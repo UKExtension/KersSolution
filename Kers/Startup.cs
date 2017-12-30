@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Kers.Models.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -42,7 +44,35 @@ namespace Kers
                     jsonOptions.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
                     jsonOptions.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 });
+            if(CurrentEnvironment.IsDevelopment()){
+                // Development
+                services.AddDbContext<KERSmainContext>(options => 
+                    options.UseSqlite(Configuration["ConnectionStrings:connKersMainLocal"]));
+                services.AddDbContext<KERScoreContext>(options => 
+                    options.UseSqlite(Configuration["ConnectionStrings:connKersCoreLocal"]));
+                services.AddDbContext<KERS_SNAPED2017Context>(options => 
+                   options.UseSqlite(Configuration["ConnectionStrings:connKersSnapLocal"]));
 
+                services.AddDistributedMemoryCache();
+            }else if(CurrentEnvironment.IsStaging()){
+                // Staging
+                services.AddDbContext<KERSmainContext>(options => 
+                    options.UseSqlServer(Configuration["ConnectionStrings:connKersMain"]));
+                services.AddDbContext<KERScoreContext>(options => 
+                    options.UseSqlServer(Configuration["ConnectionStrings:connKersCore"]));
+                services.AddDbContext<KERS2017Context>(options => 
+                    options.UseSqlServer(Configuration["ConnectionStrings:connKERS2017"]));
+                
+                
+                services.AddDistributedSqlServerCache(options =>
+                    {
+                        options.ConnectionString = Configuration["ConnectionStrings:connKersCore"];
+                        options.SchemaName = "dbo";
+                        options.TableName = "Cache";
+                    });
+            }else if( CurrentEnvironment.IsProduction()){
+                //Production
+            }
 
               /*  
             if(CurrentEnvironment.IsEnvironment("Development")){
