@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Kers.Models.Abstract;
 using Kers.Models.Contexts;
+using Kers.Models.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -72,20 +74,6 @@ namespace Kers
                     });
             }else if( CurrentEnvironment.IsProduction()){
                 //Production
-            }
-
-              /*  
-            if(CurrentEnvironment.IsEnvironment("Development")){
-                services.AddDbContext<KERSmainContext>(options => 
-                    options.UseSqlite(Configuration["ConnectionStrings:connKersMainLocal"]));
-                services.AddDbContext<KERScoreContext>(options => 
-                    options.UseSqlite(Configuration["ConnectionStrings:connKersCoreLocal"]));
-                services.AddDbContext<KERS_SNAPED2017Context>(options => 
-                   options.UseSqlite(Configuration["ConnectionStrings:connKersSnapLocal"]));
-
-                services.AddDistributedMemoryCache();
-            }else{
-                 
                 services.AddDbContext<KERSmainContext>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersMain"]));
                 services.AddDbContext<KERScoreContext>(options => 
@@ -115,6 +103,11 @@ namespace Kers
             services.AddScoped<IHelpContentRepository, HelpContentRepository>();
             services.AddScoped<IAffirmativeActionPlanRevisionRepository, AffirmativeActionPlanRevisionRepository>();
 
+              /*  
+            
+            
+            
+            
             services.AddScoped<IMembershipService, MembershipService>();
 */
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
