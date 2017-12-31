@@ -1,0 +1,25 @@
+@model Kers.Models.ViewModels.TableViewModel
+
+<div class="table-responsive">
+    <table class="table table-striped text-right">
+        <thead>
+            @foreach( var hrow in Model.Header){
+                <th class="text-right">@hrow</th>
+            }
+        </thead>
+        <tbody>
+        @foreach( var row in Model.Rows){
+            <tr>
+                @foreach( var cell in row){
+                    <td>@cell</td>
+                }
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+            @foreach( var frow in Model.Foother){
+                <td><strong>@frow</strong></td>
+            }
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,35 @@
+@model Kers.Models.ViewModels.PlanOfWorkViewModel
+<h3>@Model.PlanningUnit.Name</h3>
+<h5>Title:</h5>
+<blockquote>@Model.LastRevision.Title</blockquote>
+<h5>MAP:</h5>
+<blockquote>@Model.LastRevision.Map.Title</blockquote>
+<h5>Agents Involved:</h5>
+<blockquote>@Model.LastRevision.AgentsInvolved</blockquote>
+<h5>MAJOR PROGRAM 1:</h5>
+<blockquote>@Model.LastRevision.Mp1.Name</blockquote>
+@if(@Model.LastRevision.Mp2 != null){
+    <h5>MAJOR PROGRAM 2:</h5>
+    <blockquote>@Model.LastRevision.Mp2.Name</blockquote>
+}
+@if(@Model.LastRevision.Mp3 != null){
+    <h5>MAJOR PROGRAM 3:</h5>
+    <blockquote>@Model.LastRevision.Mp3.Name</blockquote>
+}
+@if(@Model.LastRevision.Mp4 != null){
+    <h5>MAJOR PROGRAM 4:</h5>
+    <blockquote>@Model.LastRevision.Mp4.Name</blockquote>
+}
+<h5>Situation:</h5>
+<blockquote>@Html.Raw(@Model.LastRevision.Situation)</blockquote>
+<h5>Long-Term Outcomes: </h5>
+<blockquote>@Html.Raw(@Model.LastRevision.LongTermOutcomes)</blockquote>
+<h5>Intermediate Outcomes: </h5>
+<blockquote>@Html.Raw(@Model.LastRevision.IntermediateOutcomes)</blockquote>
+<h5>Initial Outcomes:</h5>
+<blockquote>@Html.Raw(@Model.LastRevision.InitialOutcomes)</blockquote>
+<h5>Evaluation: </h5>
+<blockquote>@Html.Raw(@Model.LastRevision.Evaluation)</blockquote>
+<h5>Learning Opportunities:</h5>
+<blockquote>@Html.Raw(@Model.LastRevision.Learning)</blockquote>
+

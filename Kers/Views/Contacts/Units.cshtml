@@ -1,0 +1,30 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = "Counties Statistical Contact Reports";
+    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+}
+@model List<Kers.Models.Entities.KERScore.PlanningUnit>
+
+
+<div class="bs-glyphicons">
+    <ul class="bs-glyphicons-list">
+      <li>
+        <a asp-controller="Contacts"  asp-action="Index">
+          <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+          <span class="glyphicon-class">Back to State Reports</span>
+        </a>
+      </li>
+        @if(Model != null){
+            @foreach( var unit in Model){
+                <li>
+                    <a asp-controller="Employees"  asp-action="Data" asp-route-type="1" asp-route-id=@unit.Id>
+                    <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    <span class="glyphicon-class">@unit.Name</span>
+                    </a>
+                </li>
+            }
+        }
+      
+      
+    </ul>
+  </div>

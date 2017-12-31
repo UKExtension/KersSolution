@@ -1,0 +1,47 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = "Statistical Contact Summaries";
+    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+}
+
+
+<div class="bs-glyphicons">
+    <ul class="bs-glyphicons-list">
+      <li>
+        <a asp-controller="Data"  asp-action="Index">
+          <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+          <span class="glyphicon-class">Back to Data</span>
+        </a>
+      </li>
+      <li>
+        <a asp-controller="Contacts"  asp-action="State">
+          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+          <span class="glyphicon-class">State Reports</span>
+        </a>
+      </li>
+      <li>
+        <a asp-controller="Contacts"  asp-action="Districts">
+          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+          <span class="glyphicon-class">Districts</span>
+        </a>
+      </li>
+      <li>
+        <a asp-controller="Contacts"  asp-action="County">
+          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+          <span class="glyphicon-class">County Extension Offices</span>
+        </a>
+      </li>
+      <li>
+        <a asp-controller="Contacts"  asp-action="Units">
+          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+          <span class="glyphicon-class">Planning Units</span>
+        </a>
+      </li>
+      <li>
+        <a asp-controller="Employees"  asp-action="Data" asp-route-type="2">
+          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+          <span class="glyphicon-class">Kentucky State University</span>
+        </a>
+      </li>
+    </ul>
+  </div>
