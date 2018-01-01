@@ -1,0 +1,27 @@
+    <td *ngIf="rowOppened">{{initiative.name}}</td>
+    <td *ngIf="rowOppened">{{initiative.programCategory.shortName}}</td>
+    <td class="text-right"  *ngIf="rowOppened">
+        <button (click)="programs()" class="btn btn-info btn-xs">programs</button>
+        <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
+        <button (click)="delete()" class="btn btn-info btn-xs">delete</button>
+        <span *ngIf="errorMessage">{{errorMessage}}</span>
+    </td>
+
+    <td *ngIf="programsOppened" colspan="2">
+        {{initiative.name}}
+       <programs-list [initiative]="initiative" (onChange)="initiativeUpdated(event)"></programs-list>
+    </td>
+    <td class="text-right"  *ngIf="programsOppened">
+        <button (click)="close()" class="btn btn-info btn-xs">close</button>
+    </td>
+
+    <td *ngIf="editOppened" colspan="2">
+        <initiative-form [initiative]="initiative" (onFormCancel)="close()" (onFormSubmit)="initiativeUpdated(event)"></initiative-form>
+    </td>
+    <td class="text-right"  *ngIf="editOppened">
+        <button (click)="close()" class="btn btn-info btn-xs">close</button>
+    </td>
+    <td *ngIf="deleteOppened" colspan="2">Do you really want to delete Strategic Initiative {{initiative.name}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></td>
+    <td class="text-right"  *ngIf="deleteOppened">
+        <button (click)="close()" class="btn btn-info btn-xs">close</button>
+    </td>

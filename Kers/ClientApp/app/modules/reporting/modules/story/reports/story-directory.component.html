@@ -1,0 +1,60 @@
+<br><input type="text" placeholder="search phrase" (keyup)="onSearch($event)" class="form-control" /> <br><br>
+<a (click)="condition = !condition"><i class="fa fa-minus-square" *ngIf="condition"></i>
+<i class="fa fa-plus-square" *ngIf="!condition"></i> more search options <span class="text-muted">(planning unit, major program )</span></a>
+<div class="row">
+    <form *ngIf="condition" class="form-horizontal form-label-left">
+            <div class="col-sm-offset-3 col-sm-9">
+    <h2>Refine Search</h2>
+</div>
+            <div class="form-group" *ngIf="planningUnits">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">Planning Unit</label>
+                <div class="col-md-6 col-sm-6 col-xs-12"><loading [type]="'bars'" *ngIf="!(planningUnits | async)"></loading>
+                    <select class="form-control" (change)="onPlaningUnitChange($event)" *ngIf="(planningUnits | async)">
+                        <option value="0">-- Select --</option>
+                        <option *ngFor="let planningUnit of planningUnits | async" value="{{planningUnit.id}}">{{planningUnit.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="majorProgramId">Major Program: </label>
+                <div class="col-md-6 col-sm-6 col-xs-12"><loading [type]="'bars'" *ngIf="!(initiatives | async)"></loading>
+                    <select name="majorProgramId" id="majorProgramId" *ngIf="(initiatives | async)" (change)="onProgramChange($event)" class="form-control col-md-7 col-xs-12" >
+                        <option value="0">--- Select ---</option>
+                        <optgroup  *ngFor="let initiative of initiatives | async" label="{{initiative.name}}">
+                            <option *ngFor="let program of initiative.majorPrograms" [value]="program.id">{{program.name}} ({{program.pacCode}})</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="story">Snap Ed Related:</label>           
+                <div class="col-md-9 col-sm-9 col-xs-12" style="padding-top: 9px;">
+                    <input id="isSnap" name="isSnap" type="checkbox" value="1" (change)="onSnapChange($event)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="story">With Images:</label>           
+                <div class="col-md-9 col-sm-9 col-xs-12" style="padding-top: 9px;">
+                    <input id="withImage" name="withImage" type="checkbox" value="1" (change)="onWithImageChange($event)">
+                </div>
+            </div>
+    </form>
+</div><br><br>
+<div class="row">
+
+
+    <div class="clearfix"></div>
+    <loading [type]="'bars'" *ngIf="loading"></loading>
+    <success-story-display-list [stories]="stories" [link]="false"></success-story-display-list>
+</div>
+
+<div *ngIf="numProfiles != 0" class="text-center">
+    <div>Showing {{ numProfiles }} of {{numResults}} Success Stories</div>
+    <div *ngIf="(stories | async)?.length < numResults" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+        load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+</div>
+
+
+
+

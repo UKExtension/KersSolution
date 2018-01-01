@@ -1,0 +1,156 @@
+<div *ngIf="user" class="x_content">
+                    <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
+                      <div class="profile_img">
+                        <div id="crop-avatar">
+                          <!-- Current avatar -->
+                          <img class="img-responsive avatar-view" src="{{profilePicSrc}}" alt="Avatar" title="Change the avatar">
+                        </div>
+                      </div>
+                      <h3>{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</h3>
+                      <h2>{{user.personalProfile.professionalTitle}}</h2>
+                      <ul class="list-unstyled user_data">
+                        <li><i class="fa fa-map-marker user-profile-icon"></i> {{user.rprtngProfile.planningUnit.name}}
+                        </li>
+
+                        <li>
+                          <i class="fa fa-briefcase user-profile-icon"></i> {{user.extensionPosition.title}}
+                        </li>
+
+                        <li class="m-top-xs">
+                          <i class="fa fa-envelope user-profile-icon"></i>
+                          <a href="mailto:{{user.rprtngProfile.email}}" target="_blank">{{user.rprtngProfile.email}}</a>
+                        </li>
+                        <li  class="m-top-xs" *ngIf="user.personalProfile"><i class="fa fa-phone user-profile-icon"></i> <span *ngIf="user.personalProfile.officePhone != ''">{{user.personalProfile.officePhone}}</span><span *ngIf="user.personalProfile.officePhone == '' || !user.personalProfile">{{user.rprtngProfile.planningUnit.phone}}</span> </li>
+                        <li class="m-top-xs" *ngIf="user.personalProfile && user.personalProfile.mobilePhone != null && user.personalProfile.mobilePhone != ''"><i class="fa fa-mobile user-profile-icon"></i> 
+                                {{user.personalProfile.mobilePhone}}
+                          </li>
+                      </ul>
+                      <br>
+                      <!-- start areas -->
+                      <div *ngIf="user.specialties.length > 0">
+                        <h4>Program Areas</h4>
+                        <ul class="list-unstyled user_data">
+                          <li *ngFor="let area of user.specialties">
+                            <p>{{area.specialty.name}}</p>
+                          </li>
+                        </ul>
+                      
+                      </div>
+                      <!-- end of areas -->
+                      <br>
+                      <!-- start interests -->
+                      <div *ngIf="user.personalProfile.interests.length > 0">
+                        <h4>Interests</h4>
+                        <ul class="list-unstyled user_data">
+                          <li *ngFor="let interest of user.personalProfile.interests">
+                            <p>{{interest.interest.name}}</p>
+                          </li>
+                        </ul>
+                      
+                      </div>
+                      <!-- end of interests -->
+                      <br>
+                      <!-- start social media -->
+                      <div *ngIf="user.personalProfile.socialConnections.length > 0">
+                        <h4>Social Connections</h4>
+                        <ul class="list-unstyled user_data">
+                          <li *ngFor="let connection of user.personalProfile.socialConnections">
+                            <p><i class="fa {{connection.socialConnectionType.icon}} user-profile-icon"></i> 
+                                  <span *ngIf="connection.socialConnectionType.url != ''"><a href="{{connection.socialConnectionType.url}}{{connection.identifier}}" target="_blank">{{connection.identifier}}</a></span>
+                                  <span *ngIf="connection.socialConnectionType.url == ''">{{connection.identifier}}</span>
+                            </p>
+                          </li>
+                        </ul>
+                      </div>
+                      <!-- end of social media -->
+                      <br>
+                        <div [innerHtml]="timeWithExtension"></div>
+                    </div>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+
+                      <div class="profile_title">
+                        <div class="col-md-6">
+                          <h2>User Activity</h2>
+                        </div>
+                        <div class="col-md-6">
+                          
+                        </div>
+                      </div>
+                      
+                      <!-- start of user-activity-graph -->
+                     <div [ts-chart]="option"></div>
+                      <!-- end of user-activity-graph -->
+                      
+
+                      <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                          <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Success Stories</a>
+                          </li>
+                          <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">About</a>
+                          </li>
+                          <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Activity</a>
+                          </li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                          <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+
+                            <!-- start recent activity -->
+                            <ul class="messages">
+                              <li *ngFor="let story of latestStories | async">
+                                <img src="{{externalUrl('/image/crop/100/100/' + story.storyImages[0].uploadImage.uploadFile.name)}}" class="avtr" alt="Avatar" *ngIf="story.storyImages.length > 0">
+                                <div class="message_date">
+                                  <h3 class="date text-info">{{day(story.created)}}</h3>
+                                  <p class="month">{{month(story.created)}}</p>
+                                </div>
+                                <div class="message_wrapper">
+                                  <h4 class="heading">{{story.title}}</h4>
+                                  <blockquote class="message" [innerHtml]="htmlToPlaintext(story.story)"></blockquote>
+                                  <br>
+                                  <p class="url">
+                                    <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                                    <a [routerLink]="['/reporting/story', story.id]"><i class="fa fa-align-left"></i> Full Story</a>
+                                  </p>
+                                </div>
+                              </li>
+                              
+
+                            </ul>
+                            <!-- end recent activity -->
+
+                          </div>
+                          <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                              <br><br>
+                              <div [innerHtml]="user.personalProfile.bio" class="fr-view"></div>
+
+                          </div>
+                          <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+                            <!-- start user projects -->
+                            <table class="data table table-striped no-margin">
+                              <thead>
+                                <tr>
+                                  <th>#</th>
+                                  <th>Title</th>
+                                  <th>Major Program</th>
+                                  <th class="hidden-phone">Hours</th>
+                                  <th>Audience</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let activity of latestActivities | async; let i = index">
+                                  <td>{{i+1}}</td>
+                                  <td>{{activity.title}}</td>
+                                  <td>{{activity.majorProgram.name}}</td>
+                                  <td class="hidden-phone">{{activity.hours}}</td>
+                                  <td class="vertical-align-mid">
+                                    {{+activity.male + activity.female}}
+                                  </td>
+                                </tr>
+                                
+                              </tbody>
+                            </table>
+                            <!-- end user projects -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>

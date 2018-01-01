@@ -1,0 +1,28 @@
+<div class="ln_solid"></div>
+<div class="row">
+    <div class="col-xs-10">
+        
+        <article class="media event" *ngIf="rowDefault">
+            <a class="pull-left date">
+                <p class="month">{{activity.activityDate | date:'MMM'}} </p>
+                <p class="day">{{activity.activityDate | date:'d'}}</p>   
+            </a>
+            <div class="media-body">
+            <a class="title">{{activity.title}}</a>
+            <p>Hours: {{activity.hours}}, Audience: {{activity.male + activity.female}}</p>
+            </div>
+        </article>
+        <div class="col-xs-12" *ngIf="rowEdit">
+            <activity-form [activity]="activity" (onFormCancel)="default()" (onFormSubmit)="activitySubmitted($event)"></activity-form>
+        </div>
+        <div class="col-xs-11" *ngIf="rowDelete">
+            Do you really want to delete activity <strong>{{activity.title}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+        </div>
+        
+    </div>
+    <div class="col-xs-2 text-right">
+        <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
+        <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
+        <a class="btn btn-primary btn-xs" (click)="default()" *ngIf="!rowDefault"><i class="fa fa-close"></i> Close</a>
+    </div>  
+</div>

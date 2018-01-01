@@ -1,0 +1,24 @@
+<div class="ln_solid"></div>
+<div class="row">
+    <div class="col-xs-10">
+        
+        <article class="media event" *ngIf="rowDefault">
+            <div class="media-body">
+                <a class="title">{{story.title}}</a>
+                <p></p>
+            </div>
+        </article>
+        <div class="col-xs-12" *ngIf="rowEdit">
+            <story-form [story]="story" (onFormCancel)="default()" (onFormSubmit)="storySubmitted($event)"></story-form>
+        </div>
+        <div class="col-xs-11" *ngIf="rowDelete">
+            Do you really want to delete story <strong>{{story.title}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+        </div>
+        
+    </div>
+    <div class="col-xs-2 text-right">
+        <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault">edit</a>
+        <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault">delete</a>
+        <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
+    </div>  
+</div>

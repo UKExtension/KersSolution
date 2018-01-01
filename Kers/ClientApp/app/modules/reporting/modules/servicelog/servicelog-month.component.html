@@ -1,0 +1,2 @@
+<h3>{{month.date | date:'MMMM, y'}}</h3>
+<servicelog-detail *ngFor="let activity of month.activities" [activity]="activity" (onEdited)="edited($event)" (onDeleted)="deleted($event)"></servicelog-detail><br><br>

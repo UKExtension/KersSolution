@@ -1,0 +1,24 @@
+<div class="ln_solid"></div>
+<div class="row">
+    <div class="col-xs-10">
+        
+        <article class="media event" *ngIf="rowDefault">
+            <div class="media-body">
+            <a class="title">{{contact.majorProgram.name}}</a>
+            <p>Days: {{contact.days}}, Audience: {{contact.male + contact.female}}</p>
+            </div>
+        </article>
+        <div class="col-xs-12" *ngIf="rowEdit">
+            <contact-form [contact]="contact" (onFormCancel)="default()" (onFormSubmit)="contactSubmitted($event)"></contact-form>
+        </div>
+        <div class="col-xs-11" *ngIf="rowDelete">
+            Do you really want to delete the statistical contact?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+        </div>
+        
+    </div>
+    <div class="col-xs-2 text-right">
+        <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault">edit</a>
+        <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault">delete</a>
+        <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
+    </div>  
+</div>

@@ -1,0 +1,135 @@
+<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Error: </strong> {{errorMessage}}
+</div>
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
+    <div><reporting-display-help id="3"></reporting-display-help></div>
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!serviceLog">New Statistical Contact Record</h2>
+        <h2 *ngIf="serviceLog">Edit Statistical Contact Record</h2>
+    </div>
+    <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="contactForm">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="contactDate">Month:</label>
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <select name="contactDate" formControlName="contactDate" id="contactDate" class="form-control col-md-7 col-xs-12">
+                    <option value="">--- select ---</option>
+                    <option value="7">2017 JUL</option>
+                    <option value="8">2017 AUG</option>
+                    <option value="9">2017 SEP</option>
+                    <option value="10">2017 OCT</option>
+                    <option value="11">2017 NOV</option>
+                    <option value="12">2017 DEC</option>
+                    <option value="1">2018 JAN</option>
+                    <option value="2">2018 FEB</option>
+                    <option value="3">2018 MAR</option>
+                    <option value="4">2018 APR</option>
+                    <option value="5">2018 MAY</option>
+                    <option value="6">2018 JUN</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="days" class="control-label col-md-3 col-sm-3 col-xs-12">Days:</label>           
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <input type="number" name="days" formControlName="days" id="days" class="form-control col-xs-12" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="days" class="control-label col-md-3 col-sm-3 col-xs-12">Of the days reported above, how many were related to multi-state efforts?:</label>           
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <input type="number" name="multistate" formControlName="multistate" id="multistate" class="form-control col-xs-12" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="majorProgramId">Major Program: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <select name="majorProgramId" id="majorProgramId" formControlName="majorProgramId" class="form-control col-md-7 col-xs-12" >
+                    <option value="">--- select ---</option>
+                    <optgroup  *ngFor="let initiative of initiatives" label="{{initiative.name}}">
+                        <option *ngFor="let program of initiative.majorPrograms" [value]="program.id">{{program.name}} ({{program.pacCode}})</option>
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Race/Ethnicity:</label> 
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <div class="table-responsive snap-audience">
+                    <table class="table table-striped table-bordered" formArrayName="contactRaceEthnicityValues">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th *ngFor="let ethn of ethnicities">{{ethn.name}}</th>
+                                <th>TOTALS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let rc of races">
+                                <td>{{rc.name}}: </td>
+                                <td *ngFor="let et of ethnicities; let i=index" [formGroupName]="rIndex()">
+                                    <input type="number" formControlName="amount">
+                                </td>
+                                <td>{{totalRaceById(rc.id)}}</td>
+                            </tr>
+
+                            <tr>
+                                <td><b>TOTALS: </b></td>
+                                <td></td>
+                                <td></td>
+                                <td>{{totalRace()}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Gender:</label> 
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Female</th>
+                                <th>Male</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input formControlName="female" type="number" maxlength="5" ></td>
+                                <td>{{males()}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>      
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">&nbsp;</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <a (click)="condition = !condition"><i class="fa fa-minus-square" *ngIf="!condition"></i><i class="fa fa-plus-square" *ngIf="condition"></i> more options <span class="text-muted">(volunteers, minors ... )</span></a>
+                <div *ngIf="!condition">
+                    <div formArrayName="contactOptionNumbers">
+                        <div *ngFor="let optN of contactForm.controls.contactOptionNumbers.controls; let i=index" [formGroupName]="i" class="checkbox">
+                            <label>
+                                <input type="number" formControlName="value" id="voluntiers" maxlength="7" style="width: 70px; margin-left: -9px;"> 
+                                {{optionNumbers[i].name}} </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                <button type="submit" [disabled]="contactForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+        
+    </form>
+</div>

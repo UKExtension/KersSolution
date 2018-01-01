@@ -1,0 +1,102 @@
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
+    <div class="alert alert-warning alert-dismissible fade in" role="alert" *ngIf="message != ''">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+            </button>
+            {{message}}
+    </div>
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2>Attempt sending email</h2>
+    </div>
+    <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="form">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pressets">Setttings Presets:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <select name="pressets" id="pressets" formControlName="pressets" class="form-control col-md-7 col-xs-12" (change)="choice($event)">
+                    <option value="1">Ivelin's UK email</option>
+                    <option value="3">appsettings.json</option>
+                    <option value="4">Custom</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="selectedValue==4">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="server">Server:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="server" id="server" formControlName="server" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group" *ngIf="selectedValue==4">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="port">Port:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="number" name="port" id="port" formControlName="port" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group" *ngIf="selectedValue==4">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="username">Username:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="username" id="username" formControlName="username" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group" *ngIf="selectedValue==4">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="password">Password:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="password" name="password" id="password" formControlName="password" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        
+        
+        
+        <br><br>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="to">Settings:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <div *ngIf="selectedValue==1">
+                    Server: outlook.office365.com<br>
+                    Port: 587<br>
+                    Username: idene3@uky.edu<br>
+                    Password: Ivelin's password
+                </div>
+                <div *ngIf="selectedValue==3">
+                appsettings.json definitions
+                </div>
+                <div *ngIf="selectedValue==4">
+                Server: {{form.value.server}}<br>
+                Port: {{form.value.port}}<br>
+                Username: {{form.value.username}}<br>
+                </div> 
+            </div>
+        </div><br><br>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="from">From:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="from" id="from" formControlName="from" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="to">To:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="to" id="to" formControlName="to" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject">Subject:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="subject" id="subject" formControlName="subject" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="body">Body:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <textarea name="body" id="body" formControlName="body" class="form-control col-md-7 col-xs-12"></textarea>
+            </div>
+        </div>
+        
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" (click)="OnCancel()">Cancel</a>
+                <button type="submit" [disabled]="form.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

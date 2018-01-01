@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!program">New Major Program</h2>
+        <h2 *ngIf="program">Edit Major Program {{program.name}}</h2>
+    </div>
+    <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="programForm">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" name="name" id="name" formControlName="name" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="pacCode">Pac Code:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="number" name="pacCode" id="pacCode" formControlName="pacCode" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="order">Order:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="number" name="order" id="order" formControlName="order" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" (click)="OnCancel()">Cancel</a>
+                <button type="submit" [disabled]="programForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+    
+    

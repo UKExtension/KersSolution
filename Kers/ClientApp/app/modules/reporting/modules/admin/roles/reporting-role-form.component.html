@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!role">New Role</h2>
+        <h2 *ngIf="role">Edit Role {{role.title}}</h2>
+    </div>
+    <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="roleForm">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Title:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" name="title" id="title" formControlName="title" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="shortTitle">Short Title:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" id="shortTitle" formControlName="shortTitle" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="activityDescription" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>           
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <textarea [froalaEditor]="options" name="description" formControlName="description" rows="2" cols="20" id="description" class="form-control col-md-7 col-xs-12"></textarea>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="role">
+            <label for="selfEnrolling" class="control-label col-md-3 col-sm-3 col-xs-12">Self Enrolling:</label>           
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="checkbox" formControlName="selfEnrolling" />
+            </div>
+        </div>
+        <div class="form-group" *ngIf="role">
+            <label for="activityDescription" class="control-label col-md-3 col-sm-3 col-xs-12">Enabled:</label>           
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="checkbox" formControlName="enabled" />
+            </div>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" (click)="OnCancel()">Cancel</a>
+                <button type="submit" [disabled]="roleForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+    
+    

@@ -1,0 +1,204 @@
+<div class="col-md-12 col-sm-12 col-xs-12" *ngIf="user">
+    <div class="row">
+
+        <div class="col-lg-1 col-md-2 col-sm-3 col-xs-4 text-center">
+            <img src="{{profilePicSrc}}" alt="" class="img-circle img-responsive">
+        </div>
+
+
+        <div class="col-lg-11 col-md-10 col-sm-9 col-xs-8 profile_details">
+            <div class="col-sm-12 top">
+                <div class="col-xs-4">
+                    <h2 *ngIf="user.personalProfile">{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</h2>
+                    <p><strong>{{user.extensionPosition.title}}</strong></p>
+                </div>
+                <div class="col-xs-4">
+                    <ul class="list-unstyled">
+                        <li *ngIf="user.rprtngProfile"><a [routerLink]="['/reporting/county/', user.rprtngProfile.planningUnit.id]"><i class="fa fa-building"></i> {{user.rprtngProfile.planningUnit.name}}</a></li> 
+                        <li *ngIf="user.personalProfile"><i class="fa fa-phone"></i> 
+                            <span *ngIf="user.personalProfile.officePhone != ''">{{user.personalProfile.officePhone}}</span>
+                            <span *ngIf="user.personalProfile.officePhone == null || user.personalProfile.officePhone == '' || !user.personalProfile">{{user.rprtngProfile.planningUnit.phone}}</span> 
+                        </li>
+                        <li class="m-top-xs">
+                          <i class="fa fa-envelope user-profile-icon"></i>
+                          <a href="mailto:{{user.rprtngProfile.email}}" target="_blank">{{user.rprtngProfile.email}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-xs-4">
+                    <i *ngIf="user.personalProfile">{{user.personalProfile.professionalTitle}}</i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ln_solid"></div>
+
+    <h2>MEETINGS / ACTIVITIES</h2>
+    <user-activities [user]="user"></user-activities>
+
+    <h2>EXPENSES</h2>
+    <user-expenses [user]="user"></user-expenses>
+
+
+
+
+
+<h2>EXPENSE TOTALS BY FUNDING SOURCE FOR FISCAL YEAR 2018 (7/1/2017 - 6/30/2018)</h2>
+<div class="table-responsive">
+<div>
+	<table class="table table-bordered table-striped" cellspacing="0" rules="all" border="1" id="ctl00_MainContent_GridViewEmployeeExpenseSummaryByFundingSourceYTD" style="border-collapse:collapse;">
+        <thead>
+            <tr>
+			<th>FUNDING SOURCE</th><th class="text-right">TOTAL</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let smr of expenseSummaries | async">
+                <td>
+                {{smr.fundingSource.name}} <br>
+            </td>
+            <td align="right">
+                {{smr.total | currency:'USD':true:'1.2-2' }}
+            <br>
+            </td>
+		</tr>
+	</tbody></table>
+</div>
+</div><br><br>
+
+
+<h2>STATISTICAL CONTACTS BY MONTH</h2>
+<div class="view-row" *ngIf="!aa">
+    <div class="text-right">
+        <button class="btn btn-info btn-xs" (click)="aa = !aa" >view</button>
+    </div>
+</div>
+<div class="close-row" *ngIf="aa">
+    <div class="text-right">
+        <button class="btn btn-info btn-xs" (click)="aa = !aa" >close</button>
+    </div>
+    <contact-activity-summary-month [user]="user"></contact-activity-summary-month>
+</div>
+
+
+
+<h2>STATISTICAL CONTACTS BY MAJOR PROGRAM</h2>
+<div class="view-row" *ngIf="!pr">
+    <div class="text-right">
+        <button class="btn btn-info btn-xs" (click)="pr = !pr" >view</button>
+    </div>
+</div>
+<div class="close-row" *ngIf="pr">
+    <div class="text-right">
+        <button class="btn btn-info btn-xs" (click)="pr = !pr" >close</button>
+    </div>
+    <contact-activity-summary-program [user]="user"></contact-activity-summary-program>
+</div>
+
+
+
+<h2>CES IN-SERVICE ENROLLMENT</h2>
+<div class="table-responsive" *ngIf="inServiceEnrolment">
+
+    <table class="table table-bordered table-striped" *ngIf="inServiceEnrolment.length == 0">
+        <tbody>
+            <tr>
+                <td colspan="8">no records.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered table-striped" *ngIf="inServiceEnrolment.length != 0">
+        <thead>
+            <tr>
+                <th>
+                    Training Date
+                </th>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Hours
+                </th>
+                <th>
+                    Attended
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Location
+                </th>
+                <th>
+                    Time
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let enr of inServiceEnrolment">
+                <td align="left" style="white-space:nowrap;">
+                   {{enr[0]}}
+                </td>
+                <td align="right" style="white-space:nowrap;">
+                    {{enr[1]}}
+                </td>
+                <td align="center">
+                    {{enr[2]}}
+                </td>
+                <td align="center" style="white-space:nowrap;">
+                    {{enr[3]}}
+                </td>
+                <td align="left">
+                    {{enr[4]}}
+                </td>
+                <td align="left">
+                    {{enr[5]}}
+                </td>
+                <td align="left">
+                    {{enr[6]}}
+                </td>
+            </tr>
+            <tr>
+                <td align="right" colspan="2">
+                    TOTAL HOURS ATTENDED
+                </td>
+                <td align="center">
+                    {{hoursAttended}}
+                </td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<h2>SUCCESS STORIES</h2>
+
+<!-- start success stories -->
+    <ul class="messages">
+        <li *ngFor="let story of latestStories | async">
+        <img src="{{externalUrl('/image/crop/100/100/' + story.storyImages[0].uploadImage.uploadFile.name)}}" class="avtr" alt="Avatar" *ngIf="story.storyImages.length > 0">
+        <div class="message_date">
+            <h3 class="date text-info">{{day(story.created)}}</h3>
+            <p class="month">{{month(story.created)}}</p>
+        </div>
+        <div class="message_wrapper">
+            <h4 class="heading">{{story.title}}</h4>
+            <blockquote class="message" [innerHtml]="htmlToPlaintext(story.story)"></blockquote>
+            <br>
+            <p class="url">
+            <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+            <a [routerLink]="['/reporting/story', story.id]"><i class="fa fa-align-left"></i> Full Story</a>
+            </p>
+        </div>
+        </li>
+        
+
+    </ul>
+    <!-- end success stories -->
+
+
+
+
+
+</div>

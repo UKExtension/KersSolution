@@ -1,0 +1,32 @@
+<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Error: </strong> {{errorMessage}}
+</div>
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!indicator">New Program Indicator <span *ngIf="majorProgram">for {{majorProgram.name}}</span></h2>
+        <h2 *ngIf="indicator">Edit Program Indicator</h2>
+    </div>
+    <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="indicatorForm">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="question">Question:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <textarea [froalaEditor]="options" name="question" id="question" formControlName="question" class="form-control col-md-7 col-xs-12"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="order">Order:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="number" name="order" id="order" formControlName="order" class="form-control col-md-5 col-xs-8" />
+            </div>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-9 col-sm-9 col-xs-12 col-sm-offset-3">
+                <a class="btn btn-primary" (click)="OnCancel()">Cancel</a>
+                <button type="submit" [disabled]="indicatorForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

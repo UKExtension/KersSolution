@@ -1,0 +1,20 @@
+<h4>MAPS</h4>
+<div>
+    <div class="text-right">
+        <a class="btn btn-info btn-xs" *ngIf="!newMap" (click)="newMapOpen()">+ new map</a>
+    </div>
+    <plansofwork-map-form *ngIf="newMap" (onFormCancel)="newMapCancelled()" (onFormSubmit)="newMapSubmitted()"></plansofwork-map-form>
+</div>
+<div *ngIf="maps">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+              <tr *ngFor="let map of maps" [plansofworkMapsDetail]="map" (onMapUpdated)="onMapUpdate()" (onMapDeleted)="onMapUpdate()" ></tr>
+        </tbody>               
+    </table>            
+</div>

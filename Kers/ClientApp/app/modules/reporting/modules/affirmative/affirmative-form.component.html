@@ -1,0 +1,168 @@
+<loading *ngIf="loading"></loading>
+<div *ngIf="!loading">
+    <form class="form-horizontal form-label-left col-xs-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="affirmativeForm">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Agents Involved: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="agents" name="agents" id="agents" formControlName="agents" class="form-control col-md-7 col-xs-12" >
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <textarea [froalaEditor]="options" name="description" formControlName="description" id="description" class="form-control col-xs-12"></textarea>
+                <p><small>A brief description of the county reflecting diversity in demographics, 
+                    program audiences, available resources, and the county program. This statement should describe the current state of affairs yet expose the areas where improvement is needed.</small></p>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="makeupLoaded">
+            <label class="col-xs-12">County Extension Council, District Board and Program Council Makeup:</label>           
+            <div class="col-xs-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">ADVISORY GROUP</th>
+                                <ng-container *ngFor="let group of makeupDiversityGroups">
+                                    <ng-container *ngIf="group.render">
+                                        <th [attr.colspan]="group.types.length">{{group.name}}</th>
+                                    </ng-container>
+                                    <ng-container *ngIf="!group.render">
+                                        <ng-container *ngFor="let type of group.types">
+                                            <th  [attr.rowspan]="2">{{type.name}}</th>
+                                        </ng-container>
+                                    </ng-container>
+                                    
+                                </ng-container>
+                                
+                            </tr>
+                            <tr>
+                                <ng-container *ngFor="let group of makeupDiversityGroups">
+                                    <ng-container *ngIf="group.render">
+                                        <th *ngFor="let type of group.types">{{type.name}}</th>
+                                    </ng-container>
+                                </ng-container>
+                            </tr>                 
+                        </thead>
+                        <tbody formArrayName="makeupValues">
+                            <tr *ngFor="let aGroup of advisoryGroups; let gi = index">
+                                <td>{{aGroup.name}}</td>
+                                <ng-container *ngFor="let group of makeupDiversityGroups; let mi = index">
+                                    <td *ngFor="let type of group.types; let i = index" [formGroupName]="mIndex()">
+                                        <ng-container *ngIf="type.type=='number'">
+                                            <input type="number" style="width: 50px;" formControlName="value" />
+                                        </ng-container>
+                                        <ng-container *ngIf="type.type=='date'">
+                                            <input type="date" placeholder="mm/dd/yyyy" formControlName="value" />
+                                        </ng-container>
+                                        <ng-container *ngIf="type.type=='boolean'">
+                                            <select formControlName="value">
+                                                <option value="">select</option>
+                                                <option value="yes">yes</option>
+                                                <option value="no">no</option>
+                                            </select>
+                                        </ng-container>
+                                    </td>
+                                </ng-container>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><small>Provide the number of individuals above that represent the current makeup of the County Extension Council, District Board, Program Councils and other advisory groups.</small></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="goals" class="control-label col-md-3 col-sm-3 col-xs-12">Affirmative Action Goals:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <textarea [froalaEditor]="options" name="goals" formControlName="goals" id="goals" class="form-control col-xs-12"></textarea>
+                <p><small>This is the state of affairs county programs are working toward in terms of reaching all audiences. These goals will come about as a result of examining the makeup of 
+                    advisory committees, geographic, age, racial and gender participation in programs, and the variety of programming opportunities provided to extension audiences. As you list your goals, 
+                    include the initials of the agents responsible for setting that particular goal.</small></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="strategies" class="control-label col-md-3 col-sm-3 col-xs-12">Action Strategies to Accomplish the Above Identified Affirmative Action Goals:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <textarea [froalaEditor]="options" name="strategies" formControlName="strategies" id="strategies" class="form-control col-xs-12"></textarea>
+                <p><small>Action strategies should be as specific as possible and should include those efforts the county staff intends to initiate during this program year. Efforts will be related 
+                    to strengthening councils and leadership, providing more diversity in these groups as well as actual programming and outreach efforts from the county Plan of Work. 
+                    As you list your efforts to achieve identified goals, include the initials of the agents responsible for carrying out each particular effort.</small></p>
+            </div>
+        </div>
+
+
+<div class="fontawesome-icon-list help-block" style="width: auto">
+    <div class="fa-hover">
+        <a (click)="condition = !condition"><i class="fa fa-arrow-circle-right"></i>To be Reported at the End of the Fiscal Year &nbsp;</a>
+    </div>
+
+    <div *ngIf="condition">
+        <div class="ln_solid"></div>
+
+
+
+        <div class="form-group">
+            <label for="efforts" class="control-label col-md-3 col-sm-3 col-xs-12">Efforts:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <textarea name="efforts" formControlName="efforts" id="efforts" class="form-control col-xs-12"></textarea>
+                <p><small>What specific efforts have you made to comply with Civil Rights and Affirmative Action Guidelines and the 
+                    goals and strategies established in the County Affirmative Action Plan above? Efforts should relate to the 
+                    planned efforts and goals identified above and again are identified by the initials of individual agents involved.</small></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="success" class="control-label col-md-3 col-sm-3 col-xs-12">Success:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <textarea name="success" formControlName="success" id="success" class="form-control col-xs-12"></textarea>
+                <p><small>What success have you had in increasing minority or other under represented groups’ participation in your program? (Identify successes with initials of agents involved.)</small></p>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="summaryLoaded">
+            <label class="col-xs-12">Summary of Meetings and Minority/Gender-Based Involvement:</label>           
+            <div class="col-xs-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ADVISORY GROUP</th>
+                                <th *ngFor="let diversity of summaryDevirsity">{{diversity.name}}</th>
+                            </tr>                 
+                        </thead>
+                        <tbody formArrayName="summaryValues">
+                            <tr *ngFor="let aGroup of advisoryGroups">
+                                <td>{{aGroup.name}}</td>
+                                <td *ngFor="let diversity of summaryDevirsity" [formGroupName]="sIndex()">
+                                    <input type="number" style="width: 50px;" formControlName="value" disabled="disabled" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><small>* This number should reflect the actual number of females/racial minorities (non-duplicates) 
+                    attending throughout the year.  For example, if the same female attended a council meeting four (4) 
+                    times throughout the year, the participant should only be counted once.</small></p>
+            </div>
+        </div>
+
+
+
+
+        <div class="fa-hover">
+            <a (click)="condition = !condition"><i class="fa fa-arrow-circle-up"></i>hide &nbsp;</a>
+        </div>
+        <div class="ln_solid"></div>
+    </div>
+</div>
+
+
+
+
+
+
+        <div class="ln_solid"></div>
+        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+            <a class="btn btn-primary" (click)="OnCancel()">Cancel</a>
+            <button type="submit" [disabled]="affirmativeForm.invalid"  class="btn btn-success">Submit</button>
+        </div>
+    </form>
+</div>

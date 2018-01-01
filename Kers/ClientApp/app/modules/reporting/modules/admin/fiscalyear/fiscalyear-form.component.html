@@ -1,0 +1,68 @@
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!fiscalyear">New Fiscal Year</h2>
+        <h2 *ngIf="fiscalyear">Edit FiscalYear {{fiscalyear.title}}</h2>
+    </div>
+    <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="fiscalyearForm">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" name="name" id="name" formControlName="name" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Type:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select name="type" id="type" formControlName="type" class="form-control col-md-5 col-xs-10">
+                        <option value="serviceLog">Service Log</option>
+                        <option value="snapEd">Snap Ed</option>
+                    </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="input-prepend input-group">
+                    <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>   
+                    <material-datepicker [date]="startValue" id="start" (onSelect)="startDateSelected($event)" placeholder="" ></material-datepicker>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="input-prepend input-group">
+                    <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>   
+                    <material-datepicker [date]="endValue" id="end" (onSelect)="endDateSelected($event)" placeholder="" ></material-datepicker>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">Available at:</label>
+            <div class="col-md-4 col-sm-4 col-xs-8">
+                <div class="input-prepend input-group">
+                    <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>   
+                    <material-datepicker [date]="availableatValue" id="availableAt" (onSelect)="availableAtDateSelected($event)" placeholder="" ></material-datepicker>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">ExtendedTo:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="input-prepend input-group">
+                    <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>   
+                    <material-datepicker [date]="extendedtoValue" id="extendedTo" (onSelect)="extendedToDateSelected($event)" placeholder="" ></material-datepicker>
+                </div>
+            </div>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" (click)="OnCancel()">Cancel</a>
+                <button type="submit" [disabled]="fiscalyearForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+    
+    

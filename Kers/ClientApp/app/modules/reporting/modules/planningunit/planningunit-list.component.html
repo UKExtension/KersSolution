@@ -1,0 +1,1 @@
+<div *ngFor="let county of counties | async" class="btn btn-default" routerLink="{{link}}{{county.id}}">{{county.name.substring(0,county.name.length - 11 )}}</div>

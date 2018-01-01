@@ -1,0 +1,2 @@
+<h3>{{month.date | date:'MMMM, y'}}</h3>
+<contact-detail *ngFor="let contact of month.activities" [contact]="contact" (onDeleted)="deleted($event)"></contact-detail><br><br>

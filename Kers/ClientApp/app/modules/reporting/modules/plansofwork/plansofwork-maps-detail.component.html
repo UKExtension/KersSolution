@@ -1,0 +1,17 @@
+<td *ngIf="rowOppened">{{map.title}}</td>
+<td class="text-right"  *ngIf="rowOppened">
+        <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
+        <button *ngIf="deleteAllowed" (click)="delete()" class="btn btn-info btn-xs">delete</button>
+        <span *ngIf="errorMessage">{{errorMessage}}</span>
+</td>
+<td *ngIf="editOppened">
+        <plansofwork-map-form [map]="map" (onFormCancel)="close()" (onFormSubmit)="mapUpdated(event)"></plansofwork-map-form>
+</td>
+<td class="text-right"  *ngIf="editOppened">
+    <button (click)="close()" class="btn btn-info btn-xs">close</button>
+</td>
+<td colspan="2" *ngIf="deleteOppened && loading"><loading></loading></td>
+<td *ngIf="deleteOppened && !loading">Do you really want to delete map {{map.title}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></td>
+<td class="text-right"  *ngIf="deleteOppened && !loading">
+    <button (click)="close()" class="btn btn-info btn-xs">close</button>
+</td>

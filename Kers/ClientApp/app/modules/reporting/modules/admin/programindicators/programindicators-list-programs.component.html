@@ -1,0 +1,11 @@
+<ul class="list-unstyled timeline widget">
+    <li *ngFor="let program of programs">
+        <div class="block">
+            <div class="block_content">                    
+                        <h2 class="title">{{program.name}}</h2>
+                        <programindicators-list-indicators [majorProgram]="program"></programindicators-list-indicators>                  
+            </div>
+        </div>
+    </li>
+    
+</ul>

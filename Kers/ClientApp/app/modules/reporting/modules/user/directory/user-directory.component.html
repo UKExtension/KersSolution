@@ -1,0 +1,41 @@
+<br><input type="text" placeholder="search by name" (keyup)="onSearch($event)" class="form-control" /> <br><br>
+<a (click)="condition = !condition"><i class="fa fa-minus-square" *ngIf="condition"></i>
+<i class="fa fa-plus-square" *ngIf="!condition"></i> more search options <span class="text-muted">(planning unit, position )</span></a>
+<div class="row">
+    <form *ngIf="condition" class="form-horizontal form-label-left">
+            <div class="col-sm-offset-3 col-sm-9">
+    <h2>Refine Search</h2>
+</div>
+            <div class="form-group" *ngIf="positions">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="positionID">Extension Position</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select class="form-control" (change)="onPositionChange($event)">
+                        <option value="0">-- Select --</option>
+                        <option *ngFor="let position of positions | async" value="{{position.id}}">{{position.title}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" *ngIf="planningUnits">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">Planning Unit</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select class="form-control" (change)="onPlaningUnitChange($event)">
+                        <option value="0">-- Select --</option>
+                        <option *ngFor="let planningUnit of planningUnits | async" value="{{planningUnit.id}}">{{planningUnit.name}}</option>
+                    </select>
+                </div>
+            </div>
+    </form>
+</div><br><br>
+<div class="row">
+
+
+    <div class="clearfix"></div>
+
+    <user-directory-profile *ngFor="let user of users | async" [user]="user"></user-directory-profile>
+</div>
+
+<div *ngIf="numProfiles != 0" class="text-center">
+    <div>Showing {{ numProfiles }} of {{numResults}} Users</div>
+    <div *ngIf="(users | async)?.length < numResults" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+        load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+</div>

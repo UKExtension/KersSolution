@@ -1,0 +1,45 @@
+<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Error: </strong> {{errorMessage}}
+</div>
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading"><div *ngIf="stats">
+<div *ngIf="stats.length == 0">
+    <p>
+        No Snap-Ed activity for the Fiscal Year.
+    </p>
+</div>
+<div *ngIf="stats.length != 0">
+        <h2>Reported Hours By Month</h2>
+        <div class="table-responsive text-right">
+                <div>
+                    <table class="table table-bordered table-striped" >
+                        <thead>
+                                <tr>
+                                    <th scope="col">MONTH</th><th scope="col">HOURS<br>REPORTED</th><th scope="col">DIRECT<br>CONTACTS</th><th scope="col">INDIRECT<br>CONTACTS</th><th scope="col">TOTAL<br>CONTACTS</th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let stat of stats; let i = index;">
+                                <td>{{stat.year}}/{{stat.month}}</td>
+                                <td>{{stat.hours}}</td>
+                                <td>{{directPerMounth[i]}}</td>
+                                <td>{{indirectPerMounth[i]}}</td>
+                                <td>{{directPerMounth[i] + indirectPerMounth[i]}}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td><strong>TOTALS</strong></td>
+                                <td><strong>{{hoursTotal}}</strong></td>
+                                <td><strong>{{directTotal}}</strong></td>
+                                <td><strong>{{indirectTotal}}</strong></td>
+                                <td><strong>{{directTotal + indirectTotal}}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

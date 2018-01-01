@@ -1,0 +1,20 @@
+<h2>Committed Hours for {{fiscalYear.start | date:'mediumDate'}} - {{fiscalYear.end | date:'mediumDate'}}</h2>
+<div class="table-responsive" *ngIf="commitments">
+    <div>
+        <table class="table table-bordered table-striped" cellspacing="0" rules="all" border="1" id="ctl00_MainContent_GridViewMyCommittedHours" style="border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th *ngFor="let proj of projectTypes">{{proj.name}}</th>
+                    <th>Admin</th>
+                    <th>TOTAL HOURS<br>COMMITTED</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td *ngFor="let proj of projectTypes">{{hours(proj.id)}}</td>
+                <td>{{admingHours()}}</td>
+                <td><strong>{{totalHours()}}</strong></td>
+            </tr>
+        </tbody></table>
+    </div>
+</div>

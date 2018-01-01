@@ -1,0 +1,13 @@
+<div *ngIf="plans">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+              <tr *ngFor="let planofwork of plans" [isReport]="true" [planofworkDetail]="planofwork" (onPlanofworkUpdated)="onPlanofworkUpdate()" (onPlanofworkDeleted)="onPlanofworkUpdate()" ></tr>
+        </tbody>               
+    </table>            
+</div>

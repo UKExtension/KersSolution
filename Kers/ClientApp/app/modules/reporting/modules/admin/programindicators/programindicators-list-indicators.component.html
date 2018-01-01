@@ -1,0 +1,9 @@
+<div class="row">
+    <div class="col-xs-12" *ngIf="newIndicator"><programindicators-form-admin 
+                                    [majorProgram]="majorProgram" 
+                                    (onFormCancel)="newIndicator = false"
+                                    (onFormSubmit)="onNewIndicator($event)"
+                                    ></programindicators-form-admin></div>
+    <div class="col-xs-2 col-sm-offset-10" *ngIf="!newIndicator"><a class="btn btn-info btn-xs" (click)="newIndicator = true" >+ new indicator</a></div>
+</div>
+<programindicators-indicator-detail *ngFor="let indicator of indicators" [indicator]="indicator" (onDeleted)="indicatorDeleted($event)"></programindicators-indicator-detail>

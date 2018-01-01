@@ -1,0 +1,24 @@
+<td *ngIf="rowOppened">{{group.name}} <small>{{positionRestriction}} {{roleRestriction}}</small></td><td *ngIf="rowOppened"></td>
+<td class="text-right"  *ngIf="rowOppened">
+        <button (click)="items()" class="btn btn-info btn-xs">items</button>
+        <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
+        <button (click)="delete()" class="btn btn-info btn-xs">delete</button>
+        <span *ngIf="errorMessage">{{errorMessage}}</span>
+</td>
+<td colspan="2" *ngIf="editOppened">
+    <navigation-group-form (onFormSubmit)="onUpdateSubmit($event)" (onFormCancel)="close()" [group]="group" ></navigation-group-form>
+</td>
+<td class="text-right"  *ngIf="editOppened">
+    <button (click)="close()" class="btn btn-info btn-xs">close</button>
+</td>
+<td colspan="2" *ngIf="deleteOppened">Do you really want to delete group {{group.name}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></td>
+<td class="text-right"  *ngIf="deleteOppened">
+    <button (click)="close()" class="btn btn-info btn-xs">close</button>
+</td>
+<td colspan="2" *ngIf="itemsOppened">
+    <div>{{group.name}}</div>
+    <admin-nav-items [group]="group" (itemAdded)="newItem($event)" (itemDeleted)="itemDeleted($event)"></admin-nav-items>
+</td>
+<td class="text-right"  *ngIf="itemsOppened">
+    <button (click)="close()" class="btn btn-info btn-xs">close</button>
+</td>

@@ -1,0 +1,115 @@
+<h2 class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3 col-sm-offset-3">Reporting Profile</h2>
+<form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="editForm">
+    <div class="form-group" *ngIf="admin">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="personName">Person Name:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" id="personName" formControlName="personName" class="form-control col-md-7 col-xs-12">
+        </div>
+    </div>
+    
+    <div class="form-group" *ngIf="planningUnits">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Planning Unit</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <select formControlName="planningUnitID" class="form-control">
+                <option value="0">-- Select --</option>
+                <option *ngFor="let planningUnit of planningUnits" value="{{planningUnit.planningUnitID}}">{{planningUnit.planningUnitName}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group" *ngIf="positions">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="positionID">Extension Position</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <select formControlName="positionID" class="form-control">
+                <option value="0">-- Select --</option>
+                <option *ngFor="let position of positions" value="{{position.posCode}}">{{position.posTitle}}</option>
+            </select>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <span class="control-label col-md-3 col-sm-3">PROGRAM AREA/RESPONSIBILITY:<br>(check any/all that apply)</span>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <div class="checkbox">
+                <label><input type="checkbox" id="prog4HYD" formControlName="prog4HYD"> 4-H Youth Development</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="progANR" formControlName="progANR"> Agriculture and Natural Resources</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="progFCS" formControlName="progFCS"> Family and Consumer Sciences</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="progFACLD" formControlName="progFACLD"> Fine Arts / Community and Economic Development</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="progHORT" formControlName="progHORT"> Horticulture</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="progNEP" formControlName="progNEP"> (NEP) Nutrition Education Program (SNAP &amp; EFENP)</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="progOther" formControlName="progOther"> other (e.g., Extension Administration)</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group" *ngIf="locations">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="locationID">Location</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <select formControlName="locationID" class="form-control">
+                <option value="0">-- Select --</option>
+                <option *ngFor="let location of locations" value="{{location.locationID}}">{{location.locationName}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="emailDeliveryAddress">Delivery Email Address:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" id="emailDeliveryAddress" formControlName="emailDeliveryAddress" class="form-control col-md-7 col-xs-12">
+                <p class="help-block">(this must be a functional email address)</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="emailUEA">Email Alias:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" id="emailUEA" formControlName="emailUEA" class="form-control col-md-7 col-xs-12">
+                <p class="help-block">(e.g. John.Smith@uky.edu) - (this must be a functional email address)</p>
+        </div>
+    </div>
+
+
+
+    <div class="form-group" *ngIf="admin">
+        <span class="control-label col-md-3 col-sm-3">(roles/permissions)</span>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <div class="checkbox">
+                <label><input type="checkbox" id="enabled" formControlName="enabled"> Enabled</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="sapLeaveRequestPilotGroup" formControlName="sapLeaveRequestPilotGroup"> Sap Leave Request Pilot Group</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="extensionIntern" formControlName="extensionIntern"> Extension Intern</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="isDD" formControlName="isDD"> District Director</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="isCesInServiceTrainer" formControlName="isCesInServiceTrainer"> Ces InService Trainer</label>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" id="isCesInServiceAdmin" formControlName="isCesInServiceAdmin"> Ces InService Admin</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="ln_solid"></div>
+    <div class="form-group">
+        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+            <a class="btn btn-primary" (click)="OnCancel()">Cancel</a>
+            <button type="submit" [disabled]="editForm.invalid"  class="btn btn-success">Submit</button>
+        </div>
+    </div>
+</form>

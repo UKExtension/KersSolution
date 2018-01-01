@@ -1,0 +1,23 @@
+        <td *ngIf="row">{{ profile.personName }}</td>
+        <td *ngIf="row">{{ profile.positionID }}</td>
+        <td *ngIf="row">{{ profile.planningUnitName }}</td>
+        <td *ngIf="row" class="text-right">
+            <button (click)="onEditReporting()" class="btn btn-info btn-xs">reporting profile</button>
+            <button (click)="onEditPersonal()" class="btn btn-info btn-xs">personal profile</button>
+            <button (click)="onEditRoles()" class="btn btn-info btn-xs">roles</button>
+            <button [routerLink]="['/reporting/user', (u | async)?.id ]" class="btn btn-info btn-xs">details</button>
+        </td>
+        <td *ngIf="editReporting" colspan="3">
+            <div>{{ profile.personName }}</div>
+            <user-reporting-form [userObservable]="u" (onFormCancel)="onClose()" (onFormSubmit)="profileUpdated(event)" [adminEdit]="true"></user-reporting-form>
+        </td>
+        <td *ngIf="editPersonal" colspan="3">
+             <div>{{ profile.personName }}</div>
+            <user-personal-form [userObservable]="u" (onFormCancel)="onClose()" (onFormSubmit)="profileUpdated(event)"></user-personal-form>
+        </td>
+        <td *ngIf="editRoles" colspan="3">
+             <div>{{ profile.personName }}</div>
+            <roles-edit-form [user]="u" (onFormCancel)="onClose()" (onFormSubmit)="profileUpdated(event)"></roles-edit-form>
+        </td>
+        <td *ngIf="!row" class="text-right"><button (click)="onClose()" class="btn btn-info btn-xs">close</button></td>
+   

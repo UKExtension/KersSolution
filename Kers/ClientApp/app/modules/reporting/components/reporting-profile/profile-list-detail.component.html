@@ -1,0 +1,13 @@
+<td *ngIf="viewType == 'row'">{{ profile.personName }}</td>
+        <td *ngIf="viewType == 'row'">{{ profile.positionID }}</td>
+        <td *ngIf="viewType == 'row'">{{ profile.planningUnitName }}</td>
+        <td *ngIf="viewType == 'row'" class="text-right">
+            <button (click)="viewType = 'edit'" class="btn btn-info btn-xs">reporting profile</button>
+            <button (click)="viewType = 'edit'" class="btn btn-info btn-xs">personal profile</button>
+            <button (click)="viewType = 'edit'" class="btn btn-info btn-xs">roles</button>
+        </td>
+        <td *ngIf="viewType == 'edit'" colspan="3">
+            <reporting-profile-edit [profile]="profile" [admin]="true" (onFormCancel)="viewType = 'row'" (onFormSubmit)="profileUpdated(event)"></reporting-profile-edit>
+        </td>
+        <td *ngIf="viewType == 'detail' || viewType == 'edit'" class="text-right"><button (click)="viewType = 'row'" class="btn btn-info btn-xs">close</button></td>
+   

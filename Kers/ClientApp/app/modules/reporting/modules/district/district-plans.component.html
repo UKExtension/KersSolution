@@ -1,0 +1,22 @@
+<div class="text-right"><a href="/kers_mobile/ReportDD_ProgramPlansMain.aspx">Past Fiscal Years Reports</a></div>
+<h2>Fiscal Year 2018 Plans of Work Reports</h2>
+<select name="counties" id="counties" class="form-control col-md-7 col-xs-12" (change)="onChange($event.target.value)">
+        <option value="">--- select county ---</option>
+
+        <option *ngFor="let county of counties | async" [value]="county.id">{{county.name}}</option>
+
+</select>
+<br><br><br><br>
+<div *ngIf="plans">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+              <tr *ngFor="let planofwork of plans | async" [isReport]="true" [planofworkDetail]="planofwork" (onPlanofworkUpdated)="onPlanofworkUpdate()" (onPlanofworkDeleted)="onPlanofworkUpdate()" ></tr>
+        </tbody>               
+    </table>            
+</div>

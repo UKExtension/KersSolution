@@ -1,0 +1,19 @@
+<td *ngIf="rowOppened">{{item.name}}<small>{{positionRestriction}} {{roleRestriction}}</small></td>
+<td class="text-right"  *ngIf="rowOppened">
+        <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
+        <button (click)="delete()" class="btn btn-info btn-xs">delete</button>
+        <span *ngIf="errorMessage">{{errorMessage}}</span>
+</td>
+<td *ngIf="editOppened">
+    <navigation-item-form (onFormSubmit)="onUpdateSubmit($event)" (onFormCancel)="close()" [item]="item" ></navigation-item-form>
+</td>
+<td class="text-right"  *ngIf="editOppened">
+    <button (click)="close()" class="btn btn-info btn-xs">close</button>
+</td>
+<td *ngIf="deleteOppened">Do you really want to delete group {{item.name}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></td>
+<td class="text-right"  *ngIf="deleteOppened">
+    <button (click)="close()" class="btn btn-info btn-xs">close</button>
+</td>
+<td class="text-right"  *ngIf="itemsOppened">
+    <button (click)="close()" class="btn btn-info btn-xs">close</button>
+</td>

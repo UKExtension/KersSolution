@@ -1,0 +1,114 @@
+<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Error: </strong> {{errorMessage}}
+</div>
+<loading *ngIf="loading"></loading>
+<div *ngIf="!loading">
+    <div class="row" *ngIf="user">
+        <div class="col-sm-offset-3 col-sm-9">
+            <h2 *ngIf="!user">New Personal Profile</h2>
+            <h2 *ngIf="user">Edit {{user.personalProfile.firstName}}'s Personal Profile</h2>
+        </div>
+        <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="personalForm">
+            <div formGroupName="personalProfile">
+                <div class="form-group profile_details" *ngIf="user">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="firstName">Profile Image:</label>
+                    <div class="col-md-5 col-sm-5 col-xs-10 profile_view">
+                        <profile-image-picker [userId]="user.id" formControlName="uploadImageId"></profile-image-picker>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="firstName">First Name:</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <input type="text" id="firstName" formControlName="firstName" class="form-control col-md-7 col-xs-12" />            
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastName">Last Name:</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <input type="text" id="lastName" formControlName="lastName" class="form-control col-md-7 col-xs-12" />            
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="professionalTitle">Professional Title:</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <input type="text" id="professionalTitle" formControlName="professionalTitle" class="form-control col-md-7 col-xs-12" />            
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="officePhone">Office Phone:</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <input type="text" id="officePhone" formControlName="officePhone" class="form-control col-md-7 col-xs-12" />            
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mobilePhone">Mobile Phone:</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <input type="text" id="mobilePhone" formControlName="mobilePhone" class="form-control col-md-7 col-xs-12" />            
+                    </div><br><br><br><br>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastName">Interests:</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                            <small>Type interest below and press semicolon to add it to the list.</small>
+                            <tag-input 
+                                    formControlName="interests" 
+                                    theme='minimal'
+                                    [separatorKeyCodes]="[186]"
+                                    [placeholder]='Type' >                                
+                                <tag-input-dropdown [autocompleteObservable]='requestAutocompleteItems'></tag-input-dropdown>
+                            </tag-input>
+                            <br><br>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                            <label class="col-sm-3 control-label">Social Media Connections:</label>
+
+                            <div class="col-sm-9">
+
+
+
+                                <div formArrayName="socialConnections">
+                                    <div *ngFor="let connection of personalForm.controls.personalProfile.controls.socialConnections.controls; let i=index">
+                                        
+                                        <social-connection 
+                                            [group]="personalForm.controls.personalProfile.controls.socialConnections.controls[i]"
+                                            [canDelete]="personalForm.controls.personalProfile.controls.socialConnections.controls.length > 1"
+                                            [index]="index"
+                                            [connectionTypes] = "socialConnectionTypes"
+                                            (removeMe)="removeConnection(i)">
+                                        </social-connection>
+
+
+                                    </div>
+                                </div>
+                                <div class="margin-20">
+                                    <a (click)="addConnection()" class="btn btn-info btn-xs">
+                                        + add
+                                    </a>
+                                </div>
+    <br><br>
+                            
+                            </div>
+                        </div>
+
+                <div class="form-group" *ngIf="editorOptionsLoaded">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="bio">About Me:</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <textarea [froalaEditor]="options" name="bio" id="bio" formControlName="bio" class="form-control col-md-7 col-xs-12"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="ln_solid"></div>
+            <div class="form-group">
+                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                    <a class="btn btn-primary" (click)="OnCancel()">Cancel</a>
+                    <button type="submit" [disabled]="personalForm.invalid"  class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

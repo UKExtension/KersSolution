@@ -1,0 +1,40 @@
+
+    <input type="text" placeholder="search by user's name" (keyup)="onSearch($event)" /> <br>
+    <a (click)="condition = !condition"><i class="fa fa-minus-square" *ngIf="condition"></i>
+     <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options <span class="text-muted">(date range, type )</span></a>
+    <div class="row">
+        <form *ngIf="condition" class="form-horizontal form-label-left">
+            <div class="col-sm-offset-3 col-sm-9">
+            <h2>Refine Search</h2>
+            </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Date Range:</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <my-date-range-picker name="mydaterange" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
+                        
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Log Type</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <loading *ngIf="!(types | async)" [type]="bars"></loading>
+                        <select class="form-control" (change)="onType($event)" *ngIf="(types | async)">
+                            <option value="">-- Select --</option>
+                            <option *ngFor="let type of types | async" [value]="type">{{type}}</option>
+                        </select><loading [type]="bars" *ngIf="!(types | async)"></loading>
+                    </div>
+                </div>
+        </form>
+    </div><div class="ln_solid"></div>
+
+<ul class="messages">
+    <li *ngFor="let log of latest | async" [log-detail]="log"></li>
+</ul><br><br>
+    <div *ngIf="numbLogs != 0" class="text-center">
+        <div>Showing {{ numResults }} of {{numbLogs}} System Logs</div>
+        <div *ngIf="(latest | async)?.length < numbLogs" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+            load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </div>
