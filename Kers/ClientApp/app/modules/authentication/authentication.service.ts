@@ -26,13 +26,12 @@ export class AuthenticationService {
       grant_type: "password",
       scope: "offline_access profile email"
     }
-    
     return this.http.post(
         this.location.prepareExternalUrl(url),
-        this.toUrlEncodedString(data),
+        JSON.stringify(data),
         new RequestOptions({ headers: new Headers(
                 {
-                  "Content-Type": "application/x-www-form-urlencoded"
+                  "Content-Type": "application/json"
                 }
               )
             }

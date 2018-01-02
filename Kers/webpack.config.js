@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const AotPlugin = require('@ngtools/webpack').AotPlugin;
 const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => {
     // Configuration in common to both client-side and server-side bundles
@@ -39,7 +40,50 @@ module.exports = (env) => {
             new webpack.DllReferencePlugin({
                 context: __dirname,
                 manifest: require('./wwwroot/dist/vendor-manifest.json')
-            })
+            }),
+
+            /*
+    * Plugin: CopyWebpackPlugin
+    * Description: Copy files and directories in webpack.
+    *
+    * Copies project static assets.
+    *
+    * See: https://www.npmjs.com/package/copy-webpack-plugin
+    */
+    new CopyWebpackPlugin([{
+        from: 'ClientApp/assets',
+        to: 'assets'
+    }
+    
+    ,
+    {
+        from: 'node_modules/froala-editor/css/',
+        to: 'assets/froala-editor/css/',
+    },
+    {
+        from: 'node_modules/font-awesome/css/font-awesome.min.css',
+        to: 'assets/font-awesome/css/font-awesome.min.css',
+    },
+    {
+        from: 'node_modules/font-awesome/fonts',
+        to: 'assets/font-awesome/fonts'
+    }
+    
+
+    
+    ], {
+        ignore: [
+        'humans.txt',
+        'robots.txt'
+    ]
+})
+
+
+
+
+
+
+
         ].concat(isDevBuild ? [
             // Plugins that apply in development builds only
             new webpack.SourceMapDevToolPlugin({
@@ -56,6 +100,7 @@ module.exports = (env) => {
             })
         ])
     });
+    
 
     // Configuration for server-side (prerendering) bundle suitable for running in Node
     const serverBundleConfig = merge(sharedConfig, {

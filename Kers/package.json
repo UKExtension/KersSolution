@@ -30,6 +30,7 @@
     "awesome-typescript-loader": "3.2.1",
     "bootstrap": "3.3.7",
     "chai": "4.0.2",
+    "copy-webpack-plugin":"^4.3.1",
     "css": "2.2.1",
     "css-loader": "0.28.4",
     "echarts":"^3.8.5",
