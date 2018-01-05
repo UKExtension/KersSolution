@@ -5,7 +5,7 @@ import {ProfileService, Profile} from '../reporting-profile/profile.service';
 import {ReportingService} from './reporting.service';
 import {GoogleAnalyticsEventsService} from "../../core/google-analytics-events.service";
 import {Router, NavigationEnd} from "@angular/router";
-declare var ga:Function;
+declare let ga:Function;
 
 if (typeof window != 'undefined') {
     require("font-awesome-webpack");

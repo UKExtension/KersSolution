@@ -51,7 +51,7 @@ namespace Kers.Controllers
             }
             var lastActivities = context.Activity.
                                 Where(e=>e.KersUser.Id == userId).
-                                OrderByDescending(e=>e.Revisions.OrderBy( a => a.Created).Last().ActivityDate).
+                                OrderByDescending(e=>e.ActivityDate).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).

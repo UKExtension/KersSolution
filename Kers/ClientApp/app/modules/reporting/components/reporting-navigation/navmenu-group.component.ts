@@ -11,41 +11,21 @@ import {    Component,
 import { NavGroup, NavItem} from './navigation.service';
 
 @Component({
-    selector: 'nav-menu-group',
+    selector: '[nav-menu-group]',
     template: `
-    <li class="nav-group" *ngIf="sectionGroup.items.length > 0" [class.active]="this.sectionGroup.isOpen == 'active'"><a (click)="toggleOpen($event)"><i class="fa {{sectionGroup.icon}}"></i> {{sectionGroup.name}} <span class="fa fa-chevron-down"></span></a>
-        <ul class="nav child_menu" [@groupState]="this.sectionGroup.isOpen">
-            <nav-menu-item *ngFor = "let item of sectionGroup.items" [item]="item"></nav-menu-item>
+        <a (click)="toggleOpen($event)"><i class="fa {{sectionGroup.icon}}"></i> {{sectionGroup.name}} <span class="fa fa-chevron-down"></span></a>
+        <ul class="nav child_menu" [@groupState]="sectionGroup.isOpen">
+            <li routerLinkActive="active" *ngFor = "let item of sectionGroup.items" [nav-menu-item]="item">
+            </li>
         </ul>
-    </li>
+    
     `,
     styles: [
         `
-  
-.nav-group {
-    position: relative;
-    display: block;
-    cursor: pointer; 
-}
-li.active {
-    border-right: 5px solid #1ABB9C;
-}
-.nav-group.active a{
-    text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
-    background: linear-gradient(#334556, #2C4257), #2A3F54;
-    box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0    
-}
-.nav-group > a {
-    color: #E7E7E7;
-    font-weight: 500; 
-    position: relative;
-    display: block;
-    padding: 13px 15px 12px
-}
-.child_menu{
-    max-height: 300px;
-    overflow: hidden;
-}
+    .child_menu{
+      display:block;
+      overflow:hidden;
+  }
         `
     ],
     animations: [
@@ -61,7 +41,7 @@ li.active {
     ]
 })
 export class NavmenuGroupComponent {
-    @Input('group') sectionGroup: NavGroup;
+    @Input('nav-menu-group') sectionGroup: NavGroup;
     @Output() onOpen = new EventEmitter<NavGroup>();
 
     construct(){

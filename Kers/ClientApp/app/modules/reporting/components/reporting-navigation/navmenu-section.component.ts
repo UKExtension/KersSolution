@@ -8,7 +8,7 @@ import { NavSection, NavGroup, NavItem} from './navigation.service';
     <div *ngIf="section.groups.length > 0" class="menu_section">
         <h3>{{section.name}}</h3>
         <ul class="nav side-menu">
-            <nav-menu-group *ngFor = "let group of section.groups" [group]="group" (onOpen)="closeOthers($event)"></nav-menu-group>
+            <li class="nav-group" *ngFor = "let group of section.groups" [class.active]="this.group.isOpen == 'active'" [nav-menu-group]="group" (onOpen)="closeOthers($event)"></li>
         </ul>
     </div>
     `
@@ -35,6 +35,11 @@ export class NavmenuSectionComponent implements OnInit{
     }
 
     ngOnInit() {
+        for (var i = 0; i < this.section.groups.length; i++) {
+            if(this.section.groups[i].items.length == 0){
+                this.section.groups.splice(i, 1);
+            }
+        }
         this.openActive();
     }
 
