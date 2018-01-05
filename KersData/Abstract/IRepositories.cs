@@ -44,6 +44,7 @@ namespace Kers.Models.Abstract
         float Breakfast(ExpenseRevision expense);
         float Lunch(ExpenseRevision expense);
         float Dinner(ExpenseRevision expense);
+        float MileageRate(KersUser user, int year, int month);
     }
     public interface IActivityRepository: IEntityBaseRepository<Activity>{
         List<ActivityRevision> PerMonth(KersUser user, int year, int month, string order);

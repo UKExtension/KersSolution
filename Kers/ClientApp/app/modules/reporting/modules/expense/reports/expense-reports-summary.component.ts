@@ -112,7 +112,7 @@ export class ExpenseReportsSummaryComponent {
         this.service.fundingSources().subscribe(
             res => {
                 this.fundingSources = <ExpenseFundingSource[]>res;
-                this.service.mileageRate(this.userid).subscribe(
+                this.service.mileageRate(this.month.month, this.year.year, this.userid).subscribe(
                     res => {
                         this.mileageRate = res;
                         this.processExpenses();
@@ -176,7 +176,7 @@ export class ExpenseReportsSummaryComponent {
         for(let mileageExpenses of mileage){
             miles += mileageExpenses.mileage;
         }
-        milesCost = (miles * this.mileageRate.rate);
+        milesCost = (miles * this.mileageRate);
         for(let nonMileageExpenses of nonMileage){
             lodging += nonMileageExpenses.lodging;
             registration += nonMileageExpenses.registration;

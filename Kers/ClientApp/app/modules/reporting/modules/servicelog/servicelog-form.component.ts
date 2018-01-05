@@ -318,14 +318,14 @@ export class ServicelogFormComponent implements OnInit{
         if(this.activity == null){
             var dtNow = new Date();
             
-            if( dtNow.getFullYear() >= 2017 && dtNow.getMonth() < 9){
+            if( dtNow.getFullYear() <= 2017 && dtNow.getMonth() < 9){
                 this.snapFiscalYear17 = true;
             }else{
                 this.snapFiscalYear17 = false;
             }
         }else{
             let date = new Date(this.activity.activityDate);
-            if( date.getFullYear() >= 2017 && date.getMonth() < 9){
+            if( date.getFullYear() <= 2017 && date.getMonth() < 9){
                 this.snapFiscalYear17 = true;
                 this.activityForm.patchValue({isSnap:false});
             }else{

@@ -133,7 +133,7 @@ namespace Kers.Controllers
                 userId = user.Id;
             }
             var lastExpenses = context.Expense.
-                                Where(e=>e.KersUser.Id == userId).
+                                Where(e=>e.KersUser.Id == userId && e.ExpenseDate.Year == year).
                                 GroupBy(e => new {
                                     Month = e.Revisions.OrderBy(f=>f.Created).Last().ExpenseDate.Month
                                 }).
@@ -253,21 +253,22 @@ namespace Kers.Controllers
             var rates = this.context.ExpenseMealRate.Where(e => e.InstitutionId == fullUser.RprtngProfile.InstitutionId);
             return new OkObjectResult(rates);
         }
-        [HttpGet("mileagerate/{userId?}")]
+        [HttpGet("mileagerate/{month?}/{year?}/{userId?}")]
         [Authorize]
-        public IActionResult MileageRate(int userId = 0){
+        public IActionResult MileageRate(int month = 0, int year = 0, int userId = 0){
             if(userId == 0){
                 var user = this.CurrentUser();
                 userId = user.Id;
             }
-            KersUser fullUser = this.context.KersUser.Where(r=>r.Id == userId).Include(u=>u.RprtngProfile).FirstOrDefault();
             
+            KersUser fullUser = this.context.KersUser.Where(r=>r.Id == userId).Include(u=>u.RprtngProfile).FirstOrDefault();
+            /*
             var rate = this.context.
                                 ExpenseMileageRate.
                                 Where(e => e.InstitutionId == fullUser.RprtngProfile.InstitutionId && e.Start < DateTime.Now && e.End > DateTime.Now).
                                 FirstOrDefault();
-            
-            return new OkObjectResult(rate);
+             */
+            return new OkObjectResult(expenseRepo.MileageRate(fullUser, year, month));
         }
 
 

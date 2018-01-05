@@ -92,7 +92,7 @@ namespace Kers.Models.Repositories
         public List<ExpenseSummary> Summaries(KersUser user, int year, int month){
             
             var expenses = PerMonth(user, year, month);
-            var mileageRate = MileageRate(user);
+            var mileageRate = MileageRate(user, year, month);
 
             return DivideByType(expenses, mileageRate);
         }
@@ -110,14 +110,21 @@ namespace Kers.Models.Repositories
             return list;
         }
 
-
-        private float MileageRate(KersUser user){
-
-
-            var rate = this.coreContext.
+        public float MileageRate(KersUser user, int year = 0, int month = 0){
+            ExpenseMileageRate rate;
+            if(month == 0 || year == 0){
+                rate = this.coreContext.
                                 ExpenseMileageRate.
                                 Where(e => e.InstitutionId == user.RprtngProfile.InstitutionId && e.Start < DateTime.Now && e.End > DateTime.Now).
-                                FirstOrDefault();            
+                                FirstOrDefault();   
+            }else{
+                var reportDate = new DateTime(year, month, 15);
+                rate = this.coreContext.
+                                ExpenseMileageRate.
+                                Where(e => e.InstitutionId == user.RprtngProfile.InstitutionId && e.Start < reportDate && e.End > reportDate).
+                                FirstOrDefault();
+            }
+                     
             return rate.Rate;
         }
 

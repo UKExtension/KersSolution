@@ -69,10 +69,10 @@ export class ExpenseService {
                 .catch(this.handleError);
     }
 
-    mileageRate(userid:number = 0){
-        var url = this.baseUrl + 'mileagerate' + '/' + userid;
+    mileageRate(month:number, year:number, userid:number = 0){
+        var url = this.baseUrl + 'mileagerate' + '/' + month + '/' + year + '/' + userid;
         return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json())
+                .map(res => <number>res.json())
                 .catch(this.handleError);
     }
 

@@ -42,6 +42,13 @@ module.exports = (env) => {
                 manifest: require('./wwwroot/dist/vendor-manifest.json')
             }),
 
+
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery"
+              }),
+
+
             /*
     * Plugin: CopyWebpackPlugin
     * Description: Copy files and directories in webpack.
