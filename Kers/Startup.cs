@@ -149,49 +149,6 @@ namespace Kers
 
             app.UseStaticFiles();
             app.UseAuthentication();
-
-
-/*
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
-
-            app.UseSimpleTokenProvider(new TokenProviderOptions
-            {
-                Path = "/api/token",
-                Audience = "KersUsers",
-                Issuer = "KERSSystem",
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-                IdentityResolver = GetIdentity
-            });
-
-
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                // The signing key must match!
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,
-
-                // Validate the JWT Issuer (iss) claim
-                ValidateIssuer = true,
-                ValidIssuer = "KERSSystem",
-
-                // Validate the JWT Audience (aud) claim
-                ValidateAudience = true,
-                ValidAudience = "KersUsers",
-
-                // Validate the token expiry
-                ValidateLifetime = true,
-                
-                // If you want to allow a certain amount of clock drift, set that here:
-                ClockSkew = TimeSpan.Zero
-            };
-
-            app.UseJwtBearerAuthentication(new JwtBearerOptions
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                TokenValidationParameters = tokenValidationParameters
-            });
- */
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -204,32 +161,5 @@ namespace Kers
             });
         }
 
-        private async Task<ClaimsIdentity> GetIdentity(string username, string password)
-        {
-            // Don't do this in production, obviously!
-            if(this.CurrentEnvironment.IsEnvironment("Development") ){
-                if (username == "random"){
-                    return await Task.FromResult(new ClaimsIdentity(new GenericIdentity(username, "Token"), new Claim[] { }));
-                }
-            }
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Clear();
-            String uri = "https://kers.ca.uky.edu/kers_mobile/Handler.ashx";
-
-            Dictionary<string, string> pairs = new Dictionary<string,string>();
-            pairs.Add("username", username);
-            pairs.Add("password", password);
-            FormUrlEncodedContent formContent = new FormUrlEncodedContent(pairs);
-
-            var result = client.PostAsync(uri, formContent).Result;
-            var data = result.Content.ReadAsStringAsync().Result;
-
-            if( data == "{\"valid\":true}"){
-                return await Task.FromResult(new ClaimsIdentity(new GenericIdentity(username, "Token"), new Claim[] { }));
-            }
-
-            // Credentials are invalid, or account doesn't exist
-            return await Task.FromResult<ClaimsIdentity>(null);
-        }
     }
 }

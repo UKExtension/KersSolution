@@ -34,9 +34,15 @@ namespace Kers.Models.Repositories
             if (!string.IsNullOrEmpty(cacheString)){
                 ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
             }else{
-                ids = coreContext.Activity.
+                ids = new List<int>();
+                var activities = coreContext.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End)
-                    .Select( a => a.Revisions.OrderBy( r => r.Created ).Last().Id).ToList();
+                    .Include( r => r.Revisions);
+                foreach( var actvt in activities){
+                    var rev = actvt.Revisions.OrderBy( r => r.Created );
+                    var last = rev.Last();
+                    ids.Add(last.Id);
+                }
                     
                 var serialized = JsonConvert.SerializeObject(ids);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions

@@ -159,9 +159,9 @@ namespace Kers.Controllers
             // Don't do this in production, obviously!
             
             if( _hostingEnv.EnvironmentName == "Development" ){
-                if (loginViewModel.Username == "random"){
+                //if (loginViewModel.Username == "random"){
                     return loginViewModel.Username;
-                }
+                //}
             }
             
             var client = new HttpClient();

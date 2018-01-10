@@ -242,10 +242,7 @@ namespace Kers.Controllers
         [HttpPost()]
         [Authorize]
         public IActionResult AddStory( [FromBody] StoryRevision story){
-            
             if(story != null){
-
-                
                 var user = this.CurrentUser();
                 var str = new Story();
                 str.KersUser = user;
