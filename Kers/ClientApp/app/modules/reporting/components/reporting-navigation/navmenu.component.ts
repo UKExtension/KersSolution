@@ -30,7 +30,7 @@ export class NavMenuComponent implements OnInit {
                 },
             error =>  this.errorMessage = <any>error
         );
-        this.profileService.currentUser().subscribe(
+        this.profileService.currentUser().share().subscribe(
             profile => this.profile = profile,
             error => this.errorMessage = <any> error
         );

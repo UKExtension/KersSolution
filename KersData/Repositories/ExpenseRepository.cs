@@ -36,7 +36,7 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
-                                OrderByDescending(e=>e.Revisions.OrderBy(f=>f.Created).Last().ExpenseDate);
+                                OrderByDescending(e=>e.ExpenseDate);
             }else{
                 lastExpenses = coreContext.Expense.
                                 Where(e=>e.KersUser == user && e.ExpenseDate.Month == month && e.ExpenseDate.Year == year).
@@ -45,7 +45,7 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
-                                OrderBy(e=>e.Revisions.OrderBy(f=>f.Created).Last().ExpenseDate);
+                                OrderBy(e=>e.ExpenseDate);
             }
                                 
             var revs = new List<ExpenseRevision>();
@@ -68,7 +68,7 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
-                                OrderByDescending(e=>e.Revisions.OrderBy(f=>f.Created).Last().ExpenseDate);
+                                OrderByDescending(e=>e.ExpenseDate);
             var revs = new List<ExpenseRevision>();
             if( lastExpenses != null){
                 foreach(var expense in lastExpenses){
@@ -191,55 +191,6 @@ namespace Kers.Models.Repositories
             }
             return 0.0f;
         }
-
-
-
-
-        /*
-        
-        
-        calculate(){
-        for(let source of this.fundingSources){
-            var expensesMileage = this.monthExpenses.filter(e => e.fundingSourceMileageId == source.id);
-            var expenseNonMileage = this.monthExpenses.filter( e => e.fundingSourceNonMileageId == source.id);
-            this.summarize(source, expensesMileage, expenseNonMileage);
-        }
-        this.loading = false;
-    }   
-
-
-    
-
-
-
-    breakfast(expense:Expense){
-        if(expense.mealRateBreakfast != null){
-            return expense.mealRateBreakfast.breakfastRate;
-        }else if(expense.mealRateBreakfastId == 0){
-            return expense.mealRateBreakfastCustom;
-        }
-        return 0;
-    }
-    lunch(expense:Expense){
-        if(expense.mealRateLunch != null){
-            return expense.mealRateLunch.lunchRate;
-        }else if(expense.mealRateLunchId == 0){
-            return expense.mealRateLunchCustom;
-        }
-        return 0;
-    }
-    dinner(expense:Expense){
-        if(expense.mealRateDinner != null){
-            return expense.mealRateDinner.dinnerRate;
-        }else if(expense.mealRateDinnerId == 0){
-            return expense.mealRateDinnerCustom;
-        }
-        return 0;
-    }
-        
-        
-        
-         */
 
 
     }

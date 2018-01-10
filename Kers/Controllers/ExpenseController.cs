@@ -72,7 +72,7 @@ namespace Kers.Controllers
             var lastExpenses = context.Expense.
                                 Where(e=>e.KersUser.Id == userId).
                                 Include(e=>e.Revisions).
-                                OrderByDescending(e=>e.Revisions.OrderBy(f=>f.Created).Last().ExpenseDate).
+                                OrderByDescending(e=>e.ExpenseDate).
                                 Skip(skip).
                                 Take(amount);
             var revs = new List<ExpenseRevision>();
@@ -135,7 +135,7 @@ namespace Kers.Controllers
             var lastExpenses = context.Expense.
                                 Where(e=>e.KersUser.Id == userId && e.ExpenseDate.Year == year).
                                 GroupBy(e => new {
-                                    Month = e.Revisions.OrderBy(f=>f.Created).Last().ExpenseDate.Month
+                                    Month = e.ExpenseDate.Month
                                 }).
                                 Select(c => new {
                                     Month = c.Key.Month
@@ -156,7 +156,7 @@ namespace Kers.Controllers
             var years = context.Expense.
                                 Where(e=>e.KersUser.Id == userId).
                                 GroupBy(e => new {
-                                    Year = e.Revisions.OrderBy(f=>f.Created).Last().ExpenseDate.Year
+                                    Year = e.ExpenseDate.Year
                                 }).
                                 Select(c => new {
                                     Year = c.Key.Year

@@ -12,7 +12,7 @@ export class ProfileService {
 
     private baseUrl = '/api/Profile/';
 
-    public profile:Profile;
+    public profile:Profile = null;
 
     private pUnits = null;
     private pstns = null;
@@ -63,9 +63,14 @@ export class ProfileService {
 
     currentUser(){
         var url = this.baseUrl + "CurrentUser/";
-        return this.http.get(this.location.prepareExternalUrl(url))
+        if(this.profile == null){
+            return this.http.get(this.location.prepareExternalUrl(url))
             .map(res => this.profile = <Profile>res.json())
             .catch(this.handleError);
+        }else{
+            return Observable.of(this.profile);
+        }
+        
     }
 
     update(id, profile, admin?:boolean){

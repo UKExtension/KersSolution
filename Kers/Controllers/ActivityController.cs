@@ -71,7 +71,7 @@ namespace Kers.Controllers
             }
             var lastActivities = context.Activity.
                                 Where(e=>e.KersUser.Id == userId).
-                                OrderByDescending(e=>e.Revisions.OrderBy( a => a.Created).Last().ActivityDate).
+                                OrderByDescending(e=>e.ActivityDate).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
@@ -104,7 +104,7 @@ namespace Kers.Controllers
             var years = context.Activity.
                                 Where(e=>e.KersUser.Id == userId).
                                 GroupBy(e => new {
-                                    Year = e.Revisions.OrderBy(f=>f.Created).Last().ActivityDate.Year
+                                    Year = e.ActivityDate.Year
                                 }).
                                 Select(c => new {
                                     Year = c.Key.Year
@@ -123,7 +123,7 @@ namespace Kers.Controllers
             var lastExpenses = context.Activity.
                                 Where(e=>e.KersUser.Id == userId).
                                 GroupBy(e => new {
-                                    Month = e.Revisions.OrderBy(f=>f.Created).Last().ActivityDate.Month
+                                    Month = e.ActivityDate.Month
                                 }).
                                 Select(c => new {
                                     Month = c.Key.Month
@@ -142,7 +142,7 @@ namespace Kers.Controllers
             var numPerDay = context.Activity.
                                 Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end).
                                 GroupBy(e => new {
-                                    Date = e.Revisions.OrderBy(f=>f.Created).Last().ActivityDate.Day
+                                    Date = e.ActivityDate.Day
                                 }).
                                 Select(c => new {
                                     Day = c.FirstOrDefault().ActivityDate.ToString("yyyy-MM-dd"),
@@ -224,41 +224,12 @@ namespace Kers.Controllers
                                     MajorProgram = e.MajorProgram
                                 }).
                                 Select(c => new {
-                                    /*
-                                    Races = c.Select(
-                                                        s => new {
-                                                            Revs = s.
-                                                            Revisions.
-                                                            OrderBy(f=>f.Created).
-                                                            Last().RaceEthnicityValues
-                                                        }
-                                                ),
-                                    OptionNumbers = c.
-                                                    Select(
-                                                        s => new {
-                                                            Revs = s.
-                                                            Revisions.
-                                                            OrderBy(f=>f.Created).
-                                                            Last().ActivityOptionNumbers
-                                                        }
-                                                ),
-                                                 */
                                     Ids = c.Select(
                                         s => s.Id
                                     ),
                                     Hours = c.Sum(s => s.Hours),
                                     Audience = c.Sum(s => s.Audience),
                                     MajorProgram = c.Key.MajorProgram
-                                    //Males = c.Sum(s => s.Revisions.OrderBy(r => r.Created).Last().Male),
-                                    //Females = c.Sum(s => s.Revisions.OrderBy(r => r.Created).Last().Female),
-
-                                    /* 
-                                    Program = c.
-                                                    Select(
-                                                        s => new {
-                                                            Progr = s.MajorProgram
-                                                        }
-                                                )*/
                                 })
                                 .OrderBy( s => s.MajorProgram.Name)
                                 ;
@@ -332,7 +303,7 @@ namespace Kers.Controllers
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
-                                OrderByDescending(e=>e.Revisions.OrderBy(f=>f.Created).Last().ActivityDate).
+                                OrderByDescending(e=>e.ActivityDate).
                                 Take(amount);
             var revs = new List<ActivityRevision>();
             if( lastActivities != null){

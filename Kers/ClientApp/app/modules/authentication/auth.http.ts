@@ -56,7 +56,9 @@ export class AuthHttp{
         // Prevent IE from caching requests
         if(request == "get"){
             opts.search = opts.search || new URLSearchParams();
-            opts.search.set('timestamp', (new Date()).getTime());
+            if(opts.search instanceof URLSearchParams){
+                opts.search.set('timestamp', (new Date()).getTime());
+            }
         }
     }
 }

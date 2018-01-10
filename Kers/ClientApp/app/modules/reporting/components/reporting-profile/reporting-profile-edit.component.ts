@@ -87,7 +87,7 @@ export class ReportingProfileEditComponent implements OnInit{
             );
 
             if(this.rptProfile == null){
-                this.profileService.currentUser().subscribe(
+                this.profileService.currentUser().share().subscribe(
                         profile => {
                             this.profile = profile;
                             this.editForm.patchValue(this.profile);

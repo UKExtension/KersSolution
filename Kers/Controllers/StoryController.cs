@@ -124,7 +124,7 @@ namespace Kers.Controllers
             var lastStories = context.Story.
                                 Where(e=>e.KersUser.Id == userid).
                                 Include(s => s.Revisions).ThenInclude(r => r.StoryImages).ThenInclude(i => i.UploadImage).ThenInclude(f => f.UploadFile).
-                                OrderByDescending(e=>e.Revisions.OrderBy(r => r.Created).Last().Created).
+                                OrderByDescending(e=>e.Id).
                                 Take(amount);
             
             var revs = new List<StoryRevision>();

@@ -57,7 +57,7 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
-                                OrderByDescending(e=>e.Revisions.OrderBy(f=>f.Created).Last().ActivityDate);
+                                OrderByDescending(e=>e.ActivityDate);
             }else{
                 lastActivities = coreContext.Activity.
                                 Where(e=>e.KersUser == user && e.ActivityDate.Month == month && e.ActivityDate.Year == year).
@@ -65,7 +65,7 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
-                                OrderBy(e=>e.Revisions.OrderBy(f=>f.Created).Last().ActivityDate);
+                                OrderBy(e=>e.ActivityDate);
             }
             
             var revs = new List<ActivityRevision>();

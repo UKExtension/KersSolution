@@ -36,7 +36,7 @@ export class TopNavComponent implements OnInit{
                      }
     
     ngOnInit(){
-        this.profileService.currentUser().subscribe(
+        this.profileService.currentUser().share().subscribe(
             profile => this.profile = profile,
             error => this.errorMessage = <any> error
         )
