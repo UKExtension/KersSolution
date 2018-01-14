@@ -14,6 +14,7 @@ export class ProfileListComponent implements OnInit{
 
 
     profiles: Observable<Profile[]>;
+    condition = false;
     errorMessage: string;
     planningUnits = null;
     positions = null;

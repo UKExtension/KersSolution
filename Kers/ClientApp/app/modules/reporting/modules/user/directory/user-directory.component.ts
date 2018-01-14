@@ -22,6 +22,7 @@ export class UserDirectoryComponent {
         positions = null;
         numResults = 0;
         numProfiles = 0;
+        condition = false;
         criteria = {
             search: '',
             position: 0,

@@ -11,7 +11,7 @@ export class ProfileListDetailComponent implements OnInit {
 
     @Output() onProfileUpdated = new EventEmitter();
 
-    private viewType = 'row'
+    viewType = 'row'
 
     constructor(private profileService: ProfileService){
         

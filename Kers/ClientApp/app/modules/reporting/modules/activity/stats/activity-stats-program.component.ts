@@ -20,6 +20,8 @@ export class ActivityStatsProgramComponent {
 
     rowsRendered = 0;
 
+    showChart = false;
+
     option;
 
     constructor( 

@@ -71,7 +71,10 @@ export class SnapedHomeComponent {
     fiscalYear:FiscalYear;
     committed: number;
     reported:number;
-    link = "/reporting/admin/snaped/county/"
+    link = "/reporting/admin/snaped/county/";
+    ccond = false;
+    cond = false;
+    commitmentHours = false;
 
     constructor( 
         private service:SnapedAdminService,

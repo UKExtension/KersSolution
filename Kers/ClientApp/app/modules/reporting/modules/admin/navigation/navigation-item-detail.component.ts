@@ -21,6 +21,7 @@ export class NavigationItemDetailComponent implements OnInit {
     deleteOppened = false;
     rowOppened = true;
     errorMessage: string;
+    itemsOppened = false;
 
     positionRestriction = "";
     roleRestriction = "";

@@ -92,7 +92,8 @@ export class ReportingActivitiesFormComponent implements OnInit, OnDestroy{
 
     activity: zActivity;
     errorMessage: string;
-
+    cond = false;
+    condition = false;
     public options: Object;
 
     date: Date;

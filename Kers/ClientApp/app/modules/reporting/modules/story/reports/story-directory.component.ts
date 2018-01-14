@@ -23,6 +23,7 @@ export class StoryDirectoryComponent {
         planningUnits: Observable<PlanningUnit[]>;
         initiatives:Observable<StrategicInitiative[]>;
         positions = null;
+        condition = false;
         numResults = 0;
         numProfiles = 0;
         criteria = {

@@ -15,6 +15,7 @@ export class ServicelogSnapedStatsComponent {
     @Output() onCalculated = new EventEmitter<number>();
 
     stats;
+    loading = false;
 
     directPerMounth = [];
     indirectPerMounth = [];
@@ -31,18 +32,22 @@ export class ServicelogSnapedStatsComponent {
 
     ngOnInit(){
       if(this.user != null){
+          this.loading = true;
           this.service.statsPerIndividual(this.user.id).subscribe(
             res => {
               this.stats = res;
               this.processStats();
+              this.loading = false;
             },
             err => this.errorMessage = <any>err
           );
       }else if(this.planningUnit != null){
+        this.loading = true;
         this.service.statsPerCounty(this.planningUnit.id).subscribe(
           res => {
             this.stats = res;
             this.processStats();
+            this.loading = false;
           },
           err => this.errorMessage = <any>err
         );

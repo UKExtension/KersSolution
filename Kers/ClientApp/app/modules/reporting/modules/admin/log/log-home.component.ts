@@ -17,6 +17,7 @@ export class LogHomeComponent implements OnInit {
     numLoaded = 10;
     pageSize = 10;
     errorMessage:string;
+    condition = false;
 
     types:Observable<string[]>;
 
