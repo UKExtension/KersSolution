@@ -1,0 +1,36 @@
+<div class="row" *ngIf="newOff">
+    <div class="col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><span id="ctl00_MainContent_Label0" style="color:inherit;">Add a new record </span></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="row">
+                    <div class="col-md-6 col-xs-12">
+                            <a class="btn btn-dark btn-lg btn-block" (click)="direct()">Direct</a>
+                            <a class="btn btn-dark btn-lg btn-block" (click)="indirect()">Indirect</a>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                            <a class="btn btn-dark btn-lg btn-block" (click)="admin()">Admin</a>
+                            <a class="btn btn-dark btn-lg btn-block" (click)="policy()">Community/Policy System Environment</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<servicelog-form *ngIf="newDirect" [isNewDirect]="true" (onFormCancel)="closeNew()" (onFormSubmit)="newActivitySubmitted($event)"></servicelog-form>
+<servicelog-form *ngIf="newIndirect" [isNewIndirect]="true" (onFormCancel)="closeNew()" (onFormSubmit)="newActivitySubmitted($event)"></servicelog-form>
+<servicelog-form *ngIf="newPolicy" [isNewPolicy]="true" (onFormCancel)="closeNew()" (onFormSubmit)="newActivitySubmitted($event)"></servicelog-form>
+<servicelog-form *ngIf="newAdmin" [isNewAdmin]="true" (onFormCancel)="closeNew()" (onFormSubmit)="newActivitySubmitted($event)"></servicelog-form>
+
+
+<servicelog-list [byMonth]="byMonth" (onDeleted)="deleted($event)" (onEdited)="edited($event)"></servicelog-list>
+
+    <div *ngIf="numResults != 0" class="text-center">
+        <div>Showing {{latest.length}} of {{numbActivities}} Snap-Ed records</div>
+        <div *ngIf="latest.length < numbActivities" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+            load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </div>

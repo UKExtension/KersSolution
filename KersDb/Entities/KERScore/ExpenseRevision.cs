@@ -13,6 +13,12 @@ namespace Kers.Models.Entities.KERScore
         public int ExpenseId {get;set;}
         public DateTime Created {get;set;}
         public DateTime ExpenseDate {get;set;}
+        public Boolean isOvernight {get;set;}
+        public int ProgramCategoryId {get;set;}
+        public ProgramCategory ProgramCategory {get;set;}
+        public string BusinessPurpose {get;set;}
+        [Column(TypeName = "text")]
+        public string Comment {get;set;}
         public String ExpenseLocation {get;set;}
         public int? FundingSourceNonMileageId {get;set;}
         public ExpenseFundingSource FundingSourceNonMileage {get;set;}

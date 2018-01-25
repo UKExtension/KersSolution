@@ -278,23 +278,9 @@ namespace Kers.Controllers
             }
 
             var revs = activityRepo.LastActivityRevisionIds(fiscalYear, _cache);
-            var snapEligible = context.ActivityRevision.Where( r => revs.Contains( r.Id ) &&  (r.SnapPolicy != null || r.SnapDirect != null || r.SnapIndirect != null || r.SnapAdmin ));
+            var fyactivities = context.ActivityRevision.Where( r => revs.Contains( r.Id )).ToList();
+            var snapEligible = fyactivities.Where( r => (r.SnapPolicy != null || r.SnapDirect != null || r.SnapIndirect != null || r.SnapAdmin ));
             var reported = snapEligible.Sum( h => Math.Floor(h.Hours));
-            /*
-            var reported = context.Activity.
-                                Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End 
-                                                                &&    
-                                                                    (
-                                                                        e.Revisions.OrderBy( r => r.Created).Last().SnapPolicy != null 
-                                                                        || 
-                                                                        e.Revisions.OrderBy( r => r.Created).Last().SnapDirect != null 
-                                                                        || 
-                                                                        e.Revisions.OrderBy( r => r.Created).Last().SnapIndirect != null 
-                                                                        || 
-                                                                        e.Revisions.OrderBy( r => r.Created).Last().SnapAdmin )    
-                                                     ).
-                                Sum( h => Math.Floor(h.Hours));
-                                 */
             return new OkObjectResult(reported);
         }
 

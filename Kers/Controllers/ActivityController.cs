@@ -121,7 +121,7 @@ namespace Kers.Controllers
                 userId = user.Id;
             }
             var lastExpenses = context.Activity.
-                                Where(e=>e.KersUser.Id == userId).
+                                Where(e=>e.KersUser.Id == userId && e.ActivityDate.Year == year).
                                 GroupBy(e => new {
                                     Month = e.ActivityDate.Month
                                 }).
@@ -303,7 +303,7 @@ namespace Kers.Controllers
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
-                                OrderByDescending(e=>e.ActivityDate).
+                                OrderByDescending(e=>e.Revisions.OrderBy(f=>f.Created).Last().ActivityDate).
                                 Take(amount);
             var revs = new List<ActivityRevision>();
             if( lastActivities != null){

@@ -15,6 +15,7 @@ namespace Kers.Models.Entities.KERScore
         public string Name {get; set;}
         [Column(TypeName="text")]
         public string Description {get; set;}
+        public int Order {get;set;}
 
     }
 }

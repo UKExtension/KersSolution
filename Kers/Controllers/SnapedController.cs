@@ -307,6 +307,8 @@ namespace Kers.Controllers
             var numPerMonth = context.Activity.
                                 Where( e=>
                                         e.KersUser.RprtngProfile.PlanningUnitId == id 
+                                        && 
+                                        e.Revisions.OrderBy(r => r.Created).Last().isSnap 
                                         &&
                                         e.ActivityDate < fiscalYear.End
                                         &&
@@ -332,18 +334,14 @@ namespace Kers.Controllers
                 var MntRevs = new List<ActivityRevision>();
                 foreach(var rev in mnth.Ids){
                     var lstrvsn = context.ActivityRevision.
-                            Where(r => r.ActivityId == rev ).
+                            Where(r => r.ActivityId == rev).
                             Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                             Include(a => a.SnapDirect).
                             Include(a => a.SnapPolicy).
                             Include(a => a.SnapIndirect).
-                            OrderBy(a => a.Created);
-                    if(lstrvsn.Count() != 0){
-                        var last = lstrvsn.Last();
-                        if(last.SnapDirect != null || last.SnapIndirect != null || last.SnapPolicy != null || last.SnapAdmin ){
-                            MntRevs.Add(lstrvsn.Last());
-                        }
-                    }
+                            OrderBy(a => a.Created).Last();
+
+                    MntRevs.Add(lstrvsn);
                 }
 
 

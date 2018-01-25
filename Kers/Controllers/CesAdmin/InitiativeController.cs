@@ -225,7 +225,7 @@ namespace Kers.Controllers.Admin
         
         [HttpGet("category")]
         public IActionResult Category(){
-            var cats = coreContext.ProgramCategory.OrderBy(c => c.ShortName);
+            var cats = coreContext.ProgramCategory.OrderBy(c => c.Order);
             return new OkObjectResult(cats);
         }
 

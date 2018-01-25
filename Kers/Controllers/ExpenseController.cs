@@ -135,7 +135,7 @@ namespace Kers.Controllers
             var lastExpenses = context.Expense.
                                 Where(e=>e.KersUser.Id == userId && e.ExpenseDate.Year == year).
                                 GroupBy(e => new {
-                                    Month = e.ExpenseDate.Month
+                                    Month = e.Revisions.OrderBy(f=>f.Created).Last().ExpenseDate.Month
                                 }).
                                 Select(c => new {
                                     Month = c.Key.Month
@@ -260,14 +260,7 @@ namespace Kers.Controllers
                 var user = this.CurrentUser();
                 userId = user.Id;
             }
-            
             KersUser fullUser = this.context.KersUser.Where(r=>r.Id == userId).Include(u=>u.RprtngProfile).FirstOrDefault();
-            /*
-            var rate = this.context.
-                                ExpenseMileageRate.
-                                Where(e => e.InstitutionId == fullUser.RprtngProfile.InstitutionId && e.Start < DateTime.Now && e.End > DateTime.Now).
-                                FirstOrDefault();
-             */
             return new OkObjectResult(expenseRepo.MileageRate(fullUser, year, month));
         }
 
@@ -339,7 +332,6 @@ namespace Kers.Controllers
                     Where( p=>p.Code == profile.planningUnitID).
                     FirstOrDefault();
         }
-
         private zEmpRptProfile profileByUser(KersUser user){
             var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.Id == user.classicReportingProfileId).
@@ -347,19 +339,16 @@ namespace Kers.Controllers
             
             return profile;
         }
-
         private KersUser CurrentUser(){
             var u = this.CurrentUserId();
             return this.userByLinkBlueId(u);
         }
-
         private zEmpRptProfile CurrentProfile(){
             var u = this.CurrentUserId();
             return mainContext.zEmpRptProfiles.
                             Where(p=> p.linkBlueID == u).
                             FirstOrDefault();
         }
-
         private string CurrentUserId(){
             return User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }

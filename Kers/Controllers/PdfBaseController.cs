@@ -91,17 +91,25 @@ namespace Kers.Controllers
         }
 
 
-		public void AddPageInfo(SKCanvas pdfCanvas, int page, int totalPages, KersUser user, DateTime date, string Ttl = "Monthly Expenses Report"){
-			var text = "Page " + page.ToString() + " of " + totalPages.ToString();
+		public void AddPageInfo(SKCanvas pdfCanvas, int page, int totalPages, KersUser user, DateTime date, string Ttl = "Monthly Expenses Report", string PageOrientation = "portrait"){
+			
+			
+			var textTop = "Page " + page.ToString() + " of " + totalPages.ToString();
 			var paint = getPaint(9.0f, 3, 0xFF000000, SKTextAlign.Right);
-			pdfCanvas.DrawText(text, 590, 20, paint);
-
-
-			text = user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName + ", " + date.ToString("MMMM yyyy") + ", " + Ttl;
+			var text = user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName + ", " + date.ToString("MMMM yyyy") + ", " + Ttl;
 			paint = getPaint(9.0f, 1, 0xFF000000, SKTextAlign.Right);
-			pdfCanvas.DrawText(text, 530, 20, paint);
-			pdfCanvas.DrawText("Report Generated: ", 43, 770, getPaint(9.0f, 1));
-			pdfCanvas.DrawText( DateTime.Now.ToString(), 125, 770, getPaint(9.0f));
+			if( PageOrientation == "portrait"){
+				pdfCanvas.DrawText(textTop, 590, 20, paint);
+				pdfCanvas.DrawText(text, 530, 20, paint);
+				pdfCanvas.DrawText("Report Generated: ", 43, 770, getPaint(9.0f, 1));
+				pdfCanvas.DrawText( DateTime.Now.ToString(), 125, 770, getPaint(9.0f));
+			}else{
+				pdfCanvas.DrawText(textTop, 750, 20, paint);
+				pdfCanvas.DrawText(text, 690, 20, paint);
+				pdfCanvas.DrawText("Report Generated: ", 43, 600, getPaint(9.0f, 1));
+				pdfCanvas.DrawText( DateTime.Now.ToString(), 125, 600, getPaint(9.0f));
+			}
+			
 		}
 
         public void SummaryInfo(SKCanvas pdfCanvas, int year, int month, KersUser user, string Ttl = "Monthly Expenses Report"){
@@ -115,6 +123,20 @@ namespace Kers.Controllers
             pdfCanvas.DrawText(text, 43, 222, getPaint(12.0f));
             pdfCanvas.DrawText("Summary", 43, 300, getPaint(20.0f));
         }
+
+		public void SummaryLandscapeInfo(SKCanvas pdfCanvas, int year, int month, KersUser user, string Ttl = "Monthly Expenses Report"){
+			var date = new DateTime(year, month, 1);
+			var text = date.ToString("MMMM yyyy");
+			pdfCanvas.DrawText(text, 250, 80, getPaint(20.0f, 1, 0xFF000000));
+			pdfCanvas.DrawText(Ttl, 250, 102, getPaint(20.0f, 3, 0xFF000000));
+			text = user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName;
+			pdfCanvas.DrawText(text, 443, 80, getPaint(18.0f, 1));
+			text = user.ExtensionPosition.Title;
+			pdfCanvas.DrawText(text, 443, 95, getPaint(12.0f));
+			text = user.RprtngProfile.PlanningUnit.Name;
+			pdfCanvas.DrawText(text, 443, 107, getPaint(10.0f));
+			//pdfCanvas.DrawText("Summary", 43, 300, getPaint(20.0f));
+		}
 
 
 		public SKPaint getPaint(	float textSize = 64.0f, 
@@ -193,6 +215,7 @@ namespace Kers.Controllers
 		{
 			int word_length = 0;
 			String result = "";
+			if(str == null) return result;
 			for (int i = 0; i < str.Length; i++)
 			{
 				if (str[i] == ' ')

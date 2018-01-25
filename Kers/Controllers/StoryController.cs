@@ -124,7 +124,7 @@ namespace Kers.Controllers
             var lastStories = context.Story.
                                 Where(e=>e.KersUser.Id == userid).
                                 Include(s => s.Revisions).ThenInclude(r => r.StoryImages).ThenInclude(i => i.UploadImage).ThenInclude(f => f.UploadFile).
-                                OrderByDescending(e=>e.Id).
+                                OrderByDescending(e=>e.Revisions.OrderBy(r => r.Created).Last().Created).
                                 Take(amount);
             
             var revs = new List<StoryRevision>();
@@ -242,7 +242,10 @@ namespace Kers.Controllers
         [HttpPost()]
         [Authorize]
         public IActionResult AddStory( [FromBody] StoryRevision story){
+            
             if(story != null){
+
+                
                 var user = this.CurrentUser();
                 var str = new Story();
                 str.KersUser = user;

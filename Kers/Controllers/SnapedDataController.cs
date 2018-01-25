@@ -1495,7 +1495,7 @@ namespace Kers.Controllers
             var i = 0;
             do{
                 months[i] = runningDate.AddMonths( i );
-                if( months[i].Year <= currentDate.Year && months[i].Month <= currentDate.Month ){
+                if( months[i].Year < currentDate.Year || ( months[i].Year == currentDate.Year && months[i].Month <= currentDate.Month ) ){
                     var cacheKey = "IndirectActivityRevisionsPerMonth" + months[i].Month.ToString() + months[i].Year.ToString();
                     var cachedTypes = _cache.GetString(cacheKey);
                     var entity = new ActivityRevisionsPerMonth();
@@ -1543,7 +1543,7 @@ namespace Kers.Controllers
             var i = 0;
             do{
                 months[i] = runningDate.AddMonths( i );
-                if( months[i].Year <= currentDate.Year && months[i].Month <= currentDate.Month ){
+                if( months[i].Year < currentDate.Year || ( months[i].Year == currentDate.Year && months[i].Month <= currentDate.Month ) ){
                     var cacheKey = "DirectActivityRevisionsPerMonth" + months[i].Month.ToString() + months[i].Year.ToString();
                     var cachedTypes = _cache.GetString(cacheKey);
                     var entity = new ActivityRevisionsPerMonth();
