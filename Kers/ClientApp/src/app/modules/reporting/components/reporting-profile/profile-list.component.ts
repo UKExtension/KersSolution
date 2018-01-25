@@ -12,7 +12,7 @@ import { Subject } from 'rxjs/Subject';
 })
 export class ProfileListComponent implements OnInit{
 
-
+    condition = false;
     profiles: Observable<Profile[]>;
     errorMessage: string;
     planningUnits = null;

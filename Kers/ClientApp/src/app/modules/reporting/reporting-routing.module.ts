@@ -7,8 +7,6 @@ import {ReportingListComponent} from './components/reporting/reporting-list.comp
 import {ReportingDetailComponent} from './components/reporting/reporting-detail.component';
 import {ReportingHomeComponent} from './components/reporting/reporting-home.component';
 import {ReportingWidgetsComponent} from './components/reporting/reporting-widgets.component';
-import {ReportingActivitiesFormComponent} from './components/reporting-activities/reporting-activities-form.component';
-import {ReportingActivitiesHomeComponent} from './components/reporting-activities/reporting-activities-home.component';
 
 
 import {ProfileListComponent} from './components/reporting-profile/profile-list.component';
@@ -92,25 +90,6 @@ const reportingRoutes: Routes = [
               {
                 path: 'edit',
                 component: ReportingProfileEditComponent
-
-              }
-            ]
-          },
-          {
-            path: 'activities',
-            children: [
-              {
-                path: '',
-                component: ReportingActivitiesHomeComponent
-              },
-              {
-                path: 'create',
-                component: ReportingActivitiesFormComponent
-
-              },
-              {
-                path: 'create/:id',
-                component: ReportingActivitiesFormComponent
 
               }
             ]

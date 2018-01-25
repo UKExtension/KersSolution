@@ -31,10 +31,6 @@ import {WidgetSpecialistComponent} from './components/reporting-home/widgets/wid
 import {WidgetTrainingsComponent} from './components/reporting-home/widgets/widget-trainings.component';
 
 
-import {ReportingActivitiesHomeComponent} from './components/reporting-activities/reporting-activities-home.component';
-import {ReportingActivitiesFormComponent} from './components/reporting-activities/reporting-activities-form.component';
-import {ReportingActivitiesService} from './components/reporting-activities/reporting-activities.service';
-
 import {AdminModule} from './modules/admin/admin.module';
 
 import {ReportingService} from './components/reporting/reporting.service';
@@ -57,8 +53,6 @@ import {ReportingRoutingModule} from './reporting-routing.module';
         ProfileCurrentComponent,
         ProfileListDetailComponent,
         ReportingProfileEditComponent,
-        ReportingActivitiesHomeComponent,
-        ReportingActivitiesFormComponent,
 
         WidgetActivitiesAgentComponent,
         WidgetMyInfoComponent,
@@ -76,8 +70,7 @@ import {ReportingRoutingModule} from './reporting-routing.module';
     exports:[ReportingProfileEditComponent],
     providers: [
         NavigationService,
-        ProfileService,
-        ReportingActivitiesService
+        ProfileService
     ]
 })
 export class ReportingModule {
