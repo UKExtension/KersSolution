@@ -37,7 +37,7 @@ export class StoryDirectoryComponent {
 
         loading = false;
 
-
+        condition = false;
         constructor(     
                     private reportingService: ReportingService,
                     private service:StoryService,

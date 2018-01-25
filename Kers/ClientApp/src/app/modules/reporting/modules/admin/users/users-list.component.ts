@@ -26,6 +26,7 @@ export class UsersListComponent implements OnInit{
         unit: 0,
         amount: 40
     }
+    condition = false;
     private searchTermStream = new Subject<string>();
 
     constructor(    private profileService: ProfileService, 

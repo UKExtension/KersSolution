@@ -29,7 +29,7 @@
 
 <servicelog-list [byMonth]="byMonth" (onDeleted)="deleted($event)" (onEdited)="edited($event)"></servicelog-list>
 
-    <div *ngIf="numResults != 0" class="text-center">
+    <div *ngIf="numbActivities != 0" class="text-center">
         <div>Showing {{latest.length}} of {{numbActivities}} Snap-Ed records</div>
         <div *ngIf="latest.length < numbActivities" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
             load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>

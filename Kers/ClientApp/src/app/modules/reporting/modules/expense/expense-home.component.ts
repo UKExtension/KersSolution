@@ -13,7 +13,7 @@ import { Router } from "@angular/router";
             <expense-form *ngIf="newExpense" (onFormCancel)="newExpense=false" (onFormSubmit)="newExpenseSubmitted($event)"></expense-form>
         </div>
     <br><expense-list [byMonth]="byMonth" (onDeleted)="deleted($event)" (onEdited)="edited($event)"></expense-list>
-    <div *ngIf="numResults != 0" class="text-center">
+    <div *ngIf="numbExpenses != 0" class="text-center">
         <div>Showing {{latest.length}} of {{numbExpenses}} expense records</div>
         <div *ngIf="latest.length < numbExpenses" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
             load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>

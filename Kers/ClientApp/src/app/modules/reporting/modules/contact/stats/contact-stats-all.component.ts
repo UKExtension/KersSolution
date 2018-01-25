@@ -27,10 +27,10 @@ export class ContactStatsAllComponent {
     races:Observable<Race[]>;
     optionNumbers:Observable<ActivityOptionNumber[]>
 
-    private model = {beginDate: {year: 2018, month: 10, day: 9},
+    model = {beginDate: {year: 2018, month: 10, day: 9},
                              endDate: {year: 2018, month: 10, day: 19}};
 
-    private myDateRangePickerOptions: IMyDrpOptions = {
+    myDateRangePickerOptions: IMyDrpOptions = {
         // other options...
         dateFormat: 'mmm dd, yyyy',
         showClearBtn: false,

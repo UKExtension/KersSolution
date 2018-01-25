@@ -16,7 +16,7 @@ export class ContactStatsProgramComponent {
     activities:Observable<{}[]>;
     races:Observable<Race[]>;
     optionNumbers:Observable<ActivityOptionNumber[]>;
-
+    showChart = false;
 
     option;
 

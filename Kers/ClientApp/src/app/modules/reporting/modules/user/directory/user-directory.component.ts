@@ -28,6 +28,7 @@ export class UserDirectoryComponent {
             unit: 0,
             amount: 30
         }
+        condition = false;
         private searchTermStream = new Subject<string>();
 
 

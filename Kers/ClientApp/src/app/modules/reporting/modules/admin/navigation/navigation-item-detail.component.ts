@@ -24,6 +24,7 @@ export class NavigationItemDetailComponent implements OnInit {
 
     positionRestriction = "";
     roleRestriction = "";
+    itemsOppened = false;
     
 
     constructor(

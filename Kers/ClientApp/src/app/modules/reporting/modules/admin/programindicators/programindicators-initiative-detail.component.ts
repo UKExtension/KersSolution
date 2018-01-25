@@ -20,6 +20,7 @@ import { StrategicInitiative, MajorProgram} from '../programs/programs.service';
 export class ProgramindicatorsInitiativeDetailComponent{
     
     @Input()initiative:StrategicInitiative; 
+    programs = false;
 
     constructor(
        
