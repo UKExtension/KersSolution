@@ -155,7 +155,7 @@ namespace Kers
 
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
+                if (env.IsDevelopment() || env.IsStaging())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
                 }
