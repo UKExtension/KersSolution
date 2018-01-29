@@ -56,7 +56,7 @@ export class SnapIndirectMethodsComponent implements ControlValueAccessor, OnIni
   ){
     
     this.propagateChange = () => {};
-    this.snapindirectmethod = this.service.snapindirectmethod().share();
+    this.snapindirectmethod = this.service.snapindirectmethod();
   }
 
   ngOnInit(){

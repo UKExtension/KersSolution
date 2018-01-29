@@ -13,7 +13,11 @@ import {Router} from "@angular/router";
             padding: 5px 15px 5px;
         }
         .toggle{
-            margin-top: 9px;
+            margin-top: 0px;
+            padding-top: 8px;
+        }
+        .nav_menu{
+            height:42px;
         }
     `]
 })
@@ -25,6 +29,7 @@ export class TopNavComponent implements OnInit{
     profile:Profile;
     errorMessage: string;
     user:User = null;
+    isOpen = false;
 
     constructor( private profileService : ProfileService, 
                     private auth: AuthenticationService,

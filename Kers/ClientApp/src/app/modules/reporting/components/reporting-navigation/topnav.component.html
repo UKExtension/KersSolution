@@ -8,21 +8,15 @@
 
               <ul class="nav navbar-nav navbar-right">
                 <li *ngIf="!user" style="margin: 10px;"><loading type="bars"></loading></li>
-                <li class="" *ngIf="user">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <li [class.open]="isOpen" *ngIf="user">
+                  <a (click)="isOpen=!isOpen" class="user-profile dropdown-toggle">
                     <img src="{{profilePicSrc}}" alt="">{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    <li><a routerLink="/reporting/user/reporting"> Reporting Profile</a></li>
-                    <li><a routerLink="/reporting/user/personal"> Personal Profile</a></li>
+                    <li><a (click)="isOpen=!isOpen" routerLink="/reporting/user/reporting"> Reporting Profile</a></li>
+                    <li><a (click)="isOpen=!isOpen" routerLink="/reporting/user/personal"> Personal Profile</a></li>
                     <!--
-                    <li>
-                      <a href="javascript:;">
-                        <span class="badge bg-red pull-right">50%</span>
-                        <span>Personal Profile</span>
-                      </a>
-                    </li>
                     <li><a href="javascript:;">Help</a></li> -->
                     <li><a routerLink="/logout"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                   </ul>

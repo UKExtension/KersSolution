@@ -25,7 +25,7 @@ export class UserPersonalImageComponent implements ControlValueAccessor, OnInit 
       return this._value;
   }
   set imageId(val) {
-      this._value = val;     
+      this._value = val;    
       this.propagateChange(val);
   }
 
@@ -34,7 +34,7 @@ export class UserPersonalImageComponent implements ControlValueAccessor, OnInit 
   public propagateChange: any;
 
   public imgObj: Object = {
-        src: this.location.prepareExternalUrl('/dist/assets/images/user.png')
+        src: this.location.prepareExternalUrl('/assets/images/user.png')
   };
 
 
@@ -63,6 +63,7 @@ export class UserPersonalImageComponent implements ControlValueAccessor, OnInit 
   }
 
   writeValue(value: any) {
+      
       if (value !== "") {
         this.userService.filenameForImageId(<number> value).subscribe(
             res => {

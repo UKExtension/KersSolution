@@ -100,7 +100,7 @@ export class ServicelogFormComponent implements OnInit{
 
         // Snap Indirect
 
-        this.snapindirectreached = this.service.snapindirectreached().share();
+        this.snapindirectreached = this.service.snapindirectreached();
 
 
     }

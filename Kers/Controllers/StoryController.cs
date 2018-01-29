@@ -78,7 +78,7 @@ namespace Kers.Controllers
             var lastStories = context.Story.
                                 Where(e=>e.KersUser == this.CurrentUser()).
                                 Include(s => s.Revisions).ThenInclude(r => r.StoryImages).
-                                OrderByDescending(e=>e.Revisions.OrderBy(r => r.Created).Last().Created).
+                                OrderByDescending(e=>e.Updated).
                                 Skip(skip).
                                 Take(amount);
             
