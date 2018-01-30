@@ -61,7 +61,7 @@ namespace Kers.Controllers
             
             var lastContacts = context.Contact.
                                 Where(e=>e.KersUser == this.CurrentUser()).
-                                OrderByDescending(e=>e.Revisions.OrderBy(f => f.Created).Last().ContactDate).
+                                OrderByDescending(e=>e.ContactDate).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactOptionNumbers).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactRaceEthnicityValues).ThenInclude(r => r.Race).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactRaceEthnicityValues).ThenInclude(r => r.Ethnicity).
@@ -94,11 +94,11 @@ namespace Kers.Controllers
             }
             end = end.AddDays(1);
             var lastActivities = context.Contact.
-                                Where(a=>a.KersUser.Id == userid & a.Revisions.OrderBy(r => r.Created).Last().ContactDate > start & a.Revisions.OrderBy(r => r.Created).Last().ContactDate < end).
+                                Where(a=>a.KersUser.Id == userid & a.ContactDate > start & a.ContactDate < end).
                                 Include(e=>e.Revisions).ThenInclude(r => r.MajorProgram).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactOptionNumbers).ThenInclude(n => n.ActivityOptionNumber).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactRaceEthnicityValues).
-                                OrderByDescending(a => a.Revisions.OrderBy(r => r.Created).Last().ContactDate);
+                                OrderByDescending(a => a.ContactDate);
             var revs = new List<ContactRevision>();
             if( lastActivities != null){
                 foreach(var activity in lastActivities){
@@ -122,8 +122,8 @@ namespace Kers.Controllers
             var numPerMonth = context.Contact.
                                 Where(a=>a.KersUser.Id == userid).
                                 GroupBy(e => new {
-                                    Month = e.Revisions.OrderBy(f=>f.Created).Last().ContactDate.Month,
-                                    Year = e.Revisions.OrderBy(f=>f.Created).Last().ContactDate.Year
+                                    Month = e.ContactDate.Month,
+                                    Year = e.ContactDate.Year
                                 }).
                                 Select(c => new {
                                     Revisions = c.Select(

@@ -42,8 +42,8 @@ export class LoginHomeComponent {
     onNewUser(data){
         this.auth = data;
         this.newUser= true;
-        var reportng = new ReportingProfile(0, data.newUser.Userid,data.newUser.PersonID, data.newUser.Name, data.newUser.Userid + "@uky.edu","", true,1, null, undefined, null, 1,null);
-        var prsnl = new PersonalProfile(0,data.newUser.Fname,data.newUser.Lname, "", "", "", [], [],"", null);
+        var reportng = new ReportingProfile(0, data.newUser.userid,data.newUser.personID, data.newUser.name, data.newUser.userid + "@uky.edu","", true,1, null, undefined, null, 1,null);
+        var prsnl = new PersonalProfile(0,data.newUser.fname,data.newUser.lname, "", "", "", [], [],"", null);
         var user = new User( 0, 0, [], reportng, prsnl, undefined, null, null, null,null, null);
         this.userObservable = Observable.of(user);
     }

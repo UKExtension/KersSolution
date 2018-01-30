@@ -65,7 +65,7 @@ namespace Kers.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("api/token")]
-        public IActionResult Post([FromBody]LoginViewModel loginViewModel)
+        public IActionResult Post( [FromBody]LoginViewModel loginViewModel)
         {
 
             if (ModelState.IsValid)

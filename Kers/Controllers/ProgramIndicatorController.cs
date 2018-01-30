@@ -28,14 +28,12 @@ namespace Kers.Controllers
     {
         KERScoreContext context;
         KERSmainContext mainContext;
-        KERS2017Context c2017Context;
         IKersUserRepository userRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         public ProgramIndicatorController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
-                    KERS2017Context Kers2017Context,
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
                     IFiscalYearRepository fiscalYearRepo
@@ -43,7 +41,6 @@ namespace Kers.Controllers
            this.context = context;
            this.mainContext = mainContext;
            this.userRepo = userRepo;
-           this.c2017Context = Kers2017Context;
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
         }

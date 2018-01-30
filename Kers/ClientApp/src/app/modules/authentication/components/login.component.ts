@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
                 private location: Location
               ) 
   {
-    this.ukLogoSrc = location.prepareExternalUrl('/dist/assets/images/UK_gray.svg');
+    this.ukLogoSrc = location.prepareExternalUrl('/assets/images/UK_gray.svg');
     //this.setMessage();
     this.loginForm = fb.group(
             {

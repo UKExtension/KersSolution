@@ -37,7 +37,7 @@ export class TopNavComponent implements OnInit{
                     public router: Router,
                     private location:Location
                      ){
-        this.profilePicSrc = location.prepareExternalUrl('/dist/assets/images/user.png');
+        this.profilePicSrc = location.prepareExternalUrl('/assets/images/user.png');
                      }
     
     ngOnInit(){
