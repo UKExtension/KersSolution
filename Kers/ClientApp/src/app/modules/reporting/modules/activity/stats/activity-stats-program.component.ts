@@ -32,9 +32,9 @@ export class ActivityStatsProgramComponent {
 
     ngOnInit(){
         if(this.user == null){
-            this.activities = this.service.summaryPerProgram().share();
+            this.activities = this.service.summaryPerProgram();
         }else{
-            this.activities = this.service.summaryPerProgram(this.user.id).share();
+            this.activities = this.service.summaryPerProgram(this.user.id);
         }
         
         this.races = this.service.races();

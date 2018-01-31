@@ -49,7 +49,7 @@ export class ActivityStatsAllComponent {
         this.model.beginDate = {year: start.getFullYear(), month: start.getMonth(), day: start.getDate()};
         this.model.endDate = {year: end.getFullYear(), month: end.getMonth() + 1, day: end.getDate()};
 
-        this.activities = this.service.perPeriod(start, end).share();
+        this.activities = this.service.perPeriod(start, end);
         this.activities.subscribe(
             res=>{
                 return res;

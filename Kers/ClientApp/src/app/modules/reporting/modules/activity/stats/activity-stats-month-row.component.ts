@@ -35,7 +35,7 @@ export class ActivityStatsMonthRow implements OnInit {
     ngOnInit(){
         this.races= this.service.races();
         this.optionNumbers = this.service.optionnumbers();
-        this.service.options().share().subscribe(
+        this.service.options().subscribe(
             res => {
                 var multistateId = res.filter(a => a.name == 'Multistate effort?');
                 if(multistateId.length > 0){

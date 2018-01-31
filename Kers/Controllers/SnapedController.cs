@@ -192,8 +192,7 @@ namespace Kers.Controllers
             var numPerMonth = context.Activity.
                                 Where( e=>
                                         e.KersUser.Id == userId 
-                                        && 
-                                        e.Revisions.OrderBy(r => r.Created).Last().isSnap 
+                                        //&&  e.Revisions.OrderBy(r => r.Created).Last().isSnap 
                                         &&
                                         e.ActivityDate < fiscalYear.End
                                         &&
@@ -225,8 +224,9 @@ namespace Kers.Controllers
                             Include(a => a.SnapPolicy).
                             Include(a => a.SnapIndirect).
                             OrderBy(a => a.Created).Last();
-
-                    MntRevs.Add(lstrvsn);
+                    if( lstrvsn.isSnap ){
+                        MntRevs.Add(lstrvsn);
+                    }
                 }
 
 
@@ -307,8 +307,7 @@ namespace Kers.Controllers
             var numPerMonth = context.Activity.
                                 Where( e=>
                                         e.KersUser.RprtngProfile.PlanningUnitId == id 
-                                        && 
-                                        e.Revisions.OrderBy(r => r.Created).Last().isSnap 
+                                        //&&  e.Revisions.OrderBy(r => r.Created).Last().isSnap 
                                         &&
                                         e.ActivityDate < fiscalYear.End
                                         &&
@@ -340,8 +339,9 @@ namespace Kers.Controllers
                             Include(a => a.SnapPolicy).
                             Include(a => a.SnapIndirect).
                             OrderBy(a => a.Created).Last();
-
-                    MntRevs.Add(lstrvsn);
+                    if(lstrvsn.isSnap){
+                        MntRevs.Add(lstrvsn);
+                    }
                 }
 
 

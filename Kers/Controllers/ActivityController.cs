@@ -303,7 +303,7 @@ namespace Kers.Controllers
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
-                                OrderByDescending(e=>e.Revisions.OrderBy(f=>f.Created).Last().ActivityDate).
+                                OrderByDescending(e=>e.ActivityDate).
                                 Take(amount);
             var revs = new List<ActivityRevision>();
             if( lastActivities != null){

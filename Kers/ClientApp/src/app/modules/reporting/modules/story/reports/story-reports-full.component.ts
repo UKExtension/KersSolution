@@ -79,7 +79,7 @@ export class StoryReportsFullComponent {
     {}
 
     ngOnInit(){ 
-        this.author = this.service.author(this.story.id).share();
+        this.author = this.service.author(this.story.id);
         this.author.subscribe(
                 res => {
                     this.otherStories=this.service.latestByUser(res.id);

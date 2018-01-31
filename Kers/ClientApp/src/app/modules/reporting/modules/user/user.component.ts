@@ -63,7 +63,7 @@ export class UserComponent {
         private location:Location
     )   
     {
-        this.profilePicSrc = location.prepareExternalUrl('/dist/assets/images/user.png');
+        this.profilePicSrc = location.prepareExternalUrl('/assets/images/user.png');
         //this.data = this.getVirtulData(2016);
         //console.log(this.data);
         

@@ -56,7 +56,7 @@ export class SnapedCountyComponent {
     ngOnInit(){
 
       this.route.params
-            .switchMap( (params: Params) => this.planningUnitService.id(params['id']).share()).
+            .switchMap( (params: Params) => this.planningUnitService.id(params['id']) ).
             subscribe(
               res=>{
                 var countyRes = res;

@@ -45,7 +45,7 @@ export class SnapedUserComponent {
         }
       );
       this.route.params
-            .switchMap( (params: Params) => this.userService.byId(params['id']).share()).
+            .switchMap( (params: Params) => this.userService.byId(params['id'])).
             subscribe(
               res=>{
                 this.assistant = <User>res;

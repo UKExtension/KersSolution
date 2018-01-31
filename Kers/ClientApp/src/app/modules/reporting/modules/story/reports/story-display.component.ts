@@ -30,7 +30,7 @@ export class StoryDisplayComponent {
     {}
 
     ngOnInit(){ 
-        this.author = this.service.author(this.story.id).share();
+        this.author = this.service.author(this.story.id);
     }
 
     
