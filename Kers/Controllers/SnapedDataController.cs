@@ -579,10 +579,10 @@ namespace Kers.Controllers
             var result = string.Join(",", keys.ToArray()) + "\n";
 
             var perPerson = context.Activity.
-                                Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && e.Revisions.OrderBy(r => r.Created).Last().SnapDirect != null )
+                                Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null )
                                 .Select( s => new {
-                                    Last = s.Revisions.Where(r => true).OrderBy(r => r.Created).Last(),
-                                    Snap = s.Revisions.Where(r => true).OrderBy(r => r.Created).Last().SnapDirect
+                                    Last = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
+                                    Snap = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last().SnapDirect
                                 })
                                 .OrderBy(e => e.Last.ActivityDate.Month).ToList();
             
@@ -645,9 +645,9 @@ namespace Kers.Controllers
             var result = string.Join(",", keys.ToArray()) + "\n";
 
             var perPerson = context.Activity.
-                                Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && (e.Revisions.OrderBy(r => r.Created).Last().SnapDirect != null || e.Revisions.OrderBy(r => r.Created).Last().SnapIndirect != null) )
+                                Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && (e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null || e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapIndirect != null) )
                                 .Select( s => new {
-                                    Last = s.Revisions.Where(r => true).OrderBy(r => r.Created).Last(),
+                                    Last = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
                                     User = s.KersUser,
                                     Profile = s.KersUser.RprtngProfile,
                                     Unit = s.KersUser.RprtngProfile.PlanningUnit,
@@ -836,13 +836,14 @@ namespace Kers.Controllers
             var result = string.Join(",", keys.ToArray()) + "\n";
             var settings = this.context.SnapDirectDeliverySite.Where( d => d.FiscalYearId == fiscalYear.Id && d.Active).OrderBy(d => d.order).ToList();
             
-            var snapPerMonth = new List<SnapDirect>[difference];
+            var snapPerMonth = new List<int>[difference];
             for( i = 0; i< difference; i++){
                 var activitiesPerMonth = context.Activity.Where( a => a.ActivityDate.Month == months[i].Month && a.ActivityDate.Year == months[i].Year);
                 var activitiesWithSnapDirect = activitiesPerMonth
-                                                .Select( v => v.Revisions.OrderBy( r => r.Created).Last())
-                                                .Where( a => a.SnapDirect != null);
-                snapPerMonth[i] = activitiesWithSnapDirect.Select( s => s.SnapDirect).ToList();
+                                                .Select( v => v.Revisions.OrderBy( r => r.Created.ToString("s")).Last())
+                                                .Where( a => a.SnapDirect != null)
+                                                .ToList();
+                snapPerMonth[i] = activitiesWithSnapDirect.Select( s => s.SnapDirectId??0 ).Where( a => a != 0).ToList();
             }
             
             
@@ -850,7 +851,8 @@ namespace Kers.Controllers
                 var row = fiscalYear.Name + ",";
                 row += setting.Name + ",";
                 for( i = 0; i< difference; i++){
-                    row += snapPerMonth[i].Where(s => s.SnapDirectDeliverySiteId == setting.Id).Count().ToString() + ",";
+                        var directs = context.SnapDirect.Where(s => snapPerMonth[i].Contains(s.Id) );
+                        row +=  directs.Where( s => s.SnapDirectDeliverySiteId == setting.Id).Count().ToString() + ",";
                 }
                 result += row + "\n";
             }
@@ -1046,45 +1048,54 @@ namespace Kers.Controllers
             var activitiesWithPolicy = activitiesThisFiscalYear.Where( r => r.Revisions.Last().SnapPolicy != null).OrderBy( a => a.ActivityDate.Year).ThenBy( a => a.ActivityDate.Month).ThenBy(a => a.KersUser.PersonalProfile.FirstName);
             var policyMeetings = activitiesWithPolicy.Select(
                                     a => new {
-                                        SnapPolicy = a.Revisions.OrderBy( r => r.Created).Last().SnapPolicy,
+                                        //SnapPolicy = a.Revisions.OrderBy( r => r.Created).Last().SnapPolicy,
                                         ActivityDate = a.ActivityDate,
                                         PersonalProfile = a.KersUser.PersonalProfile,
                                         PlanningUnit = a.KersUser.RprtngProfile.PlanningUnit,
                                         Hours = a.Hours,
-                                        Programs = a.KersUser.Specialties
+                                        Programs = a.KersUser.Specialties,
+                                        Revisions = a.Revisions
                                     }
-                                ).ToList();
+                                )
+                                .ToList();
             var specialties = context.Specialty.ToList();
             foreach( var meeting in policyMeetings){
-                var row = meeting.ActivityDate.ToString("yyyyMM") + ",";
-                row += meeting.ActivityDate.ToString("yyyy-MMM") + ",";
-                row += meeting.PersonalProfile.FirstName + meeting.PersonalProfile.LastName + ",";
-                row += meeting.PlanningUnit.Name + ",";
-                row += meeting.PlanningUnit.DistrictId + ",";
-                var prgrms = "";
-                foreach( var program in meeting.Programs){
-                    prgrms += specialties.Where( s => s.Id == program.SpecialtyId).FirstOrDefault() ?.Code + " "??"";
-                }
-                row += prgrms + ",";
-                row += meeting.ActivityDate.ToString("mm/dd/yyy") + ",";
-                row += meeting.Hours.ToString() + ",";
-                var aimed = context.SnapPolicy.Where( p => p.Id == meeting.SnapPolicy.Id).Include( s => s.SnapPolicyAimedSelections).FirstOrDefault();
-                foreach( var tp in types){
-                    if( aimed.SnapPolicyAimedSelections == null){
-                        row += ",";
-                    }else{
-                        var sels = aimed.SnapPolicyAimedSelections.Where( a => a.SnapPolicyAimedId == tp.Id).FirstOrDefault();
-                        if( sels != null ){
-                            row += "X,";
-                        }else{
+                var LastRevision = meeting.Revisions.OrderBy(r => r.Created).Last();
+                if(LastRevision.SnapPolicyId != null){
+                    var row = meeting.ActivityDate.ToString("yyyyMM") + ",";
+                    row += meeting.ActivityDate.ToString("yyyy-MMM") + ",";
+                    row += meeting.PersonalProfile.FirstName + meeting.PersonalProfile.LastName + ",";
+                    row += meeting.PlanningUnit.Name + ",";
+                    row += meeting.PlanningUnit.DistrictId + ",";
+                    var prgrms = "";
+                    foreach( var program in meeting.Programs){
+                        prgrms += specialties.Where( s => s.Id == program.SpecialtyId).FirstOrDefault() ?.Code + " "??"";
+                    }
+                    row += prgrms + ",";
+                    row += meeting.ActivityDate.ToString("mm/dd/yyy") + ",";
+                    row += meeting.Hours.ToString() + ",";
+                    var aimed = context.SnapPolicy.Where( p => p.Id == LastRevision.SnapPolicyId).Include( s => s.SnapPolicyAimedSelections).FirstOrDefault();
+                    foreach( var tp in types){
+                        if( aimed.SnapPolicyAimedSelections == null){
                             row += ",";
+                        }else{
+                            var sels = aimed.SnapPolicyAimedSelections.Where( a => a.SnapPolicyAimedId == tp.Id).FirstOrDefault();
+                            if( sels != null ){
+                                row += "X,";
+                            }else{
+                                row += ",";
+                            }
                         }
                     }
+                    row += string.Concat( "\"", StripHTML(aimed.Purpose), "\"") + ",";
+                    row += string.Concat( "\"", StripHTML(aimed.Result), "\"") ;
+                    
+                    result += row + "\n";
                 }
-                row += string.Concat( "\"", StripHTML(aimed.Purpose), "\"") + ",";
-                row += string.Concat( "\"", StripHTML(aimed.Result), "\"") ;
+
+
+
                 
-                result += row + "\n";
             }
             return Ok(result);
         }

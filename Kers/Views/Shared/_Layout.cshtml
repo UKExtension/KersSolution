@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script id="fr-fek">try{(function (k){localStorage.FEK=k;t=document.getElementById('fr-fek');t.parentNode.removeChild(t);})('4mrcA2yyk==')}catch(e){}</script>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kentucky Extension Reporting System</title>
+        <environment names="Development">
+            <base href="/" />
+        </environment>
+        <environment names="Staging,Production">
+            <base href="/core" />
+        </environment>
+        <link rel="apple-touch-icon" href="~/dist/assets/images/site_icons/touch-icon-iphone.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="~/dist/assets/images/site_icons/touch-icon-ipad.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="~/dist/assets/images/site_icons/touch-icon-iphone-retina.png">
+        <link rel="apple-touch-icon" sizes="167x167" href="~/dist/assets/images/site_icons/touch-icon-ipad-retina.png">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="icon" sizes="192x192" href="~/dist/assets/images/site_icons/icon-hires.png" />
+        <link rel="icon" sizes="128x128" href="~/dist/assets/images/site_icons/icon-normal.png" />
+        <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/assets/froala-editor/css/froala_editor.pkgd.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/assets/froala-editor/css/froala_style.min.css" asp-append-version="true" />
+    </head>
+    <body>
+        @RenderBody()
+
+        @RenderSection("scripts", required: false)
+        <script src="~/dist/assets/web-animations.min.js"></script>
+    </body>
+</html>

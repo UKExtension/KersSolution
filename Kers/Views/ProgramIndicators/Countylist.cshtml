@@ -1,0 +1,35 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = "Program Indicators for 2017-2018 (FY2018)";
+    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+}
+@model List<Kers.Models.Entities.KERScore.PlanningUnit>
+
+<div class="bs-glyphicons">
+    <ul class="bs-glyphicons-list">
+      <li>
+        <a asp-controller="Data"  asp-action="Index">
+          <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+          <span class="glyphicon-class">Back to Data</span>
+        </a>
+      </li>
+      <li>
+                    <a asp-controller="ProgramIndicators"  asp-action="Get" asp-route-id=0>
+                    <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    <span class="glyphicon-class">STATE TOTALS</span>
+                    </a>
+                </li>
+        @if(Model != null){
+            @foreach( var unit in Model){
+                <li>
+                    <a asp-controller="ProgramIndicators"  asp-action="Get" asp-route-id=@unit.Id>
+                    <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    <span class="glyphicon-class">@unit.Name.Substring(0, @unit.Name.Length - 11)</span>
+                    </a>
+                </li>
+            }
+        }
+      
+      
+    </ul>
+  </div>
