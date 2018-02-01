@@ -6,6 +6,10 @@
     -moz-animation: .7s 1 shake linear;
     -webkit-animation: 0.7s 1 shake linear;
   }
-  input.ng-invalid, select.ng-invalid{
+  input.ng-invalid, select.ng-invalid, textarea.ng-invalid{
+    @extend %error-form-field;
+  }
+
+  .bad input, .bad select, .bad textarea, input.ng-invalid, select.ng-invalid, textarea.ng-invalid, div.description-invalid > div {
     @extend %error-form-field;
   }
