@@ -49,7 +49,7 @@ export class StateService {
     
     
     kyMap(){
-        var url = '/dist/assets/json/kentucky-counties.json';
+        var url = '/assets/json/kentucky-counties.json';
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => res.json())
                 .catch(this.handleError);
