@@ -541,7 +541,7 @@ namespace Kers.Controllers
                     spclt += " " + sp.Specialty.Code;
                 }
                 row += spclt + ", ";
-                if(lastRevision.SnapDirect.SnapDirectDeliverySite != null){
+                if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
                     row += string.Concat("\"", lastRevision.SnapDirect.SnapDirectDeliverySite.Name, "\"") + ",";
                 }else{
                     row += ",";
