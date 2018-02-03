@@ -14,7 +14,7 @@
                 <br>
                 <p class="url">
                 <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                <a [routerLink]="['/reporting/user', log.user.id]"><i class="fa fa-bookmark-o"></i> {{log.user.personalProfile.firstName}} {{log.user.personalProfile.lastName}}</a>
+                <a *ngIf="log.user" [routerLink]="['/reporting/user', log.user.id]"><i class="fa fa-bookmark-o"></i> {{log.user.personalProfile.firstName}} {{log.user.personalProfile.lastName}}</a>
                 </p>
             </div>
         </article>

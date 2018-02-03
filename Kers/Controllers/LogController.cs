@@ -109,7 +109,7 @@ namespace Kers.Controllers
                         OrderByDescending( l => l.Time).
                         Take(theAmount);
             foreach(var log in logs){
-                if(log.User.PersonalProfile != null ){
+                if(log.User != null && log.User.PersonalProfile != null ){
                     if(log.User.PersonalProfile.UploadImage != null){
                         log.User.PersonalProfile.UploadImage.UploadFile.Content = null;
                     }

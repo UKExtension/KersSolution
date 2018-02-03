@@ -27,7 +27,7 @@ export class LogDetailComponent implements OnInit {
     }
 
     ngOnInit(){
-        if(this.log.user.personalProfile.uploadImage){
+        if(this.log.user && this.log.user.personalProfile.uploadImage){
             this.profilePicSrc = this.location.prepareExternalUrl('/image/crop/60/60/' + this.log.user.personalProfile.uploadImage.uploadFile.name);
         }
         var a = this.log.time.toString().split(/[^0-9]/);
