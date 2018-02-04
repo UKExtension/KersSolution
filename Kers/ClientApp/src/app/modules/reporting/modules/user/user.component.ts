@@ -53,6 +53,10 @@ export class UserComponent {
     serieActivity;
     serieStory;
 
+    storiesOpen = true;
+    aboutOpen = false;
+    activityOpen = false;
+
     constructor( 
         private reportingService: ReportingService,
         private route: ActivatedRoute,
@@ -156,6 +160,22 @@ export class UserComponent {
 
     }
 
+    openStories(){
+        this.storiesOpen = true;
+        this.aboutOpen = false;
+        this.activityOpen = false;
+    }
+    openAbout(){
+        this.storiesOpen = false;
+        this.aboutOpen = true;
+        this.activityOpen = false;
+    }
+    openActivity(){
+        this.storiesOpen = false;
+        this.aboutOpen = false;
+        this.activityOpen = true;
+    }
+
 
     initOptions(){
 
@@ -166,10 +186,6 @@ export class UserComponent {
         var endString = lastDayOfTheMonth.toISOString().split('T')[0];
         var threeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 3, 1);
         var startString = threeMonthsAgo.toISOString().split('T')[0];
-
-        console.log( startString);
-        console.log( endString);
-
         this.option = {
                 tooltip : {
                     formatter: '{a0}: {c}',

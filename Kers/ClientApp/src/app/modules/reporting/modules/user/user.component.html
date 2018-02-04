@@ -84,15 +84,15 @@
 
                       <div class="" role="tabpanel" data-example-id="togglable-tabs">
                         <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                          <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Success Stories</a>
+                          <li role="presentation" [class.active]="storiesOpen"><a (click)="openStories()" style="cursor: pointer">Success Stories</a>
                           </li>
-                          <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">About</a>
+                          <li role="presentation" [class.active]="aboutOpen"><a (click)="openAbout()" style="cursor: pointer">About</a>
                           </li>
-                          <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Activity</a>
+                          <li role="presentation" [class.active]="activityOpen"><a (click)="openActivity()" style="cursor: pointer">Activity</a>
                           </li>
                         </ul>
                         <div id="myTabContent" class="tab-content">
-                          <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+                          <div role="tabpanel" class="tab-pane fade in" [class.active]="storiesOpen">
 
                             <!-- start recent activity -->
                             <ul class="messages">
@@ -118,12 +118,12 @@
                             <!-- end recent activity -->
 
                           </div>
-                          <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+                          <div role="tabpanel" class="tab-pane fade" [class.active]="aboutOpen" [class.in]="aboutOpen">
                               <br><br>
                               <div [innerHtml]="user.personalProfile.bio" class="fr-view"></div>
 
                           </div>
-                          <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+                          <div role="tabpanel" class="tab-pane fade" [class.active]="activityOpen" [class.in]="activityOpen">
                             <!-- start user projects -->
                             <table class="data table table-striped no-margin">
                               <thead>

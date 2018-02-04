@@ -27,14 +27,14 @@ import { User } from "../../user/user.service";
                             <strong>Expense Funding: </strong><br>{{expense.fundingSourceNonMileage.name}}
                         </p>
                         <div class="row">
-                            <div class="col-md-4"><strong>Breakfast: </strong>{{ breakfast(expense)| currency:'USD':true:'1.2-2'}}</div>
-                            <div class="col-md-4"><strong>Lunch: </strong>{{ lunch(expense)| currency:'USD':true:'1.2-2'}}</div>
-                            <div class="col-md-4"><strong>Dinner: </strong>{{ dinner(expense)| currency:'USD':true:'1.2-2'}}</div>
+                            <div class="col-md-4"><strong>Breakfast: </strong>{{ breakfast(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
+                            <div class="col-md-4"><strong>Lunch: </strong>{{ lunch(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
+                            <div class="col-md-4"><strong>Dinner: </strong>{{ dinner(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4"><strong>Lodging: </strong>{{ expense.lodging | currency:'USD':true:'1.2-2'}}</div>
-                            <div class="col-md-4"><strong>Registration: </strong>{{ expense.registration | currency:'USD':true:'1.2-2'}}</div>
-                            <div class="col-md-4"><strong>Other: </strong>{{ expense.otherExpenseCost| currency:'USD':true:'1.2-2'}}</div>
+                            <div class="col-md-4"><strong>Lodging: </strong>{{ expense.lodging | currency:'USD':'symbol':'1.2-2'}}</div>
+                            <div class="col-md-4"><strong>Registration: </strong>{{ expense.registration | currency:'USD':'symbol':'1.2-2'}}</div>
+                            <div class="col-md-4"><strong>Other: </strong>{{ expense.otherExpenseCost| currency:'USD':'symbol':'1.2-2'}}</div>
                         </div>
                         <div *ngIf="expense.otherExpenseCost != 0">{{expense.otherExpenseExplanation}}</div>
                     </div>

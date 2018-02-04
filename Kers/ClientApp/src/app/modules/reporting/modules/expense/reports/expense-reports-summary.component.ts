@@ -31,12 +31,12 @@ import { User } from "../../user/user.service";
                         <tr *ngFor="let summary of summaries">
                             <td>{{summary.fundingSource.name}}</td>
                             <td class="text-right">{{summary.miles}}</td>
-                            <td class="text-right">{{summary.mileageCost | currency:'USD':true:'1.2-2'}}</td>
-                            <td class="text-right">{{summary.meals | currency:'USD':true:'1.2-2'}}</td>
-                            <td class="text-right">{{summary.lodging | currency:'USD':true:'1.2-2'}}</td>
-                            <td class="text-right">{{summary.registration | currency:'USD':true:'1.2-2'}}</td>
-                            <td class="text-right">{{summary.other | currency:'USD':true:'1.2-2'}}</td>
-                            <td class="text-right">{{summary.total | currency:'USD':true:'1.2-2'}}</td>
+                            <td class="text-right">{{summary.mileageCost | currency:'USD':'symbol':'1.2-2'}}</td>
+                            <td class="text-right">{{summary.meals | currency:'USD':'symbol':'1.2-2'}}</td>
+                            <td class="text-right">{{summary.lodging | currency:'USD':'symbol':'1.2-2'}}</td>
+                            <td class="text-right">{{summary.registration | currency:'USD':'symbol':'1.2-2'}}</td>
+                            <td class="text-right">{{summary.other | currency:'USD':'symbol':'1.2-2'}}</td>
+                            <td class="text-right">{{summary.total | currency:'USD':'symbol':'1.2-2'}}</td>
                         </tr>
                         
                     </tbody>
