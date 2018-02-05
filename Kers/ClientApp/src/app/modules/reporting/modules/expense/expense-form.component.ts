@@ -168,7 +168,6 @@ export class ExpenseFormComponent {
         var dateValue = this.expenseForm.value.expenseDate.date;
         var d = new Date(Date.UTC(dateValue.year, dateValue.month - 1, dateValue.day, 8, 5, 12));
         var val = this.expenseForm.value;
-        console.log(this.expenseForm.value);
         val.expenseDate = d;
         val.departTime = (val.departTime == ""? null : val.departTime );
         val.returnTime = (val.returnTime == ""? null: val.returnTime );
