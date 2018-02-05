@@ -584,7 +584,7 @@ namespace Kers.Controllers
                                     Last = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
                                     Snap = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last().SnapDirect
                                 })
-                                .OrderBy(e => e.Last.ActivityDate.Month).ToList();
+                                .OrderBy(e => e.Last.ActivityDate.Month.ToString()).ToList();
             
             
             var grouped = perPerson.Where( r => r.Snap!= null)
