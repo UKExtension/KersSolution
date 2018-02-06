@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Location} from '@angular/common';
-import {NavigationService} from '../reporting-navigation/navigation.service';
+import {NavigationService, NavSection} from '../reporting-navigation/navigation.service';
 import {ProfileService, Profile} from '../reporting-profile/profile.service';
 import {ReportingService} from './reporting.service';
 import {GoogleAnalyticsEventsService} from "../../core/google-analytics-events.service";
@@ -73,9 +73,21 @@ export class ReportingComponent implements OnInit {
         if(this.layoutClasses['nav-md']){
             this.layoutClasses['nav-md'] = false;
             this.layoutClasses['nav-sm'] = true;
+            this.closeGroups();
         }else{
             this.layoutClasses['nav-md'] = true;
             this.layoutClasses['nav-sm'] = false;
+        }
+    }
+
+    closeGroups(){
+        for(var section of this.navigation){
+            this.closeInSection(section);
+        } 
+    }
+    closeInSection(section:NavSection){
+        for(var key in section.groups){ 
+                section.groups[key].isOpen = 'inactive';
         }
     }
 }
