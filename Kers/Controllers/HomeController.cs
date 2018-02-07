@@ -158,7 +158,7 @@ namespace Kers.Controllers
         private string GetUserIdFromCredentials(LoginViewModel loginViewModel){
             // Don't do this in production, obviously!
             
-            if( _hostingEnv.EnvironmentName == "Development" ){
+            if( _hostingEnv.EnvironmentName == "Development" || _hostingEnv.EnvironmentName == "Staging"){
                 //if (loginViewModel.Username == "random"){
                     return loginViewModel.Username;
                 //}

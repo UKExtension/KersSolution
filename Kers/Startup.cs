@@ -79,7 +79,8 @@ namespace Kers
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersCore"]));
                 services.AddDbContext<KERS2017Context>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS2017"]));
-                
+                services.AddDbContext<KERS_SNAPED2017Context>(options => 
+                    options.UseSqlServer(Configuration["ConnectionStrings:connKERS_SNAPED2017"]));
                 
                 services.AddDistributedSqlServerCache(options =>
                     {
@@ -95,7 +96,9 @@ namespace Kers
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersCore"]));
                 services.AddDbContext<KERS2017Context>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS2017"]));
-                
+                services.AddDbContext<KERS_SNAPED2017Context>(options => 
+                    options.UseSqlServer(Configuration["ConnectionStrings:connKERS_SNAPED2017"]));
+                //
                 
                 services.AddDistributedSqlServerCache(options =>
                     {
