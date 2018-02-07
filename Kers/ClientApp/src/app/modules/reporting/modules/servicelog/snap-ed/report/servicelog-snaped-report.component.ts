@@ -105,7 +105,6 @@ export class ServicelogSnapedReportComponent {
             res => {
                 this.user = <User>res;
                 this.county = this.user.rprtngProfile.planningUnit;
-                console.log(this.user);
                 this.checkIfAssistant();
                 if(this.isSnapEdAssistant){
                     this.service.assistantReimbursments(this.user.id).subscribe(
