@@ -278,7 +278,14 @@ namespace Kers.Controllers
             }
 
             var revs = activityRepo.LastActivityRevisionIds(fiscalYear, _cache);
-            var fyactivities = context.ActivityRevision.Where( r => revs.Contains( r.Id )).ToList();
+            // Divide revs into batches as SQL server is having trouble to process more then several thousands at once
+            var fyactivities = new List<ActivityRevision>();
+            var batchCount = 10000;
+            for(var i = 0; i <= revs.Count(); i += batchCount){
+                var currentBatch = revs.Skip(i).Take(batchCount);
+                fyactivities.AddRange(context.ActivityRevision.Where( r => currentBatch.Contains( r.Id )).ToList());
+            }
+            
             var snapEligible = fyactivities.Where( r => (r.SnapPolicy != null || r.SnapDirect != null || r.SnapIndirect != null || r.SnapAdmin ));
             var reported = snapEligible.Sum( h => Math.Floor(h.Hours));
             return new OkObjectResult(reported);

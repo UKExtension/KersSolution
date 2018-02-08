@@ -325,8 +325,8 @@ namespace Kers.Controllers
                                     Ids = c.Select(
                                         s => s.Id
                                     ),
-                                    Hours = c.Sum(s => s.Hours),
-                                    Audience = c.Sum(s => s.Audience),
+                                    //Hours = c.Sum(s => s.Hours),
+                                    //Audience = c.Sum(s => s.Audience),
                                     Month = c.Key.Month,
                                     Year = c.Key.Year
                                 }).
@@ -334,6 +334,8 @@ namespace Kers.Controllers
             var result = new List<PerMonthActivities>();
 
             foreach(var mnth in numPerMonth){
+                float hours = 0;
+                var audience = 0;
                 var MntRevs = new List<ActivityRevision>();
                 foreach(var rev in mnth.Ids){
                     var lstrvsn = context.ActivityRevision.
@@ -344,6 +346,8 @@ namespace Kers.Controllers
                             Include(a => a.SnapIndirect).
                             OrderBy(a => a.Created).Last();
                     if(lstrvsn.isSnap){
+                        hours += lstrvsn.Hours;
+                        audience += lstrvsn.Male + lstrvsn.Female;
                         MntRevs.Add(lstrvsn);
                     }
                 }
@@ -351,8 +355,8 @@ namespace Kers.Controllers
 
                 var actvts = new PerMonthActivities();
                 actvts.Revisions = MntRevs;
-                actvts.Hours = mnth.Hours;
-                actvts.Audience = mnth.Audience;
+                actvts.Hours = hours;
+                actvts.Audience = audience;
                 actvts.Month = mnth.Month;
                 actvts.Year = mnth.Year;
                 result.Add(actvts);
