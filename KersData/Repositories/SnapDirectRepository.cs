@@ -82,30 +82,31 @@ namespace Kers.Models.Repositories
 
                 var SnapData = this.SnapData( fiscalYear);
 
-                var byUser = SnapData.GroupBy( s => s.User.Id).Select( 
+                var byMonth = SnapData.GroupBy( s => new {
+                                            Year = s.Revision.ActivityDate.Year,
+                                            Month = s.Revision.ActivityDate.Month
+
+                                        }
+                
+                                    ).Select( 
                                             d => new {
-                                                User = d.Select( s => s.User ).First(),
+                                                Year = d.Key.Year,
+                                                Month = d.Key.Month,
                                                 Revisions = d.Select( s => s.Revision )
                                             }
                                         )
-                                        .OrderBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
-                foreach( var userData in byUser ){
-                    var row = fiscalYear.Name + ",";
-                    row += string.Concat("\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                    row += string.Concat("\"", userData.User.RprtngProfile.Name, "\"") + ",";
-                    row += string.Concat("\"", userData.User.ExtensionPosition.Code, "\"") + ",";
-                    var spclt = "";
-                    foreach( var sp in userData.User.Specialties){
-                        spclt += " " + sp.Specialty.Code;
-                    }
-                    row += spclt + ", ";
-                    row += userData.Revisions.Sum( s => s.Hours).ToString() + ",";
+                                        .OrderBy( d => d.Year).ThenBy( d => d.Month);
+                foreach( var monthData in byMonth ){
+                    var dt = new DateTime( monthData.Year, monthData.Month, 15);
+                    var row = dt.ToString("yyyyMM") + ",";
+                    row += dt.ToString("yyyy-MMM") + ",";
+                    row += monthData.Revisions.Sum( s => s.Hours).ToString() + ",";
 
-                    var male = userData.Revisions.Sum( s => s.Male);
-                    var female = userData.Revisions.Sum( s => s.Female);
+                    var male = monthData.Revisions.Sum( s => s.Male);
+                    var female = monthData.Revisions.Sum( s => s.Female);
 
                     row += ( male + female ).ToString() + ",";
-                    var revisionsWithDirectContacts = userData.Revisions.Where( s => s.SnapDirect != null);
+                    var revisionsWithDirectContacts = monthData.Revisions.Where( s => s.SnapDirect != null);
 
                     var ageAudienceValues = new List<SnapDirectAgesAudienceValue>();
                     foreach( var rev in revisionsWithDirectContacts){
@@ -127,7 +128,7 @@ namespace Kers.Models.Repositories
 
                     var RaceEthnicityValues = new List<RaceEthnicityValue>();
 
-                    foreach( var rev in userData.Revisions){
+                    foreach( var rev in monthData.Revisions){
                         RaceEthnicityValues.AddRange(rev.RaceEthnicityValues);
                     }
 
@@ -138,7 +139,7 @@ namespace Kers.Models.Repositories
                     }
 
 
-                    var withIndirect = userData.Revisions.Where( r => r.SnapIndirect != null);
+                    var withIndirect = monthData.Revisions.Where( r => r.SnapIndirect != null);
                     var indirects = 0;
                     foreach( var ind in withIndirect){
                         indirects += ind.SnapIndirect.SnapIndirectReachedValues.Sum( s => s.Value);
@@ -175,7 +176,7 @@ namespace Kers.Models.Repositories
 
 
                 
-                var cacheKey = "UserRevisionWithSnapData" + rev.Id.ToString();
+                var cacheKey = CacheKeys.UserRevisionWithSnapData + rev.Id.ToString();
                 var cacheString = _cache.GetString(cacheKey);
                 UserRevisionData data;
                 if (!string.IsNullOrEmpty(cacheString)){
@@ -209,8 +210,6 @@ namespace Kers.Models.Repositories
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( expiration )
                         }); 
                 }
-
-                
 
                 
                 SnapData.Add(data);
