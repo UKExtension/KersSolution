@@ -86,6 +86,10 @@ namespace Kers.Controllers
                         client.Connect (Email.Server, Email.Port, false);
                         client.AuthenticationMechanisms.Remove ("XOAUTH2");
                         client.Authenticate (Email.Username, Email.Password);
+                    }else if(Email.Pressets == 5){
+                        client.Connect (Email.Server, Email.Port, false);
+                        client.AuthenticationMechanisms.Remove ("XOAUTH2");
+                        //client.Authenticate (Email.Username, Email.Password);
                     }
                     client.Send (message);
                     client.Disconnect (true);

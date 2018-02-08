@@ -16,6 +16,7 @@
                     <option value="1">Ivelin's UK email</option>
                     <option value="3">appsettings.json</option>
                     <option value="4">Custom</option>
+                    <option value="5">No Authentication</option>
                 </select>
             </div>
         </div>
@@ -43,6 +44,18 @@
                     <input type="password" name="password" id="password" formControlName="password" class="form-control col-md-7 col-xs-12">
             </div>
         </div>
+        <div class="form-group" *ngIf="selectedValue==5">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="server">Server:</label>
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                        <input type="text" name="server" id="server" formControlName="server" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            <div class="form-group" *ngIf="selectedValue==5">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="port">Port:</label>
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                        <input type="number" name="port" id="port" formControlName="port" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
         
         
         
@@ -64,6 +77,10 @@
                 Port: {{form.value.port}}<br>
                 Username: {{form.value.username}}<br>
                 </div> 
+                <div *ngIf="selectedValue==5">
+                        Server: {{form.value.server}}<br>
+                        Port: {{form.value.port}}<br>
+                        </div> 
             </div>
         </div><br><br>
         <div class="form-group">

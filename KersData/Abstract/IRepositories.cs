@@ -65,4 +65,8 @@ namespace Kers.Models.Abstract
         FiscalYear nextFiscalYear(string type);
     }
     public interface IAffirmativeActionPlanRevisionRepository: IEntityBaseRepository<AffirmativeActionPlanRevision>{}
+    public interface ISnapDirectRepository: IEntityBaseRepository<SnapDirect>{
+        string TotalByMonth(FiscalYear fiscalYear, Boolean refreshCache);
+    }
+    public interface ISnapInDirectRepository: IEntityBaseRepository<SnapIndirect>{}
 }

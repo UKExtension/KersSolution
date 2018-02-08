@@ -34,6 +34,7 @@ namespace Kers.Controllers
         IFiscalYearRepository fiscalRepo;
         private IDistributedCache _cache;
         IActivityRepository activityRepo;
+        ISnapDirectRepository snapDirectRepo;
         const string LogType = "SnapEdData";
         public SnapedDataController( 
                     KERSmainContext mainContext,
@@ -41,11 +42,13 @@ namespace Kers.Controllers
                     IKersUserRepository userRepo,
                     IDistributedCache _cache,
                     IFiscalYearRepository fiscalRepo,
-                    IActivityRepository activityRepo
+                    IActivityRepository activityRepo,
+                    ISnapDirectRepository snapDirectRepo
             ):base(mainContext, context, userRepo){
                 this.fiscalRepo = fiscalRepo;
                 this._cache = _cache;
                 this.activityRepo = activityRepo;
+                this.snapDirectRepo = snapDirectRepo;
         }
     
         [HttpGet]
@@ -61,19 +64,25 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
+            
+
+            var result = snapDirectRepo.TotalByMonth(fiscalYear, false);
+
+/*
+
             var keys = new List<string>();
             keys.Add("YearMonth");
             keys.Add("YearMonthName");
             keys.Add("HoursReported");
             keys.Add("DirectContacts");
 
-            var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+            var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order).ToList();
             
             foreach( var audnc in snapDirectAudience){
                 keys.Add(audnc.Name);
             }
 
-            var snapDirectAges = this.context.SnapDirectAges.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+            var snapDirectAges = this.context.SnapDirectAges.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order).ToList();
 
             foreach( var ags in snapDirectAges){
                 keys.Add(ags.Name);
@@ -82,7 +91,7 @@ namespace Kers.Controllers
             keys.Add("Male");
             keys.Add("Female");
 
-            var races = this.context.Race;
+            var races = this.context.Race.ToList();
             var ethnicities = this.context.Ethnicity;
 
             foreach(var race in races){
@@ -95,10 +104,6 @@ namespace Kers.Controllers
 
 
             var result = string.Join(", ", keys.ToArray()) + "\n";
-
-
-
-
 
 
             var SnapData = this.SnapData( fiscalYear);
@@ -168,7 +173,7 @@ namespace Kers.Controllers
                 row += indirects.ToString();
                 result += row + "\n";
             }
-
+*/
 
             return Ok(result);
         }
@@ -1803,9 +1808,5 @@ namespace Kers.Controllers
     
     }
 
-    class UserRevisionData{
-        public KersUser User;
-        public ActivityRevision Revision;
-    }
 
 }
