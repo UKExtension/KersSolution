@@ -397,12 +397,15 @@ export class ServicelogFormComponent implements OnInit{
         if(this.snapPolicy || !(this.numParticipants() > 0)){
             val.snapDirect = null;
         }
-        if(this.isAdmin){
-            val.snapDirect = null;
-            val.snapIndirect = null;
-            val.snapPolicy = null;
+        if(val.isSnap){
+            if(this.isAdmin){
+                val.snapDirect = null;
+                val.snapIndirect = null;
+                val.snapPolicy = null;
+            }
+        }else{
+            this.isAdmin = false;
         }
-
         if(this.activity == null){
             this.service.add(val).subscribe(
                 res => {
@@ -448,7 +451,6 @@ export class ServicelogFormComponent implements OnInit{
                         }
                     }
                 }
-                
             }
             this.service.update(this.activity.id, val).subscribe(
                 res => {

@@ -44,7 +44,7 @@ import { User } from "../../user/user.service";
                             <td>{{activity.hours}}</td>
                             <td>{{attendance(activity)}}</td>
                             <td><div *ngFor="let opt of activity.activityOptionSelections">{{opt.activityOption.name.substring(0, opt.activityOption.name.length -1 )}}</div></td>
-                            <td><div *ngIf="activity.snapAdmin">Admin</div><div *ngIf="activity.snapPolicyId != null">Community/PSE</div> <div *ngIf="activity.snapDirectId != null">Direct</div> <div *ngIf="activity.snapIndirectId != null">Indirect</div></td>
+                            <td><div *ngIf="activity.snapAdmin && activity.isSnap">Admin</div><div *ngIf="activity.snapPolicyId != null">Community/PSE</div> <div *ngIf="activity.snapDirectId != null">Direct</div> <div *ngIf="activity.snapIndirectId != null">Indirect</div></td>
                         </tr>
                         
                     </tbody>
@@ -92,13 +92,8 @@ export class ActivityReportsSummaryComponent {
         this.service.activitiesPerMonth(this.month.month, this.year.year, userid).subscribe(
             res=> {
                 this.monthActivities = <Activity[]>res;
-                console.log(this.monthActivities);
                 this.loading = false;
-
-
                 this.createChart();
-
-
             },
             err => this.errorMessage = <any>err
         );
