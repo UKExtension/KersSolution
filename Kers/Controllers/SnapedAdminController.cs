@@ -233,19 +233,6 @@ namespace Kers.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpGet("committed/{fy?}")]
         [Authorize]
         public IActionResult Committed(string fy = "0"){
@@ -286,7 +273,7 @@ namespace Kers.Controllers
                 fyactivities.AddRange(context.ActivityRevision.Where( r => currentBatch.Contains( r.Id )).ToList());
             }
             
-            var snapEligible = fyactivities.Where( r => (r.SnapPolicy != null || r.SnapDirect != null || r.SnapIndirect != null || r.SnapAdmin ));
+            var snapEligible = fyactivities.Where( r => (r.SnapPolicyId != null || r.SnapDirectId != null || r.SnapIndirectId != null || (r.SnapAdmin && r.isSnap) ));
             var reported = snapEligible.Sum( h => Math.Floor(h.Hours));
             return new OkObjectResult(reported);
         }

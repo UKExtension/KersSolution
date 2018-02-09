@@ -66,7 +66,7 @@ namespace Kers.Controllers
 
             
 
-            var result = snapDirectRepo.TotalByMonth(fiscalYear, false);
+            var result = snapDirectRepo.TotalByMonth(fiscalYear, true);
 
 /*
 

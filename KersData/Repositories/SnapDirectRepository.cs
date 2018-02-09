@@ -165,9 +165,8 @@ namespace Kers.Models.Repositories
 
         private List<UserRevisionData> SnapData( FiscalYear fiscalYear){
             var today = DateTime.Now;
-            var revs = LastActivityRevisionIds(fiscalYear);
-
-            var snapEligible = context.ActivityRevision.Where( r => revs.Contains( r.Id ) &&  (r.SnapPolicy != null || r.SnapDirect != null || r.SnapIndirect != null || r.SnapAdmin ));
+           
+            var snapEligible = RevisionsWithSnapData(fiscalYear);
 
 
             List<UserRevisionData> SnapData = new List<UserRevisionData>();
@@ -241,6 +240,20 @@ namespace Kers.Models.Repositories
                     });
             }
             return ids;
+        }
+
+        private IEnumerable<ActivityRevision> RevisionsWithSnapData(FiscalYear fiscalYear){
+            var revs = LastActivityRevisionIds(fiscalYear);
+            // Divide revs into batches as SQL server is having trouble to process more then several thousands at once
+            var fyactivities = new List<ActivityRevision>();
+            var batchCount = 10000;
+            for(var i = 0; i <= revs.Count(); i += batchCount){
+                var currentBatch = revs.Skip(i).Take(batchCount);
+                fyactivities.AddRange(context.ActivityRevision.Where( r => currentBatch.Contains( r.Id )).ToList());
+            }
+            
+            var snapEligible = fyactivities.Where( r => (r.SnapPolicyId != null || r.SnapDirectId != null || r.SnapIndirectId != null || (r.SnapAdmin && r.isSnap) ));
+            return snapEligible;
         }
 
 

@@ -8,19 +8,19 @@ import { saveAs } from 'file-saver';
   template: `
     
     <div>
-      <a (click)="ccond = !ccond"><i class="fa fa-plus-square" *ngIf="!ccond"></i><i class="fa fa-minus-square" *ngIf="ccond"></i> Counties </a>
+      <a (click)="ccond = !ccond" style="cursor:pointer;"><i class="fa fa-plus-square" *ngIf="!ccond"></i><i class="fa fa-minus-square" *ngIf="ccond"></i> Counties </a>
       <div *ngIf="ccond">
         <planningunit-list [link]="link"></planningunit-list>
       </div>
     </div>
     <div>
-      <a (click)="cond = !cond"><i class="fa fa-plus-square" *ngIf="!cond"></i><i class="fa fa-minus-square" *ngIf="cond"></i> Snap-Ed Assistants </a>
+      <a (click)="cond = !cond" style="cursor:pointer;"><i class="fa fa-plus-square" *ngIf="!cond"></i><i class="fa fa-minus-square" *ngIf="cond"></i> Snap-Ed Assistants </a>
       <div *ngIf="cond">
         <snaped-assistants-list></snaped-assistants-list>
       </div>
     </div>
     <div>
-    <a (click)="commitmentHours = !commitmentHours"><i class="fa fa-plus-square" *ngIf="!commitmentHours"></i><i class="fa fa-minus-square" *ngIf="commitmentHours"></i> Commitment Hours</a>
+    <a (click)="commitmentHours = !commitmentHours" style="cursor:pointer;"><i class="fa fa-plus-square" *ngIf="!commitmentHours"></i><i class="fa fa-minus-square" *ngIf="commitmentHours"></i> Commitment Hours</a>
     <div *ngIf="commitmentHours">
      
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/kers_mobile/SnapEd2018CommitmentWorksheet.aspx?admin=1">Commitment Hours Worksheet per individual</a>
