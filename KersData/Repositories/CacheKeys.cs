@@ -8,6 +8,8 @@ namespace Kers.Models.Repositories
 
         //Snap Ed
         public static string SnapEdTotalByMonth = "SnapEdTotalByMonth";
+        public static string SnapEdTotalByCounty = "SnapEdTotalByCounty";
+        public static string SnapEdTotalByEmployee = "SnapEdTotalByEmployee";
         public static string UserRevisionWithSnapData = "UserRevisionWithSnapData";
 
     }

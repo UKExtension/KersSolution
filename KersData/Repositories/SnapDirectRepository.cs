@@ -30,9 +30,6 @@ namespace Kers.Models.Repositories
 
         public string TotalByMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
-
-
-
             var cacheKey = CacheKeys.SnapEdTotalByMonth + fiscalYear.Name;
             var cacheString = _cache.GetString(cacheKey);
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
@@ -55,16 +52,12 @@ namespace Kers.Models.Repositories
                 foreach( var audnc in snapDirectAudience){
                     keys.Add(audnc.Name);
                 }
-
                 var snapDirectAges = this.context.SnapDirectAges.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order).ToList();
-
                 foreach( var ags in snapDirectAges){
                     keys.Add(ags.Name);
                 }
-
                 keys.Add("Male");
                 keys.Add("Female");
-
                 var races = this.context.Race.ToList();
                 var ethnicities = this.context.Ethnicity;
 
@@ -73,15 +66,9 @@ namespace Kers.Models.Repositories
                         keys.Add( race.Name + ethn.Name);
                     }
                 }
-
                 keys.Add("IndirectContacts");
-
-
                 result = string.Join(", ", keys.ToArray()) + "\n";
-                
-
                 var SnapData = this.SnapData( fiscalYear);
-
                 var byMonth = SnapData.GroupBy( s => new {
                                             Year = s.Revision.ActivityDate.Year,
                                             Month = s.Revision.ActivityDate.Month
@@ -147,17 +134,257 @@ namespace Kers.Models.Repositories
                     row += indirects.ToString();
                     result += row + "\n";
                 }
-
-
-
-
-
-
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
                     }); 
             }
+            return result;
+        }
+        public string TotalByCounty(FiscalYear fiscalYear, Boolean refreshCache = false){
+
+            string result;
+            var cacheKey = CacheKeys.SnapEdTotalByCounty + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                /*********************************/
+
+                // Build result from data source 
+
+                /*********************************/
+                var keys = new List<string>();
+                keys.Add("FY");
+                keys.Add("PlanningUnit");
+                keys.Add("HoursReported");
+                keys.Add("DirectContacts");
+
+                var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+                
+                foreach( var audnc in snapDirectAudience){
+                    keys.Add(audnc.Name);
+                }
+
+                var snapDirectAges = this.context.SnapDirectAges.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+
+                foreach( var ags in snapDirectAges){
+                    keys.Add(ags.Name);
+                }
+
+                keys.Add("Male");
+                keys.Add("Female");
+
+                var races = this.context.Race;
+                var ethnicities = this.context.Ethnicity;
+
+                foreach(var race in races){
+                    foreach( var ethn in ethnicities){
+                        keys.Add( race.Name + ethn.Name);
+                    }
+                }
+
+                keys.Add("IndirectContacts");
+                result = string.Join(", ", keys.ToArray()) + "\n";
+
+
+                var SnapData = this.SnapData( fiscalYear);
+
+                var byUnit = SnapData.GroupBy( s => s.User.RprtngProfile.PlanningUnit.Id).Select( 
+                                            d => new {
+                                                Unit = d.Select( s => s.User.RprtngProfile.PlanningUnit ).First(),
+                                                Revisions = d.Select( s => s.Revision )
+                                            }
+                                        )
+                                        .OrderBy( d => d.Unit.Name);
+                foreach( var unitData in byUnit ){
+                    var row = fiscalYear.Name + ",";
+                    row += string.Concat("\"", unitData.Unit.Name, "\"") + ",";
+                    row += unitData.Revisions.Sum( s => s.Hours).ToString() + ",";
+
+                    var male = unitData.Revisions.Sum( s => s.Male);
+                    var female = unitData.Revisions.Sum( s => s.Female);
+
+                    row += ( male + female ).ToString() + ",";
+                    var revisionsWithDirectContacts = unitData.Revisions.Where( s => s.SnapDirect != null);
+
+                    var ageAudienceValues = new List<SnapDirectAgesAudienceValue>();
+                    foreach( var rev in revisionsWithDirectContacts){
+                        ageAudienceValues.AddRange( rev.SnapDirect.SnapDirectAgesAudienceValues);
+                    }
+
+
+                    foreach( var audnc in snapDirectAudience){
+                        row += ageAudienceValues.Where( a => a.SnapDirectAudienceId == audnc.Id).Sum( s => s.Value ).ToString() + ",";
+                    }
+
+                    foreach( var ags in snapDirectAges){
+                        row += ageAudienceValues.Where( a => a.SnapDirectAgesId == ags.Id).Sum( s => s.Value ).ToString() + ",";
+                    }
+
+                    row += male.ToString() + ",";
+                    row += female.ToString() + ",";
+
+
+                    var RaceEthnicityValues = new List<RaceEthnicityValue>();
+
+                    foreach( var rev in unitData.Revisions){
+                        RaceEthnicityValues.AddRange(rev.RaceEthnicityValues);
+                    }
+
+                    foreach(var race in races){
+                        foreach( var ethn in ethnicities){
+                            row += RaceEthnicityValues.Where( v => v.EthnicityId == ethn.Id && v.RaceId == race.Id).Sum( s => s.Amount).ToString() + ",";
+                        }
+                    }
+
+
+                    var withIndirect = unitData.Revisions.Where( r => r.SnapIndirect != null);
+                    var indirects = 0;
+                    foreach( var ind in withIndirect){
+                        indirects += ind.SnapIndirect.SnapIndirectReachedValues.Sum( s => s.Value);
+                    }
+                    row += indirects.ToString();
+                    result += row + "\n";
+                }
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    }); 
+            }
+            return result;
+        }
+
+
+        public string TotalByEmployee(FiscalYear fiscalYear, bool refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapEdTotalByEmployee + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                /*********************************/
+
+                // Build result from data source 
+
+                /*********************************/
+            
+                var keys = new List<string>();
+                keys.Add("FY");
+                keys.Add("PlanningUnit");
+                keys.Add("EmployeeName");
+                keys.Add("Position");
+                keys.Add("Program(s)");
+                keys.Add("HoursReported");
+                keys.Add("DirectContacts");
+
+                var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+                
+                foreach( var audnc in snapDirectAudience){
+                    keys.Add(audnc.Name);
+                }
+
+                var snapDirectAges = this.context.SnapDirectAges.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+
+                foreach( var ags in snapDirectAges){
+                    keys.Add(ags.Name);
+                }
+
+                keys.Add("Male");
+                keys.Add("Female");
+
+                var races = this.context.Race;
+                var ethnicities = this.context.Ethnicity;
+
+                foreach(var race in races){
+                    foreach( var ethn in ethnicities){
+                        keys.Add( race.Name + ethn.Name);
+                    }
+                }
+
+                keys.Add("IndirectContacts");
+
+                result = string.Join(", ", keys.ToArray()) + "\n";
+
+                var SnapData = this.SnapData( fiscalYear);
+
+                var byUser = SnapData.GroupBy( s => s.User.Id).Select( 
+                                            d => new {
+                                                User = d.Select( s => s.User ).First(),
+                                                Revisions = d.Select( s => s.Revision )
+                                            }
+                                        )
+                                        .OrderBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
+                foreach( var userData in byUser ){
+                    var row = fiscalYear.Name + ",";
+                    row += string.Concat("\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                    row += string.Concat("\"", userData.User.RprtngProfile.Name, "\"") + ",";
+                    row += string.Concat("\"", userData.User.ExtensionPosition.Code, "\"") + ",";
+                    var spclt = "";
+                    foreach( var sp in userData.User.Specialties){
+                        spclt += " " + sp.Specialty.Code;
+                    }
+                    row += spclt + ", ";
+                    row += userData.Revisions.Sum( s => s.Hours).ToString() + ",";
+
+                    var male = userData.Revisions.Sum( s => s.Male);
+                    var female = userData.Revisions.Sum( s => s.Female);
+
+                    row += ( male + female ).ToString() + ",";
+                    var revisionsWithDirectContacts = userData.Revisions.Where( s => s.SnapDirect != null);
+
+                    var ageAudienceValues = new List<SnapDirectAgesAudienceValue>();
+                    foreach( var rev in revisionsWithDirectContacts){
+                        ageAudienceValues.AddRange( rev.SnapDirect.SnapDirectAgesAudienceValues);
+                    }
+
+
+                    foreach( var audnc in snapDirectAudience){
+                        row += ageAudienceValues.Where( a => a.SnapDirectAudienceId == audnc.Id).Sum( s => s.Value ).ToString() + ",";
+                    }
+
+                    foreach( var ags in snapDirectAges){
+                        row += ageAudienceValues.Where( a => a.SnapDirectAgesId == ags.Id).Sum( s => s.Value ).ToString() + ",";
+                    }
+
+                    row += male.ToString() + ",";
+                    row += female.ToString() + ",";
+
+
+                    var RaceEthnicityValues = new List<RaceEthnicityValue>();
+
+                    foreach( var rev in userData.Revisions){
+                        RaceEthnicityValues.AddRange(rev.RaceEthnicityValues);
+                    }
+
+                    foreach(var race in races){
+                        foreach( var ethn in ethnicities){
+                            row += RaceEthnicityValues.Where( v => v.EthnicityId == ethn.Id && v.RaceId == race.Id).Sum( s => s.Amount).ToString() + ",";
+                        }
+                    }
+
+
+                    var withIndirect = userData.Revisions.Where( r => r.SnapIndirect != null);
+                    var indirects = 0;
+                    foreach( var ind in withIndirect){
+                        indirects += ind.SnapIndirect.SnapIndirectReachedValues.Sum( s => s.Value);
+                    }
+                    row += indirects.ToString();
+                    result += row + "\n";
+                }
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    }); 
+            
+            
+            }
+            
+            
+            
+            
+            
+            
             
             return result;
         }

@@ -66,7 +66,9 @@ namespace Kers.Models.Abstract
     }
     public interface IAffirmativeActionPlanRevisionRepository: IEntityBaseRepository<AffirmativeActionPlanRevision>{}
     public interface ISnapDirectRepository: IEntityBaseRepository<SnapDirect>{
-        string TotalByMonth(FiscalYear fiscalYear, Boolean refreshCache);
+        string TotalByMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string TotalByCounty(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string TotalByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
     }
     public interface ISnapInDirectRepository: IEntityBaseRepository<SnapIndirect>{}
 }
