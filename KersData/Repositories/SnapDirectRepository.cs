@@ -379,66 +379,60 @@ namespace Kers.Models.Repositories
             
             
             }
-            
-            
-            
-            
-            
-            
-            
             return result;
         }
 
 
         private List<UserRevisionData> SnapData( FiscalYear fiscalYear){
-            var today = DateTime.Now;
-           
-            var snapEligible = RevisionsWithSnapData(fiscalYear);
+            List<UserRevisionData> SnapData;
+            var cacheKeyData = CacheKeys.SnapData + fiscalYear.Name;
+            var cacheStringData = _cache.GetString(cacheKeyData);
+            if (!string.IsNullOrEmpty(cacheStringData)){
+                SnapData = JsonConvert.DeserializeObject<List<UserRevisionData>>(cacheStringData);
+            }else{
+                var today = DateTime.Now;            
+                var snapEligible = RevisionsWithSnapData(fiscalYear);
+                SnapData = new List<UserRevisionData>();
+                foreach( var rev in snapEligible ){
+                    var cacheKey = CacheKeys.UserRevisionWithSnapData + rev.Id.ToString();
+                    var cacheString = _cache.GetString(cacheKey);
+                    UserRevisionData data;
+                    if (!string.IsNullOrEmpty(cacheString)){
+                        data = JsonConvert.DeserializeObject<UserRevisionData>(cacheString);
+                    }else{
+                        data = new UserRevisionData();
+                        var activity = context.Activity.Where( a => a.Id == rev.ActivityId )
+                                        .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                        .Include( a => a.KersUser ).ThenInclude( u => u.ExtensionPosition)
+                                        .Include( a => a.KersUser).ThenInclude( u => u.Specialties).ThenInclude( s => s.Specialty)
+                                        .FirstOrDefault();
+                        var revision = context.ActivityRevision.Where( r => r.Id == rev.Id)
+                                            .Include( s => s.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues )
+                                            .Include( s => s.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
+                                            .Include( s => s.RaceEthnicityValues)
+                                            .Include( s => s.ActivityOptionNumbers).FirstOrDefault();
+                        
+                        data.User = activity.KersUser;
+                        data.Revision = revision;
+                        var expiration = (today - activity.ActivityDate).Days;
+                        if( expiration < 1){
+                            expiration = 1;
+                        }
 
-
-            List<UserRevisionData> SnapData = new List<UserRevisionData>();
-
-            foreach( var rev in snapEligible ){
-
-
-                
-                var cacheKey = CacheKeys.UserRevisionWithSnapData + rev.Id.ToString();
-                var cacheString = _cache.GetString(cacheKey);
-                UserRevisionData data;
-                if (!string.IsNullOrEmpty(cacheString)){
-                    data = JsonConvert.DeserializeObject<UserRevisionData>(cacheString);
-                }else{
-                    
-                    data = new UserRevisionData();
-                    var activity = context.Activity.Where( a => a.Id == rev.ActivityId )
-                                    .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
-                                    .Include( a => a.KersUser ).ThenInclude( u => u.ExtensionPosition)
-                                    .Include( a => a.KersUser).ThenInclude( u => u.Specialties).ThenInclude( s => s.Specialty)
-                                    .FirstOrDefault();
-                    var revision = context.ActivityRevision.Where( r => r.Id == rev.Id)
-                                        .Include( s => s.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues )
-                                        .Include( s => s.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
-                                        .Include( s => s.RaceEthnicityValues)
-                                        .Include( s => s.ActivityOptionNumbers).FirstOrDefault();
-                    
-                    data.User = activity.KersUser;
-                    data.Revision = revision;
-
-
-                    var expiration = (today - activity.ActivityDate).Days;
-                    if( expiration < 1){
-                        expiration = 1;
-                    }
-
-                    var serialized = JsonConvert.SerializeObject(data);
-                    _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( expiration )
-                        }); 
+                        var serialized = JsonConvert.SerializeObject(data);
+                        _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                            {
+                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( expiration )
+                            }); 
+                    }      
+                    SnapData.Add(data);
                 }
 
-                
-                SnapData.Add(data);
+                var serializedData = JsonConvert.SerializeObject(SnapData);
+                _cache.SetString(cacheKeyData, serializedData, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(3)
+                    });
             }
             return SnapData;
         }
@@ -478,7 +472,6 @@ namespace Kers.Models.Repositories
                 var currentBatch = revs.Skip(i).Take(batchCount);
                 fyactivities.AddRange(context.ActivityRevision.Where( r => currentBatch.Contains( r.Id )).ToList());
             }
-            
             var snapEligible = fyactivities.Where( r => (r.SnapPolicyId != null || r.SnapDirectId != null || r.SnapIndirectId != null || (r.SnapAdmin && r.isSnap) ));
             return snapEligible;
         }
