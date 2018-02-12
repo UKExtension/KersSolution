@@ -9,7 +9,7 @@ import {ReportingService} from '../../components/reporting/reporting.service';
   <div>
     <div class="row x_title">
         <div class="col-md-6">
-        <h3>KSU Employees</h3>
+        <h3>Employees</h3>
         </div>
                   
    </div>
@@ -30,10 +30,7 @@ export class KsuHomeComponent {
     {}
 
     ngOnInit(){
-        
-        
-        
-   
+        this.defaultTitle();
     }
 
     ngOnDestroy(){
@@ -42,6 +39,6 @@ export class KsuHomeComponent {
     }
 
     defaultTitle(){
-        this.reportingService.setTitle("KSU Employees" );
+        this.reportingService.setTitle("Kentucky State University");
     }
 }
