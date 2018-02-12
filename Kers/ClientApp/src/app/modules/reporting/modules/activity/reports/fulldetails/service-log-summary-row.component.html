@@ -1,0 +1,13 @@
+<td *ngIf="!detailsOpened">{{activity.activityDate| date:'shortDate'}}</td>
+<td *ngIf="!detailsOpened">{{activity.title}}</td>
+<td innerHtml="{{activity.description}}"  *ngIf="!detailsOpened"></td>
+<td *ngIf="!detailsOpened">{{activity.majorProgram.name}}</td>
+<td *ngIf="!detailsOpened">{{activity.hours}}</td>
+<td *ngIf="!detailsOpened">{{attendance(activity)}}</td>
+<td *ngIf="!detailsOpened"><div *ngFor="let opt of activity.activityOptionSelections">{{opt.activityOption.name.substring(0, opt.activityOption.name.length -1 )}}</div></td>
+<td *ngIf="!detailsOpened"><div *ngIf="activity.snapAdmin && activity.isSnap">Admin</div><div *ngIf="activity.snapPolicyId != null">Community/PSE</div> <div *ngIf="activity.snapDirectId != null">Direct</div> <div *ngIf="activity.snapIndirectId != null">Indirect</div></td>
+<td *ngIf="!detailsOpened"><a class="btn btn-info btn-xs" (click)="open()">Details</a></td>
+<td  *ngIf="detailsOpened" colspan="9">
+  <div class="text-right"><a class="btn btn-primary btn-xs" (click)="close()">Close</a></div>
+  <service-log-full-details [activity]="activity"></service-log-full-details>
+</td>

@@ -336,6 +336,16 @@ namespace Kers.Controllers
             return new OkObjectResult(sst);
         }
 
+        
+        [HttpGet("getsnapdirect/{id}")]
+        public async Task<IActionResult> GetSnapDirect(int id){
+            var snapDirect = await this.context.SnapDirect
+                                    .Include(r => r.SnapDirectAgesAudienceValues)
+                                    .Include( r => r.SnapDirectDeliverySite)
+                                    .Include( r => r.SnapDirectSessionType)
+                                    .Where( s => s.Id == id).FirstOrDefaultAsync();
+            return new OkObjectResult(snapDirect);
+        }
         /**********************************/
         // Snap Ed InDirect
         /**********************************/
@@ -349,6 +359,15 @@ namespace Kers.Controllers
         public IActionResult SnapIndirectReached(){
             var sst = this.context.SnapIndirectReached.Where(o => o.Active).OrderBy(o => o.order);
             return new OkObjectResult(sst);
+        }
+
+        [HttpGet("getsnapindirect/{id}")]
+        public async Task<IActionResult> GetSnapInDirect(int id){
+            var snapInDirect = await this.context.SnapIndirect
+                                    .Include( r => r.SnapIndirectMethodSelections).ThenInclude( s => s.SnapIndirectMethod)
+                                    .Include( r => r.SnapIndirectReachedValues)
+                                    .Where( s => s.Id == id).FirstOrDefaultAsync();
+            return new OkObjectResult(snapInDirect);
         }
 
         /**********************************/
@@ -365,6 +384,15 @@ namespace Kers.Controllers
         public IActionResult SnapPolicyPartner(){
             var sst = this.context.SnapPolicyPartner.Where(o => o.Active).OrderBy(o => o.order);
             return new OkObjectResult(sst);
+        }
+
+        [HttpGet("getsnappolicy/{id}")]
+        public async Task<IActionResult> GetSnapPolicy(int id){
+            var snapInDirect = await this.context.SnapPolicy
+                                    .Include( r => r.SnapPolicyAimedSelections).ThenInclude( s => s.SnapPolicyAimed)
+                                    .Include( r => r.SnapPolicyPartnerValue)
+                                    .Where( s => s.Id == id).FirstOrDefaultAsync();
+            return new OkObjectResult(snapInDirect);
         }
 
     }

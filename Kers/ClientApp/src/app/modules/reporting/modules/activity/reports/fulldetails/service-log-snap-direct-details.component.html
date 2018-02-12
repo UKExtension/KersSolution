@@ -1,0 +1,45 @@
+<br><br><br><h4>Snap-Ed Direct Contacts Record</h4>
+<div *ngIf="(snapDirect | async) as direct; else loading">
+  <div>
+    <strong>Delivery Site:</strong> {{direct.snapDirectDeliverySite.name}}
+  </div>
+  <div>
+    <strong>Specific Site Name:</strong> {{direct.siteName}}
+  </div>
+  <div>
+    <strong>Session Type:</strong> {{direct.snapDirectSessionType.name}}
+  </div>
+    <div><strong>Audience:</strong></div>
+    <div>
+       <div class="row">
+        <div class="col-xs-12 table">
+            <div class="table-responsive snap-audience">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th *ngFor="let age of ages | async">{{age.name}}</th>
+                            <th>TOTALS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let audience of audiences | async">
+                            <td>{{audience.name}}: </td>
+                            <td *ngFor="let age of ages | async">{{getAgeAudienceValue(direct.snapDirectAgesAudienceValues, age.id, audience.id)}}</td>
+                            <td>{{getTotalPerAudience(direct.snapDirectAgesAudienceValues, audience.id)}}</td>
+                        </tr>
+
+                        <tr>
+                            <td><b>TOTALS: </b></td>
+                            <td *ngFor="let age of ages | async"></td>
+                            <td>{{getTotal(direct.snapDirectAgesAudienceValues)}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>   
+</div>
+<loading *ngIf="loading"></loading>
+

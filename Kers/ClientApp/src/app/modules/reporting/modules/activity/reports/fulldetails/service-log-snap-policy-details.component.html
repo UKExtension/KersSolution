@@ -1,0 +1,35 @@
+<br><br><br><h4>Community/Policy System Environment </h4>
+<div *ngIf="(snapPolicy | async) as policy; else loading">
+    <div><strong>Purpose or Overall Goal:</strong></div>
+    <div innerHtml="{{policy.purpose}}"></div>
+    <div><strong>Meeting Result or Long Term Impact:</strong></div>
+    <div innerHtml="{{policy.result}}"></div>
+    <div class="row">
+     <div class="col-xs-12 table">
+        <div>
+        <strong>Aimed towards Improvement in:</strong> 
+        </div>
+        
+        <div *ngFor="let impr of policy.snapPolicyAimedSelections">{{impr.snapPolicyAimed.name}}</div><br><br>
+        <div>
+            <strong>Number of Partners in each category:</strong> 
+        </div>
+         <div class="table-responsive snap-audience">
+             <table class="table table-striped table-bordered">
+                 <tbody>
+                     <tr *ngFor="let partner of partners | async">
+                         <td>{{partner.name}}: </td>
+                         <td>{{getPartnerValue(policy.snapPolicyPartnerValue, partner.id)}}</td>
+                     </tr>
+                 </tbody>
+             </table>
+         </div>
+         
+     </div>
+
+
+
+  
+</div>
+<loading *ngIf="loading"></loading>
+

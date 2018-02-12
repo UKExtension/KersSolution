@@ -1,0 +1,30 @@
+<br><br><br><h4>SNAP-Ed Indirect Contacts Record </h4>
+<div *ngIf="(snapInDirect | async) as indirect; else loading">
+  <div>
+    <strong>Estimated Number Reached:</strong> 
+  </div>
+
+    <div class="row">
+     <div class="col-xs-12 table">
+         <div class="table-responsive snap-audience">
+             <table class="table table-striped table-bordered">
+                 <tbody>
+                     <tr *ngFor="let rch of reached | async">
+                         <td>{{rch.name}}: </td>
+                         <td>{{getReachedValue(indirect.snapIndirectReachedValues, rch.id)}}</td>
+                     </tr>
+                 </tbody>
+             </table>
+         </div>
+         <div>
+            <strong>Method(s) Used:</strong> 
+          </div>
+          <div *ngFor="let method of indirect.snapIndirectMethodSelections">{{method.snapIndirectMethod.name}}</div>
+     </div>
+
+
+
+  
+</div>
+<loading *ngIf="loading"></loading>
+

@@ -31,22 +31,13 @@ import { User } from "../../user/user.service";
                             <th>Major Program</th>
                             <th>Hours</th>
                             <th>Contacts</th>
-                            <th>Details</th>
+                            <th>Options</th>
                             <th>Snap-Ed</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let activity of monthActivities">
-                            <td>{{activity.activityDate| date:'shortDate'}}</td>
-                            <td>{{activity.title}}</td>
-                            <td innerHtml="{{activity.description}}"></td>
-                            <td>{{activity.majorProgram.name}}</td>
-                            <td>{{activity.hours}}</td>
-                            <td>{{attendance(activity)}}</td>
-                            <td><div *ngFor="let opt of activity.activityOptionSelections">{{opt.activityOption.name.substring(0, opt.activityOption.name.length -1 )}}</div></td>
-                            <td><div *ngIf="activity.snapAdmin && activity.isSnap">Admin</div><div *ngIf="activity.snapPolicyId != null">Community/PSE</div> <div *ngIf="activity.snapDirectId != null">Direct</div> <div *ngIf="activity.snapIndirectId != null">Indirect</div></td>
-                        </tr>
-                        
+                        <tr *ngFor="let activity of monthActivities" [service-log-summary-row]="activity"></tr>
                     </tbody>
                 </table>
             </div>

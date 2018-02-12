@@ -1,0 +1,109 @@
+    <div class="x_panel text-left">
+      <div class="x_title">
+        <h2>Activity Details <small>Full Details of a Service Log</small></h2>
+
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+
+        <section class="content invoice">
+          <!-- title row -->
+          <div class="row">
+            <div class="col-xs-12 invoice-header">
+              <p class="pull-right">{{activity.activityDate | date:'fullDate'}}</p>
+              <h1 style="margin: 25px 0;">{{activity.title}}</h1>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- info row -->
+          <div class="row invoice-info">
+            <div class="col-sm-6 invoice-col">
+              <b>Description:</b>
+              <address innerHtml="{{activity.description}}">
+              </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-3 invoice-col">
+              <b>Major Program:</b>
+              <address>{{activity.majorProgram.name}}</address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-3 invoice-col">
+              <b>Hours: </b> {{activity.hours}}
+              <br>
+              <b>Audience:</b> {{activity.male + activity.female}}
+              <br>
+              <b>Male:</b> {{activity.male}}
+              <br>
+              <b>Female:</b> {{activity.female}}
+              
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+          <div><strong>Race/Ethnicity:</strong></div>
+          <!-- Table row -->
+          <div class="row">
+            <div class="col-xs-12 table">
+                <div class="table-responsive snap-audience">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th *ngFor="let ethnicity of ethnicities | async">{{ethnicity.name}}</th>
+                                <th>TOTALS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let race of races | async">
+                                <td>{{race.name}}: </td>
+                                <td *ngFor="let ethnicity of ethnicities | async">{{getRaceEthnicityValue(race.id, ethnicity.id)}}</td>
+                                <td>{{getTotalPerRace(race.id)}}</td>
+                            </tr>
+
+                            <tr>
+                                <td><b>TOTALS: </b></td>
+                                <td *ngFor="let ethnicity of ethnicities | async"></td>
+                                <td>{{getTotal()}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+
+          <div class="row">
+            <!-- accepted payments column -->
+            <div class="col-xs-6">
+                <div style="margin: 10px 0 30px;">
+                    <div *ngFor="let optNum of activity.activityOptionNumbers"><strong>{{optNum.activityOptionNumber.name}}:</strong> {{optNum.value}}</div>
+                </div>
+            </div>
+            <!-- /.col -->
+            <div class="col-xs-6">
+              <div style="margin-top: 10px;">
+                  <div *ngFor="let opt of activity.activityOptionSelections">{{opt.activityOption.name.substring(0, opt.activityOption.name.length -1 )}}</div>
+              </div>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+          <h4>Snap Eligible: {{activity.isSnap ? 'Yes' : 'No'}}</h4>
+          <div *ngIf="activity.isSnap">
+            <div *ngIf="activity.snapAdmin">
+              <strong>Snap-Ed Admin/Staff Dev</strong>
+            </div>
+            <div *ngIf="!activity.snapAdmin">
+              <service-log-snap-direct-details *ngIf="activity.snapDirectId != null" [snapDirectId]="activity.snapDirectId"></service-log-snap-direct-details>
+              <service-log-snap-policy-details *ngIf="activity.snapPolicyId != null" [snapPolicyId]="activity.snapPolicyId"></service-log-snap-policy-details>
+              <service-log-snap-indirect-details *ngIf="activity.snapIndirectId != null" [snapIndirectId]="activity.snapIndirectId"></service-log-snap-indirect-details>
+            </div>
+
+
+          </div>
+          
+        </section>
+      </div>
+    </div>

@@ -28,6 +28,12 @@ import {ActivityStatsProgramhRow} from './stats/activity-stats-program-row.compo
 
 import {ActivityService} from './activity.service';
 import {SnapClassicService} from './snap-classic.service';
+import { ServiceLogFullDetailsComponent } from './reports/fulldetails/service-log-full-details.component';
+import { ServiceLogSummaryRowComponent } from './reports/fulldetails/service-log-summary-row.component';
+import { ServiceLogSnapDirectDetailsComponent } from './reports/fulldetails/service-log-snap-direct-details.component';
+import { ServiceLogSnapIndirectDetailsComponent } from './reports/fulldetails/service-log-snap-indirect-details.component';
+import { ServicelogService } from '../servicelog/servicelog.service';
+import { ServiceLogSnapPolicyDetailsComponent } from './reports/fulldetails/service-log-snap-policy-details.component';
 
 @NgModule({
   imports:      [ SharedModule,
@@ -54,12 +60,17 @@ import {SnapClassicService} from './snap-classic.service';
                     ActivityStatsMonthComponent,
                     ActivityStatsRow,
                     ActivityStatsMonthRow,
-                    ActivityStatsProgramhRow
-
+                    ActivityStatsProgramhRow,
+                    ServiceLogFullDetailsComponent,
+                    ServiceLogSummaryRowComponent,
+                    ServiceLogSnapDirectDetailsComponent,
+                    ServiceLogSnapIndirectDetailsComponent,
+                    ServiceLogSnapPolicyDetailsComponent
                 ],
   providers:    [  
                     ActivityService,
-                    SnapClassicService
+                    SnapClassicService,
+                    ServicelogService
                 ],
   exports:      [
                     ActivityHomeComponent,

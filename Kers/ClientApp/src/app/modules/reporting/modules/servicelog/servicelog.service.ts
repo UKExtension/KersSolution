@@ -83,6 +83,13 @@ export class ServicelogService {
     // Snap Ed Direct
     /*****************************/
 
+    getSnapDirect(id:number):Observable<SnapDirect>{
+        var url = this.baseUrl + 'getsnapdirect/'+id;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <SnapDirect>res.json())
+                .catch(this.handleError);
+    }
+
     sessiontypes():Observable<SnapDirectSessionType[]>{
         var url = this.baseUrl + 'sessiontypes';
         return this.http.get(this.location.prepareExternalUrl(url))
@@ -115,6 +122,13 @@ export class ServicelogService {
     // Snap Ed InDirect
     /*****************************/
 
+    getSnapInDirect(id:number):Observable<SnapIndirect>{
+        var url = this.baseUrl + 'getsnapindirect/'+id;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <SnapIndirect>res.json())
+                .catch(this.handleError);
+    }
+
     snapindirectmethod():Observable<SnapIndirectMethod[]>{
         var url = this.baseUrl + 'snapindirectmethod';
         return this.http.get(this.location.prepareExternalUrl(url))
@@ -134,6 +148,13 @@ export class ServicelogService {
     /*****************************/
     // Snap Ed Policy
     /*****************************/
+
+    getSnapPolicy(id:number):Observable<SnapPolicy>{
+        var url = this.baseUrl + 'getsnappolicy/'+id;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <SnapPolicy>res.json())
+                .catch(this.handleError);
+    }
 
     snappolicyaimed():Observable<SnapPolicyAimed[]>{
         var url = this.baseUrl + 'snappolicyaimed';
@@ -343,7 +364,7 @@ export interface SnapIndirectMethod{
 export interface SnapIndirectMethodSelection{
     id:number;
     snapIndirectMethodId:number;
-    //snapIndirectMethod:SnapIndirectMethod;
+    snapIndirectMethod:SnapIndirectMethod;
 }
 
 export interface SnapIndirectReached{
@@ -377,7 +398,7 @@ export interface SnapPolicyAimed{
 
 export interface SnapPolicyAimedSelection{
     snapPolicyAimedId:number;
-    //snapPolicyAimed:SnapPolicyAimed;
+    snapPolicyAimed:SnapPolicyAimed;
 }
 
 export interface SnapPolicyPartner{
