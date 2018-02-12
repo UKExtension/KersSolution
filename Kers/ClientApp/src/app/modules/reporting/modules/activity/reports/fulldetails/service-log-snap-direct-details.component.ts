@@ -11,6 +11,7 @@ export class ServiceLogSnapDirectDetailsComponent implements OnInit {
   snapDirect:Observable<SnapDirect>|null = null;
   ages:Observable<SnapDirectAges[]>;
   audiences:Observable<SnapDirectAudience[]>;
+  loading=false;
 
   constructor(
     private service:ServicelogService

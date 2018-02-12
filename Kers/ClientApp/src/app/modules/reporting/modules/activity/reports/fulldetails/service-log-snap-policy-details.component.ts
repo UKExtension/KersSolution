@@ -10,7 +10,7 @@ export class ServiceLogSnapPolicyDetailsComponent implements OnInit {
   @Input() snapPolicyId;
   snapPolicy:Observable<SnapPolicy>|null = null;
   partners:Observable<SnapPolicyPartner[]>;
-
+  loading=false;
   constructor(
     private service:ServicelogService
   ) { 

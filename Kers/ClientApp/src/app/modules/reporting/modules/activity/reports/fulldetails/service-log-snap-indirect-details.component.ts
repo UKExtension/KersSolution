@@ -10,7 +10,7 @@ export class ServiceLogSnapIndirectDetailsComponent implements OnInit {
   @Input() snapIndirectId;
   snapInDirect:Observable<SnapIndirect>|null = null;
   reached:Observable<SnapIndirectReached[]>|null = null;
-
+  loading=false;
 
   constructor(
     private service:ServicelogService
