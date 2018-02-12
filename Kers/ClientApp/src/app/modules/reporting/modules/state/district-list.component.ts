@@ -21,6 +21,20 @@ import { District } from "../district/district.service";
             </div>
         </div>
     </div>
+    <div class="col-md-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-xs-12" >
+                        <a [routerLink]="['/reporting/state/district/notcounties']" class="btn btn-dark btn-lg btn-block">Not County Units</a>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-xs-12" >
+                        <a [routerLink]="['/reporting/county/ksu']" class="btn btn-dark btn-lg btn-block">KSU Employees</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
   `
 })

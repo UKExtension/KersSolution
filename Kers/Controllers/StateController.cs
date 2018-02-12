@@ -59,6 +59,12 @@ namespace Kers.Controllers
             return new OkObjectResult(counties);
         }
 
+        [HttpGet("notcounties")]
+        public IActionResult GetNotCounties(){
+            var counties = this.context.PlanningUnit.Where(u => u.District == null).OrderBy(d => d.Name);
+            return new OkObjectResult(counties);
+        }
+
         [HttpGet("populationByCounty")]
         public IActionResult PopulationByCounty(){
 

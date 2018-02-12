@@ -32,6 +32,7 @@ export class UserDirectoryListComponent {
 
 
         @Input() county:PlanningUnit;
+        @Input() onlyKSU:boolean=false;
         @Input() showEmployeeSummaryButton:boolean=false;
         @Input() onlySnapAssistants:boolean=false;
         @Input() onlyWitSnapCommitment:boolean=false;
@@ -48,7 +49,8 @@ export class UserDirectoryListComponent {
             unit: 0,
             amount: 30,
             snapAssistants: 0,
-            withSnapCommitment: 0
+            withSnapCommitment: 0,
+            onlyKSU: 0
         }
         
 
@@ -69,7 +71,9 @@ export class UserDirectoryListComponent {
         if(this.onlyWitSnapCommitment ){
             this.criteria.withSnapCommitment = 1;
         }
-
+        if(this.onlyKSU ){
+            this.criteria.onlyKSU = 1;
+        }
         this.users = this.service.getCustom(this.criteria);
 
        

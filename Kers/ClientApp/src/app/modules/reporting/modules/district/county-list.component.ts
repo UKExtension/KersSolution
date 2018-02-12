@@ -3,6 +3,7 @@ import { DistrictService, County, District } from './district.service';
 
 import {Observable} from 'rxjs/Observable';
 import { ActivatedRoute, Params } from "@angular/router";
+import { StateService } from '../state/state.service';
 
 @Component({
     selector: 'county-list',
@@ -10,13 +11,15 @@ import { ActivatedRoute, Params } from "@angular/router";
     <div class="col-xs-12">
         <div class="x_panel">
         <div class="x_title">
-            <h2>Counties</h2>
+            <h2 *ngIf="district != null">Counties</h2>
+            <h2 *ngIf="district == null">Units</h2>
             <div class="clearfix"></div>
         </div>
         <div class="x_content" *ngIf="counties">
 
                 <div class="col-lg-4 col-md-6 col-xs-12" *ngFor="let county of counties | async">
-                        <a [routerLink]="['/reporting/county', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name.substring(0, county.name.length - 11)}}</a>
+                        <a *ngIf="district != null" [routerLink]="['/reporting/county', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name.substring(0, county.name.length - 11)}}</a>
+                        <a *ngIf="district == null" [routerLink]="['/reporting/county/unit', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name}}</a>
                 </div>
                 
             </div>
@@ -70,7 +73,7 @@ import { ActivatedRoute, Params } from "@angular/router";
 })
 export class CountyListComponent { 
 
-    @Input() district:District;
+    @Input() district:District | null = null;
     counties:Observable<County[]>;
     countiesNoAa:County[];
     countiesNoPl:County[];
@@ -79,13 +82,18 @@ export class CountyListComponent {
 
     constructor( 
         private service:DistrictService,
+        private stateService:StateService,
         private route: ActivatedRoute,
     )   
     {}
 
     ngOnInit(){
-
-        this.counties = this.service.counties(this.district.id);
+        if( this.district == null){
+            this.counties = this.stateService.notCounties();
+        }else{
+            this.counties = this.service.counties(this.district.id);
+        }
+        
         
 /*
 

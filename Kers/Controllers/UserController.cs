@@ -144,7 +144,8 @@ namespace Kers.Controllers
                                         [FromQuery] string position = "0",
                                         [FromQuery] string amount = "0",
                                         [FromQuery] string snapAssistants = "0",
-                                        [FromQuery] string withSnapCommitment = "0"
+                                        [FromQuery] string withSnapCommitment = "0",
+                                        [FromQuery] string onlyKSU = "0"
                                         ){
             var theAmount = Convert.ToInt32(amount);
             theAmount =  theAmount <= 0 ? DefaultNumberOfItems : theAmount ;
@@ -166,11 +167,14 @@ namespace Kers.Controllers
                 var commitmentIds = this._context.SnapEd_Commitment.Select( r => r.KersUserId1).ToList();
                 users = users.Where( r => commitmentIds.Contains( r.Id ));
             }
-             if(snapAssistants != "0"){
+            if(snapAssistants != "0"){
                 users = users.Where(c=> c.Specialties.Where(s => s.Specialty.Name == "Expanded Food and Nutrition Education Program").Count() != 0 
                                     ||
                                     c.Specialties.Where(s => s.Specialty.Name == "Supplemental Nutrition Assistance Program Education").Count() != 0
                                  );
+            }
+            if( onlyKSU != "0" ){
+                users = users.Where( i => i.RprtngProfile.Institution.Name == "Kentucky State University" );
             }
             
             users = users.Include(i => i.PersonalProfile).ThenInclude(i=>i.UploadImage).ThenInclude( i => i.UploadFile).

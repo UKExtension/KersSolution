@@ -38,6 +38,12 @@ export class StateService {
                 .map(res => <PlanningUnit[]>res.json())
                 .catch(this.handleError);
     }
+    notCounties(){
+        var url = this.baseUrl + "notcounties";
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <PlanningUnit[]>res.json())
+                .catch(this.handleError);
+    }
 
     addGeoFeature( planningUnitId:number, feature:Object ){
         var url = this.baseUrl + "addGeoFearure/" + planningUnitId;

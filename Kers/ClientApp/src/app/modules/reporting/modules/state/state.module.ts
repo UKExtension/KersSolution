@@ -7,6 +7,7 @@ import {StateRoutingModule} from './state-routing.module';
 import {StateHomeComponent} from './state-home.component';
 import {DistrictListComponent} from './district-list.component';
 import { CountyService } from '../county/county.service';
+import { DistrictService } from '../district/district.service';
 
 
 
@@ -21,7 +22,8 @@ import { CountyService } from '../county/county.service';
                     ],
   providers:    [     
                   StateService,
-                  CountyService
+                  CountyService,
+                  DistrictService
                 ]
 })
 export class StateModule { }

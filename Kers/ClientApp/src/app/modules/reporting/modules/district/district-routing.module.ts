@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DistrictHomeComponent } from './district-home.component';
 import {CountyListComponent} from './county-list.component';
 import {DistrictPlansComponent} from './district-plans.component';
+import { NotCountiesListComponent } from './not-counties-list.component';
 
 @NgModule({
   imports: [ RouterModule.forChild([
@@ -13,6 +14,10 @@ import {DistrictPlansComponent} from './district-plans.component';
               {
                       path: 'plans',
                       component: DistrictPlansComponent
+                },
+                {
+                  path: 'notcounties',
+                  component: NotCountiesListComponent,
                 },
                 {
                   path: ':id',

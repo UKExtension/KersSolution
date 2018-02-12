@@ -70,7 +70,7 @@ export class UserSummaryComponent {
         private storyService: StoryService,
     )   
     {
-        this.profilePicSrc = location.prepareExternalUrl('/dist/assets/images/user.png');
+        this.profilePicSrc = location.prepareExternalUrl('/assets/images/user.png');
         
     }
 

@@ -9,6 +9,8 @@ import {CountyService} from './county.service';
 import {UserModule} from '../user/user.module';
 import { PlansofworkModule } from "../plansofwork/plansofwork.module";
 import { AffirmativeModule } from "../affirmative/affirmative.module";
+import { UnitHomeComponent } from './unit-home.component';
+import { KsuHomeComponent } from './ksu-home.component';
 
 
 
@@ -20,7 +22,9 @@ import { AffirmativeModule } from "../affirmative/affirmative.module";
                     AffirmativeModule,
                     UserModule
                     ],
-  declarations: [ CountyHomeComponent  
+  declarations: [ CountyHomeComponent,
+                  UnitHomeComponent,
+                  KsuHomeComponent  
                     ],
   providers:    [     
                   CountyService
