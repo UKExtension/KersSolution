@@ -31,13 +31,13 @@ import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetRei
                     <tbody>
                         <tr *ngFor="let reimbursment of reimbursments">
                             <td>{{reimbursement.notes}}</td>
-                            <td class="text-right">{{reimbursement.amount  | currency:'USD':true }}</td>
+                            <td class="text-right">{{reimbursement.amount  | currency:'USD':'symbol' }}</td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td>Remaining budget: <strong>{{remainingBudget | currency:'USD':true }}</strong></td>
-                            <td class="text-right">Total Reimbursements: <strong>{{totalReimbursementsAmount | currency:'USD':true }}</strong></td>
+                            <td>Remaining budget: <strong>{{remainingBudget | currency:'USD':'symbol' }}</strong></td>
+                            <td class="text-right">Total Reimbursements: <strong>{{totalReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
                         </tr>
                     </tfoot>               
                 </table>
@@ -55,13 +55,13 @@ import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetRei
             <tbody>
                 <tr *ngFor="let countyReimbursment of countyReimbursements">
                     <td>{{countyReimbursment.notes}}</td>
-                    <td class="text-right">{{countyReimbursment.amount  | currency:'USD':true }}</td>
+                    <td class="text-right">{{countyReimbursment.amount  | currency:'USD':'symbol' }}</td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
-                    <td>Remaining budget: <strong>{{remainingCountyBudget | currency:'USD':true }}</strong></td>
-                    <td class="text-right">Total Reimbursements: <strong>{{totalCountyReimbursementsAmount | currency:'USD':true }}</strong></td>
+                    <td>Remaining budget: <strong>{{remainingCountyBudget | currency:'USD':'symbol' }}</strong></td>
+                    <td class="text-right">Total Reimbursements: <strong>{{totalCountyReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
                 </tr>
             </tfoot>               
         </table>

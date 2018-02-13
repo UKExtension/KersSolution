@@ -59,8 +59,8 @@ export class ActivityService {
                 .catch(this.handleError);
     }
 
-    activitiesPerMonth(month:number, year:number = 2017, userid:number = 0, orderBy:string = "desc") : Observable<Activity[]>{
-        var url = this.baseUrl + 'permonth/' + year + '/' + month + '/' + userid + '/' + orderBy;
+    activitiesPerMonth(month:number, year:number = 2017, userid:number = 0, orderBy:string = "desc", isSnap:boolean = false) : Observable<Activity[]>{
+        var url = this.baseUrl + 'permonth/' + year + '/' + month + '/' + userid + '/' + orderBy + '/' + isSnap;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => <Activity[]>res.json() )
                 .catch(this.handleError);

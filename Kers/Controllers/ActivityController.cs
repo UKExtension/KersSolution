@@ -318,9 +318,9 @@ namespace Kers.Controllers
         }
 
 
-        [HttpGet("permonth/{year}/{month}/{userId?}/{orderBy?}")]
+        [HttpGet("permonth/{year}/{month}/{userId?}/{orderBy?}/{isSnap?}")]
         [Authorize]
-        public IActionResult PerMonth(int year, int month, int userId = 0, string orderBy = "desc"){
+        public IActionResult PerMonth(int year, int month, int userId = 0, string orderBy = "desc", bool isSnap = false){
             KersUser user;
             if(userId == 0){
                 user = this.CurrentUser();
@@ -328,7 +328,11 @@ namespace Kers.Controllers
             }else{
                 user = this.context.KersUser.Find(userId);
             }
-            return new OkObjectResult(activityRepo.PerMonth(user, year, month, orderBy));
+            var activities = activityRepo.PerMonth(user, year, month, orderBy);
+            if(isSnap){
+                activities = activities.Where(a => a.isSnap).ToList();
+            }
+            return new OkObjectResult(activities);
         }
 
 

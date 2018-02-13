@@ -61,6 +61,7 @@ export class ActivityReportsSummaryComponent {
     @Input() month;
     @Input() year;
     @Input() user:User;
+    @Input() isSnap = false;
     monthActivities: Activity[];
 
     races:Race[];
@@ -80,14 +81,26 @@ export class ActivityReportsSummaryComponent {
         if(this.user != null){
             userid = this.user.id;
         }
-        this.service.activitiesPerMonth(this.month.month, this.year.year, userid).subscribe(
-            res=> {
-                this.monthActivities = <Activity[]>res;
-                this.loading = false;
-                this.createChart();
-            },
-            err => this.errorMessage = <any>err
-        );
+        if(this.isSnap){
+            this.service.activitiesPerMonth(this.month, this.year, userid, 'desc', true).subscribe(
+                res=> {
+                    this.monthActivities = <Activity[]>res;
+                    this.loading = false;
+                    this.createChart();
+                },
+                err => this.errorMessage = <any>err
+            );
+        }else{
+            this.service.activitiesPerMonth(this.month.month, this.year.year, userid).subscribe(
+                res=> {
+                    this.monthActivities = <Activity[]>res;
+                    this.loading = false;
+                    this.createChart();
+                },
+                err => this.errorMessage = <any>err
+            );
+        }
+        
         
         this.service.races().subscribe(
             res=> this.races = <Race[]> res,

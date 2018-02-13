@@ -24,6 +24,8 @@ import { SnapedCommitmentStatsComponent } from './snap-ed/snaped-commitment-stat
 import { ServicelogSnapedReportComponent } from './snap-ed/report/servicelog-snaped-report.component';
 import { FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 import { SnapedAdminService } from '../admin/snaped/snaped-admin.service';
+import { ServicelogSnapedStatsRowComponent } from './snap-ed/servicelog-snaped-stats-row.component';
+import { ActivityModule } from '../activity/activity.module';
 
 
 
@@ -31,8 +33,8 @@ import { SnapedAdminService } from '../admin/snaped/snaped-admin.service';
   imports:      [ SharedModule,
                   MyDatePickerModule,
                   MyDateRangePickerModule,
-                  ServicelogRoutingModule
-                  
+                  ServicelogRoutingModule,
+                  ActivityModule
                 ],
   declarations: [ 
                     ServicelogHomeComponent,
@@ -49,7 +51,8 @@ import { SnapedAdminService } from '../admin/snaped/snaped-admin.service';
                     ServicelogSnapedComponent,
                     ServicelogSnapedStatsComponent,
                     SnapedCommitmentStatsComponent,
-                    ServicelogSnapedReportComponent
+                    ServicelogSnapedReportComponent,
+                    ServicelogSnapedStatsRowComponent
 
                 ],
   providers:    [  
