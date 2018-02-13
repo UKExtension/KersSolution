@@ -17,7 +17,7 @@
     <div *ngIf="countyBudget">
         <h2>County Budget</h2>
         <div *ngIf="!editBudget">
-            <strong>{{countyBudget | currency:'USD':true }}</strong> &nbsp;&nbsp;<a class="btn btn-info btn-xs" (click)="editBudget = true">edit</a>
+            <strong>{{countyBudget | currency:'USD':'symbol' }}</strong> &nbsp;&nbsp;<a class="btn btn-info btn-xs" (click)="editBudget = true">edit</a>
         </div>
         <div *ngIf="editBudget">
             <form class="form-inline" novalidate (ngSubmit)="onCountyBudgetSubmit()" [formGroup]="budgetForm">
@@ -56,8 +56,8 @@
         </tbody>
         <tfoot>
             <tr>
-                <td>Remaining budget: <strong>{{remainingBudget | currency:'USD':true }}</strong></td>
-                <td class="text-right">Total: <strong>{{totalReimbursementsAmount | currency:'USD':true }}</strong></td>
+                <td>Remaining budget: <strong>{{remainingBudget | currency:'USD':'symbol' }}</strong></td>
+                <td class="text-right">Total: <strong>{{totalReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
                 <td></td>
             </tr>
         </tfoot>               

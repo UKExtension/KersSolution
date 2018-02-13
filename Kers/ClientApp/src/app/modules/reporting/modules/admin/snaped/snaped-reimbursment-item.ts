@@ -6,7 +6,7 @@ import { SnapBudgetReimbursementsCounty, SnapedAdminService } from './snaped-adm
     selector: '[snapedReimbursmentItem]',
     template: `
     <td *ngIf="rowOppened">{{reimbursment.notes}}</td>
-    <td *ngIf="rowOppened" class="text-right">{{reimbursment.amount | currency:'USD':true}}</td>
+    <td *ngIf="rowOppened" class="text-right">{{reimbursment.amount | currency:'USD':'symbol'}}</td>
     <td class="text-right"  *ngIf="rowOppened">
         
         <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
