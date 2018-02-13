@@ -99,8 +99,9 @@
               <service-log-snap-direct-details *ngIf="activity.snapDirectId != null" [snapDirectId]="activity.snapDirectId"></service-log-snap-direct-details>
               <service-log-snap-policy-details *ngIf="activity.snapPolicyId != null" [snapPolicyId]="activity.snapPolicyId"></service-log-snap-policy-details>
               <service-log-snap-indirect-details *ngIf="activity.snapIndirectId != null" [snapIndirectId]="activity.snapIndirectId"></service-log-snap-indirect-details>
+              <div><strong>Printed Paper Copies:</strong> {{activity.snapCopies}} </div>
             </div>
-
+            
 
           </div>
           
