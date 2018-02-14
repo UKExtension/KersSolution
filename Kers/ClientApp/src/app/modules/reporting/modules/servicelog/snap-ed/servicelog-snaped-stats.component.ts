@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 })
 export class ServicelogSnapedStatsComponent { 
     @Input() planningUnit: PlanningUnit;
-    @Input() user:User;
+    @Input() user:User | null = null;
 
     @Output() onCalculated = new EventEmitter<number>();
 

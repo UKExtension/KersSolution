@@ -3,7 +3,7 @@
   <td *ngIf="!fullstats">{{direct}}</td>
   <td *ngIf="!fullstats">{{indirect}}</td>
   <td *ngIf="!fullstats">{{direct + indirect}}</td>
-  <td *ngIf="!fullstats" width="20"><a class="btn btn-info btn-xs" (click)="open()"><i class="fa fa-plus"></i></a></td>
+  <td *ngIf="!fullstats && user != null" width="20"><a class="btn btn-info btn-xs" (click)="open()"><i class="fa fa-plus"></i></a></td>
   <td *ngIf="fullstats" colspan="6">
     <div class="text-right"><a class="btn btn-info btn-xs" (click)="close()"><i class="fa fa-minus"></i></a></div>
     <activity-reports-summary [month]="stat.month" [year]="stat.year" [isSnap]="true" [user]="user"></activity-reports-summary>

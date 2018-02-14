@@ -17,7 +17,12 @@
                     <table class="table table-bordered table-striped" >
                         <thead>
                                 <tr>
-                                    <th scope="col">MONTH</th><th scope="col">HOURS<br>REPORTED</th><th scope="col">DIRECT<br>CONTACTS</th><th scope="col">INDIRECT<br>CONTACTS</th><th scope="col">TOTAL<br>CONTACTS</th><th></th>
+                                    <th scope="col">MONTH</th>
+                                    <th scope="col">HOURS<br>REPORTED</th>
+                                    <th scope="col">DIRECT<br>CONTACTS</th>
+                                    <th scope="col">INDIRECT<br>CONTACTS</th>
+                                    <th scope="col">TOTAL<br>CONTACTS</th>
+                                    <th *ngIf="user != null"></th>
                                 </tr>
                         </thead>
                         <tbody>
@@ -28,7 +33,7 @@
                                 <td><strong>{{directTotal}}</strong></td>
                                 <td><strong>{{indirectTotal}}</strong></td>
                                 <td><strong>{{directTotal + indirectTotal}}</strong></td>
-                                <td></td>
+                                <td *ngIf="user != null"></td>
                             </tr>
                         </tbody>
                     </table>
