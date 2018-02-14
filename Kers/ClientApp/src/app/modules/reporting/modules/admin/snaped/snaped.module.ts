@@ -19,6 +19,7 @@ import { SnapedUserComponent } from './snaped-user.component';
 import { ServicelogModule } from '../../servicelog/servicelog.module';
 import { SnapedReimbursmentFormComponent } from './snaped-reimbursment-form';
 import { SnapedReimbursmentItem } from './snaped-reimbursment-item';
+import { SnapedBudgetHomeComponent } from './snaped-budget-home.component';
 
 
 
@@ -39,7 +40,8 @@ import { SnapedReimbursmentItem } from './snaped-reimbursment-item';
                   SnapedAssistantsListComponent,
                   SnapedUserComponent,
                   SnapedReimbursmentFormComponent,
-                  SnapedReimbursmentItem
+                  SnapedReimbursmentItem,
+                  SnapedBudgetHomeComponent
 
                 ],
   providers:    [  
