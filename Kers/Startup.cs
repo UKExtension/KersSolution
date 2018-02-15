@@ -66,7 +66,7 @@ namespace Kers
                 services.AddDbContext<KERSmainContext>(options => 
                     options.UseSqlite(Configuration["ConnectionStrings:connKersMainLocal"]));
                 services.AddDbContext<KERScoreContext>(options => 
-                    options.UseSqlite(Configuration["ConnectionStrings:connKersCoreLocal"]));
+                    options.UseSqlite(Configuration["ConnectionStrings:connKersCoreLocal"], b => b.MigrationsAssembly("Kers")));
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 
                    options.UseSqlite(Configuration["ConnectionStrings:connKersSnapLocal"]));
 
@@ -76,7 +76,7 @@ namespace Kers
                 services.AddDbContext<KERSmainContext>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersMain"]));
                 services.AddDbContext<KERScoreContext>(options => 
-                    options.UseSqlServer(Configuration["ConnectionStrings:connKersCore"]));
+                    options.UseSqlServer(Configuration["ConnectionStrings:connKersCore"], b => b.MigrationsAssembly("Kers")));
                 services.AddDbContext<KERS2017Context>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS2017"]));
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 
@@ -93,7 +93,7 @@ namespace Kers
                 services.AddDbContext<KERSmainContext>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersMain"]));
                 services.AddDbContext<KERScoreContext>(options => 
-                    options.UseSqlServer(Configuration["ConnectionStrings:connKersCore"]));
+                    options.UseSqlServer(Configuration["ConnectionStrings:connKersCore"], b => b.MigrationsAssembly("Kers")));
                 services.AddDbContext<KERS2017Context>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS2017"]));
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 
