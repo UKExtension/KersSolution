@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KersDb\KersDb.csproj" />
+    <ProjectReference Include="..\KersData\KersData.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
