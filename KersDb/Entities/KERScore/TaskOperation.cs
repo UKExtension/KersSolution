@@ -12,6 +12,7 @@ namespace Kers.Models.Entities.KERScore
         public int Id { get; set; }
         public string ClassName {get;set;}
         public string Description {get;set;}
+        public string Arguments {get;set;}
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
     }

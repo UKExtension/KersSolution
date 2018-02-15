@@ -12,6 +12,7 @@ namespace Kers.Models.Entities.KERScore
         public int Id { get; set; }
         public int TaskScheduleId {get;set;}
         public TaskSchedule TaskSchedule {get;set;}
+        public DateTime PerformedAt {get;set;}
 
     }
 }

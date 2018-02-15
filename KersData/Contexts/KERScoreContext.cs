@@ -171,6 +171,14 @@ namespace Kers.Models.Contexts
         public virtual DbSet <StoryImage> StoryImage {get;set;}
 
         /***************************************/
+        //  Scheduled Tasks
+        /***************************************/
+        public virtual DbSet<TaskOperation> TaskOperation {get;set;}
+        public virtual DbSet<TaskPerformed> TaskPerformed {get;set;}
+        public virtual DbSet<TaskRecurringSchedule> TaskRecurringSchedule {get;set;}
+        public virtual DbSet <TaskSchedule> TaskSchedule {get;set;}
+
+        /***************************************/
         //  General
         /***************************************/
         public virtual DbSet<Log> Log {get; set;}

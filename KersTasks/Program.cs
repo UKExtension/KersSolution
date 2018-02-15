@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using Kers.Models.Contexts;
 using Kers.Models.Repositories;
+using Kers.Tasks.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -51,6 +52,11 @@ namespace KersTasks
                        .BuildServiceProvider();
                 cache = provider.GetService<IDistributedCache>();
             }
+
+            var service = new TaskService( context, cache);
+            service.run();
+
+/* 
             var fiscalYearRepo = new FiscalYearRepository( context );
 
             var repo = new SnapDirectRepository(context, cache);
@@ -69,21 +75,9 @@ namespace KersTasks
             ITask entity = (ITask) Activator.CreateInstance(type);
             entity.SetName( "Sample");
 
-            Console.WriteLine("Hello World!" + str);
+            Console.WriteLine("Hello World!" );
+             */
         }
     }
 
-    class Task:ITask{
-        public string Name;
-        public string GetName(){
-            return Name;
-        }
-        public void SetName(string Name){
-            this.Name = Name;
-        }
-    }
-    interface ITask{
-        string GetName();
-        void SetName(string Name);
-    }
 }
