@@ -3,7 +3,6 @@
     </button>
     <strong>Error: </strong> {{errorMessage}}
 </div>
-<div class="text-right"><a class="btn btn-default btn-xs" routerLink="/reporting/admin/snaped">Snap-Ed Admin Dashboard</a></div>
 <div *ngIf="county">    
     <h2>Snap-Ed Assistants</h2>
     <user-directory-list [county]="county" [onlySnapAssistants]="true"></user-directory-list><br><br>
