@@ -1,5 +1,5 @@
 namespace Kers.Tasks{
     public interface ITask{
-        void run(string[] arguments);
+        object run(string[] arguments);
     }
 }

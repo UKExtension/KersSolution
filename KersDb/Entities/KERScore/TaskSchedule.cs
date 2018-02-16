@@ -10,7 +10,7 @@ namespace Kers.Models.Entities.KERScore
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int TaskRecurrinScheduleId {get;set;}
+        public int TaskRecurringScheduleId {get;set;}
         public TaskRecurringSchedule TaskRecurringSchedule {get;set;}
         public int TaskOperationId {get;set;}
         public TaskOperation TaskOperation {get;set;}

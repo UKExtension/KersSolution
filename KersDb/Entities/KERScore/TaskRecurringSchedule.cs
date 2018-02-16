@@ -11,7 +11,7 @@ namespace Kers.Models.Entities.KERScore
 
 /* 
 Frequency : 0 = EachRun, 1 = Hourly, 2 = Daily, 3 = Weekly, 4 = Monthly or 5 = Yearly.
-DayNo : What Day to run on (1-7 for weekly, 1-31 for monthly, 1-365 for yearly)
+DayNo : What Day/Hour to run on (0-23 for daily, 1-7 for weekly, 1-31 for monthly, 1-365 for yearly)
 Interval : Every x weeks, months etc.
 WeekOfMonth : first, second, third... etc If populated then DayNo specifies the day of the week.
 MonthOfYear : 1-12.

@@ -53,6 +53,11 @@ namespace KersTasks
                 cache = provider.GetService<IDistributedCache>();
             }
 
+
+            //var init = new TaskInitialiser(context);
+            //init.addSampleTask();
+
+
             var service = new TaskService( context, cache);
             service.run();
 

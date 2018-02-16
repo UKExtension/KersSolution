@@ -1487,7 +1487,7 @@ namespace Kers.Controllers
             if(fy == "0"){
                 fiscalYear = this.fiscalRepo.currentFiscalYear(type);
             }else{
-                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "snapEd").FirstOrDefault();
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
             }
             return fiscalYear;
         }

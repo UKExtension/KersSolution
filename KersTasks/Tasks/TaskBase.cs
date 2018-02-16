@@ -1,5 +1,8 @@
+using System;
 using Kers.Models.Contexts;
+using Kers.Models.Entities.KERScore;
 using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace Kers.Tasks{
     public class TaskBase{
@@ -10,5 +13,10 @@ namespace Kers.Tasks{
             this.cache = cache;
 
         }
+
+
+
+
+
     }
 }
