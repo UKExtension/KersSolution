@@ -16,7 +16,7 @@ namespace Kers.Tasks.Services{
         public TaskService(KERScoreContext context, IDistributedCache cache){
             this.context = context;
             this.cache = cache;
-            scheduleService = new TaskScheduleService();
+            scheduleService = new TaskScheduleService(context);
         }
 
         public void run(){
@@ -25,7 +25,7 @@ namespace Kers.Tasks.Services{
                 performed.TaskSchedule = schedule;
                 performed.PerformedAt = DateTime.Now;
                 context.Add(performed);
-                context.SaveChangesAsync();
+                context.SaveChanges();
                 execute(schedule.TaskOperation);
             }
         }
