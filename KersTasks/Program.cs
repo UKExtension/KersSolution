@@ -54,34 +54,15 @@ namespace KersTasks
             }
 
 
-            //var init = new TaskInitialiser(context);
-            //init.addSampleTask();
-
+            /* var init = new TaskInitialiser(context);
+            init.addSummaryByCountyTask();
+            init.addSummaryByEmployeeTask();
+ */
 
             var service = new TaskService( context, cache);
             service.run();
 
-/* 
-            var fiscalYearRepo = new FiscalYearRepository( context );
 
-            var repo = new SnapDirectRepository(context, cache);
-            
-
-            var str = repo.TotalByMonth(fiscalYearRepo.currentFiscalYear("snapEd"), true);
-
-            
-
-            Type type = Assembly.GetEntryAssembly().GetType("KersTasks.Task");
-            if(type == null)
-                Console.WriteLine("Object type is NULL.");
-            else
-                Console.WriteLine("Object type has value.");
-
-            ITask entity = (ITask) Activator.CreateInstance(type);
-            entity.SetName( "Sample");
-
-            Console.WriteLine("Hello World!" );
-             */
         }
     }
 
