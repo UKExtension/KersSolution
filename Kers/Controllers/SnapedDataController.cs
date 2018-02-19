@@ -416,7 +416,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            var keys = new List<string>();
+            /* var keys = new List<string>();
             		
 
             keys.Add("District");
@@ -493,8 +493,8 @@ namespace Kers.Controllers
                 row += committed.ToString() + ",";
                 row += (committed - totalHours).ToString();
                 result += row + "\n";
-            }
-            return Ok(result);
+            } */
+            return Ok(snapDirectRepo.PersonalHourDetails(fiscalYear));
         }
 
 
