@@ -534,7 +534,7 @@ namespace Kers.Models.Repositories
                 row += totalHours.ToString() + ",";
                 var committed = this.context.SnapEd_Commitment.Where( c => c.KersUser.Id == userData.User.Id && c.FiscalYear == fiscalYear && c.SnapEd_ActivityType.Measurement == "Hour").Sum( m => m.Amount);
                 row += committed.ToString() + ",";
-                row += (committed - totalHours).ToString();
+                row += (totalHours - committed).ToString();
                 result += row + "\n";
             }
             return result;
