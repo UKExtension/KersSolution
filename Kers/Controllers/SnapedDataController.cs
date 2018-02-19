@@ -860,6 +860,10 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
+
+
+/* 
+            
             var keys = new List<string>();
             keys.Add("YearMonth");
             keys.Add("YearMonthName");
@@ -920,8 +924,8 @@ namespace Kers.Controllers
                     row += totalHours.ToString();
                     result += row + "\n";
                 }
-            }
-            return Ok(result);
+            } */
+            return Ok(snapDirectRepo.AimedTowardsImprovement(fiscalYear));
         }
 
 

@@ -69,6 +69,7 @@ namespace Kers.Models.Abstract
         string TotalByMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
         string TotalByCounty(FiscalYear fiscalYear, Boolean refreshCache = false);
         string TotalByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
+        string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false);
     }
     public interface ISnapInDirectRepository: IEntityBaseRepository<SnapIndirect>{}
 }

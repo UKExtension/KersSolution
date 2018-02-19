@@ -382,6 +382,76 @@ namespace Kers.Models.Repositories
             return result;
         }
 
+        public string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false){
+            var keys = new List<string>();
+            keys.Add("YearMonth");
+            keys.Add("YearMonthName");
+            keys.Add("AimedTowardImprovementInName");
+            keys.Add("NumberOfAgentsReporting");
+            keys.Add("TotalHoursReported");
+
+
+            var result = string.Join(",", keys.ToArray()) + "\n";
+            //var lastActivityRevs = this.activityRepo.LastActivityRevisionIds(fiscalYear, _cache);
+            var revis = SnapData(fiscalYear);
+            var activitiesWithPolicy = revis.Where( r => r.Revision.SnapPolicy != null).OrderBy( a => a.Revision.ActivityDate.Year).ThenBy( a => a.Revision.ActivityDate.Month);
+            var groupedByMonth = activitiesWithPolicy.GroupBy(
+                                                        p => new {
+                                                            Year = p.Revision.ActivityDate.Year,
+                                                            Month = p.Revision.ActivityDate.Month
+                                                        }
+                                                )
+                                                .Select(
+                                                        k => new {
+                                                            Month = k.Key.Month,
+                                                            Year = k.Key.Year,
+                                                            Revisions = k.Select( a => a.Revision)
+                                                        }
+                                                );
+            var partners = this.context.SnapPolicyAimed.Where( p => p.Active && p.FiscalYear == fiscalYear).ToList();
+            foreach( var byMonth in groupedByMonth){
+                var revisionIds = byMonth.Revisions.Select( a => a.Id);
+                var byAimed = context.ActivityRevision
+                                                    .Where( r => revisionIds.Contains( r.Id ) )
+                                                    .Select( r => new {
+                                                                Hours = r.Hours,
+                                                                Aimed = r.SnapPolicy.SnapPolicyAimedSelections
+                                                            }
+                                                    ).ToList();
+                
+                
+                
+                var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
+                foreach( var partner in partners){
+                    
+                    var row = dt.ToString("yyyyMM") + ",";
+                    row += dt.ToString("yyyy-MMM") + ",";
+
+                    float totalHours = 0;
+                    var totalMeetings = 0;
+                    foreach( var revs in byAimed){
+                        if( revs.Aimed != null){
+                            var rv = revs.Aimed.Where( r => r.SnapPolicyAimedId == partner.Id).FirstOrDefault();
+                            if(rv != null){
+                                totalHours += revs.Hours;
+                                totalMeetings++;
+                            }
+                        }
+                    }
+
+                    row += string.Concat( "\"", partner.Name, "\"") + ",";
+                    row += totalMeetings.ToString() + ",";
+                    row += totalHours.ToString();
+                    result += row + "\n";
+                }
+            }
+
+
+
+            
+            return result;
+        }
+
 
         private List<UserRevisionData> SnapData( FiscalYear fiscalYear){
             List<UserRevisionData> SnapData;
@@ -409,6 +479,7 @@ namespace Kers.Models.Repositories
                         var revision = context.ActivityRevision.Where( r => r.Id == rev.Id)
                                             .Include( s => s.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues )
                                             .Include( s => s.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
+                                            .Include( s => s.SnapPolicy)
                                             .Include( s => s.RaceEthnicityValues)
                                             .Include( s => s.ActivityOptionNumbers).FirstOrDefault();
                         
