@@ -537,7 +537,7 @@ namespace Kers.Models.Repositories
                 row += (committed - totalHours).ToString();
                 result += row + "\n";
             }
-            return "";
+            return result;
         }
 
 
