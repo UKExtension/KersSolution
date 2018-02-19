@@ -65,11 +65,15 @@ namespace Kers.Models.Abstract
         FiscalYear nextFiscalYear(string type);
     }
     public interface IAffirmativeActionPlanRevisionRepository: IEntityBaseRepository<AffirmativeActionPlanRevision>{}
-    public interface ISnapDirectRepository: IEntityBaseRepository<SnapDirect>{
+    public interface ISnapDirectRepository{
         string TotalByMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
         string TotalByCounty(FiscalYear fiscalYear, Boolean refreshCache = false);
         string TotalByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
+    }
+
+    public interface ISnapPolicyRepository{
         string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false);
+        string PartnerCategory(FiscalYear fiscalYear, bool refreshCache = false);
     }
     public interface ISnapInDirectRepository: IEntityBaseRepository<SnapIndirect>{}
 }

@@ -121,6 +121,7 @@ namespace Kers
             services.AddScoped<IHelpContentRepository, HelpContentRepository>();
             services.AddScoped<IAffirmativeActionPlanRevisionRepository, AffirmativeActionPlanRevisionRepository>();
             services.AddScoped<ISnapDirectRepository, SnapDirectRepository>();
+            services.AddScoped<ISnapPolicyRepository, SnapPolicyRepository>();
             services.AddScoped<IMembershipService, MembershipService>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // In production, the Angular files will be served from this directory
