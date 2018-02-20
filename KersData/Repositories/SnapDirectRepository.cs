@@ -581,7 +581,6 @@ namespace Kers.Models.Repositories
                                             .ActivityRevision.Where( r => r.Id == rw.Revision.Id )
                                             .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectAgesAudienceValues)
                                             .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectDeliverySite)
-                                            .Include( r => r.SnapIndirect).ThenInclude( d => d.SnapIndirectReachedValues)
                                             .OrderBy( r => r.Created).LastOrDefault();
 
                 
