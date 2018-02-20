@@ -183,7 +183,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            var keys = new List<string>();
+            /* var keys = new List<string>();
 
             keys.Add("YearMonth");
             keys.Add("YearMonthName");
@@ -248,8 +248,8 @@ namespace Kers.Controllers
                 }
 
                 result += row + "\n";
-            }
-             return Ok(result);
+            } */
+             return Ok(snapDirectRepo.SitesPerPersonPerMonth(fiscalYear));
         }
 
 
@@ -416,84 +416,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            /* var keys = new List<string>();
-            		
-
-            keys.Add("District");
-            keys.Add("PlanningUnit");
-            keys.Add("PersonID");
-            keys.Add("Name");
-            keys.Add("Title");
-            keys.Add("Program(s)");
-            keys.Add("StartDate");
-            keys.Add("EndDate");
-
-
-            var runningDate = fiscalYear.Start;
-            var difference = (int)Math.Floor(fiscalYear.End.Subtract(fiscalYear.Start).Days / (365.2425 / 12)) + 1;
-            var months = new DateTime[difference];
-            var i = 0;
-            do{
-                months[i] = runningDate.AddMonths( i );
-                keys.Add(months[i].ToString("MMM"));
-                i++;
-            }while(i < difference);
-
-            keys.Add("ReportedHours");
-            keys.Add("CommitmentHours");
-            keys.Add("OverShort");
-
-
-            var result = string.Join(",", keys.ToArray()) + "\n";
-
-            var SnapData = this.SnapData( fiscalYear);
-
-
-            var byUser = SnapData.GroupBy( s => s.User.Id).Select( 
-                                        d => new {
-                                            User = d.Select( s => s.User ).First(),
-                                            Revisions = d.Select( s => s.Revision )
-                                        }
-                                    )
-                                    .OrderBy(d => d.User.RprtngProfile.PlanningUnit.DistrictId).ThenBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
-
-            foreach( var userData in byUser){
-                var row = userData.User.RprtngProfile.PlanningUnit.DistrictId + ",";
-                row += string.Concat( "\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                row += userData.User.RprtngProfile.PersonId + ",";
-                row += string.Concat( "\"", userData.User.RprtngProfile.Name, "\"") + ",";
-                row += string.Concat( "\"", userData.User.ExtensionPosition.Code, "\"") + ",";
-
-                var spclt = "";
-                foreach( var s in userData.User.Specialties){
-                    spclt += " " + s.Specialty.Code;
-                }
-                row += string.Concat( "\"", spclt, "\"") + ",";
-                
-                var sapData = this.mainContext.SAP_HR_ACTIVE.Where( s => s.PersonID == userData.User.RprtngProfile.PersonId).FirstOrDefault();
-                if(sapData != null){
-                    row += sapData.BeginDate?.ToString("MM/dd/yy") + ","??",";
-                    var endDate = sapData.EndDate;
-                    if( endDate == null || endDate?.Year > 2300){
-                        row += ",";
-                    }else{
-                        row += endDate?.ToString("MM/dd/yy") + ",";
-                    }
-                }else{
-                    row += ",,";
-                }
-                float totalHours = 0;
-                foreach( var month in months){
-                    var hrs = userData.Revisions.Where( r => r.ActivityDate.Month == month.Month && r.ActivityDate.Year == month.Year).Sum( s => s.Hours);
-                    totalHours += hrs;
-                    row += hrs.ToString() + ",";
-                }
-                row += totalHours.ToString() + ",";
-                var committed = this.context.SnapEd_Commitment.Where( c => c.KersUser.Id == userData.User.Id && c.FiscalYear == fiscalYear && c.SnapEd_ActivityType.Measurement == "Hour").Sum( m => m.Amount);
-                row += committed.ToString() + ",";
-                row += (committed - totalHours).ToString();
-                result += row + "\n";
-            } */
+            
             return Ok(snapDirectRepo.PersonalHourDetails(fiscalYear));
         }
 

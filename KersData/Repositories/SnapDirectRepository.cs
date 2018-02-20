@@ -540,6 +540,78 @@ namespace Kers.Models.Repositories
             return result;
         }
 
+        public string SitesPerPersonPerMonth(FiscalYear fiscalYear, bool refreshCache = false){
+            var keys = new List<string>();
+
+            keys.Add("YearMonth");
+            keys.Add("YearMonthName");
+            keys.Add("PlanningUnit");
+            keys.Add("PersonName");
+            keys.Add("Position");
+            keys.Add("Program");
+            keys.Add("DirectDeliverySiteName");
+            keys.Add("DirectSpecificSiteName");
+
+            var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+            
+            foreach( var audnc in snapDirectAudience){
+                keys.Add(audnc.Name);
+            }
+
+
+           /*  var perPerson = context.Activity.
+                                Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && e.Revisions.OrderBy(r => r.Created).Last().SnapDirect != null )
+                                .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
+                                .Include( a => a.KersUser ).ThenInclude( u => u.ExtensionPosition)
+                                .Include( a => a.KersUser).ThenInclude( u => u.Specialties ).ThenInclude( s => s.Specialty)
+                                .OrderBy(e => e.ActivityDate.Month).ThenBy(e => e.KersUser.PersonalProfile.FirstName).ToList();
+            
+             */
+            var result = string.Join(",", keys.ToArray()) + "\n";
+
+
+            var SnapData = this.SnapData( fiscalYear);
+            var perPerson = SnapData.Where( a => a.Revision.SnapDirect != null)
+                            .OrderBy(e => e.Revision.ActivityDate.Month).ThenBy(e => e.User.PersonalProfile.FirstName);
+
+            foreach (var rw in perPerson){
+
+                
+                var lastRevision = this.context
+                                            .ActivityRevision.Where( r => r.Id == rw.Revision.Id )
+                                            .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectAgesAudienceValues)
+                                            .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectDeliverySite)
+                                            .Include( r => r.SnapIndirect).ThenInclude( d => d.SnapIndirectReachedValues)
+                                            .OrderBy( r => r.Created).LastOrDefault();
+
+                
+                var row = rw.Revision.ActivityDate.Year.ToString() + rw.Revision.ActivityDate.Month.ToString() + ",";
+                row += rw.Revision.ActivityDate.ToString( "yyyy-MMM") + ",";
+                row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                
+                row +=  string.Concat("\"", rw.User.RprtngProfile.Name, "\"")  + ",";
+                row += rw.User.ExtensionPosition.Code + ",";
+                var spclt = "";
+                foreach( var sp in rw.User.Specialties){
+                    spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
+                }
+                row += spclt + ", ";
+                if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
+                    row += string.Concat("\"", lastRevision.SnapDirect.SnapDirectDeliverySite.Name, "\"") + ",";
+                }else{
+                    row += ",";
+                }
+                row += string.Concat("\"",lastRevision.SnapDirect.SiteName, "\"") + ",";
+
+                foreach( var audnc in snapDirectAudience){
+                    var s = lastRevision.SnapDirect.SnapDirectAgesAudienceValues.Where( v => v.SnapDirectAudienceId == audnc.Id).Sum( v => v.Value);
+                    row += s.ToString() + ",";
+                }
+
+                result += row + "\n";
+            }
+            return result;
+        }
 
     }
 

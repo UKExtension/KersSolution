@@ -48,6 +48,7 @@ namespace Kers.Models.Repositories
                         var activity = context.Activity.Where( a => a.Id == rev.ActivityId )
                                         .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
                                         .Include( a => a.KersUser ).ThenInclude( u => u.ExtensionPosition)
+                                        .Include( a => a.KersUser ).ThenInclude( u => u.PersonalProfile)
                                         .Include( a => a.KersUser).ThenInclude( u => u.Specialties).ThenInclude( s => s.Specialty)
                                         .FirstOrDefault();
                         var revision = context.ActivityRevision.Where( r => r.Id == rev.Id)
