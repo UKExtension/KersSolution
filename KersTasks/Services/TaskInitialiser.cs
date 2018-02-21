@@ -79,7 +79,7 @@ namespace Kers.Tasks.Services{
             recurringSchedule.Updated = DateTime.Now;
 
             var operation = new TaskOperation();
-            operation.ClassName = "SnapSummaryByEmployeeask";
+            operation.ClassName = "SnapSummaryByEmployeeTask";
             operation.Description = "Snap-Ed Summary By Employee Csv Generation";
             operation.Arguments = "";
             operation.Created = DateTime.Now;

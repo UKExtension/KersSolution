@@ -7,11 +7,12 @@ using Newtonsoft.Json;
 namespace Kers.Tasks{
     public class TaskBase{
         public KERScoreContext context;
+        public KERSmainContext mainContext;
         public IDistributedCache cache;
-        public TaskBase(KERScoreContext context, IDistributedCache cache){
+        public TaskBase(KERScoreContext context, KERSmainContext mainContext, IDistributedCache cache){
             this.context = context;
             this.cache = cache;
-
+            this.mainContext = mainContext;
         }
 
 

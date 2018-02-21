@@ -62,6 +62,11 @@ namespace Kers.Models.Contexts
         }
 
 
+        private static void TransferSnapEdToNextFiscalYear(KERScoreContext db){
+            
+
+        }
+
 
         private static void IntoMainContact(KERScoreContext db){
             var sel = db.Contact.Where( r => true).Include( c => c.Revisions);

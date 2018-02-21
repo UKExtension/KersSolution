@@ -389,225 +389,230 @@ namespace Kers.Models.Repositories
         }
 
         public string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false){
-            var keys = new List<string>();
-            keys.Add("YearMonth");
-            keys.Add("YearMonthName");
-            keys.Add("AimedTowardImprovementInName");
-            keys.Add("NumberOfAgentsReporting");
-            keys.Add("TotalHoursReported");
-
-
-            var result = string.Join(",", keys.ToArray()) + "\n";
-            //var lastActivityRevs = this.activityRepo.LastActivityRevisionIds(fiscalYear, _cache);
-            var revis = SnapData(fiscalYear);
-            var activitiesWithPolicy = revis.Where( r => r.Revision.SnapPolicy != null).OrderBy( a => a.Revision.ActivityDate.Year).ThenBy( a => a.Revision.ActivityDate.Month);
-            var groupedByMonth = activitiesWithPolicy.GroupBy(
-                                                        p => new {
-                                                            Year = p.Revision.ActivityDate.Year,
-                                                            Month = p.Revision.ActivityDate.Month
-                                                        }
-                                                )
-                                                .Select(
-                                                        k => new {
-                                                            Month = k.Key.Month,
-                                                            Year = k.Key.Year,
-                                                            Revisions = k.Select( a => a.Revision)
-                                                        }
-                                                );
-            var partners = this.context.SnapPolicyAimed.Where( p => p.Active && p.FiscalYear == fiscalYear).ToList();
-            foreach( var byMonth in groupedByMonth){
-                var revisionIds = byMonth.Revisions.Select( a => a.Id);
-                var byAimed = context.ActivityRevision
-                                                    .Where( r => revisionIds.Contains( r.Id ) )
-                                                    .Select( r => new {
-                                                                Hours = r.Hours,
-                                                                Aimed = r.SnapPolicy.SnapPolicyAimedSelections
+            string result;
+            var cacheKey = CacheKeys.AimedTowardsImprovement + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                var keys = new List<string>();
+                keys.Add("YearMonth");
+                keys.Add("YearMonthName");
+                keys.Add("AimedTowardImprovementInName");
+                keys.Add("NumberOfAgentsReporting");
+                keys.Add("TotalHoursReported");
+                result = string.Join(",", keys.ToArray()) + "\n";
+                var revis = SnapData(fiscalYear);
+                var activitiesWithPolicy = revis.Where( r => r.Revision.SnapPolicy != null).OrderBy( a => a.Revision.ActivityDate.Year).ThenBy( a => a.Revision.ActivityDate.Month);
+                var groupedByMonth = activitiesWithPolicy.GroupBy(
+                                                            p => new {
+                                                                Year = p.Revision.ActivityDate.Year,
+                                                                Month = p.Revision.ActivityDate.Month
                                                             }
-                                                    ).ToList();
-                
-                
-                
-                var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
-                foreach( var partner in partners){
+                                                    )
+                                                    .Select(
+                                                            k => new {
+                                                                Month = k.Key.Month,
+                                                                Year = k.Key.Year,
+                                                                Revisions = k.Select( a => a.Revision)
+                                                            }
+                                                    );
+                var partners = this.context.SnapPolicyAimed.Where( p => p.Active && p.FiscalYear == fiscalYear).ToList();
+                foreach( var byMonth in groupedByMonth){
+                    var revisionIds = byMonth.Revisions.Select( a => a.Id);
+                    var byAimed = context.ActivityRevision
+                                                        .Where( r => revisionIds.Contains( r.Id ) )
+                                                        .Select( r => new {
+                                                                    Hours = r.Hours,
+                                                                    Aimed = r.SnapPolicy.SnapPolicyAimedSelections
+                                                                }
+                                                        ).ToList();
                     
-                    var row = dt.ToString("yyyyMM") + ",";
-                    row += dt.ToString("yyyy-MMM") + ",";
+                    
+                    
+                    var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
+                    foreach( var partner in partners){
+                        
+                        var row = dt.ToString("yyyyMM") + ",";
+                        row += dt.ToString("yyyy-MMM") + ",";
 
-                    float totalHours = 0;
-                    var totalMeetings = 0;
-                    foreach( var revs in byAimed){
-                        if( revs.Aimed != null){
-                            var rv = revs.Aimed.Where( r => r.SnapPolicyAimedId == partner.Id).FirstOrDefault();
-                            if(rv != null){
-                                totalHours += revs.Hours;
-                                totalMeetings++;
+                        float totalHours = 0;
+                        var totalMeetings = 0;
+                        foreach( var revs in byAimed){
+                            if( revs.Aimed != null){
+                                var rv = revs.Aimed.Where( r => r.SnapPolicyAimedId == partner.Id).FirstOrDefault();
+                                if(rv != null){
+                                    totalHours += revs.Hours;
+                                    totalMeetings++;
+                                }
                             }
                         }
+
+                        row += string.Concat( "\"", partner.Name, "\"") + ",";
+                        row += totalMeetings.ToString() + ",";
+                        row += totalHours.ToString();
+                        result += row + "\n";
                     }
-
-                    row += string.Concat( "\"", partner.Name, "\"") + ",";
-                    row += totalMeetings.ToString() + ",";
-                    row += totalHours.ToString();
-                    result += row + "\n";
                 }
+
             }
-
-
-
-            
             return result;
         }
 
         public string PersonalHourDetails(FiscalYear fiscalYear, bool refreshCache = false){
-            var keys = new List<string>();
-            		
-
-            keys.Add("District");
-            keys.Add("PlanningUnit");
-            keys.Add("PersonID");
-            keys.Add("Name");
-            keys.Add("Title");
-            keys.Add("Program(s)");
-            keys.Add("StartDate");
-            keys.Add("EndDate");
-
-
-            var runningDate = fiscalYear.Start;
-            var difference = (int)Math.Floor(fiscalYear.End.Subtract(fiscalYear.Start).Days / (365.2425 / 12)) + 1;
-            var months = new DateTime[difference];
-            var i = 0;
-            do{
-                months[i] = runningDate.AddMonths( i );
-                keys.Add(months[i].ToString("MMM"));
-                i++;
-            }while(i < difference);
-
-            keys.Add("ReportedHours");
-            keys.Add("CommitmentHours");
-            keys.Add("OverShort");
+            string result;
+            var cacheKey = CacheKeys.PersonalHourDetails + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                var keys = new List<string>();
+                keys.Add("District");
+                keys.Add("PlanningUnit");
+                keys.Add("PersonID");
+                keys.Add("Name");
+                keys.Add("Title");
+                keys.Add("Program(s)");
+                keys.Add("StartDate");
+                keys.Add("EndDate");
 
 
-            var result = string.Join(",", keys.ToArray()) + "\n";
+                var runningDate = fiscalYear.Start;
+                var difference = (int)Math.Floor(fiscalYear.End.Subtract(fiscalYear.Start).Days / (365.2425 / 12)) + 1;
+                var months = new DateTime[difference];
+                var i = 0;
+                do{
+                    months[i] = runningDate.AddMonths( i );
+                    keys.Add(months[i].ToString("MMM"));
+                    i++;
+                }while(i < difference);
 
-            var SnapData = this.SnapData( fiscalYear);
+                keys.Add("ReportedHours");
+                keys.Add("CommitmentHours");
+                keys.Add("OverShort");
 
 
-            var byUser = SnapData.GroupBy( s => s.User.Id).Select( 
-                                        d => new {
-                                            User = d.Select( s => s.User ).First(),
-                                            Revisions = d.Select( s => s.Revision )
-                                        }
-                                    )
-                                    .OrderBy(d => d.User.RprtngProfile.PlanningUnit.DistrictId).ThenBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
+                result = string.Join(",", keys.ToArray()) + "\n";
 
-            foreach( var userData in byUser){
-                var row = userData.User.RprtngProfile.PlanningUnit.DistrictId + ",";
-                row += string.Concat( "\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                row += userData.User.RprtngProfile.PersonId + ",";
-                row += string.Concat( "\"", userData.User.RprtngProfile.Name, "\"") + ",";
-                row += string.Concat( "\"", userData.User.ExtensionPosition.Code, "\"") + ",";
+                var SnapData = this.SnapData( fiscalYear);
 
-                var spclt = "";
-                foreach( var s in userData.User.Specialties){
-                    spclt += " " + s.Specialty.Code;
-                }
-                row += string.Concat( "\"", spclt, "\"") + ",";
-                
-                var sapData = this.mainContext.SAP_HR_ACTIVE.Where( s => s.PersonID == userData.User.RprtngProfile.PersonId).FirstOrDefault();
-                if(sapData != null){
-                    row += sapData.BeginDate?.ToString("MM/dd/yy") + ","??",";
-                    var endDate = sapData.EndDate;
-                    if( endDate == null || endDate?.Year > 2300){
-                        row += ",";
-                    }else{
-                        row += endDate?.ToString("MM/dd/yy") + ",";
+
+                var byUser = SnapData.GroupBy( s => s.User.Id).Select( 
+                                            d => new {
+                                                User = d.Select( s => s.User ).First(),
+                                                Revisions = d.Select( s => s.Revision )
+                                            }
+                                        )
+                                        .OrderBy(d => d.User.RprtngProfile.PlanningUnit.DistrictId).ThenBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
+
+                foreach( var userData in byUser){
+                    var row = userData.User.RprtngProfile.PlanningUnit.DistrictId + ",";
+                    row += string.Concat( "\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                    row += userData.User.RprtngProfile.PersonId + ",";
+                    row += string.Concat( "\"", userData.User.RprtngProfile.Name, "\"") + ",";
+                    row += string.Concat( "\"", userData.User.ExtensionPosition.Code, "\"") + ",";
+
+                    var spclt = "";
+                    foreach( var s in userData.User.Specialties){
+                        spclt += " " + s.Specialty.Code;
                     }
-                }else{
-                    row += ",,";
+                    row += string.Concat( "\"", spclt, "\"") + ",";
+                    
+                    var sapData = this.mainContext.SAP_HR_ACTIVE.Where( s => s.PersonID == userData.User.RprtngProfile.PersonId).FirstOrDefault();
+                    if(sapData != null){
+                        row += sapData.BeginDate?.ToString("MM/dd/yy") + ","??",";
+                        var endDate = sapData.EndDate;
+                        if( endDate == null || endDate?.Year > 2300){
+                            row += ",";
+                        }else{
+                            row += endDate?.ToString("MM/dd/yy") + ",";
+                        }
+                    }else{
+                        row += ",,";
+                    }
+                    float totalHours = 0;
+                    foreach( var month in months){
+                        var hrs = userData.Revisions.Where( r => r.ActivityDate.Month == month.Month && r.ActivityDate.Year == month.Year).Sum( s => s.Hours);
+                        totalHours += hrs;
+                        row += hrs.ToString() + ",";
+                    }
+                    row += totalHours.ToString() + ",";
+                    var committed = this.context.SnapEd_Commitment.Where( c => c.KersUser.Id == userData.User.Id && c.FiscalYear == fiscalYear && c.SnapEd_ActivityType.Measurement == "Hour").Sum( m => m.Amount);
+                    row += committed.ToString() + ",";
+                    row += (totalHours - committed).ToString();
+                    result += row + "\n";
+                    _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                        });
                 }
-                float totalHours = 0;
-                foreach( var month in months){
-                    var hrs = userData.Revisions.Where( r => r.ActivityDate.Month == month.Month && r.ActivityDate.Year == month.Year).Sum( s => s.Hours);
-                    totalHours += hrs;
-                    row += hrs.ToString() + ",";
-                }
-                row += totalHours.ToString() + ",";
-                var committed = this.context.SnapEd_Commitment.Where( c => c.KersUser.Id == userData.User.Id && c.FiscalYear == fiscalYear && c.SnapEd_ActivityType.Measurement == "Hour").Sum( m => m.Amount);
-                row += committed.ToString() + ",";
-                row += (totalHours - committed).ToString();
-                result += row + "\n";
             }
             return result;
         }
 
         public string SitesPerPersonPerMonth(FiscalYear fiscalYear, bool refreshCache = false){
-            var keys = new List<string>();
-
-            keys.Add("YearMonth");
-            keys.Add("YearMonthName");
-            keys.Add("PlanningUnit");
-            keys.Add("PersonName");
-            keys.Add("Position");
-            keys.Add("Program");
-            keys.Add("DirectDeliverySiteName");
-            keys.Add("DirectSpecificSiteName");
-
-            var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+            string result;
+            var cacheKey = CacheKeys.SitesPerPersonPerMonth + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
             
-            foreach( var audnc in snapDirectAudience){
-                keys.Add(audnc.Name);
-            }
+                var keys = new List<string>();
 
+                keys.Add("YearMonth");
+                keys.Add("YearMonthName");
+                keys.Add("PlanningUnit");
+                keys.Add("PersonName");
+                keys.Add("Position");
+                keys.Add("Program");
+                keys.Add("DirectDeliverySiteName");
+                keys.Add("DirectSpecificSiteName");
 
-           /*  var perPerson = context.Activity.
-                                Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && e.Revisions.OrderBy(r => r.Created).Last().SnapDirect != null )
-                                .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
-                                .Include( a => a.KersUser ).ThenInclude( u => u.ExtensionPosition)
-                                .Include( a => a.KersUser).ThenInclude( u => u.Specialties ).ThenInclude( s => s.Specialty)
-                                .OrderBy(e => e.ActivityDate.Month).ThenBy(e => e.KersUser.PersonalProfile.FirstName).ToList();
-            
-             */
-            var result = string.Join(",", keys.ToArray()) + "\n";
-
-
-            var SnapData = this.SnapData( fiscalYear);
-            var perPerson = SnapData.Where( a => a.Revision.SnapDirect != null)
-                            .OrderBy(e => e.Revision.ActivityDate.Month).ThenBy(e => e.User.PersonalProfile.FirstName);
-
-            foreach (var rw in perPerson){
-
+                var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
                 
-                var lastRevision = this.context
-                                            .ActivityRevision.Where( r => r.Id == rw.Revision.Id )
-                                            .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectAgesAudienceValues)
-                                            .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectDeliverySite)
-                                            .OrderBy( r => r.Created).LastOrDefault();
-
-                
-                var row = rw.Revision.ActivityDate.Year.ToString() + rw.Revision.ActivityDate.Month.ToString() + ",";
-                row += rw.Revision.ActivityDate.ToString( "yyyy-MMM") + ",";
-                row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                
-                row +=  string.Concat("\"", rw.User.RprtngProfile.Name, "\"")  + ",";
-                row += rw.User.ExtensionPosition.Code + ",";
-                var spclt = "";
-                foreach( var sp in rw.User.Specialties){
-                    spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
-                }
-                row += spclt + ", ";
-                if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
-                    row += string.Concat("\"", lastRevision.SnapDirect.SnapDirectDeliverySite.Name, "\"") + ",";
-                }else{
-                    row += ",";
-                }
-                row += string.Concat("\"",lastRevision.SnapDirect.SiteName, "\"") + ",";
-
                 foreach( var audnc in snapDirectAudience){
-                    var s = lastRevision.SnapDirect.SnapDirectAgesAudienceValues.Where( v => v.SnapDirectAudienceId == audnc.Id).Sum( v => v.Value);
-                    row += s.ToString() + ",";
+                    keys.Add(audnc.Name);
                 }
+                result = string.Join(",", keys.ToArray()) + "\n";
+                var SnapData = this.SnapData( fiscalYear);
+                var perPerson = SnapData.Where( a => a.Revision.SnapDirect != null)
+                                .OrderBy(e => e.Revision.ActivityDate.Month).ThenBy(e => e.User.PersonalProfile.FirstName);
+                foreach (var rw in perPerson){    
+                    var lastRevision = this.context
+                                                .ActivityRevision.Where( r => r.Id == rw.Revision.Id )
+                                                .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectAgesAudienceValues)
+                                                .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectDeliverySite)
+                                                .OrderBy( r => r.Created).LastOrDefault();
+                    var row = rw.Revision.ActivityDate.Year.ToString() + rw.Revision.ActivityDate.Month.ToString() + ",";
+                    row += rw.Revision.ActivityDate.ToString( "yyyy-MMM") + ",";
+                    row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                    
+                    row +=  string.Concat("\"", rw.User.RprtngProfile.Name, "\"")  + ",";
+                    row += rw.User.ExtensionPosition.Code + ",";
+                    var spclt = "";
+                    foreach( var sp in rw.User.Specialties){
+                        spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
+                    }
+                    row += spclt + ", ";
+                    if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
+                        row += string.Concat("\"", lastRevision.SnapDirect.SnapDirectDeliverySite.Name, "\"") + ",";
+                    }else{
+                        row += ",";
+                    }
+                    row += string.Concat("\"",lastRevision.SnapDirect.SiteName, "\"") + ",";
 
-                result += row + "\n";
+                    foreach( var audnc in snapDirectAudience){
+                        var s = lastRevision.SnapDirect.SnapDirectAgesAudienceValues.Where( v => v.SnapDirectAudienceId == audnc.Id).Sum( v => v.Value);
+                        row += s.ToString() + ",";
+                    }
+
+                    result += row + "\n";
+                    _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                        }); 
+                }
             }
             return result;
         }

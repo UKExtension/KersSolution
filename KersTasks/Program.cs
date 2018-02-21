@@ -29,11 +29,15 @@ namespace KersTasks
             Configuration = builder.Build();
 
             KERScoreContext context;
+            KERSmainContext mainContext;
             IDistributedCache cache;
             if(environment == "development"){
                 var optionsBuilder = new DbContextOptionsBuilder<KERScoreContext>();
                 optionsBuilder.UseSqlite(Configuration["ConnectionStrings:connKersCoreLocal"]);
                 context = new KERScoreContext(optionsBuilder.Options);
+                var optionsBuilderMain = new DbContextOptionsBuilder<KERSmainContext>();
+                optionsBuilderMain.UseSqlite(Configuration["ConnectionStrings:connKersMainLocal"]);
+                mainContext = new KERSmainContext(optionsBuilderMain.Options);
                 var provider = new ServiceCollection()
                        .AddDistributedMemoryCache()
                        .BuildServiceProvider();
@@ -42,6 +46,9 @@ namespace KersTasks
                 var optionsBuilder = new DbContextOptionsBuilder<KERScoreContext>();
                 optionsBuilder.UseSqlServer(Configuration["ConnectionStrings:connKERScore"]);
                 context = new KERScoreContext(optionsBuilder.Options);
+                var optionsBuilderMain = new DbContextOptionsBuilder<KERSmainContext>();
+                optionsBuilderMain.UseSqlServer(Configuration["ConnectionStrings:connKersMain"]);
+                mainContext = new KERSmainContext(optionsBuilderMain.Options);
                 var provider = new ServiceCollection()
                        .AddDistributedSqlServerCache(options =>
                                 {
@@ -59,7 +66,7 @@ namespace KersTasks
             init.addSummaryByEmployeeTask();
  */
 
-            var service = new TaskService( context, cache);
+            var service = new TaskService( context, mainContext, cache);
             service.run();
 
 

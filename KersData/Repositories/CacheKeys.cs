@@ -12,6 +12,9 @@ namespace Kers.Models.Repositories
         public static string SnapEdTotalByCounty = "SnapEdTotalByCounty";
         public static string SnapEdTotalByEmployee = "SnapEdTotalByEmployee";
         public static string UserRevisionWithSnapData = "UserRevisionWithSnapData";
+        public static string SitesPerPersonPerMonth = "SitesPerPersonPerMonth";
+        public static string PersonalHourDetails = "PersonalHourDetails";
+        public static string AimedTowardsImprovement = "AimedTowardsImprovement";
 
     }
 }

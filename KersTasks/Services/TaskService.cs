@@ -11,10 +11,12 @@ using Newtonsoft.Json;
 namespace Kers.Tasks.Services{
     public class TaskService{
         KERScoreContext context;
+        KERSmainContext mainContext;
         IDistributedCache cache;
         TaskScheduleService scheduleService;
-        public TaskService(KERScoreContext context, IDistributedCache cache){
+        public TaskService(KERScoreContext context, KERSmainContext mainContext, IDistributedCache cache){
             this.context = context;
+            this.mainContext = mainContext;
             this.cache = cache;
             scheduleService = new TaskScheduleService(context);
         }
@@ -55,7 +57,7 @@ namespace Kers.Tasks.Services{
                 LogError(operation.ClassName, "Object type is NULL.");
             }else{
                 try{
-                    ITask entity = (ITask) Activator.CreateInstance(type, context, cache);
+                    ITask entity = (ITask) Activator.CreateInstance(type, context, mainContext, cache);
                     var result = entity.run(operation.Arguments.Split(','));
                     LogComplete(operation.ClassName,  result );
                 }catch(Exception e){
