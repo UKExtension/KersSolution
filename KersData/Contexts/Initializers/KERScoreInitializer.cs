@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Net.Http;
 using Newtonsoft.Json;
-
+using Kers.Models.Repositories;
 
 namespace Kers.Models.Contexts
 {
@@ -59,12 +59,23 @@ namespace Kers.Models.Contexts
             //SnapBudgetAllowance(db);
             //SnapEdCountyBudget(db);
             //IntoMainContact(db);
+            TransferSnapEdToNextFiscalYear(db);
         }
 
 
         private static void TransferSnapEdToNextFiscalYear(KERScoreContext db){
+            var nextYear = DateTime.Now.AddYears( 1 );
             
+            var nextFiscalYear =  db.FiscalYear.
+                        Where(y => y.Start < nextYear && y.End > nextYear && y.Type == FiscalYearType.SnapEd).
+                        FirstOrDefault();
+            // Check if next fiscal year is defined
+            if(nextFiscalYear != null){
+                // Be sure there are no activity types for the next fiscal year
+                if( db.SnapEd_ActivityType.Where(a => a.FiscalYear.Id == nextFiscalYear.Id).FirstOrDefault() != null){
 
+                }
+            }
         }
 
 
