@@ -41,7 +41,7 @@ namespace Kers.Models.Repositories
             var result = string.Join(",", keys.ToArray()) + "\n";
             //var lastActivityRevs = this.activityRepo.LastActivityRevisionIds(fiscalYear, _cache);
             var revis = SnapData(fiscalYear);
-            var activitiesWithPolicy = revis.Where( r => r.Revision.SnapPolicy != null).OrderBy( a => a.Revision.ActivityDate.Year).ThenBy( a => a.Revision.ActivityDate.Month);
+            var activitiesWithPolicy = revis.Where( r => r.Revision.SnapPolicy != null);
             var groupedByMonth = activitiesWithPolicy.GroupBy(
                                                         p => new {
                                                             Year = p.Revision.ActivityDate.Year,
@@ -52,15 +52,18 @@ namespace Kers.Models.Repositories
                                                         k => new {
                                                             Month = k.Key.Month,
                                                             Year = k.Key.Year,
-                                                            Revisions = k.Select( a => a.Revision)
+                                                            Revisions = k.Select( a => a.Revision),
+                                                            User = k.Select( a => a.User)
                                                         }
                                                 );
             var partners = this.context.SnapPolicyAimed.Where( p => p.Active && p.FiscalYear == fiscalYear).ToList();
             foreach( var byMonth in groupedByMonth){
                 var revisionIds = byMonth.Revisions.Select( a => a.Id);
+                //List of revisions per this month with policy data
                 var byAimed = context.ActivityRevision
                                                     .Where( r => revisionIds.Contains( r.Id ) )
                                                     .Select( r => new {
+                                                                ActivityId = r.ActivityId,
                                                                 Hours = r.Hours,
                                                                 Aimed = r.SnapPolicy.SnapPolicyAimedSelections
                                                             }
@@ -69,6 +72,7 @@ namespace Kers.Models.Repositories
                 
                 
                 var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
+                // cycle through partners
                 foreach( var partner in partners){
                     
                     var row = dt.ToString("yyyyMM") + ",";
@@ -76,18 +80,23 @@ namespace Kers.Models.Repositories
 
                     float totalHours = 0;
                     var totalMeetings = 0;
+                    var revIdsPerPartner = new List<int>();
+                    // Cycle through revisions
                     foreach( var revs in byAimed){
+                       
                         if( revs.Aimed != null){
+                            // if there is selection in the revision from this partner
                             var rv = revs.Aimed.Where( r => r.SnapPolicyAimedId == partner.Id).FirstOrDefault();
                             if(rv != null){
+                                revIdsPerPartner.Add( revs.ActivityId );
                                 totalHours += revs.Hours;
                                 totalMeetings++;
                             }
                         }
                     }
-
+                    var agentsReporting = context.Activity.Where( a => revIdsPerPartner.Contains( a.Id ) ).GroupBy( c => c.KersUserId).Count();
                     row += string.Concat( "\"", partner.Name, "\"") + ",";
-                    row += totalMeetings.ToString() + ",";
+                    row += agentsReporting.ToString() + ",";
                     row += totalHours.ToString();
                     result += row + "\n";
                 }
@@ -123,19 +132,32 @@ namespace Kers.Models.Repositories
                 var revisionIds = byMonth.Revisions.Select( a => a.Id);
                 var byPartner = context.ActivityRevision
                                                     .Where( r => revisionIds.Contains( r.Id ) )
-                                                    .Select( r => r.SnapPolicy.SnapPolicyPartnerValue)
+                                                    .Select( r => new {
+                                                                        activityId = r.ActivityId,
+                                                                        partnerValues = r.SnapPolicy.SnapPolicyPartnerValue
+                                                                    }
+                                                                )
                                                     .ToList();
-                var partnerValues = new List<SnapPolicyPartnerValue>();
+                /* var partnerValues = new List<SnapPolicyPartnerValue>();
                 foreach( var byPartnr in byPartner){
                     partnerValues.AddRange( byPartnr);
-                }
+                } */
                 var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
                 foreach( var partner in partners){
+                    var activityIdsPerPartner = new List<int>();
                     
+                    foreach( var prtnr in byPartner ){
+                        var rv = prtnr.partnerValues.Where( p => p.SnapPolicyPartnerId == partner.Id && p.Value != 0).FirstOrDefault();
+                        if(rv != null){
+                            activityIdsPerPartner.Add(prtnr.activityId);
+                        }
+                    }
+
+
                     var row = dt.ToString("yyyyMM") + ",";
                     row += dt.ToString("yyyy-MMM") + ",";
                     row += string.Concat( "\"", partner.Name, "\"") + ",";
-                    row += partnerValues.Where( p => p.SnapPolicyPartnerId == partner.Id && p.Value != 0).Count().ToString();
+                    row += context.Activity.Where( a => activityIdsPerPartner.Contains(a.Id)).GroupBy( g => g.KersUserId).Count().ToString();
                     result += row + "\n";
                 }
             }
