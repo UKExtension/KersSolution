@@ -15,7 +15,7 @@ export class FiscalyearFormComponent implements OnInit{
     @Input() fiscalyear:FiscalYear = null;
     errorMessage: string;
     public options: Object;
-    private myDatePickerOptions: IMyDpOptions = {
+    myDatePickerOptions: IMyDpOptions = {
         // other options...
             dateFormat: 'mm/dd/yyyy',
             showTodayBtn: false,
