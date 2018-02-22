@@ -99,7 +99,7 @@ namespace Kers.Tasks.Services{
             log.Description = description;
             log.Type = className;
             this.context.Log.Add(log);
-            context.SaveChangesAsync();
+            context.SaveChanges();
 
         }
 
