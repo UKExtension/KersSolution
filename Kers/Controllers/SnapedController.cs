@@ -48,9 +48,11 @@ namespace Kers.Controllers
                 userId = user.Id;
             }
             var hours = context.Activity.
-                                Where(e=>e.KersUser.Id == userId && e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().isSnap ).
-                                Sum( h => Math.Floor(h.Hours));
-            return new OkObjectResult(hours);
+                                Where(e=>e.KersUser.Id == userId )
+                                .Include( a => a.Revisions)
+                                .ToList();
+            var hrs = hours.Where( e => e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().isSnap).Sum( h => Math.Floor(h.Hours));
+            return new OkObjectResult(hrs);
             
         }
         [HttpGet("copies/{userId?}")]
@@ -61,11 +63,11 @@ namespace Kers.Controllers
                 userId = user.Id;
             }
             var hours = context.Activity.
-                                Where(e=>e.KersUser.Id == userId && e.Revisions.OrderBy(r => r.Created).Last().isSnap ).
-                                Include( s => s.Revisions);
-
+                                Where(e=>e.KersUser.Id == userId ).
+                                Include( s => s.Revisions).ToList();
+            var hrs = hours.Where( e => e.Revisions.OrderBy(r => r.Created).Last().isSnap);
             var sum = 0;
-            foreach( var sn in hours){
+            foreach( var sn in hrs){
                 sum += sn.Revisions.OrderBy( r => r.Created).Last().SnapCopies;
             }
                                 //Sum( h => h.Revisions.OrderBy(r => r.Created).Last().SnapCopies);
@@ -123,8 +125,7 @@ namespace Kers.Controllers
                 userId = user.Id;
             }
             var lastActivities = context.Activity.
-                                Where(e=>e.KersUser.Id == userId && e.Revisions.OrderBy(r => r.Created).Last().isSnap && e.ActivityDate > new DateTime(2017, 10, 1) ).
-                                OrderByDescending(e=>e.Revisions.OrderBy( a => a.Created.ToString("s")).Last().ActivityDate).
+                                Where(e=>e.KersUser.Id == userId && e.ActivityDate > new DateTime(2017, 10, 1) ).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
@@ -134,13 +135,15 @@ namespace Kers.Controllers
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner).
+                                Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner)
+                                .ToList();
+            var lst = lastActivities.Where( e => e.Revisions.OrderBy(r => r.Created).Last().isSnap).
+                                OrderByDescending(e=>e.Revisions.OrderBy( a => a.Created.ToString("s")).Last().ActivityDate).
                                 Skip(skip).
                                 Take(amount);
-            
             var revs = new List<ActivityRevision>();
-            if(lastActivities != null){
-                foreach(var activity in lastActivities){
+            if(lst != null){
+                foreach(var activity in lst){
                     revs.Add( activity.Revisions.OrderBy(r=>r.Created).Last() );
                 }
                 foreach( var a in revs){
@@ -173,9 +176,10 @@ namespace Kers.Controllers
                 userId = user.Id;
             }
             var lastActivities = context.Activity.
-                                Where(e=>e.KersUser.Id == userId && e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().isSnap && e.ActivityDate > new DateTime(2017, 10, 1) );
+                                Where(e=>e.KersUser.Id == userId && e.ActivityDate > new DateTime(2017, 10, 1) )
+                                .ToList();
             
-            
+            var withSnap = lastActivities.Where(e => e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().isSnap);
             return new OkObjectResult(lastActivities.Count());
         }
 

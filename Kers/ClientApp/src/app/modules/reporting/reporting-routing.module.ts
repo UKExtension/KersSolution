@@ -65,6 +65,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/contact/contact.module#ContactModule'
           },
           {
+            path: 'snaped', 
+            loadChildren: './modules/snap-ed/snap-ed.module#SnapEdModule'
+          },
+          {
             path: 'story', 
             loadChildren: './modules/story/story.module#StoryModule'
           },
