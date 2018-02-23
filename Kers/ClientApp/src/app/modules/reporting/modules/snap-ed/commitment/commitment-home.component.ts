@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SnapEdCommitmentService, CommitmentBundle } from '../snap-ed-commitment.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-commitment-home',
@@ -7,9 +9,10 @@ import { ActivatedRoute } from '@angular/router';
   styles: []
 })
 export class CommitmentHomeComponent implements OnInit {
-  commitment;
+  commitment:CommitmentBundle;
   constructor(
     private route: ActivatedRoute,
+    private service: SnapEdCommitmentService
   ) { }
 
   ngOnInit() {
@@ -17,14 +20,13 @@ export class CommitmentHomeComponent implements OnInit {
   }
   getCommitment(): void {
     const userid = this.route.snapshot.paramMap.get('userid');
-
-    console.log(userid);
     const fiscalyearid = this.route.snapshot.paramMap.get('fiscalyearid');
-
-    console.log(fiscalyearid);
-
-    /* this.heroService.getHero(id)
-      .subscribe(hero => this.hero = hero); */
+    this.service.getSnapCommitments().subscribe(
+      res => {
+            this.commitment = <CommitmentBundle> res;
+            console.log( this.commitment );
+        }
+    );
   }
 
 }

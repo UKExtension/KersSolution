@@ -6,6 +6,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { CommitmentHomeComponent } from './commitment/commitment-home.component';
 import { SnapEdCommitmentService } from './snap-ed-commitment.service';
 import { SnapEdHomeComponent } from './snap-ed-home.component';
+import { CommitmentFormComponent } from './commitment/commitment-form.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { SnapEdHomeComponent } from './snap-ed-home.component';
   ],
   declarations: [
     CommitmentHomeComponent,
-    SnapEdHomeComponent
+    SnapEdHomeComponent,
+    CommitmentFormComponent
   ],
   providers: [
     SnapEdCommitmentService
