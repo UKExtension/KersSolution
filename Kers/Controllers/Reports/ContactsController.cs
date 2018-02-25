@@ -482,7 +482,53 @@ namespace Kers.Controllers.Reports
         }
 
 
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IActionResult> ContactsByCountyByMajorProgram()
+        {
+            var counties = await this.context.PlanningUnit
+                                    .Where( u => 
+                                                u.District != null
+                                                &&
+                                                u.Name.Substring( u.Name.Length - 3) == "CES"
+                                           )
+                                    .OrderBy( u => u.Name)
+                                    .ToListAsync();
+            var majorPrograms = await this.context.MajorProgram
+                                    .Where( u => 
+                                                
+                                                u.StrategicInitiative.FiscalYear == fiscalYearRepository.currentFiscalYear(FiscalYearType.ServiceLog)
+                                           )
+                                    .OrderBy( u => u.Name)
+                                    .ToListAsync();
+            var header = new List<string>();
+            header.Add( "Counties" );
+            foreach( var program in majorPrograms){
+                header.Add(program.Name);
+            }
+            var rows = new List<List<string>>();
+            foreach( var county in counties ){
+                var row = new List<string>();
+                row.Add( county.Name );
 
+                // Add county numbers
+                foreach( var prgrm in majorPrograms){
+                    var sm = context.Activity.Where( a => a.MajorProgramId == prgrm.Id && a.PlanningUnitId == county.Id && a.ActivityDate.Year < 2018).Sum(s => s.Audience);
+                    row.Add(sm.ToString());
+                }
+
+                rows.Add(row);
+
+            }
+
+
+
+            var table = new TableViewModel();
+            table.Header = header;
+            table.Rows = rows;
+            table.Foother = new List<string>();
+            return View(table);
+        }
 
 
 
