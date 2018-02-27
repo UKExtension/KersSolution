@@ -16,7 +16,7 @@ export class CommitmentHomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getCommitment();
+    //this.getCommitment();
   }
   getCommitment(): void {
     const userid = this.route.snapshot.paramMap.get('userid');

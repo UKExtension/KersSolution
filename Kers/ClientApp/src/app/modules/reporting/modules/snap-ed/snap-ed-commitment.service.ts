@@ -59,6 +59,7 @@ export interface SnapEdCommitment{
 export interface SnapEdActivityType{
   id:number;
   name:string;
+  measurement: string;
   common_FiscalYearId?:number;
   fiscalYear:FiscalYear;
   perProject:boolean;

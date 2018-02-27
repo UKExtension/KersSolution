@@ -94,10 +94,21 @@ export class SnapedService {
 
 
 
+    comitmentActivityTypes(fiscalyearid:number = 0){
+        var url = this.baseUrl + 'activitytypes' + '/' + fiscalyearid;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => res.json() )
+                .catch(this.handleError);
+    }
 
-
-    comitmentProjectTypes(){
-        var url = this.baseUrl + 'projecttypes';
+    comitmentProjectTypes(fiscalyearid:number = 0){
+        var url = this.baseUrl + 'projecttypes' + '/' + fiscalyearid;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => res.json() )
+                .catch(this.handleError);
+    }
+    comitmentReinforcementItems(fiscalyearid:number = 0){
+        var url = this.baseUrl + 'reinforcementitems' + '/' + fiscalyearid;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => res.json() )
                 .catch(this.handleError);

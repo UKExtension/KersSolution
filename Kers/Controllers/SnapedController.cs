@@ -251,16 +251,42 @@ namespace Kers.Controllers
         }
 
         
-        [HttpGet("activitytypes")]
-        public IActionResult ActivityTypes(){
+        [HttpGet("activitytypes/{fiscalyearid?}")]
+        public IActionResult ActivityTypes(int fiscalyearId = 0){
+            FiscalYear fiscalYear;
+            if(fiscalyearId == 0){
+                fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.SnapEd);
+            }else{
+                fiscalYear = context.FiscalYear.Find(fiscalyearId);
+            }
 
-            var committed = context.SnapEd_ActivityType;
+            var committed = context.SnapEd_ActivityType.Where(a => a.FiscalYear == fiscalYear);
             return new OkObjectResult(committed);
         }
-        [HttpGet("projecttypes")]
-        public IActionResult ProjectTypes(){
+        [HttpGet("projecttypes/{fiscalyearid?}")]
+        public IActionResult ProjectTypes(int fiscalyearId = 0){
+            FiscalYear fiscalYear;
+            if(fiscalyearId == 0){
+                fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.SnapEd);
+            }else{
+                fiscalYear = context.FiscalYear.Find(fiscalyearId);
+            }
 
-            var committed = context.SnapEd_ProjectType;
+
+            var committed = context.SnapEd_ProjectType.Where(a => a.FiscalYear == fiscalYear);
+            return new OkObjectResult(committed);
+        }
+        [HttpGet("reinforcementitems/{fiscalyearid?}")]
+        public IActionResult ReinforcementItems(int fiscalyearId = 0){
+            FiscalYear fiscalYear;
+            if(fiscalyearId == 0){
+                fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.SnapEd);
+            }else{
+                fiscalYear = context.FiscalYear.Find(fiscalyearId);
+            }
+
+
+            var committed = context.SnapEd_ReinforcementItem.Where(a => a.FiscalYear == fiscalYear);
             return new OkObjectResult(committed);
         }
 
