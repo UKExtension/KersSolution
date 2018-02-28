@@ -40,6 +40,15 @@ namespace Kers.Controllers
                 this.fiscalYearRepo = fiscalYearRepo;
         }
 
+        [HttpGet]
+        [Route("[action]/{FyName}")]
+        public async Task<IActionResult> FiscalYearByName( string FyName)
+        {
+            var fy = await this.context.FiscalYear
+                                    .Where(y => y.Name == FyName && y.Type == FiscalYearType.SnapEd)
+                                    .FirstOrDefaultAsync();
+            return new OkObjectResult(fy);
+        }
 
         
 
@@ -74,7 +83,7 @@ namespace Kers.Controllers
                                     i.KersUser == user
                                     &&
                                     i.FiscalYear == fiscalYear
-                                );
+                                ).FirstOrDefault();
 
             return new OkObjectResult(new {Commitments = committed, Items = items, Suggestion = itemSuggestion});
         }
@@ -84,32 +93,70 @@ namespace Kers.Controllers
 
 
         
-        [HttpGet("activitytypes/{fiscalyearId?}")]
-        public IActionResult ActivityTypes(int fiscalyearId = 0){
-            FiscalYear fiscalYear;
-            if(fiscalyearId == 0){
-                fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.SnapEd);
+        [HttpPost()]
+        [Authorize]
+        public IActionResult AddOrEditCommitment( [FromBody] CommitmentBundle commitment){
+            
+            if(commitment != null){
+                KersUser user;
+                if(commitment.Userid == 0){
+                    user = this.CurrentUser();
+                }else{
+                    user = context.KersUser.Find(commitment.Userid);
+                }
+                FiscalYear fiscalYear;
+                if(commitment.Fiscalyearid == 0){
+                    fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.SnapEd);
+                }else{
+                    fiscalYear = context.FiscalYear.Find(commitment.Fiscalyearid);
+                }
+
+                foreach( var commtmnt in commitment.Commitments){
+                    commtmnt.KersUser = user;
+                    commtmnt.FiscalYear = fiscalYear;
+                    commtmnt.KersUserId = user.classicReportingProfileId;
+                }
+                foreach( var item in commitment.Items){
+                    item.KersUser = user;
+                    item.FiscalYear = fiscalYear;
+                    item.zEmpProfileId = user.classicReportingProfileId;
+                }
+
+
+                var currentCommitment = context.SnapEd_Commitment.Where( c => c.KersUser == user && c.FiscalYear == fiscalYear);
+                context.SnapEd_Commitment.RemoveRange(currentCommitment);
+                var currnetItemsChoice = context.SnapEd_ReinforcementItemChoice.Where( c => c.KersUser == user && c.FiscalYear == fiscalYear);
+                context.SnapEd_ReinforcementItemChoice.RemoveRange(currnetItemsChoice);
+                var currentSuggestion = context.SnapEd_ReinforcementItemSuggestion.Where( c => c.KersUser == user && c.FiscalYear == fiscalYear);
+                context.SnapEd_ReinforcementItemSuggestion.RemoveRange(currentSuggestion);
+
+                context.SnapEd_Commitment.AddRange(commitment.Commitments);
+                context.SnapEd_ReinforcementItemChoice.AddRange(commitment.Items);
+                if(commitment.Suggestion != ""){
+                    var sug = new SnapEd_ReinforcementItemSuggestion();
+                    sug.FiscalYear = fiscalYear;
+                    sug.KersUser = user;
+                    sug.zEmpProfileId = user.classicReportingProfileId;
+                    sug.Suggestion = commitment.Suggestion;
+                    context.SnapEd_ReinforcementItemSuggestion.Add(sug);
+                }
+                
+                this.Log(commitment, "CommitmentBundle", "Snap-Ed commitment added or updated.");
+                context.SaveChanges();
+                return new OkObjectResult(commitment);
             }else{
-                fiscalYear = context.FiscalYear.Find(fiscalyearId);
+                this.Log( commitment ,"CommitmentBundle", "Not Found Commitment Bundle in an adding/editent attempt.", "Commitment", "Error");
+                return new StatusCodeResult(500);
             }
-            var types = context.SnapEd_ActivityType.Where( t => t.FiscalYear == fiscalYear);
-            return new OkObjectResult(types);
         }
-        [HttpGet("projecttypes/{fiscalyearId?}")]
-        public IActionResult ProjectTypes(int fiscalyearId = 0){
-            FiscalYear fiscalYear;
-            if(fiscalyearId == 0){
-                fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.SnapEd);
-            }else{
-                fiscalYear = context.FiscalYear.Find(fiscalyearId);
-            }
-            var types = context.SnapEd_ProjectType.Where( t => t.FiscalYear == fiscalYear);
-            return new OkObjectResult(types);
-        }
+    }
 
-
-
-        
+    public class CommitmentBundle{
+        public List<SnapEd_Commitment> Commitments;
+        public List<SnapEd_ReinforcementItemChoice> Items;
+        public string Suggestion;
+        public int Userid;
+        public int Fiscalyearid;
 
     }
 }

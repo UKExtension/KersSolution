@@ -9,12 +9,29 @@ import { User } from '../user/user.service';
 @Injectable()
 export class SnapEdCommitmentService {
   baseUrl = '/api/snapedcommitment/';
+  commitmentFiscalYearName = "2019";
 
   constructor(
       private http:AuthHttp, 
       private location:Location
   ) { }
 
+  commitmentFiscalYear():Observable<FiscalYear>{
+    var url = this.baseUrl + 'FiscalYearByName/'+ this.commitmentFiscalYearName;
+    return this.http.get(this.location.prepareExternalUrl(url))
+            .map(res => <FiscalYear>res.json())
+            .catch(this.handleError);
+  }
+
+  addOrEditCommitment(commitment:CommitmentBundle){
+    return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(commitment), this.getRequestOptions())
+                    .map( res => {
+                    
+                        var ret = <CommitmentBundle>res.json();
+                        return ret;
+                    } )
+                    .catch(this.handleError);
+  }
 
   getSnapCommitments(userid:number = 0, fisclyearid = 0):Observable<CommitmentBundle>{
     var url = this.baseUrl + 'commitments/'+ fisclyearid + '/' + userid;
@@ -102,5 +119,6 @@ export interface CommitmentBundle{
   commitments:SnapEdCommitment[];
   items: SnapEdReinforcementItemChoice[];
   suggestion: SnapEd_ReinforcementItemSuggestion;
-
+  userid:number;
+  fisclyearid:number;
 }

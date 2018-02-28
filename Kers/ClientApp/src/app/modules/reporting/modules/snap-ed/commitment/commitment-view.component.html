@@ -4,19 +4,20 @@
   <strong>Error: </strong> {{errorMessage}}
 </div>
 <loading *ngIf="loading"></loading>
+<h2>SNAP-Ed Commitment Worksheet for October 1, 2018 - September 30, 2019
+  </h2><br><br>
 <div class="row" *ngIf="!loading">
-  <div><reporting-display-help id="1"></reporting-display-help></div>
-  <div class="col-lg-offset-3 col-lg-9">
-      <h2>SNAP-Ed Commitment Worksheet for October 1, 2018 - September 30, 2019
-    </h2><br><br>
+  <div *ngIf="commitment.commitments.length == 0">
+    <h4>You did not entered your commitment yet.</h4>
   </div>
-  <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="commitmentForm">
-      
-      <div class="form-group">
+  <div *ngIf="commitment.commitments.length != 0">
+
+
+      <div class="row">
           <label class="col-lg-3 col-xs-12">Commitment Hours:</label> 
           <div class="col-lg-9 col-xs-12">
               <div class="table-responsive snap-audience">
-                  <table class="table table-striped table-bordered" formArrayName="hoursCommitment">
+                  <table class="table table-striped table-bordered">
                       <thead>
                           <tr>
                               <th>&nbsp;</th>
@@ -26,14 +27,14 @@
                       <tbody>
                           <tr *ngFor="let pt of projectTypes">
                               <td>{{pt.name}}: </td>
-                              <td *ngFor="let hType of hoursActivityTypes" [formGroupName]="rIndex()">
-                                  <input type="number" formControlName="amount">
+                              <td *ngFor="let hType of hoursActivityTypes" >
+                                  {{valuePerCommitment(hType, pt)}}
                               </td>
                           </tr>
-
+  
                           <tr>
                               <td><b>TOTALS: </b></td>
-                              <td *ngFor="let hType of hoursActivityTypes">{{totalByActivityTypeHours(hType)}}</td>
+                              <td *ngFor="let hType of hoursActivityTypes">{{totalPerType(hType)}}</td>
                           </tr>
                       </tbody>
                   </table>
@@ -41,18 +42,16 @@
           
           </div>
       </div>
-
+  
     <div class="form-group">
       <label class="col-lg-3 col-xs-12">Administrative Hours:</label> 
       <div class="col-lg-9 col-xs-12">
           <div class="table-responsive snap-audience">
-              <table class="table table-striped table-bordered" formArrayName="adminCommitment">
+              <table class="table table-striped table-bordered">
                   <tbody>
-                      <tr *ngFor="let pt of notPerProjectActivityTypes; let i = index">
+                      <tr *ngFor="let pt of notPerProjectActivityTypes">
                           <td>{{pt.name}}: </td>
-                          <td [formGroupName]="i">
-                              <input type="number" formControlName="amount">
-                          </td>
+                          <td>{{valuePerCommitment(pt)}}</td>
                       </tr>
                   </tbody>
               </table>
@@ -65,7 +64,7 @@
           <label class="col-lg-3 col-xs-12">Commitment Contacts:</label> 
           <div class="col-lg-9 col-xs-12">
               <div class="table-responsive snap-audience">
-                  <table class="table table-striped table-bordered" formArrayName="contactsCommitment">
+                  <table class="table table-striped table-bordered">
                       <thead>
                           <tr>
                               <th>&nbsp;</th>
@@ -75,14 +74,14 @@
                       <tbody>
                           <tr *ngFor="let pt of projectTypes">
                               <td>{{pt.name}}: </td>
-                              <td *ngFor="let hType of contactsActivityTypes" [formGroupName]="cIndex()">
-                                  <input type="number" formControlName="amount">
-                              </td>
+                              <td *ngFor="let hType of contactsActivityTypes">
+                                    {{valuePerCommitment(hType, pt)}}
+                               </td>
                           </tr>
   
                           <tr>
                               <td><b>TOTALS: </b></td>
-                              <td *ngFor="let hType of contactsActivityTypes">{{totalByActivityTypeContacts(hType)}}</td>
+                              <td *ngFor="let hType of contactsActivityTypes">{{totalPerType(hType)}}</td>
                           </tr>
                       </tbody>
                   </table>
@@ -92,35 +91,33 @@
       </div>
       <div class="col-md-12"><br>
           <h4>Help NEP Decide POSSIBLE Reinforcement Items
-<small>Click below next to items desired.</small></h4><br>
-          <div class="row" formArrayName="items">
+  <small>Click below next to items desired.</small></h4><br>
 
-                      <div *ngFor="let opt of commitmentForm.controls.items.controls; let i=index" [formGroupName]="i"  class="col-md-4 checkbox">
-                          <label>
-                              <input type="checkbox" id="item_1" formControlName="selected">&nbsp;{{reinforcementItems[i].name}}
-                          </label>
-                      </div>
 
-              
-          </div>
+  <div class="row fontawesome-icon-list">
+                                                
+        <div *ngFor="let opt of reinforcementItems" class="col-md-4 fa-hover">
+            <i class="fa" [class.fa-close]="!isItemSelected(opt)" [class.fa-check]="isItemSelected(opt)"></i> {{opt.name}}
+        </div>
+    
+        
+    
+</div>
+
+
+
+
+
       </div>
       <div class="col-xs-12"><br><br></div>
-
+  
       <div class="form-group">
-        <label class="col-lg-3 col-xs-12">Suggested Incentive items:</label> 
-        <div class="col-lg-9 col-xs-12">
-          <input type="text" name="suggestion" formControlName="suggestion" id="suggestion" class="form-control col-xs-12" />
-        </div>
+        <label class="col-lg-3 col-xs-12">Suggested Incentive items: </label> 
+        <div class="col-lg-9 col-xs-12">{{getSuggestion()}}</div>
       </div><br>
+  </div>
 
-     
-      <div class="ln_solid col-xs-12 "></div>
-      <div class="form-group">
-          <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-              <button type="submit" [disabled]="commitmentForm.invalid"  class="btn btn-success">Submit</button>
-          </div>
-      </div>
- 
-  </form>
-</div>
+  <div class="col-xs-12"><br><br></div>
+
+  </div>
+    
