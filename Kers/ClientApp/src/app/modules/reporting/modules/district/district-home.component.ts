@@ -13,7 +13,7 @@ import { PlanningUnit } from '../user/user.service';
 @Component({
   template: `
     <div class="text-right"><a class="btn btn-default btn-xs" routerLink="/reporting/state">State Admin Dashboard</a></div>
-    
+    <div><reporting-display-help id="7"></reporting-display-help></div>
     <county-list [district]="district" *ngIf="district"></county-list>
 
 

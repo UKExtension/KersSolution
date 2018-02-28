@@ -31,6 +31,9 @@ export class CommitmentHomeComponent implements OnInit {
     this.service.getSnapCommitments().subscribe(
       res => {
             this.commitment = <CommitmentBundle> res;
+            if(this.commitment.commitments.length == 0){
+              this.isItJustView = false;
+            }
             //console.log( this.commitment );
         }
     );
