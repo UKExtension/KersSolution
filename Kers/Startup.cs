@@ -14,6 +14,8 @@ using Kers.Services.Abstract;
 using Kers.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
+using Kers.Tasks;
+using Kers.Tasks.Scheduling;
 
 namespace Kers
 {
@@ -124,6 +126,20 @@ namespace Kers
             services.AddScoped<ISnapPolicyRepository, SnapPolicyRepository>();
             services.AddScoped<IMembershipService, MembershipService>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+
+            // Add scheduled tasks & scheduler
+            services.AddSingleton<IScheduledTask, QuoteOfTheDayTask>();
+            services.AddSingleton<IScheduledTask, SomeOtherTask>();
+            services.AddScheduler((sender, args) =>
+            {
+                //Console.Write(args.Exception.Message);
+                args.SetObserved();
+            });
+
+
+
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
