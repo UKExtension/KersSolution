@@ -129,8 +129,7 @@ namespace Kers
 
 
             // Add scheduled tasks & scheduler
-            services.AddSingleton<IScheduledTask, QuoteOfTheDayTask>();
-            services.AddSingleton<IScheduledTask, SomeOtherTask>();
+            services.AddSingleton<IScheduledTask, SnapSummaryByMonthTask>();
             services.AddScheduler((sender, args) =>
             {
                 //Console.Write(args.Exception.Message);
