@@ -5,7 +5,7 @@
 
     <div *ngIf="condition">
         <div class="ln_solid"></div>
-        <div [innerHTML]="help.body" class="fr-view"></div>
+        <div [innerHTML]="help.body | safeHtml" class="fr-view"></div>
         <div class="fa-hover text-right">
             <a (click)="condition = !condition"><i class="fa fa-question-circle"></i>hide &nbsp;</a>
         </div>
