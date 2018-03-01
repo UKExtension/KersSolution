@@ -21,7 +21,7 @@ namespace Kers.Models.Contexts.Initializers
         public static void Initialize(IServiceProvider serviceProvider)
         {
             var context = serviceProvider.GetRequiredService<KERScoreContext>();
-            TransferSnapEdToNextFiscalYear(context);
+            //TransferSnapEdToNextFiscalYear(context);
         }
         private static void TransferSnapEdToNextFiscalYear(KERScoreContext db){
             var nextYear = DateTime.Now.AddYears( 1 );
