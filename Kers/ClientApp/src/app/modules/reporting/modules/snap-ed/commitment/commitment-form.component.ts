@@ -133,7 +133,9 @@ export class CommitmentFormComponent implements OnInit {
       if( typeof this.commitment.suggestion === 'string'){
         this.commitmentForm.patchValue({suggestion:this.commitment.suggestion});
       }else{
-        this.commitmentForm.patchValue({suggestion:this.commitment.suggestion.suggestion});
+        if(this.commitment.suggestion != null){
+          this.commitmentForm.patchValue({suggestion:this.commitment.suggestion.suggestion});
+        }
       }
     }
   }
