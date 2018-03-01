@@ -21,13 +21,6 @@ namespace Kers.Models.Contexts.Initializers
         public static void Initialize(IServiceProvider serviceProvider)
         {
             var context = serviceProvider.GetRequiredService<KERScoreContext>();
-            //context.Database.EnsureCreated();
-            /* if (!context.Tenants.Any())
-            {
-                context.Tenants.Add(new Tenant() { Name = "Hello", Host = "hello", Style = "red.css" });
-                context.Tenants.Add(new Tenant() { Name = "Sample", Host = "sample", Style = "blue.css" });
-                context.SaveChanges();
-            } */
             TransferSnapEdToNextFiscalYear(context);
         }
         private static void TransferSnapEdToNextFiscalYear(KERScoreContext db){
@@ -59,11 +52,22 @@ namespace Kers.Models.Contexts.Initializers
                         newProject.Name = prj.Name;
                         db.Add(newProject);
                     }
-                    var currentFiscalYearReinforcementItems = db.SnapEd_ReinforcementItem.Where( i => i.Common_FiscalYearId == currentFiscalYear.Id);
-                    foreach( var itm in currentFiscalYearReinforcementItems){
+                    //var currentFiscalYearReinforcementItems = db.SnapEd_ReinforcementItem.Where( i => i.Common_FiscalYearId == currentFiscalYear.Id);
+                    var items = new string[]{
+                        "Dry measuring cups",
+                        "Meat thermometers",
+                        "Measuring spoons",
+                        "Nylon spatula/turner",
+                        "Rubber jar openers",
+                        "Youth water bottles",
+                        "Youth mini footballs",
+                        "Gardening gloves",
+                        "Farmers market tote bags"
+                    };
+                    foreach( var itm in items){
                         var newItem = new SnapEd_ReinforcementItem();
                         newItem.FiscalYear = nextFiscalYear;
-                        newItem.Name = itm.Name;
+                        newItem.Name = itm;
                         db.Add(newItem);
                     }
 
