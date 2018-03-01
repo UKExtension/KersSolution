@@ -130,6 +130,11 @@ namespace Kers
 
             // Add scheduled tasks & scheduler
             services.AddSingleton<IScheduledTask, SnapSummaryByMonthTask>();
+            services.AddSingleton<IScheduledTask, SnapByAimedTowardImprovementTask>();
+            services.AddSingleton<IScheduledTask, SnapPersonalHourDetailsTask>();
+            services.AddSingleton<IScheduledTask, SnapSitesPerPersonPerMonthTask>();
+            services.AddSingleton<IScheduledTask, SnapSummaryByCountyTask>();
+            services.AddSingleton<IScheduledTask, SnapSummaryByEmployeeTask>();
             services.AddScheduler((sender, args) =>
             {
                 //Console.Write(args.Exception.Message);

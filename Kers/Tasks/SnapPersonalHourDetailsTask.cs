@@ -15,18 +15,18 @@ using Newtonsoft.Json.Linq;
 namespace Kers.Tasks
 {
     // uses https://theysaidso.com/api/
-    public class SnapSummaryByMonthTask : TaskBase, IScheduledTask
+    public class SnapPersonalHourDetailsTask : TaskBase, IScheduledTask
     {
         //KERScoreContext context;
         IServiceProvider serviceProvider;
-        public SnapSummaryByMonthTask(
+        public SnapPersonalHourDetailsTask(
             //KERScoreContext context
             IServiceProvider serviceProvider
         ){
             //this.context = context;
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "18 0 * * *";
+        public string Schedule => "58 0 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -41,11 +41,11 @@ namespace Kers.Tasks
                 var fiscalYearRepo = new FiscalYearRepository( context );
                 var repo = new SnapDirectRepository(context, cache, mainContext);
                 var startTime = DateTime.Now;
-                var str = repo.TotalByMonth(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
+                var str = repo.PersonalHourDetails(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
                 var endTime = DateTime.Now;
                 await LogComplete(context, 
-                                    "SnapSummaryByMonthTask", str, 
-                                    "Snap Summary By Month Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    "SnapPersonalHourDetailsTask", str, 
+                                    "Snap Personal Hour Details Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
                                 );
             }
 
