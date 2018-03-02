@@ -15,7 +15,7 @@ namespace Kers.Tasks.Scheduling
 
         public SchedulerHostedService(IEnumerable<IScheduledTask> scheduledTasks)
         {
-            var referenceTime = DateTime.UtcNow;
+            var referenceTime = DateTime.Now;
             
             foreach (var scheduledTask in scheduledTasks)
             {
@@ -41,7 +41,7 @@ namespace Kers.Tasks.Scheduling
         private async Task ExecuteOnceAsync(CancellationToken cancellationToken)
         {
             var taskFactory = new TaskFactory(TaskScheduler.Current);
-            var referenceTime = DateTime.UtcNow;
+            var referenceTime = DateTime.Now;
             
             var tasksThatShouldRun = _scheduledTasks.Where(t => t.ShouldRun(referenceTime)).ToList();
 
