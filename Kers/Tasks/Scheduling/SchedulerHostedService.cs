@@ -23,7 +23,7 @@ namespace Kers.Tasks.Scheduling
                 {
                     Schedule = CrontabSchedule.Parse(scheduledTask.Schedule),
                     Task = scheduledTask,
-                    NextRunTime = referenceTime
+                    NextRunTime = CrontabSchedule.Parse(scheduledTask.Schedule).GetNextOccurrence(referenceTime)
                 });
             }
         }
