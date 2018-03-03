@@ -36,6 +36,7 @@ namespace Kers.Controllers
         IActivityRepository activityRepo;
         ISnapDirectRepository snapDirectRepo;
         ISnapPolicyRepository snapPolicyRepo;
+        ISnapFinancesRepository snapFinancesRepo;
         const string LogType = "SnapEdData";
         public SnapedDataController( 
                     KERSmainContext mainContext,
@@ -45,13 +46,15 @@ namespace Kers.Controllers
                     IFiscalYearRepository fiscalRepo,
                     IActivityRepository activityRepo,
                     ISnapDirectRepository snapDirectRepo,
-                    ISnapPolicyRepository snapPolicyRepo
+                    ISnapPolicyRepository snapPolicyRepo,
+                    ISnapFinancesRepository snapFinancesRepo
             ):base(mainContext, context, userRepo){
                 this.fiscalRepo = fiscalRepo;
                 this._cache = _cache;
                 this.activityRepo = activityRepo;
                 this.snapDirectRepo = snapDirectRepo;
                 this.snapPolicyRepo = snapPolicyRepo;
+                this.snapFinancesRepo = snapFinancesRepo;
         }
     
         [HttpGet]
@@ -695,8 +698,11 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
+
+            //var result = CopiesReportPerCounty( fiscalYear, 1);
+            var result = snapFinancesRepo.CopiesSummarybyCountyAgents(fiscalYear);
             
-            return Ok( CopiesReportPerCounty( fiscalYear, 1) );
+            return Ok( result );
         }
 
         [HttpGet]
@@ -710,13 +716,16 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
+
+            //var result = CopiesReportPerCounty( fiscalYear, 2);
+            var result = snapFinancesRepo.CopiesSummarybyCountyNotAgents(fiscalYear);
             
-            return Ok( CopiesReportPerCounty( fiscalYear, 2) );
+            return Ok( result );
         }
 
 
         // type: 1 agents, 2 non agents
-        private string CopiesReportPerCounty(FiscalYear fiscalYear, int type){
+        /* private string CopiesReportPerCounty(FiscalYear fiscalYear, int type){
 
             var keys = new List<string>();
             keys.Add("YearMonth");
@@ -811,7 +820,7 @@ namespace Kers.Controllers
                
             }
             return result;
-        }
+        } */
 
 
 
@@ -826,8 +835,9 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            
-            return Ok( CopiesReportDetails( fiscalYear, 1) );
+            //var result = CopiesReportDetails( fiscalYear, 1);
+            var result = snapFinancesRepo.CopiesDetailAgents(fiscalYear);
+            return Ok( result );
         }
 
         [HttpGet]
@@ -842,10 +852,12 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
             
-            return Ok( CopiesReportDetails( fiscalYear, 2) );
+            //var result = CopiesReportDetails( fiscalYear, 2);
+            var result = snapFinancesRepo.CopiesDetailNotAgents(fiscalYear);
+            return Ok( result );
         }
 
-        private string CopiesReportDetails(FiscalYear fiscalYear, int type){
+        /* private string CopiesReportDetails(FiscalYear fiscalYear, int type){
 	
 
             var keys = new List<string>();
@@ -944,7 +956,7 @@ namespace Kers.Controllers
             }
 
             return result;
-        }
+        } */
 
 
         private List<ActivityRevisionsPerMonth> RevisionsWithIndirectContactsPerMonth( FiscalYear fiscalYear){
