@@ -15,6 +15,10 @@ namespace Kers.Models.Repositories
         public static string SitesPerPersonPerMonth = "SitesPerPersonPerMonth";
         public static string PersonalHourDetails = "PersonalHourDetails";
         public static string AimedTowardsImprovement = "AimedTowardsImprovement";
+        public static string CopiesSummarybyCountyAgents = "CopiesSummarybyCountyAgents";
+        public static string CopiesSummarybyCountyNotAgents = "CopiesSummarybyCountyNotAgents";
+        public static string CopiesDetailAgents = "CopiesDetailAgents";
+        public static string CopiesDetailANotAgents = "CopiesDetailANotAgents";
 
     }
 }

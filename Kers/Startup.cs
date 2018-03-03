@@ -124,6 +124,7 @@ namespace Kers
             services.AddScoped<IAffirmativeActionPlanRevisionRepository, AffirmativeActionPlanRevisionRepository>();
             services.AddScoped<ISnapDirectRepository, SnapDirectRepository>();
             services.AddScoped<ISnapPolicyRepository, SnapPolicyRepository>();
+            services.AddScoped<ISnapFinancesRepository, SnapFinancesRepository>();
             services.AddScoped<IMembershipService, MembershipService>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -135,9 +136,13 @@ namespace Kers
             services.AddSingleton<IScheduledTask, SnapSitesPerPersonPerMonthTask>();
             services.AddSingleton<IScheduledTask, SnapSummaryByCountyTask>();
             services.AddSingleton<IScheduledTask, SnapSummaryByEmployeeTask>();
+            services.AddSingleton<IScheduledTask, SnapByPartnerCategoryTask>();
+            services.AddSingleton<IScheduledTask, SnapCopiesDetailAgentsTask>();
+            services.AddSingleton<IScheduledTask, SnapCopiesDetailNotAgentsTask>();
+            services.AddSingleton<IScheduledTask, SnapCopiesSummarybyCountyAgentsTask>();
+            services.AddSingleton<IScheduledTask, SnapCopiesSummarybyCountyNotAgentsTask>();
             services.AddScheduler((sender, args) =>
             {
-                //Console.Write(args.Exception.Message);
                 args.SetObserved();
             });
 

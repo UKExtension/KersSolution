@@ -41,7 +41,7 @@ namespace Kers.Tasks
                 var fiscalYearRepo = new FiscalYearRepository( context );
                 var repo = new SnapDirectRepository(context, cache, mainContext);
                 var startTime = DateTime.Now;
-                var str = repo.PersonalHourDetails(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
+                var str = repo.SitesPerPersonPerMonth(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
                 var endTime = DateTime.Now;
                 await LogComplete(context, 
                                     "SnapSitesPerPersonPerMonthTask", str, 

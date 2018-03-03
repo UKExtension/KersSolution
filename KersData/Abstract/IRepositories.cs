@@ -78,5 +78,12 @@ namespace Kers.Models.Abstract
         string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false);
         string PartnerCategory(FiscalYear fiscalYear, bool refreshCache = false);
     }
+
+    public interface ISnapFinancesRepository{
+        string CopiesSummarybyCountyAgents(FiscalYear fiscalYear, bool refreshCache = false );
+        string CopiesSummarybyCountyNotAgents(FiscalYear fiscalYear, bool refreshCache = false);
+        string CopiesDetailAgents(FiscalYear fiscalYear, bool refreshCache = false);
+        string CopiesDetailNotAgents(FiscalYear fiscalYear, bool refreshCache = false);
+    }
     public interface ISnapInDirectRepository: IEntityBaseRepository<SnapIndirect>{}
 }

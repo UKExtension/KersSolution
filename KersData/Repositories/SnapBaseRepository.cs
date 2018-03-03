@@ -109,7 +109,7 @@ namespace Kers.Models.Repositories
             return ids;
         }
 
-        private IEnumerable<ActivityRevision> RevisionsWithSnapData(FiscalYear fiscalYear){
+        protected IEnumerable<ActivityRevision> RevisionsWithSnapData(FiscalYear fiscalYear){
             var revs = LastActivityRevisionIds(fiscalYear);
             // Divide revs into batches as SQL server is having trouble to process more then several thousands at once
             var fyactivities = new List<ActivityRevision>();

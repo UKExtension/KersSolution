@@ -68,9 +68,6 @@ namespace Kers.Models.Repositories
                                                                 Aimed = r.SnapPolicy.SnapPolicyAimedSelections
                                                             }
                                                     ).ToList();
-                
-                
-                
                 var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
                 // cycle through partners
                 foreach( var partner in partners){
@@ -138,10 +135,6 @@ namespace Kers.Models.Repositories
                                                                     }
                                                                 )
                                                     .ToList();
-                /* var partnerValues = new List<SnapPolicyPartnerValue>();
-                foreach( var byPartnr in byPartner){
-                    partnerValues.AddRange( byPartnr);
-                } */
                 var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
                 foreach( var partner in partners){
                     var activityIdsPerPartner = new List<int>();
@@ -152,8 +145,6 @@ namespace Kers.Models.Repositories
                             activityIdsPerPartner.Add(prtnr.activityId);
                         }
                     }
-
-
                     var row = dt.ToString("yyyyMM") + ",";
                     row += dt.ToString("yyyy-MMM") + ",";
                     row += string.Concat( "\"", partner.Name, "\"") + ",";

@@ -14,15 +14,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Kers.Tasks
 {
-    public class SnapByAimedTowardImprovementTask : TaskBase, IScheduledTask
+    public class SnapByPartnerCategoryTask : TaskBase, IScheduledTask
     {
         IServiceProvider serviceProvider;
-        public SnapByAimedTowardImprovementTask(
+        public SnapByPartnerCategoryTask(
             IServiceProvider serviceProvider
         ){
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "48 1 * * *";
+        public string Schedule => "52 1 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -37,15 +37,15 @@ namespace Kers.Tasks
                     var fiscalYearRepo = new FiscalYearRepository( context );
                     var repo = new SnapPolicyRepository(context, cache);
                     var startTime = DateTime.Now;
-                    var str = repo.AimedTowardsImprovement(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
+                    var str = repo.PartnerCategory(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
-                                    "SnapByAimedTowardImprovementTask", str, 
-                                    "Snap By Aimed Toward Improvement Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    "SnapByPartnerCategoryTask", str, 
+                                    "Snap By Partner Category Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
                                 );
                 }catch( Exception e){
                     await LogError(context, 
-                                    "SnapByAimedTowardImprovementTask", e, 
+                                    "SnapByPartnerCategoryTask", e, 
                                     "Snap By Aimed Toward Improvement Task failed"
                             );
                 }

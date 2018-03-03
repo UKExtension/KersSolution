@@ -14,15 +14,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Kers.Tasks
 {
-    public class SnapByAimedTowardImprovementTask : TaskBase, IScheduledTask
+    public class SnapCopiesDetailNotAgentsTask : TaskBase, IScheduledTask
     {
         IServiceProvider serviceProvider;
-        public SnapByAimedTowardImprovementTask(
+        public SnapCopiesDetailNotAgentsTask(
             IServiceProvider serviceProvider
         ){
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "48 1 * * *";
+        public string Schedule => "32 0 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -35,18 +35,18 @@ namespace Kers.Tasks
                 try{
                     var cache = scope.ServiceProvider.GetService<IDistributedCache>();
                     var fiscalYearRepo = new FiscalYearRepository( context );
-                    var repo = new SnapPolicyRepository(context, cache);
+                    var repo = new SnapFinancesRepository(context, cache);
                     var startTime = DateTime.Now;
-                    var str = repo.AimedTowardsImprovement(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
+                    var str = repo.CopiesDetailNotAgents(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
-                                    "SnapByAimedTowardImprovementTask", str, 
-                                    "Snap By Aimed Toward Improvement Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    "SnapCopiesDetailNotAgentsTask", str, 
+                                    "Snap Copies Detail Not Agents Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
                                 );
                 }catch( Exception e){
                     await LogError(context, 
-                                    "SnapByAimedTowardImprovementTask", e, 
-                                    "Snap By Aimed Toward Improvement Task failed"
+                                    "SnapCopiesDetailNotAgentsTask", e, 
+                                    "Snap Copies Detail Not Agents Task failed"
                             );
                 }
                 
