@@ -19,6 +19,9 @@ namespace Kers.Models.Repositories
         public static string CopiesSummarybyCountyNotAgents = "CopiesSummarybyCountyNotAgents";
         public static string CopiesDetailAgents = "CopiesDetailAgents";
         public static string CopiesDetailANotAgents = "CopiesDetailANotAgents";
+        public static string ReimbursementNepAssistants = "ReimbursementNepAssistants";
+        public static string SnapReimbursementCounty = "SnapReimbursementCounty";
+        public static string SnapSpecificSiteNamesByMonth = "SnapSpecificSiteNamesByMonth";
 
     }
 }

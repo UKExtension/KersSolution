@@ -72,6 +72,7 @@ namespace Kers.Models.Abstract
         string TotalByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
         string PersonalHourDetails(FiscalYear fiscalYear, bool refreshCache = false);
         string SitesPerPersonPerMonth(FiscalYear fiscalYear, bool refreshCache = false);
+        string SpecificSiteNamesByMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
     }
 
     public interface ISnapPolicyRepository{
@@ -84,6 +85,8 @@ namespace Kers.Models.Abstract
         string CopiesSummarybyCountyNotAgents(FiscalYear fiscalYear, bool refreshCache = false);
         string CopiesDetailAgents(FiscalYear fiscalYear, bool refreshCache = false);
         string CopiesDetailNotAgents(FiscalYear fiscalYear, bool refreshCache = false);
+        string ReimbursementNepAssistants(FiscalYear fiscalYear, bool refreshCache = false);
+        string ReimbursementCounty(FiscalYear fiscalYear, bool refreshCache = false);
     }
     public interface ISnapInDirectRepository: IEntityBaseRepository<SnapIndirect>{}
 }

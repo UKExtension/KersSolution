@@ -201,7 +201,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            var keys = new List<string>();
+            /* var keys = new List<string>();
 
             keys.Add("YearMonth");
             keys.Add("Count");
@@ -232,8 +232,9 @@ namespace Kers.Controllers
                 row += string.Concat( "\"", k.SiteName, "\"") + ",";
                 result += row + "\n";
             }
-
-             return Ok(result);
+ */
+            var result = snapDirectRepo.SpecificSiteNamesByMonth(fiscalYear);
+            return Ok(result);
         }
 
 
@@ -716,112 +717,10 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-
-            //var result = CopiesReportPerCounty( fiscalYear, 2);
             var result = snapFinancesRepo.CopiesSummarybyCountyNotAgents(fiscalYear);
             
             return Ok( result );
         }
-
-
-        // type: 1 agents, 2 non agents
-        /* private string CopiesReportPerCounty(FiscalYear fiscalYear, int type){
-
-            var keys = new List<string>();
-            keys.Add("YearMonth");
-            keys.Add("YearMonthName");
-            keys.Add("PlanningUnit");
-            keys.Add("NumberOfCopies");
-
-
-            var result = string.Join(",", keys.ToArray()) + "\n";
-            var lastActivityRevs = this.activityRepo.LastActivityRevisionIds(fiscalYear, _cache);
-
-            var activitiesWithCopies = context.ActivityRevision
-                                                .Where( r => 
-                                                    
-                                                        lastActivityRevs.Contains(r.Id) 
-                                                            && 
-                                                        r.SnapCopies != 0
-                                                            &&
-                                                            (
-                                                                r.SnapAdmin
-                                                                    ||
-                                                                r.SnapDirect != null    
-                                                                    ||
-                                                                r.SnapIndirect != null
-                                                                    ||
-                                                                r.SnapPolicy != null
-                                                            )
-                                                                            
-                                                                            
-                                                                            );
-            var groupedByMonth = activitiesWithCopies.GroupBy(
-                                                        p => new {
-                                                            Year = p.ActivityDate.Year,
-                                                            Month = p.ActivityDate.Month
-                                                        }
-                                                )
-                                                .Select(
-                                                        k => new {
-                                                            Month = k.Key.Month,
-                                                            Year = k.Key.Year,
-                                                            Revisions = k.Select( a => a)
-                                                        }
-                                                );
-            foreach( var byMonth in groupedByMonth){
-                var revisionIds = byMonth.Revisions.Select( a => a.Id);
-
-                var activities = context.ActivityRevision.Where( r => revisionIds.Contains(r.Id))
-                                    .Select(
-                                        r => new UserRevisionData {
-                                            Revision = r,
-                                            User = context.Activity.Where( a => a.Id == r.ActivityId).FirstOrDefault().KersUser
-                                        }
-                                    )
-                                    .ToList();
-                
-                var fullRevisions = new List<UserRevisionData>();
-                foreach( var actvt in activities){
-                    var usr = context.KersUser
-                                        .Where( u => u.Id == actvt.User.Id )
-                                        .Include( u => u.ExtensionPosition)
-                                        .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit)
-                                        .FirstOrDefault();
-                    fullRevisions.Add(
-                        new UserRevisionData{
-                            Revision = actvt.Revision,
-                            User = usr
-                        }
-                    );
-                }
-
-                IEnumerable<UserRevisionData> byUnit;
-
-                if( type == 1){
-                    byUnit = fullRevisions.Where( r => r.User.ExtensionPosition.Code == "AGENT");
-                }else{
-                    byUnit = fullRevisions.Where( r => r.User.ExtensionPosition.Code != "AGENT");
-                }
-                var grouppedByUnit = byUnit.GroupBy( r => r.User.RprtngProfile.PlanningUnit)
-                                    .Select( g => new {
-                                        Unit = g.Key,
-                                        Copies = g.Select( r => r.Revision).Sum( s => s.SnapCopies)
-                                    }).OrderBy( o => o.Unit.Name).ToList();
-
-                var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
-                foreach( var unit in grouppedByUnit){
-                    var row = dt.ToString("yyyyMM") + ",";
-                    row += dt.ToString("yyyy-MMM") + ",";
-                    row += string.Concat( "\"", unit.Unit.Name, "\"") + ",";
-                    row += unit.Copies.ToString();
-                    result += row + "\n";
-                }
-               
-            }
-            return result;
-        } */
-
 
 
         [HttpGet]
@@ -852,111 +751,9 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
             
-            //var result = CopiesReportDetails( fiscalYear, 2);
             var result = snapFinancesRepo.CopiesDetailNotAgents(fiscalYear);
             return Ok( result );
         }
-
-        /* private string CopiesReportDetails(FiscalYear fiscalYear, int type){
-	
-
-            var keys = new List<string>();
-            keys.Add("YearMonth");
-            keys.Add("YearMonthName");
-            keys.Add("PlanningUnit");
-            keys.Add("PersonName");
-            keys.Add("EventDate");
-            keys.Add("NumberOfCopies");
-            keys.Add("EntryDate");
-            keys.Add("Mode");
-            keys.Add("Title");
-            keys.Add("Program(s)");
-
-
-            var result = string.Join(",", keys.ToArray()) + "\n";
-            var lastActivityRevs = this.activityRepo.LastActivityRevisionIds(fiscalYear, _cache);
-
-            var activitiesWithCopies = context.ActivityRevision
-                                            .Where( r => lastActivityRevs.Contains(r.Id) 
-                                                            && 
-                                                        r.SnapCopies != 0
-                                                            &&
-                                                            (
-                                                                r.SnapAdmin
-                                                                    ||
-                                                                r.SnapDirect != null    
-                                                                    ||
-                                                                r.SnapIndirect != null
-                                                                    ||
-                                                                r.SnapPolicy != null
-                                                            )
-                                                        
-                                                        );
-            var revisionIds = activitiesWithCopies.Select( a => a.Id);
-            var activities = context.ActivityRevision.Where( r => revisionIds.Contains(r.Id))
-                                    .Select(
-                                        r => new UserRevisionData {
-                                            Revision = r,
-                                            User = context.Activity.Where( a => a.Id == r.ActivityId).FirstOrDefault().KersUser
-                                        }
-                                    )
-                                    .ToList();
-            var fullRevisions = new List<UserRevisionData>();
-            foreach( var actvt in activities){
-                var usr = context.KersUser
-                                    .Where( u => u.Id == actvt.User.Id )
-                                    .Include( u => u.ExtensionPosition)
-                                    .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit)
-                                    .Include( u => u.Specialties).ThenInclude( s => s.Specialty)
-                                    .FirstOrDefault();
-                fullRevisions.Add(
-                    new UserRevisionData{
-                        Revision = actvt.Revision,
-                        User = usr
-                    }
-                );
-            }
-            List<UserRevisionData> filteredRevisions;
-            if( type == 1){
-                filteredRevisions = fullRevisions.Where( r => r.User.ExtensionPosition.Code == "AGENT").ToList();
-            }else{
-                filteredRevisions = fullRevisions.Where( r => r.User.ExtensionPosition.Code != "AGENT").ToList();
-            }
-            var orderedRevisions = filteredRevisions.OrderBy(r => r.Revision.ActivityDate.Year).ThenBy( r => r.Revision.ActivityDate.Month ).ThenBy( r => r.User.RprtngProfile.PlanningUnit.Name ).ThenBy( r => r.User.RprtngProfile.Name);
-            foreach( var rev in orderedRevisions){
-                var dt = new DateTime( rev.Revision.ActivityDate.Year, rev.Revision.ActivityDate.Month, 15);
-                var row = dt.ToString("yyyyMM") + ",";
-                row += dt.ToString("yyyy-MMM") + ",";
-                row += string.Concat( "\"", rev.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                row += string.Concat( "\"", rev.User.RprtngProfile.Name, "\"") + ",";
-                row += rev.Revision.ActivityDate.ToString( "MM/dd/yyyy") + ",";
-                row += rev.Revision.SnapCopies.ToString() + ",";
-                row += string.Concat( "\"", rev.Revision.Created.ToString(), "\"" ) + ",";
-                var mode = "";
-                if(rev.Revision.SnapAdmin){
-                    mode = "Admin";
-                }else{
-                    if( rev.Revision.SnapDirectId != null){
-                        mode = "Direct";
-                    }else if( rev.Revision.SnapPolicyId != null){
-                        mode = "Commmunity";
-                    }
-                    if( rev.Revision.SnapIndirectId != null){
-                        mode += " Indirect";
-                    }
-                }
-                row += string.Concat( "\"", mode, "\"" ) + ",";
-                row += rev.User.ExtensionPosition.Code + ",";
-                var spclt = "";
-                foreach( var sp in rev.User.Specialties){
-                    spclt += " " + sp.Specialty.Code;
-                }
-                row += spclt;
-                result += row + "\n";
-            }
-
-            return result;
-        } */
 
 
         private List<ActivityRevisionsPerMonth> RevisionsWithIndirectContactsPerMonth( FiscalYear fiscalYear){
@@ -1071,7 +868,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            var keys = new List<string>();
+            /* var keys = new List<string>();
 
             keys.Add("FY");
             keys.Add("AssistantName");
@@ -1105,7 +902,8 @@ namespace Kers.Controllers
                 row += reimbursement.ToString() + ",";
                 row += (allowance - reimbursement).ToString();
                 result += row + "\n";
-            }
+            } */
+            var result = snapFinancesRepo.ReimbursementNepAssistants(fiscalYear);
             return Ok(result);
         }
 
@@ -1120,7 +918,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-
+/* 
             var keys = new List<string>();
 			
             keys.Add("PlanningUnit");
@@ -1167,7 +965,8 @@ namespace Kers.Controllers
                 }
                 row += (thisAllowance - reimbursement).ToString();
                 result += row + "\n";
-            }
+            } */
+            var result = snapFinancesRepo.ReimbursementCounty(fiscalYear);
             return Ok(result);
         }
 

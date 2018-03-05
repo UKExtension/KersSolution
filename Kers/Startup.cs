@@ -141,6 +141,10 @@ namespace Kers
             services.AddSingleton<IScheduledTask, SnapCopiesDetailNotAgentsTask>();
             services.AddSingleton<IScheduledTask, SnapCopiesSummarybyCountyAgentsTask>();
             services.AddSingleton<IScheduledTask, SnapCopiesSummarybyCountyNotAgentsTask>();
+            services.AddSingleton<IScheduledTask, ReimbursementCountyTask>();
+            services.AddSingleton<IScheduledTask, ReimbursementNepAssistantsTask>();
+            services.AddSingleton<IScheduledTask, SpecificSiteNamesByMonthTask>();
+
             services.AddScheduler((sender, args) =>
             {
                 args.SetObserved();

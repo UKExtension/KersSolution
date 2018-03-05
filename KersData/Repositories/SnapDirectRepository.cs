@@ -34,6 +34,55 @@ namespace Kers.Models.Repositories
             this.mainContext = mainContext;
         }
 
+
+
+        public string SpecificSiteNamesByMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
+
+            string result;
+            var cacheKey = CacheKeys.SnapSpecificSiteNamesByMonth + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                var keys = new List<string>();
+
+                keys.Add("YearMonth");
+                keys.Add("Count");
+                keys.Add("SpecificSiteName");
+                result = string.Join(",", keys.ToArray()) + "\n";
+                var perPerson = this.SnapData(fiscalYear).Where( d => d.Revision.SnapDirect != null).Select( s => new {
+                                        Last = s.Revision,
+                                        Snap = s.Revision.SnapDirect
+                                    }).ToList();
+                
+                var grouped = perPerson.Where( r => r.Snap!= null)
+                                .GroupBy( p => p.Snap.SiteName)
+                                .Select( s => new {
+                                    SiteName = s.Key,
+                                    Dt = s.OrderBy(l => l.Last.Id).First().Last.ActivityDate,
+                                    Count = s.Count()
+                                });
+
+
+                foreach( var k in grouped){
+                    var row = k.Dt.ToString("yyyyMM") + ",";
+                    row += k.Count.ToString() + ",";
+                    row += string.Concat( "\"", k.SiteName, "\"") + ",";
+                    result += row + "\n";
+                }
+
+
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    }); 
+            }
+            return result;
+        }
+
+
+
+
         public string TotalByMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
             var cacheKey = CacheKeys.SnapEdTotalByMonth + fiscalYear.Name;

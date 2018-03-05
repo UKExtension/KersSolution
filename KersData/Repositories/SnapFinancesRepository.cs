@@ -97,6 +97,135 @@ namespace Kers.Models.Repositories
             return result;
         }
 
+
+        public string ReimbursementNepAssistants(FiscalYear fiscalYear, bool refreshCache = false){
+
+            string result;
+            var cacheKey = CacheKeys.ReimbursementNepAssistants + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+
+                var keys = new List<string>();
+
+                keys.Add("FY");
+                keys.Add("AssistantName");
+                keys.Add("PlanningUnit");
+                keys.Add("ReimbursementsYearToDateTotal");
+                keys.Add("BudgetRemaining");
+
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+                //List<KersUser> assistants;
+                var assistants = this.context.KersUser.
+                                Where(c=> (
+                                    c.Specialties.Where(s => s.Specialty.Name == "Expanded Food and Nutrition Education Program").Count() != 0 
+                                    ||
+                                    c.Specialties.Where(s => s.Specialty.Name == "Supplemental Nutrition Assistance Program Education").Count() != 0
+                                    )
+                                    &&
+                                    c.RprtngProfile.enabled
+                                ).
+                                Include(u => u.RprtngProfile).ThenInclude(r=>r.PlanningUnit).
+                                Include(u=>u.PersonalProfile).
+                                OrderBy(c => c.RprtngProfile.Name);
+
+                var allowance = context.SnapBudgetAllowance.Where( a => a.FiscalYear == fiscalYear && a.BudgetDescription == "SNAP Ed NEP Assistant Budget").First().AnnualBudget;
+                foreach( var assistant in assistants){
+                    var row = fiscalYear.Name + ",";
+                    row += string.Concat( "\"", assistant.RprtngProfile.Name, "\"") + ",";
+                    row += string.Concat( "\"", assistant.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                    var reimbursement = context.SnapBudgetReimbursementsNepAssistant.Where( r => r.FiscalYear == fiscalYear && r.To == assistant).Sum( r => r.Amount);
+                    row += reimbursement.ToString() + ",";
+                    row += (allowance - reimbursement).ToString();
+                    result += row + "\n";
+                }
+
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                        });
+
+
+
+            }    
+            return result;
+        }
+
+
+        public string ReimbursementCounty(FiscalYear fiscalYear, bool refreshCache = false){
+            string result;
+            
+            var cacheKey = CacheKeys.SnapReimbursementCounty + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+                
+                keys.Add("PlanningUnit");
+                keys.Add("ReimbursementsYearToDateTotal");
+                keys.Add("BudgetRemaining");
+
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+
+                List<PlanningUnit> counties;
+
+            
+                
+                var cacheKeyList = "CountiesList";
+                var cached = _cache.GetString(cacheKeyList);
+
+                if (!string.IsNullOrEmpty(cached)){
+                    counties = JsonConvert.DeserializeObject<List<PlanningUnit>>(cached);
+                }else{
+                
+                
+                    counties = this.context.PlanningUnit.
+                                    Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
+                                    OrderBy(c => c.Name).ToList();
+                    
+
+                    var serializedCounties = JsonConvert.SerializeObject(counties);
+                    _cache.SetString(cacheKeyList, serializedCounties, new DistributedCacheEntryOptions
+                            {
+                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                            });
+                }
+                var allowance = context.SnapBudgetAllowance.Where( a => a.FiscalYear == fiscalYear && a.BudgetDescription == "SNAP Ed County Budget (separate from NEP Assistant Budget)").First().AnnualBudget;
+                foreach( var county in counties){
+                    
+                    var row = string.Concat( "\"", county.Name.Substring(0, county.Name.Count() - 11), "\"") + ",";
+                    var reimbursement = context.SnapBudgetReimbursementsCounty.Where( r => r.FiscalYear == fiscalYear && r.PlanningUnitId == county.Id).Sum( r => r.Amount);
+                    row += reimbursement.ToString() + ",";
+                    var countyAllowance = context.SnapCountyBudget.Where( b => b.PlanningUnitId == county.Id && b.FiscalYear == fiscalYear).FirstOrDefault();
+                    var thisAllowance = allowance;
+                    if( countyAllowance != null){
+                        thisAllowance = countyAllowance.AnnualBudget;
+                    }
+                    row += (thisAllowance - reimbursement).ToString();
+                    result += row + "\n";
+                }
+
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                        });
+
+            }
+            return result;
+        }
+
+
+
+
+
         // type: 1 agents, 2 non agents
         private string CopiesReportPerCounty(FiscalYear fiscalYear, int type){
 
