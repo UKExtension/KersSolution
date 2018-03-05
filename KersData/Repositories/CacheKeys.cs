@@ -15,6 +15,8 @@ namespace Kers.Models.Repositories
         public static string SitesPerPersonPerMonth = "SitesPerPersonPerMonth";
         public static string PersonalHourDetails = "PersonalHourDetails";
         public static string AimedTowardsImprovement = "AimedTowardsImprovement";
+        public static string SnapPartnerCategory = "SnapPartnerCategory";
+        public static string SnapAgentCommunityEventDetail = "SnapAgentCommunityEventDetail";
         public static string CopiesSummarybyCountyAgents = "CopiesSummarybyCountyAgents";
         public static string CopiesSummarybyCountyNotAgents = "CopiesSummarybyCountyNotAgents";
         public static string CopiesDetailAgents = "CopiesDetailAgents";
@@ -22,6 +24,7 @@ namespace Kers.Models.Repositories
         public static string ReimbursementNepAssistants = "ReimbursementNepAssistants";
         public static string SnapReimbursementCounty = "SnapReimbursementCounty";
         public static string SnapSpecificSiteNamesByMonth = "SnapSpecificSiteNamesByMonth";
+        public static string NumberofDeliverySitesbyTypeofSetting = "NumberofDeliverySitesbyTypeofSetting";
 
     }
 }

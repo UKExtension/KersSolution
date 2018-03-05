@@ -73,11 +73,13 @@ namespace Kers.Models.Abstract
         string PersonalHourDetails(FiscalYear fiscalYear, bool refreshCache = false);
         string SitesPerPersonPerMonth(FiscalYear fiscalYear, bool refreshCache = false);
         string SpecificSiteNamesByMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string NumberofDeliverySitesbyTypeofSetting(FiscalYear fiscalYear, Boolean refreshCache = false);
     }
 
     public interface ISnapPolicyRepository{
         string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false);
         string PartnerCategory(FiscalYear fiscalYear, bool refreshCache = false);
+        string AgentCommunityEventDetail(FiscalYear fiscalYear, bool refreshCache = false);
     }
 
     public interface ISnapFinancesRepository{

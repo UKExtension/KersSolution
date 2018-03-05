@@ -102,76 +102,6 @@ namespace Kers.Controllers
         }
 
 
-        [HttpGet]
-        [Route("indirectbyemployee/{fy}/data.csv")]
-        //[Produces("text/csv")]
-        [Authorize]
-        public IActionResult IndirectByEmployee(string fy){
-
-            FiscalYear fiscalYear = GetFYByName(fy);
-
-            if(fiscalYear == null){
-                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
-                return new StatusCodeResult(500);
-            }
-
-            var keys = new List<string>();
-            keys.Add("FY");
-            keys.Add("PlanningUnit");
-            keys.Add("EmployeeName");
-            keys.Add("Position");
-            keys.Add("Program(s)");
-            keys.Add("IndirectContacts");
-
-            var reached = this.context.SnapIndirectReached.OrderBy( r => r.order);
-            foreach( var r in reached){
-                keys.Add(r.Name);
-            }
-
-            var result = string.Join(", ", keys.ToArray()) + "\n";
-
-            var SnapData = this.SnapData( fiscalYear);
-
-            var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate.Month == 11);
-
-            var byUser = indirectSnapData.GroupBy( s => s.User.Id).Select( 
-                                        d => new {
-                                            User = d.Select( s => s.User ).First(),
-                                            Revisions = d.Select( s => s.Revision )
-                                        }
-                                    )
-                                    .OrderBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
-            foreach( var userData in byUser ){
-                var row = fiscalYear.Name + ",";
-                row += string.Concat("\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                row += string.Concat("\"", userData.User.RprtngProfile.Name, "\"") + ",";
-                row += string.Concat("\"", userData.User.ExtensionPosition.Code, "\"") + ",";
-                var spclt = "";
-                foreach( var sp in userData.User.Specialties){
-                    spclt += " " + sp.Specialty.Code;
-                }
-                row += spclt + ", ";
-                
-                var optNumbrs = new List<ActivityOptionNumberValue>();
-                
-
-                var reachedData = new List<SnapIndirectReachedValue>();
-                foreach( var dt in userData.Revisions){
-                    optNumbrs.AddRange(dt.ActivityOptionNumbers);
-                    reachedData.AddRange(dt.SnapIndirect.SnapIndirectReachedValues);
-                }
-                row += optNumbrs.Where( k =>k.ActivityOptionNumberId == 3).Sum( r => r.Value).ToString() + ",";
-                foreach( var r in reached){
-                    row += reachedData.Where( d => d.SnapIndirectReachedId == r.Id).Sum( l => l.Value).ToString() + ",";
-                }
-                result += row + "\n";
-            }
-
-            return Ok(result);
-        }
-
-
-
 
 
         [HttpGet]
@@ -200,39 +130,6 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-
-            /* var keys = new List<string>();
-
-            keys.Add("YearMonth");
-            keys.Add("Count");
-            keys.Add("SpecificSiteName");
-            var result = string.Join(",", keys.ToArray()) + "\n";
-
-            var perPerson = context.Activity.
-                                Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null )
-                                .Select( s => new {
-                                    Last = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
-                                    Snap = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last().SnapDirect
-                                })
-                                .OrderBy(e => e.Last.ActivityDate.Month.ToString()).ToList();
-            
-            
-            var grouped = perPerson.Where( r => r.Snap!= null)
-                            .GroupBy( p => p.Snap.SiteName)
-                            .Select( s => new {
-                                SiteName = s.Key,
-                                Dt = s.OrderBy(l => l.Last.Id).First().Last.ActivityDate,
-                                Count = s.Count()
-                            });
-
-
-            foreach( var k in grouped){
-                var row = k.Dt.ToString("yyyyMM") + ",";
-                row += k.Count.ToString() + ",";
-                row += string.Concat( "\"", k.SiteName, "\"") + ",";
-                result += row + "\n";
-            }
- */
             var result = snapDirectRepo.SpecificSiteNamesByMonth(fiscalYear);
             return Ok(result);
         }
@@ -370,46 +267,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            var keys = new List<string>();
- 
-            keys.Add("FY");
-            keys.Add("TypeOfSetting");
-
-
-
-            var runningDate = fiscalYear.Start;
-            var difference = (int)Math.Floor(fiscalYear.End.Subtract(fiscalYear.Start).Days / (365.2425 / 12)) + 1;
-            var months = new DateTime[difference];
-            var i = 0;
-            do{
-                months[i] = runningDate.AddMonths( i );
-                keys.Add(months[i].ToString("MMM"));
-                i++;
-            }while(i < difference);
-
-            var result = string.Join(",", keys.ToArray()) + "\n";
-            var settings = this.context.SnapDirectDeliverySite.Where( d => d.FiscalYearId == fiscalYear.Id && d.Active).OrderBy(d => d.order).ToList();
-            
-            var snapPerMonth = new List<int>[difference];
-            for( i = 0; i< difference; i++){
-                var activitiesPerMonth = context.Activity.Where( a => a.ActivityDate.Month == months[i].Month && a.ActivityDate.Year == months[i].Year);
-                var activitiesWithSnapDirect = activitiesPerMonth
-                                                .Select( v => v.Revisions.OrderBy( r => r.Created.ToString("s")).Last())
-                                                .Where( a => a.SnapDirect != null)
-                                                .ToList();
-                snapPerMonth[i] = activitiesWithSnapDirect.Select( s => s.SnapDirectId??0 ).Where( a => a != 0).ToList();
-            }
-            
-            
-            foreach( var setting in settings){
-                var row = fiscalYear.Name + ",";
-                row += setting.Name + ",";
-                for( i = 0; i< difference; i++){
-                        var directs = context.SnapDirect.Where(s => snapPerMonth[i].Contains(s.Id) );
-                        row +=  directs.Where( s => s.SnapDirectDeliverySiteId == setting.Id).Count().ToString() + ",";
-                }
-                result += row + "\n";
-            }
+            var result = this.snapDirectRepo.NumberofDeliverySitesbyTypeofSetting(fiscalYear);
             return Ok(result);
         }
 
@@ -580,7 +438,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            var keys = new List<string>();
+            /* var keys = new List<string>();
             keys.Add("YearMonth");
             keys.Add("YearMonthName");
             keys.Add("PersonName");
@@ -650,7 +508,8 @@ namespace Kers.Controllers
 
 
                 
-            }
+            } */
+            var result = snapPolicyRepo.AgentCommunityEventDetail(fiscalYear);
             return Ok(result);
         }
 
@@ -852,10 +711,6 @@ namespace Kers.Controllers
         }
 
 
-
-
-
-
         [HttpGet]
         [Route("reimbursementnepassistants/{fy}/data.csv")]
         [Authorize]
@@ -868,41 +723,6 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            /* var keys = new List<string>();
-
-            keys.Add("FY");
-            keys.Add("AssistantName");
-            keys.Add("PlanningUnit");
-            keys.Add("ReimbursementsYearToDateTotal");
-            keys.Add("BudgetRemaining");
-
-
-            var result = string.Join(",", keys.ToArray()) + "\n";
-
-            //List<KersUser> assistants;
-            var assistants = this.context.KersUser.
-                            Where(c=> (
-                                c.Specialties.Where(s => s.Specialty.Name == "Expanded Food and Nutrition Education Program").Count() != 0 
-                                ||
-                                c.Specialties.Where(s => s.Specialty.Name == "Supplemental Nutrition Assistance Program Education").Count() != 0
-                                )
-                                &&
-                                c.RprtngProfile.enabled
-                            ).
-                            Include(u => u.RprtngProfile).ThenInclude(r=>r.PlanningUnit).
-                            Include(u=>u.PersonalProfile).
-                            OrderBy(c => c.RprtngProfile.Name);
-
-            var allowance = context.SnapBudgetAllowance.Where( a => a.FiscalYear == fiscalYear && a.BudgetDescription == "SNAP Ed NEP Assistant Budget").First().AnnualBudget;
-            foreach( var assistant in assistants){
-                var row = fiscalYear.Name + ",";
-                row += string.Concat( "\"", assistant.RprtngProfile.Name, "\"") + ",";
-                row += string.Concat( "\"", assistant.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                var reimbursement = context.SnapBudgetReimbursementsNepAssistant.Where( r => r.FiscalYear == fiscalYear && r.To == assistant).Sum( r => r.Amount);
-                row += reimbursement.ToString() + ",";
-                row += (allowance - reimbursement).ToString();
-                result += row + "\n";
-            } */
             var result = snapFinancesRepo.ReimbursementNepAssistants(fiscalYear);
             return Ok(result);
         }
@@ -918,54 +738,6 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-/* 
-            var keys = new List<string>();
-			
-            keys.Add("PlanningUnit");
-            keys.Add("ReimbursementsYearToDateTotal");
-            keys.Add("BudgetRemaining");
-
-
-            var result = string.Join(",", keys.ToArray()) + "\n";
-
-
-            List<PlanningUnit> counties;
-
-           
-            
-            var cacheKey = "CountiesList";
-            var cached = _cache.GetString(cacheKey);
-
-            if (!string.IsNullOrEmpty(cached)){
-                counties = JsonConvert.DeserializeObject<List<PlanningUnit>>(cached);
-            }else{
-            
-            
-                counties = this.context.PlanningUnit.
-                                Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
-                                OrderBy(c => c.Name).ToList();
-                
-
-                var serializedCounties = JsonConvert.SerializeObject(counties);
-                _cache.SetString(cacheKey, serializedCounties, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
-                        });
-            }
-            var allowance = context.SnapBudgetAllowance.Where( a => a.FiscalYear == fiscalYear && a.BudgetDescription == "SNAP Ed County Budget (separate from NEP Assistant Budget)").First().AnnualBudget;
-            foreach( var county in counties){
-                
-                var row = string.Concat( "\"", county.Name.Substring(0, county.Name.Count() - 11), "\"") + ",";
-                var reimbursement = context.SnapBudgetReimbursementsCounty.Where( r => r.FiscalYear == fiscalYear && r.PlanningUnitId == county.Id).Sum( r => r.Amount);
-                row += reimbursement.ToString() + ",";
-                var countyAllowance = context.SnapCountyBudget.Where( b => b.PlanningUnitId == county.Id && b.FiscalYear == fiscalYear).FirstOrDefault();
-                var thisAllowance = allowance;
-                if( countyAllowance != null){
-                    thisAllowance = countyAllowance.AnnualBudget;
-                }
-                row += (thisAllowance - reimbursement).ToString();
-                result += row + "\n";
-            } */
             var result = snapFinancesRepo.ReimbursementCounty(fiscalYear);
             return Ok(result);
         }
@@ -1061,6 +833,86 @@ namespace Kers.Controllers
             }
             return fiscalYear;
         }
+
+
+
+
+/* 
+
+
+        !!!!!!! Keep this action for now !!!!!!!
+
+        This info was requested just once. Will see if it will be needed again
+
+        [HttpGet]
+        [Route("indirectbyemployee/{fy}/data.csv")]
+        [Authorize]
+        public IActionResult IndirectByEmployee(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+
+            var keys = new List<string>();
+            keys.Add("FY");
+            keys.Add("PlanningUnit");
+            keys.Add("EmployeeName");
+            keys.Add("Position");
+            keys.Add("Program(s)");
+            keys.Add("IndirectContacts");
+
+            var reached = this.context.SnapIndirectReached.OrderBy( r => r.order);
+            foreach( var r in reached){
+                keys.Add(r.Name);
+            }
+
+            var result = string.Join(", ", keys.ToArray()) + "\n";
+
+            var SnapData = this.SnapData( fiscalYear);
+
+            var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate.Month == 11);
+
+            var byUser = indirectSnapData.GroupBy( s => s.User.Id).Select( 
+                                        d => new {
+                                            User = d.Select( s => s.User ).First(),
+                                            Revisions = d.Select( s => s.Revision )
+                                        }
+                                    )
+                                    .OrderBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
+            foreach( var userData in byUser ){
+                var row = fiscalYear.Name + ",";
+                row += string.Concat("\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                row += string.Concat("\"", userData.User.RprtngProfile.Name, "\"") + ",";
+                row += string.Concat("\"", userData.User.ExtensionPosition.Code, "\"") + ",";
+                var spclt = "";
+                foreach( var sp in userData.User.Specialties){
+                    spclt += " " + sp.Specialty.Code;
+                }
+                row += spclt + ", ";
+                
+                var optNumbrs = new List<ActivityOptionNumberValue>();
+                
+
+                var reachedData = new List<SnapIndirectReachedValue>();
+                foreach( var dt in userData.Revisions){
+                    optNumbrs.AddRange(dt.ActivityOptionNumbers);
+                    reachedData.AddRange(dt.SnapIndirect.SnapIndirectReachedValues);
+                }
+                row += optNumbrs.Where( k =>k.ActivityOptionNumberId == 3).Sum( r => r.Value).ToString() + ",";
+                foreach( var r in reached){
+                    row += reachedData.Where( d => d.SnapIndirectReachedId == r.Id).Sum( l => l.Value).ToString() + ",";
+                }
+                result += row + "\n";
+            }
+
+            return Ok(result);
+        }
+
+
+ */
     
     }
 

@@ -80,6 +80,64 @@ namespace Kers.Models.Repositories
             return result;
         }
 
+        public string NumberofDeliverySitesbyTypeofSetting(FiscalYear fiscalYear, Boolean refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.NumberofDeliverySitesbyTypeofSetting + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+
+                var keys = new List<string>();
+    
+                keys.Add("FY");
+                keys.Add("TypeOfSetting");
+
+
+
+                var runningDate = fiscalYear.Start;
+                var difference = (int)Math.Floor(fiscalYear.End.Subtract(fiscalYear.Start).Days / (365.2425 / 12)) + 1;
+                var months = new DateTime[difference];
+                var i = 0;
+                do{
+                    months[i] = runningDate.AddMonths( i );
+                    keys.Add(months[i].ToString("MMM"));
+                    i++;
+                }while(i < difference);
+
+                    result = string.Join(",", keys.ToArray()) + "\n";
+                    var settings = this.context.SnapDirectDeliverySite.Where( d => d.FiscalYearId == fiscalYear.Id && d.Active).OrderBy(d => d.order).ToList();
+                    
+                    var snapPerMonth = new List<int>[difference];
+                    for( i = 0; i< difference; i++){
+                        var activitiesPerMonth = context.Activity.Where( a => a.ActivityDate.Month == months[i].Month && a.ActivityDate.Year == months[i].Year);
+                        var activitiesWithSnapDirect = activitiesPerMonth
+                                                        .Select( v => v.Revisions.OrderBy( r => r.Created.ToString("s")).Last())
+                                                        .Where( a => a.SnapDirect != null)
+                                                        .ToList();
+                        snapPerMonth[i] = activitiesWithSnapDirect.Select( s => s.SnapDirectId??0 ).Where( a => a != 0).ToList();
+                    }
+                    
+                    
+                    foreach( var setting in settings){
+                        var row = fiscalYear.Name + ",";
+                        row += setting.Name + ",";
+                        for( i = 0; i< difference; i++){
+                                var directs = context.SnapDirect.Where(s => snapPerMonth[i].Contains(s.Id) );
+                                row +=  directs.Where( s => s.SnapDirectDeliverySiteId == setting.Id).Count().ToString() + ",";
+                        }
+                        result += row + "\n";
+                }
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    }); 
+
+            }
+            return result;
+        }
+
 
 
 
