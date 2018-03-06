@@ -392,6 +392,62 @@ namespace Kers.Models.Repositories
         } 
 
 
+        public async Task<TableViewModel> ContactsByCountyByMajorProgram(FiscalYear fiscalYear, bool refreshCache = false)
+        {
+
+            var cacheKey = CacheKeys.ActivityContactsByCountyByMajorProgram + fiscalYear.Name;
+            var cachedTypes = _cache.GetString(cacheKey);
+            TableViewModel table;
+            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
+                table = JsonConvert.DeserializeObject<TableViewModel>(cachedTypes);
+            }else{
+                var counties = await this.coreContext.PlanningUnit
+                                        .Where( u => 
+                                                    u.District != null
+                                                    &&
+                                                    u.Name.Substring( u.Name.Length - 3) == "CES"
+                                            )
+                                        .OrderBy( u => u.Name)
+                                        .ToListAsync();
+                var majorPrograms = await this.coreContext.MajorProgram
+                                        .Where( u => 
+                                                    
+                                                    u.StrategicInitiative.FiscalYear == fiscalYear
+                                            )
+                                        .OrderBy( u => u.Name)
+                                        .ToListAsync();
+                var header = new List<string>();
+                header.Add( "Counties" );
+                foreach( var program in majorPrograms){
+                    header.Add(program.Name);
+                }
+                var rows = new List<List<string>>();
+                foreach( var county in counties ){
+                    var row = new List<string>();
+                    row.Add( county.Name );
+
+                    // Add county numbers
+                    foreach( var prgrm in majorPrograms){
+                        var sm = coreContext.Activity.Where( a => a.MajorProgramId == prgrm.Id && a.PlanningUnitId == county.Id && a.ActivityDate.Year < 2018).Sum(s => s.Audience);
+                        row.Add(sm.ToString());
+                    }
+
+                    rows.Add(row);
+
+                }
+                table = new TableViewModel();
+                table.Header = header;
+                table.Rows = rows;
+                table.Foother = new List<string>();
+                var serialized = JsonConvert.SerializeObject(table);
+                await _cache.SetStringAsync(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
+                    });
+            }
+            return table;
+        }
+
         public List<PerUnitActivities> ProcessUnitContacts(List<ContactUnitResult> contacts, List<PerUnitActivities> result){
             foreach( var contactGroup in contacts ){
                     var unitRevisions = new List<ContactRevision>();

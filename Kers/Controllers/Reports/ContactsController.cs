@@ -69,164 +69,9 @@ namespace Kers.Controllers.Reports
             FiscalYear fiscalYear = GetFYByName(fy);
 
             if(fiscalYear == null){
-                //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
+                //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
                 return new StatusCodeResult(500);
             }
-
-            /* var cacheKey = "StateAllContactsData";
-            var cachedTypes = _cache.GetString(cacheKey);
-            TableViewModel table;
-            if (!string.IsNullOrEmpty(cachedTypes)){
-                table = JsonConvert.DeserializeObject<TableViewModel>(cachedTypes);
-            }else{
-
-                var currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
-
-
-                var actvtsCacheKey = "AllActivitiesByPlanningUnit";
-                var cachedActivities = _cache.GetString(actvtsCacheKey);
-                List<ActivityUnitResult> activities;
-                if (!string.IsNullOrEmpty(cachedActivities)){
-                    activities = JsonConvert.DeserializeObject<List<ActivityUnitResult>>(cachedActivities);
-                }else{
-                    activities = await this.context.Activity
-                                                    .Where( a => a.ActivityDate < currentFiscalYear.End && a.ActivityDate > currentFiscalYear.Start)
-                                                    .GroupBy(e => new {
-                                                        Unit = e.PlanningUnit
-                                                    })
-                                                    .Select(c => new ActivityUnitResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        Unit = c.Key.Unit
-                                                    })
-                                                    .ToListAsync();
-                    var serializedActivities = JsonConvert.SerializeObject(activities);
-                    _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
-                        });
-                                
-                }
-                var result = activityRepo.ProcessUnitActivities( activities, _cache);
-
-
-                var contactsCacheKey = "AllContactsByPlanningUnit";
-                var cachedContacts = _cache.GetString(contactsCacheKey);
-                List<ContactUnitResult> contacts;
-                if (!string.IsNullOrEmpty(cachedContacts)){
-                    contacts = JsonConvert.DeserializeObject<List<ContactUnitResult>>(cachedContacts);
-                }else{
-                    contacts = await this.context.Contact.
-                                    Where( c => 
-                                                c.ContactDate < currentFiscalYear.End 
-                                                && 
-                                                c.ContactDate > currentFiscalYear.Start 
-                                                && 
-                                                c.PlanningUnit != null
-                                        )
-                                        .GroupBy(e => new {
-                                            Unit = e.PlanningUnit
-                                        })
-                                        .Select(c => new ContactUnitResult{
-                                            Ids = c.Select(
-                                                s => s.Id
-                                            ).ToList(),
-                                            Unit = c.Key.Unit
-                                        })
-                                        .ToListAsync();
-                    var serializedContacts = JsonConvert.SerializeObject(contacts);
-                    _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
-                        });
-                                
-                }
-                result = this.contactRepo.ProcessUnitContacts( contacts, result, _cache);
-                result = result.OrderBy( r => r.PlanningUnit.order).ToList();
-                table = new TableViewModel();
-                table.Header = new List<string>{
-                            "Planning Unit", "Days", "Multistate", "Total Contacts"
-                        };
-                var Races = this.context.Race.OrderBy(r => r.Order);
-                var Ethnicities = this.context.Ethnicity.OrderBy( e => e.Order);
-                var OptionNumbers = this.context.ActivityOptionNumber.OrderBy( n => n.Order);
-                foreach( var race in Races){
-                    table.Header.Add(race.Name);
-                }
-                foreach( var ethn in Ethnicities){
-                    table.Header.Add(ethn.Name);
-                }
-                foreach( var opnmb in OptionNumbers){
-                    table.Header.Add(opnmb.Name);
-                }
-                var Rows = new List<List<string>>();
-                float TotalHours = 0;
-                float TotalMultistate = 0;
-                int TotalAudience = 0;
-                int[] totalPerRace = new int[Races.Count()];
-                int[] totalPerEthnicity = new int[Ethnicities.Count()];
-                int[] totalPerOptionNumber = new int[OptionNumbers.Count()];
-                int i = 0;
-                foreach(var res in result){
-                    TotalHours += res.Hours;
-                    TotalAudience += res.Audience;
-                    TotalMultistate += res.Multistate;
-                    var Row = new List<string>();
-                    Row.Add(res.PlanningUnit.Name);
-                    Row.Add((res.Hours / 8).ToString());
-                    Row.Add((res.Multistate / 8).ToString());
-                    Row.Add(res.Audience.ToString());
-                    i = 0;
-                    foreach( var race in Races){
-                        var raceAmount = res.RaceEthnicityValues.Where( v => v.RaceId == race.Id).Sum( r => r.Amount);
-                        Row.Add(raceAmount.ToString());
-                        totalPerRace[i] += raceAmount;
-                        i++;
-                    }
-                    i=0;
-                    foreach( var et in Ethnicities){
-                        var ethnAmount = res.RaceEthnicityValues.Where( v => v.EthnicityId == et.Id).Sum( r => r.Amount);
-                        Row.Add(ethnAmount.ToString());
-                        totalPerEthnicity[i] += ethnAmount;
-                        i++;
-                    }
-                    i=0;
-                    foreach( var opnmb in OptionNumbers){
-                        var optNmbAmount = res.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
-                        Row.Add( optNmbAmount.ToString());
-                        totalPerOptionNumber[i] += optNmbAmount;
-                        i++;
-                    }
-                    Rows.Add(Row);
-                }
-                table.Rows = Rows;
-                table.Foother = new List<string>{
-                            "Total", (TotalHours / 8).ToString(), (TotalMultistate / 8).ToString(), TotalAudience.ToString()
-                        };
-                i = 0;
-                foreach( var race in Races){
-                    table.Foother.Add(totalPerRace[i].ToString());
-                    i++;
-                }
-                i = 0;
-                foreach( var et in Ethnicities){
-                    table.Foother.Add(totalPerEthnicity[i].ToString());
-                    i++;
-                }
-                i = 0;
-                    foreach( var opnmb in OptionNumbers){
-                    table.Foother.Add( totalPerOptionNumber[i].ToString());
-                    i++;
-                }
-                var serialized = JsonConvert.SerializeObject(table);
-                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
-                    });
-            } */
 
             var table = activityRepo.ReportsStateAll(fiscalYear);
             return View(table);
@@ -489,9 +334,12 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("[action]")]
-        public async Task<IActionResult> ContactsByCountyByMajorProgram()
+        [Route("[action]/{fy?}")]
+        public async Task<IActionResult> ContactsByCountyByMajorProgram(string fy = "0")
         {
+            
+            
+            /* 
             var counties = await this.context.PlanningUnit
                                     .Where( u => 
                                                 u.District != null
@@ -533,6 +381,16 @@ namespace Kers.Controllers.Reports
             table.Header = header;
             table.Rows = rows;
             table.Foother = new List<string>();
+
+
+             */
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
+                return new StatusCodeResult(500);
+            }
+            var table = await activityRepo.ContactsByCountyByMajorProgram(fiscalYear);
             return View(table);
         }
 

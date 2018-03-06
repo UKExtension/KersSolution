@@ -151,6 +151,7 @@ namespace Kers
             services.AddSingleton<IScheduledTask, SnapEstimatedSizeofAudiencesReachedTask>();
             services.AddSingleton<IScheduledTask, SnapSessionTypebyMonthTask>();
             services.AddSingleton<IScheduledTask, ActivityReportsStateAllTask>();
+            services.AddSingleton<IScheduledTask, ActivityContactsByCountyByMajorProgramTask>();
 
             services.AddScheduler((sender, args) =>
             {

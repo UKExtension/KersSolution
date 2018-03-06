@@ -54,6 +54,7 @@ namespace Kers.Models.Abstract
         List<PerPersonActivities> ProcessPersonActivities(List<ActivityPersonResult> activities, IDistributedCache _cache);
         List<int> LastActivityRevisionIds( FiscalYear fiscalYear, IDistributedCache _cache);
         TableViewModel ReportsStateAll(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<TableViewModel> ContactsByCountyByMajorProgram(FiscalYear fiscalYear, bool refreshCache = false);
     }
 
     public interface IContactRepository: IEntityBaseRepository<Contact>{

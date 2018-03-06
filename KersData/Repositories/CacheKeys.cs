@@ -4,10 +4,17 @@ namespace Kers.Models.Repositories
         /***************************
         //Activity
          ***************************/
+        
+        
         public static string ActivityLastRevisionIdsPerFiscalYear = "ActivityLastRevisionIdsPerFiscalYear";
+
+        //TableViewModel
+        public static string ActivityContactsByCountyByMajorProgram = "ActivityContactsByCountyByMajorProgram";
         public static string StateAllContactsData = "StateAllContactsData";
+
         //List<ActivityUnitResult>
         public static string AllActivitiesByPlanningUnit = "AllActivitiesByPlanningUnit";
+        
         //List<ContactUnitResult>
         public static string AllContactsByPlanningUnit = "AllContactsByPlanningUnit";
 
