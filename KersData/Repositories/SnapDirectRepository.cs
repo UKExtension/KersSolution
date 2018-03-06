@@ -34,7 +34,261 @@ namespace Kers.Models.Repositories
             this.mainContext = mainContext;
         }
 
+        public string IndividualContactTotals(FiscalYear fiscalYear, Boolean refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapIndividualContactTotals + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
 
+
+                var keys = new List<string>();
+                
+                keys.Add("FY");
+                keys.Add("Name");
+                keys.Add("PositionTitle");
+                keys.Add("Program(s)");
+                keys.Add("PlanningUnit");
+                keys.Add("HoursReported");
+                keys.Add("Indirect");
+                keys.Add("Direct");
+                
+                var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+                
+                foreach( var audnc in snapDirectAudience){
+                    keys.Add(audnc.Name);
+                }
+
+                var snapDirectAges = this.context.SnapDirectAges.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+                
+                foreach( var age in snapDirectAges){
+                    keys.Add(age.Name);
+                }
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+                var perPerson = context.Activity.
+                                    Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && (e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null || e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapIndirect != null) )
+                                    .Select( s => new {
+                                        Last = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
+                                        User = s.KersUser,
+                                        Profile = s.KersUser.RprtngProfile,
+                                        Unit = s.KersUser.RprtngProfile.PlanningUnit,
+                                        Position = s.KersUser.ExtensionPosition
+                                    })
+                                    .OrderBy(e => e.User.RprtngProfile.Name).ToList();
+                
+                
+                var grouped = perPerson.Where( r => true)
+                                .GroupBy( p => p.User)
+                                .Select( s => new {
+                                    User = s.Key,
+                                    Revs = s.Select( r => r.Last),
+                                    Profile = s.Select( r => r.Profile).First(),
+                                    Unit = s.Select( r => r.Unit).First(),
+                                    Position = s.Select( r => r.Position).First(),
+                                });
+
+
+                foreach( var k in grouped){
+                    var row = fiscalYear.Name + ",";
+                    row += string.Concat( "\"", k.Profile.Name, "\"") + ",";
+                    row += string.Concat( "\"", k.Position.Code, "\"") + ",";
+
+                    var spclt = "";
+                    var sp = this.context.KersUser.Where( r => r.Id == k.User.Id).Include( u => u.Specialties).ThenInclude( s => s.Specialty).FirstOrDefault();
+                    foreach( var s in sp.Specialties){
+                        spclt += " " + s.Specialty.Code;
+                    }
+                    row += string.Concat( "\"", spclt, "\"") + ",";
+                    row += string.Concat( "\"", k.Unit.Name, "\"") + ",";
+                    row += k.Revs.Sum( r => r.Hours).ToString() + ",";
+
+
+                    var revIds = k.Revs.Select( r => r.Id);
+                    var indrAud = this.context.ActivityRevision.Where( r => revIds.Contains(r.Id) && r.SnapIndirect != null).Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues);
+                    var inrVals = new List<SnapIndirectReachedValue>();
+                    foreach( var rvsn in indrAud){
+                        inrVals.AddRange(rvsn.SnapIndirect.SnapIndirectReachedValues);
+                    }
+                    row += inrVals.Sum( s => s.Value).ToString() + ",";
+                    var dirAud = this.context.ActivityRevision.Where( r => revIds.Contains(r.Id) && r.SnapDirect != null).Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues);
+                    var aavs = new List<SnapDirectAgesAudienceValue>();
+                    foreach( var rvsn in dirAud ){
+                        aavs.AddRange( rvsn.SnapDirect.SnapDirectAgesAudienceValues );
+                    }
+
+                    row += aavs.Sum( s => s.Value).ToString() + ",";
+                    foreach( var audnc in snapDirectAudience){
+                        row += aavs.Where( a => a.SnapDirectAudienceId == audnc.Id).Sum( s => s.Value ).ToString() + ",";
+                    }
+                    foreach( var age in snapDirectAges){
+                        row += aavs.Where( a => a.SnapDirectAudienceId == age.Id).Sum( s => s.Value ).ToString() + ",";
+                    }
+                    result += row + "\n";
+                    
+                }
+
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    });
+
+            }
+
+            return result;
+        }
+
+        public string EstimatedSizeofAudiencesReached(FiscalYear fiscalYear, Boolean refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapEstimatedSizeofAudiencesReached + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+                        
+                keys.Add("YearMonth");
+                keys.Add("YearMonthName");
+                var methods = context.SnapIndirectReached.Where(m => m.Active && m.FiscalYear == fiscalYear).OrderBy( m => m.order);
+                foreach( var met in methods){
+                    keys.Add(string.Concat( "\"", met.Name, "\""));
+                }
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+                var perMonth = RevisionsWithIndirectContactsPerMonth( fiscalYear);
+                foreach( var mnth in perMonth){
+                    var dt = new DateTime(mnth.Year, mnth.Month, 15);
+                    var row = dt.ToString("yyyyMM") + ",";
+                    row += dt.ToString("yyyy-MMM") + ",";
+                    var ids = mnth.Revs.Select( r => r.Id);
+                    var indirects = context.ActivityRevision.Where( r => ids.Contains( r.Id ))
+                                .Select( i => i.SnapIndirect.SnapIndirectReachedValues  );
+                    var selections = new List<SnapIndirectReachedValue>();
+                    foreach( var ind in indirects){
+                        if(ind != null){
+                            selections.AddRange( ind );
+                        }
+                        
+                    }       
+                    foreach( var mt in methods){
+                        row += selections.Where( r => r.SnapIndirectReachedId == mt.Id).Sum( s => s.Value).ToString() + ",";
+                    }
+
+                    result += row + "\n";
+                }
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    }); 
+            }
+            return result;
+        }
+
+        public string SessionTypebyMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapSessionTypebyMonth + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+    
+                keys.Add("YearMonth");
+                keys.Add("YearMonthName");
+                var types = context.SnapDirectSessionType.Where(m => m.Active && m.FiscalYear == fiscalYear).OrderBy( m => m.order);
+                foreach( var met in types){
+                    keys.Add(string.Concat( "\"", met.Name, " Number Delivered\""));
+                    keys.Add(string.Concat( "\"", met.Name, " Min Minutes\""));
+                    keys.Add(string.Concat( "\"", met.Name, " Miax Minutes\""));
+                }
+                keys.Add("MonthlyTotal");
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+                var perMonth = RevisionsWithDirectContactsPerMonth( fiscalYear);
+                foreach( var mnth in perMonth){
+                    var dt = new DateTime(mnth.Year, mnth.Month, 15);
+                    var row = dt.ToString("yyyyMM") + ",";
+                    row += dt.ToString("yyyy-MMM") + ",";
+                    
+                    var ids = mnth.Revs.Select( r => r.Id);
+                    var MonthlyTotal = 0;
+                    foreach( var type in types){
+                        var byType = context.ActivityRevision.Where( r => ids.Contains( r.Id) && r.SnapDirect.SnapDirectSessionTypeId == type.Id);
+                        var cnt = byType.Count();
+                        MonthlyTotal += cnt;
+                        row += cnt.ToString() + ",";
+                        if( cnt == 0){
+                            row += ",,";
+                        }else{
+                            row += (byType.Min( t => t.Hours) * 60).ToString() + ",";
+                            row += (byType.Max( t => t.Hours) * 60).ToString() + ",";
+                        }
+                    }
+
+                    row += MonthlyTotal.ToString();
+                    result += row + "\n";
+                }
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    }); 
+            }
+            return result;
+        }
+        public string MethodsUsedRecordCount(FiscalYear fiscalYear, Boolean refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapMethodsUsedRecordCount + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+                        
+                keys.Add("YearMonth");
+                keys.Add("YearMonthName");
+                var methods = context.SnapIndirectMethod.Where(m => m.Active && m.FiscalYear == fiscalYear).OrderBy( m => m.order);
+                foreach( var met in methods){
+                    keys.Add(string.Concat( "\"", met.Name, "\""));
+                }
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+                var perMonth = RevisionsWithIndirectContactsPerMonth( fiscalYear);
+                foreach( var mnth in perMonth){
+                    if(mnth.Revs.Count > 0){
+                        var dt = mnth.Revs.Last().ActivityDate;
+                        var row = dt.ToString("yyyyMM") + ",";
+                        row += dt.ToString("yyyy-MMM") + ",";
+                        var ids = mnth.Revs.Select( r => r.Id);
+                        var indirects = context.ActivityRevision.Where( r => ids.Contains( r.Id ))
+                                    .Select( i => i.SnapIndirect.SnapIndirectMethodSelections  );
+                        var selections = new List<SnapIndirectMethodSelection>();
+                        foreach( var ind in indirects){
+                            if(ind != null){
+                                selections.AddRange( ind );
+                            }
+                            
+                        }       
+                        foreach( var mt in methods){
+                            row += selections.Where( r => r.SnapIndirectMethodId == mt.Id).Count().ToString() + ",";
+                        }
+
+                        result += row + "\n";
+                    }
+                }
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    }); 
+            }
+            return result;
+        }
 
         public string SpecificSiteNamesByMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
 
@@ -137,9 +391,6 @@ namespace Kers.Models.Repositories
             }
             return result;
         }
-
-
-
 
         public string TotalByMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
@@ -254,6 +505,7 @@ namespace Kers.Models.Repositories
             }
             return result;
         }
+
         public string TotalByCounty(FiscalYear fiscalYear, Boolean refreshCache = false){
 
             string result;
@@ -367,7 +619,6 @@ namespace Kers.Models.Repositories
             }
             return result;
         }
-
 
         public string TotalByEmployee(FiscalYear fiscalYear, bool refreshCache = false){
             string result;

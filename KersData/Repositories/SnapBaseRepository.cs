@@ -122,6 +122,101 @@ namespace Kers.Models.Repositories
             return snapEligible;
         }
 
+        protected List<ActivityRevisionsPerMonth> RevisionsWithDirectContactsPerMonth( FiscalYear fiscalYear){
+            var perMonth = new List<ActivityRevisionsPerMonth>();
+            var currentDate = DateTime.Now;
+            var runningDate = fiscalYear.Start;
+            var difference = (int)Math.Floor(fiscalYear.End.Subtract(fiscalYear.Start).Days / (365.2425 / 12)) + 1;
+            var months = new DateTime[difference];
+            var i = 0;
+            do{
+                months[i] = runningDate.AddMonths( i );
+                if( months[i].Year < currentDate.Year || ( months[i].Year == currentDate.Year && months[i].Month <= currentDate.Month ) ){
+                    var cacheKey = "DirectActivityRevisionsPerMonth" + months[i].Month.ToString() + months[i].Year.ToString();
+                    var cachedTypes = _cache.GetString(cacheKey);
+                    var entity = new ActivityRevisionsPerMonth();
+                    if (!string.IsNullOrEmpty(cachedTypes)){
+                        entity = JsonConvert.DeserializeObject<ActivityRevisionsPerMonth>(cachedTypes);
+                    }else{
+                        var byMonth = context.Activity.Where( c => c.ActivityDate.Month == months[i].Month && c.ActivityDate.Year == months[i].Year);
+                        var activityRevisionsPerMonty = byMonth
+                                .Select( a => a.Revisions.OrderBy(r => r.Created).Last())
+                                .Where( e => e.SnapDirect != null)
+                                .ToList();
+                        entity.Revs = activityRevisionsPerMonty;
+                        entity.Month = months[i].Month;
+                        entity.Year = months[i].Year;
+
+                        var yearDifference = currentDate.Year - months[i].Year;
+                        var monthsDifference = currentDate.Month - months[i].Month;
+
+                        var cachePeriod = Math.Floor( (float) (yearDifference * 10 + monthsDifference + 5) / 2 );
+                        if(cachePeriod <= 0){
+                            cachePeriod = 1;
+                        }
+
+                        var serializedActivities = JsonConvert.SerializeObject(entity);
+                        _cache.SetString(cacheKey, serializedActivities, new DistributedCacheEntryOptions
+                            {
+                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cachePeriod)
+                            });           
+                    }
+                    perMonth.Add(entity);
+                }
+                i++;
+            }while(i < difference);
+
+            return perMonth;
+        }
+
+        protected List<ActivityRevisionsPerMonth> RevisionsWithIndirectContactsPerMonth( FiscalYear fiscalYear){
+            var perMonth = new List<ActivityRevisionsPerMonth>();
+            var currentDate = DateTime.Now;
+            var runningDate = fiscalYear.Start;
+            var difference = (int)Math.Floor(fiscalYear.End.Subtract(fiscalYear.Start).Days / (365.2425 / 12)) + 1;
+            var months = new DateTime[difference];
+            var i = 0;
+            do{
+                months[i] = runningDate.AddMonths( i );
+                if( months[i].Year < currentDate.Year || ( months[i].Year == currentDate.Year && months[i].Month <= currentDate.Month ) ){
+                    var cacheKey = "IndirectActivityRevisionsPerMonth" + months[i].Month.ToString() + months[i].Year.ToString();
+                    var cachedTypes = _cache.GetString(cacheKey);
+                    var entity = new ActivityRevisionsPerMonth();
+                    if (!string.IsNullOrEmpty(cachedTypes)){
+                        entity = JsonConvert.DeserializeObject<ActivityRevisionsPerMonth>(cachedTypes);
+                    }else{
+                        var byMonth = context.Activity.Where( c => c.ActivityDate.Month == months[i].Month && c.ActivityDate.Year == months[i].Year);
+                        var activityRevisionsPerMonty = byMonth
+                                .Select( a => a.Revisions.OrderBy(r => r.Created).Last())
+                                .Where( e => e.SnapIndirect != null)
+                                .ToList();
+                        entity.Revs = activityRevisionsPerMonty;
+                        entity.Month = months[i].Month;
+                        entity.Year = months[i].Year;
+
+                        var yearDifference = currentDate.Year - months[i].Year;
+                        var monthsDifference = currentDate.Month - months[i].Month;
+
+                        var cachePeriod = Math.Floor( (float) (yearDifference * 10 + monthsDifference + 5) / 2 );
+                        if(cachePeriod <= 0){
+                            cachePeriod = 1;
+                        }
+
+                        var serializedActivities = JsonConvert.SerializeObject(entity);
+                        _cache.SetString(cacheKey, serializedActivities, new DistributedCacheEntryOptions
+                            {
+                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cachePeriod)
+                            });
+                                    
+                    }
+                    perMonth.Add(entity);
+                }
+                i++;
+            }while(i < difference);
+
+            return perMonth;
+        }
+
 
     }
 

@@ -32,6 +32,10 @@ namespace Kers.Models.Repositories
         public static string SnapReimbursementCounty = "SnapReimbursementCounty";
         public static string SnapSpecificSiteNamesByMonth = "SnapSpecificSiteNamesByMonth";
         public static string NumberofDeliverySitesbyTypeofSetting = "NumberofDeliverySitesbyTypeofSetting";
+        public static string SnapMethodsUsedRecordCount = "MethodsUsedRecordCount";
+        public static string SnapIndividualContactTotals = "SnapIndividualContactTotals";
+        public static string SnapEstimatedSizeofAudiencesReached = "SnapEstimatedSizeofAudiencesReached";
+        public static string SnapSessionTypebyMonth = "SnapSessionTypebyMonth";
 
     }
 }

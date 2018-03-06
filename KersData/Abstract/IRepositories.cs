@@ -76,6 +76,9 @@ namespace Kers.Models.Abstract
         string SitesPerPersonPerMonth(FiscalYear fiscalYear, bool refreshCache = false);
         string SpecificSiteNamesByMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
         string NumberofDeliverySitesbyTypeofSetting(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string MethodsUsedRecordCount(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string IndividualContactTotals(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string EstimatedSizeofAudiencesReached(FiscalYear fiscalYear, Boolean refreshCache = false);
     }
 
     public interface ISnapPolicyRepository{
