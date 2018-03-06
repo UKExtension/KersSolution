@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Entities;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using Kers.Models.ViewModels;
 
 namespace Kers.Models.Repositories
 {
@@ -20,10 +21,14 @@ namespace Kers.Models.Repositories
     {
 
         private KERScoreContext coreContext;
-        public ActivityRepository(KERScoreContext context)
-            : base(context)
+        private IDistributedCache _cache;
+        public ActivityRepository(
+            IDistributedCache _cache,
+            KERScoreContext context
+            ) : base(context)
         { 
             this.coreContext = context;
+            this._cache = _cache;
         }
 
 
@@ -231,7 +236,216 @@ namespace Kers.Models.Repositories
         }
 
 
-    }
+        public TableViewModel ReportsStateAll(FiscalYear fiscalYear, bool refreshCache = false){
 
+            var cacheKey = CacheKeys.StateAllContactsData + fiscalYear.Name;
+            var cachedTypes = _cache.GetString(cacheKey);
+            TableViewModel table;
+            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
+                table = JsonConvert.DeserializeObject<TableViewModel>(cachedTypes);
+            }else{
+                var actvtsCacheKey = CacheKeys.AllActivitiesByPlanningUnit + fiscalYear.Name;
+                var cachedActivities = _cache.GetString(actvtsCacheKey);
+                List<ActivityUnitResult> activities;
+                if (!string.IsNullOrEmpty(cachedActivities)){
+                    activities = JsonConvert.DeserializeObject<List<ActivityUnitResult>>(cachedActivities);
+                }else{
+                    activities = coreContext.Activity
+                                                    .Where( a => a.ActivityDate < fiscalYear.End && a.ActivityDate > fiscalYear.Start)
+                                                    .GroupBy(e => new {
+                                                        Unit = e.PlanningUnit
+                                                    })
+                                                    .Select(c => new ActivityUnitResult{
+                                                        Ids = c.Select(
+                                                            s => s.Id
+                                                        ).ToList(),
+                                                        Hours = c.Sum(s => s.Hours),
+                                                        Audience = c.Sum(s => s.Audience),
+                                                        Unit = c.Key.Unit
+                                                    })
+                                                    .ToList();
+                    var serializedActivities = JsonConvert.SerializeObject(activities);
+                    _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
+                        });
+                                
+                }
+                var result = ProcessUnitActivities( activities, _cache);
+
+
+                var contactsCacheKey = CacheKeys.AllContactsByPlanningUnit + fiscalYear.Name;
+                var cachedContacts = _cache.GetString(contactsCacheKey);
+                List<ContactUnitResult> contacts;
+                if (!string.IsNullOrEmpty(cachedContacts)){
+                    contacts = JsonConvert.DeserializeObject<List<ContactUnitResult>>(cachedContacts);
+                }else{
+                    contacts = coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < fiscalYear.End 
+                                                && 
+                                                c.ContactDate > fiscalYear.Start 
+                                                && 
+                                                c.PlanningUnit != null
+                                        )
+                                        .GroupBy(e => new {
+                                            Unit = e.PlanningUnit
+                                        })
+                                        .Select(c => new ContactUnitResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            Unit = c.Key.Unit
+                                        })
+                                        .ToList();
+                    var serializedContacts = JsonConvert.SerializeObject(contacts);
+                    _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
+                        });
+                                
+                }
+                result = ProcessUnitContacts( contacts, result);
+                result = result.OrderBy( r => r.PlanningUnit.order).ToList();
+                table = new TableViewModel();
+                table.Header = new List<string>{
+                            "Planning Unit", "Days", "Multistate", "Total Contacts"
+                        };
+                var Races = coreContext.Race.OrderBy(r => r.Order);
+                var Ethnicities = coreContext.Ethnicity.OrderBy( e => e.Order);
+                var OptionNumbers = coreContext.ActivityOptionNumber.OrderBy( n => n.Order);
+                foreach( var race in Races){
+                    table.Header.Add(race.Name);
+                }
+                foreach( var ethn in Ethnicities){
+                    table.Header.Add(ethn.Name);
+                }
+                foreach( var opnmb in OptionNumbers){
+                    table.Header.Add(opnmb.Name);
+                }
+                var Rows = new List<List<string>>();
+                float TotalHours = 0;
+                float TotalMultistate = 0;
+                int TotalAudience = 0;
+                int[] totalPerRace = new int[Races.Count()];
+                int[] totalPerEthnicity = new int[Ethnicities.Count()];
+                int[] totalPerOptionNumber = new int[OptionNumbers.Count()];
+                int i = 0;
+                foreach(var res in result){
+                    TotalHours += res.Hours;
+                    TotalAudience += res.Audience;
+                    TotalMultistate += res.Multistate;
+                    var Row = new List<string>();
+                    Row.Add(res.PlanningUnit.Name);
+                    Row.Add((res.Hours / 8).ToString());
+                    Row.Add((res.Multistate / 8).ToString());
+                    Row.Add(res.Audience.ToString());
+                    i = 0;
+                    foreach( var race in Races){
+                        var raceAmount = res.RaceEthnicityValues.Where( v => v.RaceId == race.Id).Sum( r => r.Amount);
+                        Row.Add(raceAmount.ToString());
+                        totalPerRace[i] += raceAmount;
+                        i++;
+                    }
+                    i=0;
+                    foreach( var et in Ethnicities){
+                        var ethnAmount = res.RaceEthnicityValues.Where( v => v.EthnicityId == et.Id).Sum( r => r.Amount);
+                        Row.Add(ethnAmount.ToString());
+                        totalPerEthnicity[i] += ethnAmount;
+                        i++;
+                    }
+                    i=0;
+                    foreach( var opnmb in OptionNumbers){
+                        var optNmbAmount = res.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
+                        Row.Add( optNmbAmount.ToString());
+                        totalPerOptionNumber[i] += optNmbAmount;
+                        i++;
+                    }
+                    Rows.Add(Row);
+                }
+                table.Rows = Rows;
+                table.Foother = new List<string>{
+                            "Total", (TotalHours / 8).ToString(), (TotalMultistate / 8).ToString(), TotalAudience.ToString()
+                        };
+                i = 0;
+                foreach( var race in Races){
+                    table.Foother.Add(totalPerRace[i].ToString());
+                    i++;
+                }
+                i = 0;
+                foreach( var et in Ethnicities){
+                    table.Foother.Add(totalPerEthnicity[i].ToString());
+                    i++;
+                }
+                i = 0;
+                    foreach( var opnmb in OptionNumbers){
+                    table.Foother.Add( totalPerOptionNumber[i].ToString());
+                    i++;
+                }
+                var serialized = JsonConvert.SerializeObject(table);
+                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
+                    });
+            }
+            return table;
+        } 
+
+
+        public List<PerUnitActivities> ProcessUnitContacts(List<ContactUnitResult> contacts, List<PerUnitActivities> result){
+            foreach( var contactGroup in contacts ){
+                    var unitRevisions = new List<ContactRevision>();
+                    var OptionNumbers = new List<IOptionNumberValue>();
+                    var RaceEthnicities = new List<IRaceEthnicityValue>();
+                    foreach( var rev in contactGroup.Ids){
+
+                        var cacheKey = "ContactLastRevision" + rev.ToString();
+
+                        var cacheString = _cache.GetString(cacheKey);
+                    
+                        ContactRevision lstrvsn;
+                        if (!string.IsNullOrEmpty(cacheString)){
+                            lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(cacheString);
+                        }else{
+                            lstrvsn = coreContext.ContactRevision.
+                                    Where(r => r.ContactId == rev).
+                                    Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                                    Include(a => a.ContactRaceEthnicityValues).
+                                    OrderBy(a => a.Created).Last();
+                            unitRevisions.Add(lstrvsn);
+                            OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
+                            RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
+
+                            var serialized = JsonConvert.SerializeObject(lstrvsn);
+                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                            {
+                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                            });         
+                        }
+                    }
+                    var unitInResults = result.Where( r => r.PlanningUnit.Id == contactGroup.Unit.Id).FirstOrDefault();
+                    if(unitInResults == null){
+                        var actvts = new PerUnitActivities();
+                        actvts.RaceEthnicityValues = RaceEthnicities;
+                        actvts.OptionNumberValues = OptionNumbers;
+                        actvts.Hours = unitRevisions.Sum( r => r.Days) * 8;
+                        actvts.Audience = unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                        actvts.PlanningUnit = contactGroup.Unit;
+                        actvts.Multistate = unitRevisions.Sum(r => r.Multistate) * 8;
+                        result.Add(actvts);
+                    }else{
+                        unitInResults.RaceEthnicityValues.AddRange(RaceEthnicities);
+                        unitInResults.OptionNumberValues.AddRange(OptionNumbers);
+                        unitInResults.Hours += unitRevisions.Sum( r => r.Days) * 8;
+                        unitInResults.Audience += unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                        unitInResults.Multistate += unitRevisions.Sum(r => r.Multistate) * 8;
+                    }
+                }
+            return result;
+        }
+
+
+
+    }
 
 }

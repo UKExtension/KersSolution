@@ -63,11 +63,17 @@ namespace Kers.Controllers.Reports
         }
 
         [HttpGet]
-        [Route("[action]")]
-        public async Task<IActionResult> StateAll()
+        [Route("[action]/{fy?}")]
+        public IActionResult StateAll(string fy = "0")
         {
+            FiscalYear fiscalYear = GetFYByName(fy);
 
-            var cacheKey = "StateAllContactsData";
+            if(fiscalYear == null){
+                //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+
+            /* var cacheKey = "StateAllContactsData";
             var cachedTypes = _cache.GetString(cacheKey);
             TableViewModel table;
             if (!string.IsNullOrEmpty(cachedTypes)){
@@ -220,9 +226,9 @@ namespace Kers.Controllers.Reports
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
                     });
-            }
+            } */
 
-
+            var table = activityRepo.ReportsStateAll(fiscalYear);
             return View(table);
         }
 
@@ -587,7 +593,15 @@ namespace Kers.Controllers.Reports
             return View();
         }
 
-
+        public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepository.currentFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
+        }
 
 
 

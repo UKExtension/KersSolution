@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using Kers.Models.Data;
 using Microsoft.Extensions.Caching.Distributed;
+using Kers.Models.ViewModels;
 
 namespace Kers.Models.Abstract
 {
@@ -52,6 +53,7 @@ namespace Kers.Models.Abstract
         List<PerProgramActivities> ProcessMajorProgramActivities(List<ActivityMajorProgramResult> activities, IDistributedCache _cache);
         List<PerPersonActivities> ProcessPersonActivities(List<ActivityPersonResult> activities, IDistributedCache _cache);
         List<int> LastActivityRevisionIds( FiscalYear fiscalYear, IDistributedCache _cache);
+        TableViewModel ReportsStateAll(FiscalYear fiscalYear, bool refreshCache = false);
     }
 
     public interface IContactRepository: IEntityBaseRepository<Contact>{

@@ -14,10 +14,10 @@ using Newtonsoft.Json.Linq;
 
 namespace Kers.Tasks
 {
-    public class ReimbursementNepAssistantsTask : TaskBase, IScheduledTask
+    public class SnapReimbursementNepAssistantsTask : TaskBase, IScheduledTask
     {
         IServiceProvider serviceProvider;
-        public ReimbursementNepAssistantsTask(
+        public SnapReimbursementNepAssistantsTask(
             IServiceProvider serviceProvider
         ){
             this.serviceProvider = serviceProvider;
