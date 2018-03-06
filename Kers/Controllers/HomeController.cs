@@ -94,12 +94,12 @@ namespace Kers.Controllers
                             return Ok(new {error = errorMessage});
                         }                    
                     }else{
-                        /*
+                        
                         if( usr.enabled == false ){
                             var errorMessage = "Your Account is Disabled. Please Contact your District Director for Providing you Access.";
                             return Ok(new {error = errorMessage});
                         }
-                        */
+                        
                     }
 
                 }

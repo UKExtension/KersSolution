@@ -10,7 +10,7 @@ import {Location} from '@angular/common';
 })
 export class LoginComponent implements OnInit { 
 
-  //message: string;
+  message: string = "Username or Password Missmatch";
   public ukLogoSrc: string;
   loginError = false;
   loginForm = null;
@@ -72,6 +72,7 @@ export class LoginComponent implements OnInit {
             this.loading = false;
             if(data.error != null){
               this.loginError = true;
+              this.message = data.error;
             }else{
               this.loginError = false;
               if(data.newUser != null){
