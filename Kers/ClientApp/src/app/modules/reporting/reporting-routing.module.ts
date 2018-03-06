@@ -13,6 +13,7 @@ import {ProfileListComponent} from './components/reporting-profile/profile-list.
 import {ReportingProfileEditComponent} from './components/reporting-profile/reporting-profile-edit.component';
 
 import {AuthenticationGuard} from '../authentication/authentication-guard.service';
+import { ReportingHelpHomeComponent } from './components/reporting-help/reporting-help-home.component';
 
 const reportingRoutes: Routes = [
   {
@@ -94,6 +95,20 @@ const reportingRoutes: Routes = [
               {
                 path: 'edit',
                 component: ReportingProfileEditComponent
+
+              }
+            ]
+          },
+          {
+            path: 'help',
+            children: [
+              {
+                path: '',
+                component: ReportingHelpHomeComponent
+              },
+              {
+                path: ':id',
+                component: ReportingHelpHomeComponent
 
               }
             ]

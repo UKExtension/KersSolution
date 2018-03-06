@@ -36,6 +36,7 @@ import {AdminModule} from './modules/admin/admin.module';
 import {ReportingService} from './components/reporting/reporting.service';
 
 import {ReportingRoutingModule} from './reporting-routing.module';
+import { ReportingHelpHomeComponent } from './components/reporting-help/reporting-help-home.component';
 
 @NgModule({
     declarations: [
@@ -60,7 +61,8 @@ import {ReportingRoutingModule} from './reporting-routing.module';
         WidgetSpecialistComponent,
         WidgetTrainingsComponent,
         WidgetStaffAssistantComponent,
-        WidgetDDComponent
+        WidgetDDComponent,
+        ReportingHelpHomeComponent
     ],
     imports: [ 
         ReportingRoutingModule,
