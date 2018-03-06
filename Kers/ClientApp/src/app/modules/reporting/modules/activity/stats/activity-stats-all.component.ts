@@ -33,7 +33,8 @@ export class ActivityStatsAllComponent {
         dateFormat: 'mmm dd, yyyy',
         showClearBtn: false,
         showApplyBtn: false,
-        showClearDateRangeBtn: false
+        showClearDateRangeBtn: false,
+        firstDayOfWeek: 'su'
     };
 
     constructor( 

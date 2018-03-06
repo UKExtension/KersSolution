@@ -26,7 +26,8 @@ export class ExpenseFormComponent {
         // other options...
             dateFormat: 'mm/dd/yyyy',
             showTodayBtn: false,
-            satHighlight: true
+            satHighlight: true,
+            firstDayOfWeek: 'su'
         };
 
     customBrakefastRate = false;
