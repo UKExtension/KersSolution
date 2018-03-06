@@ -38,7 +38,7 @@ export class AuthenticationService {
           )
     ).map( response => {
           var auth = response.json();
-          if(auth.newUser == null){
+          if(auth.newUser == null && auth.error == null){
             this.setAuth(auth);
           }
           return auth;

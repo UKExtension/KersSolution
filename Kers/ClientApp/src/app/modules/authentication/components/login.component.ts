@@ -70,17 +70,22 @@ export class LoginComponent implements OnInit {
       .subscribe( 
         (data) => {
             this.loading = false;
-            this.loginError = false;
-            if(data.newUser != null){
-              this.onNewUser.emit(data);
+            if(data.error != null){
+              this.loginError = true;
             }else{
-              var auth = this.authService.getAuth();
-              if(this.authService.redirectUrl == undefined){
-                this.router.navigate(['/reporting']);
+              this.loginError = false;
+              if(data.newUser != null){
+                this.onNewUser.emit(data);
               }else{
-                this.router.navigate([this.authService.redirectUrl]);
+                var auth = this.authService.getAuth();
+                if(this.authService.redirectUrl == undefined){
+                  this.router.navigate(['/reporting']);
+                }else{
+                  this.router.navigate([this.authService.redirectUrl]);
+                }
               }
             }
+            
           },
             (err) => {
               this.loading = false;
