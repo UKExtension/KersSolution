@@ -63,10 +63,18 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("[action]/{type}/{id?}")]
-        public async Task<IActionResult> Data(int type, int id = 0)
+        [Route("[action]/{type}/{id?}/{fy?}")]
+        public async Task<IActionResult> Data(int type, int id = 0, string fy="0")
         {
+            FiscalYear fiscalYear = GetFYByName(fy);
 
+            if(fiscalYear == null){
+                //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
+                return new StatusCodeResult(500);
+            }
+
+            var table = await contactRepo.Data(fiscalYear, type, id);
+/* 
             var cacheKey = "ByEmployeeContactsData" + type.ToString() + id.ToString();
             var cachedTypes = _cache.GetString(cacheKey);
             TableViewModel table;
@@ -218,7 +226,7 @@ namespace Kers.Controllers.Reports
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
                     });
-            }
+            } */
             ViewData["Type"] = type;
             ViewData["Subtitle"] = types[type];
             if(type == 0){
@@ -230,7 +238,7 @@ namespace Kers.Controllers.Reports
 
             return View(table);
         }
-
+/* 
         private async Task<List<ActivityPersonResult>> DistrictActivities(int id){
             var activities = await this.context.Activity
                                                     .Where( a => 
@@ -375,6 +383,16 @@ namespace Kers.Controllers.Reports
                                         })
                                         .ToListAsync();
             return contacts;
+        } */
+
+        public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepository.currentFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
         }
         
 

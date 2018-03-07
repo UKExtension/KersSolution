@@ -11,10 +11,12 @@ namespace Kers.Models.Repositories
         //TableViewModel
         public static string ActivityContactsByCountyByMajorProgram = "ActivityContactsByCountyByMajorProgram";
         public static string StateAllContactsData = "StateAllContactsData";
+        public static string StateByMajorProgram = "ActivityStateByMajorProgram";
+        public static string ByEmployeeContactsData = "ByEmployeeContactsData";
 
         //List<ActivityUnitResult>
         public static string AllActivitiesByPlanningUnit = "AllActivitiesByPlanningUnit";
-        
+
         //List<ContactUnitResult>
         public static string AllContactsByPlanningUnit = "AllContactsByPlanningUnit";
 

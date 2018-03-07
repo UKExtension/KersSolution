@@ -79,10 +79,21 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("[action]/{type?}")]
+        [Route("[action]/{type?}/{fy?}")]
         // type: 0 - all, 1 - UK, 2 - KSU
-        public async Task<IActionResult> StateByMajorProgram(int type = 0)
+        public async Task<IActionResult> StateByMajorProgram(int type = 0, string fy = "0")
         {
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
+                return new StatusCodeResult(500);
+            }
+
+
+            /* 
+
 
             var cacheKey = "StateByMajorProgram" + type.ToString();
             var cachedTypes = _cache.GetString(cacheKey);
@@ -326,9 +337,9 @@ namespace Kers.Controllers.Reports
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
                     });
-            }
+            } */
 
-
+            var table = await activityRepo.StateByMajorProgram(fiscalYear, type);
             return View(table);
         }
 

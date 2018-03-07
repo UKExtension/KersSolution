@@ -55,12 +55,14 @@ namespace Kers.Models.Abstract
         List<int> LastActivityRevisionIds( FiscalYear fiscalYear, IDistributedCache _cache);
         TableViewModel ReportsStateAll(FiscalYear fiscalYear, bool refreshCache = false);
         Task<TableViewModel> ContactsByCountyByMajorProgram(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<TableViewModel> StateByMajorProgram(FiscalYear fiscalYear, int type = 0, bool refreshCache = false);
     }
 
     public interface IContactRepository: IEntityBaseRepository<Contact>{
         List<PerUnitActivities> ProcessUnitContacts(List<ContactUnitResult> contacts, List<PerUnitActivities> result, IDistributedCache _cache);
         List<PerProgramActivities> ProcessMajorProgramContacts(List<ContactMajorProgramResult> contacts, List<PerProgramActivities> result, IDistributedCache _cache);
         List<PerPersonActivities> ProcessPersonContacts(List<ContactPersonResult> contacts, List<PerPersonActivities> result, IDistributedCache _cache);
+        Task<TableViewModel> Data(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false );
     }
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
