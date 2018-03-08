@@ -1,26 +1,19 @@
 import { NgModule }             from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { PlanningunitListComponent } from './planningunit-list.component';
+import { PlanningUnitAdminHomeComponent } from './admin/planning-unit-admin-home.component';
 
 
 @NgModule({
   imports: [ RouterModule.forChild([
      {
-         /*
+         
           path: '',
-          component: PlanningunitComponent,
-          children: 
-            [
-                
-                {
-                  path: '',
-                  component: ServicelogHomeComponent
-                },
-                {
-                  path: 'snaped',
-                  component: ServicelogSnapedComponent
-                }
-               
-            ] */
+          component: PlanningunitListComponent
+      },
+      {
+        path: 'admin',
+        component: PlanningUnitAdminHomeComponent
       }
              
   ])],

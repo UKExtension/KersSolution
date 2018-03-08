@@ -25,7 +25,10 @@ export class PlanningunitService {
     counties():Observable<PlanningUnit[]>{
         var url = this.baseUrl + 'countylist';
         return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <PlanningUnit[]>res.json())
+                .map(res =>{ 
+                    let counties = <PlanningUnit[]>res.json();
+                    return counties;
+                } )
                 .catch(this.handleError);
     }
 
@@ -40,35 +43,16 @@ export class PlanningunitService {
     // CRUD operations
     /*****************************/
 
-    /*
-    add( activity:Servicelog ){
-        return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(activity), this.getRequestOptions())
-                    .map( res => {
-                    
-                        var ret = <Servicelog>res.json();
-                        return ret;
-                    } )
-                    .catch(this.handleError);
-    }
-    update(id:number, activity:Servicelog){
+    update(id:number, unit:PlanningUnit){
         var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(activity), this.getRequestOptions())
+        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(unit), this.getRequestOptions())
                     .map( res => {
-                        return <Servicelog> res.json();
+                        return <PlanningUnit> res.json();
                     })
                     .catch(this.handleError);
     }
 
-    delete(id:number){
-        var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
-    }
-
-*/
+    
 
     getRequestOptions(){
         return new RequestOptions(

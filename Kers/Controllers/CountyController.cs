@@ -61,7 +61,7 @@ namespace Kers.Controllers
 
            
             
-            var cacheKey = "CountiesList";
+            var cacheKey = CacheKeys.CountiesList;
             var cached = _cache.GetString(cacheKey);
 
             if (!string.IsNullOrEmpty(cached)){
@@ -81,6 +81,39 @@ namespace Kers.Controllers
                         });
             }
             return new OkObjectResult(counties);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateCounty( int id, [FromBody] PlanningUnit unit){
+           
+            
+            var entity = context.PlanningUnit.Find(id);
+            
+            if(entity != null && unit != null){
+                
+
+                entity.Name = unit.Name;
+                entity.Code = unit.Code;
+                entity.Description = unit.Description;
+                entity.FullName = unit.FullName;
+                entity.Address = unit.Address;
+                entity.Zip = unit.Zip;
+                entity.City = unit.City;
+                entity.Phone = unit.Phone;
+                entity.WebSite = unit.WebSite;
+                entity.Email = unit.Email;
+                entity.Population = unit.Population;
+                entity.FIPSCode = unit.FIPSCode;
+
+
+                context.SaveChanges();
+                _cache.Remove(CacheKeys.CountiesList);
+                this.Log( unit ,"PlanningUnit", "Planning Unit Updated."); 
+                return new OkObjectResult(entity);
+            }else{
+                this.Log( unit ,"PlanningUnit", "Not Found PlanningUnit in an update attempt.", "Success Story", "Error");
+                return new StatusCodeResult(500);
+            }
         }
 
 

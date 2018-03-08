@@ -20,6 +20,9 @@ namespace Kers.Models.Repositories
         //List<ContactUnitResult>
         public static string AllContactsByPlanningUnit = "AllContactsByPlanningUnit";
 
+        //List<PlanningUnit>
+        public static string CountiesList = "CountiesList";
+
         /***************************
         //Snap Ed
         ***************************/

@@ -54,6 +54,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/county/county.module#CountyModule'
           },
           {
+            path: 'planningunit', 
+            loadChildren: './modules/planningunit/planningunit.module#PlanningunitModule'
+          },
+          {
             path: 'activity', 
             loadChildren: './modules/activity/activity.module#ActivityModule'
           },
