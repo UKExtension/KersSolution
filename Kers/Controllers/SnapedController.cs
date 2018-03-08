@@ -47,8 +47,13 @@ namespace Kers.Controllers
                 var user = this.CurrentUser();
                 userId = user.Id;
             }
+            var fiscalYear = this.fiscalYearRepo.currentFiscalYear("snapEd");
             var hours = context.Activity.
-                                Where(e=>e.KersUser.Id == userId )
+                                Where(e=>e.KersUser.Id == userId 
+                                        &&
+                                        e.ActivityDate < fiscalYear.End
+                                        &&
+                                        e.ActivityDate > fiscalYear.Start )
                                 .Include( a => a.Revisions)
                                 .ToList();
             var hrs = hours.Where( e => e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().isSnap).Sum( h => Math.Floor(h.Hours));
