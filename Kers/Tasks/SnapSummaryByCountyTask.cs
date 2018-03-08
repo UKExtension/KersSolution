@@ -36,17 +36,25 @@ namespace Kers.Tasks
             using (var scope = serviceScopeFactory.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<KERScoreContext>();
-                var mainContext = scope.ServiceProvider.GetService<KERSmainContext>();
-                var cache = scope.ServiceProvider.GetService<IDistributedCache>();
-                var fiscalYearRepo = new FiscalYearRepository( context );
-                var repo = new SnapDirectRepository(context, cache, mainContext);
-                var startTime = DateTime.Now;
-                var str = repo.TotalByCounty(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
-                var endTime = DateTime.Now;
-                await LogComplete(context, 
+                try{
+                    var mainContext = scope.ServiceProvider.GetService<KERSmainContext>();
+                    var cache = scope.ServiceProvider.GetService<IDistributedCache>();
+                    var fiscalYearRepo = new FiscalYearRepository( context );
+                    var repo = new SnapDirectRepository(context, cache, mainContext);
+                    var startTime = DateTime.Now;
+                    var str = repo.TotalByCounty(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
+                    var endTime = DateTime.Now;
+                    await LogComplete(context, 
                                     "SnapSummaryByCountyTask", str, 
                                     "Snap Summary By County Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
                                 );
+                }catch( Exception e){
+                    await LogError(context, 
+                                    "SnapSummaryByCountyTask", e, 
+                                    "Snap Summary By County Task failed"
+                            );
+                }
+                
             }
 
             
