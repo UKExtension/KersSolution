@@ -320,7 +320,7 @@ export class PlanningUnit{
         public webSite:string,
         public email:string,
         public reportsExtension:boolean,
-        public fIPSCode?:number,
+        public fipsCode?:number,
         public districtId?:number,
         public geoFeature?:string,
         public population?:number

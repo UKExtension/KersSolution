@@ -38,7 +38,7 @@ export class PlanningUnitAdminFormComponent implements OnInit {
           email: [""],
           code: [""],
           geoFeature: [""],
-          fIPSCode: [0],
+          fipsCode: [0],
           reportsExtension: [true],
           population: [0]
     });
@@ -61,7 +61,6 @@ export class PlanningUnitAdminFormComponent implements OnInit {
     this.loading = true;
     this.service.update( this.county.id, this.countyForm.value).subscribe(
       res => {
-        console.log(res);
         this.loading = false;
         this.onFormSubmit.emit(res);
       }
