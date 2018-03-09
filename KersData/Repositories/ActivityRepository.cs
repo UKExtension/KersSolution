@@ -241,7 +241,7 @@ namespace Kers.Models.Repositories
                 var serialized = JsonConvert.SerializeObject(table);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(23)
                     });
             }
             return table;
@@ -298,7 +298,7 @@ namespace Kers.Models.Repositories
                 var serialized = JsonConvert.SerializeObject(table);
                 await _cache.SetStringAsync(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(13)
                     });
             }
             return table;
@@ -460,7 +460,7 @@ namespace Kers.Models.Repositories
                     var serializedContacts = JsonConvert.SerializeObject(contacts);
                     _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(21)
                         });
                                 
                 }

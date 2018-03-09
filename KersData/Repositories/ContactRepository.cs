@@ -142,8 +142,6 @@ namespace Kers.Models.Repositories
             return result;
         }
 
-
-
         public List<PerProgramActivities> ProcessMajorProgramContacts(List<ContactMajorProgramResult> contacts, List<PerProgramActivities> result, IDistributedCache _cache){
             foreach( var contactGroup in contacts ){
                     var unitRevisions = new List<ContactRevision>();
@@ -195,10 +193,6 @@ namespace Kers.Models.Repositories
                 }
             return result;
         }
-
-
-
-
 
         public async Task<TableViewModel> Data(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false )
         {
@@ -351,7 +345,7 @@ namespace Kers.Models.Repositories
                 var serialized = JsonConvert.SerializeObject(table);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(21)
                     });
             }
 

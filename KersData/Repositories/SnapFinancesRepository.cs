@@ -43,7 +43,7 @@ namespace Kers.Models.Repositories
                 result = CopiesReportPerCounty( fiscalYear, 1);
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 5 )
                         });
             }
             return result;
@@ -60,7 +60,7 @@ namespace Kers.Models.Repositories
                 result = CopiesReportPerCounty( fiscalYear, 2);
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 5 )
                         });
             }
             return result;
@@ -76,7 +76,7 @@ namespace Kers.Models.Repositories
                 result = CopiesReportDetails( fiscalYear, 1);
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 5 )
                         });
             }
             return result ;
@@ -91,7 +91,7 @@ namespace Kers.Models.Repositories
                 result = CopiesReportDetails( fiscalYear, 2);
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 5 )
                         });
             }
             return result;
@@ -146,7 +146,7 @@ namespace Kers.Models.Repositories
 
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 5 )
                         });
 
 
@@ -215,7 +215,7 @@ namespace Kers.Models.Repositories
 
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 5 )
                         });
 
             }
