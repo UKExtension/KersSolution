@@ -17,12 +17,12 @@ using System.Text.RegularExpressions;
 
 namespace Kers.Models.Repositories
 {
-    public class SnapPolicyRepository : SnapBaseRepository, ISnapPolicyRepository
+    public class SnapCommitmentRepository : SnapBaseRepository, ISnapCommitmentRepository
     {
 
         private KERScoreContext context;
         private IDistributedCache _cache;
-        public SnapPolicyRepository(KERScoreContext context, IDistributedCache _cache)
+        public SnapCommitmentRepository(KERScoreContext context, IDistributedCache _cache)
             : base(context, _cache)
         { 
             this.context = context;
@@ -30,7 +30,93 @@ namespace Kers.Models.Repositories
         }
 
 
-        public string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false){
+        public async Task<string> CommitmentSummary(FiscalYear fiscalYear, bool refreshCache = false){
+
+
+            string result;
+            var cacheKey = CacheKeys.SnapCommitmentSummary + fiscalYear.Name;
+            var cacheString = await _cache.GetStringAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+
+                var keys = new List<string>();
+                keys.Add("FY");
+                keys.Add("District");
+                keys.Add("PlanningUnit");
+                keys.Add("Name");
+                keys.Add("Title");
+                keys.Add("Program(s)");
+                keys.Add("HoursReportedLastFY");
+                keys.Add("HoursCommittedLastFY");
+                keys.Add("HoursCommittedThisFY");
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+                var previousFiscalYear = await this.context.FiscalYear
+                                                .Where( f => f.Start < fiscalYear.Start && f.Type == FiscalYearType.SnapEd)
+                                                .OrderByDescending( f => f.Start)
+                                                .FirstOrDefaultAsync();
+                if(previousFiscalYear == null){
+                    throw new Exception("No Previous Fiscal Year Fount in Commitment Summary Report.");
+                }
+                var byUser = SnapData(previousFiscalYear).GroupBy( d=> d.User);
+                foreach( var usr in byUser){
+                    
+                    var row = fiscalYear.Name + ",";
+                    if(usr.Key.RprtngProfile.PlanningUnit.District != null){
+                        row += usr.Key.RprtngProfile.PlanningUnit.District.Name + ",";
+                    }else{
+                        row +=  ",";
+                    }
+                    
+                    row += usr.Key.RprtngProfile.PlanningUnit.Name + ",";
+                    row += string.Concat( "\"", usr.Key.RprtngProfile.Name, "\"") + ",";
+                    row += usr.Key.ExtensionPosition.Code + ",";
+                    var spclt = "";
+                    foreach( var s in usr.Key.Specialties){
+                        spclt += " " + (s.Specialty.Code.Substring( 0, 4) == "prog" ? s.Specialty.Code.Substring(4) : s.Specialty.Code);
+                    }
+                    row += string.Concat( "\"", spclt, "\"") + ",";
+                    row += usr.Select( a => a.Revision ).Sum( s => s.Hours ).ToString() + ",";
+
+
+                    var prev = context.SnapEd_Commitment
+                                .Where( c => c.KersUserId1 == usr.Key.Id
+                                            && 
+                                            c.FiscalYear == previousFiscalYear
+                                            &&
+                                            c.SnapEd_ActivityType.Measurement == "Hour");
+
+
+                    row += prev.Sum( s => s.Amount).ToString() + ",";
+
+                    var curnt = context.SnapEd_Commitment
+                                .Where( c => c.KersUserId1 == usr.Key.Id
+                                            && 
+                                            c.FiscalYear == fiscalYear
+                                            &&
+                                            c.SnapEd_ActivityType.Measurement == "Hour");
+                    row += curnt.Sum( s => s.Amount).ToString() + ",";
+
+                    result += row + "\n";
+
+
+                }
+
+
+                
+                await _cache.SetStringAsync(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    });
+            }
+            return result;
+        }
+
+
+        /* public string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false){
 
 
             string result;
@@ -280,8 +366,9 @@ namespace Kers.Models.Repositories
                     });
             }
             return result;
-        }
+        } */
 
+        
 
 
     }

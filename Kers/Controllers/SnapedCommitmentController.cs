@@ -141,7 +141,7 @@ namespace Kers.Controllers
                     context.SnapEd_ReinforcementItemSuggestion.Add(sug);
                 }
                 
-                this.Log(commitment, "CommitmentBundle", "Snap-Ed commitment added or updated.");
+                this.Log(commitment, "CommitmentBundle", "Snap-Ed commitment added or updated.", "Commitment");
                 context.SaveChanges();
                 return new OkObjectResult(commitment);
             }else{

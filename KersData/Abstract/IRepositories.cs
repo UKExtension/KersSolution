@@ -99,4 +99,7 @@ namespace Kers.Models.Abstract
         string ReimbursementCounty(FiscalYear fiscalYear, bool refreshCache = false);
     }
     public interface ISnapInDirectRepository: IEntityBaseRepository<SnapIndirect>{}
+    public interface ISnapCommitmentRepository{
+        Task<string> CommitmentSummary(FiscalYear fiscalYear, bool refreshCache = false);
+    }
 }

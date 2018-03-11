@@ -37,6 +37,7 @@ namespace Kers.Controllers
         ISnapDirectRepository snapDirectRepo;
         ISnapPolicyRepository snapPolicyRepo;
         ISnapFinancesRepository snapFinancesRepo;
+        ISnapCommitmentRepository snapCommitmentRepo;
         const string LogType = "SnapEdData";
         public SnapedDataController( 
                     KERSmainContext mainContext,
@@ -47,7 +48,8 @@ namespace Kers.Controllers
                     IActivityRepository activityRepo,
                     ISnapDirectRepository snapDirectRepo,
                     ISnapPolicyRepository snapPolicyRepo,
-                    ISnapFinancesRepository snapFinancesRepo
+                    ISnapFinancesRepository snapFinancesRepo,
+                    ISnapCommitmentRepository snapCommitmentRepo
             ):base(mainContext, context, userRepo){
                 this.fiscalRepo = fiscalRepo;
                 this._cache = _cache;
@@ -55,6 +57,7 @@ namespace Kers.Controllers
                 this.snapDirectRepo = snapDirectRepo;
                 this.snapPolicyRepo = snapPolicyRepo;
                 this.snapFinancesRepo = snapFinancesRepo;
+                this.snapCommitmentRepo = snapCommitmentRepo;
         }
     
         [HttpGet]
@@ -548,6 +551,21 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
             var result = snapFinancesRepo.ReimbursementCounty(fiscalYear);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("commitmentsummary/{fy}/data.csv")]
+        [Authorize]
+        public async Task<IActionResult> CommitmentSummary(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = await snapCommitmentRepo.CommitmentSummary(fiscalYear, true);
             return Ok(result);
         }
 

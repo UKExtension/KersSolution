@@ -125,6 +125,7 @@ namespace Kers
             services.AddScoped<ISnapDirectRepository, SnapDirectRepository>();
             services.AddScoped<ISnapPolicyRepository, SnapPolicyRepository>();
             services.AddScoped<ISnapFinancesRepository, SnapFinancesRepository>();
+            services.AddScoped<ISnapCommitmentRepository, SnapCommitmentRepository>();
             services.AddScoped<IMembershipService, MembershipService>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

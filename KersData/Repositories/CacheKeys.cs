@@ -48,6 +48,7 @@ namespace Kers.Models.Repositories
         public static string SnapIndividualContactTotals = "SnapIndividualContactTotals";
         public static string SnapEstimatedSizeofAudiencesReached = "SnapEstimatedSizeofAudiencesReached";
         public static string SnapSessionTypebyMonth = "SnapSessionTypebyMonth";
+        public static string SnapCommitmentSummary = "SnapCommitmentSummary";
 
     }
 }

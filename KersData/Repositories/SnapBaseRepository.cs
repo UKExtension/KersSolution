@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Entities;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Kers.Models.Repositories
 {
@@ -46,7 +47,7 @@ namespace Kers.Models.Repositories
                     }else{
                         data = new UserRevisionData();
                         var activity = context.Activity.Where( a => a.Id == rev.ActivityId )
-                                        .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                        .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                         .Include( a => a.KersUser ).ThenInclude( u => u.ExtensionPosition)
                                         .Include( a => a.KersUser ).ThenInclude( u => u.PersonalProfile)
                                         .Include( a => a.KersUser).ThenInclude( u => u.Specialties).ThenInclude( s => s.Specialty)
@@ -215,6 +216,13 @@ namespace Kers.Models.Repositories
             }while(i < difference);
 
             return perMonth;
+        }
+
+        protected string StripHTML(string htmlString){
+
+            string pattern = @"<(.|\n)*?>";
+
+            return Regex.Replace(htmlString, pattern, string.Empty);
         }
 
 
