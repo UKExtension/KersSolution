@@ -61,44 +61,56 @@ namespace Kers.Models.Repositories
                 if(previousFiscalYear == null){
                     throw new Exception("No Previous Fiscal Year Fount in Commitment Summary Report.");
                 }
-                var byUser = SnapData(previousFiscalYear).GroupBy( d=> d.User);
+                var byUser = SnapData(previousFiscalYear)
+                                .GroupBy( d=> d.User.Id)
+                                .Select(
+                                    k => new {
+                                        Revisions = k.Select( a => a.Revision),
+                                        User = k.Select( a => a.User).First()
+                                    }
+                                );
                 foreach( var usr in byUser){
                     
                     var row = fiscalYear.Name + ",";
-                    if(usr.Key.RprtngProfile.PlanningUnit.District != null){
-                        row += usr.Key.RprtngProfile.PlanningUnit.District.Name + ",";
+                    if(usr.User.RprtngProfile.PlanningUnit.District != null){
+                        row += usr.User.RprtngProfile.PlanningUnit.District.Name + ",";
                     }else{
                         row +=  ",";
                     }
                     
-                    row += usr.Key.RprtngProfile.PlanningUnit.Name + ",";
-                    row += string.Concat( "\"", usr.Key.RprtngProfile.Name, "\"") + ",";
-                    row += usr.Key.ExtensionPosition.Code + ",";
+                    row += usr.User.RprtngProfile.PlanningUnit.Name + ",";
+                    row += string.Concat( "\"", usr.User.RprtngProfile.Name, "\"") + ",";
+                    row += usr.User.ExtensionPosition.Code + ",";
                     var spclt = "";
-                    foreach( var s in usr.Key.Specialties){
+                    foreach( var s in usr.User.Specialties){
                         spclt += " " + (s.Specialty.Code.Substring( 0, 4) == "prog" ? s.Specialty.Code.Substring(4) : s.Specialty.Code);
                     }
                     row += string.Concat( "\"", spclt, "\"") + ",";
-                    row += usr.Select( a => a.Revision ).Sum( s => s.Hours ).ToString() + ",";
+                    
+                    var reported = usr.Revisions.Sum( s => s.Hours ).ToString();
+                    row += (reported == "" ? "0" :reported) + ",";
 
 
                     var prev = context.SnapEd_Commitment
-                                .Where( c => c.KersUserId1 == usr.Key.Id
+                                .Where( c => c.KersUserId1 == usr.User.Id
                                             && 
                                             c.FiscalYear == previousFiscalYear
                                             &&
                                             c.SnapEd_ActivityType.Measurement == "Hour");
 
-
-                    row += prev.Sum( s => s.Amount).ToString() + ",";
+                    var previous = prev.Sum( s => s.Amount).ToString();
+                    row += (previous == ""? "0" : previous ) + ",";
 
                     var curnt = context.SnapEd_Commitment
-                                .Where( c => c.KersUserId1 == usr.Key.Id
+                                .Where( c => c.KersUserId1 == usr.User.Id
                                             && 
                                             c.FiscalYear == fiscalYear
                                             &&
                                             c.SnapEd_ActivityType.Measurement == "Hour");
-                    row += curnt.Sum( s => s.Amount).ToString() + ",";
+
+                    var current = curnt.Sum( s => s.Amount).ToString();
+
+                    row += (current == "" ? "0" : current) + ",";
 
                     result += row + "\n";
 
