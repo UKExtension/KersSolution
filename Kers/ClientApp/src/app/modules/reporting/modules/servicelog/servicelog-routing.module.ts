@@ -25,6 +25,10 @@ import { ServicelogSnapedReportComponent } from './snap-ed/report/servicelog-sna
                 {
                   path: 'snaped/report',
                   component: ServicelogSnapedReportComponent
+                },
+                {
+                  path: ':fy',
+                  component: ServicelogHomeComponent
                 }
             ]
       }

@@ -80,38 +80,45 @@ namespace Kers.Controllers
             
         }
 
-        [HttpGet("committed/{userId?}")]
+        [HttpGet("committed/{userId?}/{fy?}")]
         [Authorize]
-        public IActionResult Committed(int userId = 0){
+        public IActionResult Committed(int userId = 0, string fy = "0"){
             KersUser user;
             if(userId == 0){
                 user = this.CurrentUser();
             }else{
                 user = context.KersUser.Find(userId);
             }
+            var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
             var committed = context.SnapEd_Commitment.
                                 Where(e =>  e.KersUserId == user.classicReportingProfileId 
                                             &&
                                             e.SnapEd_ActivityType.Measurement == "Hour"
+                                            &&
+                                            e.FiscalYear == fiscalYear
                                         ).
                                 Sum( h => h.Amount);
             if(committed == null) committed = 0;
             return new OkObjectResult(committed);
         }
 
-        [HttpGet("commitments/{userId?}")]
+        [HttpGet("commitments/{userId?}/{fy?}")]
         [Authorize]
-        public IActionResult Commitments(int userId = 0){
+        public IActionResult Commitments(int userId = 0,  string fy = "0"){
             KersUser user;
             if(userId == 0){
                 user = this.CurrentUser();
             }else{
                 user = context.KersUser.Find(userId);
             }
+            var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
             var committed = context.SnapEd_Commitment.
                                 Where(e=>   e.KersUserId == user.classicReportingProfileId 
                                             &&
-                                            e.SnapEd_ActivityType.Measurement == "Hour");
+                                            e.SnapEd_ActivityType.Measurement == "Hour"
+                                            &&
+                                            e.FiscalYear == fiscalYear
+                                            );
             return new OkObjectResult(committed);
         }
 

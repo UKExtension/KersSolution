@@ -19,19 +19,18 @@ namespace Kers.Controllers.Admin
 {
 
     [Route("api/[controller]")]
-    public class InitiativeController : Controller
+    public class InitiativeController : BaseController
     {
-        KERSmainContext mainContext;
         KERScoreContext coreContext;
         IInitiativeRepository repo;
         public InitiativeController( 
               KERSmainContext mainContext,
               KERScoreContext coreContext,
+              IKersUserRepository userRepo,
               IInitiativeRepository repo
-            ){
+            ):base(mainContext, coreContext, userRepo){
             this.repo = repo;
-           this.mainContext = mainContext;
-           this.coreContext = coreContext;
+            this.coreContext = coreContext;
         }
 
         [HttpGet()]
@@ -46,11 +45,14 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(section);
         }
 
-        [HttpGet("All")]
-        public IActionResult All(){
+        [HttpGet("All/{fy?}")]
+        public IActionResult All(string fy = "0"){
 
-            //var all = this.repo.AllIncluding(i => i.MajorPrograms).OrderBy(s=>s.order);
+
+            var fiscalYear = this.GetFYByName(fy, FiscalYearType.ServiceLog);
+
             var all = this.coreContext.StrategicInitiative.
+                                    Where( i => i.FiscalYear == fiscalYear).
                                     Include(i=>i.MajorPrograms).
                                     Include(i=>i.ProgramCategory).
                                     OrderBy(i=>i.order).ToList();
@@ -161,17 +163,43 @@ namespace Kers.Controllers.Admin
         public IActionResult Import(){
 
 
-            bool saveContext = (coreContext.MajorProgram.Count() == 0);
-
+            bool saveContext = true;
+            //(coreContext.MajorProgram.Count() == 0);
+/* 
             FiscalYear year = coreContext.FiscalYear.Find(1);
 
             int initiativeOrder = 1;
             int programOrder = 1;
-
-            List<StrategicInitiative> initiatives = new List<StrategicInitiative>();
+ */
+            List<StrategicInitiative> newInitiatives = new List<StrategicInitiative>();
             List<MajorProgram> programs = new List<MajorProgram>();
             List<ProgramCategory> categories = new List<ProgramCategory>();
-            
+
+            var fiscalYear = this.GetFYByName("2018", FiscalYearType.ServiceLog);
+            var nextFiscalYear = this.GetFYByName("2019", FiscalYearType.ServiceLog);
+            var initiatives = context.StrategicInitiative.AsNoTracking().Where( i => i.FiscalYear == fiscalYear)
+                                    .Include( i => i.ProgramCategory)
+                                    .Include( i => i.MajorPrograms).ThenInclude(m => m.ProgramIndicators);
+            foreach( var initiative in initiatives){
+                initiative.Id = 0;
+                initiative.FiscalYear = nextFiscalYear;
+
+                initiative.ProgramCategory = this.context.ProgramCategory.Find(initiative.ProgramCategory.Id);
+
+                foreach( var mp in initiative.MajorPrograms){
+                    mp.Id = 0;
+                    mp.ProgramCategory = initiative.ProgramCategory;
+                    foreach( var pi in mp.ProgramIndicators){
+                        pi.Id = 0;
+                    }
+                }
+
+                newInitiatives.Add( initiative );
+                context.Add(initiative);
+            }
+
+/* 
+
             StrategicInitiative currentInitiative = null;
             
             var pacs = mainContext.zzPacs;
@@ -215,12 +243,12 @@ namespace Kers.Controllers.Admin
                     programs.Add(program);
                 }
             }
-
-            if(saveContext){
+ */
+            if(saveContext && context.StrategicInitiative.Where( i => i.FiscalYear == nextFiscalYear).FirstOrDefault() == null){
                 coreContext.SaveChanges();
             }
             
-            return new OkObjectResult(programs);
+            return new OkObjectResult(newInitiatives);
         }
         
         [HttpGet("category")]
@@ -230,10 +258,6 @@ namespace Kers.Controllers.Admin
         }
 
 
-
-        private string CurrentUserId(){
-            return User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        }
 
     }
 }

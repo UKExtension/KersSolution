@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ServicelogService, ServicelogMonth, Servicelog } from "./servicelog.service";
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -14,13 +16,16 @@ export class ServicelogHomeComponent implements OnInit {
     byMonth:ServicelogMonth[] = [];
 
     errorMessage:string;
+    fiscalyearid:string | null = null;
 
     constructor( 
+        private route: ActivatedRoute,
         private service:ServicelogService
     )   
     {}
 
     ngOnInit(){
+        this.fiscalyearid = this.route.snapshot.paramMap.get('fy');
         this.service.latest().subscribe(
             res=>{
                     this.latest = <Servicelog[]>res;

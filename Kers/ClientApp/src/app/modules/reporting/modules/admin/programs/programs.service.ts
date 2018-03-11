@@ -21,8 +21,8 @@ export class ProgramsService {
 
     constructor( private http:AuthHttp, private location:Location){}
 
-    listInitiatives(){
-            var url = this.baseUrl + "All";
+    listInitiatives(fy:string = "0"){
+            var url = this.baseUrl + "All/" + fy;
             return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res =>  res.json())
                 .catch(this.handleError);

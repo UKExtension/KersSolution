@@ -633,15 +633,6 @@ namespace Kers.Controllers
             return Regex.Replace(htmlString, pattern, string.Empty);
         }
 
-        public FiscalYear GetFYByName(string fy, string type = "snapEd"){
-            FiscalYear fiscalYear;
-            if(fy == "0"){
-                fiscalYear = this.fiscalRepo.currentFiscalYear(type);
-            }else{
-                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
-            }
-            return fiscalYear;
-        }
 
 
 

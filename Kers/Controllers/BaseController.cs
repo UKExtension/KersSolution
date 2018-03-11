@@ -117,6 +117,23 @@ namespace Kers.Controllers
             return User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
+        public FiscalYear GetFYByName(string fy, string type = "snapEd"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                var current = this.context.
+                        FiscalYear.
+                        Where(y => y.Start < DateTime.Now && y.End > DateTime.Now && y.Type == type).
+                        FirstOrDefault();
+                if(current == null){
+                    current = this.context.FiscalYear.Where( y => y.Name=="2018" && y.Type== type).FirstOrDefault();
+                }
+                fiscalYear = current;
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
+        }
+
 
 
     }
