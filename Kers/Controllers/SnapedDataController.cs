@@ -569,6 +569,21 @@ namespace Kers.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("commitmenthoursdetail/{fy}/data.csv")]
+        [Authorize]
+        public async Task<IActionResult> CommitmentHoursDetail(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Commitment Hours Detail Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = await snapCommitmentRepo.CommitmentHoursDetail(fiscalYear, true);
+            return Ok(result);
+        }
+
 
 
 

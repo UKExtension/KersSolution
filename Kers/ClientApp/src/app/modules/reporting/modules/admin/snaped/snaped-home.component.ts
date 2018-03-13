@@ -60,7 +60,9 @@ import { saveAs } from 'file-saver';
   <button (click)="csvSpecificSiteNameByMonth()" class="btn btn-info btn-xs" *ngIf="!specificSiteNameByMonth_loading">Specific Site Names By Month</button><loading [type]="'bars'" *ngIf="specificSiteNameByMonth_loading"></loading><br>
   <button (click)="csvDirectByPersonByMonth()" class="btn btn-info btn-xs" *ngIf="!directByPersonByMonth_loading">Direct Sites By Person, By Month - including number of contacts</button><loading [type]="'bars'" *ngIf="directByPersonByMonth_loading"></loading><br>
   <h5>Commitment FY2019: </h5>
-  <button (click)="csvCommitmentSummary()" class="btn btn-info btn-xs" *ngIf="!commitmentSummary_loading">Summary</button><loading [type]="'bars'" *ngIf="commitmentSummary_loading"></loading><br>
+  <button (click)="csvCommitmentSummary()" class="btn btn-info btn-xs" *ngIf="!commitmentSummary_loading">Summary</button><loading [type]="'bars'" *ngIf="commitmentSummary_loading"></loading>|
+  <button (click)="csvCommitmentHoursDetail()" class="btn btn-info btn-xs" *ngIf="!commitmentHoursDetail_loading">Hours Detail</button><loading [type]="'bars'" *ngIf="commitmentHoursDetail_loading"></loading>|  
+  <br>
   <!--
   <button (click)="csvIndirectByEmployee()" class="btn btn-info btn-xs" *ngIf="!indirectByEmployee_loading">Indirects per Person per Number Reached</button><loading [type]="'bars'" *ngIf="indirectByEmployee_loading"></loading><br>
  -->
@@ -448,6 +450,19 @@ export class SnapedHomeComponent {
               var blob = new Blob([data], {type: 'text/csv'});
               this.commitmentSummary_loading = false;
               saveAs(blob, "CommitmentSummary_2019.csv");
+          },
+          err => console.error(err)
+      )
+    }
+
+    commitmentHoursDetail_loading = false;
+    csvCommitmentHoursDetail(){
+      this.commitmentHoursDetail_loading = true;
+      this.service.csv('commitmenthoursdetail/2019').subscribe(
+          data => {
+              var blob = new Blob([data], {type: 'text/csv'});
+              this.commitmentHoursDetail_loading = false;
+              saveAs(blob, "CommitmentHoursDetail_2019.csv");
           },
           err => console.error(err)
       )

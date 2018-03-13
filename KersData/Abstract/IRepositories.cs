@@ -101,5 +101,6 @@ namespace Kers.Models.Abstract
     public interface ISnapInDirectRepository: IEntityBaseRepository<SnapIndirect>{}
     public interface ISnapCommitmentRepository{
         Task<string> CommitmentSummary(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<string> CommitmentHoursDetail(FiscalYear fiscalYear, bool refreshCache = false);
     }
 }
