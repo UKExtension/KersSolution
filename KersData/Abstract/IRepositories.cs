@@ -102,5 +102,8 @@ namespace Kers.Models.Abstract
     public interface ISnapCommitmentRepository{
         Task<string> CommitmentSummary(FiscalYear fiscalYear, bool refreshCache = false);
         Task<string> CommitmentHoursDetail(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<string> AgentsWithoutCommitment(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<string> SummaryByPlanningUnit(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<string> SummaryByPlanningUnitNotNEPAssistants(FiscalYear fiscalYear, bool refreshCache = false);
     }
 }

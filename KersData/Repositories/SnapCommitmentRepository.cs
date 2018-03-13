@@ -127,16 +127,12 @@ namespace Kers.Models.Repositories
             return result;
         }
         public async Task<string> CommitmentHoursDetail(FiscalYear fiscalYear, bool refreshCache = false){
-
-
             string result;
             var cacheKey = CacheKeys.SnapCommitmentHoursDetail + fiscalYear.Name;
             var cacheString = await _cache.GetStringAsync(cacheKey);
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
                 result = cacheString;
             }else{
-
-
                 var keys = new List<string>();
                 keys.Add("FY");
                 keys.Add("District");
@@ -153,14 +149,10 @@ namespace Kers.Models.Repositories
                         keys.Add( string.Concat( "\"", project.Name + type.Name, "\"") );
                     }
                 }
-
-
-
                 var activitiesNotPerProject = context.SnapEd_ActivityType.Where( p => p.PerProject != 1 && p.FiscalYear == fiscalYear);
                 foreach( var type in activitiesNotPerProject){
                     keys.Add( string.Concat( "\"", type.Name, "\""));
                 }
-
                 keys.Add( "TotalCommitmentHours" );
                 result = string.Join(",", keys.ToArray()) + "\n";
 
@@ -172,7 +164,6 @@ namespace Kers.Models.Repositories
                                         commitments = c.Select( s => s )
                                     })
                                     .ToListAsync();
-
                 foreach( var usr in commitment){
                     var user = await context.KersUser.Where( u => u.Id == usr.User.Id)
                                 .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.District)
@@ -228,12 +219,241 @@ namespace Kers.Models.Repositories
                         }
                         
                     }
-
                     row += sumHours.ToString() + ",";
                     result += row + "\n";
                 }
-               
+                await _cache.SetStringAsync(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    });
+            }
+            return result;
+        }
+
+        public async Task<string> AgentsWithoutCommitment(FiscalYear fiscalYear, bool refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapAgentsWithoutCommitment + fiscalYear.Name;
+            var cacheString = await _cache.GetStringAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                var keys = new List<string>();
+
+                keys.Add("District");
+                keys.Add("PlanningUnit");
+                keys.Add("Name");
+                keys.Add("Title");
+                keys.Add("Program(s)");
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+
+                var agents = await context.KersUser
+                                                        .Where( u => 
+                                                                u.RprtngProfile.enabled
+                                                                &&
+                                                                u.ExtensionPosition.Code == "AGENT"
+                                                                &&
+                                                                context.SnapEd_Commitment.Where( c => c.FiscalYear == fiscalYear && c.KersUser == u).Count() == 0
+                                                                )
+                                                        .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.District)
+                                                        .Include( u => u.ExtensionPosition)
+                                                        .Include( u => u.Specialties).ThenInclude( s => s.Specialty)
+                                                        .ToListAsync();
+                foreach( var user in agents){
+                    
+                                
+                    var row = "";
+
+                    if(user.RprtngProfile.PlanningUnit.District != null){
+                        row += user.RprtngProfile.PlanningUnit.District.Name + ",";
+                    }else{
+                        row +=  ",";
+                    }
+                    
+                    row += user.RprtngProfile.PlanningUnit.Name + ",";
+                    row += string.Concat( "\"", user.RprtngProfile.Name, "\"") + ",";
+                    row += user.ExtensionPosition.Code + ",";
+                    var spclt = "";
+                    if(user.Specialties != null){
+                        foreach( var s in user.Specialties){
+                            spclt += " " + (s.Specialty.Code.Substring( 0, 4) == "prog" ? s.Specialty.Code.Substring(4) : s.Specialty.Code);
+                        }
+                    }
+                    row += string.Concat( "\"", spclt, "\"") + ",";
+
+
+                    result += row + "\n";
+                } 
                 
+                await _cache.SetStringAsync(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    });
+            }
+            return result;
+        }
+
+
+
+
+        public async Task<string> SummaryByPlanningUnit(FiscalYear fiscalYear, bool refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapCommitmentSummaryByPlanningUnit + fiscalYear.Name;
+            var cacheString = await _cache.GetStringAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                var keys = new List<string>();
+                keys.Add("FY");
+                keys.Add("PlanningUnit");
+                
+                var projects = await context.SnapEd_ProjectType.Where(t => t.FiscalYear == fiscalYear).ToListAsync();
+                var activitiesPerProject = await context.SnapEd_ActivityType.Where( p => p.PerProject == 1 && p.FiscalYear == fiscalYear).ToListAsync();
+
+                foreach( var project in projects){
+                    foreach( var type in activitiesPerProject){
+                        keys.Add( string.Concat( "\"", project.Name + type.Name, "\"") );
+                    }
+                }
+                var activitiesNotPerProject = context.SnapEd_ActivityType.Where( p => p.PerProject != 1 && p.FiscalYear == fiscalYear);
+                foreach( var type in activitiesNotPerProject){
+                    keys.Add( string.Concat( "\"", type.Name, "\""));
+                }
+                keys.Add( "TotalCommitmentHours" );
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+                var commitment = await context.SnapEd_Commitment
+                                    .Where( c => c.FiscalYear == fiscalYear)
+                                    .GroupBy( c => c.KersUser.RprtngProfile.PlanningUnit)
+                                    .Select( c => new {
+                                        Unit = c.Key,
+                                        commitments = c.Select( s => s )
+                                    })
+                                    .OrderBy(s => s.Unit.Name)
+                                    .ToListAsync();
+                foreach( var unit in commitment){
+                    
+                    var row = fiscalYear.Name + ",";
+                    row += unit.Unit.Name + ",";
+                    
+
+                    var sumHours = 0;
+                    foreach( var project in projects){
+                        foreach( var type in activitiesPerProject){
+                            var cmtm = unit.commitments
+                                                .Where( c => c.SnapEd_ProjectTypeId == project.Id && c.SnapEd_ActivityTypeId == type.Id )
+                                                .FirstOrDefault();
+                            if( cmtm != null){
+                                if( type.Measurement == "Hour"){
+                                    sumHours += cmtm.Amount??0;
+                                }
+                                row += cmtm.Amount.ToString() + ",";
+                            }else{
+                                row +=  "0,";
+                            }
+                            
+                        }
+                    }
+                    foreach( var type in activitiesNotPerProject){
+                        var cmtm = unit.commitments
+                                                .Where( c => c.SnapEd_ActivityTypeId == type.Id )
+                                                .FirstOrDefault();
+                        if( cmtm != null){
+                            if( type.Measurement == "Hour"){
+                                sumHours += cmtm.Amount??0;
+                            }
+                            row += cmtm.Amount.ToString() + ",";
+                        }else{
+                            row += "0,";
+                        }
+                        
+                    }
+                    row += sumHours.ToString() + ",";
+                    result += row + "\n";
+                }
+                await _cache.SetStringAsync(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                    });
+            }
+            return result;
+        }
+
+        public async Task<string> SummaryByPlanningUnitNotNEPAssistants(FiscalYear fiscalYear, bool refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapCommitmentSummaryByPlanningUnit + fiscalYear.Name;
+            var cacheString = await _cache.GetStringAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                var keys = new List<string>();
+                keys.Add("FY");
+                keys.Add("PlanningUnit");
+                
+                var projects = await context.SnapEd_ProjectType.Where(t => t.FiscalYear == fiscalYear).ToListAsync();
+                var activitiesPerProject = await context.SnapEd_ActivityType.Where( p => p.PerProject == 1 && p.FiscalYear == fiscalYear).ToListAsync();
+
+                foreach( var project in projects){
+                    foreach( var type in activitiesPerProject){
+                        keys.Add( string.Concat( "\"", project.Name + type.Name, "\"") );
+                    }
+                }
+                var activitiesNotPerProject = context.SnapEd_ActivityType.Where( p => p.PerProject != 1 && p.FiscalYear == fiscalYear);
+                foreach( var type in activitiesNotPerProject){
+                    keys.Add( string.Concat( "\"", type.Name, "\""));
+                }
+                keys.Add( "TotalCommitmentHours" );
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+                var commitment = await context.SnapEd_Commitment
+                                    .Where( c => c.FiscalYear == fiscalYear)
+                                    .GroupBy( c => c.KersUser.RprtngProfile.PlanningUnit)
+                                    .Select( c => new {
+                                        Unit = c.Key,
+                                        commitments = c.Select( s => s )
+                                    })
+                                    .OrderBy(s => s.Unit.Name)
+                                    .ToListAsync();
+                foreach( var unit in commitment){
+                    
+                    var row = fiscalYear.Name + ",";
+                    row += unit.Unit.Name + ",";
+                    
+
+                    var sumHours = 0;
+                    foreach( var project in projects){
+                        foreach( var type in activitiesPerProject){
+                            var cmtm = unit.commitments
+                                                .Where( c => c.SnapEd_ProjectTypeId == project.Id && c.SnapEd_ActivityTypeId == type.Id )
+                                                .FirstOrDefault();
+                            if( cmtm != null){
+                                if( type.Measurement == "Hour"){
+                                    sumHours += cmtm.Amount??0;
+                                }
+                                row += cmtm.Amount.ToString() + ",";
+                            }else{
+                                row +=  "0,";
+                            }
+                            
+                        }
+                    }
+                    foreach( var type in activitiesNotPerProject){
+                        var cmtm = unit.commitments
+                                                .Where( c => c.SnapEd_ActivityTypeId == type.Id )
+                                                .FirstOrDefault();
+                        if( cmtm != null){
+                            if( type.Measurement == "Hour"){
+                                sumHours += cmtm.Amount??0;
+                            }
+                            row += cmtm.Amount.ToString() + ",";
+                        }else{
+                            row += "0,";
+                        }
+                        
+                    }
+                    row += sumHours.ToString() + ",";
+                    result += row + "\n";
+                }
                 await _cache.SetStringAsync(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )

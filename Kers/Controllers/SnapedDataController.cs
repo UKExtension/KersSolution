@@ -584,7 +584,52 @@ namespace Kers.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("agentswithoutcommitment/{fy}/data.csv")]
+        [Authorize]
+        public async Task<IActionResult> AgentsWithoutCommitment(string fy){
 
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Agents Without Commitment CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = await snapCommitmentRepo.AgentsWithoutCommitment(fiscalYear, true);
+            return Ok(result);
+        }
+
+
+
+        [HttpGet]
+        [Route("summarybyplanningunit/{fy}/data.csv")]
+        [Authorize]
+        public async Task<IActionResult> SummaryByPlanningUnit(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Summary By PlanningUnit CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = await snapCommitmentRepo.SummaryByPlanningUnit(fiscalYear, true);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("summarybyplanningunitnotassistants/{fy}/data.csv")]
+        [Authorize]
+        public async Task<IActionResult> SummaryByPlanningUnitNotNEPAssistants(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Summary By PlanningUnit CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = await snapCommitmentRepo.SummaryByPlanningUnitNotNEPAssistants(fiscalYear, true);
+            return Ok(result);
+        }
 
 
         private List<UserRevisionData> SnapData( FiscalYear fiscalYear){

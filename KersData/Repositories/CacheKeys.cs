@@ -50,6 +50,8 @@ namespace Kers.Models.Repositories
         public static string SnapSessionTypebyMonth = "SnapSessionTypebyMonth";
         public static string SnapCommitmentSummary = "SnapCommitmentSummary";
         public static string SnapCommitmentHoursDetail = "SnapCommitmentHoursDetail";
+        public static string SnapAgentsWithoutCommitment = "SnapAgentsWithoutCommitment";
+        public static string SnapCommitmentSummaryByPlanningUnit = "SnapCommitmentSummaryByPlanningUnit";
 
     }
 }

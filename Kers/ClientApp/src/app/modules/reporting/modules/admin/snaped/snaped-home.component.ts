@@ -62,6 +62,10 @@ import { saveAs } from 'file-saver';
   <h5>Commitment FY2019: </h5>
   <button (click)="csvCommitmentSummary()" class="btn btn-info btn-xs" *ngIf="!commitmentSummary_loading">Summary</button><loading [type]="'bars'" *ngIf="commitmentSummary_loading"></loading>|
   <button (click)="csvCommitmentHoursDetail()" class="btn btn-info btn-xs" *ngIf="!commitmentHoursDetail_loading">Hours Detail</button><loading [type]="'bars'" *ngIf="commitmentHoursDetail_loading"></loading>|  
+  <button (click)="csvAgentsWithoutCommitment()" class="btn btn-info btn-xs" *ngIf="!agentswithoutcommitment_loading">Agents With No Commitment Hours</button><loading [type]="'bars'" *ngIf="agentswithoutcommitment_loading"></loading>|  
+  <br>
+  <button (click)="csvSummaryByPlanningUnit()" class="btn btn-info btn-xs" *ngIf="!SummaryByPlanningUnit_loading">Summary By Planning Unit</button><loading [type]="'bars'" *ngIf="SummaryByPlanningUnit_loading"></loading>|  
+  <button (click)="csvSummaryByPlanningUnitNotNEPAssistants()" class="btn btn-info btn-xs" *ngIf="!summaryByPlanningUnitNotNEPAssistants_loading">Summary By Planning Unit (Excludes NEP Assistants)</button><loading [type]="'bars'" *ngIf="summaryByPlanningUnitNotNEPAssistants_loading"></loading>|  
   <br>
   <!--
   <button (click)="csvIndirectByEmployee()" class="btn btn-info btn-xs" *ngIf="!indirectByEmployee_loading">Indirects per Person per Number Reached</button><loading [type]="'bars'" *ngIf="indirectByEmployee_loading"></loading><br>
@@ -467,6 +471,47 @@ export class SnapedHomeComponent {
           err => console.error(err)
       )
     }
+
+    agentswithoutcommitment_loading = false;
+    csvAgentsWithoutCommitment(){
+      this.agentswithoutcommitment_loading = true;
+      this.service.csv('agentswithoutcommitment/2019').subscribe(
+          data => {
+              var blob = new Blob([data], {type: 'text/csv'});
+              this.agentswithoutcommitment_loading = false;
+              saveAs(blob, "AgentsWithoutCommitment_2019.csv");
+          },
+          err => console.error(err)
+      )
+    }
+
+    SummaryByPlanningUnit_loading = false;
+    csvSummaryByPlanningUnit(){
+      this.SummaryByPlanningUnit_loading = true;
+      this.service.csv('summarybyplanningunit/2019').subscribe(
+          data => {
+              var blob = new Blob([data], {type: 'text/csv'});
+              this.SummaryByPlanningUnit_loading = false;
+              saveAs(blob, "SummaryByPlanningUnit_2019.csv");
+          },
+          err => console.error(err)
+      )
+    }
+
+    summaryByPlanningUnitNotNEPAssistants_loading = false;
+    csvSummaryByPlanningUnitNotNEPAssistants(){
+      this.summaryByPlanningUnitNotNEPAssistants_loading = true;
+      this.service.csv('summarybyplanningunitnotassistants/2019').subscribe(
+          data => {
+              var blob = new Blob([data], {type: 'text/csv'});
+              this.summaryByPlanningUnitNotNEPAssistants_loading = false;
+              saveAs(blob, "SummaryByPlanningUnitNotNEPAssistants_2019.csv");
+          },
+          err => console.error(err)
+      )
+    }
+
+    
 
 
 
