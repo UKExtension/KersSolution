@@ -105,5 +105,8 @@ namespace Kers.Models.Abstract
         Task<string> AgentsWithoutCommitment(FiscalYear fiscalYear, bool refreshCache = false);
         Task<string> SummaryByPlanningUnit(FiscalYear fiscalYear, bool refreshCache = false);
         Task<string> SummaryByPlanningUnitNotNEPAssistants(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<string> ReinforcementItems(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<string> ReinforcementItemsPerCounty(FiscalYear fiscalYear, bool refreshCache = false);
+        Task<string> SuggestedIncentiveItems(FiscalYear fiscalYear, bool refreshCache = false);
     }
 }

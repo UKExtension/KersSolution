@@ -631,6 +631,56 @@ namespace Kers.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("reinforcementitems/{fy}/data.csv")]
+        [Authorize]
+        public async Task<IActionResult> ReinforcementItems(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Reinforcement Items CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = await snapCommitmentRepo.ReinforcementItems(fiscalYear, true);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("reinforcementitemspercounty/{fy}/data.csv")]
+        [Authorize]
+        public async Task<IActionResult> ReinforcementItemsPerCounty(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Reinforcement Items Per County CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = await snapCommitmentRepo.ReinforcementItemsPerCounty(fiscalYear, true);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("suggestedincentiveitems/{fy}/data.csv")]
+        [Authorize]
+        public async Task<IActionResult> SuggestedIncentiveItems(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Suggested Incentive Items CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = await snapCommitmentRepo.SuggestedIncentiveItems(fiscalYear, true);
+            return Ok(result);
+        }
+
+
+
+
+
+
 
         private List<UserRevisionData> SnapData( FiscalYear fiscalYear){
             var today = DateTime.Now;

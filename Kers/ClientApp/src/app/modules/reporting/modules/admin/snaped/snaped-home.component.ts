@@ -62,10 +62,14 @@ import { saveAs } from 'file-saver';
   <h5>Commitment FY2019: </h5>
   <button (click)="csvCommitmentSummary()" class="btn btn-info btn-xs" *ngIf="!commitmentSummary_loading">Summary</button><loading [type]="'bars'" *ngIf="commitmentSummary_loading"></loading>|
   <button (click)="csvCommitmentHoursDetail()" class="btn btn-info btn-xs" *ngIf="!commitmentHoursDetail_loading">Hours Detail</button><loading [type]="'bars'" *ngIf="commitmentHoursDetail_loading"></loading>|  
-  <button (click)="csvAgentsWithoutCommitment()" class="btn btn-info btn-xs" *ngIf="!agentswithoutcommitment_loading">Agents With No Commitment Hours</button><loading [type]="'bars'" *ngIf="agentswithoutcommitment_loading"></loading>|  
+  <button (click)="csvAgentsWithoutCommitment()" class="btn btn-info btn-xs" *ngIf="!agentswithoutcommitment_loading">Agents With No Commitment Hours</button><loading [type]="'bars'" *ngIf="agentswithoutcommitment_loading"></loading>  
   <br>
   <button (click)="csvSummaryByPlanningUnit()" class="btn btn-info btn-xs" *ngIf="!SummaryByPlanningUnit_loading">Summary By Planning Unit</button><loading [type]="'bars'" *ngIf="SummaryByPlanningUnit_loading"></loading>|  
-  <button (click)="csvSummaryByPlanningUnitNotNEPAssistants()" class="btn btn-info btn-xs" *ngIf="!summaryByPlanningUnitNotNEPAssistants_loading">Summary By Planning Unit (Excludes NEP Assistants)</button><loading [type]="'bars'" *ngIf="summaryByPlanningUnitNotNEPAssistants_loading"></loading>|  
+  <button (click)="csvSummaryByPlanningUnitNotNEPAssistants()" class="btn btn-info btn-xs" *ngIf="!summaryByPlanningUnitNotNEPAssistants_loading">Summary By Planning Unit (Excludes NEP Assistants)</button><loading [type]="'bars'" *ngIf="summaryByPlanningUnitNotNEPAssistants_loading"></loading>  
+  <br>
+  <button (click)="csvReinforcementItems()" class="btn btn-info btn-xs" *ngIf="!reinforcementItems_loading">Reinforcement Items</button><loading [type]="'bars'" *ngIf="reinforcementItems_loading"></loading>|
+  <button (click)="csvReinforcementItemsPerCounty()" class="btn btn-info btn-xs" *ngIf="!reinforcementItemsPerCounty_loading">Reinforcement Items Per County</button><loading [type]="'bars'" *ngIf="reinforcementItemsPerCounty_loading"></loading>|  
+  <button (click)="csvSuggestedIncentiveItems()" class="btn btn-info btn-xs" *ngIf="!suggestedIncentiveItems_loading">Suggested Incentive Items</button><loading [type]="'bars'" *ngIf="suggestedIncentiveItems_loading"></loading>  
   <br>
   <!--
   <button (click)="csvIndirectByEmployee()" class="btn btn-info btn-xs" *ngIf="!indirectByEmployee_loading">Indirects per Person per Number Reached</button><loading [type]="'bars'" *ngIf="indirectByEmployee_loading"></loading><br>
@@ -506,6 +510,45 @@ export class SnapedHomeComponent {
               var blob = new Blob([data], {type: 'text/csv'});
               this.summaryByPlanningUnitNotNEPAssistants_loading = false;
               saveAs(blob, "SummaryByPlanningUnitNotNEPAssistants_2019.csv");
+          },
+          err => console.error(err)
+      )
+    }
+
+    reinforcementItems_loading = false;
+    csvReinforcementItems(){
+      this.reinforcementItems_loading = true;
+      this.service.csv('reinforcementitems/2019').subscribe(
+          data => {
+              var blob = new Blob([data], {type: 'text/csv'});
+              this.reinforcementItems_loading = false;
+              saveAs(blob, "ReinforcementItems_2019.csv");
+          },
+          err => console.error(err)
+      )
+    }
+
+    reinforcementItemsPerCounty_loading = false;
+    csvReinforcementItemsPerCounty(){
+      this.reinforcementItemsPerCounty_loading = true;
+      this.service.csv('reinforcementitemspercounty/2019').subscribe(
+          data => {
+              var blob = new Blob([data], {type: 'text/csv'});
+              this.reinforcementItemsPerCounty_loading = false;
+              saveAs(blob, "ReinforcementItemsPerCounty_2019.csv");
+          },
+          err => console.error(err)
+      )
+    }
+
+    suggestedIncentiveItems_loading = false;
+    csvSuggestedIncentiveItems(){
+      this.suggestedIncentiveItems_loading = true;
+      this.service.csv('suggestedincentiveitems/2019').subscribe(
+          data => {
+              var blob = new Blob([data], {type: 'text/csv'});
+              this.suggestedIncentiveItems_loading = false;
+              saveAs(blob, "SuggestedIncentiveItems_2019.csv");
           },
           err => console.error(err)
       )
