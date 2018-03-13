@@ -406,8 +406,16 @@ namespace Kers.Models.Repositories
                 result = string.Join(",", keys.ToArray()) + "\n";
 
                 var commitment = await context.SnapEd_Commitment
-                                    .Where( c => c.FiscalYear == fiscalYear)
-                                    .GroupBy( c => c.KersUser.RprtngProfile.PlanningUnit)
+                                    .Where( c => 
+                                                c.FiscalYear == fiscalYear
+                                                &&
+                                                c.KersUser.Specialties.Where( s => 
+                                                                                s.Specialty.Name == "Expanded Food and Nutrition Education Program"
+                                                                                ||
+                                                                                s.Specialty.Name == "Supplemental Nutrition Assistance Program Education"
+                                                                            ).Count() == 0
+                                            )
+                                    .GroupBy( c => c.KersUser.RprtngProfile.PlanningUnit )
                                     .Select( c => new {
                                         Unit = c.Key,
                                         commitments = c.Select( s => s )
