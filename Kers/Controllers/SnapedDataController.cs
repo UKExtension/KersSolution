@@ -565,7 +565,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.CommitmentSummary(fiscalYear, true);
+            var result = await snapCommitmentRepo.CommitmentSummary(fiscalYear);
             return Ok(result);
         }
 
@@ -580,7 +580,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Commitment Hours Detail Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.CommitmentHoursDetail(fiscalYear, true);
+            var result = await snapCommitmentRepo.CommitmentHoursDetail(fiscalYear);
             return Ok(result);
         }
 
@@ -595,7 +595,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Agents Without Commitment CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.AgentsWithoutCommitment(fiscalYear, true);
+            var result = await snapCommitmentRepo.AgentsWithoutCommitment(fiscalYear);
             return Ok(result);
         }
 
@@ -612,7 +612,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Summary By PlanningUnit CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.SummaryByPlanningUnit(fiscalYear, true);
+            var result = await snapCommitmentRepo.SummaryByPlanningUnit(fiscalYear);
             return Ok(result);
         }
 
@@ -627,7 +627,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Summary By PlanningUnit CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.SummaryByPlanningUnitNotNEPAssistants(fiscalYear, true);
+            var result = await snapCommitmentRepo.SummaryByPlanningUnitNotNEPAssistants(fiscalYear);
             return Ok(result);
         }
 
@@ -642,7 +642,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Reinforcement Items CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.ReinforcementItems(fiscalYear, true);
+            var result = await snapCommitmentRepo.ReinforcementItems(fiscalYear);
             return Ok(result);
         }
 
@@ -657,7 +657,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Reinforcement Items Per County CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.ReinforcementItemsPerCounty(fiscalYear, true);
+            var result = await snapCommitmentRepo.ReinforcementItemsPerCounty(fiscalYear);
             return Ok(result);
         }
 
@@ -672,7 +672,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Suggested Incentive Items CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.SuggestedIncentiveItems(fiscalYear, true);
+            var result = await snapCommitmentRepo.SuggestedIncentiveItems(fiscalYear);
             return Ok(result);
         }
 
