@@ -107,14 +107,22 @@ namespace Kers.Controllers.Reports
             return View(counties);
         }
 
-        [HttpGet("programlist")]
-        public async Task<IActionResult> Programlist(){
+        [HttpGet("programlist/{fy?}")]
+        public async Task<IActionResult> Programlist(string fy = "0"){
 
             List<MajorProgram> programs;
-
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = currentFiscalYear;
+            }else{
+                fiscalYear = await this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "serviceLog").FirstOrDefaultAsync();
+                if( fiscalYear == null){
+                    new Exception("No Fiscal Year with Provided Identifier.");
+                }
+            }
             
             programs = await this.context.MajorProgram.
-                                
+                                Where(m => m.StrategicInitiative.FiscalYear == fiscalYear).
                                 OrderBy(c => c.PacCode).ToListAsync();
 
             return View(programs);
