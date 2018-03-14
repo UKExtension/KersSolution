@@ -1,3 +1,7 @@
+<div *ngIf="fiscalYears != null">
+    <div class="col-xs-5">Fiscal Year: <span *ngFor="let year of fiscalYears"><a (click)="selectFiscalYear(year)" [class.active-year]="year.id == selectedFiscalYear.id" style="cursor:pointer;">{{year.name}}</a> | </span>
+    </div><br><br>
+</div>
 <div *ngFor="let initiative of initiatives | async" class="row">
     <programindicators-initiative-detail [initiative]="initiative"></programindicators-initiative-detail>
 </div>

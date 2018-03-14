@@ -47,9 +47,21 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(year);
         }
 
+        [HttpGet("next/{type?}")]
+        public IActionResult Next(string type = "serviceLog"){
+            var year = fiscalYearRepository.nextFiscalYear(type);
+            return new OkObjectResult(year);
+        }
+
+        [HttpGet("bytype/{type?}")]
+        public async Task<IActionResult> ByType(string type = "serviceLog"){
+            var year = await context.FiscalYear.Where( f => f.Type == type).OrderBy(f => f.Start).ToListAsync();
+            return new OkObjectResult(year);
+        }
+
         [HttpGet("All")]
         public IActionResult All(){
-            var all = context.FiscalYear;
+            var all = context.FiscalYear.OrderBy(f => f.Start);
             return new OkObjectResult(all);
         }
 

@@ -10,6 +10,7 @@ import {ReportingHelpService} from '../components/reporting-help/reporting-help.
 import {ProgramsService} from '../modules/admin/programs/programs.service';
 import {IndicatorsService} from '../modules/indicators/indicators.service';
 import { ReportingService } from "../components/reporting/reporting.service";
+import { FiscalyearService } from '../modules/admin/fiscalyear/fiscalyear.service';
 
 @NgModule({
   imports:      [ CommonModule ],
@@ -22,7 +23,8 @@ import { ReportingService } from "../components/reporting/reporting.service";
                     Title,
                     ProgramsService,
                     IndicatorsService,
-                    ReportingService 
+                    ReportingService,
+                    FiscalyearService 
                     ]
 })
 export class CoreModule {

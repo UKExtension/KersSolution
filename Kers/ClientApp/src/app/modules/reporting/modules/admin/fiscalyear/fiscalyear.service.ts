@@ -25,9 +25,21 @@ export class FiscalyearService {
                 .map(res => this.years = res.json())
                 .catch(this.handleError);
     }
+    byType(type:string = "serviceLog"):Observable<FiscalYear[]>{
+        var url = this.baseUrl + "bytype/" + type;
+        return this.http.get(this.location.prepareExternalUrl(url))
+            .map(res => this.years = <FiscalYear[]>res.json())
+            .catch(this.handleError);
+    }
 
     current(type:string = "serviceLog"){
         var url = this.baseUrl + "current/" + type;
+        return this.http.get(this.location.prepareExternalUrl(url))
+            .map(res => <FiscalYear>res.json())
+            .catch(this.handleError);
+    }
+    next(type:string = "serviceLog"){
+        var url = this.baseUrl + "next/" + type;
         return this.http.get(this.location.prepareExternalUrl(url))
             .map(res => <FiscalYear>res.json())
             .catch(this.handleError);
