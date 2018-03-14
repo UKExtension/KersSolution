@@ -521,7 +521,7 @@ namespace Kers.Models.Repositories
 
                 result = string.Join(",", keys.ToArray()) + "\n";
 
-                var counties = context.PlanningUnit.Where( p => p.District != null).Include(p => p.District).OrderBy( p => p.Name );
+                var counties = context.PlanningUnit.Where( p => p.District != null && p.Name.Substring(p.Name.Count() - 3) == "CES").Include(p => p.District).OrderBy( p => p.Name );
 
                 foreach( var county in counties){
                     var row = county.District.Name + ",";
