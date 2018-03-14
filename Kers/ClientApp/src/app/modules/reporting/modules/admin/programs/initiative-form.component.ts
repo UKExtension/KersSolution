@@ -3,6 +3,7 @@ import { ProgramsService, StrategicInitiative, ProgramCategory } from './program
 import {Location} from '@angular/common';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import {Router} from '@angular/router';
+import { FiscalYear } from '../fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'initiative-form',
@@ -13,6 +14,7 @@ export class InitiativeFormComponent implements OnInit{
     initiativeForm = null;
     programCategories: ProgramCategory[] = null;
     @Input() initiative:StrategicInitiative = null;
+    @Input() fiscalYear:FiscalYear;
     errorMessage: string;
 
 
@@ -73,7 +75,7 @@ export class InitiativeFormComponent implements OnInit{
                 }
             );
         }else{
-            this.service.addInitiative(i).
+            this.service.addInitiative(i, this.fiscalYear).
             subscribe(
                 res => {
                     this.onFormSubmit.emit();

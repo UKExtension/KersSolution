@@ -16,7 +16,7 @@ import { FiscalyearService } from '../fiscalyear/fiscalyear.service';
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newInitiative" (click)="newInitiativeOpen()">+ new statigic initiative</a>
     </div>
-    <initiative-form *ngIf="newInitiative" (onFormCancel)="newInitiativeCancelled()" (onFormSubmit)="newInitiativeSubmitted()"></initiative-form>
+    <initiative-form *ngIf="newInitiative" (onFormCancel)="newInitiativeCancelled()" (onFormSubmit)="newInitiativeSubmitted()" [fiscalYear]="selectedFiscalYear"></initiative-form>
 </div>
 <div *ngIf="initiatives">
     <table class="table table-striped">

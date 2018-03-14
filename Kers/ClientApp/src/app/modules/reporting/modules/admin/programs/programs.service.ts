@@ -36,9 +36,8 @@ export class ProgramsService {
         
     }
 
-    addInitiative(initiative:StrategicInitiative){
-        console.log(initiative);
-        return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(initiative), this.getRequestOptions())
+    addInitiative(initiative:StrategicInitiative, fiscalYear:FiscalYear){
+        return this.http.post(this.location.prepareExternalUrl(this.baseUrl + fiscalYear.id), JSON.stringify(initiative), this.getRequestOptions())
                     .map( res => {
                         return res.json();
                     })

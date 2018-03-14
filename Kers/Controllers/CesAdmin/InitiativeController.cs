@@ -60,12 +60,17 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(all);
         }
 
-        [HttpPost()]
+        [HttpPost("{fyId}")]
         [Authorize]
-        public IActionResult AddItitiative( [FromBody] StrategicInitiative initiative){
-            
+        public IActionResult AddItitiative(int fyId, [FromBody] StrategicInitiative initiative){
+            FiscalYear FiscalYear;
             if(initiative != null){
-                var FiscalYear = this.coreContext.FiscalYear.Where(f=>f.Type == "serviceLog").FirstOrDefault();
+                if(fyId == 0){
+                    FiscalYear = this.coreContext.FiscalYear.Where(f=>f.Type == "serviceLog").FirstOrDefault();
+                }else{
+                    FiscalYear = this.coreContext.FiscalYear.Find(fyId);
+                }
+                
                 initiative.FiscalYear = FiscalYear;
                 
                 var category = this.coreContext.ProgramCategory.Find(initiative.ProgramCategory.Id);
