@@ -525,13 +525,16 @@ namespace Kers.Models.Repositories
 
                 foreach( var county in counties){
                     var row = county.District.Name + ",";
-                    row = county.Name + ",";
-                    var areItemsSelected = context.SnapEd_ReinforcementItemChoice.Where( c => c.KersUser.RprtngProfile.PlanningUnit == county).Any();
-                    if( areItemsSelected ){
-                        row += "x" + ",";
-                    }else{
-                        row += ",";
+                    row += county.Name + ",";
+                    foreach( var item in ReinforcementItems){
+                        var areItemsSelected = context.SnapEd_ReinforcementItemChoice.Where( c => c.KersUser.RprtngProfile.PlanningUnit == county && c.SnapEd_ReinforcementItem == item).Any();
+                        if( areItemsSelected ){
+                            row += "x" + ",";
+                        }else{
+                            row += ",";
+                        }
                     }
+                    
                     result += row + "\n";
                 }
 
