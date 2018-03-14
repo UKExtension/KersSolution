@@ -32,9 +32,21 @@ import { saveAs } from 'file-saver';
   <button (click)="csvTotalByMonth()" class="btn btn-info btn-xs" *ngIf="!totalByMonth_loading">by Month</button><loading [type]="'bars'" *ngIf="totalByMonth_loading"></loading>|   
   <button (click)="csvTotalByCounty()" class="btn btn-info btn-xs" *ngIf="!totalByCounty_loading">by County</button><loading [type]="'bars'" *ngIf="totalByCounty_loading"></loading>|  
   <button (click)="csvTotalByEmployee()" class="btn btn-info btn-xs" *ngIf="!totalByEmployee_loading">by Employee</button><loading [type]="'bars'" *ngIf="totalByEmployee_loading"></loading> 
+  <h5>Commitment FY2019: </h5>
+  <button (click)="csvCommitmentSummary()" class="btn btn-info btn-xs" *ngIf="!commitmentSummary_loading">Summary</button><loading [type]="'bars'" *ngIf="commitmentSummary_loading"></loading>|
+  <button (click)="csvCommitmentHoursDetail()" class="btn btn-info btn-xs" *ngIf="!commitmentHoursDetail_loading">Hours Detail</button><loading [type]="'bars'" *ngIf="commitmentHoursDetail_loading"></loading>|  
+  <button (click)="csvAgentsWithoutCommitment()" class="btn btn-info btn-xs" *ngIf="!agentswithoutcommitment_loading">Agents With No Commitment Hours</button><loading [type]="'bars'" *ngIf="agentswithoutcommitment_loading"></loading>  
+  <br>
+  <button (click)="csvSummaryByPlanningUnit()" class="btn btn-info btn-xs" *ngIf="!SummaryByPlanningUnit_loading">Summary By Planning Unit</button><loading [type]="'bars'" *ngIf="SummaryByPlanningUnit_loading"></loading>|  
+  <button (click)="csvSummaryByPlanningUnitNotNEPAssistants()" class="btn btn-info btn-xs" *ngIf="!summaryByPlanningUnitNotNEPAssistants_loading">Summary By Planning Unit (Excludes NEP Assistants)</button><loading [type]="'bars'" *ngIf="summaryByPlanningUnitNotNEPAssistants_loading"></loading>  
+  <br>
+  <button (click)="csvReinforcementItems()" class="btn btn-info btn-xs" *ngIf="!reinforcementItems_loading">Reinforcement Items</button><loading [type]="'bars'" *ngIf="reinforcementItems_loading"></loading>|
+  <button (click)="csvReinforcementItemsPerCounty()" class="btn btn-info btn-xs" *ngIf="!reinforcementItemsPerCounty_loading">Reinforcement Items Per County</button><loading [type]="'bars'" *ngIf="reinforcementItemsPerCounty_loading"></loading>|  
+  <button (click)="csvSuggestedIncentiveItems()" class="btn btn-info btn-xs" *ngIf="!suggestedIncentiveItems_loading">Suggested Incentive Items</button><loading [type]="'bars'" *ngIf="suggestedIncentiveItems_loading"></loading>  
+  <br>
+  <!--
   <h5>Commitment: </h5>
   <a href="https://kers.ca.uky.edu/kers_mobile/SnapEd2018AdminDashboard.aspx">Commitment reports are available here</a>
-  <!--
   Summary  |   Detail  |   Agents With No Commitment Hours
   Summary By Planning Unit  |   Summary By Planning Unit (Excludes NEP Assistants)
   Reinforcement Items  |   Reinforcement Items By County  |   Suggested Incentive Items 
@@ -59,18 +71,6 @@ import { saveAs } from 'file-saver';
   <button (click)="csvIndividualContactTotals()" class="btn btn-info btn-xs" *ngIf="!individualContactTotals_loading">Individual Contact Totals</button><loading [type]="'bars'" *ngIf="individualContactTotals_loading"></loading><br>
   <button (click)="csvSpecificSiteNameByMonth()" class="btn btn-info btn-xs" *ngIf="!specificSiteNameByMonth_loading">Specific Site Names By Month</button><loading [type]="'bars'" *ngIf="specificSiteNameByMonth_loading"></loading><br>
   <button (click)="csvDirectByPersonByMonth()" class="btn btn-info btn-xs" *ngIf="!directByPersonByMonth_loading">Direct Sites By Person, By Month - including number of contacts</button><loading [type]="'bars'" *ngIf="directByPersonByMonth_loading"></loading><br>
-  <h5>Commitment FY2019: </h5>
-  <button (click)="csvCommitmentSummary()" class="btn btn-info btn-xs" *ngIf="!commitmentSummary_loading">Summary</button><loading [type]="'bars'" *ngIf="commitmentSummary_loading"></loading>|
-  <button (click)="csvCommitmentHoursDetail()" class="btn btn-info btn-xs" *ngIf="!commitmentHoursDetail_loading">Hours Detail</button><loading [type]="'bars'" *ngIf="commitmentHoursDetail_loading"></loading>|  
-  <button (click)="csvAgentsWithoutCommitment()" class="btn btn-info btn-xs" *ngIf="!agentswithoutcommitment_loading">Agents With No Commitment Hours</button><loading [type]="'bars'" *ngIf="agentswithoutcommitment_loading"></loading>  
-  <br>
-  <button (click)="csvSummaryByPlanningUnit()" class="btn btn-info btn-xs" *ngIf="!SummaryByPlanningUnit_loading">Summary By Planning Unit</button><loading [type]="'bars'" *ngIf="SummaryByPlanningUnit_loading"></loading>|  
-  <button (click)="csvSummaryByPlanningUnitNotNEPAssistants()" class="btn btn-info btn-xs" *ngIf="!summaryByPlanningUnitNotNEPAssistants_loading">Summary By Planning Unit (Excludes NEP Assistants)</button><loading [type]="'bars'" *ngIf="summaryByPlanningUnitNotNEPAssistants_loading"></loading>  
-  <br>
-  <button (click)="csvReinforcementItems()" class="btn btn-info btn-xs" *ngIf="!reinforcementItems_loading">Reinforcement Items</button><loading [type]="'bars'" *ngIf="reinforcementItems_loading"></loading>|
-  <button (click)="csvReinforcementItemsPerCounty()" class="btn btn-info btn-xs" *ngIf="!reinforcementItemsPerCounty_loading">Reinforcement Items Per County</button><loading [type]="'bars'" *ngIf="reinforcementItemsPerCounty_loading"></loading>|  
-  <button (click)="csvSuggestedIncentiveItems()" class="btn btn-info btn-xs" *ngIf="!suggestedIncentiveItems_loading">Suggested Incentive Items</button><loading [type]="'bars'" *ngIf="suggestedIncentiveItems_loading"></loading>  
-  <br>
   <!--
   <button (click)="csvIndirectByEmployee()" class="btn btn-info btn-xs" *ngIf="!indirectByEmployee_loading">Indirects per Person per Number Reached</button><loading [type]="'bars'" *ngIf="indirectByEmployee_loading"></loading><br>
  -->
