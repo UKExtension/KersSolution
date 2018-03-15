@@ -36,7 +36,6 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
-                                Include(e=>e.Revisions).ThenInclude( r => r.ProgramCategory).
                                 OrderByDescending(e=>e.ExpenseDate);
             }else{
                 lastExpenses = coreContext.Expense.
@@ -46,7 +45,6 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
-                                Include(e=>e.Revisions).ThenInclude( r => r.ProgramCategory).
                                 OrderBy(e=>e.ExpenseDate);
             }
                                 
@@ -54,7 +52,14 @@ namespace Kers.Models.Repositories
             if( lastExpenses != null){
                 foreach(var expense in lastExpenses){
                     if(expense.Revisions.Count != 0){
-                        revs.Add( expense.Revisions.OrderBy(r=>r.Created).Last() );
+                        var lastRevision = expense.Revisions.OrderBy(r=>r.Created).Last();
+                        if( lastRevision.ProgramCategoryId != 0){
+                            var category = coreContext.ProgramCategory.Find(lastRevision.ProgramCategoryId);
+                            if(category != null){
+                                lastRevision.ProgramCategory = category;
+                            }
+                        }
+                        revs.Add( lastRevision );
                     }
                 }
             }
