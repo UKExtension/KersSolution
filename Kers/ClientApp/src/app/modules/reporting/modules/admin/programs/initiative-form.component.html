@@ -11,9 +11,10 @@
             </div>
         </div>
         <div class="form-group" *ngIf="programCategories">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="programCategory">Program Category:</label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="programCategoryId">Program Category:</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-                <select name="programCategory" formControlName="programCategory" class="form-control col-md-7 col-xs-12">
+                <select name="programCategoryId" formControlName="programCategoryId" class="form-control col-md-7 col-xs-12">
+                    <option>-- select --</option>
                     <option *ngFor="let category of programCategories" [value]="category.id">{{category.name}}</option>
                 </select>
             </div>

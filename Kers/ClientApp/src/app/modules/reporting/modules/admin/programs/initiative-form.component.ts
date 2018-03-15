@@ -37,7 +37,7 @@ export class InitiativeFormComponent implements OnInit{
         this.initiativeForm = this.fb.group(
             {
               name: ['', Validators.required],
-              programCategory: [''],
+              programCategoryId: [0],
               pacCode: ['', this.validateNumber],
               order: ['', this.validateNumber]
             }
@@ -61,10 +61,12 @@ export class InitiativeFormComponent implements OnInit{
 
     onSubmit(){    
         
-        var programCategoryId = this.initiativeForm.value.programCategory;
-        var cat = this.programCategories.find(c=>c.id = programCategoryId);
+        //var programCategoryId = this.initiativeForm.value.programCategory;
+        //var cat = this.programCategories.find(c=>c.id = programCategoryId);
         var i = <StrategicInitiative> this.initiativeForm.value;
-        i.programCategory = cat;
+        //i.programCategory = cat[0];
+        //i.programCategoryId = programCategoryId;
+        //console.log(i);
         if(this.initiative){
             this.service.updateInitiative(this.initiative.id, i ).
             subscribe(

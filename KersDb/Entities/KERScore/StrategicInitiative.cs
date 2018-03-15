@@ -16,6 +16,7 @@ namespace Kers.Models.Entities.KERScore
         public int PacCode {get; set;}
         public int order {get; set;}
         public FiscalYear FiscalYear {get; set;}
+        public int ProgramCategoryId {get; set;}
         public ProgramCategory ProgramCategory {get; set;}
         public List<MajorProgram> MajorPrograms {get; set;}
 

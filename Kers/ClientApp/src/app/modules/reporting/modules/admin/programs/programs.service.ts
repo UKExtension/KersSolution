@@ -118,6 +118,7 @@ export class StrategicInitiative{
         public pacCode: number,
         public order: number,
         public fiscalYear: FiscalYear,
+        public programCategoryId: number,
         public programCategory: ProgramCategory,
         public majorPrograms: MajorProgram[]
     ){}

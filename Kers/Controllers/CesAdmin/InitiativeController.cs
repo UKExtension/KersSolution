@@ -73,8 +73,8 @@ namespace Kers.Controllers.Admin
                 
                 initiative.FiscalYear = FiscalYear;
                 
-                var category = this.coreContext.ProgramCategory.Find(initiative.ProgramCategory.Id);
-                initiative.ProgramCategory = category;
+                //var category = this.coreContext.ProgramCategory.Find(initiative.ProgramCategory.Id);
+                //initiative.ProgramCategoryId = initiative.ProgramCategoryId;
                 this.coreContext.StrategicInitiative.Add(initiative);
                 this.coreContext.SaveChanges();
 

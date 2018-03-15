@@ -177,30 +177,58 @@ namespace Kers.Controllers.Reports
                 }
             }
 
-            var plansofwork = await this.context.PlanOfWork
-                                        .Where( p =>    (
-                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp1.Id == id
-                                                        ||
-                                                        ( p.Revisions.OrderBy( r => r.Created).Last().Mp2 != null && p.Revisions.OrderBy( r => r.Created).Last().Mp2.Id == id)
-                                                        ||
-                                                        ( p.Revisions.OrderBy( r => r.Created).Last().Mp3 != null && p.Revisions.OrderBy( r => r.Created).Last().Mp3.Id == id )
-                                                        ||
-                                                        ( p.Revisions.OrderBy( r => r.Created).Last().Mp4 != null && p.Revisions.OrderBy( r => r.Created).Last().Mp4.Id == id )
-                                                        )
-                                                        
-                                                        && 
-                                                        p.FiscalYear == fiscalYear)
-                                        .Include( p => p.PlanningUnit)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Map)
-                                        .ToListAsync();
 
+            var lastRevisionIds = this.context.PlanOfWork
+                                        .Where( p => p.FiscalYear == fiscalYear)
+                                        .Select( p => p.Revisions.OrderBy( r => r.Created).Last().Id );
+
+
+
+            var LastRevisions = await this.context.PlanOfWorkRevision
+                                        .Where( r => lastRevisionIds.Contains(r.Id)
+                                                        &&
+                                                        (
+                                                           r.Mp1Id == id 
+                                                           ||
+                                                           r.Mp2Id == id
+                                                           ||
+                                                           r.Mp3Id == id
+                                                           ||
+                                                           r.Mp4Id == id
+                                                        )
+                                        
+                                        )
+                                        .Include( r => r.Map)
+                                        .ToListAsync();
+/* 
+            var plansofwork = this.context.PlanOfWork
+                                        .Where( p =>    (
+                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp1Id == id
+                                                        ||
+                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp2Id == id
+                                                        ||
+                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp3Id == id 
+                                                        ||
+                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp4.Id == id
+                                                        )
+                                                        && 
+                                                        p.FiscalYear == fiscalYear
+                                                )
+                                        .Include( p => p.PlanningUnit)
+                                        .Include( p => p.Revisions ).ThenInclude( r => r.Map);
+ */
             List<PlanOfWorkViewModel> plans = new List<PlanOfWorkViewModel>();
-            foreach( var plan in plansofwork){
+            foreach( var plan in LastRevisions){
                 var pow = new PlanOfWorkViewModel();
-                pow.Id = plan.Id;
+                pow.Id = plan.PlanOfWorkId;
                 pow.FiscalYear = fiscalYear;
-                pow.PlanningUnit = plan.PlanningUnit;
-                pow.LastRevision = plan.Revisions.OrderBy( r => r.Created).Last();
+
+                var planOfWork = await this.context.PlanOfWork.Where( p => p.Id == plan.PlanOfWorkId).Include( r => r.PlanningUnit).FirstOrDefaultAsync();
+                if(planOfWork != null && planOfWork.PlanningUnit != null){
+                    pow.PlanningUnit = planOfWork.PlanningUnit;
+                }
+                
+                pow.LastRevision = plan;
                 plans.Add(pow);
             }
             ViewData["ProgramId"] = id;
