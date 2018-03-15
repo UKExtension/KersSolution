@@ -93,7 +93,8 @@ namespace Kers.Controllers.Admin
                 entity.ShortName = initiative.ShortName;
                 entity.PacCode = initiative.PacCode;
                 entity.order = initiative.order;
-                entity.ProgramCategory = this.coreContext.ProgramCategory.Find(initiative.ProgramCategory.Id);
+                entity.ProgramCategoryId = initiative.ProgramCategoryId;
+                //entity.ProgramCategory = this.coreContext.ProgramCategory.Find(initiative.ProgramCategory.Id);
                 this.coreContext.SaveChanges();
                 return new OkObjectResult(entity);
             }else{
