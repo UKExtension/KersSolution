@@ -16,7 +16,7 @@
             <div *ngIf="!navigation" style="margin: 20px 0 0 50px;text-align:center;">
               <loading type="bars"></loading>
             </div>
-            <nav-menu-section *ngFor = "let section of navigation" [section]="section"></nav-menu-section>
+            <nav-menu-section *ngFor = "let section of navigation" [section]="section" (onSelected)="itemSelected($event)"></nav-menu-section>
           </div>
           <!-- /sidebar menu -->
 

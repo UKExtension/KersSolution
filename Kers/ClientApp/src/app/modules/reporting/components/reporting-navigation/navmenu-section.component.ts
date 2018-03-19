@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { NavSection, NavGroup, NavItem} from './navigation.service';
 
@@ -8,14 +8,14 @@ import { NavSection, NavGroup, NavItem} from './navigation.service';
     <div *ngIf="section.groups.length > 0" class="menu_section">
         <h3>{{section.name}}</h3>
         <ul class="nav side-menu">
-            <li class="nav-group" *ngFor = "let group of section.groups" [class.active]="this.group.isOpen == 'active'" [nav-menu-group]="group" (onOpen)="closeOthers($event)"></li>
+            <li class="nav-group" *ngFor = "let group of section.groups" [class.active]="this.group.isOpen == 'active'" [nav-menu-group]="group" (onOpen)="closeOthers($event)" (onSelected)="itemSelected($event)"></li>
         </ul>
     </div>
     `
 })
 export class NavmenuSectionComponent implements OnInit{
     @Input('section') section: NavSection;
-
+    @Output() onSelected = new EventEmitter<NavItem>();
 
     constructor( 
         private route: ActivatedRoute, 
@@ -55,5 +55,9 @@ export class NavmenuSectionComponent implements OnInit{
             }
         }
 
+    }
+
+    itemSelected(event){
+        this.onSelected.emit(event);
     }
 }

@@ -90,4 +90,9 @@ export class ReportingComponent implements OnInit {
                 section.groups[key].isOpen = 'inactive';
         }
     }
+    itemSelected(event){
+        if(this.layoutClasses['nav-sm']){
+            this.closeGroups();
+        }
+    }
 }
