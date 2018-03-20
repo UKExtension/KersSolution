@@ -34,7 +34,9 @@ namespace Kers.Models.Entities.KERScore
         [Column(TypeName="text")]
         public string Evaluation {get; set;}
         public DateTime Created {get; set;}
+        public int ById {get; set;}
         public KersUser By {get; set;}
+        public int MapId {get; set;}
         public Map Map {get; set;}
 
         public int PlanOfWorkId { get; set; }

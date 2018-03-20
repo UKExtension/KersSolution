@@ -14,6 +14,7 @@ namespace Kers.Models.Entities.KERScore
         public int Code {get; set;}
         public string Title {get; set;}
         public DateTime Updated {get; set;}
+        public int PlanningUnitId {get; set;}
         public PlanningUnit PlanningUnit {get; set;}
         public KersUser By {get; set;}
         public FiscalYear FiscalYear {get;set;}

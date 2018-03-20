@@ -135,13 +135,19 @@ namespace Kers.Controllers
         /*               Plan CRUD operations               */
         /***************************************************/
 
-        [HttpPost]
+        [HttpPost("{fyId?}")]
         [Authorize]
-        public IActionResult AddPlan( [FromBody] PlanOfWorkRevision plan){
+        public IActionResult AddPlan([FromBody] PlanOfWorkRevision plan, string fyId = "0"){
 
             if(plan != null){
                 var thePlan = new PlanOfWork();
-                thePlan.FiscalYear = fiscalYearRepo.nextFiscalYear("serviceLog");
+                FiscalYear fiscalYear;
+                if(fyId != "0"){
+                    fiscalYear = fiscalYearRepo.byName(fyId, FiscalYearType.ServiceLog);
+                }else{
+                    fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.ServiceLog);
+                }
+                thePlan.FiscalYear = fiscalYear;
                 thePlan.PlanningUnit = this.CurrentPlanningUnit();
                 thePlan.Revisions = new List<PlanOfWorkRevision>();
 
@@ -246,9 +252,9 @@ namespace Kers.Controllers
         /*               MAP CRUD operations               */
         /***************************************************/
 
-        [HttpPost("map")]
+        [HttpPost("map/{fyId?}")]
         [Authorize]
-        public IActionResult AddMap( [FromBody] Map map){
+        public IActionResult AddMap( [FromBody] Map map, string fyId = "0"){
 
             if(map != null){
 
@@ -259,7 +265,13 @@ namespace Kers.Controllers
                     Where( p=>p.Code == profile.planningUnitID).
                     FirstOrDefault();
                 map.PlanningUnit = planningUnt;
-                map.FiscalYear = fiscalYearRepo.nextFiscalYear("serviceLog");;
+                FiscalYear fiscalYear;
+                if(fyId != "0"){
+                    fiscalYear = fiscalYearRepo.byName(fyId, FiscalYearType.ServiceLog);
+                }else{
+                    fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.ServiceLog);
+                }
+                map.FiscalYear = fiscalYear;
                 map.By = user;
                 map.Updated = DateTime.Now;
                 context.Map.Add(map);
@@ -308,11 +320,101 @@ namespace Kers.Controllers
         }
 
         
-/*
 
 
-        [HttpGet("importplans")]
-        public IActionResult ImportPlans(){
+
+        [HttpGet("importplans/{fyFrom?}/{fyTo?}")]
+        public async Task<IActionResult> ImportPlans(string fyFrom = "0", string fyTo = "0"){
+
+
+            FiscalYear fiscalYearFrom;
+            if(fyFrom != "0"){
+                fiscalYearFrom = fiscalYearRepo.byName(fyFrom, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYearFrom = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
+
+            FiscalYear fiscalYearTo;
+            if(fyFrom != "0"){
+                fiscalYearTo = fiscalYearRepo.byName(fyTo, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYearTo = fiscalYearRepo.nextFiscalYear(FiscalYearType.ServiceLog);
+            }
+
+            //Do not import if already something is imported
+            if( !this.context.PlanOfWork.Where( p => p.FiscalYear == fiscalYearTo).Any()){
+                if( true || !this.context.Map.Where( m => m.FiscalYear == fiscalYearTo).Any()){
+
+                    var newPlans = new List<PlanOfWork>();
+                    var newMaps = new List<Map>();
+                    
+                    var maps = context.Map.AsNoTracking().Where(
+                                    m =>
+                                        m.FiscalYear == fiscalYearFrom
+                            );
+
+                    List<PlanOfWorkRevision>  lastPlanRevisions = await context.PlanOfWork.AsNoTracking()
+                                            .Where( p => p.FiscalYear == fiscalYearFrom)
+                                            .Select(p => p.Revisions.OrderBy( c => c.Created).Last() ).ToListAsync();
+
+                    foreach( var map in maps ){
+                        var revisions = lastPlanRevisions.Where( r => r.MapId == map.Id);
+                        if( revisions.Any()){
+                            map.FiscalYear = fiscalYearTo;
+                            map.Id = 0;
+                            newMaps.Add(map);
+                            foreach( var revision in revisions){
+                                var plan = new PlanOfWork();
+                                plan.FiscalYear = fiscalYearTo;
+                                plan.PlanningUnit = context.PlanOfWork.Find( revision.PlanOfWorkId ).PlanningUnit;
+                                plan.Revisions = new List<PlanOfWorkRevision>();
+                                revision.Id = 0;
+                                if( revision.Mp1Id != null){
+                                    revision.Mp1 = await context.MajorProgram.Where( 
+                                                                m => 
+                                                                    m.PacCode == context.MajorProgram.Find(revision.Mp1Id).PacCode 
+                                                                    &&
+                                                                    m.StrategicInitiative.FiscalYear == fiscalYearTo
+                                                                ).FirstOrDefaultAsync();
+                                }
+                                if( revision.Mp2Id != null){
+                                    revision.Mp2 = await context.MajorProgram.Where( 
+                                                                m => 
+                                                                    m.PacCode == context.MajorProgram.Find(revision.Mp2Id).PacCode 
+                                                                    &&
+                                                                    m.StrategicInitiative.FiscalYear == fiscalYearTo
+                                                                ).FirstOrDefaultAsync();
+                                }
+                                if( revision.Mp3Id != null){
+                                    revision.Mp3 = await context.MajorProgram.Where( 
+                                                                m => 
+                                                                    m.PacCode == context.MajorProgram.Find(revision.Mp3Id).PacCode 
+                                                                    &&
+                                                                    m.StrategicInitiative.FiscalYear == fiscalYearTo
+                                                                ).FirstOrDefaultAsync();
+                                }
+                                if( revision.Mp4Id != null){
+                                    revision.Mp4 = await context.MajorProgram.Where( 
+                                                                m => 
+                                                                    m.PacCode == context.MajorProgram.Find(revision.Mp4Id).PacCode 
+                                                                    &&
+                                                                    m.StrategicInitiative.FiscalYear == fiscalYearTo
+                                                                ).FirstOrDefaultAsync();
+                                }
+                                plan.Revisions.Add( revision );
+                                newPlans.Add(plan);
+                            }
+                        }
+                        
+                        
+                    }
+                    context.Map.AddRange(newMaps);
+                    context.PlanOfWork.AddRange(newPlans);
+                    return Ok( newPlans );
+                }
+            }
+
+            /*
             FiscalYear year = fiscalYearRepo.nextFiscalYear("serviceLog");;
             var mapsCore = context.Map;
             if(mapsCore.Count() == 0){
@@ -397,9 +499,11 @@ namespace Kers.Controllers
                 context.SaveChanges();
             }
             return new OkObjectResult(context.PlanOfWork.Take(1));
-            //return NotFound(new {Error = "no need to import plans"});
+            //;
+             */
+            return NotFound(new {Error = "no need to import plans"});
         }
-
+/* 
         [HttpGet("importregions")]
         public IActionResult ImportRegions(){
 
@@ -445,8 +549,8 @@ namespace Kers.Controllers
             }
             return NotFound(new {Error = "not found"});
         }
- */
 
+ */
         private KersUser userByProfileId(string profileId){
             var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.personID == profileId).
