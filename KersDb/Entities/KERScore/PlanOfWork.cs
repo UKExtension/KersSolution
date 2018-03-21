@@ -11,6 +11,7 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public int PlanningUnitId {get; set;}
         public PlanningUnit PlanningUnit {get; set;}
         public FiscalYear FiscalYear {get; set;}
         public List<PlanOfWorkRevision> Revisions {get; set;}

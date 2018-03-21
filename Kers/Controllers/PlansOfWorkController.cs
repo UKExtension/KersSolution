@@ -343,7 +343,7 @@ namespace Kers.Controllers
 
             //Do not import if already something is imported
             if( !this.context.PlanOfWork.Where( p => p.FiscalYear == fiscalYearTo).Any()){
-                if( true || !this.context.Map.Where( m => m.FiscalYear == fiscalYearTo).Any()){
+                if( !this.context.Map.Where( m => m.FiscalYear == fiscalYearTo).Any()){
 
                     var newPlans = new List<PlanOfWork>();
                     var newMaps = new List<Map>();
@@ -358,48 +358,77 @@ namespace Kers.Controllers
                                             .Select(p => p.Revisions.OrderBy( c => c.Created).Last() ).ToListAsync();
 
                     foreach( var map in maps ){
-                        var revisions = lastPlanRevisions.Where( r => r.MapId == map.Id);
-                        if( revisions.Any()){
+                        var revs = lastPlanRevisions.Where( r => r.MapId == map.Id).ToList();
+                        if( revs.Count() != 0){
                             map.FiscalYear = fiscalYearTo;
                             map.Id = 0;
                             newMaps.Add(map);
-                            foreach( var revision in revisions){
+                            
+                            foreach( var revision in revs ){
                                 var plan = new PlanOfWork();
                                 plan.FiscalYear = fiscalYearTo;
-                                plan.PlanningUnit = context.PlanOfWork.Find( revision.PlanOfWorkId ).PlanningUnit;
+                                plan.PlanningUnitId = context.PlanOfWork.Find( revision.PlanOfWorkId ).PlanningUnitId;
                                 plan.Revisions = new List<PlanOfWorkRevision>();
                                 revision.Id = 0;
                                 if( revision.Mp1Id != null){
+                                    var pacCode = context.MajorProgram.Find(revision.Mp1Id).PacCode;
                                     revision.Mp1 = await context.MajorProgram.Where( 
                                                                 m => 
-                                                                    m.PacCode == context.MajorProgram.Find(revision.Mp1Id).PacCode 
+                                                                    m.PacCode == pacCode 
                                                                     &&
                                                                     m.StrategicInitiative.FiscalYear == fiscalYearTo
                                                                 ).FirstOrDefaultAsync();
+                                    if(revision.Mp1 != null){
+                                        revision.Mp1Id = revision.Mp1.Id;
+                                    }else{
+                                        revision.Mp1Id = null;
+                                    }
+                                        
                                 }
                                 if( revision.Mp2Id != null){
+                                    var pacCode = context.MajorProgram.Find(revision.Mp2Id).PacCode;
                                     revision.Mp2 = await context.MajorProgram.Where( 
                                                                 m => 
-                                                                    m.PacCode == context.MajorProgram.Find(revision.Mp2Id).PacCode 
+                                                                    m.PacCode == pacCode 
                                                                     &&
                                                                     m.StrategicInitiative.FiscalYear == fiscalYearTo
                                                                 ).FirstOrDefaultAsync();
+                                    if(revision.Mp2 != null){
+                                        revision.Mp2Id = revision.Mp2.Id;
+                                    }else{
+                                        revision.Mp2Id = null;
+                                    }
+                                    
                                 }
                                 if( revision.Mp3Id != null){
+                                    var pacCode = context.MajorProgram.Find(revision.Mp3Id).PacCode;
                                     revision.Mp3 = await context.MajorProgram.Where( 
                                                                 m => 
-                                                                    m.PacCode == context.MajorProgram.Find(revision.Mp3Id).PacCode 
+                                                                    m.PacCode == pacCode 
                                                                     &&
                                                                     m.StrategicInitiative.FiscalYear == fiscalYearTo
                                                                 ).FirstOrDefaultAsync();
+                                    if(revision.Mp3 != null){
+                                        revision.Mp3Id = revision.Mp3.Id;
+                                    }else{
+                                        revision.Mp3Id = null;
+                                    }
+                                    
                                 }
                                 if( revision.Mp4Id != null){
+                                    var pacCode = context.MajorProgram.Find(revision.Mp4Id).PacCode;
                                     revision.Mp4 = await context.MajorProgram.Where( 
                                                                 m => 
-                                                                    m.PacCode == context.MajorProgram.Find(revision.Mp4Id).PacCode 
+                                                                    m.PacCode == pacCode 
                                                                     &&
                                                                     m.StrategicInitiative.FiscalYear == fiscalYearTo
                                                                 ).FirstOrDefaultAsync();
+                                    if(revision.Mp4 != null){
+                                        revision.Mp4Id = revision.Mp4.Id;
+                                    }else{
+                                        revision.Mp4Id = null;
+                                    }
+                                    
                                 }
                                 plan.Revisions.Add( revision );
                                 newPlans.Add(plan);
@@ -410,7 +439,8 @@ namespace Kers.Controllers
                     }
                     context.Map.AddRange(newMaps);
                     context.PlanOfWork.AddRange(newPlans);
-                    return Ok( newPlans );
+                    context.SaveChanges();
+                    return new OkObjectResult( newPlans );
                 }
             }
 
