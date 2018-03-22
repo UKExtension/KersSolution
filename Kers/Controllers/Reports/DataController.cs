@@ -47,15 +47,15 @@ namespace Kers.Controllers.Reports
                 var unit = await this.context.PlanningUnit.Where( u => u.Id == id).FirstOrDefaultAsync();
                 if(unit != null){
                     model.PlanningUnit = unit;
-                    var stories = await this.context.Story.
+                    var stories = this.context.Story.
                                             Where( s => s.KersUser.RprtngProfile.PlanningUnit == unit)
                                             .Include(s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.PersonalProfile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude(u => u.PlanningUnit)
-                                            .Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
+                                            //.Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
                                             .Include( s => s.Revisions ).ThenInclude( r => r.StoryOutcome)
                                             .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
-                                            .ToListAsync();
+                                            .ToList();
                     model.Stories = this.storyViewModelList(stories);
                 }
             }

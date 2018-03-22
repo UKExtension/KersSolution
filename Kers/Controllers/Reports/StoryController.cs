@@ -48,7 +48,7 @@ namespace Kers.Controllers.Reports
                                             .Include(s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.PersonalProfile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude(u => u.PlanningUnit)
-                                            .Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
+                                            //.Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
                                             .Include( s => s.Revisions ).ThenInclude( r => r.StoryOutcome)
                                             .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
                                             .FirstOrDefaultAsync();
