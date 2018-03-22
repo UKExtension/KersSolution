@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { PlansofworkService, PlanOfWork, Plan, PlanningUnit, FiscalYear } from './plansofwork.service';
+import { PlansofworkService, PlanOfWork, Plan, PlanningUnit } from './plansofwork.service';
 import { Observable } from "rxjs/Observable";
 
 @Component({

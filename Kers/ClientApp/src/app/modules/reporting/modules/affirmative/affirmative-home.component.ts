@@ -7,7 +7,8 @@ import {    AffirmativeService,
             AdvisoryGroup,
             SummaryDiversity
     } from './affirmative.service';
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
+import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   templateUrl: 'affirmative-home.component.html'
@@ -17,22 +18,36 @@ export class AffirmativeHomeComponent {
     
     plan:AffirmativePlan;
 
+    fy:FiscalYear;
+
 
     errorMessage: string;
 
     constructor( 
         private reportingService: ReportingService,
         private service: AffirmativeService,
-        private router: Router
+        private fiscalYearService: FiscalyearService,
+        private router: Router,
+        private route: ActivatedRoute,
     )   
     {}
 
     ngOnInit(){
         
-        this.defaultTitle();
+        
 
         this.plan = this.service.get().map(res=><AffirmativePlan>res);
-        //this.populateData();
+        const fiscalyearid = this.route.snapshot.paramMap.get('fy');
+        if( fiscalyearid == null){
+            this.fiscalYearService.next("serviceLog").subscribe(
+                res =>{
+                    this.fy = <FiscalYear> res;
+                    this.defaultTitle();
+                },
+                err => this.errorMessage = <any> err 
+            );
+        }
+
         
     }
 
@@ -56,6 +71,6 @@ export class AffirmativeHomeComponent {
     }
 
     defaultTitle(){
-        this.reportingService.setTitle("Affirmative Action Plan for 2017-2018");
+        this.reportingService.setTitle("Affirmative Action Plan for FY " + this.fy.name);
     }
 }

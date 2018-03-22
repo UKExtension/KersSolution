@@ -3,7 +3,7 @@
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newMap" (click)="newMapOpen()">+ new map</a>
     </div>
-    <plansofwork-map-form *ngIf="newMap" (onFormCancel)="newMapCancelled()" (onFormSubmit)="newMapSubmitted()"></plansofwork-map-form>
+    <plansofwork-map-form *ngIf="newMap" (onFormCancel)="newMapCancelled()" (onFormSubmit)="newMapSubmitted($event)" [fiscalYear]="fy"></plansofwork-map-form>
 </div>
 <div *ngIf="maps">
     <table class="table table-striped">

@@ -66,13 +66,19 @@ namespace Kers.Controllers
             
         }
 
-        [HttpGet("All")]
+        [HttpGet("All/{fy?}")]
         [Authorize]
-        public IActionResult AllPlans(){
+        public IActionResult AllPlans(string fy = "0"){
+            FiscalYear fiscalYear;
+            if(fy != "0"){
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
             var unit = this.CurrentPlanningUnit();
             var lastRevisions = new List<PlanOfWorkRevision>();
             var plans = this.context.
-                            PlanOfWork.Where( m=>m.PlanningUnit == unit && m.FiscalYear == this.fiscalYearRepo.currentFiscalYear("serviceLog")).
+                            PlanOfWork.Where( m=>m.PlanningUnit == unit && m.FiscalYear == fiscalYear).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Map).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp1).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp2).
@@ -85,16 +91,22 @@ namespace Kers.Controllers
             return new OkObjectResult(lastRevisions);
         }
 
-        [HttpGet("AllDetails/{id?}")]
+        [HttpGet("AllDetails/{id?}/{fy?}")]
         [Authorize]
-        public IActionResult AllPlansWithDetails(int? id){
+        public IActionResult AllPlansWithDetails(int? id, string fy = "0"){
+            FiscalYear fiscalYear;
+            if(fy != "0"){
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
             if(id == null){
                 var unit = this.CurrentPlanningUnit();
                 id = unit.Id;
             }
             var lastRevisions = new List<PlanOfWorkRevision>();
             var plans = this.context.
-                            PlanOfWork.Where( m=>m.PlanningUnit.Id == id && m.FiscalYear == this.fiscalYearRepo.currentFiscalYear("serviceLog")).
+                            PlanOfWork.Where( m=>m.PlanningUnit.Id == id && m.FiscalYear == fiscalYear).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Map).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp1).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp2).
@@ -108,11 +120,16 @@ namespace Kers.Controllers
             return new OkObjectResult(lastRevisions);
         }
 
-        [HttpGet("mapsall")]
+        [HttpGet("mapsall/{fy?}")]
         [Authorize]
-        public IActionResult AllMaps(){
+        public IActionResult AllMaps(string fy = "0"){
             var unit = this.CurrentPlanningUnit();
-            var fiscalYear = this.fiscalYearRepo.nextFiscalYear("serviceLog");
+            FiscalYear fiscalYear;
+            if(fy != "0"){
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
             var maps = this.context.Map.Where(m=>m.PlanningUnit == unit && m.FiscalYear == fiscalYear);
             return new OkObjectResult(maps);
         }
@@ -361,6 +378,7 @@ namespace Kers.Controllers
                         var revs = lastPlanRevisions.Where( r => r.MapId == map.Id).ToList();
                         if( revs.Count() != 0){
                             map.FiscalYear = fiscalYearTo;
+                            map.FiscalYearId = map.FiscalYear.Id;
                             map.Id = 0;
                             newMaps.Add(map);
                             
@@ -444,143 +462,10 @@ namespace Kers.Controllers
                 }
             }
 
-            /*
-            FiscalYear year = fiscalYearRepo.nextFiscalYear("serviceLog");;
-            var mapsCore = context.Map;
-            if(mapsCore.Count() == 0){
-                var mapsKers = c2017Context.zMaps;
-                
-                foreach( var map in mapsKers){
-                    var mapCore = new Map();
-                    mapCore.Code = map.mapID;
-                    mapCore.Updated = map.rDT??new DateTime();
-                    mapCore.Title = map.mapTitle;
-                    mapCore.By = this.userByProfileId(map.rBY);
-                    mapCore.PlanningUnit = context.PlanningUnit.Where(p => p.Code == map.planningUnitID).FirstOrDefault();
-                    mapsCore.Add(mapCore);
-                }
-                context.SaveChanges();
-            }
-
-            if(context.PlanOfWork.Count() == 0){
-                var plansKers = c2017Context.zProgramPlans;
-                var plansCore = context.PlanOfWork;
-                
-                
-                foreach(var plan in plansKers){
-                    var planCore = new PlanOfWorkRevision();
-                    
-                    planCore.Map = mapsCore.Where( c => c.Code == plan.mapID ).FirstOrDefault();
-
-                    planCore.By = this.userByProfileId(plan.rBY);
-
-                    planCore.Title = plan.programPlanTitle;
-                    planCore.AgentsInvolved = plan.agentsInvolved;
-                    planCore.Situation = Regex.Replace(plan.situation??"", @"\r\n?|\n", "<br />");
-                    planCore.LongTermOutcomes = Regex.Replace(plan.longTermOutcomes??"", @"\r\n?|\n", "<br />");
-                    planCore.IntermediateOutcomes = Regex.Replace(plan.intermediateOutcomes??"", @"\r\n?|\n", "<br />");
-                    planCore.InitialOutcomes = Regex.Replace(plan.initialOutcomes??"", @"\r\n?|\n", "<br />");
-                    planCore.Learning = Regex.Replace(plan.learning??"", @"\r\n?|\n", "<br />");
-                    planCore.Evaluation = Regex.Replace(plan.evaluation??"", @"\r\n?|\n", "<br />");
-                    planCore.Created = plan.rDT??new DateTime();
-
-                    var PacCode1 = c2017Context.zzPacs.
-                                        Where(c => c.pacID == plan.pacID1).
-                                        FirstOrDefault();
-                    if(PacCode1 != null){
-                        planCore.Mp1 = context.MajorProgram.
-                                Where( p => p.PacCode == PacCode1.pacCodeID).FirstOrDefault();
-                    }
-
-                    var PacCode2 = c2017Context.zzPacs.
-                                        Where(c => c.pacID == plan.pacID2).
-                                        FirstOrDefault();
-                    if(PacCode2 != null){
-                        planCore.Mp2 = context.MajorProgram.
-                                Where( p => p.PacCode == PacCode2.pacCodeID).FirstOrDefault();
-                    }
-
-                    var PacCode3 = c2017Context.zzPacs.
-                                        Where(c => c.pacID == plan.pacID3).
-                                        FirstOrDefault();
-                    if(PacCode3 != null){
-                        planCore.Mp3 = context.MajorProgram.
-                                Where( p => p.PacCode == PacCode3.pacCodeID).FirstOrDefault();
-                    }
-                    var PacCode4 = c2017Context.zzPacs.
-                                        Where(c => c.pacID == plan.pacID4).
-                                        FirstOrDefault();
-                    if(PacCode4 != null){
-                        planCore.Mp4 = context.MajorProgram.
-                                Where( p => p.PacCode == PacCode4.pacCodeID).FirstOrDefault();
-                    }
-                    
-                    //context.PlanOfWorkRevision.Add(planCore);
-                    var thePlan = new PlanOfWork();
-                    thePlan.Revisions = new List<PlanOfWorkRevision>();
-                    thePlan.Revisions.Add(planCore);
-                    thePlan.FiscalYear = year;
-                    thePlan.PlanningUnit = context.PlanningUnit.Where(u=>u.Code == plan.planningUnitID).FirstOrDefault();
-
-                    context.PlanOfWork.Add(thePlan);
-
-
-                }
-                context.SaveChanges();
-            }
-            return new OkObjectResult(context.PlanOfWork.Take(1));
-            //;
-             */
+            
             return NotFound(new {Error = "no need to import plans"});
         }
-/* 
-        [HttpGet("importregions")]
-        public IActionResult ImportRegions(){
 
-            
-            var regionsCore = context.Region;
-            if(regionsCore.Count() == 0){
-                var regionsMain = mainContext.zzCESregions;
-                foreach(var regionMain in regionsMain){
-                    var regionCore = new Region();
-                    //regionCore.Id = regionMain.rID??1;
-                    regionCore.Name = regionMain.rName;
-                    regionCore.Admin = this.userByProfileId(regionMain.rAdminID);
-                    regionsCore.Add(regionCore);
-                }
-                context.SaveChanges();
-                var districtsMain = mainContext.zzCESdistricts;
-                var districtsCore = context.District;
-
-                foreach(var districtMain in districtsMain){
-                    var districtCore = new District();
-                    //districtCore.Id = districtMain.dID;
-                    districtCore.Name = districtMain.dName;
-                    districtCore.AreaName = districtMain.dAreaName;
-                    districtCore.Admin = this.userByProfileId(districtMain.dAdminID);
-                    districtCore.Assistant = this.userByProfileId(districtMain.dAsstID);
-                    districtsCore.Add(districtCore);
-                }
-                context.SaveChanges();
-                var planningUnitsMain = mainContext.zzPlanningUnits;
-                var planningUnitsCore = context.PlanningUnit;
-                foreach(var unit in planningUnitsMain){
-                    var unitCore = new PlanningUnit();
-                    unitCore.order = unit.orderID;
-                    unitCore.Name = unit.planningUnitName;
-                    unitCore.Code = unit.planningUnitID;
-                    unitCore.ReportsExtension = unit.reportsExtension??false;
-                    unitCore.District = districtsCore.Where(d => d.Id == unit.distID).FirstOrDefault();
-                    unitCore.Region = regionsCore.Where(r => r.Id  == unit.regID).FirstOrDefault();
-                    planningUnitsCore.Add(unitCore);
-                }
-                context.SaveChanges();
-                return new OkObjectResult(planningUnitsCore);
-            }
-            return NotFound(new {Error = "not found"});
-        }
-
- */
         private KersUser userByProfileId(string profileId){
             var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.personID == profileId).

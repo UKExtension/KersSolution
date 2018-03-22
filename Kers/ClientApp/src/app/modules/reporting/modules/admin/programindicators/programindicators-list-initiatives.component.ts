@@ -2,8 +2,7 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { ProgramsService, StrategicInitiative, MajorProgram} from '../programs/programs.service';
-import { FiscalyearService } from '../fiscalyear/fiscalyear.service';
-import { FiscalYear } from '../../plansofwork/plansofwork.service';
+import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';
 
 
 

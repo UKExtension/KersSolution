@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { PlansofworkService, Map } from './plansofwork.service';
 import { FormBuilder, Validators }   from '@angular/forms';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'plansofwork-map-form',
@@ -31,11 +32,12 @@ export class PlansofworkMapFormComponent implements OnInit{
 
     mapForm = null;
     @Input() map = null;
+    @Input() fiscalYear:FiscalYear;
     errorMessage: string;
     loading = false;
 
     @Output() onFormCancel = new EventEmitter<void>();
-    @Output() onFormSubmit = new EventEmitter<void>();
+    @Output() onFormSubmit = new EventEmitter<Map>();
 
     constructor( 
         private plansofworkService: PlansofworkService,
@@ -64,20 +66,22 @@ export class PlansofworkMapFormComponent implements OnInit{
             subscribe(
                 res => {
                     this.map = <Map> res;
-                    this.onFormSubmit.emit();
+                    this.onFormSubmit.emit(res);
                     this.loading = false;
                     //console.log(res);
                 }
             );
         }else{
-            this.plansofworkService.addMap(this.mapForm.value).
-            subscribe(
-                res => {
-                    this.onFormSubmit.emit();
-                    this.loading = false;
-                    //console.log(res.json());
-                }
-            );
+            let m:Map = <Map> this.mapForm.value;
+            m.fiscalYearId = this.fiscalYear.id;
+            this.plansofworkService.addMap(this.mapForm.value)
+                .subscribe(
+                    res => {
+                        this.onFormSubmit.emit(res);
+                        this.loading = false;
+                        //console.log(res.json());
+                    }
+                );
         }
 
     }

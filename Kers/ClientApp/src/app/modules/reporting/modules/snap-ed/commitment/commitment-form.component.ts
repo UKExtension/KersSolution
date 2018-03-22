@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { SnapedService } from '../../servicelog/snaped.service';
 import { SnapEdActivityType, SnapEdProjectType, SnapEdCommitmentService, CommitmentBundle, SnapEdReinforcementItem, SnapEdReinforcementItemChoice } from '../snap-ed-commitment.service';
-import { FiscalYear } from '../../plansofwork/plansofwork.service';
 import { User } from '../../user/user.service';
 
 @Component({

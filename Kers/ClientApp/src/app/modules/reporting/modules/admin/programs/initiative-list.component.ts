@@ -3,8 +3,7 @@ import {Router} from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import {InitiativeFormComponent} from './initiative-form.component';
 import {ProgramsService, StrategicInitiative, MajorProgram} from './programs.service';
-import { FiscalYear } from '../../plansofwork/plansofwork.service';
-import { FiscalyearService } from '../fiscalyear/fiscalyear.service';
+import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';
 
 @Component({
     template: `

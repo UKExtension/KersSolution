@@ -3,7 +3,7 @@
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newPlan" (click)="newPlanofworkOpen()">+ new plan of work</a>
     </div>
-    <planofwork-form *ngIf="newPlan" (onFormCancel)="newPlanofworkCancelled()" (onFormSubmit)="newPlanofworkSubmitted()"></planofwork-form>
+    <planofwork-form *ngIf="newPlan" (onFormCancel)="newPlanofworkCancelled()" (onFormSubmit)="newPlanofworkSubmitted()" [fiscalYear]="fy"></planofwork-form>
 </div>
 <div *ngIf="plans">
     <table class="table table-striped">

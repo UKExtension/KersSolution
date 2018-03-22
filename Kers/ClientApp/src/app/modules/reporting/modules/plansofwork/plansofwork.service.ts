@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import {AuthHttp} from '../../../authentication/auth.http';
 import {MajorProgram } from '../admin/programs/programs.service';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 
 @Injectable()
@@ -24,8 +25,8 @@ export class PlansofworkService {
 
 
 
-    listPlans(){
-            var url = this.baseUrl + "All";
+    listPlans(fy:string = "0"){
+            var url = this.baseUrl + "All/"+fy;
             return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => this.plans = <PlanOfWork[]>res.json())
                 .catch(this.handleError);
@@ -36,8 +37,8 @@ export class PlansofworkService {
                 .map(res => this.plans = <PlanOfWork[]>res.json())
                 .catch(this.handleError);
     }
-    plansForCounty(id:number){
-        var url = this.baseUrl + "AllDetails/" + id;
+    plansForCounty(id:number, fy:string = "0"){
+        var url = this.baseUrl + "AllDetails/" + id + "/" + fy;
             return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => this.plans = <PlanOfWork[]>res.json())
                 .catch(this.handleError);
@@ -78,8 +79,8 @@ export class PlansofworkService {
                     .catch(this.handleError);
     }
 
-    listMaps(){
-            var url = this.baseUrl + "mapsall";
+    listMaps(fy:string = "0"){
+            var url = this.baseUrl + "mapsall/" + fy;
             return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => this.maps = res.json())
                 .catch(this.handleError);
@@ -144,6 +145,7 @@ export class Map{
     constructor(
         public id:number,
         public title:string,
+        public fiscalYearId:number
     ){}
 }
 
@@ -167,25 +169,14 @@ export class PlanOfWork{
     ){}
 }
 export class Plan{
-    construcror(
-        id:number,
-        revisions:PlanOfWork[],
-        fiscalYear:FiscalYear,
-        planningUnit: PlanningUnit
+    constructor(
+        public id:number,
+        public revisions:PlanOfWork[],
+        public fiscalYear:FiscalYear,
+        public planningUnit: PlanningUnit
     ){}
 }
 
-export class FiscalYear{
-    constructor(
-        public id: number,
-        public start: Date,
-        public end: Date,
-        public availableAt: Date,
-        public extendedTo: Date,
-        public type: string,
-        public name: string
-    ){}
-}
 
 export class PlanningUnit{
     constructor(

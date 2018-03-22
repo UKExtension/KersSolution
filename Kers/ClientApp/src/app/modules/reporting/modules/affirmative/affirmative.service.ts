@@ -57,57 +57,6 @@ export class AffirmativeService {
                 .catch(this.handleError);
     }
 
-/*
-
-    listPlans(){
-            var url = this.baseUrl + "All";
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.plans = <PlanOfWork[]>res.json())
-                .catch(this.handleError);
-    }
-
-    addPlan(plan:PlanOfWork){
-        var url = this.baseUrl;
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(plan), this.getRequestOptions())
-                    .map( res => {
-                        this.plans.push(<PlanOfWork> res.json());
-                        return res.json();
-                    })
-                    .catch(this.handleError);
-    }
-
-    
-    updatePlan(id: number, plan:PlanOfWork){
-        var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(plan), this.getRequestOptions())
-                    .map( res => {
-                        return <PlanOfWork> res.json();
-                    })
-                    .catch(this.handleError);
-    }
-
-    deletePlan(id:number){
-        var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
-    }
-
-
-
-
-
-
-*/
-
-
-
-
-
-
-
 
     getRequestOptions(){
         return new RequestOptions(

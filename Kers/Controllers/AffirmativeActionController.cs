@@ -50,12 +50,18 @@ namespace Kers.Controllers
 
         [HttpGet("{unit?}/{fy?}")]
         [Authorize]
-        public IActionResult Get(int unit = 0, String fy = "2018"){
+        public IActionResult Get(int unit = 0, string fy = "0"){
             if(unit == 0){
                 unit = this.CurrentPlanningUnit().Id;
             }
+            FiscalYear FiscalYear;
+            if(fy == "0"){
+                FiscalYear = fiscalYearRepo.nextFiscalYear( FiscalYearType.ServiceLog );
+            }else{
+                FiscalYear = this.context.FiscalYear.Where( f => f.Name == fy ).FirstOrDefault();
+            }
             var lastRevision = context.AffirmativeActionPlan.
-                                    Where(p=>p.PlanningUnit.Id == unit && p.FiscalYear.Name == fy).
+                                    Where(p=>p.PlanningUnit.Id == unit && p.FiscalYear == FiscalYear).
                                     Include(a=>a.Revisions).ThenInclude(r=>r.MakeupValues).
                                     Include(a=>a.Revisions).ThenInclude(r=>r.SummaryValues).
                                     FirstOrDefault()?.

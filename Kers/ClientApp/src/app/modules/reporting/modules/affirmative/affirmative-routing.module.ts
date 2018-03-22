@@ -10,23 +10,19 @@ import {AffirmativeReportsHomeComponent} from './reports/affirmative-reports-hom
       {
           path: '',
           component: AffirmativeHomeComponent,
-          /*
-          children: [
-            {
-              path: '',
-              component: UsersListComponent
-            },
-            {
-                path: 'user/:id',
-                component: UserComponent,
-            }  
-          ]
-          */
       },
       {
           path: 'reports',
           component: AffirmativeReportsHomeComponent
-      }           
+      },
+      {
+        path: ':fy',
+        component: AffirmativeHomeComponent,
+      },
+      {
+          path: 'reports/:fy',
+          component: AffirmativeReportsHomeComponent
+      }         
   ])],
   exports: [RouterModule]
 })

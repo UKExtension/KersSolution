@@ -1,5 +1,6 @@
 import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
-import { PlansofworkService, Map, PlanOfWork } from './plansofwork.service';
+import { PlansofworkService, Map, PlanOfWork, Plan } from './plansofwork.service';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: '[planofworkDetail]',
@@ -19,6 +20,8 @@ export class PlansofworkDetailComponent implements OnInit {
     deleteAllowed = false;
     rowOppened = true;
     errorMessage: string;
+    fiscalYear:FiscalYear;
+    plan:Plan;
 
 
     constructor(
@@ -27,6 +30,12 @@ export class PlansofworkDetailComponent implements OnInit {
     }
 
     ngOnInit(){
+        this.plansofworkService.planForRevision(this.planofwork.id).subscribe(
+            res => {
+                this.plan = <Plan>res;
+                this.fiscalYear = this.plan.fiscalYear;
+            }
+        );
         
     }
     edit(){

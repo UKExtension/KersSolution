@@ -2,6 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { PlansofworkService, Map, PlanOfWork } from './plansofwork.service';
 import { FormBuilder, Validators }   from '@angular/forms';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
@@ -12,6 +13,7 @@ export class PlansofworkFormComponent implements OnInit{
 
     planofworkForm = null;
     @Input() planofwork = null;
+    @Input() fiscalYear:FiscalYear;
     errorMessage: string;
 
     loading = false;
@@ -60,12 +62,12 @@ export class PlansofworkFormComponent implements OnInit{
    
     ngOnInit(){
 
-        this.plansofworkService.listMaps().subscribe(
+        this.plansofworkService.listMaps(this.fiscalYear.name).subscribe(
             m => this.maps = m,
             error =>  this.errorMessage = <any>error
         );
         var prgrms = [];
-        this.service.listInitiatives().subscribe(
+        this.service.listInitiatives(this.fiscalYear.name).subscribe(
             i => {
                 this.initiatives = i;
                 
