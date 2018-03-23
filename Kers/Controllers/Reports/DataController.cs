@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
+using Kers.Models.Abstract;
+using Kers.Models.Repositories;
 
 namespace Kers.Controllers.Reports
 {
@@ -25,11 +27,14 @@ namespace Kers.Controllers.Reports
     public class DataController : Controller
     {
         KERScoreContext context;
+        IFiscalYearRepository fiscalYearRepo;
 
         public DataController( 
-                    KERScoreContext context
+                    KERScoreContext context,
+                    IFiscalYearRepository fiscalYearRepo
             ){
            this.context = context;
+           this.fiscalYearRepo = fiscalYearRepo;
         }
         public IActionResult Index()
         {
@@ -68,7 +73,7 @@ namespace Kers.Controllers.Reports
         [Route("storiesprogram/{id?}", Name = "StoryProgram")]
         public async Task<IActionResult> StoriesProgram(int id = 0)
         {
-            var programs = await this.context.MajorProgram.OrderBy(l => l.order).ToListAsync();
+            var programs = await this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear == this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog)).OrderBy(l => l.order).ToListAsync();
             var model = new ProgramStoryViewModel();
             model.MajorPrograms = programs;
             if(id != 0){
@@ -87,7 +92,7 @@ namespace Kers.Controllers.Reports
                                             .Include(s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.PersonalProfile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude(u => u.PlanningUnit)
-                                            .Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
+                                            //.Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
                                             .Include( s => s.Revisions ).ThenInclude( r => r.StoryOutcome)
                                             .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
                                             .ToListAsync();
