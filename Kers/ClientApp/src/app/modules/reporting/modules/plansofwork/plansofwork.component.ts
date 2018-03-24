@@ -45,7 +45,7 @@ export class PlansofworkComponent implements OnInit{
     }
 
     onPlanofworkUpdate(){
-        this.plansofworkService.listPlans().subscribe(
+        this.plansofworkService.listPlans(this.fy.name).subscribe(
             plans => this.plans = plans,
             error =>  this.errorMessage = <any>error
         );

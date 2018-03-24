@@ -88,8 +88,10 @@ namespace Kers.Controllers
             if(plan != null){
                 var p = this.context.
                             AffirmativeActionPlan.
+                            
+                            //Where(a => a.PlanningUnit == this.CurrentPlanningUnit() && a.FiscalYear == this.fiscalYearRepo.nextFiscalYear("serviceLog")).
+                            Where(a => plan.AffirmativeActionPlanId == a.Id).
                             Include(a=>a.Revisions).
-                            Where(a => a.PlanningUnit == this.CurrentPlanningUnit() && a.FiscalYear == this.fiscalYearRepo.nextFiscalYear("serviceLog")).
                             FirstOrDefault();
                 if( p== null){
                     p = new AffirmativeActionPlan();

@@ -25,6 +25,8 @@ namespace Kers.Models.Entities.KERScore
         public List<AffirmativeSummaryValue> SummaryValues {get;set;}
         public KersUser CreatedBy {get;set;}
         public DateTime Created {get;set;}
+        public AffirmativeActionPlan AffirmativeActionPlan {get;set;}
+        public int AffirmativeActionPlanId {get;set;}
         
     }
 }

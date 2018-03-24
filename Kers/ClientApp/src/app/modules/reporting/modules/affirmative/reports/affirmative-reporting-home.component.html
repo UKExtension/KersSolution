@@ -1,10 +1,15 @@
-<div class="col-md-12 col-sm-12 col-xs-12" *ngIf="plan">
+<fiscal-year-switcher [initially]="current" (onSwitched)="selectFiscalYear($event)" (onLoaded)="yearsLoaded($event)"></fiscal-year-switcher><br><br>
+
+<loading *ngIf="loading"></loading>
 
 
+<div class="col-md-12 col-sm-12 col-xs-12" *ngIf="!loading">
+<div *ngIf="plan==null">Affirmative Action Plan is not Submitted</div>
+<div *ngIf="plan!=null">
 
 <div>
 	
-AFFIRMATIVE ACTION PLAN FOR July 1, 2017 - June 30, 2018<br><br>
+AFFIRMATIVE ACTION PLAN FOR {{selectedFiscalYear.start | date:'mediumDate'}} - {{selectedFiscalYear.end | date:'mediumDate'}}<br><br>
 Serving All the People of <span *ngIf="user">{{user.rprtngProfile.planningUnit.name}}</span><br><br>
 Cooperative Extension Service<br><br>
 University of Kentucky<br><br>
@@ -637,3 +642,4 @@ Discrimination and Harassment</strong></p>
 
 </div>
 <div class="text-right" *ngIf="unitId==0"><a class="btn btn-default btn-xs" href="https://kers.ca.uky.edu/kers_mobile/ReportAffirmativeActionPlan.aspx">Affirmative Action Reports Archive</a></div>
+</div>

@@ -100,7 +100,7 @@ namespace Kers.Controllers
             }else{
                 fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
             }
-            if(id == null){
+            if(id == null || id == 0){
                 var unit = this.CurrentPlanningUnit();
                 id = unit.Id;
             }

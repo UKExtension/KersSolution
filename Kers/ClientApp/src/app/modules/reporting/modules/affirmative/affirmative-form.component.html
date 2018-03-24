@@ -1,6 +1,16 @@
 <loading *ngIf="loading"></loading>
 <div *ngIf="!loading">
-    <form class="form-horizontal form-label-left col-xs-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="affirmativeForm">
+    <div *ngIf="isReport && plan == null">
+        There is no Affirmative Action Plan submitted for the current fiscal year.
+    </div>
+    <form *ngIf="!(isReport && plan == null)" class="form-horizontal form-label-left col-xs-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="affirmativeForm">
+        <div class="fontawesome-icon-list help-block" style="width: auto">
+        <div class="fa-hover text-right" *ngIf="isReport">
+                <a (click)="planCondition = !planCondition"><i class="fa fa-arrow-circle-right"></i> <span *ngIf="!planCondition">Show</span><span *ngIf="planCondition">Hide</span> Affirmative Action Plan &nbsp;</a>
+        </div>
+        
+        <div *ngIf="planCondition" style="padding-top: 15px;">
+        
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Agents Involved: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -89,11 +99,13 @@
                     As you list your efforts to achieve identified goals, include the initials of the agents responsible for carrying out each particular effort.</small></p>
             </div>
         </div>
-
-
-<div class="fontawesome-icon-list help-block" style="width: auto">
-    <div class="fa-hover">
-        <a (click)="condition = !condition"><i class="fa fa-arrow-circle-right"></i>To be Reported at the End of the Fiscal Year &nbsp;</a>
+        <div class="fa-hover text-right" *ngIf="isReport">
+                <a (click)="planCondition = !planCondition"><i class="fa fa-arrow-circle-up"></i>Hide Affirmative Action Plan&nbsp;</a>
+            </div>
+    </div>
+    
+        <div class="fa-hover" *ngIf="!isReport">
+            <a (click)="condition = !condition"><i class="fa fa-arrow-circle-right"></i>To be Reported at the End of the Fiscal Year &nbsp;</a>
     </div>
 
     <div *ngIf="condition">
@@ -132,7 +144,7 @@
                             <tr *ngFor="let aGroup of advisoryGroups">
                                 <td>{{aGroup.name}}</td>
                                 <td *ngFor="let diversity of summaryDevirsity" [formGroupName]="sIndex()">
-                                    <input type="number" style="width: 50px;" formControlName="value" disabled="disabled" />
+                                    <input type="number" style="width: 50px;" formControlName="value" />
                                 </td>
                             </tr>
                         </tbody>
@@ -147,10 +159,9 @@
 
 
 
-        <div class="fa-hover">
+        <div class="fa-hover" *ngIf="!isReport">
             <a (click)="condition = !condition"><i class="fa fa-arrow-circle-up"></i>hide &nbsp;</a>
         </div>
-        <div class="ln_solid"></div>
     </div>
 </div>
 

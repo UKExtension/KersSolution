@@ -28,10 +28,15 @@ export class AffirmativeFormComponent implements OnInit{
     summaryIndex = 0;
 
     @Input() affirmativePlan:Observable<AffirmativePlan>;
+    @Input() isReport:boolean = false;
     errorMessage: string;
 
     loading = false;
     options: object;
+
+    plan:AffirmativePlan;
+    condition = false;
+    planCondition = true;
     
 
     makeupDiversityGroups: MakeupDiversityGroup[];
@@ -45,33 +50,44 @@ export class AffirmativeFormComponent implements OnInit{
         private service: AffirmativeService,
         private fb: FormBuilder
     ){
+        
+
+        
+
+    }
+
+   
+    ngOnInit(){
+        this.loading = true;
+        var isRprt = this.isReport;
         this.options = { 
             placeholderText: 'Your Description Here!',
             toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL'],
             toolbarButtonsMD: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat'],
             toolbarButtonsSM: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat'],
             toolbarButtonsXS: ['undo', 'redo', 'bold', 'italic'],
-            quickInsertButtons: ['ul', 'ol', 'hr']
+            quickInsertButtons: ['ul', 'ol', 'hr'],
+            events : {
+                'froalaEditor.initialized' : function(e, editor) {
+                    if(isRprt){
+                        editor.edit.off();
+                    }
+                }
+              }
         }
-
-        this.affirmativeForm = fb.group(
+        this.affirmativeForm = this.fb.group(
             {
-              agents: [''],
-              description: [''],
-              goals: '',
-              strategies: '',
-              efforts: {value: '', disabled: true},
-              success: {value: '', disabled: true},
+              agents: [{value: '', disabled: isRprt}],
+              description: [{value: '', disabled: isRprt}],
+              goals: [{value: '', disabled: isRprt}],
+              strategies: [{value: '', disabled: isRprt}],
+              efforts: {value: '', disabled: !isRprt},
+              success: {value: '', disabled: !isRprt},
               makeupValues: this.fb.array([]),
-              summaryValues: this.fb.array([])
+              summaryValues: this.fb.array([]),
+              affirmativeActionPlanId: 0
             }
         );
-
-    }
-
-   
-    ngOnInit(){
-
         this.service.getMakeupDiversityGroups().subscribe(res => {
                 this.makeupDiversityGroups = <MakeupDiversityGroup[]>res;
                 this.service.getAdvisoryGroups().subscribe(res => {
@@ -83,7 +99,11 @@ export class AffirmativeFormComponent implements OnInit{
                                 
                                 this.affirmativePlan.subscribe(
                                     res=>{
-                                        this.affirmativeForm.patchValue(res);
+                                        if(res != null){
+                                            this.plan = res;
+                                            this.affirmativeForm.patchValue(res);
+                                        }
+                                        this.loading = false;
                                     }
                                 );
                                   
@@ -96,7 +116,8 @@ export class AffirmativeFormComponent implements OnInit{
             },
             error =>  this.errorMessage = <any>error
         );
-        
+        this.condition = this.isReport;
+        this.planCondition = !this.isReport;
     }
 
     mIndex(){
@@ -138,11 +159,12 @@ export class AffirmativeFormComponent implements OnInit{
         var values = [];
         var fb = this.fb;
         var devsty = this.summaryDevirsity;
+        var isRprt = this.isReport;
         this.advisoryGroups.forEach(function(advsGroup){
             devsty.forEach(
                 function(div:SummaryDiversity){
                     values.push(
-                        fb.group( new SummaryValue("", div.id, null, advsGroup.id, null) )
+                        fb.group( new SummaryValue({value:"", disabled:!isRprt}, div.id, null, advsGroup.id, null) )
                     );
                 }
             );
@@ -156,7 +178,7 @@ export class AffirmativeFormComponent implements OnInit{
 
         this.loading = true;
 
-        this.service.add(this.affirmativeForm.value).
+        this.service.add(this.affirmativeForm.getRawValue()).
                 subscribe(
                     res => {
                         this.onFormSubmit.emit();

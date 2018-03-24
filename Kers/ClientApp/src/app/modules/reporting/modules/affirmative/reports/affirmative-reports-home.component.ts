@@ -5,10 +5,12 @@ import {    AffirmativeService,
             MakeupDiversityGroup,
             MakeupValue,
             AdvisoryGroup,
-            SummaryDiversity
+            SummaryDiversity,
+            SummaryValue
     } from '../affirmative.service';
 import { Router } from "@angular/router";
 import {UserService, User} from '../../user/user.service';
+import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'affirmative-report',
@@ -19,6 +21,7 @@ export class AffirmativeReportsHomeComponent {
     
     plan:AffirmativePlan;
     counter = 0;
+    loading = true;
     
     @Input() unitId:number = 0;
 
@@ -30,6 +33,8 @@ export class AffirmativeReportsHomeComponent {
     user:User;
     errorMessage: string;
 
+    selectedFiscalYear:FiscalYear;
+
     constructor( 
         private reportingService: ReportingService,
         private service: AffirmativeService,
@@ -40,32 +45,42 @@ export class AffirmativeReportsHomeComponent {
     {}
 
     ngOnInit(){
-        this.counter = 0;
-        this.defaultTitle();
-
-        
+        this.counter = 0;       
 
         this.userService.current().subscribe(
             res => this.user = <User>res,
             err => this.errorMessage = <any>err
         );
 
+        
+        
+    }
+
+    getPlan(){
+        this.loading = true;
+        this.service.get(this.unitId, this.selectedFiscalYear.name).subscribe(
+            res=>{
+                this.plan = <AffirmativePlan>res;
+                if(this.plan != null){
+                    for(var v of this.plan.makeupValues){
+                        this.values.push({val:"0"});
+                    }
+                }
+                this.loading = false;
+            },
+            err => this.errorMessage = <any> err
+        );
+    }
+
+    setValues(){
         this.service.getMakeupDiversityGroups().subscribe(res => {
-                this.makeupDiversityGroups = <MakeupDiversityGroup[]>res;
-                this.service.getAdvisoryGroups().subscribe(res => {
-                        this.advisoryGroups = res;
-                        this.service.getSummaryDiversity().subscribe(res => {
-                                this.summaryDevirsity = res;
-                                this.service.get(this.unitId).subscribe(
-                                    res=>{
-                                        this.plan = <AffirmativePlan>res;
-                                        for(var v of this.plan.makeupValues){
-                                            this.values.push({val:"0"});
-                                        }
-                                    },
-                                    err => this.errorMessage = <any> err
-                                );
-                                  
+            this.makeupDiversityGroups = <MakeupDiversityGroup[]>res;
+            this.service.getAdvisoryGroups().subscribe(res => {
+                    this.advisoryGroups = res;
+                    this.service.getSummaryDiversity().subscribe(res => {
+                            this.summaryDevirsity = res;
+                            this.getPlan();
+                              
                             },
                             error =>  this.errorMessage = <any>error
                         );
@@ -75,7 +90,6 @@ export class AffirmativeReportsHomeComponent {
             },
             error =>  this.errorMessage = <any>error
         );
-        
     }
 
     cnt(type){
@@ -91,13 +105,35 @@ export class AffirmativeReportsHomeComponent {
 
     cntSummary(){
         if(this.counterSummary == this.plan.summaryValues.length) this.counterSummary = 0;
-        var vl =this.plan.summaryValues[this.counterSummary++].value;
-        if(vl == "") vl="0";
-        return vl;
+        
+        var vl = this.plan.summaryValues[this.counterSummary++];
+        if(vl.value == undefined){
+            return 0;
+        }else{
+            return vl.value;
+        }
+        
+    }
+
+
+    selectFiscalYear(event:FiscalYear){
+        if(this.selectedFiscalYear == null ){
+            this.selectedFiscalYear = event;
+            this.setValues();
+            this.defaultTitle();
+        }else if(this.selectedFiscalYear.id != event.id){
+            this.selectedFiscalYear = event;
+            this.getPlan();
+            this.defaultTitle();
+        }
+
+    }
+    yearsLoaded(event:FiscalYear[]){
+
     }
 
 
     defaultTitle(){
-        this.reportingService.setTitle("Affirmative Action Plan for 2017-2018");
+        this.reportingService.setTitle("Affirmative Action Plan for FY " + this.selectedFiscalYear.name);
     }
 }

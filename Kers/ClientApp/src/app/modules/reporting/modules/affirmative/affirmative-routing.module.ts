@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import {AffirmativeHomeComponent} from './affirmative-home.component';
 import {AffirmativeReportsHomeComponent} from './reports/affirmative-reports-home.component';
+import { AffirmativeHomeReportComponent } from './affirmative-home-report.component';
 
 
 @NgModule({
@@ -14,6 +15,10 @@ import {AffirmativeReportsHomeComponent} from './reports/affirmative-reports-hom
       {
           path: 'reports',
           component: AffirmativeReportsHomeComponent
+      },
+      {
+          path: 'report',
+          component: AffirmativeHomeReportComponent
       },
       {
         path: ':fy',

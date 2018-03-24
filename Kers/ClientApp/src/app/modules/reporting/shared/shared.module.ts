@@ -36,6 +36,7 @@ import { UserPersonalConnectionComponent} from '../modules/user/personal/user-pe
 
 
 import { UserReportingFormComponent } from '../modules/user/reporting/user-reporting-form.component';
+import { FiscalYearSwitcherComponent } from './components/fiscal-year-switcher.component';
 
 
 
@@ -61,7 +62,8 @@ import { UserReportingFormComponent } from '../modules/user/reporting/user-repor
                   UserPersonalImageComponent,
                   UserPersonalConnectionComponent,
                   UserReportingFormComponent,
-                  SafeHtmlPipe 
+                  SafeHtmlPipe,
+                  FiscalYearSwitcherComponent 
                 ],
   exports:      [ 
       CommonModule, 
@@ -79,7 +81,8 @@ import { UserReportingFormComponent } from '../modules/user/reporting/user-repor
       UserPersonalImageComponent,
       UserPersonalConnectionComponent,
       UserReportingFormComponent,
-      SelectModule
+      SelectModule,
+      FiscalYearSwitcherComponent 
  ]
 })
 export class SharedModule { }

@@ -21,8 +21,8 @@ export class AffirmativeService {
         ){}
 
 
-    get(unitId:number = 0){
-        var url = this.baseUrl + unitId;
+    get(unitId:number = 0, fy:string = "0"){
+        var url = this.baseUrl + unitId + '/' + fy;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => this.plan = <AffirmativePlan>res.json())
                 .catch(this.handleError);
@@ -86,7 +86,8 @@ export class AffirmativePlan{
         public efforts:string,
         public success:string,
         public makeupValues: MakeupValue[],
-        public summaryValues: SummaryValue[]
+        public summaryValues: SummaryValue[],
+        public AffirmativeActionPlanId: number
     ){}
 }
 
@@ -132,11 +133,15 @@ export class MakeupValue{
 
 export class SummaryValue{
     constructor(
-        public value: string,
+        public value: SummaryFormValue,
         public diversityTypeId:number,
         public diversityType:SummaryDiversity,
         public groupTypeId:number,
         public groupType:AdvisoryGroup
     ){}
+}
+export interface SummaryFormValue{
+    value:string|number;
+    disabled:boolean;
 }
 

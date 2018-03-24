@@ -8,10 +8,12 @@ import {AffirmativeFormComponent} from './affirmative-form.component';
 import {AffirmativeReportsHomeComponent} from './reports/affirmative-reports-home.component';
 
 import {AffirmativeService} from './affirmative.service';
+import { AffirmativeHomeReportComponent } from './affirmative-home-report.component';
 
 @NgModule({
   imports:      [ SharedModule, AffirmativeRoutingModule ],
   declarations: [ AffirmativeHomeComponent,
+                  AffirmativeHomeReportComponent,
                   AffirmativeFormComponent,
                   AffirmativeReportsHomeComponent
                 ],
