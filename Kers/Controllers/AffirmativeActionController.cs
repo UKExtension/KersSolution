@@ -58,26 +58,29 @@ namespace Kers.Controllers
             if(fy == "0"){
                 FiscalYear = fiscalYearRepo.nextFiscalYear( FiscalYearType.ServiceLog );
             }else{
-                FiscalYear = this.context.FiscalYear.Where( f => f.Name == fy ).FirstOrDefault();
+                FiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == FiscalYearType.ServiceLog ).FirstOrDefault();
             }
-            var lastRevision = context.AffirmativeActionPlan.
-                                    Where(p=>p.PlanningUnit.Id == unit && p.FiscalYear == FiscalYear).
+            var plan = context.AffirmativeActionPlan.
+                                    Where(p=>p.PlanningUnitId == unit && p.FiscalYearId == FiscalYear.Id).
                                     Include(a=>a.Revisions).ThenInclude(r=>r.MakeupValues).
                                     Include(a=>a.Revisions).ThenInclude(r=>r.SummaryValues).
-                                    FirstOrDefault()?.
-                                    Revisions.
-                                    Last();
-            if(lastRevision != null){
-                lastRevision.MakeupValues = lastRevision.MakeupValues.
+                                    FirstOrDefault();
+            if(plan != null){
+                var lastRevision = plan.Revisions.OrderBy( r => r.Created).Last();
+                if(lastRevision != null){
+                    lastRevision.MakeupValues = lastRevision.MakeupValues.
+                                                    OrderBy(m=>m.GroupTypeId).
+                                                    ThenBy(m=>m.DiversityTypeId).
+                                                    ToList();
+                    lastRevision.SummaryValues = lastRevision.SummaryValues.
                                                 OrderBy(m=>m.GroupTypeId).
                                                 ThenBy(m=>m.DiversityTypeId).
                                                 ToList();
-                lastRevision.SummaryValues = lastRevision.SummaryValues.
-                                            OrderBy(m=>m.GroupTypeId).
-                                            ThenBy(m=>m.DiversityTypeId).
-                                            ToList();
-            }
-            return new OkObjectResult(lastRevision);
+                }
+                return new OkObjectResult(lastRevision);
+            }                    
+                                    
+            return new OkObjectResult( plan );
         }
 
 
