@@ -110,7 +110,7 @@ export class AffirmativeReportsHomeComponent {
         if(vl.value == undefined){
             return 0;
         }else{
-            return vl.value;
+            return +vl.value;
         }
         
     }

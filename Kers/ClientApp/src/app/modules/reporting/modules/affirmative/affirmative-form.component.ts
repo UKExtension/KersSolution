@@ -7,7 +7,8 @@ import {
             MakeupValue,
             AdvisoryGroup,
             SummaryDiversity,
-            SummaryValue
+            SummaryValue,
+            MakeupValueForm
                                 } from './affirmative.service';
 import { FormBuilder, Validators, FormGroup,FormArray, FormControl }   from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
@@ -139,12 +140,13 @@ export class AffirmativeFormComponent implements OnInit{
     setMakeupValues() {
         var values = [];
         var fb = this.fb;
+        var isRprt = this.isReport;
         var makupGroup = this.makeupDiversityGroups;
         this.advisoryGroups.forEach(function(advsGroup){
             makupGroup.forEach(
                 function(divGroup:MakeupDiversityGroup){
                     divGroup.types.forEach( function( mkType ){
-                            var grp = fb.group(new MakeupValue( "", mkType.id, null, advsGroup.id, null));
+                            var grp = fb.group(new MakeupValueForm( {value:"", disabled:isRprt}, mkType.id, null, advsGroup.id, null));
                             values.push( grp );
                         }
                     );

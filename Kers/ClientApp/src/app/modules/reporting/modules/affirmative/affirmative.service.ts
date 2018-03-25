@@ -131,6 +131,23 @@ export class MakeupValue{
     ){}
 }
 
+export class MakeupValueForm{
+    constructor(
+        public value:MakeupValueFormValue,
+        public diversityTypeId:number,
+        public diversityType:MakeupDiversity,
+        public groupTypeId:number,
+        public GroupType:AdvisoryGroup
+    ){}
+}
+
+export interface MakeupValueFormValue{
+    value:string|number;
+    disabled:boolean;
+}
+
+
+
 export class SummaryValue{
     constructor(
         public value: SummaryFormValue,
