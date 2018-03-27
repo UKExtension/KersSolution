@@ -34,6 +34,7 @@ namespace Kers.Models.Entities.KERScore
         public int? SnapPolicyId {get;set;}
         public SnapPolicy SnapPolicy {get;set;}
         public int SnapCopies {get;set;}
+        public int SnapCopiesBW {get;set;}
         public Boolean SnapAdmin {get;set;}
         public Boolean IsPolicy {get;set;}
     }
