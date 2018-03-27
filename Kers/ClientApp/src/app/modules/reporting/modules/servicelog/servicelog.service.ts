@@ -257,6 +257,7 @@ export interface Servicelog{
     snapIndirect:SnapIndirect;
     snapPolicy:SnapPolicy;
     snapCopies:number;
+    snapCopiesBW:number;
     snapAdmin:boolean;
     isPolicy: boolean;
 }

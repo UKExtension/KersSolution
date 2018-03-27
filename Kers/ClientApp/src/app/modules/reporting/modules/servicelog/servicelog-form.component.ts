@@ -112,6 +112,7 @@ export class ServicelogFormComponent implements OnInit{
             error =>  this.errorMessage = <any>error
         );
         this.populateOptions();
+        console.log(this.activity);
 
 
     }
