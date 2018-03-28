@@ -195,7 +195,7 @@ namespace Kers.Models.Contexts
             modelBuilder.Entity<ActivityRevision>()
                 .Property(b => b.SnapCopiesBW)
                 .HasDefaultValue(0);
-            
+            /* 
             modelBuilder.Entity<ExpenseRevision>()
                 .Property(b => b.StartingLocationType)
                 .HasDefaultValue(0);
@@ -203,7 +203,7 @@ namespace Kers.Models.Contexts
             modelBuilder.Entity<ExpenseRevision>()
                 .Property(b => b.StartingLocationOther)
                 .HasDefaultValue(""); 
-
+ */
             modelBuilder.Entity<SnapDirectAges>()
                 .Property(b => b.Active)
                 .HasDefaultValue(true);

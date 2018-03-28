@@ -293,7 +293,8 @@ export class ServicelogFormComponent implements OnInit{
                     snapPolicyAimedSelections: [[]],
                     snapPolicyPartnerValue: [[]]
                 }),
-                snapCopies: [""]
+                snapCopies: [""],
+                snapCopiesBW: [""]
                 
             }, { validator: snapValidator }
         );
