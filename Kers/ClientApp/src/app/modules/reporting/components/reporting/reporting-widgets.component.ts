@@ -73,14 +73,17 @@ export class ReportingWidgetsComponent implements OnInit {
     if(this.hasRole("DD")){
       this.isDD = true;
       this.isAny = true;
-    }
-
-    if(!this.isAny && this.hasRole("DDASST")){
+    }else if(!this.isAny && this.hasRole("DDASST")){
       this.isDDAssistant = true;
       this.isAny = true;
-    }
-
-    if(!this.isAny && this.user.extensionPosition.code == "AGENT"){
+    }else if(!this.isAny && 
+                (
+                  this.user.extensionPosition.code == "AGENT"
+                  ||
+                  this.user.extensionPosition.code == "EXTPROGASSIST"
+                )
+              
+              ){
       this.isAgent = true;
       this.isAny = true;
     }
@@ -102,12 +105,12 @@ export class ReportingWidgetsComponent implements OnInit {
       this.isSepcialist = true;
       this.isAny = true;
     }
-
+/* 
     if(!this.isAny ){
       this.isAny = true;
       this.isStaffAssistant = true;
     }
-
+ */
 
 
 
