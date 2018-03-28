@@ -19,8 +19,8 @@ namespace Kers.Models.Entities.KERScore
         public string BusinessPurpose {get;set;}
         [Column(TypeName = "text")]
         public string Comment {get;set;}
-        public int StartingLocationType {get; set;}
-        public string StartingLocationOther {get;set;}
+        //public int StartingLocationType {get; set;}
+        //public string StartingLocationOther {get;set;}
         public String ExpenseLocation {get;set;}
         public int? FundingSourceNonMileageId {get;set;}
         public ExpenseFundingSource FundingSourceNonMileage {get;set;}
