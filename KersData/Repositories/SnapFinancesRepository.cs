@@ -233,9 +233,10 @@ namespace Kers.Models.Repositories
             keys.Add("YearMonth");
             keys.Add("YearMonthName");
             keys.Add("PlanningUnit");
-            keys.Add("NumberOfCopies");
+            keys.Add("NumberOfColorCopies");
+            keys.Add("NumberOfBWCopies");
             var result = string.Join(",", keys.ToArray()) + "\n";
-            var activitiesWithCopies = RevisionsWithSnapData(fiscalYear).Where( a => a.SnapCopies != 0);
+            var activitiesWithCopies = RevisionsWithSnapData(fiscalYear).Where( a => a.SnapCopies != 0 || a.SnapCopiesBW != 0);
             var groupedByMonth = activitiesWithCopies.GroupBy(
                                                         p => new {
                                                             Year = p.ActivityDate.Year,
@@ -286,7 +287,8 @@ namespace Kers.Models.Repositories
                 var grouppedByUnit = byUnit.GroupBy( r => r.User.RprtngProfile.PlanningUnit)
                                     .Select( g => new {
                                         Unit = g.Key,
-                                        Copies = g.Select( r => r.Revision).Sum( s => s.SnapCopies)
+                                        Copies = g.Select( r => r.Revision).Sum( s => s.SnapCopies),
+                                        BwCopies = g.Select( r => r.Revision).Sum( s => s.SnapCopiesBW)
                                     }).OrderBy( o => o.Unit.Name).ToList();
 
                 var dt = new DateTime( byMonth.Year, byMonth.Month, 15);
@@ -294,7 +296,8 @@ namespace Kers.Models.Repositories
                     var row = dt.ToString("yyyyMM") + ",";
                     row += dt.ToString("yyyy-MMM") + ",";
                     row += string.Concat( "\"", unit.Unit.Name, "\"") + ",";
-                    row += unit.Copies.ToString();
+                    row += unit.Copies.ToString() + ",";
+                    row += unit.BwCopies.ToString();
                     result += row + "\n";
                 }
                
@@ -312,7 +315,8 @@ namespace Kers.Models.Repositories
             keys.Add("PlanningUnit");
             keys.Add("PersonName");
             keys.Add("EventDate");
-            keys.Add("NumberOfCopies");
+            keys.Add("NumberOfColorCopies");
+            keys.Add("NumberOfBWCopies");
             keys.Add("EntryDate");
             keys.Add("Mode");
             keys.Add("Title");
@@ -320,7 +324,7 @@ namespace Kers.Models.Repositories
 
 
             var result = string.Join(",", keys.ToArray()) + "\n";
-            var activitiesWithCopies = RevisionsWithSnapData(fiscalYear).Where( a => a.SnapCopies != 0);
+            var activitiesWithCopies = RevisionsWithSnapData(fiscalYear).Where( a => a.SnapCopies != 0 || a.SnapCopiesBW != 0);
             var revisionIds = activitiesWithCopies.Select( a => a.Id);
             var activities = context.ActivityRevision.Where( r => revisionIds.Contains(r.Id))
                                     .Select(
@@ -360,6 +364,7 @@ namespace Kers.Models.Repositories
                 row += string.Concat( "\"", rev.User.RprtngProfile.Name, "\"") + ",";
                 row += rev.Revision.ActivityDate.ToString( "MM/dd/yyyy") + ",";
                 row += rev.Revision.SnapCopies.ToString() + ",";
+                row += rev.Revision.SnapCopiesBW.ToString() + ",";
                 row += string.Concat( "\"", rev.Revision.Created.ToString(), "\"" ) + ",";
                 var mode = "";
                 if(rev.Revision.SnapAdmin){
