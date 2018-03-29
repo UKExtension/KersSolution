@@ -30,8 +30,8 @@ import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetRei
                     </thead>
                     <tbody>
                         <tr *ngFor="let reimbursment of reimbursments">
-                            <td>{{reimbursement.notes}}</td>
-                            <td class="text-right">{{reimbursement.amount  | currency:'USD':'symbol' }}</td>
+                            <td>{{reimbursment.notes}}</td>
+                            <td class="text-right">{{reimbursment.amount  | currency:'USD':'symbol' }}</td>
                         </tr>
                     </tbody>
                     <tfoot>
