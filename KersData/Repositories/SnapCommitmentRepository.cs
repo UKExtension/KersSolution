@@ -39,8 +39,6 @@ namespace Kers.Models.Repositories
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
                 result = cacheString;
             }else{
-
-
                 var keys = new List<string>();
                 keys.Add("FY");
                 keys.Add("District");
@@ -59,7 +57,7 @@ namespace Kers.Models.Repositories
                                                 .OrderByDescending( f => f.Start)
                                                 .FirstOrDefaultAsync();
                 if(previousFiscalYear == null){
-                    throw new Exception("No Previous Fiscal Year Fount in Commitment Summary Report.");
+                    throw new Exception("No Previous Fiscal Year Found in Commitment Summary Report.");
                 }
                 var byUser = SnapData(previousFiscalYear)
                                 .GroupBy( d=> d.User.Id)
@@ -69,27 +67,28 @@ namespace Kers.Models.Repositories
                                         User = k.Select( a => a.User).First()
                                     }
                                 );
+                var Rows = new List<CommitmentSummaryViewModel>();
+                var userIds = new List<int>();
                 foreach( var usr in byUser){
+                    userIds.Add(usr.User.Id);
+                    var rowData = new CommitmentSummaryViewModel();
+                    rowData.FY = fiscalYear.Name;
                     
-                    var row = fiscalYear.Name + ",";
                     if(usr.User.RprtngProfile.PlanningUnit.District != null){
-                        row += usr.User.RprtngProfile.PlanningUnit.District.Name + ",";
+                        rowData.District = usr.User.RprtngProfile.PlanningUnit.District.Name;
                     }else{
-                        row +=  ",";
+                        rowData.District = "";
                     }
-                    
-                    row += usr.User.RprtngProfile.PlanningUnit.Name + ",";
-                    row += string.Concat( "\"", usr.User.RprtngProfile.Name, "\"") + ",";
-                    row += usr.User.ExtensionPosition.Code + ",";
+                    rowData.PlanningUnit = usr.User.RprtngProfile.PlanningUnit.Name;
+                    rowData.Name = usr.User.RprtngProfile.Name;
+                    rowData.Title = usr.User.ExtensionPosition.Code;
                     var spclt = "";
                     foreach( var s in usr.User.Specialties){
                         spclt += " " + (s.Specialty.Code.Substring( 0, 4) == "prog" ? s.Specialty.Code.Substring(4) : s.Specialty.Code);
                     }
-                    row += string.Concat( "\"", spclt, "\"") + ",";
-                    
+                    rowData.Programs = spclt;
                     var reported = usr.Revisions.Sum( s => s.Hours ).ToString();
-                    row += (reported == "" ? "0" :reported) + ",";
-
+                    rowData.HoursReportedLastFY = (reported == "" ? "0" :reported);
 
                     var prev = context.SnapEd_Commitment
                                 .Where( c => c.KersUserId1 == usr.User.Id
@@ -99,8 +98,7 @@ namespace Kers.Models.Repositories
                                             c.SnapEd_ActivityType.Measurement == "Hour");
 
                     var previous = prev.Sum( s => s.Amount).ToString();
-                    row += (previous == ""? "0" : previous ) + ",";
-
+                    rowData.HoursCommittedLastFY = (previous == ""? "0" : previous );
                     var curnt = context.SnapEd_Commitment
                                 .Where( c => c.KersUserId1 == usr.User.Id
                                             && 
@@ -109,14 +107,72 @@ namespace Kers.Models.Repositories
                                             c.SnapEd_ActivityType.Measurement == "Hour");
 
                     var current = curnt.Sum( s => s.Amount).ToString();
-
-                    row += (current == "" ? "0" : current) + ",";
-
-                    result += row + "\n";
-
-
+                    rowData.HoursCommittedThisFY = (current == "" ? "0" : current);
+                    Rows.Add(rowData);
                 }
 
+                // Find people with commitment but no reported hours
+                var rest = context.SnapEd_Commitment.Where(
+                                                        c =>                    
+                                                            !userIds.Contains(c.KersUserId1??0)
+                                                            && 
+                                                            c.FiscalYear == fiscalYear
+                                                            &&
+                                                            c.SnapEd_ActivityType.Measurement == "Hour"
+                                ).GroupBy( d=> d.KersUser.Id)
+                                .Select(
+                                    k => new {
+                                        Commitments = k.Select( a => a),
+                                        User = k.Select( a => a.KersUser).First()
+                                    }
+                                );
+                foreach( var usr in rest){
+                    var userData = await context.KersUser.Where( u => u.Id == usr.User.Id )
+                                .Include( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.District)
+                                .Include( u => u.Specialties ).FirstOrDefaultAsync();
+                    var rowData = new CommitmentSummaryViewModel();
+                    rowData.FY = fiscalYear.Name;
+                    if(userData.RprtngProfile.PlanningUnit.District != null){
+                        rowData.District = userData.RprtngProfile.PlanningUnit.District.Name;
+                    }else{
+                        rowData.District = "";
+                    }
+                    rowData.PlanningUnit = userData.RprtngProfile.PlanningUnit.Name;
+                    rowData.Name = userData.RprtngProfile.Name;
+                    rowData.Title = userData.ExtensionPosition.Code;
+                    var spclt = "";
+                    foreach( var s in userData.Specialties){
+                        spclt += " " + (s.Specialty.Code.Substring( 0, 4) == "prog" ? s.Specialty.Code.Substring(4) : s.Specialty.Code);
+                    }
+                    rowData.Programs = spclt;
+                    rowData.HoursReportedLastFY = "0";
+                    var prev = context.SnapEd_Commitment
+                                .Where( c => c.KersUserId1 == usr.User.Id
+                                            && 
+                                            c.FiscalYear == previousFiscalYear
+                                            &&
+                                            c.SnapEd_ActivityType.Measurement == "Hour");
+
+                    var previous = prev.Sum( s => s.Amount).ToString();
+                    rowData.HoursCommittedLastFY = (previous == ""? "0" : previous );
+                    rowData.HoursCommittedThisFY = usr.Commitments.Sum( c => c.Amount).ToString();
+                }
+                
+
+
+                foreach( var Row in Rows.OrderBy( r => r.District).ThenBy( r => r.PlanningUnit).ThenBy( r => r.Name )){
+                    var textRow = "";
+                    textRow += Row.FY + ",";
+                    textRow += Row.District + ",";
+                    textRow += Row.PlanningUnit + ",";
+                    textRow += string.Concat( "\"", Row.Name, "\"") + ",";
+                    textRow += string.Concat( "\"", Row.Title, "\"") + ",";
+                    textRow += string.Concat( "\"", Row.Programs, "\"") + ",";
+                    textRow += Row.HoursReportedLastFY + ",";
+                    textRow += Row.HoursCommittedLastFY + ",";
+                    textRow += Row.HoursCommittedThisFY;
+                    result += textRow + "\n";
+                }
 
                 
                 await _cache.SetStringAsync(cacheKey, result, new DistributedCacheEntryOptions
@@ -610,6 +666,24 @@ namespace Kers.Models.Repositories
             }
             return result;
         }
+
+
+    }
+
+
+
+
+    public class CommitmentSummaryViewModel{
+
+        public string FY;
+        public string District;
+        public string PlanningUnit;
+        public string Name;
+        public string Title;
+        public string Programs;
+        public string HoursReportedLastFY;
+        public string HoursCommittedLastFY;
+        public string HoursCommittedThisFY;
 
 
     }
