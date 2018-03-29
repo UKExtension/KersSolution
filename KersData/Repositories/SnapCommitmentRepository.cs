@@ -129,7 +129,9 @@ namespace Kers.Models.Repositories
                 foreach( var usr in rest){
                     var userData = await context.KersUser.Where( u => u.Id == usr.User.Id )
                                 .Include( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.District)
-                                .Include( u => u.Specialties ).FirstOrDefaultAsync();
+                                .Include( u => u.Specialties ).ThenInclude( s => s.Specialty)
+                                .Include( u => u.ExtensionPosition)
+                                .FirstOrDefaultAsync();
                     var rowData = new CommitmentSummaryViewModel();
                     rowData.FY = fiscalYear.Name;
                     if(userData.RprtngProfile.PlanningUnit.District != null){
@@ -156,6 +158,7 @@ namespace Kers.Models.Repositories
                     var previous = prev.Sum( s => s.Amount).ToString();
                     rowData.HoursCommittedLastFY = (previous == ""? "0" : previous );
                     rowData.HoursCommittedThisFY = usr.Commitments.Sum( c => c.Amount).ToString();
+                    Rows.Add(rowData);
                 }
                 
 
