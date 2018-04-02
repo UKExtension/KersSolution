@@ -69,7 +69,18 @@ namespace Kers.Models.Repositories
                 result = string.Join(",", keys.ToArray()) + "\n";
 
                 var perPerson = context.Activity.
-                                    Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && (e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null || e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapIndirect != null) )
+                                    Where(e=>
+                                                e.ActivityDate > fiscalYear.Start
+                                                && 
+                                                e.ActivityDate < fiscalYear.End 
+                                                &&
+                                                e.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                                && 
+                                                    (
+                                                        e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null 
+                                                        || 
+                                                        e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapIndirect != null) 
+                                                    )
                                     .Select( s => new {
                                         Last = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
                                         User = s.KersUser,
