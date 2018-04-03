@@ -10,6 +10,7 @@ import { UserService, User } from '../user.service';
     selector: 'user-directory-profile',
     template: `<div class="col-md-4 col-sm-4 col-xs-12 profile_details" *ngIf="user">
             <div class="well profile_view">
+                <div class="ribbon" *ngIf="!user.rprtngProfile.enabled"><span>NOT EMPLOYEED</span></div>
                 <div class="col-sm-12 top">
                     <h4 class="brief"><i *ngIf="user.personalProfile">{{user.personalProfile.professionalTitle}}</i>&nbsp;</h4>
                     <div class="left col-xs-7">
@@ -45,6 +46,54 @@ import { UserService, User } from '../user.service';
             .profile_view > div.top{
                 min-height: 180px;
             }
+
+
+            .ribbon {
+                position: absolute;
+                right: 5px; top: -5px;
+                z-index: 1;
+                overflow: hidden;
+                width: 75px; height: 75px;
+                text-align: right;
+              }
+              .ribbon span {
+                font-size: 8px;
+                font-weight: bold;
+                color: #FFF;
+                text-transform: uppercase;
+                text-align: center;
+                line-height: 20px;
+                transform: rotate(45deg);
+                -webkit-transform: rotate(45deg);
+                width: 100px;
+                display: block;
+                background: #79A70A;
+                background: linear-gradient(#2989d8 0%, #1e5799 100%);
+                box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+                position: absolute;
+                top: 19px; right: -21px;
+              }
+              .ribbon span::before {
+                content: "";
+                position: absolute; left: 0px; top: 100%;
+                z-index: -1;
+                border-left: 3px solid #1e5799;
+                border-right: 3px solid transparent;
+                border-bottom: 3px solid transparent;
+                border-top: 3px solid #1e5799;
+              }
+              .ribbon span::after {
+                content: "";
+                position: absolute; right: 0px; top: 100%;
+                z-index: -1;
+                border-left: 3px solid transparent;
+                border-right: 3px solid #1e5799;
+                border-bottom: 3px solid transparent;
+                border-top: 3px solid #1e5799;
+              }
+
+
+
             
             `]
 })

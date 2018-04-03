@@ -223,7 +223,13 @@ namespace Kers.Models.Repositories
                 keys.Add("PurposeGoal");
                 keys.Add("ResultImpact");
                 result = string.Join(",", keys.ToArray()) + "\n";
-                var activitiesThisFiscalYear = context.Activity.Where( a => a.ActivityDate > fiscalYear.Start && a.ActivityDate < fiscalYear.End);
+                var activitiesThisFiscalYear = context.Activity.Where( a => 
+                                                                            a.ActivityDate > fiscalYear.Start 
+                                                                            && 
+                                                                            a.ActivityDate < fiscalYear.End
+                                                                            &&
+                                                                            a.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                                                        );
                 var activitiesWithPolicy = activitiesThisFiscalYear.Where( r => r.Revisions.Last().SnapPolicy != null).OrderBy( a => a.ActivityDate.Year).ThenBy( a => a.ActivityDate.Month).ThenBy(a => a.KersUser.PersonalProfile.FirstName);
                 var policyMeetings = activitiesWithPolicy.Select(
                                         a => new {

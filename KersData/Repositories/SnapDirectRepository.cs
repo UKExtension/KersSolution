@@ -69,7 +69,19 @@ namespace Kers.Models.Repositories
                 result = string.Join(",", keys.ToArray()) + "\n";
 
                 var perPerson = context.Activity.
-                                    Where(e=>e.ActivityDate > fiscalYear.Start && e.ActivityDate < fiscalYear.End && (e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null || e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapIndirect != null) )
+                                    Where( e =>
+                                                e.ActivityDate > fiscalYear.Start 
+                                                &&
+                                                e.ActivityDate < fiscalYear.End 
+                                                && 
+                                                    (
+                                                        e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null 
+                                                        || 
+                                                        e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapIndirect != null
+                                                    ) 
+                                                &&
+                                                e.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                            )
                                     .Select( s => new {
                                         Last = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
                                         User = s.KersUser,
@@ -365,7 +377,13 @@ namespace Kers.Models.Repositories
                     
                     var snapPerMonth = new List<int>[difference];
                     for( i = 0; i< difference; i++){
-                        var activitiesPerMonth = context.Activity.Where( a => a.ActivityDate.Month == months[i].Month && a.ActivityDate.Year == months[i].Year);
+                        var activitiesPerMonth = context.Activity.Where( a => 
+                                                                                a.ActivityDate.Month == months[i].Month 
+                                                                                &&
+                                                                                a.ActivityDate.Year == months[i].Year
+                                                                                &&
+                                                                                a.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                                                        );
                         var activitiesWithSnapDirect = activitiesPerMonth
                                                         .Select( v => v.Revisions.OrderBy( r => r.Created.ToString("s")).Last())
                                                         .Where( a => a.SnapDirect != null)

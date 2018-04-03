@@ -119,8 +119,28 @@ namespace Kers.Models.Repositories
                 var currentBatch = revs.Skip(i).Take(batchCount);
                 fyactivities.AddRange(context.ActivityRevision.Where( r => currentBatch.Contains( r.Id )).ToList());
             }
-            var snapEligible = fyactivities.Where( r => (r.SnapPolicyId != null || r.SnapDirectId != null || r.SnapIndirectId != null || (r.SnapAdmin && r.isSnap) ));
-            return snapEligible;
+            var snapEligible = fyactivities.Where( r => 
+                                                        (
+                                                            r.SnapPolicyId != null 
+                                                            || 
+                                                            r.SnapDirectId != null 
+                                                            ||
+                                                            r.SnapIndirectId != null 
+                                                            || 
+                                                            (r.SnapAdmin && r.isSnap) 
+                                                        )
+                                                    );
+
+            // Check if activity is by UK employee
+            var UKRevisions = new List<ActivityRevision>();
+            foreach( var rev in snapEligible ){
+                if(context.Activity.Where( a => a.Id == rev.ActivityId && a.KersUser.RprtngProfile.Institution.Code == "21000-1862").Any()){
+                    UKRevisions.Add( rev );
+                }
+            }
+
+
+            return UKRevisions;
         }
 
         protected List<ActivityRevisionsPerMonth> RevisionsWithDirectContactsPerMonth( FiscalYear fiscalYear){
@@ -139,7 +159,13 @@ namespace Kers.Models.Repositories
                     if (!string.IsNullOrEmpty(cachedTypes)){
                         entity = JsonConvert.DeserializeObject<ActivityRevisionsPerMonth>(cachedTypes);
                     }else{
-                        var byMonth = context.Activity.Where( c => c.ActivityDate.Month == months[i].Month && c.ActivityDate.Year == months[i].Year);
+                        var byMonth = context.Activity.Where( c => 
+                                                                    c.ActivityDate.Month == months[i].Month 
+                                                                    &&
+                                                                    c.ActivityDate.Year == months[i].Year
+                                                                    &&
+                                                                    c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                                                );
                         var activityRevisionsPerMonty = byMonth
                                 .Select( a => a.Revisions.OrderBy(r => r.Created).Last())
                                 .Where( e => e.SnapDirect != null)
@@ -186,10 +212,18 @@ namespace Kers.Models.Repositories
                     if (!string.IsNullOrEmpty(cachedTypes)){
                         entity = JsonConvert.DeserializeObject<ActivityRevisionsPerMonth>(cachedTypes);
                     }else{
-                        var byMonth = context.Activity.Where( c => c.ActivityDate.Month == months[i].Month && c.ActivityDate.Year == months[i].Year);
+                        var byMonth = context.Activity.Where( c => 
+                                                                    c.ActivityDate.Month == months[i].Month 
+                                                                    &&
+                                                                    c.ActivityDate.Year == months[i].Year
+                                                                    &&
+                                                                    c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                                            );
                         var activityRevisionsPerMonty = byMonth
                                 .Select( a => a.Revisions.OrderBy(r => r.Created).Last())
-                                .Where( e => e.SnapIndirect != null)
+                                .Where( e => 
+                                            e.SnapIndirect != null
+                                        )
                                 .ToList();
                         entity.Revs = activityRevisionsPerMonty;
                         entity.Month = months[i].Month;

@@ -119,6 +119,8 @@ namespace Kers.Models.Repositories
                                                             c.FiscalYear == fiscalYear
                                                             &&
                                                             c.SnapEd_ActivityType.Measurement == "Hour"
+                                                            &&
+                                                            c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
                                 ).GroupBy( d=> d.KersUser.Id)
                                 .Select(
                                     k => new {
@@ -216,7 +218,11 @@ namespace Kers.Models.Repositories
                 result = string.Join(",", keys.ToArray()) + "\n";
 
                 var commitment = await context.SnapEd_Commitment
-                                    .Where( c => c.FiscalYear == fiscalYear)
+                                    .Where( c => 
+                                                    c.FiscalYear == fiscalYear
+                                                    &&
+                                                    c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                                    )
                                     .GroupBy( c => c.KersUser)
                                     .Select( c => new {
                                         User = c.Key,
@@ -312,6 +318,8 @@ namespace Kers.Models.Repositories
                                                                 &&
                                                                 u.ExtensionPosition.Code == "AGENT"
                                                                 &&
+                                                                u.RprtngProfile.Institution.Code == "21000-1862"
+                                                                &&
                                                                 context.SnapEd_Commitment.Where( c => c.FiscalYear == fiscalYear && c.KersUser == u).Count() == 0
                                                                 )
                                                         .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.District)
@@ -382,7 +390,11 @@ namespace Kers.Models.Repositories
                 result = string.Join(",", keys.ToArray()) + "\n";
 
                 var commitment = await context.SnapEd_Commitment
-                                    .Where( c => c.FiscalYear == fiscalYear)
+                                    .Where( c => 
+                                                c.FiscalYear == fiscalYear
+                                                &&
+                                                c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                            )
                                     .GroupBy( c => c.KersUser.RprtngProfile.PlanningUnit)
                                     .Select( c => new {
                                         Unit = c.Key,
@@ -468,6 +480,8 @@ namespace Kers.Models.Repositories
                                     .Where( c => 
                                                 c.FiscalYear == fiscalYear
                                                 &&
+                                                c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                                &&
                                                 c.KersUser.Specialties.Where( s => 
                                                                                 s.Specialty.Name == "Expanded Food and Nutrition Education Program"
                                                                                 ||
@@ -541,7 +555,11 @@ namespace Kers.Models.Repositories
                 keys.Add("ItemName");
                 result = string.Join(",", keys.ToArray()) + "\n";
                 var items = context.SnapEd_ReinforcementItemChoice
-                                .Where( i => i.FiscalYear == fiscalYear)
+                                .Where( i => 
+                                            i.FiscalYear == fiscalYear
+                                            &&
+                                            i.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                        )
                                 .GroupBy( i => i.SnapEd_ReinforcementItem )
                                 .Select( i => new {
                                     item = i.Key,
@@ -586,7 +604,15 @@ namespace Kers.Models.Repositories
                     var row = county.District.Name + ",";
                     row += county.Name + ",";
                     foreach( var item in ReinforcementItems){
-                        var areItemsSelected = context.SnapEd_ReinforcementItemChoice.Where( c => c.KersUser.RprtngProfile.PlanningUnit == county && c.SnapEd_ReinforcementItem == item).Any();
+                        var areItemsSelected = context.SnapEd_ReinforcementItemChoice
+                                                        .Where( c => 
+                                                                    c.KersUser.RprtngProfile.PlanningUnit == county 
+                                                                    && 
+                                                                    c.SnapEd_ReinforcementItem == item
+                                                                    &&
+                                                                    c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
+                                                                    )
+                                                        .Any();
                         if( areItemsSelected ){
                             row += "x" + ",";
                         }else{
@@ -631,6 +657,8 @@ namespace Kers.Models.Repositories
                                                                 u.FiscalYear == fiscalYear
                                                                 &&
                                                                 u.Suggestion != ""
+                                                                &&
+                                                                u.KersUser.RprtngProfile.Institution.Code == "21000-1862"
                                                                 )
                                                         .Include( u => u.KersUser.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.District)
                                                         .Include( u => u.KersUser.ExtensionPosition)
