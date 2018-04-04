@@ -238,6 +238,7 @@ namespace Kers.Controllers
                 user.Created = DateTime.Now;
                 user.Updated = DateTime.Now;
                 user.LastLogin = DateTime.Now;
+                user.RprtngProfile.enabled = true;
                 if(user.RprtngProfile.InstitutionId == 0 ){
                     user.RprtngProfile.InstitutionId = 1;
                 }
