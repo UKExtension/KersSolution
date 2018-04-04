@@ -60,6 +60,7 @@ import { Observable } from "rxjs/Observable";
                   
    </div>
 
+
     <user-directory-list [county]="county" [showEmployeeSummaryButton]="true"></user-directory-list>
 
 
@@ -89,6 +90,7 @@ export class CountyHomeComponent {
     id:number = 0;
     county: PlanningUnit;
     plans:Observable<PlanOfWork[]>;
+    onlyEnabled:boolean = true;
 
     constructor( 
         private reportingService: ReportingService,
@@ -124,6 +126,10 @@ export class CountyHomeComponent {
 
         
    
+    }
+
+    includeLeftChecked(){
+        this.onlyEnabled = !this.onlyEnabled;
     }
 
     ngOnDestroy(){

@@ -145,7 +145,8 @@ namespace Kers.Controllers
                                         [FromQuery] string amount = "0",
                                         [FromQuery] string snapAssistants = "0",
                                         [FromQuery] string withSnapCommitment = "0",
-                                        [FromQuery] string onlyKSU = "0"
+                                        [FromQuery] string onlyKSU = "0",
+                                        [FromQuery] string enabled = "0"
                                         ){
             var theAmount = Convert.ToInt32(amount);
             theAmount =  theAmount <= 0 ? DefaultNumberOfItems : theAmount ;
@@ -175,6 +176,9 @@ namespace Kers.Controllers
             }
             if( onlyKSU != "0" ){
                 users = users.Where( i => i.RprtngProfile.Institution.Name == "Kentucky State University" );
+            }
+            if( enabled != "0" ){
+                users = users.Where( i => i.RprtngProfile.enabled == true );
             }
             
             users = users.Include(i => i.PersonalProfile).ThenInclude(i=>i.UploadImage).ThenInclude( i => i.UploadFile).
