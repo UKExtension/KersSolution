@@ -412,13 +412,12 @@ namespace Kers.Models.Repositories
                     foreach( var project in projects){
                         foreach( var type in activitiesPerProject){
                             var cmtm = unit.commitments
-                                                .Where( c => c.SnapEd_ProjectTypeId == project.Id && c.SnapEd_ActivityTypeId == type.Id )
-                                                .FirstOrDefault();
+                                                .Where( c => c.SnapEd_ProjectTypeId == project.Id && c.SnapEd_ActivityTypeId == type.Id );
                             if( cmtm != null){
                                 if( type.Measurement == "Hour"){
-                                    sumHours += cmtm.Amount??0;
+                                    sumHours += cmtm.Sum( s => s.Amount)??0;
                                 }
-                                row += cmtm.Amount.ToString() + ",";
+                                row += cmtm.Sum( s => s.Amount).ToString() + ",";
                             }else{
                                 row +=  "0,";
                             }
@@ -427,13 +426,12 @@ namespace Kers.Models.Repositories
                     }
                     foreach( var type in activitiesNotPerProject){
                         var cmtm = unit.commitments
-                                                .Where( c => c.SnapEd_ActivityTypeId == type.Id )
-                                                .FirstOrDefault();
+                                                .Where( c => c.SnapEd_ActivityTypeId == type.Id );
                         if( cmtm != null){
                             if( type.Measurement == "Hour"){
-                                sumHours += cmtm.Amount??0;
+                                sumHours += cmtm.Sum( s => s.Amount)??0;
                             }
-                            row += cmtm.Amount.ToString() + ",";
+                            row += cmtm.Sum( s => s.Amount).ToString() + ",";
                         }else{
                             row += "0,";
                         }
@@ -505,13 +503,12 @@ namespace Kers.Models.Repositories
                     foreach( var project in projects){
                         foreach( var type in activitiesPerProject){
                             var cmtm = unit.commitments
-                                                .Where( c => c.SnapEd_ProjectTypeId == project.Id && c.SnapEd_ActivityTypeId == type.Id )
-                                                .FirstOrDefault();
+                                                .Where( c => c.SnapEd_ProjectTypeId == project.Id && c.SnapEd_ActivityTypeId == type.Id );
                             if( cmtm != null){
                                 if( type.Measurement == "Hour"){
-                                    sumHours += cmtm.Amount??0;
+                                    sumHours += cmtm.Sum( s => s.Amount)??0;
                                 }
-                                row += cmtm.Amount.ToString() + ",";
+                                row += cmtm.Sum( s => s.Amount).ToString() + ",";
                             }else{
                                 row +=  "0,";
                             }
@@ -520,13 +517,12 @@ namespace Kers.Models.Repositories
                     }
                     foreach( var type in activitiesNotPerProject){
                         var cmtm = unit.commitments
-                                                .Where( c => c.SnapEd_ActivityTypeId == type.Id )
-                                                .FirstOrDefault();
+                                                .Where( c => c.SnapEd_ActivityTypeId == type.Id );
                         if( cmtm != null){
                             if( type.Measurement == "Hour"){
-                                sumHours += cmtm.Amount??0;
+                                sumHours += cmtm.Sum( s => s.Amount)??0;
                             }
-                            row += cmtm.Amount.ToString() + ",";
+                            row += cmtm.Sum( s => s.Amount).ToString() + ",";
                         }else{
                             row += "0,";
                         }
