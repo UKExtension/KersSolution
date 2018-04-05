@@ -4,6 +4,7 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
 
 @Component({
   template: `
+  <div><reporting-display-help id="12"></reporting-display-help></div>
   <div *ngIf="nextFiscalYear">
     <plansofwork-maps [fy]="nextFiscalYear"></plansofwork-maps>
     <hr />
