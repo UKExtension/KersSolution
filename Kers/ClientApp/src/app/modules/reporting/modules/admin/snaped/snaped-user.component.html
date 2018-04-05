@@ -13,35 +13,37 @@
     <snape-ed-commitment-stats [fiscalYear]="fiscalYear" [user]="assistant"></snape-ed-commitment-stats>
     
     <br><br>
-    <h2>Reimbursements</h2>
-    <div *ngIf="budget">
-        <div *ngIf="!newReinbursment" class="text-right">
-                <a class="btn btn-info btn-xs" (click)="newReinbursment = true">+ new reimbursement</a>
-        </div>
-        <div *ngIf="newReinbursment">
-            <snaped-reimbursment-form [userId]="assistant.id" (onFormCancel)="newReinbursment = false" (onFormSubmit)="newReinbursmentSubmit($event)"></snaped-reimbursment-form>
-        </div>
+    <div *ngIf="isAssitant">
+        <h2>Reimbursements</h2>
+        <div *ngIf="budget">
+            <div *ngIf="!newReinbursment" class="text-right">
+                    <a class="btn btn-info btn-xs" (click)="newReinbursment = true">+ new reimbursement</a>
+            </div>
+            <div *ngIf="newReinbursment">
+                <snaped-reimbursment-form [userId]="assistant.id" (onFormCancel)="newReinbursment = false" (onFormSubmit)="newReinbursmentSubmit($event)"></snaped-reimbursment-form>
+            </div>
 
 
-        <table class="table table-striped" *ngIf="reimbursments">
-            <thead>
-                <tr>
-                    <th>Notes</th>
-                    <th class="text-right">Amount</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let reimbursment of reimbursments" [snapedReimbursmentItem]="reimbursment" (onReimbursementDeleted)="reimbursementDeleted($event)" (onReimbursementUpdated)="reimbursementUpdated($event)"></tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Remaining budget: <strong>{{remainingBudget | currency:'USD':'symbol' }}</strong></td>
-                    <td class="text-right">Total: <strong>{{totalReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
-                    <td></td>
-                </tr>
-            </tfoot>               
-        </table>
+            <table class="table table-striped" *ngIf="reimbursments">
+                <thead>
+                    <tr>
+                        <th>Notes</th>
+                        <th class="text-right">Amount</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let reimbursment of reimbursments" [snapedReimbursmentItem]="reimbursment" (onReimbursementDeleted)="reimbursementDeleted($event)" (onReimbursementUpdated)="reimbursementUpdated($event)"></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Remaining budget: <strong>{{remainingBudget | currency:'USD':'symbol' }}</strong></td>
+                        <td class="text-right">Total: <strong>{{totalReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>               
+            </table>
+        </div>
     </div>
 </div>
 

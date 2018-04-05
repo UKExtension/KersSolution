@@ -24,7 +24,7 @@ import { Observable } from 'rxjs/Observable';
 
             <div class="clearfix"></div>
 
-            <user-directory-profile *ngFor="let user of users | async" [user]="user" [showEmployeeSummaryButton]="showEmployeeSummaryButton" [showSnapButton]="onlySnapAssistants || onlyWitSnapCommitment"></user-directory-profile>
+            <user-directory-profile *ngFor="let user of users | async" [user]="user" [showEmployeeSummaryButton]="showEmployeeSummaryButton" [showSnapButton]="showSnapButton"></user-directory-profile>
         </div>
 
         <div *ngIf="numProfiles != 0" class="text-center">
@@ -107,6 +107,7 @@ export class UserDirectoryListComponent {
         @Input() onlySnapAssistants:boolean=false;
         @Input() onlyWitSnapCommitment:boolean=false;
         @Input() switchEnabled:boolean=true;
+        @Input() showSnapButton:boolean=false;
 
         users: Observable<User[]>;
         errorMessage: string;

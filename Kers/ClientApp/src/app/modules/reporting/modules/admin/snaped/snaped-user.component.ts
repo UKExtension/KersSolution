@@ -26,6 +26,7 @@ export class SnapedUserComponent {
     budget:number;
     remainingBudget:number;
     errorMessage: string;
+    isAssitant:boolean = false;
     
 
     constructor( 
@@ -49,7 +50,8 @@ export class SnapedUserComponent {
             subscribe(
               res=>{
                 this.assistant = <User>res;
-                this.reportingService.setTitle("Snap-Ed Assistant " + this.assistant.personalProfile.firstName + ' ' + this.assistant.personalProfile.lastName)
+                this.isAssitant = this.checkIfAssistant(this.assistant);
+                this.reportingService.setTitle( (this.isAssitant?"Snap-Ed Assistant ":"Snap-Ed Activity for ") + this.assistant.personalProfile.firstName + ' ' + this.assistant.personalProfile.lastName)
                 this.reportingService.setSubtitle(this.assistant.rprtngProfile.planningUnit.name);
                 this.service.assistantReimbursments(this.assistant.id).subscribe(
                   res => {
@@ -90,6 +92,11 @@ export class SnapedUserComponent {
           }
         );
         */
+    }
+
+    checkIfAssistant(user:User):boolean{
+      var isSpecialties = user.specialties.filter( s => s.specialty.code =="progNEP" || s.specialty.code =="snapEd");
+      return isSpecialties.length > 0;
     }
     storeHours(event){
       this.reported = <number>event;

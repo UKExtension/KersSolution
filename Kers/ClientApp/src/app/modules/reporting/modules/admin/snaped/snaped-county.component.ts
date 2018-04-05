@@ -9,7 +9,14 @@ import { Observable } from 'rxjs/Observable';
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
 
 @Component({
-  templateUrl: 'snaped-county.component.html'
+  templateUrl: 'snaped-county.component.html',
+  styles: [
+    `
+    .bar_tabs li{
+      cursor: pointer;
+    }
+    `
+  ]
 })
 export class SnapedCountyComponent { 
 
@@ -36,6 +43,10 @@ export class SnapedCountyComponent {
     countyName:string;
 
     errorMessage: string;
+
+    tabAssistants = true;
+    tabWithCommitment = false;
+    tabAll = false;
 
     constructor( 
         private service:SnapedAdminService,

@@ -3,11 +3,28 @@
     </button>
     <strong>Error: </strong> {{errorMessage}}
 </div>
-<div *ngIf="county">    
-    <h2>Snap-Ed Assistants</h2>
-    <user-directory-list [county]="county" [onlySnapAssistants]="true"></user-directory-list><br><br>
-    <h2>With Commitment</h2>
-    <user-directory-list [county]="county" [onlyWitSnapCommitment]="true"></user-directory-list><br><br>
+<div *ngIf="county"> 
+    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+            <li role="presentation" [class.active]="tabAssistants"><a (click)="tabAssistants=true;tabWithCommitment=tabAll=false;" id="home-tab" role="tab">Snap-Ed Assistants</a>
+            </li>
+            <li role="presentation" [class.active]="tabWithCommitment"><a (click)="tabWithCommitment=true;tabAssistants=tabAll=false;" role="tab" id="profile-tab">With Commitment</a>
+            </li>
+            <li role="presentation" [class.active]="tabAll"><a (click)="tabAll=true;tabWithCommitment=tabAssistants=false;" role="tab" id="profile-tab2">All Employees</a>
+            </li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            <div role="tabpanel" class="tab-pane fade" [class.in]="tabAssistants" [class.active]="tabAssistants" id="tab_content1" *ngIf="tabAssistants">
+                <user-directory-list [county]="county" [onlySnapAssistants]="true" [showSnapButton]="true"></user-directory-list><br><br>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" [class.in]="tabWithCommitment" [class.active]="tabWithCommitment" id="tab_content2" *ngIf="tabWithCommitment">
+                <user-directory-list [county]="county" [onlyWitSnapCommitment]="true" [showSnapButton]="true"></user-directory-list><br><br>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" [class.in]="tabAll" [class.active]="tabAll" id="tab_content3" *ngIf="tabAll">
+                <user-directory-list [county]="county" [showSnapButton]="true"></user-directory-list><br><br>
+            </div>
+        </div>
+    </div>
     <div class="col-xs-12">
         <snape-ed-stats [planningUnit]="county" (onCalculated)="storeHours($event)"></snape-ed-stats>
     </div><br><br>
@@ -40,8 +57,6 @@
     <div *ngIf="newReinbursment">
         <snaped-reimbursment-form [countyId]="county.id" (onFormCancel)="newReinbursment = false" (onFormSubmit)="newReinbursmentSubmit($event)"></snaped-reimbursment-form>
     </div>
-
-
     <table class="table table-striped" *ngIf="reimbursments">
         <thead>
             <tr>
