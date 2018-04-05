@@ -33,7 +33,8 @@
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <select name="planOfWorkId" id="planOfWorkId" formControlName="planOfWorkId" class="form-control col-md-7 col-xs-12" >	
                     	<option value="">--- select ---</option>
-						<option *ngFor="let plan of plans | async"  [value]="plan.id">{{plan.title}}</option>
+                        <option *ngFor="let plan of plans | async"  [value]="plan.id">{{plan.title}}</option>
+                        <option value="3670">Unrelated to a specified County Plan of Work</option>
 				</select>
             </div>
         </div>
