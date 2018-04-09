@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SnapEdCommitmentService, CommitmentBundle } from '../snap-ed-commitment.service';
 import { Observable } from 'rxjs/Observable';
@@ -11,8 +11,10 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
 })
 export class CommitmentHomeComponent implements OnInit {
   commitment:CommitmentBundle;
-
-
+  @Input() userid = 0;
+  @Input() fiscalyearid = 0;
+  @Input() canItBeEdited = true;
+ 
   isItJustView = true;
 
   constructor(
@@ -26,9 +28,16 @@ export class CommitmentHomeComponent implements OnInit {
     this.getCommitment();
   }
   getCommitment(): void {
-    const userid = this.route.snapshot.paramMap.get('userid');
-    const fiscalyearid = this.route.snapshot.paramMap.get('fiscalyearid');
-    this.service.getSnapCommitments().subscribe(
+    const routeUserId = this.route.snapshot.paramMap.get('userid');
+    if(routeUserId){
+      this.userid = +routeUserId;
+    }
+    const routeFiscalYear = this.route.snapshot.paramMap.get('fiscalyearid');
+    if(routeFiscalYear){
+      this.fiscalyearid = +routeFiscalYear;
+    }
+    
+    this.service.getSnapCommitments(this.userid, this.fiscalyearid).subscribe(
       res => {
             this.commitment = <CommitmentBundle> res;
             if(this.commitment.commitments.length == 0){

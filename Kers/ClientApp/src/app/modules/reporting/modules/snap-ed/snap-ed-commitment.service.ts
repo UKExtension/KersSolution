@@ -33,7 +33,7 @@ export class SnapEdCommitmentService {
                     .catch(this.handleError);
   }
 
-  getSnapCommitments(userid:number = 0, fisclyearid = 0):Observable<CommitmentBundle>{
+  getSnapCommitments(userid:number = 0, fisclyearid:number = 0):Observable<CommitmentBundle>{
     var url = this.baseUrl + 'commitments/'+ fisclyearid + '/' + userid;
     return this.http.get(this.location.prepareExternalUrl(url))
             .map(res => <CommitmentBundle>res.json())
@@ -120,5 +120,5 @@ export interface CommitmentBundle{
   items: SnapEdReinforcementItemChoice[];
   suggestion: SnapEd_ReinforcementItemSuggestion;
   userid:number;
-  fisclyearid:number;
+  fiscalyearid:number;
 }

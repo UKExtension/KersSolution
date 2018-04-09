@@ -4,14 +4,15 @@
   <strong>Error: </strong> {{errorMessage}}
 </div>
 <loading *ngIf="loading"></loading>
-<h2>SNAP-Ed Commitment Worksheet for October 1, 2018 - September 30, 2019
-  </h2><br><br>
+
 <div class="row" *ngIf="!loading">
+
   <div *ngIf="commitment.commitments.length == 0">
-    <h4>You did not entered your commitment yet.</h4>
+    <h4>No commitment submitted.</h4>
   </div>
   <div *ngIf="commitment.commitments.length != 0">
-
+    <h2>SNAP-Ed Commitment Worksheet <span *ngIf="fiscalYear | async as year"> for {{year.start | date:'mediumDate'}} - {{year.end | date:'mediumDate'}}</span>
+    </h2><br><br>
 
       <div class="row">
           <label class="col-lg-3 col-xs-12">Commitment Hours:</label> 

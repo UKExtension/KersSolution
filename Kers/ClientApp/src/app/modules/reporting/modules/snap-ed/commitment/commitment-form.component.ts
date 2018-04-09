@@ -61,7 +61,7 @@ export class CommitmentFormComponent implements OnInit {
     )
   }
   getReinforcementItems(){
-    this.service.comitmentReinforcementItems().subscribe(
+    this.service.comitmentReinforcementItems(this.commitmentFiscalYearId).subscribe(
       res => {
         this.reinforcementItems = <SnapEdReinforcementItem[]>res;
         this.generateForm();
@@ -226,13 +226,16 @@ export class CommitmentFormComponent implements OnInit {
     }
     commitmentBundle.items = items;
     commitmentBundle.suggestion = this.commitmentForm.value.suggestion;
+    commitmentBundle.fiscalyearid = this.commitmentFiscalYearId;
+    //console.log(commitmentBundle);
+ 
     this.commitmentService.addOrEditCommitment(commitmentBundle).subscribe(
       res => {
         this.onFormSubmit.emit(<CommitmentBundle> res);
         this.loading = false;
       }
     );
-    
+
   }
   onCancel(){
     this.onFormCancel.emit();

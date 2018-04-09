@@ -32,6 +32,13 @@ export class FiscalyearService {
             .catch(this.handleError);
     }
 
+    byId(id:number):Observable<FiscalYear>{
+        var url = this.baseUrl + id;
+        return this.http.get(this.location.prepareExternalUrl(url))
+            .map(res => <FiscalYear>res.json())
+            .catch(this.handleError);
+    }
+
     current(type:string = "serviceLog"){
         var url = this.baseUrl + "current/" + type;
         return this.http.get(this.location.prepareExternalUrl(url))

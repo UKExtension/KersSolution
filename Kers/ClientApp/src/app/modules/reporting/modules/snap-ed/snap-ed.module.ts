@@ -9,6 +9,7 @@ import { SnapEdHomeComponent } from './snap-ed-home.component';
 import { CommitmentFormComponent } from './commitment/commitment-form.component';
 import { SnapedService } from '../servicelog/snaped.service';
 import { CommitmentViewComponent } from './commitment/commitment-view.component';
+import { SnapEdCommitmentComponent } from './commitment/snap-ed-commitment.component';
 
 @NgModule({
   imports: [
@@ -20,11 +21,17 @@ import { CommitmentViewComponent } from './commitment/commitment-view.component'
     CommitmentHomeComponent,
     SnapEdHomeComponent,
     CommitmentFormComponent,
-    CommitmentViewComponent
+    CommitmentViewComponent,
+    SnapEdCommitmentComponent
   ],
   providers: [
     SnapEdCommitmentService,
     SnapedService
+  ],
+  exports: [
+    SnapEdHomeComponent,
+    CommitmentHomeComponent,
+    SnapEdCommitmentComponent
   ]
 })
 export class SnapEdModule { }

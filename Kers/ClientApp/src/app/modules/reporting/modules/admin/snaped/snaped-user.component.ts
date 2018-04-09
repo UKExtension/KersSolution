@@ -14,6 +14,8 @@ import { SnapedService } from '../../servicelog/snaped.service';
 export class SnapedUserComponent { 
 
     fiscalYear:FiscalYear;
+    commitmentFiscalYear:FiscalYear;
+
     committed: number;
     reported:number;
     newReinbursment = false;
@@ -108,6 +110,9 @@ export class SnapedUserComponent {
 
         }
       )
+    }
+    commitmentFiscalYearSwitched(event:FiscalYear){
+      this.commitmentFiscalYear = event;
     }
 
     newReinbursmentSubmit(event){

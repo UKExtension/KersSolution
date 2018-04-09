@@ -8,10 +8,19 @@
     
         
     <snape-ed-stats [user]="assistant" (onCalculated)="storeHours($event)"></snape-ed-stats>
+    <div class="row">
+        <div class="well">
+            <h2>Commitment</h2>
+            <snap-ed-commitment-manager [userid]="assistant.id"></snap-ed-commitment-manager>
+        </div>
+    </div>
     
-        
+    
+    <!--
+    <fiscal-year-switcher (onSwitched)="commitmentFiscalYearSwitched($event)" (onLoaded)="commitmentFiscalYearSwitched($event)"></fiscal-year-switcher> 
+    <app-commitment-home *ngIf="commitmentFiscalYear" [fiscalyearid]="commitmentFiscalYear.id" [userid]="assistant.id"></app-commitment-home>
     <snape-ed-commitment-stats [fiscalYear]="fiscalYear" [user]="assistant"></snape-ed-commitment-stats>
-    
+    -->
     <br><br>
     <div *ngIf="isAssitant">
         <h2>Reimbursements</h2>

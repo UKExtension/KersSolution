@@ -20,6 +20,7 @@ import { ServicelogModule } from '../../servicelog/servicelog.module';
 import { SnapedReimbursmentFormComponent } from './snaped-reimbursment-form';
 import { SnapedReimbursmentItem } from './snaped-reimbursment-item';
 import { SnapedBudgetHomeComponent } from './snaped-budget-home.component';
+import { SnapEdModule } from '../../snap-ed/snap-ed.module';
 
 
 
@@ -31,7 +32,8 @@ import { SnapedBudgetHomeComponent } from './snaped-budget-home.component';
                   SnapedRoutingModule,
                   PlanningunitModule,
                   UserModule,
-                  ServicelogModule
+                  ServicelogModule,
+                  SnapEdModule
                 ],
   declarations: [ 
                   SnapedHomeComponent,

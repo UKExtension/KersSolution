@@ -19,6 +19,7 @@ import { FiscalYear, FiscalyearService } from '../../modules/admin/fiscalyear/fi
 export class FiscalYearSwitcherComponent implements OnInit {
 
   @Input() initially = "next"; // next or current
+  @Input() type = "serviceLog";
   @Output() onLoaded = new EventEmitter<FiscalYear[]>();
   @Output() onSwitched = new EventEmitter<FiscalYear>();
 
@@ -38,7 +39,7 @@ export class FiscalYearSwitcherComponent implements OnInit {
     this.getNextFiscalYear();
   }
   getFiscalYears(){
-    this.fiscalYearService.byType("serviceLog").subscribe(
+    this.fiscalYearService.byType(this.type).subscribe(
         res => {
             this.fiscalYears = res;
             this.onLoaded.emit(this.fiscalYears);
@@ -46,7 +47,7 @@ export class FiscalYearSwitcherComponent implements OnInit {
     );
   }
   getNextFiscalYear(){
-    this.fiscalYearService.next("serviceLog").subscribe(
+    this.fiscalYearService.next(this.type).subscribe(
         res => {
             this.nextFiscalYear = res;
             this.getCurrentFiscalYear();
@@ -55,7 +56,7 @@ export class FiscalYearSwitcherComponent implements OnInit {
     );
   }
   getCurrentFiscalYear(){
-      this.fiscalYearService.current("serviceLog").subscribe(
+      this.fiscalYearService.current(this.type).subscribe(
           res => {
               this.currentFiscalYear = res;
               if(this.initially == "next"){
