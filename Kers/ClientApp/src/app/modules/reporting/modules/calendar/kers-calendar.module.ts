@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FullCalendarModule } from 'ng-fullcalendar';
+import { CalendarModule } from 'angular-calendar';
+import { FormsModule } from '@angular/forms';
 
 import { CalendarRoutingModule } from './calendar-routing.module';
 import { CalendarHomeComponent } from './calendar-home.component';
@@ -8,9 +9,10 @@ import { CalendarHomeComponent } from './calendar-home.component';
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     CalendarRoutingModule,
-    FullCalendarModule
+    CalendarModule.forRoot(),
   ],
   declarations: [CalendarHomeComponent]
 })
-export class CalendarModule { }
+export class KersCalendarModule { }

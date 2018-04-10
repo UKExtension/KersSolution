@@ -59,7 +59,7 @@ const reportingRoutes: Routes = [
           },
           {
             path: 'calendar', 
-            loadChildren: './modules/calendar/calendar.module#CalendarModule'
+            loadChildren: './modules/calendar/kers-calendar.module#KersCalendarModule'
           },
           {
             path: 'activity', 
