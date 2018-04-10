@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Observable';
 })
 export class CommitmentViewComponent implements OnInit {
   @Input() commitment:CommitmentBundle | null = null;
-  @Input() commitmentFiscalYearId:number = 0;
+  @Input() commitmentFiscalYear:FiscalYear;
   @Input() commitmentUserId:number = 0;
 
 
@@ -36,11 +36,11 @@ export class CommitmentViewComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     this.getActivityTypes();
-    this.fiscalYear = this.fiscalYearService.byId(this.commitmentFiscalYearId);
+    this.fiscalYear = this.fiscalYearService.byId(this.commitmentFiscalYear.id);
     
   }
   getActivityTypes(){
-    this.service.comitmentActivityTypes(this.commitmentFiscalYearId).subscribe(
+    this.service.comitmentActivityTypes(this.commitmentFiscalYear.id).subscribe(
       res => {
         this.activityTypes = <SnapEdActivityType[]>res;
         this.getProjectTypes();
@@ -49,7 +49,7 @@ export class CommitmentViewComponent implements OnInit {
     );
   }
   getProjectTypes(){
-    this.service.comitmentProjectTypes(this.commitmentFiscalYearId).subscribe(
+    this.service.comitmentProjectTypes(this.commitmentFiscalYear.id).subscribe(
       res => {
         this.projectTypes = <SnapEdProjectType[]>res;  
         this.getReinforcementItems()      
@@ -58,7 +58,7 @@ export class CommitmentViewComponent implements OnInit {
     )
   }
   getReinforcementItems(){
-    this.service.comitmentReinforcementItems(this.commitmentFiscalYearId).subscribe(
+    this.service.comitmentReinforcementItems(this.commitmentFiscalYear.id).subscribe(
       res => {
         this.reinforcementItems = <SnapEdReinforcementItem[]>res;
         this.divideCommitments()

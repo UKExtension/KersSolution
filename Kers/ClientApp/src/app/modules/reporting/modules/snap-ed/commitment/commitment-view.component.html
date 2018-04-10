@@ -11,7 +11,7 @@
     <h4>No commitment submitted.</h4>
   </div>
   <div *ngIf="commitment.commitments.length != 0">
-    <h2>SNAP-Ed Commitment Worksheet <span *ngIf="fiscalYear | async as year"> for {{year.start | date:'mediumDate'}} - {{year.end | date:'mediumDate'}}</span>
+    <h2>SNAP-Ed Commitment Worksheet <span *ngIf="commitmentFiscalYear"> for {{commitmentFiscalYear.start | date:'mediumDate'}} - {{commitmentFiscalYear.end | date:'mediumDate'}}</span>
     </h2><br><br>
 
       <div class="row">

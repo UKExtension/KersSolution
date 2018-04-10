@@ -3,6 +3,7 @@ import { FormControl, FormBuilder } from '@angular/forms';
 import { SnapedService } from '../../servicelog/snaped.service';
 import { SnapEdActivityType, SnapEdProjectType, SnapEdCommitmentService, CommitmentBundle, SnapEdReinforcementItem, SnapEdReinforcementItemChoice } from '../snap-ed-commitment.service';
 import { User } from '../../user/user.service';
+import { FiscalYear, FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   selector: 'commitment-form',
@@ -12,7 +13,8 @@ import { User } from '../../user/user.service';
 export class CommitmentFormComponent implements OnInit {
 
   @Input() commitment:CommitmentBundle | null = null;
-  @Input() commitmentFiscalYearId:number = 0;
+  //@Input() commitmentFiscalYearId:number = 0;
+  @Input() commitmentFiscalYear:FiscalYear | null = null;
   @Input() commitmentUserId:number = 0;
 
   @Output() onFormCancel = new EventEmitter<void>();
@@ -35,15 +37,35 @@ export class CommitmentFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service:SnapedService,
-    private commitmentService:SnapEdCommitmentService
+    private commitmentService:SnapEdCommitmentService,
+    private fiscalYearService:FiscalyearService
   ) { }
 
   ngOnInit() {
     this.loading = true;
-    this.getActivityTypes();
+    if(this.commitment != null){
+      this.fiscalYearService.byId(this.commitment.fiscalyearid).subscribe(
+        res =>{
+          this.commitmentFiscalYear = <FiscalYear>res;
+          this.getActivityTypes();
+        },
+        err => this.errorMessage = <any>err
+      )
+    }else if(this.commitmentFiscalYear == null){
+      this.fiscalYearService.next("snapEd").subscribe(
+        res =>{
+          this.commitmentFiscalYear = <FiscalYear>res;
+          this.getActivityTypes();
+        },
+        err => this.errorMessage = <any>err 
+      )
+    }else{
+      this.getActivityTypes();
+    }
+    
   }
   getActivityTypes(){
-    this.service.comitmentActivityTypes(this.commitmentFiscalYearId).subscribe(
+    this.service.comitmentActivityTypes(this.commitmentFiscalYear.id).subscribe(
       res => {
         this.activityTypes = <SnapEdActivityType[]>res;
         this.getProjectTypes();
@@ -52,7 +74,7 @@ export class CommitmentFormComponent implements OnInit {
     );
   }
   getProjectTypes(){
-    this.service.comitmentProjectTypes(this.commitmentFiscalYearId).subscribe(
+    this.service.comitmentProjectTypes(this.commitmentFiscalYear.id).subscribe(
       res => {
         this.projectTypes = <SnapEdProjectType[]>res;  
         this.getReinforcementItems()      
@@ -61,7 +83,7 @@ export class CommitmentFormComponent implements OnInit {
     )
   }
   getReinforcementItems(){
-    this.service.comitmentReinforcementItems(this.commitmentFiscalYearId).subscribe(
+    this.service.comitmentReinforcementItems(this.commitmentFiscalYear.id).subscribe(
       res => {
         this.reinforcementItems = <SnapEdReinforcementItem[]>res;
         this.generateForm();
@@ -226,7 +248,7 @@ export class CommitmentFormComponent implements OnInit {
     }
     commitmentBundle.items = items;
     commitmentBundle.suggestion = this.commitmentForm.value.suggestion;
-    commitmentBundle.fiscalyearid = this.commitmentFiscalYearId;
+    commitmentBundle.fiscalyearid = this.commitmentFiscalYear.id;
     //console.log(commitmentBundle);
  
     this.commitmentService.addOrEditCommitment(commitmentBundle).subscribe(
