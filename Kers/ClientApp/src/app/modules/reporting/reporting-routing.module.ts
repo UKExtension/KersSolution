@@ -58,6 +58,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/planningunit/planningunit.module#PlanningunitModule'
           },
           {
+            path: 'calendar', 
+            loadChildren: './modules/calendar/calendar.module#CalendarModule'
+          },
+          {
             path: 'activity', 
             loadChildren: './modules/activity/activity.module#ActivityModule'
           },
