@@ -85,7 +85,7 @@ namespace Kers.Controllers
                                     i.FiscalYear == fiscalYear
                                 ).FirstOrDefault();
 
-            return new OkObjectResult(new {Commitments = committed, Items = items, Suggestion = itemSuggestion, Fiscalyearid = fiscalYear.Id});
+            return new OkObjectResult(new {Commitments = committed, Items = items, Suggestion = itemSuggestion, Fiscalyearid = fiscalYear.Id, Userid = user.Id});
         }
 
 

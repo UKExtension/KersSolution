@@ -13,7 +13,7 @@ import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
           <a class="btn btn-dark btn-lg btn-block" (click)="isItJustView=false" *ngIf="canItBeEdited">Edit Commitment Data</a>
       </div>
       
-      <commitment-form *ngIf="!isItJustView" [commitment]="commitment" [commitmentFiscalYear]="fiscalyear" (onFormSubmit)="commitmentEdited($event)" (onFormCancel)="isItJustView=true"></commitment-form>
+      <commitment-form *ngIf="!isItJustView" [commitment]="commitment" [commitmentFiscalYear]="fiscalyear" [commitmentUserId]="userid" (onFormSubmit)="commitmentEdited($event)" (onFormCancel)="isItJustView=true"></commitment-form>
       
   </div>
   `,
@@ -28,7 +28,7 @@ export class SnapEdCommitmentComponent implements OnInit {
 
   isItJustView = true;
   commitment:CommitmentBundle;
-  loading = false;
+  loading = true;
 
   constructor(
     private service: SnapEdCommitmentService

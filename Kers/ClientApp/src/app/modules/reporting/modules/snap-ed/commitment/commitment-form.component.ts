@@ -50,7 +50,10 @@ export class CommitmentFormComponent implements OnInit {
           this.getActivityTypes();
         },
         err => this.errorMessage = <any>err
-      )
+      );
+      if(this.commitmentUserId == 0){
+        this.commitmentUserId = this.commitment.userid;
+      }
     }else if(this.commitmentFiscalYear == null){
       this.fiscalYearService.next("snapEd").subscribe(
         res =>{
@@ -249,6 +252,7 @@ export class CommitmentFormComponent implements OnInit {
     commitmentBundle.items = items;
     commitmentBundle.suggestion = this.commitmentForm.value.suggestion;
     commitmentBundle.fiscalyearid = this.commitmentFiscalYear.id;
+    commitmentBundle.userid = this.commitmentUserId;
     //console.log(commitmentBundle);
  
     this.commitmentService.addOrEditCommitment(commitmentBundle).subscribe(

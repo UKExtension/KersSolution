@@ -24,6 +24,7 @@ export class SnapedUserComponent {
     totalReimbursementsAmount = 0;
     
     assistant: User;
+    ccond = false;
 
     budget:number;
     remainingBudget:number;

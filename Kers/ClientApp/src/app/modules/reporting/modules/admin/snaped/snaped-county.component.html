@@ -15,13 +15,20 @@
         </ul>
         <div id="myTabContent" class="tab-content">
             <div role="tabpanel" class="tab-pane fade" [class.in]="tabAssistants" [class.active]="tabAssistants" id="tab_content1" *ngIf="tabAssistants">
-                <user-directory-list [county]="county" [onlySnapAssistants]="true" [showSnapButton]="true"></user-directory-list><br><br>
+                <div class="col-md-12">
+                    <user-directory-list [county]="county" [onlySnapAssistants]="true" [showSnapButton]="true"></user-directory-list><br><br>
+                </div>
+                
             </div>
             <div role="tabpanel" class="tab-pane fade" [class.in]="tabWithCommitment" [class.active]="tabWithCommitment" id="tab_content2" *ngIf="tabWithCommitment">
-                <user-directory-list [county]="county" [onlyWitSnapCommitment]="true" [showSnapButton]="true"></user-directory-list><br><br>
+                <div class="col-xs-12">
+                    <user-directory-list [county]="county" [onlyWitSnapCommitment]="true" [showSnapButton]="true"></user-directory-list><br><br>
+                </div>
             </div>
             <div role="tabpanel" class="tab-pane fade" [class.in]="tabAll" [class.active]="tabAll" id="tab_content3" *ngIf="tabAll">
-                <user-directory-list [county]="county" [showSnapButton]="true"></user-directory-list><br><br>
+                <div class="col-xs-12">
+                    <user-directory-list [county]="county" [showSnapButton]="true"></user-directory-list><br><br>
+                </div>
             </div>
         </div>
     </div>
