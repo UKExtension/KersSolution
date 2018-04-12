@@ -9,7 +9,7 @@ namespace Kers.Tasks.Services{
         public TaskInitialiser(KERScoreContext context){
             this.context = context; 
         }
-
+/* 
         public void addSampleTask(){
             if( context.TaskSchedule.Any()){
                 return;
@@ -18,7 +18,7 @@ namespace Kers.Tasks.Services{
 
         }
 
-        public void addSummaryByMonthTask(){
+ */        public void addSummaryByMonthTask(){
             var recurringSchedule = new TaskRecurringSchedule();
             recurringSchedule.Frequency = 2;
             recurringSchedule.DayNo = 2;

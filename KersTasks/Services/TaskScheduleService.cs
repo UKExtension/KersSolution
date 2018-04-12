@@ -21,13 +21,13 @@ namespace Kers.Tasks.Services{
         }
 
         private bool DailySchedule(TaskSchedule schedule){
-            var ent = context.TaskPerformed.Where( p => p.TaskSchedule == schedule && p.PerformedAt.ToShortDateString() == DateTime.Now.ToShortDateString()).FirstOrDefault();
+           /*  var ent = context.TaskPerformed.Where( p => p.TaskSchedule == schedule && p.PerformedAt.ToShortDateString() == DateTime.Now.ToShortDateString()).FirstOrDefault();
             if(  ent != null ){
                 return false;
             }
             if( schedule.TaskRecurringSchedule.DayNo > DateTime.Now.Hour ){
                 return false;
-            }
+            } */
             return true;
         }
 

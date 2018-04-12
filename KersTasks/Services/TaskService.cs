@@ -34,20 +34,20 @@ namespace Kers.Tasks.Services{
 
         private List<TaskSchedule> getOperations(){
 
-            var schedules = this.context.TaskSchedule.Where( a => true)
+           /*  var schedules = this.context.TaskSchedule.Where( a => true)
                                 .Include( a => a.TaskRecurringSchedule)
                                 .Include( a => a.TaskOperation)
                                 .ToList();
 
-
+ */
             var operations = new List<TaskSchedule>();
-
+/* 
             foreach( var schedule in schedules){
                 if(scheduleService.ShouldItBeExecuted(schedule)){
                     operations.Add(schedule);
                 }
             }
-
+ */
             return operations;
         }
 
