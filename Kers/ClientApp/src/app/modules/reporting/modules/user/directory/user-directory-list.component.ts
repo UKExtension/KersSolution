@@ -15,7 +15,7 @@ import { Observable } from 'rxjs/Observable';
     template: `
         <div class="row">
             <div class="text-right" *ngIf="switchEnabled" style="padding: 10px 0;">
-                <span style="vertical-align:top;">Include no more employeed employees</span> <label class="switch">
+                <span style="vertical-align:top;">Include Former CES Employees</span> <label class="switch">
                     <input type="checkbox" id="onlyEnabledCheckbox">
                     <div class="slider round" (click)="includeLeftChecked()"></div>
                 </label>

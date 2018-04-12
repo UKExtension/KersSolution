@@ -10,7 +10,7 @@ import { UserService, User } from '../user.service';
     selector: 'user-directory-profile',
     template: `<div class="col-md-4 col-sm-4 col-xs-12 profile_details" *ngIf="user">
             <div class="well profile_view">
-                <div class="ribbon" *ngIf="!user.rprtngProfile.enabled"><span>NOT EMPLOYEED</span></div>
+                <div class="ribbon" *ngIf="!user.rprtngProfile.enabled"><span>Former Employee</span></div>
                 <div class="col-sm-12 top">
                     <h4 class="brief"><i *ngIf="user.personalProfile">{{user.personalProfile.professionalTitle}}</i>&nbsp;</h4>
                     <div class="left col-xs-7">
@@ -57,7 +57,7 @@ import { UserService, User } from '../user.service';
                 text-align: right;
               }
               .ribbon span {
-                font-size: 8px;
+                font-size: 7px;
                 font-weight: bold;
                 color: #FFF;
                 text-transform: uppercase;
