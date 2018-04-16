@@ -55,6 +55,7 @@ namespace Kers.Models.Repositories
         public static string SnapCommitmentReinforcementItems = "SnapCommitmentReinforcementItems";
         public static string SnapCommitmentReinforcementItemsPerCounty = "SnapCommitmentReinforcementItemsPerCounty";
         public static string SnapCommitmentSuggestedIncentiveItems = "SnapCommitmentSuggestedIncentiveItems";
+        public static string IndirectByEmployee = "IndirectByEmployee";
 
     }
 }

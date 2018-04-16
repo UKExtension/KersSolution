@@ -1004,60 +1004,69 @@ namespace Kers.Models.Repositories
 
         public string IndirectByEmployee(FiscalYear fiscalYear, bool refreshCache = false){
 
-            
+            string result;
+            var cacheKey = CacheKeys.IndirectByEmployee + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
 
-            var keys = new List<string>();
-            keys.Add("FY");
-            keys.Add("PlanningUnit");
-            keys.Add("EmployeeName");
-            keys.Add("Position");
-            keys.Add("Program(s)");
-            keys.Add("IndirectContacts");
+                var keys = new List<string>();
+                keys.Add("FY");
+                keys.Add("PlanningUnit");
+                keys.Add("EmployeeName");
+                keys.Add("Position");
+                keys.Add("Program(s)");
+                keys.Add("IndirectContacts");
 
-            var reached = this.context.SnapIndirectReached.OrderBy( r => r.order);
-            foreach( var r in reached){
-                keys.Add(r.Name);
-            }
-
-            var result = string.Join(", ", keys.ToArray()) + "\n";
-
-            var SnapData = this.SnapData( fiscalYear);
-
-            var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate < fiscalYear.End && s.Revision.ActivityDate > fiscalYear.Start);
-
-            var byUser = indirectSnapData.GroupBy( s => s.User.Id).Select( 
-                                        d => new {
-                                            User = d.Select( s => s.User ).First(),
-                                            Revisions = d.Select( s => s.Revision )
-                                        }
-                                    )
-                                    .OrderBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
-            foreach( var userData in byUser ){
-                var row = fiscalYear.Name + ",";
-                row += string.Concat("\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                row += string.Concat("\"", userData.User.RprtngProfile.Name, "\"") + ",";
-                row += string.Concat("\"", userData.User.ExtensionPosition.Code, "\"") + ",";
-                var spclt = "";
-                foreach( var sp in userData.User.Specialties){
-                    spclt += " " + sp.Specialty.Code;
-                }
-                row += spclt + ", ";
-                
-                var optNumbrs = new List<ActivityOptionNumberValue>();
-                
-
-                var reachedData = new List<SnapIndirectReachedValue>();
-                foreach( var dt in userData.Revisions){
-                    optNumbrs.AddRange(dt.ActivityOptionNumbers);
-                    reachedData.AddRange(dt.SnapIndirect.SnapIndirectReachedValues);
-                }
-                row += optNumbrs.Where( k =>k.ActivityOptionNumberId == 3).Sum( r => r.Value).ToString() + ",";
+                var reached = this.context.SnapIndirectReached.OrderBy( r => r.order);
                 foreach( var r in reached){
-                    row += reachedData.Where( d => d.SnapIndirectReachedId == r.Id).Sum( l => l.Value).ToString() + ",";
+                    keys.Add(r.Name);
                 }
-                result += row + "\n";
-            }
 
+                result = string.Join(", ", keys.ToArray()) + "\n";
+
+                var SnapData = this.SnapData( fiscalYear);
+
+                var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate < fiscalYear.End && s.Revision.ActivityDate > fiscalYear.Start);
+
+                var byUser = indirectSnapData.GroupBy( s => s.User.Id).Select( 
+                                            d => new {
+                                                User = d.Select( s => s.User ).First(),
+                                                Revisions = d.Select( s => s.Revision )
+                                            }
+                                        )
+                                        .OrderBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
+                foreach( var userData in byUser ){
+                    var row = fiscalYear.Name + ",";
+                    row += string.Concat("\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                    row += string.Concat("\"", userData.User.RprtngProfile.Name, "\"") + ",";
+                    row += string.Concat("\"", userData.User.ExtensionPosition.Code, "\"") + ",";
+                    var spclt = "";
+                    foreach( var sp in userData.User.Specialties){
+                        spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
+                    }
+                    row += spclt + ", ";
+                    
+                    var optNumbrs = new List<ActivityOptionNumberValue>();
+                    
+
+                    var reachedData = new List<SnapIndirectReachedValue>();
+                    foreach( var dt in userData.Revisions){
+                        optNumbrs.AddRange(dt.ActivityOptionNumbers);
+                        reachedData.AddRange(dt.SnapIndirect.SnapIndirectReachedValues);
+                    }
+                    row += optNumbrs.Where( k =>k.ActivityOptionNumberId == 3).Sum( r => r.Value).ToString() + ",";
+                    foreach( var r in reached){
+                        row += reachedData.Where( d => d.SnapIndirectReachedId == r.Id).Sum( l => l.Value).ToString() + ",";
+                    }
+                    result += row + "\n";
+                    _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        }); 
+                }
+            }
             return result;
         }
 
