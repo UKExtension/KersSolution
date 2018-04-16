@@ -82,6 +82,7 @@ namespace Kers.Models.Abstract
         string MethodsUsedRecordCount(FiscalYear fiscalYear, Boolean refreshCache = false);
         string IndividualContactTotals(FiscalYear fiscalYear, Boolean refreshCache = false);
         string EstimatedSizeofAudiencesReached(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string IndirectByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
     }
 
     public interface ISnapPolicyRepository{
