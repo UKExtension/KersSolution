@@ -71,9 +71,8 @@ import { saveAs } from 'file-saver';
   <button (click)="csvIndividualContactTotals()" class="btn btn-info btn-xs" *ngIf="!individualContactTotals_loading">Individual Contact Totals</button><loading [type]="'bars'" *ngIf="individualContactTotals_loading"></loading><br>
   <button (click)="csvSpecificSiteNameByMonth()" class="btn btn-info btn-xs" *ngIf="!specificSiteNameByMonth_loading">Specific Site Names By Month</button><loading [type]="'bars'" *ngIf="specificSiteNameByMonth_loading"></loading><br>
   <button (click)="csvDirectByPersonByMonth()" class="btn btn-info btn-xs" *ngIf="!directByPersonByMonth_loading">Direct Sites By Person, By Month - including number of contacts</button><loading [type]="'bars'" *ngIf="directByPersonByMonth_loading"></loading><br>
-  <!--
+
   <button (click)="csvIndirectByEmployee()" class="btn btn-info btn-xs" *ngIf="!indirectByEmployee_loading">Indirects per Person per Number Reached</button><loading [type]="'bars'" *ngIf="indirectByEmployee_loading"></loading><br>
- -->
 
 
 

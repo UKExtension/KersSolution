@@ -6,11 +6,15 @@ import {
   OnInit
 } from '@angular/core';
 import {
-  startOfDay,
+  startOfMonth,
   endOfDay,
   subDays,
   addDays,
   endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  startOfDay,
+  format,
   isSameDay,
   isSameMonth,
   addHours
@@ -21,6 +25,9 @@ import {
   CalendarEventAction,
   CalendarEventTimesChangedEvent
 } from 'angular-calendar';
+import { Observable } from 'rxjs/Observable';
+import { Activity } from '../activity/activity.service';
+import { CalendarService } from './calendar-service.service';
 
 const colors: any = {
   red: {
@@ -44,9 +51,7 @@ const colors: any = {
   styleUrls: ['./calendar-home.component.css']
 })
 export class CalendarHomeComponent implements OnInit {
-  ngOnInit(): void {
-    
-  }
+  
 
 
   view: string = 'month';
@@ -71,6 +76,10 @@ export class CalendarHomeComponent implements OnInit {
   ];
 
   refresh: Subject<any> = new Subject();
+
+
+  events$: Observable<Array<CalendarEvent<{ activity: Activity }>>>;
+
 
   events: CalendarEvent[] = [
     {
@@ -108,7 +117,102 @@ export class CalendarHomeComponent implements OnInit {
 
   activeDayIsOpen: boolean = true;
 
-  constructor() {}
+  constructor(
+    private service:CalendarService
+  ) {}
+
+
+
+
+
+
+
+
+
+
+
+
+  ngOnInit(): void {
+    this.fetchEvents();
+  }
+
+  fetchEvents(): void {
+    const getStart: any = {
+      month: startOfMonth,
+      week: startOfWeek,
+      day: startOfDay
+    }[this.view];
+
+    const getEnd: any = {
+      month: endOfMonth,
+      week: endOfWeek,
+      day: endOfDay
+    }[this.view];
+    var start = format(getStart(this.viewDate), 'YYYY-MM-DD');
+    var end = format(getEnd(this.viewDate), 'YYYY-MM-DD');
+    console.log(start);
+    console.log(end);
+    this.events$ = this.service.activitiesPerPeriod(getStart(this.viewDate), getEnd(this.viewDate));
+
+/* 
+    const params = new HttpParams()
+      .set(
+        'primary_release_date.gte',
+        format(getStart(this.viewDate), 'YYYY-MM-DD')
+      )
+      .set(
+        'primary_release_date.lte',
+        format(getEnd(this.viewDate), 'YYYY-MM-DD')
+      )
+      .set('api_key', '0ec33936a68018857d727958dca1424f');
+
+    this.events$ = this.http
+      .get('https://api.themoviedb.org/3/discover/movie', { params })
+      .pipe(
+        map(({ results }: { results: Film[] }) => {
+          return results.map((film: Film) => {
+            return {
+              title: film.title,
+              start: new Date(film.release_date),
+              color: colors.yellow,
+              meta: {
+                film
+              }
+            };
+          });
+        })
+      );
+
+ */
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -152,6 +256,10 @@ export class CalendarHomeComponent implements OnInit {
       }
     });
     this.refresh.next();
+  }
+  beforeRendered(event){
+    this.fetchEvents();
+    //console.log(event);
   }
 
 }

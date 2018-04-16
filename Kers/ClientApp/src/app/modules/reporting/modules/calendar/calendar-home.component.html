@@ -25,6 +25,27 @@
       </div>
     </div>
   </div>
+
+
+  <ng-template  #kersOpenDayTemplate  let-events="events"  let-eventClicked="eventClicked">sss
+    <div *ngFor="let event of events; trackBy:trackByEventId" [ngClass]="event?.cssClass" mwlDraggable [dropData]="{event: event}" [dragAxis]="{x: event.draggable, y: event.draggable}">
+      <span class="cal-event" [style.backgroundColor]="event.color?.primary"></span>
+      <mwl-calendar-event-title [event]="event" [customTemplate]="eventTitleTemplate" view="month" (mwlClick)="eventClicked.emit({event: event})"></mwl-calendar-event-title>
+      <mwl-calendar-event-actions [event]="event"></mwl-calendar-event-actions>
+    </div>
+  </ng-template>
+  <div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
+    <ng-template [ngTemplateOutlet]="customTemplate || defaultTemplate" [ngTemplateOutletContext]="{
+      events: events,
+      eventClicked: eventClicked
+    }"></ng-template>
+  </div>
+
+
+
+
+
+
   <div class="col-md-4">
     <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
   </div>
@@ -59,6 +80,8 @@
     [events]="events"
     [refresh]="refresh"
     [activeDayIsOpen]="activeDayIsOpen"
+    [openDayEventsTemplate]="kersOpenDayTemplate"
+    (beforeViewRender)="beforeRendered($event)"
     (dayClicked)="dayClicked($event.day)"
     (eventClicked)="handleEvent('Clicked', $event.event)"
     (eventTimesChanged)="eventTimesChanged($event)">

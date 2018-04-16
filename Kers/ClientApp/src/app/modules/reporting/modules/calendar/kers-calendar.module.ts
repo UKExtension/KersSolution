@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { CalendarRoutingModule } from './calendar-routing.module';
 import { CalendarHomeComponent } from './calendar-home.component';
+import { CalendarService } from './calendar-service.service';
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { CalendarHomeComponent } from './calendar-home.component';
     CalendarRoutingModule,
     CalendarModule.forRoot(),
   ],
-  declarations: [CalendarHomeComponent]
+  declarations: [CalendarHomeComponent],
+  providers: [CalendarService]
 })
 export class KersCalendarModule { }

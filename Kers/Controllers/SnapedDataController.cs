@@ -765,13 +765,13 @@ namespace Kers.Controllers
 
 
 
+
+
 /* 
-
-
         !!!!!!! Keep this action for now !!!!!!!
 
         This info was requested just once. Will see if it will be needed again
-
+ */
         [HttpGet]
         [Route("indirectbyemployee/{fy}/data.csv")]
         [Authorize]
@@ -801,7 +801,7 @@ namespace Kers.Controllers
 
             var SnapData = this.SnapData( fiscalYear);
 
-            var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate.Month == 11);
+            var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate < fiscalYear.End && s.Revision.ActivityDate > fiscalYear.Start);
 
             var byUser = indirectSnapData.GroupBy( s => s.User.Id).Select( 
                                         d => new {
@@ -840,7 +840,7 @@ namespace Kers.Controllers
         }
 
 
- */
+
     
     }
 
