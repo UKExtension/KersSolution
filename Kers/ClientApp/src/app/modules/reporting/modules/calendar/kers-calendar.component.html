@@ -1,0 +1,114 @@
+<div id="calendar" class="fc fc-unthemed fc-ltr">
+  <div class="fc-toolbar fc-header-toolbar">
+    <div class="fc-left"><div class="fc-button-group">
+      <button type="button" class="fc-prev-button fc-button fc-state-default fc-corner-left"
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="activeDayIsOpen = false">
+        <span class="fc-icon fc-icon-left-single-arrow"></span>
+      </button>
+      <button type="button" class="fc-next-button fc-button fc-state-default fc-corner-right"
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="activeDayIsOpen = false">
+        <span class="fc-icon fc-icon-right-single-arrow"></span>
+      </button></div>
+      <button type="button" class="fc-today-button fc-button fc-state-default fc-corner-left fc-corner-right"
+      mwlCalendarToday
+      [(viewDate)]="viewDate">today</button>
+    </div>
+    <div class="fc-right">
+      <div class="fc-button-group">
+        <button type="button" class="fc-month-button fc-button fc-state-default fc-corner-left"
+        (click)="view = 'month'"
+        [class.fc-state-active]="view === 'month'"
+        >month</button>
+        <button type="button" class="fc-agendaWeek-button fc-button fc-state-default"
+        (click)="view = 'week'"
+        [class.fc-state-active]="view === 'week'"
+        >week</button>
+        <button type="button" class="fc-agendaDay-button fc-button fc-state-default fc-corner-right"
+        (click)="view = 'day'"
+        [class.fc-state-active]="view === 'day'"
+        >day</button>
+      </div>
+    </div>
+    <div class="fc-center"><h2>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h2></div>
+    <div class="fc-clear"></div>
+  </div>
+</div>
+
+<ng-template  #kersOpenDayTemplate  let-events="events"  let-eventClicked="eventClicked">
+    <div class="text-right">
+        <a class="btn btn-info btn-xs" *ngIf="viewDate <= today && !logOpened" (click)="logOpened=true">+ new service log record</a> <a class="btn btn-info btn-xs" *ngIf="viewDate <= today">+ new expense record</a>
+    </div>
+    <div>
+      <servicelog-form [activityDate]="viewDate" *ngIf="logOpened"></servicelog-form>
+    </div>
+  <div *ngFor="let event of events; trackBy:trackByEventId" [ngClass]="event?.cssClass" mwlDraggable [dropData]="{event: event}" [dragAxis]="{x: event.draggable, y: event.draggable}">
+    
+
+    <div class="row" style="border-top:1px solid #eee; padding-top: 8px;">
+        <div class="col-xs-8">
+            <span class="cal-event" [style.backgroundColor]="event.color?.primary"></span>
+            {{event.title}}
+        </div>
+        <div class="col-xs-4 text-right">
+            <a class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit</a>
+            <a class="btn btn-info btn-xs"><i class="fa fa-trash-o"></i> Delete</a>
+        </div>  
+    </div>
+
+  </div>
+</ng-template>
+<div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
+  <ng-template [ngTemplateOutlet]="customTemplate || defaultTemplate" [ngTemplateOutletContext]="{
+    events: events,
+    eventClicked: eventClicked
+  }"></ng-template>
+</div>
+
+
+
+<ng-template #loading>
+  <loading></loading>
+</ng-template>
+
+<div *ngIf="events$ | async; else loading; let events">
+
+
+  <div [ngSwitch]="view">
+    <mwl-calendar-month-view
+      *ngSwitchCase="'month'"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [activeDayIsOpen]="activeDayIsOpen"
+      [openDayEventsTemplate]="kersOpenDayTemplate"
+      (beforeViewRender)="beforeRendered($event)"
+      (dayClicked)="dayClicked($event.day)"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-month-view>
+    <mwl-calendar-week-view
+      *ngSwitchCase="'week'"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-week-view>
+    <mwl-calendar-day-view
+      *ngSwitchCase="'day'"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-day-view>
+  </div>
+</div>
+
+

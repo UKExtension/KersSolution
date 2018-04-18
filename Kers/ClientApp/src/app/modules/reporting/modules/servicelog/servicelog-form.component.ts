@@ -26,6 +26,8 @@ export class ServicelogFormComponent implements OnInit{
     isAdmin = false;
 
     @Input() activity:Servicelog = null;
+    @Input() activityId:number;
+    @Input() activityDate:Date;
     @Input() isNewDirect = false;
     @Input() isNewIndirect = false;
     @Input() isNewPolicy = false;
@@ -35,7 +37,7 @@ export class ServicelogFormComponent implements OnInit{
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<Servicelog>();
 
-    loading = true;
+    logLoading = true;
     activityForm = null;
 
     optionArray:ActivityOption[];
@@ -112,7 +114,6 @@ export class ServicelogFormComponent implements OnInit{
             error =>  this.errorMessage = <any>error
         );
         this.populateOptions();
-        console.log(this.activity);
 
 
     }
@@ -326,6 +327,20 @@ export class ServicelogFormComponent implements OnInit{
             }else{
                 this.snapFiscalYear17 = false;
             }
+
+
+
+            if(this.activityDate != null){
+                this.activityForm.patchValue({activityDate: {
+                    date: {
+                        year: this.activityDate.getFullYear(),
+                        month: this.activityDate.getMonth() + 1,
+                        day: this.activityDate.getDate()}
+                    }});
+            }
+
+
+
         }else{
             let date = new Date(this.activity.activityDate);
             if( date.getFullYear() <= 2017 && date.getMonth() < 9){
@@ -337,8 +352,7 @@ export class ServicelogFormComponent implements OnInit{
             this.patch();
         }
 
-
-        this.loading = false;
+        this.logLoading = false;
     }
 
     patch(){
@@ -380,7 +394,7 @@ export class ServicelogFormComponent implements OnInit{
     
 
     onSubmit(){
-        this.loading = true;
+        this.logLoading = true;
         var dateValue = this.activityForm.value.activityDate.date;
         var d = new Date(Date.UTC(dateValue.year, dateValue.month - 1, dateValue.day, 8, 5, 12));
         /*
@@ -413,7 +427,7 @@ export class ServicelogFormComponent implements OnInit{
             this.service.add(val).subscribe(
                 res => {
                     this.onFormSubmit.emit(res);
-                    this.loading = false;
+                    this.logLoading = false;
                 }
             );
         }else{
@@ -458,7 +472,7 @@ export class ServicelogFormComponent implements OnInit{
             this.service.update(this.activity.id, val).subscribe(
                 res => {
                     this.onFormSubmit.emit(res);
-                    this.loading = false;
+                    this.logLoading = false;
                 }
             );
             

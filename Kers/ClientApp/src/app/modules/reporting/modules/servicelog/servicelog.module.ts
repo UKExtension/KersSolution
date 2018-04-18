@@ -62,8 +62,9 @@ import { ActivityModule } from '../activity/activity.module';
                     SnapedAdminService
                 ],
   exports:      [
+                    ServicelogFormComponent,
                     ServicelogSnapedStatsComponent,
-                    SnapedCommitmentStatsComponent
+                    SnapedCommitmentStatsComponent,
                 ]
 })
 export class ServicelogModule { }

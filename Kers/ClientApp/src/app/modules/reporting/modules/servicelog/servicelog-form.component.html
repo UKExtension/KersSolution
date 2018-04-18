@@ -3,8 +3,8 @@
     </button>
     <strong>Error: </strong> {{errorMessage}}
 </div>
-<loading *ngIf="loading"></loading>
-<div class="row" *ngIf="!loading">
+<loading *ngIf="logLoading"></loading>
+<div class="row" *ngIf="!logLoading">
     <div><reporting-display-help id="1"></reporting-display-help></div>
     <div class="col-sm-offset-3 col-sm-9">
         <h2 *ngIf="!activity">New Meeting/Activity Record</h2>

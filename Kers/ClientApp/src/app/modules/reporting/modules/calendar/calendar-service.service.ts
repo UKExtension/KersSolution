@@ -5,6 +5,14 @@ import { Http, Response, Headers, RequestOptions, URLSearchParams, ResponseConte
 import {Observable} from 'rxjs/Observable';
 import { Activity } from '../activity/activity.service';
 import {CalendarEvent} from 'angular-calendar';
+import { Expense } from '../expense/expense.service';
+
+
+import { concat } from 'rxjs/observable/concat';
+import { merge } from 'rxjs/observable/merge';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import 'rxjs/add/operator/mergeMap';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 @Injectable()
 export class CalendarService {
@@ -16,27 +24,63 @@ export class CalendarService {
         private location:Location
   ) { }
 
-  activitiesPerPeriod(start:Date, end:Date, userId:number = 0):Observable<CalendarEvent[]>{
-    var url = this.activityBaseUrl + 'perPeriod/' + start.toISOString() + '/' + end.toISOString()+ '/' + userId  ;
+  activitiesPerPeriod(start:Date, end:Date, userId:number = 0):Observable<CalendarEvent<{ id: number, type: string }>[]>{
+    var url = this.activityBaseUrl + 'perPeriodLite/' + start.toISOString() + '/' + end.toISOString()+ '/' + userId  ;
     return this.http.get(this.location.prepareExternalUrl(url))
             .map(res =>{
               var activities = <Activity[]>res.json();
               var events:CalendarEvent[] = [];
-              for( var activity of activities){
-                var event:CalendarEvent;
-                event.start = activity.activityDate;
+              for( let activity of activities){
+                var event:CalendarEvent = <CalendarEvent>{};
+                var dt = new Date(activity.activityDate);
+                event.start = dt;
                 event.allDay = true;
                 event.title = activity.title;
-                event.color = {primary: '#ccc', secondary: '#cca'};
-                event.meta = {activity:activity}
+                event.color = calendarColors.activity;
+                event.meta = {id:activity.id, type: 'activity'}
                 events.push(event);
               }
-
+              
               return events;
 
             } )
             .catch(this.handleError);
   }
+
+
+  expensesPerPeriod(start:Date, end:Date, userId:number = 0):Observable<CalendarEvent<{ id: number, type: string }>[]>{
+    var url = this.expenseBaseUrl + 'perPeriodLite/' + start.toISOString() + '/' + end.toISOString()+ '/' + userId  ;
+    return this.http.get(this.location.prepareExternalUrl(url))
+            .map(res =>{
+              var activities = <Expense[]>res.json();
+              var events:CalendarEvent[] = [];
+              for( let expense of activities){
+                var event:CalendarEvent = <CalendarEvent>{};
+                var dt = new Date(expense.expenseDate);
+                event.start = dt;
+                event.allDay = true;
+                event.title = expense.expenseLocation;
+                event.color = calendarColors.expense;
+                event.meta = {id:expense.id, type: 'expense'}
+                events.push(event);
+              }
+              
+              return events;
+
+            } )
+            .catch(this.handleError);
+  }
+
+  eventsPerPeriod(start:Date, end:Date, userId:number = 0):Observable<CalendarEvent<{ id: number, type: string }>[]>{
+    var expenses = this.expensesPerPeriod(start, end, userId);
+    var activity = this.activitiesPerPeriod(start, end, userId);
+
+    var merged = combineLatest(expenses, activity)
+                    .map(([bT, sT]) => [...bT, ...sT]);
+
+    return merged;
+  }
+
 
   getRequestOptions(){
     return new RequestOptions(
@@ -54,3 +98,18 @@ export class CalendarService {
   }
 
 }
+
+export const calendarColors: any = {
+  activity: {
+    primary: '#ccc',
+    secondary: '#cca'
+  },
+  expense: {
+    primary: '#acc',
+    secondary: '#aca'
+  },
+  training: {
+    primary: '#e3bc08',
+    secondary: '#FDF1BA'
+  }
+};

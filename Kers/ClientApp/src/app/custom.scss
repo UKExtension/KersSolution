@@ -13,3 +13,22 @@
   .bad input, .bad select, .bad textarea, input.ng-invalid, select.ng-invalid, textarea.ng-invalid, div.description-invalid > div {
     @extend %error-form-field;
   }
+
+
+  .cal-month-view .cal-days .cal-open-day-events{
+    background-color: #ededed;
+    box-shadow: inset 0 0 15px 0 rgba(210, 210, 210, 0.5); 
+  }
+  .cal-month-view .cal-day-badge{
+    background-color: #3a87ad;
+  }
+  .cal-month-view .cal-day-cell.cal-today{
+    background-color: #fcf8e3;
+  }
+
+  .cal-month-view .cal-cell.cal-open{
+    background-color: #e5e5e5 !important; 
+  }
+  .cal-month-view .cal-open-day-events{
+    color:inherit;
+  }

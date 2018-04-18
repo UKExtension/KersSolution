@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CalendarHomeComponent } from './calendar-home.component';
+import { KersCalendarComponent } from './kers-calendar.component';
 
 const routes: Routes = [
   {
@@ -8,7 +8,7 @@ const routes: Routes = [
       children: [
         {
           path: '',
-          component: CalendarHomeComponent
+          component: KersCalendarComponent
         } 
       ]
 

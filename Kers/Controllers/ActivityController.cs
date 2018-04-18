@@ -290,6 +290,18 @@ namespace Kers.Controllers
             return new OkObjectResult(revs);
         }
 
+        [HttpGet("perPeriodLite/{start}/{end}/{userid?}")]
+        [Authorize]
+        public IActionResult PerPeriodLight(DateTime start, DateTime end, int userid = 0 ){
+            if(userid == 0){
+                userid = this.CurrentUser().Id;
+            }
+            end = end.AddDays(1);
+            var lastActivities = context.Activity.
+                                Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end);
+            
+            return new OkObjectResult(lastActivities);
+        }
 
 
 

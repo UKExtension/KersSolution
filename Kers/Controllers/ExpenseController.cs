@@ -86,6 +86,63 @@ namespace Kers.Controllers
             return new OkObjectResult(revs);
         }
 
+
+
+        [HttpGet("perPeriod/{start}/{end}/{userid?}")]
+        [Authorize]
+        public IActionResult PerPeriod(DateTime start, DateTime end, int userid = 0 ){
+            if(userid == 0){
+                userid = this.CurrentUser().Id;
+            }
+            end = end.AddDays(1);
+            var lastExpenses = context.Expense.
+                                Where(e=>e.KersUser.Id == userid && e.ExpenseDate > start && e.ExpenseDate < end).
+                                Include(e=>e.Revisions).ThenInclude( r => r.FundingSourceNonMileage).
+                                Include(e=>e.Revisions).ThenInclude( r => r.FundingSourceMileage).
+                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
+                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
+                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
+                                OrderBy(e=>e.ExpenseDate);
+                              
+            var revs = new List<ExpenseRevision>();
+            if( lastExpenses != null){
+                foreach(var expense in lastExpenses){
+                    if(expense.Revisions.Count != 0){
+                        var lastRevision = expense.Revisions.OrderBy(r=>r.Created).Last();
+                        if( lastRevision.ProgramCategoryId != 0){
+                            var category = context.ProgramCategory.Find(lastRevision.ProgramCategoryId);
+                            if(category != null){
+                                lastRevision.ProgramCategory = category;
+                            }
+                        }
+                        revs.Add( lastRevision );
+                    }
+                }
+            }
+
+            return new OkObjectResult(revs);
+        }
+
+        [HttpGet("perPeriodLite/{start}/{end}/{userid?}")]
+        [Authorize]
+        public IActionResult PerPeriodLite(DateTime start, DateTime end, int userid = 0 ){
+            if(userid == 0){
+                userid = this.CurrentUser().Id;
+            }
+            end = end.AddDays(1);
+            var lastExpenses = context.Expense.
+                                Where(e=>e.KersUser.Id == userid && e.ExpenseDate > start && e.ExpenseDate < end);
+                              
+            var revs = new List<ExpenseRevision>();
+            foreach( var last in lastExpenses){
+                revs.Add(context.ExpenseRevision.Where(e => e.ExpenseId == last.Id).OrderBy(r => r.Created).Last());
+            }
+            return new OkObjectResult(revs);
+        }
+
+
+
+
         [HttpGet("permonth/{year}/{month}/{userId?}/{orderBy?}")]
         [Authorize]
         public IActionResult PerMonth(int year, int month, int userId=0, string orderBy = "desc"){
