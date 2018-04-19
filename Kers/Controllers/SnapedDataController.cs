@@ -265,6 +265,10 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
+
+
+
+/* 
             var keys = new List<string>();
  
             keys.Add("YearMonth");
@@ -305,7 +309,8 @@ namespace Kers.Controllers
                 row += MonthlyTotal.ToString();
                 result += row + "\n";
             }
-             
+              */
+             var result = this.snapDirectRepo.SessionTypebyMonth(fiscalYear);
              return Ok(result);
         }
 
@@ -764,14 +769,6 @@ namespace Kers.Controllers
 
 
 
-
-
-
-/* 
-        !!!!!!! Keep this action for now !!!!!!!
-
-        This info was requested just once. Will see if it will be needed again
- */
         [HttpGet]
         [Route("indirectbyemployee/{fy}/data.csv")]
         [Authorize]
@@ -783,59 +780,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-/* 
-            var keys = new List<string>();
-            keys.Add("FY");
-            keys.Add("PlanningUnit");
-            keys.Add("EmployeeName");
-            keys.Add("Position");
-            keys.Add("Program(s)");
-            keys.Add("IndirectContacts");
 
-            var reached = this.context.SnapIndirectReached.OrderBy( r => r.order);
-            foreach( var r in reached){
-                keys.Add(r.Name);
-            }
-
-            var result = string.Join(", ", keys.ToArray()) + "\n";
-
-            var SnapData = this.SnapData( fiscalYear);
-
-            var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate < fiscalYear.End && s.Revision.ActivityDate > fiscalYear.Start);
-
-            var byUser = indirectSnapData.GroupBy( s => s.User.Id).Select( 
-                                        d => new {
-                                            User = d.Select( s => s.User ).First(),
-                                            Revisions = d.Select( s => s.Revision )
-                                        }
-                                    )
-                                    .OrderBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
-            foreach( var userData in byUser ){
-                var row = fiscalYear.Name + ",";
-                row += string.Concat("\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                row += string.Concat("\"", userData.User.RprtngProfile.Name, "\"") + ",";
-                row += string.Concat("\"", userData.User.ExtensionPosition.Code, "\"") + ",";
-                var spclt = "";
-                foreach( var sp in userData.User.Specialties){
-                    spclt += " " + sp.Specialty.Code;
-                }
-                row += spclt + ", ";
-                
-                var optNumbrs = new List<ActivityOptionNumberValue>();
-                
-
-                var reachedData = new List<SnapIndirectReachedValue>();
-                foreach( var dt in userData.Revisions){
-                    optNumbrs.AddRange(dt.ActivityOptionNumbers);
-                    reachedData.AddRange(dt.SnapIndirect.SnapIndirectReachedValues);
-                }
-                row += optNumbrs.Where( k =>k.ActivityOptionNumberId == 3).Sum( r => r.Value).ToString() + ",";
-                foreach( var r in reached){
-                    row += reachedData.Where( d => d.SnapIndirectReachedId == r.Id).Sum( l => l.Value).ToString() + ",";
-                }
-                result += row + "\n";
-            }
- */
             return Ok(this.snapDirectRepo.IndirectByEmployee(fiscalYear));
         }
 

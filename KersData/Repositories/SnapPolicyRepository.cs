@@ -112,7 +112,7 @@ namespace Kers.Models.Repositories
             
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 4 )
                     });
             
             
