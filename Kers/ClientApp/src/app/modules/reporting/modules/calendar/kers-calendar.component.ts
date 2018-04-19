@@ -31,7 +31,6 @@ import { CalendarService } from './calendar-service.service';
 
 @Component({
   selector: 'kers-calendar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './kers-calendar.component.html',
   styleUrls: ['./kers-calendar.component.css']
 })
@@ -40,14 +39,12 @@ export class KersCalendarComponent implements OnInit {
   view: string = 'month';
 
   viewDate: Date = new Date();
-  today:Date = new Date();
-
   refresh: Subject<any> = new Subject();
 
   events$: Observable<Array<CalendarEvent<{ id: number, type: string }>>>;
 
   activeDayIsOpen: boolean = true;
-  logOpened = false;
+
 
   constructor(
     private service:CalendarService
@@ -76,38 +73,24 @@ export class KersCalendarComponent implements OnInit {
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    
     if (isSameMonth(date, this.viewDate)) {
       if (
         isSameDay(this.viewDate, date) && this.activeDayIsOpen === true
       ) {
         this.activeDayIsOpen = false;
-      } else {
-        this.activeDayIsOpen = true;
+      } else {     
         this.viewDate = date;
+        this.activeDayIsOpen = true;
       }
-      this.logOpened = false;
     }
     
   }
 
-  eventTimesChanged({
-    event,
-    newStart,
-    newEnd
-  }: CalendarEventTimesChangedEvent): void {
-    event.start = newStart;
-    event.end = newEnd;
-    this.handleEvent('Dropped or resized', event);
-    this.refresh.next();
+  viewDateChange(){
+    this.activeDayIsOpen = false;
+    this.fetchEvents();
   }
 
-  handleEvent(action: string, event: CalendarEvent): void {
-    console.log(event);
-  }
-
-  beforeRendered(event){
-    //this.fetchEvents();
-    //console.log(event);
-  }
 
 }

@@ -9,6 +9,8 @@ import { CalendarService } from './calendar-service.service';
 import { SharedModule } from '../../shared/shared.module';
 import { ServicelogModule } from '../servicelog/servicelog.module';
 import { ServicelogFormComponent } from '../servicelog/servicelog-form.component';
+import { CalendarDayEventsComponent } from './calendar-day-events.component';
+import { CalendarHeaderComponent } from './calendar-header.component';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { ServicelogFormComponent } from '../servicelog/servicelog-form.component
     CalendarModule.forRoot(),
   ],
   declarations: [
-    KersCalendarComponent
+    KersCalendarComponent,
+    CalendarDayEventsComponent,
+    CalendarHeaderComponent
   ],
   providers: [CalendarService]
 })

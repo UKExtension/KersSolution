@@ -101,12 +101,12 @@ export class CalendarService {
 
 export const calendarColors: any = {
   activity: {
-    primary: '#ccc',
-    secondary: '#cca'
+    primary: '#394D5F',
+    secondary: '#286090'
   },
   expense: {
-    primary: '#acc',
-    secondary: '#aca'
+    primary: '#169F85',
+    secondary: '#ec971f'
   },
   training: {
     primary: '#e3bc08',
