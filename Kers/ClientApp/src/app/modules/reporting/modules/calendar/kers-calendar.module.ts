@@ -11,6 +11,8 @@ import { ServicelogModule } from '../servicelog/servicelog.module';
 import { ServicelogFormComponent } from '../servicelog/servicelog-form.component';
 import { CalendarDayEventsComponent } from './calendar-day-events.component';
 import { CalendarHeaderComponent } from './calendar-header.component';
+import { ExpenseModule } from '../expense/expense.module';
+import { CalendarEventDetailComponent } from './calendar-event-detail.component';
 
 
 @NgModule({
@@ -20,12 +22,14 @@ import { CalendarHeaderComponent } from './calendar-header.component';
     FormsModule,
     CalendarRoutingModule,
     ServicelogModule,
+    ExpenseModule,
     CalendarModule.forRoot(),
   ],
   declarations: [
     KersCalendarComponent,
     CalendarDayEventsComponent,
-    CalendarHeaderComponent
+    CalendarHeaderComponent,
+    CalendarEventDetailComponent
   ],
   providers: [CalendarService]
 })

@@ -141,6 +141,27 @@ namespace Kers.Controllers
         }
 
 
+        [HttpGet("byrevid/{Id}")]
+        [Authorize]
+        public async Task<IActionResult> ByRevId(int Id ){
+
+            var rev = await context.ExpenseRevision
+                                .Where(e=>e.Id == Id).
+                                Include( r => r.FundingSourceNonMileage).
+                                Include( r => r.FundingSourceMileage).
+                                Include( r => r.MealRateBreakfast).
+                                Include( r => r.MealRateLunch).
+                                Include( r => r.MealRateDinner).
+                                FirstOrDefaultAsync();
+
+            var category = context.ProgramCategory.Find(rev.ProgramCategoryId);
+            if(category != null){
+                rev.ProgramCategory = category;
+            }
+
+            return new OkObjectResult(rev);
+        }
+
 
 
         [HttpGet("permonth/{year}/{month}/{userId?}/{orderBy?}")]

@@ -79,6 +79,13 @@ export class ServicelogService {
                 .catch(this.handleError);
     }
 
+    byId(id:number):Observable<Servicelog>{
+        var url = this.baseUrl + 'byid/'+ id;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <Servicelog>res.json())
+                .catch(this.handleError);
+    }
+
     /*****************************/
     // Snap Ed Direct
     /*****************************/

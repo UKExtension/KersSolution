@@ -19,6 +19,14 @@ export class ExpenseService {
         private location:Location
         ){}
 
+
+    byRevId(id:number):Observable<Expense>{
+        var url = this.baseUrl + 'byrevid/' + id;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <Expense>res.json() )
+                .catch(this.handleError);
+    }
+
     add( expense:Expense ){
         return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(expense), this.getRequestOptions())
                     .map( res => <Expense>res.json() )

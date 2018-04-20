@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
+
 
 @Component({
   selector: 'calendar-day-events',
@@ -21,8 +22,15 @@ export class CalendarDayEventsComponent implements OnInit {
     this._viewDate = viewDate;
   }
   @Input() events: Array<CalendarEvent<{ id: number, type: string }>>;
+  @Output() changed: EventEmitter<void> = new EventEmitter();
+
+
+
+
+
   today:Date = new Date();
   logOpened = false;
+  expenseOpened = false;
 
   constructor() { }
 
@@ -31,6 +39,11 @@ export class CalendarDayEventsComponent implements OnInit {
 
   logSubmit(event){
     this.logOpened = false;
+    this.changed.emit();
+  }
+  expenseSubmit(event){
+    this.expenseOpened = false;
+    this.changed.emit();
   }
 
 }

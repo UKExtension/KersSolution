@@ -879,7 +879,7 @@ namespace Kers.Models.Repositories
 
                 var byUser = SnapData.GroupBy( s => s.User.Id).Select( 
                                             d => new {
-                                                User = d.Select( s => s.User ).First(),
+                                                User = d.Select( s => s.User ).Last(),
                                                 Revisions = d.Select( s => s.Revision )
                                             }
                                         )
@@ -893,8 +893,8 @@ namespace Kers.Models.Repositories
                     row += string.Concat( "\"", userData.User.ExtensionPosition.Code, "\"") + ",";
 
                     var spclt = "";
-                    foreach( var s in userData.User.Specialties){
-                        spclt += " " + s.Specialty.Code;
+                    foreach( var sp in userData.User.Specialties){
+                        spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
                     }
                     row += string.Concat( "\"", spclt, "\"") + ",";
                     

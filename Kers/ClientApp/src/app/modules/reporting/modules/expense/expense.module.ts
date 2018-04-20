@@ -56,6 +56,7 @@ import {ExpenseService} from './expense.service';
   providers:    [ ExpenseService ],
   exports:      [
                   ExpenseReportsHomeComponent,
+                  ExpenseFormComponent
                 ]
 })
 export class ExpenseModule { }

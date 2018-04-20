@@ -42,6 +42,51 @@ namespace Kers.Controllers
         }
 
 
+
+        [HttpGet("byid/{Id}")]
+        [Authorize]
+        public async Task<IActionResult> Byid(int Id = 0){
+            
+            var activity = await context.Activity.
+                                Where(e=> e.Id == Id).
+                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
+                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
+                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
+                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
+                                Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).
+                                Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAges).
+                                Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
+                                Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
+                                Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
+                                Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner).
+                                FirstOrDefaultAsync();
+            if(activity == null){
+                this.Log( activity ,"ActivityRevision", "Not Found Activity in get by id attempt.", "Activity", "Error");
+                return new StatusCodeResult(500);
+            }
+
+            var a = activity.Revisions.OrderBy(r=>r.Created).Last();
+            a.RaceEthnicityValues = a.RaceEthnicityValues.
+                                        OrderBy(r => r.Race.Order).
+                                        ThenBy(e => e.Ethnicity.Order).
+                                        ToList();
+            if(a.SnapDirect != null){
+                a.SnapDirect.SnapDirectAgesAudienceValues = a.SnapDirect.SnapDirectAgesAudienceValues.
+                                        OrderBy(r => r.SnapDirectAudience.order).
+                                        ThenBy( r => r.SnapDirectAges.order).
+                                        ToList();
+            }
+            if(a.SnapPolicy != null){
+                a.SnapPolicy.SnapPolicyPartnerValue = a.SnapPolicy.SnapPolicyPartnerValue.
+                                        OrderBy(r => r.SnapPolicyPartner.order).
+                                        ToList();
+            }
+            return new OkObjectResult(a);
+        }
+
+
+
+
         [HttpGet("latest/{skip?}/{amount?}/{userId?}")]
         [Authorize]
         public IActionResult Get(int skip = 0, int amount = 10, int userId = 0){

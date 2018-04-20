@@ -6,7 +6,7 @@
 </calendar-header>
 
 <ng-template  #kersOpenDayTemplate  let-events="events"  let-eventClicked="eventClicked">
-  <calendar-day-events [viewDate]="viewDate" [events]="events" *ngIf="activeDayIsOpen"></calendar-day-events>
+  <calendar-day-events [viewDate]="viewDate" [events]="events" *ngIf="activeDayIsOpen" (changed)="fetchEvents()"></calendar-day-events>
 </ng-template>
 
 

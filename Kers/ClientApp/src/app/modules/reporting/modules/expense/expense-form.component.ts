@@ -13,6 +13,7 @@ import { ProgramCategory, ProgramsService } from '../admin/programs/programs.ser
 export class ExpenseFormComponent { 
 
     @Input() expense:Expense = null;
+    @Input() expenseDate:Date;
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<Expense>();
@@ -123,6 +124,13 @@ export class ExpenseFormComponent {
              if( this.expense.programCategoryId == 0){
                 this.expenseForm.patchValue({programCategoryId:""});
              }
+         }else if(this.expenseDate != null){
+            this.expenseForm.patchValue({expenseDate: {
+                date: {
+                    year: this.expenseDate.getFullYear(),
+                    month: this.expenseDate.getMonth() + 1,
+                    day: this.expenseDate.getDate()}
+                }});
          }
     }
 
