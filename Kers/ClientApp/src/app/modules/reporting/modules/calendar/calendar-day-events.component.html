@@ -6,6 +6,6 @@
   <servicelog-form [activityDate]="viewDate" *ngIf="logOpened" (onFormCancel)="logOpened=false" (onFormSubmit)="logSubmit($event)"></servicelog-form>
   <expense-form *ngIf="expenseOpened" [expenseDate]="viewDate" (onFormCancel)="expenseOpened=false" (onFormSubmit)="expenseSubmit($event)"></expense-form>
 </div>
-<div *ngFor="let event of events; trackBy:trackByEventId" [ngClass]="event?.cssClass">
+<div *ngFor="let event of events" [ngClass]="event?.cssClass">
   <calendar-event-detail [event]="event" (changed)="changed.emit()"></calendar-event-detail>
 </div>
