@@ -10,10 +10,12 @@ import { ServicelogService, Servicelog } from '../servicelog/servicelog.service'
 })
 export class CalendarEventDetailComponent implements OnInit {
   @Input() event:CalendarEvent;
-  @Output() change: EventEmitter<void> = new EventEmitter;
+  @Output() changed: EventEmitter<void> = new EventEmitter;
 
   expenseEdit = false;
   activityEdit = false;
+  expenseDelete = false;
+  activityDelete = false;
 
   expense:Expense;
   activity:Servicelog;
@@ -60,10 +62,36 @@ export class CalendarEventDetailComponent implements OnInit {
     this.activityEdit = false;
   }
 
-  formSubmit(){
-    
+  formSubmit(event){
+    if(this.event.meta.type == "expense"){
+      this.expense = <Expense>event;
+    }
     this.expenseEdit = false;
     this.activityEdit = false;
-    this.change.emit();
+    this.changed.emit();
+  }
+
+  delete(){
+    if(this.event.meta.type == "expense"){
+      this.expenseDelete = true;
+    }else if (this.event.meta.type == "activity"){
+      this.activityDelete = true;
+    }
+  }
+  confirmDelete(){
+    if(this.event.meta.type == "expense"){
+      this.expenseService.delete(this.event.meta.id).subscribe(
+        res => {
+          this.changed.emit();
+        }
+      );
+    }else if (this.event.meta.type == "activity"){
+      this.activityService.deleteByActivityId(this.event.meta.id).subscribe(
+        res => {
+          this.changed.emit();
+        }
+      );
+    }
+    
   }
 }

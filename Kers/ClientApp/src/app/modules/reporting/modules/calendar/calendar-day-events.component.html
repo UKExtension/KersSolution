@@ -7,5 +7,5 @@
   <expense-form *ngIf="expenseOpened" [expenseDate]="viewDate" (onFormCancel)="expenseOpened=false" (onFormSubmit)="expenseSubmit($event)"></expense-form>
 </div>
 <div *ngFor="let event of events; trackBy:trackByEventId" [ngClass]="event?.cssClass">
-  <calendar-event-detail [event]="event" (change)="changed.emit()"></calendar-event-detail>
+  <calendar-event-detail [event]="event" (changed)="changed.emit()"></calendar-event-detail>
 </div>

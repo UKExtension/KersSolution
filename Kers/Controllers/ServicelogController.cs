@@ -261,6 +261,29 @@ namespace Kers.Controllers
             }
         }
 
+        [HttpDelete("byactivityid/{id}")]
+        public IActionResult DeleteByActivityId( int id ){
+            var acEntity = context.Activity.Where(a => a.Id == id).
+                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
+                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
+                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
+                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
+                                FirstOrDefault();
+            
+            if(acEntity != null){
+                
+                context.Activity.Remove(acEntity);
+                context.SaveChanges();
+                
+                this.Log(acEntity,"ActivityRevision", "Activity Removed.");
+
+                return new OkResult();
+            }else{
+                this.Log( id ,"ActivityRevision", "Not Found Activity in a delete attempt.", "Activity", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
 
 
         [HttpGet("options")]

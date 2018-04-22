@@ -1,13 +1,19 @@
 <loading [type]="'bars'" *ngIf="loading"></loading>
-<div class="row" style="border-top:1px solid #eee; padding-top: 8px;" *ngIf="!loading">
+<div class="row" style="border-top:1px solid #eee; padding-top: 8px;" *ngIf="!loading && !expenseEdit && !activityEdit && !expenseDelete && !activityDelete">
   <div class="col-xs-8">
       <span class="cal-event" [style.backgroundColor]="event.color?.primary"></span>
       {{event.title}}
   </div>
   <div class="col-xs-4 text-right">
       <a class="btn btn-info btn-xs" (click)="edit()"><i class="fa fa-pencil"></i> Edit</a>
-      <a class="btn btn-info btn-xs"><i class="fa fa-trash-o"></i> Delete</a>
-  </div>
-  <expense-form [expense]="expense" *ngIf="expenseEdit" (onFormCancel)="formCancel()" (onFormSubmit)="formSubmit($event)"></expense-form>
-  <servicelog-form [activity]="activity" *ngIf="activityEdit" (onFormCancel)="formCancel()" (onFormSubmit)="formSubmit($event)"></servicelog-form>  
+      <a class="btn btn-info btn-xs" (click)="delete()"><i class="fa fa-trash-o"></i> Delete</a>
+  </div>  
+</div>
+<expense-form [expense]="expense" *ngIf="expenseEdit" (onFormCancel)="formCancel()" (onFormSubmit)="formSubmit($event)"></expense-form>
+<servicelog-form [activity]="activity" *ngIf="activityEdit" (onFormCancel)="formCancel()" (onFormSubmit)="formSubmit($event)"></servicelog-form>
+<div *ngIf="expenseDelete">
+    Do you really want to delete expense <strong>{{event.title}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="expenseDelete = false" class="btn btn-info btn-xs">No</button>
+</div>
+<div *ngIf="activityDelete">
+    Do you really want to delete activity <strong>{{event.title}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="activityDelete = false" class="btn btn-info btn-xs">No</button>
 </div>

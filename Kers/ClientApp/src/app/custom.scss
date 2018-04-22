@@ -32,3 +32,8 @@
   .cal-month-view .cal-open-day-events{
     color:inherit;
   }
+  mwl-calendar-week-view-event .cal-event .cal-event-title, 
+  mwl-calendar-week-view-event .cal-event,
+  .cal-all-day-event .cal-event-title{
+    color: #e5e5e5;
+  }

@@ -209,6 +209,15 @@ export class ServicelogService {
                     .catch(this.handleError);
     }
 
+    deleteByActivityId(id:number){
+        var url = this.baseUrl + 'byactivityid/' + id;
+        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
+                    .map( res => {
+                        return res;
+                    })
+                    .catch(this.handleError);
+    }
+
 
     latest(skip:number = 0, take:number = 5){
         var url = this.baseUrl + 'latest/' + skip + '/' + take;
