@@ -111,4 +111,8 @@ namespace Kers.Models.Abstract
         Task<string> ReinforcementItemsPerCounty(FiscalYear fiscalYear, bool refreshCache = false);
         Task<string> SuggestedIncentiveItems(FiscalYear fiscalYear, bool refreshCache = false);
     }
+    public interface IStoryRepository: IEntityBaseRepository<Story>{
+        List<int> LastStoryRevisionIds( FiscalYear fiscalYear);
+        List<StoryRevision> LastStoryRevisions( FiscalYear fiscalYear);
+    }
 }

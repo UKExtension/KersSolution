@@ -120,11 +120,15 @@ export class AffirmativeReportsHomeComponent {
         if(this.selectedFiscalYear == null ){
             this.selectedFiscalYear = event;
             this.setValues();
-            this.defaultTitle();
+            if(this.unitId == 0){
+                this.defaultTitle();
+            }
         }else if(this.selectedFiscalYear.id != event.id){
             this.selectedFiscalYear = event;
             this.getPlan();
-            this.defaultTitle();
+            if(this.unitId == 0){
+                this.defaultTitle();
+            }
         }
 
     }

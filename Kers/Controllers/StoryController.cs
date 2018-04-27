@@ -29,6 +29,7 @@ namespace Kers.Controllers
         KERScoreContext context;
         KERSmainContext mainContext;
         IKersUserRepository userRepo;
+        IStoryRepository storyRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
 
@@ -38,13 +39,15 @@ namespace Kers.Controllers
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
-                    IFiscalYearRepository fiscalYearRepo
+                    IFiscalYearRepository fiscalYearRepo,
+                    IStoryRepository storyRepo
             ){
            this.context = context;
            this.mainContext = mainContext;
            this.userRepo = userRepo;
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
+           this.storyRepo = storyRepo;
         }
 
 
@@ -173,6 +176,34 @@ namespace Kers.Controllers
             var theAmount = Convert.ToInt32(amount);
             theAmount =  theAmount <= 0 ? DefaultNumberOfItems : theAmount ;
 
+            IEnumerable<StoryRevision> revs = storyRepo.LastStoryRevisions(this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog));
+            if(search != null){
+                revs = revs.Where( i => i.Title.Contains(search) || i.Story.Contains(search));
+            }
+            if( unit != "0" ){
+                revs = revs.Where( i => context.Story.Where(s => i.StoryId == s.Id).First().KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit) );
+            }
+            if( program != "0"){
+                revs = revs.Where( i => i.MajorProgramId == Convert.ToInt32(program) );
+            }
+            if( snap != "0"){
+                revs = revs.Where( i => i.IsSnap );
+            }
+            if( withImage != "0"){
+                revs = revs.Where( i => i.StoryImages.Count() > 0 );
+            }
+            revs = revs.Take(theAmount);
+            foreach(var rev in revs){
+                var imgs = new List<StoryImage>();
+                foreach( var img in rev.StoryImages){
+                    var file = context.StoryImage.Where( f => f.Id == img.Id).Include(s => s.UploadImage).ThenInclude(i => i.UploadFile).FirstOrDefault();
+                    file.UploadImage.UploadFile.Content = null;
+                    imgs.Add(file);
+                }
+                rev.StoryImages = imgs;
+            }
+
+/* 
             var stories = from i in context.Story select i;
             if(search != null){
                 stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().Title.Contains(search) || i.Revisions.OrderBy(r => r.Created).Last().Story.Contains(search));
@@ -195,6 +226,9 @@ namespace Kers.Controllers
             stories = stories.OrderByDescending(s => s.Updated);
             stories = stories.Take(theAmount);
             var revs = new List<StoryRevision>();
+
+
+
             if(stories != null){
                 foreach(var story in stories){
                     revs.Add( story.Revisions.OrderBy(r=>r.Created).Last() );
@@ -204,7 +238,7 @@ namespace Kers.Controllers
                 foreach( var img in rev.StoryImages){
                     img.UploadImage.UploadFile.Content = null;
                 }
-            }
+            } */
             return new OkObjectResult(revs);
         }
 
@@ -216,23 +250,24 @@ namespace Kers.Controllers
                                                 [FromQuery] string snap = "0",
                                                 [FromQuery] string withImage = "0"
                                             ){
-            var stories = from i in context.Story select i;
+            IEnumerable<StoryRevision> revs = storyRepo.LastStoryRevisions(this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog));
             if(search != null){
-                stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().Title.Contains(search));
+                revs = revs.Where( i => i.Title.Contains(search) || i.Story.Contains(search));
             }
             if( unit != "0" ){
-                stories = stories.Where( i => i.KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit) );
+                revs = revs.Where( i => context.Story.Where(s => i.StoryId == s.Id).First().KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit) );
             }
             if( program != "0"){
-                stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().MajorProgramId == Convert.ToInt32(program) );
+                revs = revs.Where( i => i.MajorProgramId == Convert.ToInt32(program) );
             }
             if( snap != "0"){
-                stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().IsSnap );
+                revs = revs.Where( i => i.IsSnap );
             }
             if( withImage != "0"){
-                stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().StoryImages.Count() > 0 );
+                revs = revs.Where( i => i.StoryImages.Count() > 0 );
             }
-            return new OkObjectResult(stories.Count());
+            
+            return new OkObjectResult(revs.Count());
         }
 
 

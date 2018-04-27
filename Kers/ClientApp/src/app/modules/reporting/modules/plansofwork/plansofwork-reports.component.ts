@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import {PlansofworkService, Map, PlanOfWork} from './plansofwork.service';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
@@ -14,6 +14,7 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
 })
 export class PlansofworkReportsComponent implements OnInit{
 
+    @Input() planningUnitId:number = 0;
     plans:PlanOfWork[];
 
     fiscalYears: FiscalYear[];
@@ -38,14 +39,16 @@ export class PlansofworkReportsComponent implements OnInit{
 
     selectFiscalYear(year:FiscalYear){
         this.selectedFiscalYear = year;
-        this.defaultTitle();
+        if(this.planningUnitId == 0){
+            this.defaultTitle();
+        }
         this.getList();        
     }
 
 
 
     getList(){
-        this.plansofworkService.listPlansDetails(this.selectedFiscalYear.name).subscribe(
+        this.plansofworkService.listPlansDetails(this.selectedFiscalYear.name, this.planningUnitId).subscribe(
             plans => {
                 this.plans = plans;
                 

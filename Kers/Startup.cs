@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
 using Kers.Tasks;
 using Kers.Tasks.Scheduling;
+using Newtonsoft.Json;
 
 namespace Kers
 {
@@ -33,6 +34,7 @@ namespace Kers
             Configuration = builder.Build();
             this.secretKey = Configuration["Secret:JWTKey"].ToString();
             CurrentEnvironment = env;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -126,6 +128,7 @@ namespace Kers
             services.AddScoped<ISnapPolicyRepository, SnapPolicyRepository>();
             services.AddScoped<ISnapFinancesRepository, SnapFinancesRepository>();
             services.AddScoped<ISnapCommitmentRepository, SnapCommitmentRepository>();
+            services.AddScoped<IStoryRepository, StoryRepository>();
             services.AddScoped<IMembershipService, MembershipService>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -207,6 +210,11 @@ namespace Kers
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
         }
     }
 }
