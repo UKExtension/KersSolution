@@ -37,7 +37,7 @@ namespace Kers.Models.Repositories
                 ids = new List<int>();
                 var stories = context.Story
                                 .Where(r => r.Created > fiscalYear.Start && r.Created < fiscalYear.End)
-                                .Include( r => r.Revisions);
+                                .Include( r => r.Revisions).OrderByDescending(s => s.Created);
                 foreach( var story in stories){
                     var rev = story.Revisions.OrderBy( r => r.Created );
                     var last = rev.Last();
