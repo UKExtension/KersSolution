@@ -65,23 +65,72 @@ import { Observable } from "rxjs/Observable";
 
 
 
-    <h2>Plans of Work</h2>
-    <div *ngIf="plans">
-        <table class="table table-striped">
-            <tbody>
-                <tr *ngFor="let planofwork of plans | async" [isReport]="true" [planofworkDetail]="planofwork" (onPlanofworkUpdated)="onPlanofworkUpdate()" (onPlanofworkDeleted)="onPlanofworkUpdate()" ></tr>
-            </tbody>               
-        </table>            
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+            <div class="x_title">
+                <h2>Plans of Work<small>by Fiscal Year</small></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div *ngIf="county">
+                    <plansofwork-reports [planningUnitId]="county.id"></plansofwork-reports>          
+                </div>  
+                
+            </div>
+        </div>
     </div>
-    <h2>Affirmative Action Plan</h2>
-    <table class="table table-striped">
-        <tr *ngIf="!aa"><td class="text-right"><button class="btn btn-info btn-xs" (click)="aa = !aa" >view</button></td></tr>
-        <tr *ngIf="aa"><td class="text-right"><button class="btn btn-info btn-xs" (click)="aa = !aa">close</button></td></tr>
-        <tr *ngIf="aa"><td><affirmative-report [unitId]="county.id"></affirmative-report></td></tr>
-    </table>
+
+
+        <div class="col-md-12">
+            <div class="x_panel">
+            <div class="x_title">
+                <h2>Affirmative Action<small>Plans and Reports</small></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div *ngIf="county">
+                    <div class="text-right">
+                        <div *ngIf="!affOpen"><button (click)="affOpen=true" class="btn btn-info btn-xs">view</button></div>
+                        <div *ngIf="affOpen"><button (click)="affOpen=false" class="btn btn-info btn-xs">close</button></div>
+                    </div>
+                    <affirmative-report [unitId]="county.id" *ngIf="affOpen"></affirmative-report>       
+                </div>  
+                
+            </div>
+        </div>
+
+
+
+
     
 
   </div>
+
+    
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
     
   `
 })
@@ -89,7 +138,6 @@ export class CountyHomeComponent {
 
     id:number = 0;
     county: PlanningUnit;
-    plans:Observable<PlanOfWork[]>;
     onlyEnabled:boolean = true;
 
     constructor( 
@@ -115,7 +163,6 @@ export class CountyHomeComponent {
                     .subscribe(
                         county => {
                             this.county = <PlanningUnit>county;
-                            this.plans = this.plansofworkService.plansForCounty(this.county.id);
                             this.defaultTitle();
                             /*
                             var go = JSON.parse(this.county.geoFeature);

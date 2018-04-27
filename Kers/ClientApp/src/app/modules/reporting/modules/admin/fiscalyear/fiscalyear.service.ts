@@ -21,6 +21,7 @@ export class FiscalyearService {
 
     listFiscalYears(){
             var url = this.baseUrl + "All";
+            if(this.years != null) return Observable.of(this.years);
             return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => this.years = res.json())
                 .catch(this.handleError);
@@ -29,6 +30,24 @@ export class FiscalyearService {
         var url = this.baseUrl + "bytype/" + type;
         return this.http.get(this.location.prepareExternalUrl(url))
             .map(res => this.years = <FiscalYear[]>res.json())
+            .catch(this.handleError);
+    }
+    forDate(date:Date, type:string = "serviceLog"):Observable<FiscalYear>{
+        var url = this.baseUrl + "forDate/" + date.toISOString() + "/" + type;
+        return this.http.get(this.location.prepareExternalUrl(url))
+            .map(res => {
+                var year = <FiscalYear>res.json();
+                year.start = new Date(year.start);
+                year.end = new Date(year.end);
+                if(year.availableAt != null){
+                    year.availableAt = new Date(year.availableAt);
+                }
+                if(year.extendedTo != null){
+                    year.extendedTo = new Date(year.extendedTo);
+                }
+                return year;
+                
+            })
             .catch(this.handleError);
     }
 

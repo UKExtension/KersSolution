@@ -46,6 +46,22 @@ namespace Kers.Controllers.Admin
             var year = fiscalYearRepository.currentFiscalYear(type);
             return new OkObjectResult(year);
         }
+        [HttpGet("forDate/{date}/{type?}")]
+        public async Task<IActionResult> ForDate(DateTime date, string type = "serviceLog"){
+            var year = await context.FiscalYear
+                        .Where( f => 
+                                f.Type == type
+                                &&
+                                f.Start < date
+                                &&  
+                                f.End > date    
+                            )
+                        .FirstOrDefaultAsync();
+            if(year == null){
+                return new StatusCodeResult(500);
+            }           
+            return new OkObjectResult(year);
+        }
 
         [HttpGet("next/{type?}")]
         public IActionResult Next(string type = "serviceLog"){

@@ -13,6 +13,7 @@ import { CalendarDayEventsComponent } from './calendar-day-events.component';
 import { CalendarHeaderComponent } from './calendar-header.component';
 import { ExpenseModule } from '../expense/expense.module';
 import { CalendarEventDetailComponent } from './calendar-event-detail.component';
+import { CalendarHomeComponent } from './calendar-home.component';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { CalendarEventDetailComponent } from './calendar-event-detail.component'
     KersCalendarComponent,
     CalendarDayEventsComponent,
     CalendarHeaderComponent,
-    CalendarEventDetailComponent
+    CalendarEventDetailComponent,
+    CalendarHomeComponent
   ],
   providers: [CalendarService]
 })

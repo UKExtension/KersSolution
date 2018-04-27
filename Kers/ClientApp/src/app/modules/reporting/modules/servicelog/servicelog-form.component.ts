@@ -10,6 +10,7 @@ import { SnapClassic, SnapClassicService, zzSnapEdDeliverySite, zzSnapEdSessionT
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from "rxjs/Observable";
 import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectAges, SnapDirectAudience, SnapDirectDeliverySite, SnapIndirectMethod, SnapIndirectReached, SnapPolicyAimed, SnapPolicyPartner } from "./servicelog.service";
+import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 
 
@@ -45,6 +46,8 @@ export class ServicelogFormComponent implements OnInit{
     ethnicities:Ethnicity[];
     optionNumbers:ActivityOptionNumber[];
     initiatives:StrategicInitiative[];
+
+    fiscalYear:FiscalYear;
 
     snapEligable = false;
     hasIndirect = false;
@@ -84,7 +87,8 @@ export class ServicelogFormComponent implements OnInit{
     constructor( 
         private fb: FormBuilder,
         private service: ServicelogService,
-        private programsService:ProgramsService
+        private programsService:ProgramsService,
+        private fiscalYearService: FiscalyearService
     )   
     {
           
@@ -109,14 +113,41 @@ export class ServicelogFormComponent implements OnInit{
     }
 
     ngOnInit(){
-        this.programsService.listInitiatives().subscribe(
-            i => this.initiatives = i,
-            error =>  this.errorMessage = <any>error
-        );
+
+        
+
+        if( this.activity != null){
+            this.getFiscalYear(new Date(this.activity.activityDate));
+        }else if( this.activityDate != null ){
+            this.getFiscalYear( this.activityDate );
+        }else{
+            this.getFiscalYear( new Date() );
+        }
+        
         this.populateOptions();
 
 
     }
+
+    getFiscalYear(date:Date){
+        this.fiscalYearService.forDate(  date ).subscribe(
+            res => {
+                this.fiscalYear = <FiscalYear> res;
+                this.getInitiatives(this.fiscalYear);
+            }
+        )
+    }
+
+    getInitiatives( fy:FiscalYear ){
+        this.programsService.listInitiatives( fy.name ).subscribe(
+            i => this.initiatives = i,
+            error =>  this.errorMessage = <any>error
+        );
+    }
+
+
+
+
     //Disable Snap Ed Checkbox for the 2017 fiscal year on date change
     onDateChanged(event: IMyDateModel) {
         if(event.date.year <= 2017 && event.date.month < 10){
@@ -125,6 +156,10 @@ export class ServicelogFormComponent implements OnInit{
             this.snapEligable = false;
         }else{
             this.snapFiscalYear17 = false;
+        }
+        var date = event.jsdate;
+        if(  this.fiscalYear.start > date || this.fiscalYear.end < date   ){
+            this.getFiscalYear( date );
         }
     }
 

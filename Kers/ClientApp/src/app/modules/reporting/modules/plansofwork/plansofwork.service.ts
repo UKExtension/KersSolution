@@ -31,8 +31,8 @@ export class PlansofworkService {
                 .map(res => this.plans = <PlanOfWork[]>res.json())
                 .catch(this.handleError);
     }
-    listPlansDetails(fy:string = "0"){
-            var url = this.baseUrl + "AllDetails/" + 0 + "/" + fy;
+    listPlansDetails(fy:string = "0", planningUnitId:number = 0){
+            var url = this.baseUrl + "AllDetails/" + planningUnitId  + "/" + fy;
             return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => this.plans = <PlanOfWork[]>res.json())
                 .catch(this.handleError);
