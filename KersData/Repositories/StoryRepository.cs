@@ -37,7 +37,7 @@ namespace Kers.Models.Repositories
                 ids = new List<int>();
                 var stories = context.Story
                                 .Where(r => r.Created > fiscalYear.Start && r.Created < fiscalYear.End)
-                                .Include( r => r.Revisions).OrderByDescending(s => s.Created);
+                                .Include( r => r.Revisions);
                 foreach( var story in stories){
                     var rev = story.Revisions.OrderBy( r => r.Created );
                     var last = rev.Last();
@@ -66,7 +66,7 @@ namespace Kers.Models.Repositories
                     var currentBatch = revids.Skip(i).Take(batchCount);
                     revs.AddRange(context.StoryRevision.Where( r => currentBatch.Contains( r.Id )).Include(s => s.StoryImages).ToList());
                 }
-
+                revs = revs.OrderByDescending( r => r.Created ).ToList();
                 var serialized = JsonConvert.SerializeObject(revs);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {

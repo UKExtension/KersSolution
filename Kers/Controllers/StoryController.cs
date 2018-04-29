@@ -180,9 +180,6 @@ namespace Kers.Controllers
             if(search != null){
                 revs = revs.Where( i => i.Title.Contains(search) || i.Story.Contains(search));
             }
-            if( unit != "0" ){
-                revs = revs.Where( i => context.Story.Where(s => i.StoryId == s.Id).First().KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit) );
-            }
             if( program != "0"){
                 revs = revs.Where( i => i.MajorProgramId == Convert.ToInt32(program) );
             }
@@ -191,6 +188,22 @@ namespace Kers.Controllers
             }
             if( withImage != "0"){
                 revs = revs.Where( i => i.StoryImages.Count() > 0 );
+            }
+            
+            if( unit != "0" ){
+                var i = 0;
+                var newRevs = new List<StoryRevision>();
+                foreach( var rev in revs ){
+                    var story = context.Story.Where(s => rev.StoryId == s.Id).Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).FirstOrDefault();
+                    if( story != null ){
+                        if(story.KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit)){
+                            i++;
+                            newRevs.Add(rev);
+                        }
+                    }
+                    if( i >= theAmount ) break;
+                }
+                revs = newRevs;
             }
             revs = revs.Take(theAmount);
             foreach(var rev in revs){
@@ -254,9 +267,6 @@ namespace Kers.Controllers
             if(search != null){
                 revs = revs.Where( i => i.Title.Contains(search) || i.Story.Contains(search));
             }
-            if( unit != "0" ){
-                revs = revs.Where( i => context.Story.Where(s => i.StoryId == s.Id).First().KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit) );
-            }
             if( program != "0"){
                 revs = revs.Where( i => i.MajorProgramId == Convert.ToInt32(program) );
             }
@@ -265,6 +275,19 @@ namespace Kers.Controllers
             }
             if( withImage != "0"){
                 revs = revs.Where( i => i.StoryImages.Count() > 0 );
+            }
+            if( unit != "0" ){
+                var i = 0;
+                foreach( var rev in revs ){
+                    var story = context.Story.Where(s => rev.StoryId == s.Id).Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).FirstOrDefault();
+                    if( story != null ){
+                        
+                        if(story.KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit)){
+                            i++;
+                        }
+                    }
+                }
+                return new OkObjectResult(i);
             }
             
             return new OkObjectResult(revs.Count());
