@@ -37,6 +37,7 @@ import {ReportingService} from './components/reporting/reporting.service';
 
 import {ReportingRoutingModule} from './reporting-routing.module';
 import { ReportingHelpHomeComponent } from './components/reporting-help/reporting-help-home.component';
+import { KersCalendarModule } from './modules/calendar/kers-calendar.module';
 
 @NgModule({
     declarations: [
@@ -67,6 +68,7 @@ import { ReportingHelpHomeComponent } from './components/reporting-help/reportin
     imports: [ 
         ReportingRoutingModule,
         SharedModule,
+        KersCalendarModule,
         AdminModule
     ],
     exports:[ReportingProfileEditComponent],

@@ -33,6 +33,11 @@ import { CalendarHomeComponent } from './calendar-home.component';
     CalendarEventDetailComponent,
     CalendarHomeComponent
   ],
-  providers: [CalendarService]
+  providers: [
+    CalendarService
+  ],
+  exports: [
+    KersCalendarComponent
+  ]
 })
 export class KersCalendarModule { }

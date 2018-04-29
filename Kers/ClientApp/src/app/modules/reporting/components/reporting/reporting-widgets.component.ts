@@ -25,6 +25,24 @@ import {RolesService, Role } from '../../modules/admin/roles/roles.service';
     <widget-my-info [user]="user"></widget-my-info>
     
 </div>
+<div class="row"  *ngIf="isAgent">
+  <div class="col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Calendar of Activities</h2>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <kers-calendar></kers-calendar>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+
   `
 })
 export class ReportingWidgetsComponent implements OnInit { 
