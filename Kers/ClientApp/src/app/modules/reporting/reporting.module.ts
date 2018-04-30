@@ -22,14 +22,6 @@ import {ReportingDetailComponent} from './components/reporting/reporting-detail.
 import {ReportingWidgetsComponent} from './components/reporting/reporting-widgets.component';
 import {ReportingAlertComponent} from './components/reporting/reporting-alert.component';
 
-import {WidgetActivitiesAgentComponent} from './components/reporting-home/widgets/widget-activities-agent.component';
-import {WidgetMyInfoComponent} from './components/reporting-home/widgets/widget-my-info.component';
-import {WidgetDDAssistantComponent} from './components/reporting-home/widgets/widget-dd-assistant.component';
-import {WidgetDDComponent} from './components/reporting-home/widgets/widget-dd.component';
-import {WidgetStaffAssistantComponent} from './components/reporting-home/widgets/widget-staff-assistant.component';
-import {WidgetSpecialistComponent} from './components/reporting-home/widgets/widget-specialist.component';
-import {WidgetTrainingsComponent} from './components/reporting-home/widgets/widget-trainings.component';
-
 
 import {AdminModule} from './modules/admin/admin.module';
 
@@ -37,7 +29,8 @@ import {ReportingService} from './components/reporting/reporting.service';
 
 import {ReportingRoutingModule} from './reporting-routing.module';
 import { ReportingHelpHomeComponent } from './components/reporting-help/reporting-help-home.component';
-import { KersCalendarModule } from './modules/calendar/kers-calendar.module';
+import { ReportingWidgetsModule } from './components/reporting-home/reporting-widgets.module';
+
 
 @NgModule({
     declarations: [
@@ -55,21 +48,13 @@ import { KersCalendarModule } from './modules/calendar/kers-calendar.module';
         ProfileCurrentComponent,
         ProfileListDetailComponent,
         ReportingProfileEditComponent,
-
-        WidgetActivitiesAgentComponent,
-        WidgetMyInfoComponent,
-        WidgetDDAssistantComponent,
-        WidgetSpecialistComponent,
-        WidgetTrainingsComponent,
-        WidgetStaffAssistantComponent,
-        WidgetDDComponent,
         ReportingHelpHomeComponent
     ],
     imports: [ 
         ReportingRoutingModule,
         SharedModule,
-        KersCalendarModule,
-        AdminModule
+        AdminModule,
+        ReportingWidgetsModule
     ],
     exports:[ReportingProfileEditComponent],
     providers: [
