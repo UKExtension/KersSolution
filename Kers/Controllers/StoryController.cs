@@ -194,7 +194,9 @@ namespace Kers.Controllers
                 var i = 0;
                 var newRevs = new List<StoryRevision>();
                 foreach( var rev in revs ){
-                    var story = context.Story.Where(s => rev.StoryId == s.Id).Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).FirstOrDefault();
+                    var story = context.Story.Where(s => rev.StoryId == s.Id)
+                                        .Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile)
+                                        .FirstOrDefault();
                     if( story != null ){
                         if(story.KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit)){
                             i++;
@@ -216,42 +218,6 @@ namespace Kers.Controllers
                 rev.StoryImages = imgs;
             }
 
-/* 
-            var stories = from i in context.Story select i;
-            if(search != null){
-                stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().Title.Contains(search) || i.Revisions.OrderBy(r => r.Created).Last().Story.Contains(search));
-            }
-            if( unit != "0" ){
-                stories = stories.Where( i => i.KersUser.RprtngProfile.PlanningUnitId == Convert.ToInt32(unit) );
-            }
-            if( program != "0"){
-                stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().MajorProgramId == Convert.ToInt32(program) );
-            }
-            if( snap != "0"){
-                stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().IsSnap );
-            }
-            if( withImage != "0"){
-                stories = stories.Where( i => i.Revisions.OrderBy(r => r.Created).Last().StoryImages.Count() > 0 );
-            }
-            
-            stories = stories.Include(s => s.Revisions).ThenInclude(r => r.StoryImages).ThenInclude(i => i.UploadImage).ThenInclude(f => f.UploadFile).
-                        Include( s => s.Revisions).ThenInclude(u => u.MajorProgram);
-            stories = stories.OrderByDescending(s => s.Updated);
-            stories = stories.Take(theAmount);
-            var revs = new List<StoryRevision>();
-
-
-
-            if(stories != null){
-                foreach(var story in stories){
-                    revs.Add( story.Revisions.OrderBy(r=>r.Created).Last() );
-                }
-            }
-            foreach(var rev in revs){
-                foreach( var img in rev.StoryImages){
-                    img.UploadImage.UploadFile.Content = null;
-                }
-            } */
             return new OkObjectResult(revs);
         }
 

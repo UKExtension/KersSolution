@@ -64,7 +64,12 @@ namespace Kers.Models.Repositories
                 var batchCount = 10000;
                 for(var i = 0; i <= revids.Count(); i += batchCount){
                     var currentBatch = revids.Skip(i).Take(batchCount);
-                    revs.AddRange(context.StoryRevision.Where( r => currentBatch.Contains( r.Id )).Include(s => s.StoryImages).ToList());
+                    revs.AddRange(
+                                    context.StoryRevision.Where( r => currentBatch.Contains( r.Id ))
+                                        .Include(s => s.StoryImages)
+                                        .Include( s => s.MajorProgram)
+                                        .ToList()
+                                );
                 }
                 revs = revs.OrderByDescending( r => r.Created ).ToList();
                 var serialized = JsonConvert.SerializeObject(revs);
