@@ -43,6 +43,14 @@ export class PlansofworkService {
                 .map(res => this.plans = <PlanOfWork[]>res.json())
                 .catch(this.handleError);
     }
+
+    countiesWithoutPlans(districtId:number = 0, fy:string = "0"):Observable<PlanningUnit[]>{
+        var url = this.baseUrl + "noplanscounties/" + districtId + "/" + fy;
+            return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <PlanningUnit[]>res.json())
+                .catch(this.handleError);
+    }
+
     planForRevision(id:number){
         var url = this.baseUrl + "planforrevision/"+id;
         return this.http.get(this.location.prepareExternalUrl(url))

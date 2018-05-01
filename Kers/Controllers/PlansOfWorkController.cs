@@ -66,6 +66,67 @@ namespace Kers.Controllers
             
         }
 
+
+
+
+        [HttpGet("noplanscounties/{dstrId?}/{fy?}")]
+        [Authorize]
+        public IActionResult CountiesWithoutPlans(int dstrId = 0, string fy = "0"){
+            FiscalYear fiscalYear;
+            if(fy != "0"){
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.ServiceLog);
+            }
+
+            var plansOfWorkPerFiscalYear = this.context.PlanOfWork.Where(p => p.FiscalYear == fiscalYear);
+            if( dstrId != 0 ){
+                plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => p.PlanningUnit.DistrictId == dstrId);
+            }
+
+            var plansPerCounty = plansOfWorkPerFiscalYear.GroupBy( p => p.PlanningUnit )
+                                    .Select( p =>
+                                        new {
+                                            county = p.Key,
+                                            plans = p.Select( a => a )
+                                        }
+                                    
+                                    );
+            var countiesWithoutPlan = new List<PlanningUnit>();
+            foreach( var cnt in plansPerCounty){
+                var editedCount = 0;
+                foreach( var plan in cnt.plans ){
+                    if( this.context.PlanOfWorkRevision.Where(r => r.PlanOfWorkId == plan.Id ).Count() > 1 ){
+                        editedCount++;
+                    }
+                }
+                if(editedCount == 0){
+                    countiesWithoutPlan.Add(cnt.county);
+                }
+            }
+            
+            return new OkObjectResult(countiesWithoutPlan);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpGet("All/{fy?}")]
         [Authorize]
         public IActionResult AllPlans(string fy = "0"){

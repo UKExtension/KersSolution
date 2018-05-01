@@ -12,6 +12,7 @@ import {DistrictPlansComponent} from './district-plans.component';
 import {PlansofworkModule} from '../plansofwork/plansofwork.module';
 import { CountyService } from '../county/county.service';
 import { NotCountiesListComponent } from './not-counties-list.component';
+import { AssignmentPlansOfWorkComponent } from './assignments/assignment-plans-of-work.component';
 
 
 
@@ -23,7 +24,8 @@ import { NotCountiesListComponent } from './not-counties-list.component';
   declarations: [   DistrictHomeComponent,
                     CountyListComponent,
                     DistrictPlansComponent,
-                    NotCountiesListComponent
+                    NotCountiesListComponent,
+                    AssignmentPlansOfWorkComponent
                     ],
   providers:    [     
                   DistrictService,
