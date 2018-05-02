@@ -8,6 +8,7 @@ import {StateHomeComponent} from './state-home.component';
 import {DistrictListComponent} from './district-list.component';
 import { CountyService } from '../county/county.service';
 import { DistrictService } from '../district/district.service';
+import { DistrictModule } from '../district/district.module';
 
 
 
@@ -16,6 +17,7 @@ import { DistrictService } from '../district/district.service';
 @NgModule({
   imports:      [ SharedModule, 
                   StateRoutingModule,
+                  DistrictModule
                     ],
   declarations: [   StateHomeComponent,
                     DistrictListComponent

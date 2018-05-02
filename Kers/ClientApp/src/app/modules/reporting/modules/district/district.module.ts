@@ -28,8 +28,11 @@ import { AssignmentPlansOfWorkComponent } from './assignments/assignment-plans-o
                     AssignmentPlansOfWorkComponent
                     ],
   providers:    [     
-                  DistrictService,
-                  CountyService
-                ]
+                    DistrictService,
+                    CountyService
+                ],
+  exports: [
+                    AssignmentPlansOfWorkComponent
+  ]
 })
 export class DistrictModule { }
