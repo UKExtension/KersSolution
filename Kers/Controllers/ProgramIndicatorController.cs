@@ -69,9 +69,9 @@ namespace Kers.Controllers
             List<PlanningUnit> counties;
 
             if(dstrId != 0){
-                counties = context.PlanningUnit.Where( u => u.DistrictId == dstrId).ToList();
+                counties = context.PlanningUnit.Where( u => u.DistrictId == dstrId && u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
             }else{
-                counties = context.PlanningUnit.Where( u => u.District != null).ToList();
+                counties = context.PlanningUnit.Where( u => u.District != null && u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
             }
 
             var countiesWithoutIndicators = new List<PlanningUnit>();

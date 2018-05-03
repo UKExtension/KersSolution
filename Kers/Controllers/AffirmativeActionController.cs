@@ -147,9 +147,9 @@ namespace Kers.Controllers
             List<PlanningUnit> counties;
 
             if(district != 0){
-                counties = context.PlanningUnit.Where( u => u.DistrictId == district).ToList();
+                counties = context.PlanningUnit.Where( c => c.DistrictId == district && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
             }else{
-                counties = context.PlanningUnit.Where( u => u.District != null).ToList();
+                counties = context.PlanningUnit.Where( u => u.District != null && u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
             }
 
             var countiesWithoutPlan = new List<PlanningUnit>();
