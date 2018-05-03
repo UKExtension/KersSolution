@@ -140,6 +140,8 @@ export class DistrictHomeComponent {
 
     assignmentPlansOfWorkOpen = false;
     assignmentAffirmativeReportOpen = false;
+    assignmentAffirmativePlanOpen = false;
+    assignmentProgramIndicatorsOpen = false;
 
 
     constructor( 
