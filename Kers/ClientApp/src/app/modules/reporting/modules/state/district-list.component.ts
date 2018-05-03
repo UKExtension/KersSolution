@@ -67,7 +67,7 @@ import { District } from "../district/district.service";
         </div>
         <div class="row">
             <div class="ln_solid"></div>
-            <div class="col-xs-10">
+            <div class="col-xs-10"  *ngIf="!assignmentAffirmativeReportOpen">
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Affirmative Action Report</a>
@@ -75,14 +75,17 @@ import { District } from "../district/district.service";
                     </div>
                 </article>
             </div>
-            <div class="col-xs-2 text-right">
-                <a class="btn btn-info btn-xs">show</a>                
+            <div class="col-xs-2 text-right" *ngIf="!assignmentAffirmativeReportOpen">
+                <a class="btn btn-info btn-xs" (click)="assignmentAffirmativeReportOpen=true">show</a>                
             </div>
-            <assignment-affirmative-report></assignment-affirmative-report>  
+            <div class="col-xs-12 text-right" *ngIf="assignmentAffirmativeReportOpen">
+                <a class="btn btn-info btn-xs" (click)="assignmentAffirmativeReportOpen=false">close</a>                
+            </div>
+            <assignment-affirmative-report *ngIf="assignmentAffirmativeReportOpen"></assignment-affirmative-report>
         </div>
         <div class="row">
             <div class="ln_solid"></div>
-            <div class="col-xs-10">
+            <div class="col-xs-10" *ngIf="!assignmentAffirmativePlanOpen">
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Affirmative Action Plan</a>
@@ -90,14 +93,17 @@ import { District } from "../district/district.service";
                     </div>
                 </article>
             </div>
-            <div class="col-xs-2 text-right">
-                <a class="btn btn-info btn-xs">show</a>                
+            <div class="col-xs-2 text-right" *ngIf="!assignmentAffirmativePlanOpen">
+                <a class="btn btn-info btn-xs" (click)="assignmentAffirmativePlanOpen=true">show</a>                
             </div>
-            <assignment-affirmative-plan></assignment-affirmative-plan>  
+            <div class="col-xs-12 text-right" *ngIf="assignmentAffirmativePlanOpen">
+                <a class="btn btn-info btn-xs" (click)="assignmentAffirmativePlanOpen=false">close</a>                
+            </div>
+            <assignment-affirmative-plan *ngIf="assignmentAffirmativePlanOpen"></assignment-affirmative-plan>  
         </div>
         <div class="row">
             <div class="ln_solid"></div>
-            <div class="col-xs-10">
+            <div class="col-xs-10" *ngIf="!assignmentProgramIndicatorsOpen">
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Program Indicators</a>
@@ -105,10 +111,13 @@ import { District } from "../district/district.service";
                     </div>
                 </article>
             </div>
-            <div class="col-xs-2 text-right">
-                <a class="btn btn-info btn-xs">show</a>                
+            <div class="col-xs-2 text-right" *ngIf="!assignmentProgramIndicatorsOpen">
+                <a class="btn btn-info btn-xs" (click)="assignmentProgramIndicatorsOpen=true">show</a>                
             </div>
-            <assignment-program-indicators></assignment-program-indicators>  
+            <div class="col-xs-12 text-right" *ngIf="assignmentProgramIndicatorsOpen">
+                <a class="btn btn-info btn-xs" (click)="assignmentProgramIndicatorsOpen=false">close</a>                
+            </div>
+            <assignment-program-indicators *ngIf="assignmentProgramIndicatorsOpen"></assignment-program-indicators>  
         </div>
 
 
@@ -132,6 +141,9 @@ export class DistrictListComponent {
 
 
     assignmentPlansOfWorkOpen = false;
+    assignmentAffirmativeReportOpen = false;
+    assignmentAffirmativePlanOpen = false;
+    assignmentProgramIndicatorsOpen = false;
 
     constructor( 
         private service:StateService

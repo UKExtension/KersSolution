@@ -100,10 +100,12 @@ namespace Kers.Controllers
 
 
             var plansPerFiscalYear = this.context.AffirmativeActionPlan
-                                            .Where(p => p.FiscalYearId == FiscalYear.Id);
+                                            .Where(p => p.FiscalYearId == FiscalYear.Id)
+                                            .Include( a => a.PlanningUnit)
+                                            .Include( a => a.Revisions ).ToList();
             if(district != 0){
                 plansPerFiscalYear = plansPerFiscalYear
-                                            .Where( p => p.PlanningUnit.DistrictId == district);
+                                            .Where( p => p.PlanningUnit.DistrictId == district).ToList();
             }
             
 
@@ -129,6 +131,36 @@ namespace Kers.Controllers
         }
 
 
+
+
+
+        [HttpGet("countieswithoutplan/{district?}/{fy?}")]
+        [Authorize]
+        public IActionResult CountiesWithoutPlan(int district = 0, string fy = "0"){
+            FiscalYear FiscalYear;
+            if(fy == "0"){
+                FiscalYear = fiscalYearRepo.nextFiscalYear( FiscalYearType.ServiceLog );
+            }else{
+                FiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == FiscalYearType.ServiceLog ).FirstOrDefault();
+            }
+
+            List<PlanningUnit> counties;
+
+            if(district != 0){
+                counties = context.PlanningUnit.Where( u => u.DistrictId == district).ToList();
+            }else{
+                counties = context.PlanningUnit.Where( u => u.District != null).ToList();
+            }
+
+            var countiesWithoutPlan = new List<PlanningUnit>();
+
+            foreach( var county in counties ){
+                if(!this.context.AffirmativeActionPlan.Where( p => p.PlanningUnit == county && p.FiscalYear == FiscalYear).Any()){
+                    countiesWithoutPlan.Add(county);
+                }
+            }
+            return new OkObjectResult( countiesWithoutPlan.OrderBy(c => c.Name) );
+        }
 
 
 

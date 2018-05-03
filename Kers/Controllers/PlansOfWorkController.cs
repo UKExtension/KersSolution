@@ -109,24 +109,6 @@ namespace Kers.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [HttpGet("All/{fy?}")]
         [Authorize]
         public IActionResult AllPlans(string fy = "0"){

@@ -16,13 +16,15 @@ import { AssignmentPlansOfWorkComponent } from './assignments/assignment-plans-o
 import { AssignmentAffirmativeReportComponent } from './assignments/assignment-affirmative-report.component';
 import { AssignmentAffirmativePlanComponent } from './assignments/assignment-affirmative-plan.component';
 import { AssignmentProgramIndicatorsComponent } from './assignments/assignment-program-indicators.component';
+import { AffirmativeModule } from '../affirmative/affirmative.module';
 
 
 
 @NgModule({
   imports:      [   SharedModule,
                     DistrictRoutingModule,
-                    PlansofworkModule
+                    PlansofworkModule,
+                    AffirmativeModule
                     ],
   declarations: [   DistrictHomeComponent,
                     CountyListComponent,

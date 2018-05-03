@@ -50,6 +50,45 @@ namespace Kers.Controllers
             return NotFound(new {Error = "not found"});
         }
 
+
+        [HttpGet("noindicatorscounties/{dstrId?}/{fy?}")]
+        [Authorize]
+        public IActionResult CountiesWithoutPlans(int dstrId = 0, string fy = "0"){
+            FiscalYear fiscalYear;
+            if(fy != "0"){
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
+
+            var plansOfWorkPerFiscalYear = this.context.PlanOfWork.Where(p => p.FiscalYear == fiscalYear);
+            if( dstrId != 0 ){
+                plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => p.PlanningUnit.DistrictId == dstrId);
+            }
+
+            List<PlanningUnit> counties;
+
+            if(dstrId != 0){
+                counties = context.PlanningUnit.Where( u => u.DistrictId == dstrId).ToList();
+            }else{
+                counties = context.PlanningUnit.Where( u => u.District != null).ToList();
+            }
+
+            var countiesWithoutIndicators = new List<PlanningUnit>();
+
+
+            foreach( var county in counties ){
+                if(!this.context.ProgramIndicatorValue.Where( p => p.KersUser.RprtngProfile.PlanningUnit == county && p.ProgramIndicator.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear).Any()){
+                    countiesWithoutIndicators.Add(county);
+                }
+            }
+            return new OkObjectResult( countiesWithoutIndicators.OrderBy(c => c.Name) );
+        }
+
+
+
+
+
         [HttpGet("indicatorsforprogram/{id}")]
         public IActionResult GetIndicatorsForProgram(int id){
             var program = this.context.MajorProgram.Find(id);

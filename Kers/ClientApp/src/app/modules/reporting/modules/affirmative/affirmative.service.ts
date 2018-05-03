@@ -5,6 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import {AuthHttp} from '../../../authentication/auth.http';
+import { PlanningUnit } from '../plansofwork/plansofwork.service';
 
 
 @Injectable()
@@ -19,6 +20,25 @@ export class AffirmativeService {
         private http:AuthHttp, 
         private location:Location
         ){}
+
+
+
+    countiesWithoutPlan(districtId:number = 0, fy:string = "0"){
+        var url = this.baseUrl + 'countieswithoutplan/' + districtId + '/' + fy;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <PlanningUnit[]>res.json())
+                .catch(this.handleError);
+    }
+
+    countiesWithoutReport(districtId:number = 0, fy:string = "0"){
+        var url = this.baseUrl + 'countieswithoutreport/' + districtId + '/' + fy;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <PlanningUnit[]>res.json())
+                .catch(this.handleError);
+    }
+
+
+
 
 
     get(unitId:number = 0, fy:string = "0"){

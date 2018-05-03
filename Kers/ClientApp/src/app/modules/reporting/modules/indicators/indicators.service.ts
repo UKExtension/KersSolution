@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import {AuthHttp} from '../../../authentication/auth.http';
 import {MajorProgram } from '../admin/programs/programs.service';
+import { PlanningUnit } from '../user/user.service';
 
 
 @Injectable()
@@ -21,6 +22,15 @@ export class IndicatorsService {
         ){}
 
 
+
+        
+
+    countiesWithoutIndicators(districtId:number = 0, fy:string = "0"):Observable<PlanningUnit[]>{
+        var url = this.baseUrl + 'noindicatorscounties/' + districtId + '/' + fy;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => <PlanningUnit[]>res.json())
+                .catch(this.handleError);
+    }
 
     listIndicators(program:MajorProgram):Observable<Indicator[]>{
             var url = this.baseUrl + "indicatorsforprogram/" + program.id;

@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { AffirmativeService } from '../../affirmative/affirmative.service';
+import { Observable } from 'rxjs/Observable';
+import { PlanningUnit } from '../../user/user.service';
 
 @Component({
   selector: 'assignment-affirmative-plan',
@@ -7,9 +10,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AssignmentAffirmativePlanComponent implements OnInit {
 
-  constructor() { }
+  @Input() districtId = 0;
+  counties:Observable<PlanningUnit[]>;
+
+  constructor(
+    private service:AffirmativeService
+  ) { }
 
   ngOnInit() {
+    this.counties = this.service.countiesWithoutPlan(this.districtId);
   }
 
 }
