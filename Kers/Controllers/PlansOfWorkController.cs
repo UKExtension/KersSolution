@@ -105,7 +105,7 @@ namespace Kers.Controllers
                 }
             }
             
-            return new OkObjectResult(countiesWithoutPlan);
+            return new OkObjectResult(countiesWithoutPlan.OrderBy( c => c.Name));
         }
 
 

@@ -77,7 +77,8 @@ import { District } from "../district/district.service";
             </div>
             <div class="col-xs-2 text-right">
                 <a class="btn btn-info btn-xs">show</a>                
-            </div>  
+            </div>
+            <assignment-affirmativee-report></assignment-affirmativee-report>  
         </div>
         <div class="row">
             <div class="ln_solid"></div>
@@ -91,7 +92,8 @@ import { District } from "../district/district.service";
             </div>
             <div class="col-xs-2 text-right">
                 <a class="btn btn-info btn-xs">show</a>                
-            </div>  
+            </div>
+            <assignment-affirmativee-plan></assignment-affirmativee-plan>  
         </div>
         <div class="row">
             <div class="ln_solid"></div>
@@ -105,7 +107,8 @@ import { District } from "../district/district.service";
             </div>
             <div class="col-xs-2 text-right">
                 <a class="btn btn-info btn-xs">show</a>                
-            </div>  
+            </div>
+            <assignment-program-indicators></assignment-program-indicators>  
         </div>
 
 
