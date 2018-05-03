@@ -7,4 +7,6 @@
   </div>
   <div *ngIf="cnts.length == 0">All counties submitted their Plans of Work.</div>
 </div>
-<loading *ngIf="loading"></loading>
+<ng-template #loading>
+  <loading></loading>
+</ng-template>

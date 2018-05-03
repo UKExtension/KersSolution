@@ -17,7 +17,9 @@ import { AffirmativeHomeReportComponent } from './affirmative-home-report.compon
                   AffirmativeFormComponent,
                   AffirmativeReportsHomeComponent
                 ],
-  providers:    [AffirmativeService],
+  providers:    [
+                  AffirmativeService
+                ],
   exports:      [
                   AffirmativeReportsHomeComponent
                 ]

@@ -84,6 +84,60 @@ namespace Kers.Controllers
         }
 
 
+
+
+
+        [HttpGet("countieswithoutreport/{district?}/{fy?}")]
+        [Authorize]
+        public IActionResult CountiesWithoutReport(int district = 0, string fy = "0"){
+            FiscalYear FiscalYear;
+            if(fy == "0"){
+                FiscalYear = fiscalYearRepo.currentFiscalYear( FiscalYearType.ServiceLog );
+            }else{
+                FiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == FiscalYearType.ServiceLog ).FirstOrDefault();
+            }
+
+
+
+            var plansPerFiscalYear = this.context.AffirmativeActionPlan
+                                            .Where(p => p.FiscalYearId == FiscalYear.Id);
+            if(district != 0){
+                plansPerFiscalYear = plansPerFiscalYear
+                                            .Where( p => p.PlanningUnit.DistrictId == district);
+            }
+            
+
+
+
+            var plansPerCounty = plansPerFiscalYear.GroupBy( p => p.PlanningUnit )
+                                    .Select( p =>
+                                        new {
+                                            county = p.Key,
+                                            report = p.Select( a => a ).Last()
+                                        }
+                                    
+                                    );
+            var countiesWithoutPlan = new List<PlanningUnit>();
+            foreach( var cnt in plansPerCounty){
+                var lastRev = cnt.report.Revisions.OrderBy(r => r.Created ).Last();
+                if(lastRev.Efforts == "" && lastRev.Success == ""){
+                    countiesWithoutPlan.Add(cnt.county);
+                }
+            }
+                                    
+            return new OkObjectResult( countiesWithoutPlan.OrderBy(c => c.Name) );
+        }
+
+
+
+
+
+
+
+
+
+
+
         [HttpPost]
         [Authorize]
         public IActionResult Add( [FromBody] AffirmativeActionPlanRevision plan){

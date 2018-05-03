@@ -13,8 +13,8 @@ import {PlansofworkModule} from '../plansofwork/plansofwork.module';
 import { CountyService } from '../county/county.service';
 import { NotCountiesListComponent } from './not-counties-list.component';
 import { AssignmentPlansOfWorkComponent } from './assignments/assignment-plans-of-work.component';
-import { AssignmentAffirmativeeReportComponent } from './assignments/assignment-affirmativee-report.component';
-import { AssignmentAffirmativeePlanComponent } from './assignments/assignment-affirmativee-plan.component';
+import { AssignmentAffirmativeReportComponent } from './assignments/assignment-affirmative-report.component';
+import { AssignmentAffirmativePlanComponent } from './assignments/assignment-affirmative-plan.component';
 import { AssignmentProgramIndicatorsComponent } from './assignments/assignment-program-indicators.component';
 
 
@@ -29,8 +29,8 @@ import { AssignmentProgramIndicatorsComponent } from './assignments/assignment-p
                     DistrictPlansComponent,
                     NotCountiesListComponent,
                     AssignmentPlansOfWorkComponent,
-                    AssignmentAffirmativeeReportComponent,
-                    AssignmentAffirmativeePlanComponent,
+                    AssignmentAffirmativeReportComponent,
+                    AssignmentAffirmativePlanComponent,
                     AssignmentProgramIndicatorsComponent
                     ],
   providers:    [     
@@ -38,7 +38,10 @@ import { AssignmentProgramIndicatorsComponent } from './assignments/assignment-p
                     CountyService
                 ],
   exports: [
-                    AssignmentPlansOfWorkComponent
+                    AssignmentPlansOfWorkComponent,
+                    AssignmentAffirmativeReportComponent,
+                    AssignmentAffirmativePlanComponent,
+                    AssignmentProgramIndicatorsComponent
   ]
 })
 export class DistrictModule { }

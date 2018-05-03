@@ -12,7 +12,6 @@ export class AssignmentPlansOfWorkComponent implements OnInit {
 
   @Input() districtId = 0;
   counties:Observable<PlanningUnit[]>;
-
   constructor(
     private service:PlansofworkService
   ) { 
