@@ -122,7 +122,7 @@ namespace Kers.Controllers
             var countiesWithoutPlan = new List<PlanningUnit>();
             foreach( var cnt in plansPerCounty){
                 var lastRev = cnt.report.Revisions.OrderBy(r => r.Created ).Last();
-                if(lastRev.Efforts == "" && lastRev.Success == ""){
+                if(lastRev.Efforts == "" || lastRev.Success == "" || lastRev.Efforts == null || lastRev.Success == null){
                     countiesWithoutPlan.Add(cnt.county);
                 }
             }
