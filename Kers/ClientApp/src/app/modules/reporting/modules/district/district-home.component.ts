@@ -30,7 +30,7 @@ import { PlanningUnit } from '../user/user.service';
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Plans of Work</a>
-                    <p>Displays list of counties with no Plans of Work for the next fiscal year</p>
+                    <p>List of counties with no 2018-19 Plans of Work</p>
                     </div>
                 </article>
             </div>
@@ -48,7 +48,7 @@ import { PlanningUnit } from '../user/user.service';
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Affirmative Action Report</a>
-                    <p>Displays list of counties with no Affirmative Action Report for the current fiscal year</p>
+                    <p>List of counties with no 2017-18 Affirmative Action Report</p>
                     </div>
                 </article>
             </div>
@@ -66,7 +66,7 @@ import { PlanningUnit } from '../user/user.service';
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Affirmative Action Plan</a>
-                    <p>Displays list of counties with no Affirmative Action Plan for the next fiscal year</p>
+                    <p>List of counties with no 2018-19 Affirmative Action Plan</p>
                     </div>
                 </article>
             </div>
@@ -84,7 +84,7 @@ import { PlanningUnit } from '../user/user.service';
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Program Indicators</a>
-                    <p>Displays list of counties with no program indicators submitted for the currect fiscal year</p>
+                    <p>List of counties that submitted no Program Indicators for 2017-18 Fiscal Year.</p>
                     </div>
                 </article>
             </div>
