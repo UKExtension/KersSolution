@@ -7,6 +7,8 @@ namespace Kers.Models.Data{
         public List<int> Ids;
         public float Hours;
         public int Audience;
+        public int Female {get;set;}
+        public int Male {get;set;}
         public MajorProgram MajorProgram;
     }
 }

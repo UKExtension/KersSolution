@@ -71,6 +71,8 @@ namespace Kers.Models.Repositories
                         actvts.OptionNumberValues = OptionNumbers;
                         actvts.Hours = unitRevisions.Sum( r => r.Days) * 8;
                         actvts.Audience = unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                        actvts.Male = unitRevisions.Sum( r => r.Male);
+                        actvts.Female = unitRevisions.Sum( r => r.Female);
                         actvts.PlanningUnit = contactGroup.Unit;
                         actvts.Multistate = unitRevisions.Sum(r => r.Multistate) * 8;
                         result.Add(actvts);
@@ -79,6 +81,8 @@ namespace Kers.Models.Repositories
                         unitInResults.OptionNumberValues.AddRange(OptionNumbers);
                         unitInResults.Hours += unitRevisions.Sum( r => r.Days) * 8;
                         unitInResults.Audience += unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                        unitInResults.Male += unitRevisions.Sum( r => r.Male);
+                        unitInResults.Female += unitRevisions.Sum( r => r.Female);
                         unitInResults.Multistate += unitRevisions.Sum(r => r.Multistate) * 8;
                     }
                 }
@@ -87,58 +91,62 @@ namespace Kers.Models.Repositories
 
         public List<PerPersonActivities> ProcessPersonContacts(List<ContactPersonResult> contacts, List<PerPersonActivities> result, IDistributedCache _cache){
             foreach( var contactGroup in contacts ){
-                    var unitRevisions = new List<ContactRevision>();
-                    var OptionNumbers = new List<IOptionNumberValue>();
-                    var RaceEthnicities = new List<IRaceEthnicityValue>();
-                    foreach( var rev in contactGroup.Ids){
+                var unitRevisions = new List<ContactRevision>();
+                var OptionNumbers = new List<IOptionNumberValue>();
+                var RaceEthnicities = new List<IRaceEthnicityValue>();
+                foreach( var rev in contactGroup.Ids){
 
-                        var cacheKey = "ContactLastRevision" + rev.ToString();
+                    var cacheKey = "ContactLastRevision" + rev.ToString();
 
-                        var cacheString = _cache.GetString(cacheKey);
-                    
-                        ContactRevision lstrvsn;
-                        if (!string.IsNullOrEmpty(cacheString)){
-                            lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(cacheString);
-                        }else{
-                            lstrvsn = coreContext.ContactRevision.
-                                    Where(r => r.ContactId == rev).
-                                    Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
-                                    Include(a => a.ContactRaceEthnicityValues).
-                                    OrderBy(a => a.Created).Last();
-                            unitRevisions.Add(lstrvsn);
-                            OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
-                            RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
-
-                            var serialized = JsonConvert.SerializeObject(lstrvsn);
-                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
-                            });         
-                        }
-                    }
-                    var unitInResults = result.Where( r => r.KersUser.Id == contactGroup.KersUser.Id).FirstOrDefault();
-                    if(unitInResults == null){
-                        var user = this.coreContext.
-                                    KersUser.Where( u => u.Id == contactGroup.KersUser.Id)
-                                    .Include( u => u.PersonalProfile)
-                                    .Include(u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
-                                    .First();
-                        var actvts = new PerPersonActivities();
-                        actvts.RaceEthnicityValues = RaceEthnicities;
-                        actvts.OptionNumberValues = OptionNumbers;
-                        actvts.Hours = unitRevisions.Sum( r => r.Days) * 8;
-                        actvts.Audience = unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
-                        actvts.KersUser = user;
-                        actvts.Multistate = unitRevisions.Sum(r => r.Multistate) * 8;
-                        result.Add(actvts);
+                    var cacheString = _cache.GetString(cacheKey);
+                
+                    ContactRevision lstrvsn;
+                    if (!string.IsNullOrEmpty(cacheString)){
+                        lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(cacheString);
                     }else{
-                        unitInResults.RaceEthnicityValues.AddRange(RaceEthnicities);
-                        unitInResults.OptionNumberValues.AddRange(OptionNumbers);
-                        unitInResults.Hours += unitRevisions.Sum( r => r.Days) * 8;
-                        unitInResults.Audience += unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
-                        unitInResults.Multistate += unitRevisions.Sum(r => r.Multistate) * 8;
+                        lstrvsn = coreContext.ContactRevision.
+                                Where(r => r.ContactId == rev).
+                                Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                                Include(a => a.ContactRaceEthnicityValues).
+                                OrderBy(a => a.Created).Last();
+                        unitRevisions.Add(lstrvsn);
+                        OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
+                        RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
+
+                        var serialized = JsonConvert.SerializeObject(lstrvsn);
+                        _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                        });         
                     }
                 }
+                var unitInResults = result.Where( r => r.KersUser.Id == contactGroup.KersUser.Id).FirstOrDefault();
+                if(unitInResults == null){
+                    var user = this.coreContext.
+                                KersUser.Where( u => u.Id == contactGroup.KersUser.Id)
+                                .Include( u => u.PersonalProfile)
+                                .Include(u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
+                                .First();
+                    var actvts = new PerPersonActivities();
+                    actvts.RaceEthnicityValues = RaceEthnicities;
+                    actvts.OptionNumberValues = OptionNumbers;
+                    actvts.Hours = unitRevisions.Sum( r => r.Days) * 8;
+                    actvts.Audience = unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                    actvts.Male = unitRevisions.Sum( r => r.Male);
+                    actvts.Female = unitRevisions.Sum( r => r.Female);
+                    actvts.KersUser = user;
+                    actvts.Multistate = unitRevisions.Sum(r => r.Multistate) * 8;
+                    result.Add(actvts);
+                }else{
+                    unitInResults.RaceEthnicityValues.AddRange(RaceEthnicities);
+                    unitInResults.OptionNumberValues.AddRange(OptionNumbers);
+                    unitInResults.Hours += unitRevisions.Sum( r => r.Days) * 8;
+                    unitInResults.Audience += unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                    unitInResults.Male += unitRevisions.Sum( r => r.Male);
+                    unitInResults.Female += unitRevisions.Sum( r => r.Female);
+                    unitInResults.Multistate += unitRevisions.Sum(r => r.Multistate) * 8;
+                }
+            }
             return result;
         }
 
@@ -180,6 +188,8 @@ namespace Kers.Models.Repositories
                         actvts.OptionNumberValues = OptionNumbers;
                         actvts.Hours = unitRevisions.Sum( r => r.Days) * 8;
                         actvts.Audience = unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                        actvts.Male = unitRevisions.Sum( r => r.Male);
+                        actvts.Female = unitRevisions.Sum( r => r.Female);
                         actvts.MajorProgram = contactGroup.MajorProgram;
                         actvts.Multistate = unitRevisions.Sum(r => r.Multistate) * 8;
                         result.Add(actvts);
@@ -188,6 +198,8 @@ namespace Kers.Models.Repositories
                         unitInResults.OptionNumberValues.AddRange(OptionNumbers);
                         unitInResults.Hours += unitRevisions.Sum( r => r.Days) * 8;
                         unitInResults.Audience += unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                        unitInResults.Male = unitRevisions.Sum( r => r.Male);
+                        unitInResults.Female = unitRevisions.Sum( r => r.Female);
                         unitInResults.Multistate += unitRevisions.Sum(r => r.Multistate) * 8;
                     }
                 }
@@ -278,6 +290,8 @@ namespace Kers.Models.Repositories
                 foreach( var ethn in Ethnicities){
                     table.Header.Add(ethn.Name);
                 }
+                table.Header.Add("Male");
+                table.Header.Add("Female");
                 foreach( var opnmb in OptionNumbers){
                     table.Header.Add(opnmb.Name);
                 }
@@ -285,6 +299,8 @@ namespace Kers.Models.Repositories
                 float TotalHours = 0;
                 float TotalMultistate = 0;
                 int TotalAudience = 0;
+                int TotalMale = 0;
+                int TotalFemale = 0;
                 int[] totalPerRace = new int[Races.Count()];
                 int[] totalPerEthnicity = new int[Ethnicities.Count()];
                 int[] totalPerOptionNumber = new int[OptionNumbers.Count()];
@@ -292,6 +308,8 @@ namespace Kers.Models.Repositories
                 foreach(var res in result){
                     TotalHours += res.Hours;
                     TotalAudience += res.Audience;
+                    TotalMale += res.Male;
+                    TotalFemale += res.Female;
                     TotalMultistate += res.Multistate;
                     var Row = new List<string>();
                     Row.Add(res.KersUser.RprtngProfile.PlanningUnit.Name);
@@ -313,6 +331,8 @@ namespace Kers.Models.Repositories
                         totalPerEthnicity[i] += ethnAmount;
                         i++;
                     }
+                    Row.Add(res.Male.ToString());
+                    Row.Add(res.Female.ToString());
                     i=0;
                     foreach( var opnmb in OptionNumbers){
                         var optNmbAmount = res.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
@@ -336,6 +356,8 @@ namespace Kers.Models.Repositories
                     table.Foother.Add(totalPerEthnicity[i].ToString());
                     i++;
                 }
+                table.Foother.Add(TotalMale.ToString());
+                table.Foother.Add(TotalFemale.ToString());  
                 i = 0;
                 foreach( var opnmb in OptionNumbers){
                     table.Foother.Add( totalPerOptionNumber[i].ToString());
@@ -374,6 +396,20 @@ namespace Kers.Models.Repositories
                                                     })
                                                     .ToListAsync();
 
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
+            
+            
+            
             return activities;
 
         }
@@ -422,6 +458,17 @@ namespace Kers.Models.Repositories
                                                         KersUser = c.Key.KersUser
                                                     })
                                                     .ToListAsync();
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
 
             return activities;
 
@@ -540,11 +587,12 @@ namespace Kers.Models.Repositories
                 actvts.OptionNumberValues = OptionNumbers;
                 actvts.Hours = unt.Hours;
                 actvts.Audience = unt.Audience;
+                actvts.Male = unt.Male;
+                actvts.Female = unt.Female;
                 actvts.KersUser = user;
                 actvts.Multistate = unitRevisions.Where( r => r.ActivityOptionSelections.Where( s => s.ActivityOption.Name == "Multistate effort?").Count() > 0).Sum(s => s.Hours);
                 result.Add(actvts);
             }
-
             return result;
         }
 
