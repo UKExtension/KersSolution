@@ -29,7 +29,14 @@ import {ReportingService} from './components/reporting/reporting.service';
 
 import {ReportingRoutingModule} from './reporting-routing.module';
 import { ReportingHelpHomeComponent } from './components/reporting-help/reporting-help-home.component';
-import { ReportingWidgetsModule } from './components/reporting-home/reporting-widgets.module';
+import { WidgetActivitiesAgentComponent } from './components/reporting-home/widgets/widget-activities-agent.component';
+import { WidgetDDAssistantComponent } from './components/reporting-home/widgets/widget-dd-assistant.component';
+import { WidgetDDComponent } from './components/reporting-home/widgets/widget-dd.component';
+import { WidgetMyInfoComponent } from './components/reporting-home/widgets/widget-my-info.component';
+import { WidgetSpecialistComponent } from './components/reporting-home/widgets/widget-specialist.component';
+import { WidgetStaffAssistantComponent } from './components/reporting-home/widgets/widget-staff-assistant.component';
+import { WidgetTrainingsComponent } from './components/reporting-home/widgets/widget-trainings.component';
+import { WidgetCalendarComponent } from './components/reporting-home/widgets/widget-calendar.component';
 
 
 @NgModule({
@@ -48,13 +55,20 @@ import { ReportingWidgetsModule } from './components/reporting-home/reporting-wi
         ProfileCurrentComponent,
         ProfileListDetailComponent,
         ReportingProfileEditComponent,
-        ReportingHelpHomeComponent
+        ReportingHelpHomeComponent,
+        WidgetActivitiesAgentComponent,
+        WidgetDDAssistantComponent,
+        WidgetDDComponent,
+        WidgetMyInfoComponent,
+        WidgetSpecialistComponent,
+        WidgetStaffAssistantComponent,
+        WidgetTrainingsComponent,
+        WidgetCalendarComponent
     ],
     imports: [ 
         ReportingRoutingModule,
         SharedModule,
-        AdminModule,
-        ReportingWidgetsModule
+        AdminModule
     ],
     exports:[ReportingProfileEditComponent],
     providers: [
