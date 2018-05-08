@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import {Location} from '@angular/common';
-import {ProfileService, Profile} from '../reporting-profile/profile.service';
 import {UserService, User, PersonalProfile} from '../../modules/user/user.service';
 import {AuthenticationService} from '../../../authentication/authentication.service';
 import {Router} from "@angular/router";
@@ -26,12 +25,11 @@ export class TopNavComponent implements OnInit{
     @Output() onToggle = new EventEmitter<void>();
 
     public profilePicSrc;
-    profile:Profile;
     errorMessage: string;
     user:User = null;
     isOpen = false;
 
-    constructor( private profileService : ProfileService, 
+    constructor( 
                     private auth: AuthenticationService,
                     private userService: UserService,
                     public router: Router,
@@ -41,10 +39,14 @@ export class TopNavComponent implements OnInit{
                      }
     
     ngOnInit(){
+
+/* 
         this.profileService.currentUser().subscribe(
             profile => this.profile = profile,
             error => this.errorMessage = <any> error
         )
+ */
+
         this.userService.current().subscribe(
             res=> {
                 this.user = <User>res;
