@@ -8,6 +8,8 @@ import {    ContactService, Contact,
 import {ActivityOptionNumber, Race, Ethnicity} from '../activity/activity.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from "rxjs/Observable";
+import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
+import { ContactModule } from './contact.module';
 
 
 
@@ -17,7 +19,8 @@ import { Observable } from "rxjs/Observable";
 })
 export class ContactFormComponent implements OnInit{ 
 
-    @Input() contact:Contact = null;
+    @Input() contact:Contact | null = null;
+    @Input() fiscalYear:FiscalYear | null = null;
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<Contact>();
@@ -28,6 +31,7 @@ export class ContactFormComponent implements OnInit{
     races:Race[];
     ethnicities:Ethnicity[];
     optionNumbers:ActivityOptionNumber[];
+    months:ContactMonth[] = new Array<ContactMonth>();
 
     raceEthnicityIndex = 0;
 
@@ -45,18 +49,84 @@ export class ContactFormComponent implements OnInit{
         private fb: FormBuilder,
         private service: ContactService,
         private programsService:ProgramsService,
+        private fiscalYearService: FiscalyearService
     )   
     {}
 
     ngOnInit(){
-        this.programsService.listInitiatives().subscribe(
-            i => this.initiatives = i,
-            error =>  this.errorMessage = <any>error
-        );
+        this.getFiscalYear();
         this.populateOptionNumbers();
     }
 
 
+
+    getFiscalYear(){
+        if( this.contact == null ){
+            if( this.fiscalYear == null ){
+                this.fiscalYearService.current("serviceLog").subscribe(
+                    res => {
+                        this.fiscalYear =<FiscalYear> res;
+                        this.getInitiatives();
+                        this.buildMonths();
+                    },
+                    error => this.errorMessage = <any>error
+                )
+            }else{
+                this.getInitiatives();
+                this.buildMonths();
+            }
+        }else{
+            this.fiscalYearService.byType("serviceLog").subscribe(
+                res => {
+                    this.fiscalYear = this.getFiscalYearByContact( <FiscalYear[]> res );
+                    this.getInitiatives();
+                    this.buildMonths();
+                }
+            )
+            
+        }
+        
+    }
+
+    getFiscalYearByContact(years:FiscalYear[]):FiscalYear{
+        let year = years.filter( y => new Date(y.start) < new Date(this.contact.contactDate) && new Date(y.end ) > new Date(this.contact.contactDate) );
+        if( year.length > 0 ){
+            return year[0];
+        }else{
+            this.errorMessage = "Fiscal Year not Found for this Contact.";
+        }
+        
+    }
+
+
+    getInitiatives(){
+        this.programsService.listInitiatives(this.fiscalYear.name).subscribe(
+            i => this.initiatives = i,
+            error =>  this.errorMessage = <any>error
+        );
+    }
+
+
+
+    getMonthId(month:number, year:number ):number{
+        if( year == 2017  ){
+            return month;
+        }else if (year == 2018 && month <= 6){
+            return month;
+        }
+        return (year - 2018) * 12 + month;
+    }
+
+    buildMonths(){
+        var end = new Date(this.fiscalYear.end);
+        for( var m = new Date(this.fiscalYear.start); m < end; m.setMonth(m.getMonth() + 1)){
+            var mnth:ContactMonth = {
+                date: new Date(m.getTime()),
+                id: this.getMonthId( m.getMonth() + 1, m.getFullYear())
+            };
+            this.months.push( mnth );
+        }
+    }
 
 
     populateOptionNumbers(){
@@ -238,4 +308,10 @@ export class ContactFormComponent implements OnInit{
 
 
 
+}
+
+
+interface ContactMonth{
+    date:Date;
+    id:number;
 }
