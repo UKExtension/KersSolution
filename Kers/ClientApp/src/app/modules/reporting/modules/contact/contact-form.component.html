@@ -16,18 +16,8 @@
             <div class="col-md-3 col-sm-3 col-xs-6">
                 <select name="contactDate" formControlName="contactDate" id="contactDate" class="form-control col-md-7 col-xs-12">
                     <option value="">--- select ---</option>
-                    <option value="7">2017 JUL</option>
-                    <option value="8">2017 AUG</option>
-                    <option value="9">2017 SEP</option>
-                    <option value="10">2017 OCT</option>
-                    <option value="11">2017 NOV</option>
-                    <option value="12">2017 DEC</option>
-                    <option value="1">2018 JAN</option>
-                    <option value="2">2018 FEB</option>
-                    <option value="3">2018 MAR</option>
-                    <option value="4">2018 APR</option>
-                    <option value="5">2018 MAY</option>
-                    <option value="6">2018 JUN</option>
+                    <option *ngFor="let month of months" [value]="month.id">{{month.date | date:'y MMM'}}</option>
+                    
                 </select>
             </div>
         </div>

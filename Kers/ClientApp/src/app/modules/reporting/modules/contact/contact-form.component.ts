@@ -108,14 +108,7 @@ export class ContactFormComponent implements OnInit{
 
 
 
-    getMonthId(month:number, year:number ):number{
-        if( year == 2017  ){
-            return month;
-        }else if (year == 2018 && month <= 6){
-            return month;
-        }
-        return (year - 2018) * 12 + month;
-    }
+    
 
     buildMonths(){
         var end = new Date(this.fiscalYear.end);
@@ -252,19 +245,45 @@ export class ContactFormComponent implements OnInit{
         this.contactForm.get('female').markAsDirty();
         this.contactForm.patchValue(this.contact);
         let date = new Date(this.contact.contactDate);
-        this.contactForm.patchValue({contactDate:date.getMonth() + 1})
+        this.contactForm.patchValue({contactDate:this.getMonthId(date.getMonth() + 1, date.getFullYear())})
     }
+    getMonthId(month:number, year:number ):number{
+        if( year == 2017  ){
+            return month;
+        }else if (year == 2018 && month <= 6){
+            return month;
+        }
+        return (year - 2017) * 12 + month;
+    }
+
+    getDateByMonthId(monthId:number):Date{
+        let d = new Date();
+        if( monthId <= 12 ){
+            d.setMonth(monthId - 1);
+            d.setFullYear(monthId > 6 ? 2017 : 2018);
+        } else {
+            var month = monthId % 12;
+            var year = Math.round( monthId / 12 ) + 2016;
+
+
+            d.setFullYear(year);
+            d.setMonth( month -1 );
+            d.setDate( 15 );
+        }
+
+
+        return d;
+    }
+
+
 
 
     onSubmit(){
 
-
-        var dateValue = this.contactForm.value.contactDate;
-        var d = new Date();
-        d.setMonth(dateValue - 1);
-        d.setFullYear(+dateValue > 6 ? 2017 : 2018);
         var val = this.contactForm.value;
-        val.contactDate = d;
+        val.contactDate = this.getDateByMonthId( +this.contactForm.value.contactDate );
+
+        
         if(this.contact != null){
             this.service.update(this.contact.id, val).subscribe(
                 res => {
@@ -285,6 +304,9 @@ export class ContactFormComponent implements OnInit{
                 err => this.errorMessage = <any> err
             );
         }
+
+
+
     }
 
     onCancel(){
