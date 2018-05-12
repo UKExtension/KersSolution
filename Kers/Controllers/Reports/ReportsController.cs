@@ -41,6 +41,9 @@ namespace Kers.Controllers.Reports
         {
             var lastStoryWithImage = await storyRepo.LastStoryWithImages();
             ViewData["MainStory"] = lastStoryWithImage;
+
+            var moreStories = await storyRepo.LastStories();
+            ViewData["MoreStories"] = moreStories;
             return View();
         }
         [HttpGet]

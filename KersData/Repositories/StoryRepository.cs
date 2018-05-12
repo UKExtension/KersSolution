@@ -89,15 +89,22 @@ namespace Kers.Models.Repositories
                                     .Include( s => s.MajorProgram )
                                     .OrderBy( s => s.Created ).LastAsync();
             
-            foreach( var im in LastRevWithImages.StoryImages ){
-                im.UploadImage.UploadFile.Content = null;
-            }
+            
 
             var story = new StoryViewModel();
             story.StoryId = LastRevWithImages.StoryId;
             story.Title = LastRevWithImages.Title;
             story.Story = LastRevWithImages.Story;
             story.ImageName = LastRevWithImages.StoryImages.Last().UploadImage.UploadFile.Name;
+
+            //Find Landscape Image if available.
+            foreach( var img in LastRevWithImages.StoryImages){
+                if( img.UploadImage.Width > img.UploadImage.Height){
+                    story.ImageName = img.UploadImage.UploadFile.Name;
+                    break;
+                }
+            }
+
             story.KersUser = context.Story.Where( s => s.Id == LastRevWithImages.StoryId)
                                 .Include( s => s.KersUser ).ThenInclude( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
                                 .Include( s => s.KersUser ).ThenInclude( u => u.PersonalProfile )
@@ -108,6 +115,48 @@ namespace Kers.Models.Repositories
             return story;
 
             
+        }
+
+        public async Task<List<StoryViewModel>> LastStories( int amount = 4 ){
+            var Last = await this.context.Story.OrderByDescending( s => s.Updated ).Take( amount ).ToListAsync();
+            var lastStories = new List<StoryViewModel>();
+
+            foreach( var str in Last ){
+                var lastRev = await context.StoryRevision
+                                        .Where(s => s.StoryId == str.Id)
+                                        .Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
+                                        .Include( s => s.MajorProgram )
+                                        .OrderBy( s => s.Created)
+                                        .LastAsync();
+                var story = new StoryViewModel();
+                story.StoryId = lastRev.StoryId;
+                story.Title = lastRev.Title;
+                story.Story = lastRev.Story;
+
+
+                if(lastRev.StoryImages.Count > 0){
+                    story.ImageName = lastRev.StoryImages.Last().UploadImage.UploadFile.Name;
+
+                    //Find Landscape Image if available.
+                    foreach( var img in lastRev.StoryImages){
+                        if( img.UploadImage.Width > img.UploadImage.Height){
+                            story.ImageName = img.UploadImage.UploadFile.Name;
+                            break;
+                        }
+                    }
+                }
+                
+
+                story.KersUser = context.KersUser.Where( s => s.Id == str.KersUserId)
+                                    .Include( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
+                                    .Include( u => u.PersonalProfile )
+                                    .FirstOrDefault();
+                story.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
+                story.MajorProgram = lastRev.MajorProgram;
+                story.Updated = lastRev.Created;
+                lastStories.Add(story);
+            }
+            return lastStories;
         }
 
 
