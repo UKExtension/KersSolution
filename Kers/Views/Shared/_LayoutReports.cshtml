@@ -154,17 +154,21 @@
             <div class="row">
                 <div id="navigation" class="navbar col-xs-12">
                                     <nav id="main-menu" class="main-menu collapse navbar-collapse" role="navigation">
-                          <ul class="nav navbar-nav">
-                            <li class="first expanded menu-link-about-us"><a href="http://extension.ca.uky.edu/content/about-us">About Us</a></li>
-                              <li class="leaf menu-link-accountability"><a href="https://kers.ca.uky.edu/CES/rpt/CESreports.aspx" title="">Accountability</a></li>
-                              <li class="leaf menu-link-counties"><a href="http://extension.ca.uky.edu/county" title="">Counties</a></li>
-                              <li class="leaf menu-link-districts"><a href="http://districts.ca.uky.edu/" title="">Districts</a></li>
-                              <li class="leaf menu-link-advisory-council"><a href="http://psd.ca.uky.edu/advisorycouncils" title="">Advisory Council</a></li>
-                              <li class="leaf menu-link-depts-units"><a href="http://www.ca.uky.edu/deptunits" title="">Depts/Units</a></li>
-                              <li class="leaf menu-link-publications"><a href="http://www2.ca.uky.edu/agcomm/pubs.asp" title="">Publications</a></li>
-                              <li class="leaf menu-link-field-directory"><a href="http://directory.ca.uky.edu/" title="">Field Directory</a></li>
-                              <li class="last leaf menu-link-kers-reporting"><a href="https://kers.ca.uky.edu/" title="">KERS Reporting</a></li>
-                                                    </ul>
+
+
+
+
+                                    <ul class="nav navbar-nav">
+                        <li class="first leaf menu-link-county-offices"><a href="http://extension.ca.uky.edu/county" title="">County Offices</a></li>
+<li class="leaf menu-link-publications"><a href="http://www2.ca.uky.edu/agcomm/pubs.asp" title="">Publications</a></li>
+<li class="leaf menu-link-impacts"><a href="https://kers.ca.uky.edu/CES/rpt/CESreports.aspx" title="">Impacts</a></li>
+<li class="leaf menu-link-about-extension"><a href="http://extension.ca.uky.edu/content/about-us" title="">About Extension</a></li>
+<li class="leaf menu-link-contact-us"><a href="http://directory.ca.uky.edu/" title="">Contact Us</a></li>
+<li class="last leaf menu-link-jobs"><a href="https://ukjobs.uky.edu/postings/search?utf8=%E2%9C%93&amp;query=&amp;query_v0_posted_at_date=&amp;225=&amp;985=5&amp;986=&amp;987=&amp;988=&amp;989=&amp;query_organizational_tier_3_id=any&amp;commit=Search" title="">Jobs</a></li>
+                      </ul>
+
+
+
                       </nav> <!-- /#main-menu -->
                               </div>
             </div>
@@ -180,7 +184,7 @@
         <div class="x_title"><br>
             <h2>@ViewData["Title"] <small>@ViewData["Subtitle"]</small></h2>
             <ul class="nav navbar-right panel_toolbox">
-                <!--
+                
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
                     <a asp-controller="Reports" asp-action="Index" >Home</a>
                 </li>
@@ -193,7 +197,7 @@
                 <li>
                     <a href="~/reports/counties">Programs</a>
                 </li>
-                -->
+                
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
                     <a asp-controller="Data" asp-action="Index">Data</a>
                 </li>

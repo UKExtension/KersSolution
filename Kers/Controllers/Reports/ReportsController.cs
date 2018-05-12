@@ -27,15 +27,20 @@ namespace Kers.Controllers.Reports
     public class ReportsController : Controller
     {
         KERScoreContext context;
+        IStoryRepository storyRepo;
 
         public ReportsController( 
-                    KERScoreContext context
+                    KERScoreContext context,
+                    IStoryRepository storyRepo
             ){
            this.context = context;
+           this.storyRepo = storyRepo;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var lastStoryWithImage = await storyRepo.LastStoryWithImages();
+            ViewData["MainStory"] = lastStoryWithImage;
             return View();
         }
         [HttpGet]

@@ -10,6 +10,7 @@ using Kers.Models.Contexts;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
+using Kers.Models.ViewModels;
 
 namespace Kers.Models.Repositories
 {
@@ -79,6 +80,34 @@ namespace Kers.Models.Repositories
                     });
             }
             return revs;
+        }
+
+        public async Task<StoryViewModel> LastStoryWithImages(){
+            var LastRevWithImages = await this.context.StoryRevision
+                                    .Where( s => s.StoryImages.Count() > 0 )
+                                    .Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
+                                    .Include( s => s.MajorProgram )
+                                    .OrderBy( s => s.Created ).LastAsync();
+            
+            foreach( var im in LastRevWithImages.StoryImages ){
+                im.UploadImage.UploadFile.Content = null;
+            }
+
+            var story = new StoryViewModel();
+            story.StoryId = LastRevWithImages.StoryId;
+            story.Title = LastRevWithImages.Title;
+            story.Story = LastRevWithImages.Story;
+            story.ImageName = LastRevWithImages.StoryImages.Last().UploadImage.UploadFile.Name;
+            story.KersUser = context.Story.Where( s => s.Id == LastRevWithImages.StoryId)
+                                .Include( s => s.KersUser ).ThenInclude( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
+                                .Include( s => s.KersUser ).ThenInclude( u => u.PersonalProfile )
+                                .FirstOrDefault().KersUser;
+            story.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
+            story.MajorProgram = LastRevWithImages.MajorProgram;
+            story.Updated = LastRevWithImages.Created;
+            return story;
+
+            
         }
 
 
