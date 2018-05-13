@@ -598,6 +598,88 @@ namespace Kers.Models.Repositories
 
 
 
+        public async Task<StatsViewModel> StatsPerMonth( int year = 0, int month = 0, int PlanningUnitId = 0, int MajorProgramId = 0){
+            // If not month or year is provided, get the last month
+            if( year == 0 || month == 0){
+                var currentDate = DateTime.Now;
+                month = currentDate.Month;
+                if( month == 1 ){
+                    year = currentDate.Year - 1;
+                    month = 12;
+                }else{
+                    year = currentDate.Year;
+                    month = currentDate.Month - 1;
+                }
+            }
+            var firstDay = new DateTime( year, month, 1, 0, 0, 0);
+            var lastDay = new DateTime( year, month, DateTime.DaysInMonth(year, month), 23, 59, 59);
+
+
+            var activities = this.coreContext.Activity.Where( a => a.ActivityDate > firstDay && a.ActivityDate < lastDay);
+
+            if( PlanningUnitId != 0){
+                activities = activities.Where( a => a.PlanningUnitId == PlanningUnitId );
+            }
+
+            if( MajorProgramId != 0 ){
+                activities = activities.Where( a => a.MajorProgramId == MajorProgramId );
+            }
+
+            var activitiesList = await activities.ToListAsync();
+    
+            var OptionNumbers = new List<IOptionNumberValue>();
+
+            var lastActivityRevs = new List<ActivityRevision>();
+
+            foreach( var activity in activitiesList ){
+                var rev = await coreContext.ActivityRevision
+                            .Where( a => a.ActivityId == activity.Id)
+                            .Include( r => r.ActivityOptionNumbers ).ThenInclude( o => o.ActivityOptionNumber )
+                            .OrderBy( r => r.Created)
+                            .LastAsync();
+                lastActivityRevs.Add( rev );
+                OptionNumbers.AddRange( rev.ActivityOptionNumbers );
+            }
+
+            
+            var contacts = this.coreContext.Contact.Where( c => c.ContactDate > firstDay && c.ContactDate < lastDay );
+
+            if(PlanningUnitId != 0 ){
+                contacts = contacts.Where( c => c.PlanningUnitId == PlanningUnitId );
+            }
+
+            if( MajorProgramId != 0 ){
+                contacts = contacts.Where( c => c.MajorProgramId == MajorProgramId );
+            }
+
+            var contactsList = await contacts.ToListAsync();
+
+
+
+            var lastContactRevs = new List<ContactRevision>();
+            foreach( var contact in contactsList ){
+                var rev = await coreContext.ContactRevision
+                                .Where( c => c.ContactId == contact.Id )
+                                .Include( r => r.ContactOptionNumbers ).ThenInclude( n => n.ActivityOptionNumber)
+                                .LastAsync();
+                lastContactRevs.Add( rev );
+                OptionNumbers.AddRange( rev.ContactOptionNumbers );
+            }
+
+            var stats = new StatsViewModel();
+
+            stats.DirectContacts = activitiesList.Sum( a => a.Audience ) + contacts.Sum( c => c.Audience );
+            stats.Hours = activitiesList.Sum( a => a.Hours ) + contacts.Sum( c => c.Days) * 8;
+            stats.Male = lastActivityRevs.Sum( r => r.Male ) + lastContactRevs.Sum( r => r.Male );
+            stats.Female = lastActivityRevs.Sum( r => r.Female ) + lastContactRevs.Sum( r =>r.Female );
+            stats.IndirectContacts = OptionNumbers.Where( a => a.ActivityOptionNumber.Name == "Number of Indirect Contacts").Sum( a => a.Value );
+            stats.Voluntiers = OptionNumbers.Where( a => a.ActivityOptionNumber.Name == "Adult Volunteers").Sum( a => a.Value );
+
+            return stats;
+        }
+
+
+
 
 
 

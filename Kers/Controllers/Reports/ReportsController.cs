@@ -29,12 +29,16 @@ namespace Kers.Controllers.Reports
         KERScoreContext context;
         IStoryRepository storyRepo;
 
+        IContactRepository contactRepo;
+
         public ReportsController( 
                     KERScoreContext context,
-                    IStoryRepository storyRepo
+                    IStoryRepository storyRepo,
+                    IContactRepository contactRepo
             ){
            this.context = context;
            this.storyRepo = storyRepo;
+           this.contactRepo = contactRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -44,6 +48,10 @@ namespace Kers.Controllers.Reports
 
             var moreStories = await storyRepo.LastStories();
             ViewData["MoreStories"] = moreStories;
+
+            var StatsLastMonth = await contactRepo.StatsPerMonth();
+            ViewData["StatsLastMonth"] = StatsLastMonth;
+            
             return View();
         }
         [HttpGet]
