@@ -51,7 +51,12 @@ namespace Kers.Controllers.Reports
 
             var StatsLastMonth = await contactRepo.StatsPerMonth();
             ViewData["StatsLastMonth"] = StatsLastMonth;
-            
+
+            DateTime ago = DateTime.Now.AddMonths(-2);
+
+            var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month );
+            ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
+
             return View();
         }
         [HttpGet]

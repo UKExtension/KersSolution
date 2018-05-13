@@ -63,7 +63,7 @@ namespace Kers.Models.Abstract
         List<PerProgramActivities> ProcessMajorProgramContacts(List<ContactMajorProgramResult> contacts, List<PerProgramActivities> result, IDistributedCache _cache);
         List<PerPersonActivities> ProcessPersonContacts(List<ContactPersonResult> contacts, List<PerPersonActivities> result, IDistributedCache _cache);
         Task<TableViewModel> Data(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false );
-        Task<StatsViewModel> StatsPerMonth( int year = 0, int month = 0, int PlanningUnitId = 0, int MajorProgramId = 0);
+        Task<StatsViewModel> StatsPerMonth( int year = 0, int month = 0, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false);
     }
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
