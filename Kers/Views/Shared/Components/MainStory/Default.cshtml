@@ -1,0 +1,28 @@
+@model Kers.Models.ViewModels.StoryViewModel;
+@{
+    var extract = ViewData["Extract"] as string;
+}
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+        <div class="x_title">
+            <h2>@Model.Title <small>Featured Success Story</small></h2>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="dashboard-widget-content">
+            <div class="col-md-4">
+                <div class="byline" style="padding-bottom: .35em;">
+                    <span>@Html.TimeAgo(@Model.Updated)</span> by <a>@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</a>
+                </div>
+                <p>@extract...</p>
+                <p><a href="~/reports/Story/@Model.StoryId">Read More</a></p>
+            </div>
+            <div class="col-md-8">
+                <img src="@Url.RouteUrl("ProcessImage", new { filename = @Model.ImageName, mode="crop", w=900, h=500 })" alt="@Model.Title" class="img-responsive" />
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

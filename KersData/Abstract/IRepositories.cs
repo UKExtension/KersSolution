@@ -115,7 +115,7 @@ namespace Kers.Models.Abstract
     public interface IStoryRepository: IEntityBaseRepository<Story>{
         List<int> LastStoryRevisionIds( FiscalYear fiscalYear);
         List<StoryRevision> LastStoryRevisions( FiscalYear fiscalYear);
-        Task<StoryViewModel> LastStoryWithImages();
-        Task<List<StoryViewModel>> LastStories( int amount = 4 );
+        Task<StoryViewModel> LastStoryWithImages(int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false);
+        Task<List<StoryViewModel>> LastStories( int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false );
     }
 }
