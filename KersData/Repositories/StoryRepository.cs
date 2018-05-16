@@ -237,7 +237,24 @@ namespace Kers.Models.Repositories
         }
 
         public async Task<List<StoryViewModel>> LastStories( int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false ){
-            var Last = await this.context.Story.OrderByDescending( s => s.Updated ).Take( amount ).ToListAsync();
+            
+            
+            var LastQuery = this.context.Story.Where( s => true );
+            if( PlanningUnitId != 0 ){
+                LastQuery = LastQuery.Where( s => s.PlanningUnitId == PlanningUnitId );
+            }
+
+            if( MajorProgramId != 0 ){
+               // LastQuery = LastQuery.Where( s => s.MajorProgramId == MajorProgramId );
+            }
+            
+            
+            var Last = await LastQuery.OrderByDescending( s => s.Updated ).Take( amount ).ToListAsync();
+
+
+
+
+
             var lastStories = new List<StoryViewModel>();
 
             foreach( var str in Last ){

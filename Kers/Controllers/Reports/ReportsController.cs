@@ -77,10 +77,10 @@ namespace Kers.Controllers.Reports
 
             ViewData["County"] = await this.context.PlanningUnit.Where( p => p.Id == id ).FirstOrDefaultAsync();
  
-            var lastStoryWithImage = await storyRepo.LastStoryWithImages(id);
+            var lastStoryWithImage = await storyRepo.LastStoryWithImages( id);
             ViewData["MainStory"] = lastStoryWithImage;
 
-            var moreStories = await storyRepo.LastStories(id);
+            var moreStories = await storyRepo.LastStories(4, id);
             ViewData["MoreStories"] = moreStories;
 
             var lastMonth = DateTime.Now.AddMonths(-1);

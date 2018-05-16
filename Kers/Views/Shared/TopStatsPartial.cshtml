@@ -3,22 +3,28 @@
 
     var stathsTwoMonthsAgo  = ViewData["StathsTwoMonthsAgo"] as Kers.Models.ViewModels.StatsViewModel;
     
-    double directRatio = stathsTwoMonthsAgo.DirectContacts == 0 ? statsLastMonth.DirectContacts : (statsLastMonth.DirectContacts - stathsTwoMonthsAgo.DirectContacts)/stathsTwoMonthsAgo.DirectContacts;
+    double directDifference = (statsLastMonth.DirectContacts - stathsTwoMonthsAgo.DirectContacts);
+    double directRatio = stathsTwoMonthsAgo.DirectContacts == 0 ? statsLastMonth.DirectContacts : directDifference/stathsTwoMonthsAgo.DirectContacts;
     var directPercentage = Math.Round( directRatio * 100 );
 
-    double hoursRatio = stathsTwoMonthsAgo.Hours == 0 ? statsLastMonth.Hours : (statsLastMonth.Hours - stathsTwoMonthsAgo.Hours) - stathsTwoMonthsAgo.Hours;
+    double hoursDifference = (statsLastMonth.Hours - stathsTwoMonthsAgo.Hours);
+    double hoursRatio = stathsTwoMonthsAgo.Hours == 0 ? statsLastMonth.Hours : hoursDifference / stathsTwoMonthsAgo.Hours;
     var hoursPercentage = Math.Round( hoursRatio * 100 );
 
-    double maleRatio = stathsTwoMonthsAgo.Male == 0 ? statsLastMonth.Male : (statsLastMonth.Male - stathsTwoMonthsAgo.Male ) / stathsTwoMonthsAgo.Male;
+    double maleDifference = (statsLastMonth.Male - stathsTwoMonthsAgo.Male );
+    double maleRatio = stathsTwoMonthsAgo.Male == 0 ? statsLastMonth.Male :  maleDifference / stathsTwoMonthsAgo.Male;
     var malePercentage = Math.Round( maleRatio * 100 );
 
-    double femaleRatio = stathsTwoMonthsAgo.Female == 0 ? statsLastMonth.Female : ( statsLastMonth.Female - stathsTwoMonthsAgo.Female ) / stathsTwoMonthsAgo.Female;
+    double FemaleDifference = ( statsLastMonth.Female - stathsTwoMonthsAgo.Female );
+    double femaleRatio = stathsTwoMonthsAgo.Female == 0 ? statsLastMonth.Female : FemaleDifference / stathsTwoMonthsAgo.Female;
     var femalePercentage = Math.Round( femaleRatio * 100 );
 
-    double indirectRatio = stathsTwoMonthsAgo.IndirectContacts == 0 ? statsLastMonth.IndirectContacts : (statsLastMonth.IndirectContacts - stathsTwoMonthsAgo.IndirectContacts )/ stathsTwoMonthsAgo.IndirectContacts;
+    double indirectDifference = (statsLastMonth.IndirectContacts - stathsTwoMonthsAgo.IndirectContacts );
+    double indirectRatio = stathsTwoMonthsAgo.IndirectContacts == 0 ? statsLastMonth.IndirectContacts : indirectDifference / stathsTwoMonthsAgo.IndirectContacts;
     var indirectPercentage = Math.Round( indirectRatio * 100 );
 
-    double volunteersRatio = stathsTwoMonthsAgo.Voluntiers == 0 ? statsLastMonth.Voluntiers : ( statsLastMonth.Voluntiers -  stathsTwoMonthsAgo.Voluntiers) / stathsTwoMonthsAgo.Voluntiers;
+    double volunteerDifference = ( statsLastMonth.Voluntiers -  stathsTwoMonthsAgo.Voluntiers);
+    double volunteersRatio = stathsTwoMonthsAgo.Voluntiers == 0 ? statsLastMonth.Voluntiers : volunteerDifference / stathsTwoMonthsAgo.Voluntiers;
     var volunteersPercentage = Math.Round( volunteersRatio * 100 );
 
     var lastMonth = DateTime.Now.AddMonths(-1);
@@ -31,32 +37,32 @@
   <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
     <span class="count_top"><i class="fa fa-user"></i> Direct Contacts</span>
     <div class="count">@statsLastMonth.DirectContacts</div>
-    <span class="count_bottom"><i class='@(directPercentage > 0 ? "green" : "red")'><i class="fa @(directPercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@directPercentage% </i></span>
+    <span class="count_bottom"><i class='@(directPercentage > 0 ? "green" : "red")'><i class="fa @(directPercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@directDifference (@directPercentage%) </i></span>
   </div>
   <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
     <span class="count_top"><i class="fa fa-clock-o"></i> Hours</span>
     <div class="count green">@statsLastMonth.Hours</div>
-    <span class="count_bottom"><i class='@(hoursPercentage > 0 ? "green" : "red")'><i class="fa @(hoursPercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@hoursPercentage% </i></span>
+    <span class="count_bottom"><i class='@(hoursPercentage > 0 ? "green" : "red")'><i class="fa @(hoursPercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@hoursDifference (@hoursPercentage%) </i></span>
   </div>
   <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
     <span class="count_top"><i class="fa fa-user"></i> Total Males</span>
     <div class="count">@statsLastMonth.Male</div>
-    <span class="count_bottom"><i class='@(malePercentage > 0 ? "green" : "red")'><i class="fa @(malePercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@malePercentage% </i></span>
+    <span class="count_bottom"><i class='@(malePercentage > 0 ? "green" : "red")'><i class="fa @(malePercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@maleDifference (@malePercentage%) </i></span>
   </div>
   <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
     <span class="count_top"><i class="fa fa-user"></i> Total Females</span>
     <div class="count">@statsLastMonth.Female</div>
-    <span class="count_bottom"><i class='@(femalePercentage > 0 ? "green" : "red")'><i class="fa @(femalePercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@femalePercentage% </i></span>
+    <span class="count_bottom"><i class='@(femalePercentage > 0 ? "green" : "red")'><i class="fa @(femalePercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@FemaleDifference (@femalePercentage%) </i></span>
   </div>
   <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
     <span class="count_top"><i class="fa fa-user"></i> Indirect Contacts</span>
     <div class="count">@statsLastMonth.IndirectContacts</div>
-    <span class="count_bottom"><i class='@(indirectPercentage > 0 ? "green" : "red")'><i class="fa @(indirectPercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@indirectPercentage% </i></span>
+    <span class="count_bottom"><i class='@(indirectPercentage > 0 ? "green" : "red")'><i class="fa @(indirectPercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@indirectDifference (@indirectPercentage%) </i></span>
   </div>
   <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
     <span class="count_top"><i class="fa fa-user"></i> Volunteers</span>
     <div class="count">@statsLastMonth.Voluntiers</div>
-    <span class="count_bottom"><i class='@(volunteersPercentage > 0 ? "green" : "red")'><i class="fa @(volunteersPercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@volunteersPercentage% </i></span>
+    <span class="count_bottom"><i class='@(volunteersPercentage > 0 ? "green" : "red")'><i class="fa @(volunteersPercentage > 0 ? "fa-sort-asc" : "fa-sort-desc")"></i>@volunteerDifference (@volunteersPercentage%) </i></span>
   </div>
   
 </div>
