@@ -1,0 +1,37 @@
+@model List<Kers.Models.ViewModels.StoryViewModel>;
+<div class="x_panel">
+    <div class="x_title">
+        <h2>Stories <small>Behind the Numbers</small></h2>
+        
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <div class="dashboard-widget-content">
+            <ul class="list-unstyled timeline widget">
+                @foreach( var theStory in Model){
+                        <li>
+                        <div class="block">
+                        <div class="block_content">
+                            <h2 class="title">
+                                            <a>@theStory.Title</a>
+                                        </h2>
+                            <div class="byline" style="padding-bottom: .35em;">
+                        <span>@Html.TimeAgo(@theStory.Updated)</span> by <a>@theStory.KersUser.PersonalProfile.FirstName @theStory.KersUser.PersonalProfile.LastName</a>
+                    </div>
+                            <p class="excerpt">
+                            
+                                @{
+                                var stryn = System.Text.RegularExpressions.Regex.Replace(@theStory.Story, "<[^>]*>", string.Empty);
+                            }
+                    
+                            @stryn.Substring(0, Math.Min(stryn.Length, 200))... <a href="~/reports/Story/@theStory.StoryId">Read&nbsp;More</a>
+                            </p>
+                        </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <a href="~/reports/Story/">More Stories</a>
+    </div>
+</div>

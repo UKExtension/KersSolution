@@ -80,7 +80,14 @@ namespace Kers
                 services.AddDbContext<KERSmainContext>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersMain"]));
                 services.AddDbContext<KERScoreContext>(options => 
-                    options.UseSqlServer(Configuration["ConnectionStrings:connKersCore"], b => b.MigrationsAssembly("Kers")));
+                    options.UseSqlServer(
+                        Configuration["ConnectionStrings:connKersCore"], 
+                            sqlServerOptions => {
+                                    sqlServerOptions.MigrationsAssembly("Kers");
+                                    sqlServerOptions.CommandTimeout(60);
+                                }
+                        )
+                    );
                 services.AddDbContext<KERS2017Context>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS2017"]));
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 

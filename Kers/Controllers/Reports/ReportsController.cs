@@ -43,20 +43,11 @@ namespace Kers.Controllers.Reports
 
         public async Task<IActionResult> Index()
         {
-            var lastStoryWithImage = await storyRepo.LastStoryWithImages();
-            ViewData["MainStory"] = lastStoryWithImage;
-
-            var moreStories = await storyRepo.LastStories();
-            ViewData["MoreStories"] = moreStories;
-
             var StatsLastMonth = await contactRepo.StatsPerMonth();
             ViewData["StatsLastMonth"] = StatsLastMonth;
-
             DateTime ago = DateTime.Now.AddMonths(-2);
-
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
-
             return View();
         }
         [HttpGet]
@@ -76,23 +67,12 @@ namespace Kers.Controllers.Reports
         {
 
             ViewData["County"] = await this.context.PlanningUnit.Where( p => p.Id == id ).FirstOrDefaultAsync();
- 
-            var lastStoryWithImage = await storyRepo.LastStoryWithImages( id);
-            ViewData["MainStory"] = lastStoryWithImage;
-
-            var moreStories = await storyRepo.LastStories(4, id);
-            ViewData["MoreStories"] = moreStories;
-
             var lastMonth = DateTime.Now.AddMonths(-1);
             var StatsLastMonth = await contactRepo.StatsPerMonth(lastMonth.Year,lastMonth.Month,id);
             ViewData["StatsLastMonth"] = StatsLastMonth;
-
             DateTime ago = DateTime.Now.AddMonths(-2);
-
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month, id );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
-
-            
             return View();
         }
 
