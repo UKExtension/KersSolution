@@ -28,17 +28,20 @@ namespace Kers.Controllers.Reports
     {
         KERScoreContext context;
         IStoryRepository storyRepo;
+        IActivityRepository activityRepo;
 
         IContactRepository contactRepo;
 
         public ReportsController( 
                     KERScoreContext context,
                     IStoryRepository storyRepo,
-                    IContactRepository contactRepo
+                    IContactRepository contactRepo,
+                    IActivityRepository activityRepo
             ){
-           this.context = context;
-           this.storyRepo = storyRepo;
-           this.contactRepo = contactRepo;
+            this.context = context;
+            this.storyRepo = storyRepo;
+            this.contactRepo = contactRepo;
+            this.activityRepo = activityRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -48,6 +51,10 @@ namespace Kers.Controllers.Reports
             DateTime ago = DateTime.Now.AddMonths(-2);
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
+            var TopPrograms = await activityRepo.TopProgramsPerMonth();
+            ViewData["TopPrograms"] = TopPrograms;
+            var sum = TopPrograms.Sum( a => a.DirectContacts );
+            ViewData["TopProgramsAudienceSum"] = sum;
             return View();
         }
         [HttpGet]
@@ -73,6 +80,10 @@ namespace Kers.Controllers.Reports
             DateTime ago = DateTime.Now.AddMonths(-2);
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month, id );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
+            var TopPrograms = await activityRepo.TopProgramsPerMonth( 0, 0, 5, id );
+            ViewData["TopPrograms"] = TopPrograms;
+            var sum = TopPrograms.Sum( a => a.DirectContacts );
+            ViewData["TopProgramsAudienceSum"] = sum;
             return View();
         }
 

@@ -33,6 +33,63 @@ namespace Kers.Models.Repositories
         }
 
 
+
+        public async Task<List<ProgramDataViewModel>> TopProgramsPerMonth(int year = 0, int month = 0, int amount = 5, int PlanningUnitId = 0, bool refreshCache = false){
+            
+            
+            
+            List<ProgramDataViewModel> data;
+
+
+            // If not month or year is provided, get the last month
+            if( year == 0 || month == 0){
+                var currentDate = DateTime.Now;
+                month = currentDate.Month;
+                if( month == 1 ){
+                    year = currentDate.Year - 1;
+                    month = 12;
+                }else{
+                    year = currentDate.Year;
+                    month = currentDate.Month - 1;
+                }
+            }
+
+/* 
+            var cacheKey = CacheKeys.StatsPerMonth + month.ToString() + year.ToString() + PlanningUnitId.ToString() + MajorProgramId.ToString();
+            var cachedStats = _cache.GetString(cacheKey);
+            StatsViewModel stats;
+            if (!string.IsNullOrEmpty(cachedStats) && !refreshCache){
+                stats = JsonConvert.DeserializeObject<StatsViewModel>(cachedStats);
+            }else{
+ */
+            var firstDay = new DateTime( year, month, 1, 0, 0, 0);
+            var lastDay = new DateTime( year, month, DateTime.DaysInMonth(year, month), 23, 59, 59);
+
+            var activities = this.coreContext.Activity.Where( a => a.ActivityDate > firstDay && a.ActivityDate < lastDay );
+
+            if( PlanningUnitId != 0) {
+                activities = activities.Where( a => a.PlanningUnitId == PlanningUnitId );
+            }
+
+            // Exclude Administrative Functions and PSD programs
+
+            activities = activities.Where( a => a.MajorProgram.Name != "Administrative Functions" && a.MajorProgram.Name != "Staff Development");
+
+
+            data = await activities.GroupBy( a => a.MajorProgram )
+                                .Select( g => new ProgramDataViewModel {
+                                    Program = g.Key,
+                                    DirectContacts = g.Sum( a => a.Audience ),
+                                    Hours = g.Sum( a => a.Hours )
+                                })
+                                .OrderByDescending( g => g.DirectContacts )
+                                .Take( amount )
+                                .ToListAsync();
+            return data;
+        }
+
+
+
         public List<int> LastActivityRevisionIds( FiscalYear fiscalYear, IDistributedCache _cache){
             var cacheKey = "ActivityLastRevisionIdsPerFiscalYear" + fiscalYear.Name;
             var cacheString = _cache.GetString(cacheKey);

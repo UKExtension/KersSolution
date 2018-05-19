@@ -4,6 +4,19 @@
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
     var conty = ViewData["County"] as Kers.Models.Entities.KERScore.PlanningUnit;
     ViewData["Title"] = conty.Name;
+    var topPrograms = ViewData["TopPrograms"] as List<Kers.Models.ViewModels.ProgramDataViewModel>; 
+    var topProgramsSum = ViewData["TopProgramsAudienceSum"] as int?;
+    string[] colors = {"#BDC3C7", "#9B59B6", "#E74C3C",  "#26B99A", "#3498DB"};
+    string colorsAsAString = "[\"#BDC3C7\", \"#9B59B6\", \"#E74C3C\",  \"#26B99A\", \"#3498DB\"]";
+    var index = 0;
+    var programNamesAsString = "[";
+    var dataAsString = "[";
+    foreach( var prgrm in topPrograms ){
+      programNamesAsString += "\"" + prgrm.Program.Name + "\",";
+      dataAsString += prgrm.DirectContacts.ToString() + ",";
+    }
+    programNamesAsString += "]";
+    dataAsString += "]";
 }
 @await Html.PartialAsync("TopStatsPartial")
 
@@ -22,7 +35,46 @@
               <div class="x_content">
 
                 <div class="">
-                  
+                  <table class="" style="width:100%">
+                  <tr>
+                      <th style="width:37%;">
+                      <p>Top Programs</p>
+                      </th>
+                      <th>
+                      <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                          <p class="">Name</p>
+                      </div>
+                      <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                          <p class="">Percent</p>
+                      </div>
+                      </th>
+                  </tr>
+                  <tr>
+                      <td>
+                      <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                      </td>
+                      <td>
+                          <table class="tile_info">
+                              <tbody>
+                              @foreach(var progrm in topPrograms)
+                              {
+                                  <tr>
+                                      <td style="font-size: 12px">
+                                      <p><i class="fa fa-square" style="color: @colors[index];"></i>@progrm.Program.Name.Substring(0,Math.Min(@progrm.Program.Name.Length, 19))... </p>
+                                      </td>
+                                      @{
+                                      int percent = (int)Math.Round((double)(100 * progrm.DirectContacts) / (double)topProgramsSum);
+                                      }
+                                      <td style="font-size: 12px">@percent%</td>
+                                  </tr>
+                                  index++;
+                              }
+                              </tbody>
+                              
+                          </table>
+                      </td>
+                  </tr>
+              </table>
                 </div>
               </div>
             </div>
@@ -50,3 +102,44 @@
       </div>
     </div>
   </div>     
+  @section scripts
+{
+   <script type="text/javascript" src="@Url.Content("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")"></script>
+   <script>
+      
+	 
+		if ($('.canvasDoughnut').length){
+			
+      var chart_doughnut_settings = {
+          type: 'doughnut',
+          tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+          data: {
+            labels: @Html.Raw(@programNamesAsString),
+            datasets: [{
+              data: @Html.Raw(@dataAsString),
+              backgroundColor: @Html.Raw(@colorsAsAString),
+              hoverBackgroundColor: [
+                "#CFD4D8",
+                "#B370CF",
+                "#E95E4F",
+                "#36CAAB",
+                "#49A9EA"
+              ]
+            }]
+          },
+          options: { 
+            legend: false, 
+            responsive: false 
+          }
+        }
+      
+        $('.canvasDoughnut').each(function(){
+          
+          var chart_element = $(this);
+          var chart_doughnut = new Chart( chart_element, chart_doughnut_settings);
+          
+        });			
+      
+      } 
+    </script>
+}

@@ -56,6 +56,7 @@ namespace Kers.Models.Abstract
         TableViewModel ReportsStateAll(FiscalYear fiscalYear, bool refreshCache = false);
         Task<TableViewModel> ContactsByCountyByMajorProgram(FiscalYear fiscalYear, bool refreshCache = false);
         Task<TableViewModel> StateByMajorProgram(FiscalYear fiscalYear, int type = 0, bool refreshCache = false);
+        Task<List<ProgramDataViewModel>> TopProgramsPerMonth(int year = 0, int month = 0, int amount = 5, int PlanningUnitId = 0, bool refreshCache = false);
     }
 
     public interface IContactRepository: IEntityBaseRepository<Contact>{
