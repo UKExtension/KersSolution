@@ -26,13 +26,7 @@ namespace Kers.Controllers.Reports.ViewComponents
                 var str = System.Text.RegularExpressions.Regex.Replace(story.Story, "<[^>]*>", string.Empty);
                 ViewData["Extract"] = str.Substring(0, Math.Min(str.Length, 500));
             }else{
-                ViewData["Extract"] = "";
-                story.Updated = DateTime.Now;
-                var user = new KersUser();
-                user.PersonalProfile = new PersonalProfile();
-                user.PersonalProfile.FirstName="";
-                user.PersonalProfile.LastName = "";
-                story.KersUser = user;
+                story = null;
             }
             return View(story);
         }

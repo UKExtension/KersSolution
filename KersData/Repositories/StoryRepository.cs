@@ -127,7 +127,7 @@ namespace Kers.Models.Repositories
                     story.Updated = LastRevWithImages.Created;
 
                 }else{
-
+                    //Planning unit or Major Program is selected
                     var stories = context.Story.Where(s => true);
                     
                     if( PlanningUnitId != 0 ){
@@ -212,6 +212,12 @@ namespace Kers.Models.Repositories
 
                     }
 
+                }
+
+
+                // Get rid of the story that do not match the Major Program
+                if( MajorProgramId != 0 && story.MajorProgram.Id != MajorProgramId ){
+                    story = null;
                 }
 
                 var serialized = JsonConvert.SerializeObject(story);
