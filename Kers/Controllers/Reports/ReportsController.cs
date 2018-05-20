@@ -59,13 +59,19 @@ namespace Kers.Controllers.Reports
         }
         [HttpGet]
         [Route("counties")]
-        public IActionResult Counties()
+        public async Task<IActionResult> Counties()
         {
-            var counties = this.context.PlanningUnit.
+            var counties = await this.context.PlanningUnit.
                                 Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
-                                OrderBy(c => c.Name).ToList();
-            ViewData["Counties"] = counties;
-            return View();
+                                Include( c => c.District).
+                                GroupBy( c => c.District )
+                                .Select( g => new DistrictViewModel{
+                                                District = g.Key,
+                                                Counties = g.Select( a => a).OrderBy( c => c.Name).ToList()
+                                            }
+                                        )
+                                .OrderBy(c => c.District.Name).ToListAsync();
+            return View(counties);
         }
 
         [HttpGet]
@@ -91,4 +97,10 @@ namespace Kers.Controllers.Reports
 
 
     }
+
+    public class DistrictViewModel{
+        public District District {get;set;}
+        public List<PlanningUnit> Counties {get;set;}
+    }
+
 }

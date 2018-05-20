@@ -1,14 +1,50 @@
+@model List<Kers.Controllers.Reports.DistrictViewModel>
+
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "Counties";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
-    var counties = ViewData["Counties"] as List<Kers.Models.Entities.KERScore.PlanningUnit>;
+    var index = 0;
+    var divided = false;
 }
 
 
 
-@foreach (var county in counties)
-    {<a asp-controller="Reports" 
+<div class="row">
+    <div class="col-md-6 col-sm-12">
+        @foreach( var district in Model )
+        {
+
+            <div class="x_panel tile">
+                <div class="x_title">
+                  <h2>@district.District.Name</h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  
+                        @foreach( var county in district.Counties)
+                        {
+                        <a asp-controller="Reports" 
    asp-action="County" 
-   asp-route-id="@county.Id" class="btn btn-default">@county.Name.Substring(0, county.Name.Length - 11)</a>}
+   asp-route-id="@county.Id" class="btn btn-default">@county.Name.Substring(0, county.Name.Length - 11)</a>
+                        
+                        }
+                    
+                </div>
+              </div>
+              @if( index >= (Model.Count() / 2) && !divided)
+              {
+                  divided = true;
+                  @Html.Raw("</div><div class='col-md-6 col-sm-12'>")
+              }
+              index++;
+        }
+    </div>
+
+
+
+
+</div>
+
+
 
