@@ -1,0 +1,9 @@
+﻿@model Kers.Models.Entities.KERScore.MajorProgram
+
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = Model.Name;
+    ViewData["Subtitle"] = "Major Program";
+}
+
+@await Html.PartialAsync("TopStatsPartial")

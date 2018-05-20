@@ -60,7 +60,9 @@
                               {
                                   <tr>
                                       <td style="font-size: 12px">
-                                      <p><i class="fa fa-square" style="color: @colors[index];"></i>@progrm.Program.Name.Substring(0,Math.Min(@progrm.Program.Name.Length, 19))... </p>
+                                      <p><i class="fa fa-square" style="color: @colors[index];"></i><a asp-controller="MajorProgram" 
+                                    asp-action="Program" 
+                                    asp-route-id="@progrm.Program.Id">@progrm.Program.Name.Substring(0,Math.Min(@progrm.Program.Name.Length, 19))...</a> </p>
                                       </td>
                                       @{
                                       int percent = (int)Math.Round((double)(100 * progrm.DirectContacts) / (double)topProgramsSum);

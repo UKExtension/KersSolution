@@ -195,7 +195,7 @@
                     <a asp-controller="Reports" asp-action="Counties" >Counties</a>
                 </li>
                 <li>
-                    <a href="~/reports/counties">Programs</a>
+                    <a asp-controller="MajorProgram" asp-action="Index" >Programs</a>
                 </li>
                 
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
