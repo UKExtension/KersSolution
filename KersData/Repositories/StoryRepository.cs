@@ -141,14 +141,16 @@ namespace Kers.Models.Repositories
                         if(MajorProgramId != 0 ){
                             storyRevision = storyRevision.Where( r => r.MajorProgramId == MajorProgramId);
                         }
-                        storyRevision = storyRevision
+                        if(storyRevision.Count() > 0 ){
+                            storyRevision = storyRevision
                                             .Include( s => s.StoryImages)
                                             .OrderBy(r => r.Created);
-                        var last = await storyRevision.LastAsync();
-                        if( last.StoryImages != null && last.StoryImages.Count() > 0 ){
-                            theStory = stry;
-                            theStoryRevision = last;
-                            break;
+                            var last = await storyRevision.LastAsync();
+                            if( last.StoryImages != null && last.StoryImages.Count() > 0 ){
+                                theStory = stry;
+                                theStoryRevision = last;
+                                break;
+                            }
                         }
                     }
                     if(theStory == null || theStoryRevision == null){

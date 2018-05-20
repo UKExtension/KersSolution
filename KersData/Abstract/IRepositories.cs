@@ -17,7 +17,9 @@ namespace Kers.Models.Abstract
     //public interface IzActivityRepository : IEntityBaseRepository<zActivity> { }
     //public interface IzzGeneralLocationRepository : IEntityBaseRepository<zzGeneralLocation> { }
     public interface  IzEmpRoleTypeRepository : IEntityBaseRepository<zEmpRoleType> { }
-    public interface  IInitiativeRepository : IEntityBaseRepository<StrategicInitiative> { }
+    public interface  IInitiativeRepository : IEntityBaseRepository<StrategicInitiative> {
+        Task<List<ProgramIndicatorSumViewModel>> IndicatorSumPerMajorProgram(int MajorProgramId );
+    }
     public interface IKersUserRepository : IEntityBaseRepository<KersUser>{ 
         KersUser findByProfileID(int ProfileId);
         KersUser createUserFromProfile(zEmpRptProfile profile);

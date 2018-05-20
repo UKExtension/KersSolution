@@ -32,17 +32,19 @@ namespace Kers.Controllers.Reports
         KERScoreContext context;
         IFiscalYearRepository fiscalYearRepository;
         IContactRepository contactRepo;
+        IInitiativeRepository initiativeRepo;
         private FiscalYear currentFiscalYear;
         public MajorProgramController( 
                     KERScoreContext context,
                     IFiscalYearRepository fiscalYearRepository,
-                    IContactRepository contactRepo
+                    IContactRepository contactRepo,
+                    IInitiativeRepository initiativeRepo
             ){
            this.context = context;
            this.fiscalYearRepository = fiscalYearRepository;
            this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
            this.contactRepo = contactRepo;
-
+           this.initiativeRepo = initiativeRepo;
         }
 
 
@@ -71,15 +73,17 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> Program(int id)
         {
             
-            var Program = await context.MajorProgram.FindAsync(id);
+            var Program = context.MajorProgram.FindAsync(id);
             var lastMonth = DateTime.Now.AddMonths(-1);
             var StatsLastMonth = await contactRepo.StatsPerMonth(lastMonth.Year,lastMonth.Month,0, id);
             ViewData["StatsLastMonth"] = StatsLastMonth;
             DateTime ago = DateTime.Now.AddMonths(-2);
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month, 0, id );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
+            ViewData["Indicators"] = await initiativeRepo.IndicatorSumPerMajorProgram( id );
 
-            return View(Program);
+
+            return View(await Program);
         }
 
 
