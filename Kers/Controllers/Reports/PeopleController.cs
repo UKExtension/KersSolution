@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.Data;
+using Kers.Models.ViewModels;
 
 namespace Kers.Controllers.Reports
 {
@@ -29,28 +30,44 @@ namespace Kers.Controllers.Reports
     public class PeopleController : Controller
     {
         KERScoreContext context;
-        private IDistributedCache _cache;
-        IActivityRepository activityRepo;
-        IContactRepository contactRepo;
+        IKersUserRepository userRepo;
+
         public PeopleController( 
                     KERScoreContext context,
-                    IDistributedCache _cache,
-                    IActivityRepository activityRepo,
-                    IContactRepository contactRepo
+                    IKersUserRepository userRepo
             ){
            this.context = context;
-           this._cache = _cache;
-           this.activityRepo = activityRepo;
-           this.contactRepo = contactRepo;
+           this.userRepo = userRepo;
         }
 
 
 
         [HttpGet]
         [Route("")]
-        public IActionResult Index()
+        public async Task<ActionResult> Index(string SearchString = "", int length = 18)
         {
-            return View();
+            var searchCrigeria = new SearchCriteriaViewModel();
+            searchCrigeria.Skip = 0;
+            searchCrigeria.Take = length;
+            searchCrigeria.OrderBy = "name";
+            searchCrigeria.SearchString = SearchString;
+
+            var users = await userRepo.Search(searchCrigeria);
+
+            return View(users);
+        }
+
+        [HttpGet]
+        [Route("person/{id}")]
+        public async Task<ActionResult> Person(int id)
+        {
+            var person = await context.KersUser.Where( u => u.Id == id)
+                        .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit )
+                        .Include( u => u.PersonalProfile).ThenInclude( p => p.UploadImage ).ThenInclude( i => i.UploadFile )
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
+
+            return View(person);
         }
         
 

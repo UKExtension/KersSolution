@@ -27,6 +27,7 @@ namespace Kers.Models.Abstract
         List<zEmpRoleType> roles(int id);
 
         zEmpRoleType roleForId(int id);
+        Task<List<KesrUserBriefViewModel>> Search( SearchCriteriaViewModel criteria, bool refreshCache = false );
     }
 
     public interface  INavSectionRepository : IEntityBaseRepository<NavSection> { 

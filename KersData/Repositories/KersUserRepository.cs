@@ -8,6 +8,8 @@ using Kers.Models.Contexts;
 using System.Text;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Kers.Models.ViewModels;
 
 namespace Kers.Models.Repositories
 {
@@ -21,6 +23,32 @@ namespace Kers.Models.Repositories
             this.coreContext = context;
         }
         
+
+        public async Task<List<KesrUserBriefViewModel>> Search( SearchCriteriaViewModel criteria, bool refreshCache = false ){
+            var search = coreContext.KersUser.Where( u => u.RprtngProfile.enabled == true)
+                                .Skip( criteria.Skip ).Take( criteria.Take )
+                                .Select( u => new KesrUserBriefViewModel{
+                                        Id = u.Id,
+                                        Name = u.PersonalProfile.FirstName + " " + u.PersonalProfile.LastName,
+                                        PlanningUnitName = u.RprtngProfile.PlanningUnit.Name,
+                                        PlanningUnitId = u.RprtngProfile.PlanningUnitId,
+                                        Position = u.ExtensionPosition.Title,
+                                        Title = u.PersonalProfile.ProfessionalTitle,
+                                        Phone = u.PersonalProfile.OfficePhone == "" ? u.RprtngProfile.PlanningUnit.Phone : u.PersonalProfile.OfficePhone,
+                                        Image = u.PersonalProfile.UploadImage != null ? u.PersonalProfile.UploadImage.UploadFile.Name : null
+                                    } 
+                                );
+            if( criteria.OrderBy == "unit"){
+                search = search.OrderBy( u => u.PlanningUnitName );
+            }else{
+                search = search.OrderBy( u => u.Name);
+            }
+
+            var list = await search.AsNoTracking().ToListAsync();
+
+            return list;
+        }
+
         public KersUser findByProfileID(int ProfileId){
             var user = this.GetSingle(t=> t.classicReportingProfileId == ProfileId, t=>t.ExtensionPosition);
             if(user != null){

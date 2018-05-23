@@ -1,0 +1,31 @@
+@model Kers.Models.ViewModels.KesrUserBriefViewModel
+<div class="col-md-4 col-sm-4 col-xs-12 profile_details">
+    <div class="well profile_view">
+        <div class="col-sm-12">
+            <h4 class="brief"><i>@Model.Title</i></h4>
+            <div class="left col-xs-7">
+                <h2>@Model.Name</h2>
+                <p><strong>@Model.Position</strong></p>
+                <p><i class="fa fa-building"></i> <a href="~/Reports/county/@Model.PlanningUnitId" >@Model.PlanningUnitName</a></p>
+            </div>
+            <div class="right col-xs-5 text-center">
+                @if(@Model.Image != null)
+                {
+                    <img src="@Url.RouteUrl("ProcessImage", new { filename = @Model.Image, mode="crop", w=300, h=300 })" alt="@Model.Name" class="img-circle img-responsive">
+                }else{
+                    <img src="~/assets/images/user.png" alt="@Model.Name" class="img-circle img-responsive">
+                }
+                
+            </div>
+        </div>
+        <div class="col-xs-12 bottom text-center">
+        
+            <div class="col-xs-12 col-sm-6 emphasis">
+                
+                <a href="~/Reports/People/person/@Model.Id" class="btn btn-primary btn-xs">
+                <i class="fa fa-user"> </i> View Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,1 +1,196 @@
-People
+@model List<Kers.Models.ViewModels.KesrUserBriefViewModel>
+
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = "People";
+    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+}
+
+<style>
+
+
+div.dataTables_wrapper div.dataTables_length label {
+    font-weight: normal;
+    text-align: left;
+    white-space: nowrap
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    width: 75px;
+    display: inline-block
+}
+
+div.dataTables_wrapper div.dataTables_filter {
+    text-align: right
+}
+
+div.dataTables_wrapper div.dataTables_filter label {
+    font-weight: normal;
+    white-space: nowrap;
+    text-align: left
+}
+
+div.dataTables_wrapper div.dataTables_filter input {
+    margin-left: 0.5em;
+    display: inline-block;
+    width: auto
+}
+
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 8px;
+    white-space: nowrap
+}
+
+div.dataTables_wrapper div.dataTables_paginate {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right
+}
+
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    margin: 2px 0;
+    white-space: nowrap
+}
+
+div.dataTables_wrapper div.dataTables_processing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    margin-left: -100px;
+    margin-top: -26px;
+    text-align: center;
+    padding: 1em 0
+}
+
+
+div.dataTables_scrollHead table.dataTable {
+    margin-bottom: 0 !important
+}
+
+div.dataTables_scrollBody table {
+    border-top: none;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important
+}
+
+div.dataTables_scrollBody table thead .sorting:after, div.dataTables_scrollBody table thead .sorting_asc:after,
+div.dataTables_scrollBody table thead .sorting_desc:after {
+    display: none
+}
+
+div.dataTables_scrollBody table tbody tr:first-child th, div.dataTables_scrollBody table tbody tr:first-child td {
+    border-top: none
+}
+
+div.dataTables_scrollFoot table {
+    margin-top: 0 !important;
+    border-top: none
+}
+</style>
+
+
+<form asp-controller="People" asp-action="Index" method="get">
+    
+<div id="datatable-keytable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-sm-6">
+            <div class="dataTables_length" id="datatable-keytable_length">
+                <label>Show 
+                    <select name="length" aria-controls="datatable-keytable" class="form-control input-sm">
+                        <option value="10">18</option>
+                        <option value="25">36</option>
+                        <option value="50">72</option>
+                        <option value="100">144</option>
+                    </select> entries
+                </label>
+            </div>
+
+
+            <div class="dt-buttons btn-group" data-toggle="buttons">
+                <label class="btn btn-default active">
+                    <input type="radio" name="OrderBy" id="active"> Most Active
+                </label>
+                <label class="btn btn-default">
+                    <input type="radio" name="OrderBy" id="alphabetically"> Alphabetically
+                </label>
+                <label class="btn btn-default">
+                    <input type="radio" name="OrderBy" id="unit"> Unit
+                </label>
+            </div>
+
+        </div>
+        <div class="col-sm-6">
+            <div id="datatable-keytable_filter" class="dataTables_filter">
+                <label>Search:<input type="search" class="form-control input-sm" placeholder="" name="SearchString"></label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    
+                      <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                        
+                      </div>
+
+                      <div class="clearfix"></div>
+
+                       @foreach( var person in Model)
+                        {
+                            @await Html.PartialAsync("UserBriefPartial", person)
+                        }
+
+    </div>
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="dataTables_info" id="datatable-keytable_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div>
+        </div>
+        <div class="col-sm-7">
+            <div class="text-right" id="datatable-keytable_paginate">
+                <ul class="pagination">
+                    <li class="paginate_button previous disabled" id="datatable-keytable_previous">
+                        <a href="#" aria-controls="datatable-keytable" data-dt-idx="0" tabindex="0">Previous</a>
+                    </li>
+                    <li class="paginate_button active"><a href="#" aria-controls="datatable-keytable" data-dt-idx="1" tabindex="0">1</a></li>
+                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="2" tabindex="0">2</a></li>
+                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="3" tabindex="0">3</a></li>
+                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="4" tabindex="0">4</a></li>
+                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="5" tabindex="0">5</a></li>
+                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="6" tabindex="0">6</a></li>
+                    <li class="paginate_button next" id="datatable-keytable_next"><a href="#" aria-controls="datatable-keytable" data-dt-idx="7" tabindex="0">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+    </div>
+</div>
+                
+            
+
+                      
+</div>
+
+
+
+
+
+
+
+            
+            
+                
+                
+
+
+
+
+
+
+
+               
+
+</form>
