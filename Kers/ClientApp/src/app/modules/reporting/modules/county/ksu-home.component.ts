@@ -14,7 +14,7 @@ import {ReportingService} from '../../components/reporting/reporting.service';
                   
    </div>
 
-    <user-directory-list [onlyKSU]="true" [initialAmount]=100 [showEmployeeSummaryButton]="true"></user-directory-list>
+    <user-directory-list [onlyKSU]="true" [initialAmount]="100" [showEmployeeSummaryButton]="true"></user-directory-list>
 
 
   </div>
