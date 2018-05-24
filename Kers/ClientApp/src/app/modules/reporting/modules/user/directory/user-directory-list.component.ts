@@ -148,6 +148,7 @@ export class UserDirectoryListComponent {
         if(this.onlyKSU ){
             this.criteria.onlyKSU = 1;
         }
+        this.criteria.amount = this.initialAmount;
         this.users = this.service.getCustom(this.criteria);
 
        
