@@ -108,6 +108,7 @@ export class UserDirectoryListComponent {
         @Input() onlyWitSnapCommitment:boolean=false;
         @Input() switchEnabled:boolean=true;
         @Input() showSnapButton:boolean=false;
+        @Input() initialAmount:number=30;
 
         users: Observable<User[]>;
         errorMessage: string;
@@ -119,7 +120,7 @@ export class UserDirectoryListComponent {
             search: '',
             position: 0,
             unit: 0,
-            amount: 30,
+            amount: this.initialAmount,
             snapAssistants: 0,
             withSnapCommitment: 0,
             onlyKSU: 0,

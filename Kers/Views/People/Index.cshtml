@@ -1,4 +1,4 @@
-@model List<Kers.Models.ViewModels.KesrUserBriefViewModel>
+@model KersData.Models.PaginatedList<Kers.Models.Entities.KERScore.KersUser>
 
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
@@ -136,27 +136,53 @@ div.dataTables_scrollFoot table {
 
                        @foreach( var person in Model)
                         {
-                            @await Html.PartialAsync("UserBriefPartial", person)
+                            @await Html.PartialAsync("KersUserBriefPartial", person)
                         }
 
     </div>
     <div class="row">
+        @{
+            var from = (Model.PageIndex - 1) * Model.PageSize + 1;
+            var to = from + Model.Count() - 1;
+        }
         <div class="col-sm-5">
-            <div class="dataTables_info" id="datatable-keytable_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div>
+            <div class="dataTables_info" id="datatable-keytable_info" role="status" aria-live="polite">Showing @from to @to of @Model.TotalItems entries</div>
         </div>
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+            var active = "";
+        }
         <div class="col-sm-7">
             <div class="text-right" id="datatable-keytable_paginate">
                 <ul class="pagination">
-                    <li class="paginate_button previous disabled" id="datatable-keytable_previous">
-                        <a href="#" aria-controls="datatable-keytable" data-dt-idx="0" tabindex="0">Previous</a>
+                    <li class="paginate_button previous @prevDisabled" id="datatable-keytable_previous">
+                        <a asp-action="Index"
+                            asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-page="@(Model.PageIndex - 1)"
+                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            class="">Previous</a>
                     </li>
-                    <li class="paginate_button active"><a href="#" aria-controls="datatable-keytable" data-dt-idx="1" tabindex="0">1</a></li>
-                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="2" tabindex="0">2</a></li>
-                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="3" tabindex="0">3</a></li>
-                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="4" tabindex="0">4</a></li>
-                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="5" tabindex="0">5</a></li>
-                    <li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="6" tabindex="0">6</a></li>
-                    <li class="paginate_button next" id="datatable-keytable_next"><a href="#" aria-controls="datatable-keytable" data-dt-idx="7" tabindex="0">Next</a></li>
+                    @{
+                        var start = Math.Max(1, Model.PageIndex - 6);
+                        var end = Math.Min(Model.PageIndex + 6, Model.TotalPages );
+                    }
+                    @for( var i = start; i <= end; i++ )
+                    {
+                        active = Model.PageIndex == i ? "active" : "";
+                        <li class="paginate_button @active"><a 
+                            asp-action="Index"
+                            asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-page="@i"
+                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                        >@i</a></li>
+                    }
+                    <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
+                        <a  asp-action="Index"
+                            asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-page="@(Model.PageIndex + 1)"
+                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            class="" >Next</a></li>
                 </ul>
             </div>
         </div>

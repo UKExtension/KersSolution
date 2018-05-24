@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.Data;
 using Kers.Models.ViewModels;
+using KersData.Models;
 
 namespace Kers.Controllers.Reports
 {
@@ -44,8 +45,65 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult> Index(string SearchString = "", int length = 18)
+        public async Task<ActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? page
+        )
         {
+
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var users = from s in context.KersUser
+                        select s;
+            users = users.Where( u =>u.RprtngProfile.enabled);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(s => s.PersonalProfile.LastName.Contains(searchString)
+                                    || s.PersonalProfile.FirstName.Contains(searchString));
+            }
+            
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    users = users.OrderByDescending(s => s.PersonalProfile.LastName);
+                    break;
+                case "Date":
+                    users = users.OrderBy(s => s.LastLogin);
+                    break;
+                case "date_desc":
+                    users = users.OrderByDescending(s => s.LastLogin);
+                    break;
+                default:
+                    users = users.OrderBy(s => s.PersonalProfile.LastName);
+                    break;
+            }
+
+            int pageSize = 21;
+            users = users.Include( u => u.PersonalProfile ).ThenInclude( p => p.UploadImage).ThenInclude( i => i.UploadFile )
+                        .Include(u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
+                        .Include( u => u.ExtensionPosition);
+
+            var list = await PaginatedList<KersUser>.CreateAsync(users.AsNoTracking(), page ?? 1, pageSize);
+
+
+            return View(list);
+
+            /* 
             var searchCrigeria = new SearchCriteriaViewModel();
             searchCrigeria.Skip = 0;
             searchCrigeria.Take = length;
@@ -53,8 +111,8 @@ namespace Kers.Controllers.Reports
             searchCrigeria.SearchString = SearchString;
 
             var users = await userRepo.Search(searchCrigeria);
-
-            return View(users);
+ 
+            return View(users);*/
         }
 
         [HttpGet]

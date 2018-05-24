@@ -11,7 +11,7 @@
             <div class="right col-xs-5 text-center">
                 @if(@Model.Image != null)
                 {
-                    <img src="@Url.RouteUrl("ProcessImage", new { filename = @Model.Image, mode="crop", w=300, h=300 })" alt="@Model.Name" class="img-circle img-responsive">
+                    <img src="@Url.RouteUrl("ProcessImage", new { filename = @Model.Image, mode="crop", w=200, h=200 })" alt="@Model.Name" class="img-circle img-responsive">
                 }else{
                     <img src="~/assets/images/user.png" alt="@Model.Name" class="img-circle img-responsive">
                 }
