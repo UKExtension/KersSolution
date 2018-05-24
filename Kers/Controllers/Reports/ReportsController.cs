@@ -79,7 +79,11 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> County(int id)
         {
 
-            ViewData["County"] = await this.context.PlanningUnit.Where( p => p.Id == id ).FirstOrDefaultAsync();
+            ViewData["County"] = await this.context
+                                .PlanningUnit.Where( p => p.Id == id )
+                                .Include( p => p.District)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync();
             var lastMonth = DateTime.Now.AddMonths(-1);
             var StatsLastMonth = await contactRepo.StatsPerMonth(lastMonth.Year,lastMonth.Month,id);
             ViewData["StatsLastMonth"] = StatsLastMonth;

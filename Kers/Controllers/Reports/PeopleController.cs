@@ -89,7 +89,7 @@ namespace Kers.Controllers.Reports
                     users = users.OrderByDescending(s => s.LastLogin);
                     break;
                 default:
-                    users = users.OrderBy(s => s.PersonalProfile.LastName);
+                    users = users.OrderBy(s => s.PersonalProfile.FirstName).ThenBy( s => s.PersonalProfile.LastName);
                     break;
             }
 

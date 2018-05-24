@@ -17,6 +17,6 @@
         var stryn = System.Text.RegularExpressions.Regex.Replace(@Model.PersonalProfile.Bio, "<[^>]*>", string.Empty);
     }
 
-    @stryn.Substring(0, Math.Min(stryn.Length, 200))... <a href="~/reports/People/@Model.Id">More</a>
+    @stryn.Substring(0, Math.Min(stryn.Length, 200))... <a href="~/Reports/People/person/@Model.Id">More</a>
 </div>
 }
