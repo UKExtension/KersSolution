@@ -38,7 +38,7 @@
                 </div>
               </div>
             
-
+            @await Component.InvokeAsync("MainStory", new {MajorProgramId = Model.Id})
             <div class="col-xs-12">
                 <div class="panel">
                 <div class="x_title">
@@ -88,7 +88,7 @@
         </div>
 
 
-        @await Component.InvokeAsync("MainStory", new {MajorProgramId = Model.Id})
+        
     </div>
     <div class="col-md-4 col-sm-4 col-xs-12">
         @await Component.InvokeAsync("LatestStories", new {MajorProgramId = Model.Id})
