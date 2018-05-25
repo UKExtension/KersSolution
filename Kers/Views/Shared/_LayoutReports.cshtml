@@ -162,7 +162,7 @@
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
                     <a asp-controller="Reports" asp-action="Index" >Home</a>
                 </li>
-                <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "People" ? "active" : "")">
+                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "People" ? "active" : "")">
                     <a asp-controller="People" asp-action="Index" >People</a>
                 </li>
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Counties" ? "active" : "")">

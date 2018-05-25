@@ -33,7 +33,7 @@
                 
                 <div class="clearfix"></div>
               </div>
-              <div class="x_content">
+              <div class="panel-body">
 
                 <table class="" style="width:100%">
                   <tr>
@@ -78,24 +78,31 @@
                   </tr>
               </table>
 
-
+              <div class="clearfix"></div>
+                <div style="padding-top: 30px;">
+                  <a asp-controller="MajorProgram" asp-action="Index" class="btn btn-sm btn-primary">Discover Major Programs</a>
+                </div>
                 
               </div>
             </div>
           </div>
           <!-- End to do list -->
           
-          <!-- start of weather widget -->
+          <!-- start of person widget -->
           <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="panel">
               <div class="x_title">
                 <h2>People <small></small></h2>
                 <div class="clearfix"></div>
               </div>
-              <div class="x_content">
+              <div class="panel-body">
                 @await Component.InvokeAsync("FeaturedPerson")
-              </div>
+                <div class="clearfix"></div>
+                <div style="padding-top: 30px;">
+                  <a asp-controller="People" asp-action="Index" class="btn btn-sm btn-primary">Meet Our People</a>
+                </div>
             </div>
+          </div>
 
           </div>
           <!-- end of weather widget -->

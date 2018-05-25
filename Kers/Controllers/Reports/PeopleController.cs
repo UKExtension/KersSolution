@@ -49,7 +49,8 @@ namespace Kers.Controllers.Reports
             string sortOrder,
             string currentFilter,
             string searchString,
-            int? page
+            int? page,
+            int planningUnitId = 0
         )
         {
 
@@ -60,9 +61,7 @@ namespace Kers.Controllers.Reports
             if (searchString != null)
             {
                 page = 1;
-            }
-            else
-            {
+            }else{
                 searchString = currentFilter;
             }
 
@@ -75,6 +74,9 @@ namespace Kers.Controllers.Reports
             {
                 users = users.Where(s => s.PersonalProfile.LastName.Contains(searchString)
                                     || s.PersonalProfile.FirstName.Contains(searchString));
+            }
+            if(planningUnitId != 0 ){
+                users = users.Where( u => u.RprtngProfile.PlanningUnitId == planningUnitId );
             }
             
             switch (sortOrder)
@@ -120,8 +122,12 @@ namespace Kers.Controllers.Reports
         public async Task<ActionResult> Person(int id)
         {
             var person = await context.KersUser.Where( u => u.Id == id)
+                        .Include( u => u.ExtensionPosition)
+                        .Include( u => u.Specialties).ThenInclude( s => s.Specialty)
                         .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit )
                         .Include( u => u.PersonalProfile).ThenInclude( p => p.UploadImage ).ThenInclude( i => i.UploadFile )
+                        .Include( u => u.PersonalProfile).ThenInclude( p => p.Interests ).ThenInclude( i => i.Interest)
+                        .Include( u => u.PersonalProfile).ThenInclude( p => p.SocialConnections ).ThenInclude( i => i.SocialConnectionType )
                         .AsNoTracking()
                         .FirstOrDefaultAsync();
 

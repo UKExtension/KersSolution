@@ -5,4 +5,115 @@
     ViewData["Title"] = "Person";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
 }
-Person
+<div class="x_content">
+    <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
+        <div class="profile_img">
+        <div id="crop-avatar">
+            @if(@Model.PersonalProfile.UploadImage != null)
+            {
+                <img src="@Url.RouteUrl("ProcessImage", new { filename = @Model.PersonalProfile.UploadImage.UploadFile.Name, mode="crop", w=300, h=350 })" alt="@Model.PersonalProfile.FirstName" class="avatar-view img-responsive">
+            }else{
+                <img src="~/assets/images/user.png" alt="@Model.PersonalProfile.FirstName" class="avatar-view img-responsive">
+            }
+        </div>
+        </div>
+        <h3>@Model.PersonalProfile.FirstName @Model.PersonalProfile.LastName</h3>
+        <h2>@Model.PersonalProfile.ProfessionalTitle</h2>
+        <ul class="list-unstyled user_data">
+            <li><i class="fa fa-map-marker user-profile-icon"></i> <a href="~/Reports/county/@Model.RprtngProfile.PlanningUnitId">@Model.RprtngProfile.PlanningUnit.Name</a>
+            </li>
+
+            <li>
+                <i class="fa fa-briefcase user-profile-icon"></i> @Model.ExtensionPosition.Title
+            </li>
+
+            <li class="m-top-xs">
+                <i class="fa fa-envelope user-profile-icon"></i>
+                <a href="mailto:@Model.RprtngProfile.Email" target="_blank">@Model.RprtngProfile.Email</a>
+            </li>
+            <li  class="m-top-xs">
+                @if( !String.IsNullOrEmpty(@Model.PersonalProfile.OfficePhone) )
+                {
+                    <i class="fa fa-phone user-profile-icon"></i> <span>@Model.PersonalProfile.OfficePhone</span>
+                }
+                else if (!String.IsNullOrEmpty(@Model.RprtngProfile.PlanningUnit.Phone))
+                {
+                    <i class="fa fa-phone user-profile-icon"></i> <span>@Model.RprtngProfile.PlanningUnit.Phone</span>
+                }
+            </li>
+            @if( !String.IsNullOrEmpty(@Model.PersonalProfile.MobilePhone) )
+            {
+                <li class="m-top-xs"><i class="fa fa-mobile user-profile-icon"></i> @Model.PersonalProfile.MobilePhone</li>
+            }
+        </ul>
+        <br>
+        <!-- start areas -->
+        @if(@Model.Specialties.Count() > 0)
+        {
+            <div>
+                <h4>Program Areas</h4>
+                <ul class="list-unstyled user_data">
+                    @foreach( var specialty in @Model.Specialties)
+                    {
+                        <li>
+                            <p>@specialty.Specialty.Name</p>
+                        </li>
+                    }
+                    
+                </ul>
+            </div>
+        }
+        
+        <!-- end of areas -->
+        <br>
+        <!-- start interests -->
+        @if(@Model.PersonalProfile.Interests.Count() > 0)
+        {
+            <div>
+                <h4>Interests</h4>
+                <ul class="list-unstyled user_data">
+                    @foreach( var interest in @Model.PersonalProfile.Interests)
+                    {
+                        <li>
+                            <p>@interest.Interest.Name</p>
+                        </li>
+                    }
+                    
+                </ul>
+            </div>
+        }
+        <!-- end of interests -->
+        <br>
+        <!-- start social media -->
+        @if(@Model.PersonalProfile.SocialConnections.Count() > 0)
+        {
+            <div>
+                <h4>Social Connections</h4>
+                <ul class="list-unstyled user_data">
+                    @foreach( var connection in @Model.PersonalProfile.SocialConnections)
+                    {
+                        <li>
+                            <p>
+                                <i class="fa @connection.SocialConnectionType.Icon user-profile-icon"></i>
+                                @if(!String.IsNullOrEmpty(@connection.SocialConnectionType.Url))
+                                {
+                                    <span><a href="@connection.SocialConnectionType.Url@connection.Identifier" target="_blank">@connection.Identifier</a></span>
+                                }
+                                else
+                                {
+                                    <span>@connection.Identifier</span>
+                                }
+                            </p>
+                        </li>
+                    }
+                    
+                </ul>
+            </div>
+        }
+        
+    </div>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+
+        Body
+    </div>
+</div>
