@@ -243,7 +243,7 @@ export class SnapedHomeComponent {
           data => {
               var blob = new Blob([data], {type: 'text/csv'});
               this.individualContactTotals_loading = false;
-              saveAs(blob, "DirectByPersonPerMonth_2018.csv");
+              saveAs(blob, "IndividualContactTotals_2018.csv");
           },
           err => console.error(err)
       )

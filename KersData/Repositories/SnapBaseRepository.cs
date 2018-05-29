@@ -119,18 +119,7 @@ namespace Kers.Models.Repositories
                 var currentBatch = revs.Skip(i).Take(batchCount);
                 fyactivities.AddRange(context.ActivityRevision.Where( r => currentBatch.Contains( r.Id )).ToList());
             }
-            var snapEligible = fyactivities.Where( r => 
-                                                        (
-                                                            r.SnapPolicyId != null 
-                                                            || 
-                                                            r.SnapDirectId != null 
-                                                            ||
-                                                            r.SnapIndirectId != null 
-                                                            || 
-                                                            (r.SnapAdmin && r.isSnap) 
-                                                        )
-                                                    );
-
+            var snapEligible = fyactivities.Where( r => r.isSnap );
             // Check if activity is by UK employee
             var UKRevisions = new List<ActivityRevision>();
             foreach( var rev in snapEligible ){
