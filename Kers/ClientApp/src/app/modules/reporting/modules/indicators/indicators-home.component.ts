@@ -3,6 +3,7 @@ import {ReportingService} from '../../components/reporting/reporting.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {IndicatorsService, Indicator} from './indicators.service';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   template: `
@@ -12,10 +13,11 @@ import {IndicatorsService, Indicator} from './indicators.service';
     <strong>Error: </strong> {{errorMessage}}
 </div>
 
-
     These numbers are to be kept up to date PER INDIVIDUAL (YOU) - NOT THE COUNTY.<br>
 Simply update the numbers as needed throughout the fiscal year.<br>
 <strong>ENTER WHOLE NUMBERS ONLY.</strong><br><br>
+
+<fiscal-year-switcher [initially]="current" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
 
 <div class="alert alert-success alert-dismissible fade in" role="alert" *ngIf="dataSubmitted">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
@@ -24,6 +26,8 @@ Simply update the numbers as needed throughout the fiscal year.<br>
 To enter/adjust data for another Major Program, just select the Major Program from the dropdown list bellow.
 </div>
 <br>
+<loading *ngIf="initiatives == null"></loading>
+<div *ngIf="initiatives != null">
     Select the Major Program from the dropdown list to access/enter your Program Indicator numbers:<br>
     <select name="mp3" id="mp3" class="form-control col-md-7 col-xs-12" (change)="onChange($event.target.value)">
         <option value="">--- select ---</option>
@@ -63,6 +67,7 @@ To enter/adjust data for another Major Program, just select the Major Program fr
         </div>
         <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0">There are no indicators available for selected Major Program</div>
     </div>
+</div>
   `
 })
 export class IndicatorsHomeComponent { 
@@ -93,26 +98,7 @@ export class IndicatorsHomeComponent {
     }
 
     ngOnInit(){
-        var prgrms = [];
-        this.programsService.listInitiatives().subscribe(
-            i => {
-                this.initiatives = i;
-                
-                i.forEach(
-                    function(initiative) {
-                        
-                        initiative.majorPrograms.forEach(
-                            function(program){
-                                prgrms.push(program);
-                            }
-                        )
-                    }
-                    
-                )
-                this.programs = prgrms;
-            },
-            error =>  this.errorMessage = <any>error
-        );
+        
         this.defaultTitle();
     }
     onChange(programId) {
@@ -159,6 +145,30 @@ export class IndicatorsHomeComponent {
                     this.loading = false;
                 },
                 err=>this.errorMessage = <any> err
+        );
+    }
+
+    fiscalYearSwitched(event:FiscalYear){
+        var prgrms = [];
+        this.initiatives = null;
+        this.programsService.listInitiatives(event.name).subscribe(
+            i => {
+                this.initiatives = i;
+                
+                i.forEach(
+                    function(initiative) {
+                        
+                        initiative.majorPrograms.forEach(
+                            function(program){
+                                prgrms.push(program);
+                            }
+                        )
+                    }
+                    
+                )
+                this.programs = prgrms;
+            },
+            error =>  this.errorMessage = <any>error
         );
     }
 

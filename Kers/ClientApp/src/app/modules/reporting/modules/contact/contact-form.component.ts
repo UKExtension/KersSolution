@@ -21,6 +21,7 @@ export class ContactFormComponent implements OnInit{
 
     @Input() contact:Contact | null = null;
     @Input() fiscalYear:FiscalYear | null = null;
+    @Input() fiscalYearSwitcher = false;
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<Contact>();
@@ -54,7 +55,9 @@ export class ContactFormComponent implements OnInit{
     {}
 
     ngOnInit(){
-        this.getFiscalYear();
+        if( !this.fiscalYearSwitcher ){
+            this.getFiscalYear();
+        }
         this.populateOptionNumbers();
     }
 
@@ -106,13 +109,20 @@ export class ContactFormComponent implements OnInit{
         );
     }
 
-
+    fiscalYearSwitched( event:FiscalYear ){
+        this.loading = true;
+        this.fiscalYear = event;
+        this.getInitiatives();
+        this.buildMonths();
+        if( this.contactForm != null) this.loading = false;
+    }
 
     
 
     buildMonths(){
+        this.months = [];
         var end = new Date(this.fiscalYear.end);
-        for( var m = new Date(this.fiscalYear.start); m < end; m.setMonth(m.getMonth() + 1)){
+        for( var m = new Date(this.fiscalYear.start); m < end; m.setMonth(m.getMonth() + 1, 15)){
             var mnth:ContactMonth = {
                 date: new Date(m.getTime()),
                 id: this.getMonthId( m.getMonth() + 1, m.getFullYear())
@@ -259,19 +269,15 @@ export class ContactFormComponent implements OnInit{
     getDateByMonthId(monthId:number):Date{
         let d = new Date();
         if( monthId <= 12 ){
-            d.setMonth(monthId - 1);
+            var monthToSet = monthId - 1;
+            d.setMonth(monthToSet, 10);
             d.setFullYear(monthId > 6 ? 2017 : 2018);
         } else {
             var month = monthId % 12;
             var year = Math.round( monthId / 12 ) + 2016;
-
-
             d.setFullYear(year);
-            d.setMonth( month -1 );
-            d.setDate( 15 );
+            d.setMonth( month - 1, 15 );
         }
-
-
         return d;
     }
 

@@ -3,12 +3,13 @@
     </button>
     <strong>Error: </strong> {{errorMessage}}
 </div>
+<fiscal-year-switcher *ngIf="fiscalYearSwitcher" [initially]="current" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
 <loading *ngIf="loading"></loading>
 <div class="row" *ngIf="!loading">
     <div><reporting-display-help id="3"></reporting-display-help></div>
     <div class="col-sm-offset-3 col-sm-9">
-        <h2 *ngIf="!serviceLog">New Statistical Contact Record</h2>
-        <h2 *ngIf="serviceLog">Edit Statistical Contact Record</h2>
+        <h2 *ngIf="!contact">New Statistical Contact Record</h2>
+        <h2 *ngIf="contact">Edit Statistical Contact Record</h2>
     </div>
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="contactForm">
         <div class="form-group">

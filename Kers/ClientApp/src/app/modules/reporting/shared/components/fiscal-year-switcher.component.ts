@@ -18,7 +18,7 @@ import { FiscalYear, FiscalyearService } from '../../modules/admin/fiscalyear/fi
 })
 export class FiscalYearSwitcherComponent implements OnInit {
 
-  @Input() initially = "next"; // next or current
+  @Input() initially = "next"; // next, current, previous
   @Input() type = "serviceLog";
   @Output() onLoaded = new EventEmitter<FiscalYear[]>();
   @Output() onSwitched = new EventEmitter<FiscalYear>();

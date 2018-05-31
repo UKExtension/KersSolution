@@ -6,6 +6,7 @@ import { Observable } from "rxjs/Observable";
 import {UserService, User} from '../user/user.service';
 import {StoryService, Story, StoryImage, StoryOutcome} from './story.service';
 import {PlansofworkService, PlanOfWork} from '../plansofwork/plansofwork.service';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 
 
@@ -19,6 +20,7 @@ export class StoryFormComponent implements OnInit{
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<Story>();
+    @Input() fiscalYearSwitcher = false;
 
     loading = true;
     storyForm = null;
@@ -48,13 +50,15 @@ export class StoryFormComponent implements OnInit{
     }
 
     ngOnInit(){
-        this.plans = this.plansService.listPlans();
-        this.outcome = this.service.outcome();
-        this.programsService.listInitiatives().subscribe(
-            i => this.initiatives = i,
-            error =>  this.errorMessage = <any>error
-        );
+        if( !this.fiscalYearSwitcher){
+            this.plans = this.plansService.listPlans();
+            this.programsService.listInitiatives().subscribe(
+                i => this.initiatives = i,
+                error =>  this.errorMessage = <any>error
+            );
+        }
         
+        this.outcome = this.service.outcome();
         this.userService.current().subscribe(
             res => {
                 this.currentUser = <User> res;
@@ -118,7 +122,13 @@ export class StoryFormComponent implements OnInit{
         
     }
 
-
+    fiscalYearSwitched( event:FiscalYear ){
+        this.plans = this.plansService.listPlans(event.name);
+        this.programsService.listInitiatives(event.name).subscribe(
+            i => this.initiatives = i,
+            error =>  this.errorMessage = <any>error
+        );
+    }
         
 
 
