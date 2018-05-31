@@ -92,13 +92,22 @@ export class ContactFormComponent implements OnInit{
     }
 
     getFiscalYearByContact(years:FiscalYear[]):FiscalYear{
+        
+        var year = this.contact.majorProgram.strategicInitiative.fiscalYear;
+
+        year.start = new Date(year.start);
+        year.end = new Date(year.end);
+
+        return year;
+
+/* 
         let year = years.filter( y => new Date(y.start) < new Date(this.contact.contactDate) && new Date(y.end ) > new Date(this.contact.contactDate) );
         if( year.length > 0 ){
             return year[0];
         }else{
             this.errorMessage = "Fiscal Year not Found for this Contact.";
         }
-        
+         */
     }
 
 

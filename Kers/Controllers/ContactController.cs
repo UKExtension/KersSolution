@@ -65,7 +65,7 @@ namespace Kers.Controllers
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactOptionNumbers).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactRaceEthnicityValues).ThenInclude(r => r.Race).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactRaceEthnicityValues).ThenInclude(r => r.Ethnicity).
-                                Include(e=>e.Revisions).ThenInclude(r => r.MajorProgram).
+                                Include(e=>e.Revisions).ThenInclude(r => r.MajorProgram).ThenInclude( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear).
                                 Skip(skip).
                                 Take(amount);
             
@@ -237,7 +237,10 @@ namespace Kers.Controllers
                 context.Add(cnt); 
                 this.Log(contact,"ContactRevision", "Statistical Contact Added.");
                 context.SaveChanges();
-                contact.MajorProgram = this.context.MajorProgram.Find(contact.MajorProgramId);
+                contact.MajorProgram = this.context.MajorProgram
+                                        .Where( m => m.Id == contact.MajorProgramId)
+                                        .Include( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear )
+                                        .FirstOrDefault();
                 return new OkObjectResult(contact);
             }else{
                 this.Log( contact ,"ContactRevision", "Error in adding statistical contact attempt.", "Activity", "Error");
@@ -264,7 +267,10 @@ namespace Kers.Controllers
                 acEntity.Revisions.Add(contact);
                 context.SaveChanges();
                 this.Log(entity,"ContactRevision", "Statistical Contact Updated.");
-                contact.MajorProgram = this.context.MajorProgram.Find(contact.MajorProgramId);
+                contact.MajorProgram = this.context.MajorProgram
+                                        .Where( m => m.Id == contact.MajorProgramId)
+                                        .Include( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear )
+                                        .FirstOrDefault();
                 return new OkObjectResult(contact);
             }else{
                 this.Log( contact ,"ContactRevision", "Not Found Statistical Contact in an update attempt.", "Activity", "Error");

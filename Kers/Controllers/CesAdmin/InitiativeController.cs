@@ -263,7 +263,7 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(cats);
         }
 
-
+        
 
     }
 }
