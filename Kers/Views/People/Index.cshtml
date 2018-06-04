@@ -4,11 +4,12 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "People";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var lngth = Convert.ToString(ViewData["CurrentLength"]);
+    var srt = Convert.ToString(ViewData["CurrentSort"]);
+    var srch = Convert.ToString(ViewData["CurrentFilter"]);
 }
 
 <style>
-
-
 div.dataTables_wrapper div.dataTables_length label {
     font-weight: normal;
     text-align: left;
@@ -96,33 +97,95 @@ div.dataTables_scrollFoot table {
     <div class="row" style="padding-bottom: 20px;">
         <div class="col-sm-6">
             <div class="dataTables_length" id="datatable-keytable_length">
-                <label>Show 
-                    <select name="length" aria-controls="datatable-keytable" class="form-control input-sm">
-                        <option value="10">18</option>
-                        <option value="25">36</option>
-                        <option value="50">72</option>
-                        <option value="100">144</option>
+                <label>Show
+                    <select name="length" 
+                            class="form-control input-sm"
+                            id="length"
+                            onchange="this.form.submit()"
+                            >
+                       
+                        @if( lngth == "18")
+                        {
+                             <option value="18" selected="selected" >18</option>
+                        }
+                        else
+                        {
+                            <option value="18" >18</option>
+                        }
+                        @if( lngth == "36")
+                        {
+                             <option value="36" selected="selected" >36</option>
+                        }
+                        else
+                        {
+                            <option value="36" >36</option>
+                        }
+
+                        @if( lngth == "72")
+                        {
+                             <option value="72" selected="selected" >72</option>
+                        }
+                        else
+                        {
+                            <option value="72" >72</option>
+                        }
+                        
+                        @if( lngth == "144")
+                        {
+                             <option value="144" selected="selected" >144</option>
+                        }
+                        else
+                        {
+                            <option value="144" >144</option>
+                        }
                     </select> entries
                 </label>
             </div>
-
-
             <div class="dt-buttons btn-group" data-toggle="buttons">
-                <label class="btn btn-default active">
-                    <input type="radio" name="OrderBy" id="active"> Alphabetically
+                
+                @if(srt == "alphabetically")
+                {
+                <label class="btn btn-default active" onclick="document.getElementById('alphabetically').checked=true; this.form.submit();">
+                    <input type="radio" name="SortOrder" id="alphabetically" value="alphabetically" checked="checked"> Alphabetically
                 </label>
-                <label class="btn btn-default">
-                    <input type="radio" name="OrderBy" id="alphabetically"> Unit
+                }
+                else
+                {
+                <label class="btn btn-default" onclick="document.getElementById('alphabetically').checked=true; this.form.submit();">
+                        <input type="radio" name="SortOrder" id="alphabetically" value="alphabetically"> Alphabetically
                 </label>
-                <label class="btn btn-default">
-                    <input type="radio" name="OrderBy" id="unit"> Position
+                }
+
+                @if(srt == "unit")
+                {  
+                <label class="btn btn-default active" onclick="document.getElementById('unit').checked=true; this.form.submit();">
+                    <input type="radio" name="SortOrder" id="unit" value="unit"  checked="checked"> Unit
                 </label>
+                }
+                else
+                {
+                <label class="btn btn-default" onclick="document.getElementById('unit').checked=true; this.form.submit();">
+                    <input type="radio" name="SortOrder" id="unit" value="unit"> Unit
+                </label>  
+                }
+                @if(srt == "position")
+                {  
+                <label class="btn btn-default active" onclick="document.getElementById('position').checked=true; this.form.submit();">
+                    <input type="radio" name="SortOrder" id="position" value="position"  checked="checked"> Position
+                </label>
+                }
+                else
+                {
+                <label class="btn btn-default" onclick="document.getElementById('position').checked=true; this.form.submit();">
+                    <input type="radio" name="SortOrder" id="position" value="position"> Position
+                </label>
+                }
             </div>
 
         </div>
         <div class="col-sm-6">
             <div id="datatable-keytable_filter" class="dataTables_filter">
-                <label>Search:<input type="search" class="form-control input-sm" placeholder="" name="SearchString"></label>
+                <label>Search:<input type="search" class="form-control input-sm" placeholder="" name="SearchString" value="@srch"></label>
             </div>
         </div>
     </div>
@@ -159,6 +222,7 @@ div.dataTables_scrollFoot table {
                     <li class="paginate_button previous @prevDisabled" id="datatable-keytable_previous">
                         <a asp-action="Index"
                             asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-length="@ViewData["CurrentLength"]"
                             asp-route-page="@(Model.PageIndex - 1)"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
                             class="">Previous</a>
@@ -173,6 +237,7 @@ div.dataTables_scrollFoot table {
                         <li class="paginate_button @active"><a 
                             asp-action="Index"
                             asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-length="@ViewData["CurrentLength"]"
                             asp-route-page="@i"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
                         >@i</a></li>
@@ -180,6 +245,7 @@ div.dataTables_scrollFoot table {
                     <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
                         <a  asp-action="Index"
                             asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-length="@ViewData["CurrentLength"]"
                             asp-route-page="@(Model.PageIndex + 1)"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
                             class="" >Next</a></li>
@@ -199,24 +265,4 @@ div.dataTables_scrollFoot table {
 
                       
 </div>
-
-
-
-
-
-
-
-            
-            
-                
-                
-
-
-
-
-
-
-
-               
-
 </form>
