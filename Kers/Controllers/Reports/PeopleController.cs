@@ -44,19 +44,20 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("")]
+        [Route("", Name = "PeopleSearch")]
         public async Task<ActionResult> Index(
             string sortOrder,
             string currentFilter,
             string searchString,
             int? page,
-            int planningUnitId = 0
+            int planningUnitId = 0,
+            int length = 18
         )
         {
 
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentLength"] = length;
+
 
             if (searchString != null)
             {
@@ -81,21 +82,19 @@ namespace Kers.Controllers.Reports
             
             switch (sortOrder)
             {
-                case "name_desc":
-                    users = users.OrderByDescending(s => s.PersonalProfile.LastName);
+
+                case "position":
+                    users = users.OrderBy(s => s.ExtensionPosition.Title);
                     break;
-                case "Date":
-                    users = users.OrderBy(s => s.LastLogin);
-                    break;
-                case "date_desc":
-                    users = users.OrderByDescending(s => s.LastLogin);
+                case "unit":
+                    users = users.OrderBy(s => s.RprtngProfile.PlanningUnit.Name);
                     break;
                 default:
                     users = users.OrderBy(s => s.PersonalProfile.FirstName).ThenBy( s => s.PersonalProfile.LastName);
                     break;
             }
 
-            int pageSize = 21;
+            int pageSize = length;
             users = users.Include( u => u.PersonalProfile ).ThenInclude( p => p.UploadImage).ThenInclude( i => i.UploadFile )
                         .Include(u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
                         .Include( u => u.ExtensionPosition);
