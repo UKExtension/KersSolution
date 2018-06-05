@@ -68,8 +68,8 @@ export class StoryService {
                 .catch(this.handleError);
     }
 
-    latestByUser(userId:number, amount:number = 3):Observable<Story[]>{
-        var url = this.baseUrl + 'latestbyuser/'+ userId + '/' + amount;
+    latestByUser(userId:number, amount:number = 23, fiscalYearName="0"):Observable<Story[]>{
+        var url = this.baseUrl + 'latestbyuser/'+ userId + '/' + amount + '/' + fiscalYearName;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => <Story[]>res.json())
                 .catch(this.handleError);

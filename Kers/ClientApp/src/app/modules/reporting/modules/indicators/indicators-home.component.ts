@@ -158,6 +158,7 @@ export class IndicatorsHomeComponent {
     fiscalYearSwitched(event:FiscalYear){
         var prgrms = [];
         this.initiatives = null;
+        this.selectedProgram = null;
         this.programsService.listInitiatives(event.name).subscribe(
             i => {
                 this.initiatives = i;

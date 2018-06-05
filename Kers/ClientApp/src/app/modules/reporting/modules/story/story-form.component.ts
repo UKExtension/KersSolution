@@ -6,7 +6,7 @@ import { Observable } from "rxjs/Observable";
 import {UserService, User} from '../user/user.service';
 import {StoryService, Story, StoryImage, StoryOutcome} from './story.service';
 import {PlansofworkService, PlanOfWork} from '../plansofwork/plansofwork.service';
-import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
+import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 
 
@@ -20,6 +20,7 @@ export class StoryFormComponent implements OnInit{
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<Story>();
+    @Input() fiscalYear:FiscalYear | null = null;
     @Input() fiscalYearSwitcher = false;
 
     loading = true;
@@ -29,6 +30,7 @@ export class StoryFormComponent implements OnInit{
     errorMessage:string;
     storyId = 0;
     currentUser:User;
+    
     editorOptionsLoaded = false;
     initiatives:StrategicInitiative[];
     plans: Observable<PlanOfWork[]>;
@@ -41,7 +43,8 @@ export class StoryFormComponent implements OnInit{
         private location: Location,
         private userService:UserService,
         private plansService: PlansofworkService,
-        private service: StoryService
+        private service: StoryService,
+        private fiscalYearService: FiscalyearService
     )   
     {
           
@@ -51,11 +54,7 @@ export class StoryFormComponent implements OnInit{
 
     ngOnInit(){
         if( !this.fiscalYearSwitcher){
-            this.plans = this.plansService.listPlans();
-            this.programsService.listInitiatives().subscribe(
-                i => this.initiatives = i,
-                error =>  this.errorMessage = <any>error
-            );
+            this.getFiscalYear();
         }
         
         this.outcome = this.service.outcome();
@@ -63,11 +62,6 @@ export class StoryFormComponent implements OnInit{
             res => {
                 this.currentUser = <User> res;
                 var thisObject = this;
-
-                
-
-
-
                 this.options = { 
                         placeholderText: 'Your Success Story Here!',
                         toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL', 'insertImage', 'insertVideo'],
@@ -122,12 +116,57 @@ export class StoryFormComponent implements OnInit{
         
     }
 
-    fiscalYearSwitched( event:FiscalYear ){
-        this.plans = this.plansService.listPlans(event.name);
-        this.programsService.listInitiatives(event.name).subscribe(
+    getFiscalYear(){
+        if( this.story == null ){
+            if( this.fiscalYear == null ){
+                this.fiscalYearService.current("serviceLog").subscribe(
+                    res => {
+                        this.fiscalYear =<FiscalYear> res;
+                        this.getInitiatives();
+                        this.plans = this.plansService.listPlans(this.fiscalYear.name);
+                    },
+                    error => this.errorMessage = <any>error
+                )
+            }else{
+                this.getInitiatives();
+                this.plans = this.plansService.listPlans(this.fiscalYear.name);
+            }
+        }else{
+            this.fiscalYearService.byType("serviceLog").subscribe(
+                res => {
+                    this.fiscalYear = this.getFiscalYearByStory();
+                    this.getInitiatives();
+                    this.plans = this.plansService.listPlans(this.fiscalYear.name);
+                }
+            )
+            
+        }
+        
+    }
+
+    getInitiatives(){
+        this.programsService.listInitiatives(this.fiscalYear.name).subscribe(
             i => this.initiatives = i,
             error =>  this.errorMessage = <any>error
         );
+    }
+
+    getFiscalYearByStory():FiscalYear{
+        var year = this.story.majorProgram.strategicInitiative.fiscalYear;
+
+        year.start = new Date(year.start);
+        year.end = new Date(year.end);
+
+        return year;
+    }
+
+
+
+    fiscalYearSwitched( event:FiscalYear ){
+        this.fiscalYear = event;
+        this.initiatives = null;
+        this.plans = this.plansService.listPlans(event.name);
+        this.getInitiatives();
     }
         
 

@@ -3,6 +3,7 @@ import {StoryService, Story} from '../story.service';
 import { Observable } from "rxjs/Observable";
 import { User, UserService } from "../../user/user.service";
 import {Location} from '@angular/common';
+import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'success-story-list',
@@ -17,6 +18,7 @@ export class StoryReportsListComponent {
 
 
     @Input() author:User;
+    @Input() fiscalYear:FiscalYear;
     otherStories: Observable<Story[]>
     errorMessage: string;
 
@@ -32,11 +34,11 @@ export class StoryReportsListComponent {
             this.userService.current().subscribe(
                 res =>{
                     this.author = res;
-                    this.otherStories=this.service.latestByUser(this.author.id);
+                    this.otherStories=this.service.latestByUser(this.author.id, 30, this.fiscalYear.name);
                 } 
             )
         }else{
-            this.otherStories=this.service.latestByUser(this.author.id);
+            this.otherStories=this.service.latestByUser(this.author.id, 30, this.fiscalYear.name);
         }
         
 

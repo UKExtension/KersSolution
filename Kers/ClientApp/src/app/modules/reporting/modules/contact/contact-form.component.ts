@@ -79,19 +79,14 @@ export class ContactFormComponent implements OnInit{
                 this.buildMonths();
             }
         }else{
-            this.fiscalYearService.byType("serviceLog").subscribe(
-                res => {
-                    this.fiscalYear = this.getFiscalYearByContact( <FiscalYear[]> res );
-                    this.getInitiatives();
-                    this.buildMonths();
-                }
-            )
-            
+            this.fiscalYear = this.getFiscalYearByContact();
+            this.getInitiatives();
+            this.buildMonths();  
         }
         
     }
 
-    getFiscalYearByContact(years:FiscalYear[]):FiscalYear{
+    getFiscalYearByContact():FiscalYear{
         
         var year = this.contact.majorProgram.strategicInitiative.fiscalYear;
 

@@ -81,6 +81,7 @@ namespace Kers.Controllers
             var lastStories = context.Story.
                                 Where(e=>e.KersUser == this.CurrentUser()).
                                 Include(s => s.Revisions).ThenInclude(r => r.StoryImages).
+                                Include( s => s.Revisions).ThenInclude( r => r.MajorProgram ).ThenInclude( p => p.StrategicInitiative ).ThenInclude( i => i.FiscalYear ).
                                 OrderByDescending(e=>e.Updated).
                                 Skip(skip).
                                 Take(amount);
@@ -120,20 +121,34 @@ namespace Kers.Controllers
             
         }
 
-        [HttpGet("latestbyuser/{userid}/{amount?}")]
+        [HttpGet("latestbyuser/{userid}/{amount?}/{fy?}")]
         [Authorize]
-        public IActionResult LatestByUser(int userid, int amount = 10){
+        public IActionResult LatestByUser(int userid, int amount = 10, string fy = "0"){
+
+
+            FiscalYear fiscalYear;
+            if(fy != "0"){
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
+
+
             
             var lastStories = context.Story.
                                 Where(e=>e.KersUser.Id == userid).
                                 Include(s => s.Revisions).ThenInclude(r => r.StoryImages).ThenInclude(i => i.UploadImage).ThenInclude(f => f.UploadFile).
-                                OrderByDescending(e=>e.Updated).
-                                Take(amount);
+                                Include( s => s.Revisions).ThenInclude( r => r.MajorProgram ).ThenInclude( p => p.StrategicInitiative ).ThenInclude( i => i.FiscalYear ).
+                                OrderByDescending(e=>e.Updated);
             
             var revs = new List<StoryRevision>();
             if(lastStories != null){
                 foreach(var story in lastStories){
-                    revs.Add( story.Revisions.OrderBy(r=>r.Created).Last() );
+                    var last = story.Revisions.OrderBy(r=>r.Created).Last();
+                    if( last.MajorProgram.StrategicInitiative.FiscalYear.Id == fiscalYear.Id){
+                        revs.Add( last );
+                    }
+                    if( revs.Count >= amount ) break;
                 }
             }
             foreach(var rev in revs){
@@ -277,6 +292,9 @@ namespace Kers.Controllers
                 str.Updated = DateTime.Now;
                 str.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
                 story.Created = DateTime.Now;
+                story.MajorProgram = this.context.MajorProgram.Where( m => m.Id == story.MajorProgramId)
+                                            .Include(m => m.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
+                                            .FirstOrDefault();
                 str.Revisions = new List<StoryRevision>();
                 str.Revisions.Add(story);
                 context.Add(str); 
@@ -293,13 +311,14 @@ namespace Kers.Controllers
 
         [HttpPut("{id}")]
         public IActionResult UpdateStory( int id, [FromBody] StoryRevision story){
-           
-            
             var entity = context.StoryRevision.Find(id);
             var stEntity = context.Story.Find(entity.StoryId);
 
             if(story != null && stEntity != null){
                 story.Created = DateTime.Now;
+                story.MajorProgram = this.context.MajorProgram.Where( m => m.Id == story.MajorProgramId)
+                                            .Include(m => m.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
+                                            .FirstOrDefault();
                 stEntity.Revisions.Add(story);
                 stEntity.Updated = DateTime.Now;
                 context.SaveChanges();
