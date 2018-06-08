@@ -7,209 +7,123 @@
     var lngth = Convert.ToString(ViewData["CurrentLength"]);
     var srt = Convert.ToString(ViewData["CurrentSort"]);
     var srch = Convert.ToString(ViewData["CurrentFilter"]);
+    var units = ViewData["Units"] as List<Kers.Models.Entities.KERScore.PlanningUnit>;
+    var positions = ViewData["Position"] as List<Kers.Models.Entities.KERScore.ExtensionPosition>;
+    int currUnit = (int) ViewBag.CurrentUnit;
+    int currPosition = (int) ViewBag.CurrentPosition;
 }
 
 <style>
-div.dataTables_wrapper div.dataTables_length label {
+.search-filters{
+    padding-bottom: 2em;
+}
+.search-filters label{
     font-weight: normal;
-    text-align: left;
-    white-space: nowrap
-}
-
-div.dataTables_wrapper div.dataTables_length select {
-    width: 75px;
-    display: inline-block
-}
-
-div.dataTables_wrapper div.dataTables_filter {
-    text-align: right
-}
-
-div.dataTables_wrapper div.dataTables_filter label {
-    font-weight: normal;
-    white-space: nowrap;
-    text-align: left
-}
-
-div.dataTables_wrapper div.dataTables_filter input {
-    margin-left: 0.5em;
-    display: inline-block;
-    width: auto
-}
-
-div.dataTables_wrapper div.dataTables_info {
-    padding-top: 8px;
-    white-space: nowrap
-}
-
-div.dataTables_wrapper div.dataTables_paginate {
-    margin: 0;
-    white-space: nowrap;
-    text-align: right
-}
-
-div.dataTables_wrapper div.dataTables_paginate ul.pagination {
-    margin: 2px 0;
-    white-space: nowrap
-}
-
-div.dataTables_wrapper div.dataTables_processing {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200px;
-    margin-left: -100px;
-    margin-top: -26px;
-    text-align: center;
-    padding: 1em 0
-}
-
-
-div.dataTables_scrollHead table.dataTable {
-    margin-bottom: 0 !important
-}
-
-div.dataTables_scrollBody table {
-    border-top: none;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important
-}
-
-div.dataTables_scrollBody table thead .sorting:after, div.dataTables_scrollBody table thead .sorting_asc:after,
-div.dataTables_scrollBody table thead .sorting_desc:after {
-    display: none
-}
-
-div.dataTables_scrollBody table tbody tr:first-child th, div.dataTables_scrollBody table tbody tr:first-child td {
-    border-top: none
-}
-
-div.dataTables_scrollFoot table {
-    margin-top: 0 !important;
-    border-top: none
 }
 </style>
 
 
 <form asp-controller="People" asp-action="Index" method="get" class="form-inline">
-    <div class="form-group">
-    <label>
-        Order By: 
-        <div class="btn-group" data-toggle="buttons">
+    <div class="search-filters">
+        <div class="form-group">
+            <label class="sr-only" for="SearchString">Search</label>
+            <input type="search" class="form-control input-sm" name="SearchString" value="@srch" placeholder="Search"></label>
+        </div>
+
+        <div class="form-group">
+            <label for="planningUnitId">&nbsp;&nbsp;&nbsp;Planning Unit</label>
+            <select class="form-control" name="planningUnitId" onchange="this.form.submit()">
+                <option>-- Select --</option>
+                @foreach( var unit in units )
+                {
+                    if(unit.Id == @currUnit)
+                    {
+                        <option value="@unit.Id" selected="selected">@unit.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@unit.Id">@unit.Name</option>
+                    }
+                    
+                }
                 
-                @if(srt == "alphabetically")
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="extensionPositionId">&nbsp;&nbsp;&nbsp;Position</label>
+            <select class="form-control" name="extensionPositionId" onchange="this.form.submit()">
+                <option value="0">-- Select --</option>
+                @foreach( var position in positions )
                 {
-                <label class="btn btn-default active" onclick="document.getElementById('alphabetically').checked=true; this.form.submit();">
-                    <input type="radio" name="SortOrder" id="alphabetically" value="alphabetically" checked="checked"> Alphabetically
-                </label>
+                    if(position.Id == @currPosition)
+                    {
+                        <option value="@position.Id" selected="selected">@position.Title</option>
+                    }else{
+                        <option value="@position.Id">@position.Title</option>
+                    }
                 }
-                else
-                {
-                <label class="btn btn-default" onclick="document.getElementById('alphabetically').checked=true; this.form.submit();">
-                        <input type="radio" name="SortOrder" id="alphabetically" value="alphabetically"> Alphabetically
-                </label>
-                }
+            </select>
+        </div>
 
-                @if(srt == "unit")
-                {  
-                <label class="btn btn-default active" onclick="document.getElementById('unit').checked=true; this.form.submit();">
-                    <input type="radio" name="SortOrder" id="unit" value="unit"  checked="checked"> Unit
-                </label>
-                }
-                else
-                {
-                <label class="btn btn-default" onclick="document.getElementById('unit').checked=true; this.form.submit();">
-                    <input type="radio" name="SortOrder" id="unit" value="unit"> Unit
-                </label>  
-                }
-                @if(srt == "position")
-                {  
-                <label class="btn btn-default active" onclick="document.getElementById('position').checked=true; this.form.submit();">
-                    <input type="radio" name="SortOrder" id="position" value="position"  checked="checked"> Position
-                </label>
-                }
-                else
-                {
-                <label class="btn btn-default" onclick="document.getElementById('position').checked=true; this.form.submit();">
-                    <input type="radio" name="SortOrder" id="position" value="position"> Position
-                </label>
-                }
-            </div>
-    </label>
+
+
+        <div class="form-group" style="float: right">
+            <label>
+                Order By: 
+                <div class="btn-group" data-toggle="buttons">
+                        
+                        @if(srt == "alphabetically")
+                        {
+                        <label class="btn btn-default active" onclick="document.getElementById('alphabetically').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="alphabetically" value="alphabetically" checked="checked"> Alphabetically
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('alphabetically').checked=true; this.form.submit();">
+                                <input type="radio" name="SortOrder" id="alphabetically" value="alphabetically"> Alphabetically
+                        </label>
+                        }
+
+                        @if(srt == "unit")
+                        {  
+                        <label class="btn btn-default active" onclick="document.getElementById('unit').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="unit" value="unit"  checked="checked"> Unit
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('unit').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="unit" value="unit"> Unit
+                        </label>  
+                        }
+                        @if(srt == "position")
+                        {  
+                        <label class="btn btn-default active" onclick="document.getElementById('position').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="position" value="position"  checked="checked"> Position
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('position').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="position" value="position"> Position
+                        </label>
+                        }
+                    </div>
+            </label>
+        </div>
+
+
+
+
     </div>
-
-<div class="form-group">
-    <label>Show
-        <select name="length" 
-                class="form-control input-sm"
-                id="length"
-                onchange="this.form.submit()"
-                >
-            
-            @if( lngth == "18")
-            {
-                    <option value="18" selected="selected" >18</option>
-            }
-            else
-            {
-                <option value="18" >18</option>
-            }
-            @if( lngth == "36")
-            {
-                    <option value="36" selected="selected" >36</option>
-            }
-            else
-            {
-                <option value="36" >36</option>
-            }
-
-            @if( lngth == "72")
-            {
-                    <option value="72" selected="selected" >72</option>
-            }
-            else
-            {
-                <option value="72" >72</option>
-            }
-            
-            @if( lngth == "144")
-            {
-                    <option value="144" selected="selected" >144</option>
-            }
-            else
-            {
-                <option value="144" >144</option>
-            }
-        </select> entries
-    </label>
-</div>
-<div class="form-group">
-    <label class="sr-only" for="SearchString">Search</label>
-    <input type="search" class="form-control input-sm" name="SearchString" value="@srch" placeholder="Search"></label>
-</div>
-
+    
   
 
 
 
 <div id="datatable-keytable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-    <div class="row" style="padding-bottom: 20px;">
-        <div class="col-sm-5">
-            <div class="dataTables_length" id="datatable-keytable_length">
-                
-            </div>
-            
-
-        </div>
-        <div class="col-sm-4">
-
-        </div>
-        <div class="col-sm-3">
-            <div class="dataTables_filter" style="width:auto;">
-                <label>Search:
-            </div>
-        </div>
-    </div>
+    
     <div class="row">
     
                       <div class="col-md-12 col-sm-12 col-xs-12 text-center">
@@ -229,17 +143,64 @@ div.dataTables_scrollFoot table {
             var from = (Model.PageIndex - 1) * Model.PageSize + 1;
             var to = from + Model.Count() - 1;
         }
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             <div class="dataTables_info" id="datatable-keytable_info" role="status" aria-live="polite">Showing @from to @to of @Model.TotalItems entries</div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label>Show
+                    <select name="length" 
+                            class="form-control input-sm"
+                            id="length"
+                            onchange="this.form.submit()"
+                            >
+                        
+                        @if( lngth == "18")
+                        {
+                                <option value="18" selected="selected" >18</option>
+                        }
+                        else
+                        {
+                            <option value="18" >18</option>
+                        }
+                        @if( lngth == "36")
+                        {
+                                <option value="36" selected="selected" >36</option>
+                        }
+                        else
+                        {
+                            <option value="36" >36</option>
+                        }
+
+                        @if( lngth == "72")
+                        {
+                                <option value="72" selected="selected" >72</option>
+                        }
+                        else
+                        {
+                            <option value="72" >72</option>
+                        }
+                        
+                        @if( lngth == "144")
+                        {
+                                <option value="144" selected="selected" >144</option>
+                        }
+                        else
+                        {
+                            <option value="144" >144</option>
+                        }
+                    </select> entries
+                </label>
+            </div>
         </div>
         @{
             var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
             var nextDisabled = !Model.HasNextPage ? "disabled" : "";
             var active = "";
         }
-        <div class="col-sm-7">
-            <div class="text-right" id="datatable-keytable_paginate">
-                <ul class="pagination">
+        <div class="col-sm-5">
+            <div class="text-right" >
+                <ul class="pagination" style="margin-top:0">
                     <li class="paginate_button previous @prevDisabled" id="datatable-keytable_previous">
                         <a asp-action="Index"
                             asp-route-sortOrder="@ViewData["CurrentSort"]"

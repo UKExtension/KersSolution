@@ -51,13 +51,18 @@ namespace Kers.Controllers.Reports
             int? page,
             string sortOrder = "alphabetically",
             int planningUnitId = 0,
+            int extensionPositionId = 0,
             int length = 18
         )
         {
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentLength"] = length;
+            ViewData["Units"] = this.context.PlanningUnit.OrderBy( u => u.order).ToList();
+            ViewData["Position"] = this.context.ExtensionPosition.OrderBy( u => u.order).ToList();
 
+            ViewBag.CurrentUnit = planningUnitId;
+            ViewBag.CurrentPosition = extensionPositionId;
 
             if (searchString != null)
             {
@@ -78,6 +83,9 @@ namespace Kers.Controllers.Reports
             }
             if(planningUnitId != 0 ){
                 users = users.Where( u => u.RprtngProfile.PlanningUnitId == planningUnitId );
+            }
+            if(extensionPositionId != 0 ){
+                users = users.Where( u => u.ExtensionPositionId == extensionPositionId );
             }
             
             switch (sortOrder)
