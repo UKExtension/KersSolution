@@ -207,6 +207,8 @@
                             asp-route-length="@ViewData["CurrentLength"]"
                             asp-route-page="@(Model.PageIndex - 1)"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            asp-route-planningUnitId=@currUnit
+                            asp-route-extensionPositionId=@currPosition 
                             class="">Previous</a>
                     </li>
                     @{
@@ -222,6 +224,8 @@
                             asp-route-length="@ViewData["CurrentLength"]"
                             asp-route-page="@i"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            asp-route-planningUnitId=@currUnit
+                            asp-route-extensionPositionId=@currPosition
                         >@i</a></li>
                     }
                     <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
@@ -230,6 +234,8 @@
                             asp-route-length="@ViewData["CurrentLength"]"
                             asp-route-page="@(Model.PageIndex + 1)"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            asp-route-planningUnitId=@currUnit
+                            asp-route-extensionPositionId=@currPosition
                             class="" >Next</a></li>
                 </ul>
             </div>
