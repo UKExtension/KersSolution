@@ -91,57 +91,11 @@ div.dataTables_scrollFoot table {
 </style>
 
 
-<form asp-controller="People" asp-action="Index" method="get">
-    
-<div id="datatable-keytable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-    <div class="row" style="padding-bottom: 20px;">
-        <div class="col-sm-6">
-            <div class="dataTables_length" id="datatable-keytable_length">
-                <label>Show
-                    <select name="length" 
-                            class="form-control input-sm"
-                            id="length"
-                            onchange="this.form.submit()"
-                            >
-                       
-                        @if( lngth == "18")
-                        {
-                             <option value="18" selected="selected" >18</option>
-                        }
-                        else
-                        {
-                            <option value="18" >18</option>
-                        }
-                        @if( lngth == "36")
-                        {
-                             <option value="36" selected="selected" >36</option>
-                        }
-                        else
-                        {
-                            <option value="36" >36</option>
-                        }
-
-                        @if( lngth == "72")
-                        {
-                             <option value="72" selected="selected" >72</option>
-                        }
-                        else
-                        {
-                            <option value="72" >72</option>
-                        }
-                        
-                        @if( lngth == "144")
-                        {
-                             <option value="144" selected="selected" >144</option>
-                        }
-                        else
-                        {
-                            <option value="144" >144</option>
-                        }
-                    </select> entries
-                </label>
-            </div>
-            <div class="dt-buttons btn-group" data-toggle="buttons">
+<form asp-controller="People" asp-action="Index" method="get" class="form-inline">
+    <div class="form-group">
+    <label>
+        Order By: 
+        <div class="btn-group" data-toggle="buttons">
                 
                 @if(srt == "alphabetically")
                 {
@@ -181,11 +135,78 @@ div.dataTables_scrollFoot table {
                 </label>
                 }
             </div>
+    </label>
+    </div>
+
+<div class="form-group">
+    <label>Show
+        <select name="length" 
+                class="form-control input-sm"
+                id="length"
+                onchange="this.form.submit()"
+                >
+            
+            @if( lngth == "18")
+            {
+                    <option value="18" selected="selected" >18</option>
+            }
+            else
+            {
+                <option value="18" >18</option>
+            }
+            @if( lngth == "36")
+            {
+                    <option value="36" selected="selected" >36</option>
+            }
+            else
+            {
+                <option value="36" >36</option>
+            }
+
+            @if( lngth == "72")
+            {
+                    <option value="72" selected="selected" >72</option>
+            }
+            else
+            {
+                <option value="72" >72</option>
+            }
+            
+            @if( lngth == "144")
+            {
+                    <option value="144" selected="selected" >144</option>
+            }
+            else
+            {
+                <option value="144" >144</option>
+            }
+        </select> entries
+    </label>
+</div>
+<div class="form-group">
+    <label class="sr-only" for="SearchString">Search</label>
+    <input type="search" class="form-control input-sm" name="SearchString" value="@srch" placeholder="Search"></label>
+</div>
+
+  
+
+
+
+<div id="datatable-keytable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-sm-5">
+            <div class="dataTables_length" id="datatable-keytable_length">
+                
+            </div>
+            
 
         </div>
-        <div class="col-sm-6">
-            <div id="datatable-keytable_filter" class="dataTables_filter">
-                <label>Search:<input type="search" class="form-control input-sm" placeholder="" name="SearchString" value="@srch"></label>
+        <div class="col-sm-4">
+
+        </div>
+        <div class="col-sm-3">
+            <div class="dataTables_filter" style="width:auto;">
+                <label>Search:
             </div>
         </div>
     </div>

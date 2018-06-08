@@ -76,6 +76,7 @@ export class IndicatorsHomeComponent {
     programs: MajorProgram[];
     selectedProgram: MajorProgram;
     selectedIndicators: Indicator[];
+    fiscalYear:FiscalYear;
     loading = false;
 
     errorMessage:string;
@@ -100,13 +101,7 @@ export class IndicatorsHomeComponent {
 
     ngOnInit(){
 
-/* 
-        this.fiscalYearService.current("serviceLog").subscribe(
-            res => this.fiscalYearSwitched(<FiscalYear>res)
-        )
-
-         */
-        this.defaultTitle();
+        
     }
     onChange(programId) {
         this.dataSubmitted=false;
@@ -159,6 +154,8 @@ export class IndicatorsHomeComponent {
         var prgrms = [];
         this.initiatives = null;
         this.selectedProgram = null;
+        this.fiscalYear = event;
+        this.defaultTitle();
         this.programsService.listInitiatives(event.name).subscribe(
             i => {
                 this.initiatives = i;
@@ -181,6 +178,6 @@ export class IndicatorsHomeComponent {
     }
 
     defaultTitle(){
-        this.reportingService.setTitle("Program Indicators for 2017-2018 (FY2018)");
+        this.reportingService.setTitle("Program Indicators for FY"+this.fiscalYear.name);
     }
 }

@@ -4,6 +4,7 @@ import { ActivityService, Activity, ActivityOption, ActivityOptionNumber, Race }
 import { Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { User } from "../../user/user.service";
+import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
@@ -13,6 +14,7 @@ import { User } from "../../user/user.service";
 export class ActivityStatsProgramComponent { 
 
     @Input() user:User;
+    @Input()fiscalYearSwitcher:boolean = true;
     errorMessage: string;
     activities:Observable<{}[]>;
     races:Observable<Race[]>;
@@ -31,15 +33,20 @@ export class ActivityStatsProgramComponent {
     {}
 
     ngOnInit(){
-        if(this.user == null){
-            this.activities = this.service.summaryPerProgram();
-        }else{
-            this.activities = this.service.summaryPerProgram(this.user.id);
-        }
+        
         
         this.races = this.service.races();
         this.optionNumbers = this.service.optionnumbers();
         
+        
+    }
+
+    fiscalYearSwitched(event:FiscalYear){
+        if(this.user == null){
+            this.activities = this.service.summaryPerProgram(0, event.name );
+        }else{
+            this.activities = this.service.summaryPerProgram(this.user.id, event.name);
+        }
         this.activities.subscribe(
             res=>{
                 this.createChart(res);

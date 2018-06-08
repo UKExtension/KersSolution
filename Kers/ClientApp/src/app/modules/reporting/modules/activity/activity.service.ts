@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import {AuthHttp} from '../../../authentication/auth.http';
 import {MajorProgram } from '../admin/programs/programs.service';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 
 @Injectable()
@@ -72,8 +73,8 @@ export class ActivityService {
                 .catch(this.handleError);
     }
 
-    summaryPerProgram(userId:number = 0){
-        var url = this.baseUrl + 'summaryPerProgram/' + userId;
+    summaryPerProgram(userId:number = 0, fy:string = "0"){
+        var url = this.baseUrl + 'summaryPerProgram/' + userId + '/' + fy;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => res.json() )
                 .catch(this.handleError);

@@ -211,15 +211,26 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet("summaryPerProgram/{userid?}")]
+        [HttpGet("summaryPerProgram/{userid?}/{fy?}")]
         [Authorize]
-        public IActionResult summaryPerProgram(int userid = 0 ){
+        public IActionResult summaryPerProgram(int userid = 0, string fy = "0" ){
             if(userid == 0){
                 userid = this.CurrentUser().Id;
             }
+            FiscalYear fiscalYear;
+            if(fy != "0"){
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
             var numPerMonth = context.Activity.
                                 AsNoTracking().
-                                Where(a=>a.KersUser.Id == userid).
+                                Where( a => a.KersUser.Id == userid 
+                                            &&
+                                            a.ActivityDate >= fiscalYear.Start
+                                            &&
+                                            a.ActivityDate <= fiscalYear.End
+                                        ).
                                 GroupBy(e => new {
                                     MajorProgram = e.MajorProgram
                                 }).

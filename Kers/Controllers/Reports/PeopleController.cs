@@ -46,10 +46,10 @@ namespace Kers.Controllers.Reports
         [HttpGet]
         [Route("", Name = "PeopleSearch")]
         public async Task<ActionResult> Index(
-            string sortOrder,
             string currentFilter,
             string searchString,
             int? page,
+            string sortOrder = "alphabetically",
             int planningUnitId = 0,
             int length = 18
         )
