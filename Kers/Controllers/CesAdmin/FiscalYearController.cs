@@ -52,11 +52,15 @@ namespace Kers.Controllers.Admin
                         .Where( f => 
                                 f.Type == type
                                 &&
-                                f.Start < date
+                                f.Start <= date
                                 &&  
-                                f.End > date    
+                                f.End >= date    
                             )
                         .FirstOrDefaultAsync();
+            if( year == null ){
+                year = fiscalYearRepository.currentFiscalYear(type);
+            }
+
             if(year == null){
                 return new StatusCodeResult(500);
             }           

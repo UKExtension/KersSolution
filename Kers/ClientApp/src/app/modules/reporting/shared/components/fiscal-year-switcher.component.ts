@@ -4,7 +4,7 @@ import { FiscalYear, FiscalyearService } from '../../modules/admin/fiscalyear/fi
 @Component({
   selector: 'fiscal-year-switcher',
   template: `
-  <div class="row" *ngIf="fiscalYears != null && selectedFiscalYear != null">
+  <div class="row" *ngIf="fiscalYears != null && fiscalYears.length > 1 && selectedFiscalYear != null">
     <div class="col-md-5">
       Fiscal Year: <span *ngFor="let year of fiscalYears"><a (click)="selectFiscalYear(year)" [class.active-year]="year.id == selectedFiscalYear.id" style="cursor:pointer;">{{year.name}}</a> | </span>
     </div>

@@ -1,4 +1,4 @@
-<br><br><fiscal-year-switcher *ngIf="fiscalYearSwitcher" [initially]="'current'" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+<br><br><fiscal-year-switcher *ngIf="fiscalYearSwitcher" [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
  <div class="row" *ngIf="!user">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="dashboard_graph">
