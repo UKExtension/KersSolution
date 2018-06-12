@@ -73,6 +73,7 @@ namespace Kers.Models.Abstract
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
         FiscalYear currentFiscalYear(string type);
         FiscalYear nextFiscalYear(string type);
+        FiscalYear previoiusFiscalYear( string type );
         FiscalYear byName(string name, string type);
     }
     public interface IAffirmativeActionPlanRevisionRepository: IEntityBaseRepository<AffirmativeActionPlanRevision>{}

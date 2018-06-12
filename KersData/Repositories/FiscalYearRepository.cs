@@ -42,12 +42,29 @@ namespace Kers.Models.Repositories
         public FiscalYear nextFiscalYear(string type){
 
             var nextYear = DateTime.Now.AddYears( 1 );
-            
-            return this.coreContext.
+            var year = this.coreContext.
                         FiscalYear.
                         Where(y => y.Start < nextYear && y.End > nextYear && y.Type == type).
                         FirstOrDefault();
+
+            if( year == null){
+                year = this.currentFiscalYear(type);
+            }
+            return year;
             
+        }
+
+
+        public FiscalYear previoiusFiscalYear( string type ){
+            var previousYear = DateTime.Now.AddYears( -1 );
+            var year = this.coreContext.
+                        FiscalYear.
+                        Where(y => y.Start < previousYear && y.End > previousYear && y.Type == type).
+                        FirstOrDefault();
+            if( year == null){
+                year = this.currentFiscalYear(type);
+            }
+            return year;
         }
     }
 }

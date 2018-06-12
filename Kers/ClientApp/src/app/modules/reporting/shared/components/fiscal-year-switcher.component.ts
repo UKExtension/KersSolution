@@ -20,6 +20,7 @@ export class FiscalYearSwitcherComponent implements OnInit {
 
   @Input() initially = "next"; // next, current, previous
   @Input() type = "serviceLog";
+  @Input() showNext = true;
   @Output() onLoaded = new EventEmitter<FiscalYear[]>();
   @Output() onSwitched = new EventEmitter<FiscalYear>();
 
@@ -28,6 +29,7 @@ export class FiscalYearSwitcherComponent implements OnInit {
 
   fiscalYears: FiscalYear[];
   nextFiscalYear: FiscalYear;
+  previousFiscalYear: FiscalYear;
   currentFiscalYear: FiscalYear;
   selectedFiscalYear: FiscalYear;
 
@@ -36,12 +38,21 @@ export class FiscalYearSwitcherComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getNextFiscalYear();
+    if( this.initially == "previous"){
+      this.getPreviousFiscalYear();
+    }else{
+      this.getNextFiscalYear();
+    }
+    
   }
   getFiscalYears(){
     this.fiscalYearService.byType(this.type).subscribe(
         res => {
-            this.fiscalYears = res;
+            this.fiscalYears = <FiscalYear[]>res;
+            if(!this.showNext){
+              var now = new Date();
+              this.fiscalYears = this.fiscalYears.filter( y => new Date(y.start) < now);
+            }
             this.onLoaded.emit(this.fiscalYears);
         }
     );
@@ -55,12 +66,23 @@ export class FiscalYearSwitcherComponent implements OnInit {
         }
     );
   }
+  getPreviousFiscalYear(){
+    this.fiscalYearService.previous(this.type).subscribe(
+        res => {
+            this.previousFiscalYear = res;
+            this.getCurrentFiscalYear();
+            
+        }
+    );
+  }
   getCurrentFiscalYear(){
       this.fiscalYearService.current(this.type).subscribe(
           res => {
               this.currentFiscalYear = res;
               if(this.initially == "next"){
                 this.selectFiscalYear(this.nextFiscalYear);
+              }else if(this.initially == "previous"){
+                this.selectFiscalYear(this.previousFiscalYear);
               }else{
                 this.selectFiscalYear(this.currentFiscalYear);
               }

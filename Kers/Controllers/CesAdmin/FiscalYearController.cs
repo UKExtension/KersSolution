@@ -69,6 +69,12 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(year);
         }
 
+        [HttpGet("previous/{type?}")]
+        public IActionResult Previous(string type = "serviceLog"){
+            var year = fiscalYearRepository.previoiusFiscalYear(type);
+            return new OkObjectResult(year);
+        }
+
         [HttpGet("bytype/{type?}")]
         public async Task<IActionResult> ByType(string type = "serviceLog"){
             var year = await context.FiscalYear.Where( f => f.Type == type).OrderBy(f => f.Start).ToListAsync();

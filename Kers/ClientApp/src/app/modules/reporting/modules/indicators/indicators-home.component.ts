@@ -17,7 +17,7 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 Simply update the numbers as needed throughout the fiscal year.<br>
 <strong>ENTER WHOLE NUMBERS ONLY.</strong><br><br>
 
-<fiscal-year-switcher [initially]="current" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+<fiscal-year-switcher [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
 
 <div class="alert alert-success alert-dismissible fade in" role="alert" *ngIf="dataSubmitted">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>

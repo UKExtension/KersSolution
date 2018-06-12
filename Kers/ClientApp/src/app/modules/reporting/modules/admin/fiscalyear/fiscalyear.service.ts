@@ -71,6 +71,13 @@ export class FiscalyearService {
             .catch(this.handleError);
     }
 
+    previous(type:string = "serviceLog"){
+        var url = this.baseUrl + "previous/" + type;
+        return this.http.get(this.location.prepareExternalUrl(url))
+            .map(res => <FiscalYear>res.json())
+            .catch(this.handleError);
+    }
+
     addFiscalYear(fiscalyear){
         return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(fiscalyear), this.getRequestOptions())
                     .map( res => {
