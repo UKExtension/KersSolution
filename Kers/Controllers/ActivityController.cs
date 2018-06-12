@@ -242,8 +242,7 @@ namespace Kers.Controllers
                                     Audience = c.Sum(s => s.Audience),
                                     MajorProgram = c.Key.MajorProgram
                                 })
-                                .OrderBy( s => s.MajorProgram.Name)
-                                ;
+                                .OrderBy( s => s.MajorProgram.Name);
             var result = new List<PerProgramActivities>();
 
             foreach(var mnth in numPerMonth){
@@ -251,6 +250,7 @@ namespace Kers.Controllers
                 var MntRevs = new List<ActivityRevision>();
                 foreach(var rev in mnth.Ids){
                     var lstrvsn = context.ActivityRevision.
+                            AsNoTracking().
                             Where(r => r.ActivityId == rev).
                             Include(a => a.ActivityOptionNumbers).
                             Include(a => a.ActivityOptionSelections).
