@@ -12,6 +12,7 @@ namespace Kers.Models.Repositories
         public static string LastStories = "LastStories";
         public static string LastStoryWithImages = "LastStoryWithImages";
         public static string StatsPerMonth = "StatsPerMonth";
+        public static string ActivitiesPerFyPerUserPerMajorProgram = "ActivitiesPerFyPerUserPerMajorProgram";
 
         //TableViewModel
         public static string ActivityContactsByCountyByMajorProgram = "ActivityContactsByCountyByMajorProgram";

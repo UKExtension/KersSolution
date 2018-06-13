@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Kers.Controllers
 {
@@ -33,6 +34,7 @@ namespace Kers.Controllers
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         private IMemoryCache _cache;
+        private IDistributedCache _distributedCache;
         public ActivityController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
@@ -40,7 +42,8 @@ namespace Kers.Controllers
                     IActivityRepository activityRepo,
                     ILogRepository logRepo,
                     IFiscalYearRepository fiscalYearRepo,
-                    IMemoryCache memoryCache
+                    IMemoryCache memoryCache,
+                    IDistributedCache _distributedCache
             ){
            this.context = context;
            this.mainContext = mainContext;
@@ -49,6 +52,7 @@ namespace Kers.Controllers
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
            _cache = memoryCache;
+           this._distributedCache = _distributedCache;
         }
 
 
@@ -213,7 +217,7 @@ namespace Kers.Controllers
 
         [HttpGet("summaryPerProgram/{userid?}/{fy?}")]
         [Authorize]
-        public IActionResult summaryPerProgram(int userid = 0, string fy = "0" ){
+        public IActionResult summaryPerProgram(int userid = 0, string fy = "0", bool refreshCache = false ){
             if(userid == 0){
                 userid = this.CurrentUser().Id;
             }
@@ -223,52 +227,82 @@ namespace Kers.Controllers
             }else{
                 fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
             }
-            var numPerMonth = context.Activity.
+            
+            List<PerProgramActivities> result;
+
+
+
+            var cacheKey = CacheKeys.ActivitiesPerFyPerUserPerMajorProgram + fiscalYear.Name + userid.ToString();
+            var cacheString = _distributedCache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = JsonConvert.DeserializeObject<List<PerProgramActivities>>(cacheString);
+            }else{
+
+                var numPerMonth = context.Activity.
+                                    AsNoTracking().
+                                    Where( a => a.KersUser.Id == userid 
+                                                &&
+                                                a.ActivityDate >= fiscalYear.Start
+                                                &&
+                                                a.ActivityDate <= fiscalYear.End
+                                            ).
+                                    GroupBy(e => new {
+                                        MajorProgram = e.MajorProgram
+                                    }).
+                                    Select(c => new {
+                                        Ids = c.Select(
+                                            s => s.Id
+                                        ),
+                                        Hours = c.Sum(s => s.Hours),
+                                        Audience = c.Sum(s => s.Audience),
+                                        MajorProgram = c.Key.MajorProgram
+                                    })
+                                    .OrderBy( s => s.MajorProgram.Name);
+                result = new List<PerProgramActivities>();
+
+                foreach(var mnth in numPerMonth){
+                    var ids = new List<int>();
+                    var MntRevs = new List<ActivityRevision>();
+                    foreach(var rev in mnth.Ids){
+                        var lstrvsn = context.ActivityRevision.
                                 AsNoTracking().
-                                Where( a => a.KersUser.Id == userid 
-                                            &&
-                                            a.ActivityDate >= fiscalYear.Start
-                                            &&
-                                            a.ActivityDate <= fiscalYear.End
-                                        ).
-                                GroupBy(e => new {
-                                    MajorProgram = e.MajorProgram
-                                }).
-                                Select(c => new {
-                                    Ids = c.Select(
-                                        s => s.Id
-                                    ),
-                                    Hours = c.Sum(s => s.Hours),
-                                    Audience = c.Sum(s => s.Audience),
-                                    MajorProgram = c.Key.MajorProgram
-                                })
-                                .OrderBy( s => s.MajorProgram.Name);
-            var result = new List<PerProgramActivities>();
+                                Where(r => r.ActivityId == rev).
+                                Include(a => a.ActivityOptionNumbers).
+                                Include(a => a.ActivityOptionSelections).
+                                Include(a => a.RaceEthnicityValues).
+                                OrderBy(a => a.Created).Last();
 
-            foreach(var mnth in numPerMonth){
-                var ids = new List<int>();
-                var MntRevs = new List<ActivityRevision>();
-                foreach(var rev in mnth.Ids){
-                    var lstrvsn = context.ActivityRevision.
-                            AsNoTracking().
-                            Where(r => r.ActivityId == rev).
-                            Include(a => a.ActivityOptionNumbers).
-                            Include(a => a.ActivityOptionSelections).
-                            Include(a => a.RaceEthnicityValues).
-                            OrderBy(a => a.Created).Last();
+                        MntRevs.Add(lstrvsn);
+                    }
 
-                    MntRevs.Add(lstrvsn);
+
+                    var actvts = new PerProgramActivities();
+                    actvts.Revisions = MntRevs;
+                    actvts.Hours = mnth.Hours;
+                    actvts.Audience = mnth.Audience;
+                    actvts.MajorProgram = mnth.MajorProgram;
+                    result.Add(actvts);
+                    
+                }
+
+                var serialized = JsonConvert.SerializeObject(result);
+
+                var expireIn = 3;
+
+                if( fiscalYear.ExtendedTo < DateTime.Now ){
+                    expireIn = 365;
                 }
 
 
-                var actvts = new PerProgramActivities();
-                actvts.Revisions = MntRevs;
-                actvts.Hours = mnth.Hours;
-                actvts.Audience = mnth.Audience;
-                actvts.MajorProgram = mnth.MajorProgram;
-                result.Add(actvts);
-                
+                _distributedCache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(expireIn)
+                    });
+            
+            
+            
             }
+
             return new OkObjectResult(result);
         }
 
