@@ -186,12 +186,41 @@ namespace Kers.Controllers
             foreach(var mnth in numPerMonth){
                 var MntRevs = new List<ActivityRevision>();
                 foreach(var rev in mnth.Ids){
+                    
+                    /* 
                     var lstrvsn = context.ActivityRevision.
                             Where(r => r.ActivityId == rev).
                             Include(a => a.ActivityOptionNumbers).
                             Include(a => a.ActivityOptionSelections).
                             Include(a => a.RaceEthnicityValues).
                             OrderBy(a => a.Created).Last();
+ */
+
+                    var revCacheKey = CacheKeys.ActivityLastRevision + rev.ToString();
+                    
+
+                    var revCacheString = _distributedCache.GetString(revCacheKey);
+
+                    ActivityRevision lstrvsn;
+                    if (!string.IsNullOrEmpty(revCacheString)){
+                        lstrvsn = JsonConvert.DeserializeObject<ActivityRevision>(revCacheString);
+                    }else{
+                        lstrvsn = context.ActivityRevision.
+                            AsNoTracking().
+                            Where(r => r.ActivityId == rev).
+                            Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                            Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
+                            Include(a => a.RaceEthnicityValues).
+                            OrderBy(a => a.Created).Last();
+                            var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                            _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                {
+                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                                });
+                    }
+
+
+
 
                     MntRevs.Add(lstrvsn);
                 }
@@ -264,13 +293,38 @@ namespace Kers.Controllers
                     var ids = new List<int>();
                     var MntRevs = new List<ActivityRevision>();
                     foreach(var rev in mnth.Ids){
-                        var lstrvsn = context.ActivityRevision.
+                        /* var lstrvsn = context.ActivityRevision.
                                 AsNoTracking().
                                 Where(r => r.ActivityId == rev).
                                 Include(a => a.ActivityOptionNumbers).
                                 Include(a => a.ActivityOptionSelections).
                                 Include(a => a.RaceEthnicityValues).
+                                OrderBy(a => a.Created).Last(); */
+
+                        var revCacheKey = CacheKeys.ActivityLastRevision + rev.ToString();
+                    
+
+                        var revCacheString = _distributedCache.GetString(revCacheKey);
+
+                        ActivityRevision lstrvsn;
+                        if (!string.IsNullOrEmpty(revCacheString)){
+                            lstrvsn = JsonConvert.DeserializeObject<ActivityRevision>(revCacheString);
+                        }else{
+                            lstrvsn = context.ActivityRevision.
+                                AsNoTracking().
+                                Where(r => r.ActivityId == rev).
+                                Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                                Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
+                                Include(a => a.RaceEthnicityValues).
                                 OrderBy(a => a.Created).Last();
+                                var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                                _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                                    });
+                        }
+
+
 
                         MntRevs.Add(lstrvsn);
                     }
