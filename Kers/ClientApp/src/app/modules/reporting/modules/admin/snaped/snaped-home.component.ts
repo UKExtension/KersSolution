@@ -179,7 +179,7 @@ export class SnapedHomeComponent {
           data => {
               var blob = new Blob([data], {type: 'text/csv'});
               this.totalByMonth_loading = false;
-              saveAs(blob, "TotalByMonty_2018.csv");
+              saveAs(blob, "TotalByMonth_2018.csv");
           },
           err => console.error(err)
       )
