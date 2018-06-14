@@ -321,6 +321,75 @@ namespace Kers.Models.Repositories
             return lastStories;
         }
 
+        public async Task<List<StoryViewModel>> LastStoriesByUser( int userId, int amount = 4, bool refreshCache = false ){
+            
+            List<StoryViewModel> lastStories;
+            
+            var cacheKey = CacheKeys.LastStoriesByUser + userId.ToString()+ "_" + amount.ToString();
+            var cacheString = _cache.GetString(cacheKey);
+
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                lastStories = JsonConvert.DeserializeObject<List<StoryViewModel>>(cacheString);
+            }else{
+
+                List<Story> Last;
+                
+                var LastQuery = this.context.Story.Where( s => s.KersUserId == userId );
+                
+                Last = await LastQuery.OrderByDescending( s => s.Updated ).Take( amount ).ToListAsync();
+                
+
+
+                lastStories = new List<StoryViewModel>();
+
+                foreach( var str in Last ){
+                    var lastRev = await context.StoryRevision
+                                            .Where(s => s.StoryId == str.Id)
+                                            .Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
+                                            .Include( s => s.MajorProgram )
+                                            .OrderBy( s => s.Created)
+                                            .LastAsync();
+                    var story = new StoryViewModel();
+                    story.StoryId = lastRev.StoryId;
+                    story.Title = lastRev.Title;
+                    story.Story = lastRev.Story;
+
+
+                    if(lastRev.StoryImages.Count > 0){
+                        story.ImageName = lastRev.StoryImages.Last().UploadImage.UploadFile.Name;
+
+                        //Find Landscape Image if available.
+                        foreach( var img in lastRev.StoryImages){
+                            if( img.UploadImage.Width > img.UploadImage.Height){
+                                story.ImageName = img.UploadImage.UploadFile.Name;
+                                break;
+                            }
+                        }
+                    }
+                    
+
+                    story.KersUser = context.KersUser.Where( s => s.Id == userId)
+                                        .Include( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
+                                        .Include( u => u.PersonalProfile )
+                                        .FirstOrDefault();
+                    story.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
+                    story.MajorProgram = lastRev.MajorProgram;
+                    story.Updated = lastRev.Created;
+                    lastStories.Add(story);
+                }
+
+
+
+
+                var serialized = JsonConvert.SerializeObject(lastStories);
+                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(5)
+                    });
+            }
+            return lastStories;
+        }
+
 
 
 

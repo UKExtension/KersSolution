@@ -11,6 +11,7 @@ namespace Kers.Models.Repositories
         public static string LastStoryRevisionIds = "LastStoryRevisionIds";
         public static string LastStoryRevisions = "LastStoryRevisions";
         public static string LastStories = "LastStories";
+        public static string LastStoriesByUser = "LastStoriesByUser";
         public static string LastStoryWithImages = "LastStoryWithImages";
         public static string StatsPerMonth = "StatsPerMonth";
         public static string ActivitiesPerFyPerUserPerMajorProgram = "ActivitiesPerFyPerUserPerMajorProgram";

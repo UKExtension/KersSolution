@@ -122,5 +122,6 @@ namespace Kers.Models.Abstract
         List<StoryRevision> LastStoryRevisions( FiscalYear fiscalYear);
         Task<StoryViewModel> LastStoryWithImages(int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false);
         Task<List<StoryViewModel>> LastStories( int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false );
+        Task<List<StoryViewModel>> LastStoriesByUser( int userId, int amount = 4, bool refreshCache = false );
     }
 }

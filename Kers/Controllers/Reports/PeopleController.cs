@@ -32,13 +32,16 @@ namespace Kers.Controllers.Reports
     {
         KERScoreContext context;
         IKersUserRepository userRepo;
+        IStoryRepository storyRepo;
 
         public PeopleController( 
                     KERScoreContext context,
-                    IKersUserRepository userRepo
+                    IKersUserRepository userRepo,
+                    IStoryRepository storyRepo
             ){
            this.context = context;
            this.userRepo = userRepo;
+           this.storyRepo = storyRepo;
         }
 
 
@@ -137,6 +140,10 @@ namespace Kers.Controllers.Reports
                         .Include( u => u.PersonalProfile).ThenInclude( p => p.SocialConnections ).ThenInclude( i => i.SocialConnectionType )
                         .AsNoTracking()
                         .FirstOrDefaultAsync();
+
+            var stories = await this.storyRepo.LastStoriesByUser( person.Id );
+
+            ViewData["stories"] = stories;
 
             return View(person);
         }

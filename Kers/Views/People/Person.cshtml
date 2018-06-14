@@ -4,7 +4,26 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "Person";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var stories = ViewData["stories"] as List<Kers.Models.ViewModels.StoryViewModel>;
 }
+<style>
+    ul.messages li img.avtr, img.avtr {
+        height: 92px;
+        width: 92px;
+        float: left;
+        display: inline-block;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        padding: 2px;
+        background: #f7f7f7;
+        border: 1px solid #e6e6e6;
+    }
+    ul.messages li .message_wrapper {
+        margin-left: 105px;
+        margin-right: 45px;
+    }
+</style>
 <div class="x_content">
     <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
         <div class="profile_img">
@@ -113,7 +132,42 @@
         
     </div>
     <div class="col-md-9 col-sm-9 col-xs-12">
+        <div class="fr-view">@Html.Raw(@Model.PersonalProfile.Bio.Replace("fileuploads", "/core/fileuploads"))</div>
+        @if(stories.Count > 0)
+        {
+            <br><br>
+            <h3>Success Stories</h3>
+            <ul class="messages">
+            @foreach( var story in stories )
+            {
 
-        Body
+                <li>
+                    @if(story.ImageName != null && story.ImageName != "" )
+                    {
+                        <img src="@Url.RouteUrl("ProcessImage", new { filename = @story.ImageName, mode="crop", w=100, h=100 })" alt="@story.Title" class="avtr">
+                    }
+                                
+                    <div class="message_date">
+                        <h3 class="date text-info">@story.Updated.ToString("dd")</h3>
+                        <p class="month">@story.Updated.ToString("MMMM")</p>
+                    </div>
+                    <div class="message_wrapper">
+                        <h4 class="heading">@story.Title</h4>
+                        <blockquote class="message">@Html.StripHtml(@story.Story).Substring(0, Math.Min(@Html.StripHtml(@story.Story).Length, 200))...</blockquote>
+                        <br>
+                        <p class="url">
+                        <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                        <a href="~/reports/Story/@story.StoryId"><i class="fa fa-align-left"></i> Full Story</a>
+                        </p>
+                    </div>
+                </li>
+
+
+
+            }
+            </ul>
+        }
+        
+        
     </div>
 </div>
