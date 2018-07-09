@@ -224,7 +224,7 @@ namespace Kers.Models.Repositories
 
 
 
-                var actvtsCacheKey = "AllActivitiesByEmployee" + type.ToString() + id.ToString();
+                var actvtsCacheKey = "AllActivitiesByEmployee" + type.ToString() + id.ToString() + fiscalYear.Name;
                 var cachedActivities = _cache.GetString(actvtsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){

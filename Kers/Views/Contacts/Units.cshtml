@@ -17,7 +17,7 @@
         @if(Model != null){
             @foreach( var unit in Model){
                 <li>
-                    <a asp-controller="Employees"  asp-action="Data" asp-route-type="1" asp-route-id=@unit.Id>
+                    <a asp-controller="Employees"  asp-action="Data" asp-route-type="1" asp-route-id=@unit.Id asp-route-fy="2018">
                     <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
                     <span class="glyphicon-class">@unit.Name</span>
                     </a>
