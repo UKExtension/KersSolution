@@ -18,7 +18,7 @@ export class AssignmentAffirmativePlanComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.counties = this.service.countiesWithoutPlan(this.districtId);
+    this.counties = this.service.countiesWithoutPlan(this.districtId, "2019");
   }
 
 }

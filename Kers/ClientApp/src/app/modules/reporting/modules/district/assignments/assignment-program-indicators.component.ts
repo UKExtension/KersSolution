@@ -19,7 +19,7 @@ export class AssignmentProgramIndicatorsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.counties = this.service.countiesWithoutIndicators(this.districtId);
+    this.counties = this.service.countiesWithoutIndicators(this.districtId, "2018");
   }
 
 }
