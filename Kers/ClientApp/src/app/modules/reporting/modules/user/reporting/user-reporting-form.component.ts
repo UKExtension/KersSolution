@@ -10,10 +10,12 @@ import {    UserService,
             Specialty, 
             Institution
         } from '../user.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { Observable } from "rxjs/Observable";
 import {Router} from '@angular/router';
+import {Location} from '@angular/common';
+import { AuthHttp } from '../../../../authentication/auth.http';
 
 @Component({
     selector: 'user-reporting-form',
@@ -56,7 +58,9 @@ export class UserReportingFormComponent implements OnInit {
         private userService: UserService,
         private fb: FormBuilder, 
         private reportingService: ReportingService,
-        private router: Router
+        private router: Router,
+        private http:AuthHttp,
+        private location:Location
     )   
     {
 
@@ -88,9 +92,9 @@ export class UserReportingFormComponent implements OnInit {
                         emailAlias: '',
                         enabled: false,
                         personId: [{value: '', disabled: isDisabled}, Validators.required],
-                        linkBlueId: [{value: '', disabled: isDisabled}, Validators.required],
+                        linkBlueId: [{value: '', disabled: isDisabled}, Validators.required, this.checkNotLinkBlueIdExists],
                         institutionId: ['', Validators.required],
-                        name: ['', Validators.required],
+                        name: ['', this.doesItContainComma],
                     }
                 )
                 }
@@ -247,5 +251,26 @@ export class UserReportingFormComponent implements OnInit {
 
     OnCancel(){
         this.onFormCancel.emit();
-    } 
+    }
+
+    checkNotLinkBlueIdExists(control: FormControl): any {
+        return Observable.of(null);
+        /* var url = '/api/User/isItExists/' + control.value;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                    .map(res =>{ 
+                        var isIt = res.json();
+                        console.log(isIt);
+                        return isIt;
+                    });
+
+                     */
+    }
+
+    doesItContainComma(control:FormControl){
+        if(control.value.match(/,/)){
+            return null;
+        }
+        return {"notComa":true};
+    }
+    
 }

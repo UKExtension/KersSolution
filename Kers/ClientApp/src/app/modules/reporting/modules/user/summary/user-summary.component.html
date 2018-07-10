@@ -173,7 +173,7 @@
 
 
 <h2>SUCCESS STORIES</h2>
-
+<fiscal-year-switcher [initially]="'previous'" [showNext]="false" (onSwitched)="storiesFySwitched($event)"></fiscal-year-switcher><br><br>
 <!-- start success stories -->
     <ul class="messages">
         <li *ngFor="let story of latestStories | async">

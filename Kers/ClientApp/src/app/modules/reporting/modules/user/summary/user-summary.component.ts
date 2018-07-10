@@ -8,6 +8,7 @@ import { Activity, ActivityService } from "../../activity/activity.service";
 import { Story, StoryService } from "../../story/story.service";
 import { ReportingService } from "../../../components/reporting/reporting.service";
 import { ExpenseService, ExpenseSummary } from "../../expense/expense.service";
+import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
@@ -85,7 +86,7 @@ export class UserSummaryComponent {
                     
                     
                     
-                    this.latestStories = this.storyService.latestByUser(this.user.id, 85);
+                    
                     this.expenseSummaries = this.expenseService.fiscalYearSummaries(user.id);
                     
                     this.reportingService.setSubtitle(this.user.personalProfile.firstName + " " +this.user.personalProfile.lastName);
@@ -133,6 +134,10 @@ export class UserSummaryComponent {
 
     externalUrl(url){
         return this.location.prepareExternalUrl(url);
+    }
+
+    storiesFySwitched(event:FiscalYear){
+        this.latestStories = this.storyService.latestByUser(this.user.id, 85, event.name);
     }
 
 

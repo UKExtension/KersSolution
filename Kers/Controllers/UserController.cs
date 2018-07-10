@@ -220,6 +220,11 @@ namespace Kers.Controllers
             }
             return new OkObjectResult(null);
         }
+
+        [HttpGet("isItExists/{linkBlueId}")]
+        public IActionResult isItExists(string linkBlueId){
+            return new OkObjectResult( _mContext.zEmpRptProfiles.Where( z => z.linkBlueID == linkBlueId).Any());
+        }
         
 
         [HttpGet("PlanningUnit")]
