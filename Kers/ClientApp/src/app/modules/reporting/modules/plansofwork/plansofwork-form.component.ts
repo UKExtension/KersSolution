@@ -103,7 +103,6 @@ export class PlansofworkFormComponent implements OnInit{
            }
         }
         
-        
     }
 
     onSubmit(){ 
@@ -138,8 +137,8 @@ export class PlansofworkFormComponent implements OnInit{
                 }
             );
         }else{
-            
-            this.plansofworkService.addPlan(i).
+            var fy = this.fiscalYear == null ? "0" : this.fiscalYear.name;
+            this.plansofworkService.addPlan(i, fy).
             subscribe(
                 res => {
                     this.onFormSubmit.emit();

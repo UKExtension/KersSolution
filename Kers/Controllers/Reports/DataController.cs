@@ -70,10 +70,16 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("storiesprogram/{id?}", Name = "StoryProgram")]
-        public async Task<IActionResult> StoriesProgram(int id = 0)
+        [Route("storiesprogram/{id?}/{fy?}", Name = "StoryProgram")]
+        public async Task<IActionResult> StoriesProgram(int id = 0, string fy = "0")
         {
-            var programs = await this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear == this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog)).OrderBy(l => l.order).ToListAsync();
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                
+                return new StatusCodeResult(500);
+            }
+            var programs = await this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear == fiscalYear).OrderBy(l => l.order).ToListAsync();
             var model = new ProgramStoryViewModel();
             model.MajorPrograms = programs;
             if(id != 0){
@@ -140,7 +146,15 @@ namespace Kers.Controllers.Reports
         }
 
  */
-        
+        private FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
+        }
         
 
 

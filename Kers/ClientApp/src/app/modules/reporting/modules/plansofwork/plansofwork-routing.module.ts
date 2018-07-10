@@ -17,7 +17,7 @@ import {PlansofworkReportsComponent} from './plansofwork-reports.component';
             {
                 path: 'reports',
                 component: PlansofworkReportsComponent,
-            }  
+            }
           ]
 
       }           

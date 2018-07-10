@@ -9,7 +9,7 @@
 <div class="row">
     <label class="col-md-2">Select Major Program</label>
     <div class="col-md-8">
-        <select asp-for="MajorProgram.Id" asp-items="@(new SelectList(Model.MajorPrograms,"Id","Name"))" class="form-control" onchange="location = '@Url.RouteUrl("StoryProgram", new { id = "" })' + '/' + this.value;">
+        <select asp-for="MajorProgram.Id" asp-items="@(new SelectList(Model.MajorPrograms,"Id","Name"))" class="form-control" onchange="location = '@Url.RouteUrl("StoryProgram", new { id = "" })' + '/' + this.value + '/2018';">
             <option>-- select --</option>
         </select>
     </div>

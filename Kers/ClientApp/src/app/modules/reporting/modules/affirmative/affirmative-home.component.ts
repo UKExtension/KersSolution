@@ -36,12 +36,13 @@ export class AffirmativeHomeComponent {
         
         
 
-        this.plan = this.service.get().map(res=><AffirmativePlan>res);
+        
         const fiscalyearid = this.route.snapshot.paramMap.get('fy');
         if( fiscalyearid == null){
-            this.fiscalYearService.next("serviceLog").subscribe(
+            this.fiscalYearService.current("serviceLog").subscribe(
                 res =>{
                     this.fy = <FiscalYear> res;
+                    this.plan = this.service.get(0, this.fy.name).map(res=><AffirmativePlan>res);
                     this.defaultTitle();
                 },
                 err => this.errorMessage = <any> err 

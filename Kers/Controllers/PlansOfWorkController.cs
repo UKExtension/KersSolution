@@ -325,13 +325,14 @@ namespace Kers.Controllers
                     Where( p=>p.Code == profile.planningUnitID).
                     FirstOrDefault();
                 map.PlanningUnit = planningUnt;
+                /* 
                 FiscalYear fiscalYear;
                 if(fyId != "0"){
                     fiscalYear = fiscalYearRepo.byName(fyId, FiscalYearType.ServiceLog);
                 }else{
                     fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.ServiceLog);
                 }
-                map.FiscalYear = fiscalYear;
+                map.FiscalYear = fiscalYear; */
                 map.By = user;
                 map.Updated = DateTime.Now;
                 context.Map.Add(map);

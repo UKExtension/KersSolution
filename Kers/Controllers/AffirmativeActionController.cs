@@ -185,7 +185,7 @@ namespace Kers.Controllers
                 if( p== null){
                     p = new AffirmativeActionPlan();
                     p.PlanningUnit = this.CurrentPlanningUnit();
-                    p.FiscalYear = this.fiscalYearRepo.nextFiscalYear("serviceLog");
+                    p.FiscalYear = this.fiscalYearRepo.currentFiscalYear("serviceLog");
                     p.Revisions = new List<AffirmativeActionPlanRevision>();
                     this.context.AffirmativeActionPlan.Add(p);
                 }

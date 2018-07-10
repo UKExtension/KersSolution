@@ -1,42 +1,50 @@
 import { Component } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 
 @Component({
   template: `
   <div><reporting-display-help id="12"></reporting-display-help></div>
-  <div *ngIf="nextFiscalYear">
-    <plansofwork-maps [fy]="nextFiscalYear"></plansofwork-maps>
+  <div *ngIf="fiscalYear">
+    <plansofwork-maps [fy]="fiscalYear"></plansofwork-maps>
     <hr />
-    <plansofwork [fy]="nextFiscalYear"></plansofwork>
+    <plansofwork [fy]="fiscalYear"></plansofwork>
   </div>  
 
   `
 })
 export class PlansofworkHomeComponent { 
 
-    nextFiscalYear: FiscalYear;
+    fiscalYear: FiscalYear;
+    fyId: number;
+    hasFy: boolean;
 
     constructor( 
         private reportingService: ReportingService,
-        private fiscalYearService: FiscalyearService
+        private fiscalYearService: FiscalyearService,
+        private route: ActivatedRoute,
+        private router: Router
     )   
     {}
 
     ngOnInit(){
         
-        this.getNextFiscalYear();
+        
+            this.getNextFiscalYear();
+        
     }
     getNextFiscalYear(){
-        this.fiscalYearService.next("serviceLog").subscribe(
+        this.fiscalYearService.current("serviceLog").subscribe(
             res => {
-                this.nextFiscalYear = res;
+                
+                this.fiscalYear = res;
                 this.defaultTitle();
             }
         );
     }
 
     defaultTitle(){
-        this.reportingService.setTitle("Plans of Work for FY "+this.nextFiscalYear.name);
+        this.reportingService.setTitle("Plans of Work for FY "+this.fiscalYear.name);
     }
 }

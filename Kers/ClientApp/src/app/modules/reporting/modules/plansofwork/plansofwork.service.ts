@@ -58,8 +58,8 @@ export class PlansofworkService {
                 .catch(this.handleError);
     }
 
-    addPlan(plan:PlanOfWork){
-        var url = this.baseUrl;
+    addPlan(plan:PlanOfWork, fy:string = "0"){
+        var url = this.baseUrl + fy;
         return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(plan), this.getRequestOptions())
                     .map( res => {
                         this.plans.push(<PlanOfWork> res.json());

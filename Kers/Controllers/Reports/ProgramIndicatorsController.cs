@@ -60,9 +60,15 @@ namespace Kers.Controllers.Reports
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [Route("{id}/{fy?}")]
+        public async Task<IActionResult> Get(int id, string fy="0")
         {
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                
+                return new StatusCodeResult(500);
+            }
             var indicators = new List<StrategicInitiativeIndicatorsViewModel>();
             if( id != 0){
                 var county = context.PlanningUnit.Find(id);
@@ -73,7 +79,7 @@ namespace Kers.Controllers.Reports
             }else{
                 ViewData["county"] = "STATE TOTALS";
             }
-            var initiatives = await context.StrategicInitiative.Where(s => s.FiscalYear == currentFiscalYear)
+            var initiatives = await context.StrategicInitiative.Where(s => s.FiscalYear == fiscalYear)
                                     .Include( s => s.ProgramCategory)
                                     .Include( s => s.MajorPrograms)
                                     .OrderBy( s => s.order)
@@ -153,6 +159,16 @@ namespace Kers.Controllers.Reports
                         });
             }
             return View(counties);
+        }
+
+        public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepository.currentFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
         }
     }
 
