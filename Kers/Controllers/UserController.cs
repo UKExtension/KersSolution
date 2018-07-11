@@ -223,7 +223,20 @@ namespace Kers.Controllers
 
         [HttpGet("isItExists/{linkBlueId}")]
         public IActionResult isItExists(string linkBlueId){
-            return new OkObjectResult( _mContext.zEmpRptProfiles.Where( z => z.linkBlueID == linkBlueId).Any());
+            object returnValue = null;
+            if(_mContext.zEmpRptProfiles.Where( z => z.linkBlueID == linkBlueId).Any()){
+                returnValue = new { linkBlueEsists = true };
+            }
+            return new OkObjectResult( returnValue );
+        }
+
+        [HttpGet("isPersonIdExists/{personId}")]
+        public IActionResult isPersonIdExists(string personId){
+            object returnValue = null;
+            if(_mContext.zEmpRptProfiles.Where( z => z.personID == personId).Any()){
+                returnValue = new { personId = true };
+            }
+            return new OkObjectResult( returnValue );
         }
         
 

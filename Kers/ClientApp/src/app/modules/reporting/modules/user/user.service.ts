@@ -166,6 +166,19 @@ export class UserService {
                 .catch(this.handleError);
     }
 
+    linkBlueExists(linkBlueId:string):Observable<{}|null>{
+        var url = this.baseUrl + "isItExists/" + linkBlueId;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => < {} | null >res.json())
+                .catch(this.handleError);
+    }
+
+    personIdExists(personId:string):Observable<{}|null>{
+        var url = this.baseUrl + "isPersonIdExists/" + personId;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => < {} | null >res.json())
+                .catch(this.handleError);
+    }
 
     getRequestOptions(){
         return new RequestOptions(

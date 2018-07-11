@@ -1,4 +1,5 @@
 import { Component,OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { map, take, debounceTime } from 'rxjs/operators';
 import {    UserService,
             ExtensionPosition, 
             User,
@@ -91,8 +92,8 @@ export class UserReportingFormComponent implements OnInit {
                         email: ['', Validators.required],
                         emailAlias: '',
                         enabled: false,
-                        personId: [{value: '', disabled: isDisabled}, Validators.required],
-                        linkBlueId: [{value: '', disabled: isDisabled}, Validators.required, this.checkNotLinkBlueIdExists],
+                        personId: [{value: '', disabled: isDisabled}, Validators.required, CustomValidator.personId(this.userService)],
+                        linkBlueId: [{value: '', disabled: isDisabled}, Validators.required, CustomValidator.linkBlueId(this.userService)],
                         institutionId: ['', Validators.required],
                         name: ['', this.doesItContainComma],
                     }
@@ -253,18 +254,6 @@ export class UserReportingFormComponent implements OnInit {
         this.onFormCancel.emit();
     }
 
-    checkNotLinkBlueIdExists(control: FormControl): any {
-        return Observable.of(null);
-        /* var url = '/api/User/isItExists/' + control.value;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                    .map(res =>{ 
-                        var isIt = res.json();
-                        console.log(isIt);
-                        return isIt;
-                    });
-
-                     */
-    }
 
     doesItContainComma(control:FormControl){
         if(control.value.match(/,/)){
@@ -274,3 +263,24 @@ export class UserReportingFormComponent implements OnInit {
     }
     
 }
+
+export class CustomValidator {
+    static linkBlueId(userService: UserService) {
+      return (control: AbstractControl) => {
+        
+        return userService.linkBlueExists(control.value).pipe(
+            debounceTime(500)
+        );
+  
+      }
+    }
+    static personId(userService: UserService) {
+        return (control: AbstractControl) => {
+          
+          return userService.personIdExists(control.value).pipe(
+              debounceTime(500)
+          );
+    
+        }
+      }
+  }
