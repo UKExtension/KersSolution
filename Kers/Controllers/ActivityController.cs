@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.Distributed;
+using Kers.Models.Data;
 
 namespace Kers.Controllers
 {
@@ -242,6 +243,157 @@ namespace Kers.Controllers
 
 
 
+        [HttpGet("allContactsSummaryPerMonth/{userid?}/{fy?}")]
+        [Authorize]
+         public IActionResult allContactsSummaryPerMonth(int userid = 0, string fy = "0" ){
+            if(userid == 0){
+                userid = this.CurrentUser().Id;
+            }
+            FiscalYear fiscalYear = GetFYByName(fy);
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            /****************************************/
+            //    ACTIVITIES
+            /****************************************/
+            var numPerMonth = context.Activity.
+                                AsNoTracking().
+                                Where(a=> a.KersUser.Id == userid
+                                            &&
+                                            a.ActivityDate > fiscalYear.Start
+                                            &&
+                                            a.ActivityDate < fiscalYear.End
+                                ).
+                                GroupBy(e => new {
+                                    Month = e.ActivityDate.Month,
+                                    Year = e.ActivityDate.Year
+                                }).
+                                Select(c => new {
+                                    Ids = c.Select(
+                                        s => s.Id
+                                    ),
+                                    Month = c.Key.Month,
+                                    Year = c.Key.Year
+                                }).
+                                OrderByDescending(e => e.Year).ThenByDescending(e => e.Month).ToList();
+            var result = new List<PerMonthContacts>();
+            foreach(var mnth in numPerMonth){
+                var contactsThisMonth = new PerMonthContacts();
+                contactsThisMonth.Month = mnth.Month;
+                contactsThisMonth.Year = mnth.Year;
+                contactsThisMonth.RaceEthnicityValues = new List<IRaceEthnicityValue>();
+                contactsThisMonth.OptionNumberValues = new List<IOptionNumberValue>();
+                contactsThisMonth.Hours = 0;
+                contactsThisMonth.Multistate = 0;
+                contactsThisMonth.Males = 0;
+                contactsThisMonth.Females = 0;
+                foreach(var rev in mnth.Ids){
+                    var revCacheKey = CacheKeys.ActivityLastRevision + rev.ToString();
+                    var revCacheString = _distributedCache.GetString(revCacheKey);
+                    ActivityRevision lstrvsn;
+                    if (!string.IsNullOrEmpty(revCacheString)){
+                        lstrvsn = JsonConvert.DeserializeObject<ActivityRevision>(revCacheString);
+                    }else{
+                        lstrvsn = context.ActivityRevision.
+                            AsNoTracking().
+                            Where(r => r.ActivityId == rev).
+                            Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                            Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
+                            Include(a => a.RaceEthnicityValues).
+                            OrderBy(a => a.Created).Last();
+                            var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                            _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                {
+                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                });
+                    }
+                    contactsThisMonth.Males += lstrvsn.Male;
+                    contactsThisMonth.Females += lstrvsn.Female;
+                    contactsThisMonth.Hours += lstrvsn.Hours;
+                    contactsThisMonth.OptionNumberValues.AddRange(lstrvsn.ActivityOptionNumbers);
+                    contactsThisMonth.RaceEthnicityValues.AddRange(lstrvsn.RaceEthnicityValues);
+                    if( lstrvsn.ActivityOptionSelections.Where( n => n.ActivityOption.Name == "Multistate effort?").Any()){
+                        contactsThisMonth.Multistate += lstrvsn.Hours;
+                    }
+                } 
+                result.Add(contactsThisMonth); 
+            }
+            /****************************************/
+            //    CONTACTS
+            /****************************************/
+            var contactsPerMonth = context.Contact.
+                                AsNoTracking().
+                                Where(a=> a.KersUser.Id == userid
+                                            &&
+                                            a.ContactDate > fiscalYear.Start
+                                            &&
+                                            a.ContactDate < fiscalYear.End
+                                ).
+                                GroupBy(e => new {
+                                    Month = e.ContactDate.Month,
+                                    Year = e.ContactDate.Year
+                                }).
+                                Select(c => new {
+                                    Ids = c.Select(
+                                        s => s.Id
+                                    ),
+                                    Month = c.Key.Month,
+                                    Year = c.Key.Year
+                                }).
+                                OrderByDescending(e => e.Year).ThenByDescending(e => e.Month).ToList();
+            foreach(var mnth in contactsPerMonth){
+                var contactsThisMonth = new PerMonthContacts();
+                contactsThisMonth.Month = mnth.Month;
+                contactsThisMonth.Year = mnth.Year;
+                contactsThisMonth.RaceEthnicityValues = new List<IRaceEthnicityValue>();
+                contactsThisMonth.OptionNumberValues = new List<IOptionNumberValue>();
+                contactsThisMonth.Hours = 0;
+                contactsThisMonth.Multistate = 0;
+                contactsThisMonth.Males = 0;
+                contactsThisMonth.Females = 0;
+                foreach(var rev in mnth.Ids){
+                    var revCacheKey = CacheKeys.ContactLastRevision + rev.ToString();
+                    var revCacheString = _distributedCache.GetString(revCacheKey);
+                    ContactRevision lstrvsn;
+                    if (!string.IsNullOrEmpty(revCacheString)){
+                        lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(revCacheString);
+                    }else{
+                        lstrvsn = context.ContactRevision.
+                            AsNoTracking().
+                            Where(r => r.ContactId == rev).
+                            Include(a => a.ContactOptionNumbers).
+                            Include(a => a.ContactRaceEthnicityValues).
+                            OrderBy(a => a.Created).Last();;
+                            var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                            _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                {
+                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                });
+                    }
+                    contactsThisMonth.Males += lstrvsn.Male;
+                    contactsThisMonth.Females += lstrvsn.Female;
+                    contactsThisMonth.Hours += lstrvsn.Days * 8;
+                    contactsThisMonth.OptionNumberValues.AddRange(lstrvsn.ContactOptionNumbers);
+                    contactsThisMonth.RaceEthnicityValues.AddRange(lstrvsn.ContactRaceEthnicityValues);
+                    contactsThisMonth.Multistate += lstrvsn.Multistate * 8;
+                }
+                var thisMonth = result.Where( r => r.Month == mnth.Month && r.Year == mnth.Year ).FirstOrDefault();
+                if( thisMonth == null){
+                    result.Add(contactsThisMonth);
+                }else{
+                    thisMonth.Females += contactsThisMonth.Females;
+                    thisMonth.Males += contactsThisMonth.Males;
+                    thisMonth.Hours += contactsThisMonth.Hours;
+                    thisMonth.Multistate += contactsThisMonth.Multistate;
+                    thisMonth.RaceEthnicityValues.AddRange(contactsThisMonth.RaceEthnicityValues);
+                    thisMonth.OptionNumberValues.AddRange(contactsThisMonth.OptionNumberValues);
+                }
+            }
+
+            result = result.OrderByDescending( r => r.Year).ThenByDescending( r => r.Month).ToList();
+            return new OkObjectResult(result);
+        }
+
 
 
         [HttpGet("summaryPerProgram/{userid?}/{fy?}")]
@@ -357,6 +509,188 @@ namespace Kers.Controllers
             
             }
 
+            return new OkObjectResult(result);
+        }
+
+
+
+        [HttpGet("allContactsSummaryPerProgram/{userid?}/{fy?}")]
+        [Authorize]
+        public IActionResult allContactsSummaryPerProgram(int userid = 0, string fy = "0", bool refreshCache = false ){
+            if(userid == 0){
+                userid = this.CurrentUser().Id;
+            }
+            FiscalYear fiscalYear = GetFYByName(fy);
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            List<PerProgramContacts> result;
+            
+            /* var cacheKey = CacheKeys.ActivitiesPerFyPerUserPerMajorProgram + fiscalYear.Name + userid.ToString();
+            var cacheString = _distributedCache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = JsonConvert.DeserializeObject<List<PerProgramContacts>>(cacheString);
+            }else{ */
+                /****************************************/
+                //    ACTIVITIES
+                /****************************************/
+                var numPerMonth = context.Activity.
+                                    AsNoTracking().
+                                    Where( a => a.KersUser.Id == userid 
+                                                &&
+                                                a.ActivityDate >= fiscalYear.Start
+                                                &&
+                                                a.ActivityDate <= fiscalYear.End
+                                            ).
+                                    GroupBy(e => new {
+                                        MajorProgram = e.MajorProgram
+                                    }).
+                                    Select(c => new {
+                                        Ids = c.Select(
+                                            s => s.Id
+                                        ),
+                                        MajorProgram = c.Key.MajorProgram
+                                    });
+                result = new List<PerProgramContacts>();
+
+                foreach(var mnth in numPerMonth){
+                    var perProgramContacts = new PerProgramContacts();
+                    perProgramContacts.MajorProgram = mnth.MajorProgram;
+                    perProgramContacts.Males = 0;
+                    perProgramContacts.Females = 0;
+                    perProgramContacts.Multistate = 0;
+                    perProgramContacts.Hours = 0;
+                    perProgramContacts.RaceEthnicityValues = new List<IRaceEthnicityValue>();
+                    perProgramContacts.OptionNumberValues = new List<IOptionNumberValue>();
+                    foreach(var rev in mnth.Ids){
+                        var revCacheKey = CacheKeys.ActivityLastRevision + rev.ToString();
+                    
+                        var revCacheString = _distributedCache.GetString(revCacheKey);
+
+                        ActivityRevision lstrvsn;
+                        if (!string.IsNullOrEmpty(revCacheString)){
+                            lstrvsn = JsonConvert.DeserializeObject<ActivityRevision>(revCacheString);
+                        }else{
+                            lstrvsn = context.ActivityRevision.
+                                AsNoTracking().
+                                Where(r => r.ActivityId == rev).
+                                Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                                Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
+                                Include(a => a.RaceEthnicityValues).
+                                OrderBy(a => a.Created).Last();
+                                var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                                _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                    });
+                        }
+                        perProgramContacts.Males += lstrvsn.Male;
+                        perProgramContacts.Females += lstrvsn.Female;
+                        if( lstrvsn.ActivityOptionSelections.Where( n => n.ActivityOption.Name == "Multistate effort?").Any()){
+                            perProgramContacts.Multistate += lstrvsn.Hours;
+                        }
+                        perProgramContacts.Hours += lstrvsn.Hours;
+                        perProgramContacts.RaceEthnicityValues.AddRange(lstrvsn.RaceEthnicityValues);
+                        perProgramContacts.OptionNumberValues.AddRange(lstrvsn.ActivityOptionNumbers);
+                    }
+                    result.Add(perProgramContacts);
+                }
+
+
+                /****************************************/
+                //    CONTACTS
+                /****************************************/
+
+                numPerMonth = context.Contact.
+                                    AsNoTracking().
+                                    Where( a => a.KersUser.Id == userid 
+                                                &&
+                                                a.ContactDate >= fiscalYear.Start
+                                                &&
+                                                a.ContactDate <= fiscalYear.End
+                                            ).
+                                    GroupBy(e => new {
+                                        MajorProgram = e.MajorProgram
+                                    }).
+                                    Select(c => new {
+                                        Ids = c.Select(
+                                            s => s.Id
+                                        ),
+                                        MajorProgram = c.Key.MajorProgram
+                                    });
+                result = new List<PerProgramContacts>();
+
+                foreach(var mnth in numPerMonth){
+                    var perProgramContacts = new PerProgramContacts();
+                    perProgramContacts.MajorProgram = mnth.MajorProgram;
+                    perProgramContacts.Males = 0;
+                    perProgramContacts.Females = 0;
+                    perProgramContacts.Multistate = 0;
+                    perProgramContacts.Hours = 0;
+                    perProgramContacts.RaceEthnicityValues = new List<IRaceEthnicityValue>();
+                    perProgramContacts.OptionNumberValues = new List<IOptionNumberValue>();
+                    foreach(var rev in mnth.Ids){
+                        var revCacheKey = CacheKeys.ContactLastRevision + rev.ToString();
+                    
+                        var revCacheString = _distributedCache.GetString(revCacheKey);
+
+                        ContactRevision lstrvsn;
+                        if (!string.IsNullOrEmpty(revCacheString)){
+                            lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(revCacheString);
+                        }else{
+                            lstrvsn = context.ContactRevision.
+                                AsNoTracking().
+                                Where(r => r.ContactId == rev).
+                                Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                                Include(a => a.ContactRaceEthnicityValues).
+                                OrderBy(a => a.Created).Last();
+                                var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                                _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                    });
+                        }
+                        perProgramContacts.Males += lstrvsn.Male;
+                        perProgramContacts.Females += lstrvsn.Female;
+                        perProgramContacts.Multistate += lstrvsn.Multistate * 8;
+                        perProgramContacts.Hours += lstrvsn.Days * 8;
+                        perProgramContacts.RaceEthnicityValues.AddRange(lstrvsn.ContactRaceEthnicityValues);
+                        perProgramContacts.OptionNumberValues.AddRange(lstrvsn.ContactOptionNumbers);
+                    }
+
+
+                    var thisProgram = result.Where( r => r.MajorProgram.Id == mnth.MajorProgram.Id ).FirstOrDefault();
+                    if( thisProgram == null){
+                        result.Add(perProgramContacts);
+                    }else{
+                        thisProgram.Females += perProgramContacts.Females;
+                        thisProgram.Males += perProgramContacts.Males;
+                        thisProgram.Hours += perProgramContacts.Hours;
+                        thisProgram.Multistate += perProgramContacts.Multistate;
+                        thisProgram.RaceEthnicityValues.AddRange(perProgramContacts.RaceEthnicityValues);
+                        thisProgram.OptionNumberValues.AddRange(perProgramContacts.OptionNumberValues);
+                    }
+                }
+       /*          var serialized = JsonConvert.SerializeObject(result);
+
+                var expireIn = 3;
+
+                if( fiscalYear.ExtendedTo < DateTime.Now ){
+                    expireIn = 365;
+                }
+
+
+                _distributedCache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(expireIn)
+                    });
+            
+            
+            
+            }
+ */
+
+            result = result.OrderBy( r => r.MajorProgram.Name).ToList();
             return new OkObjectResult(result);
         }
 
@@ -730,6 +1064,16 @@ namespace Kers.Controllers
             return User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
+        public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
+        }
+
 
 
     }
@@ -744,11 +1088,34 @@ namespace Kers.Controllers
         public int Year; 
     }
 
+
+    class PerMonthContacts{
+        public List<IRaceEthnicityValue> RaceEthnicityValues {get;set;}
+        public List<IOptionNumberValue> OptionNumberValues {get; set;}
+        public float Hours;
+        public float Multistate;
+        public int Males;
+        public int Females;
+        public int Month;
+        public int Year; 
+    }
+
+
     class PerProgramActivities{
         public List<ActivityRevision> Revisions;
         public float Hours;
         public int Audience;
         public MajorProgram MajorProgram;
+    }
+
+    class PerProgramContacts{
+        public List<IRaceEthnicityValue> RaceEthnicityValues {get;set;}
+        public List<IOptionNumberValue> OptionNumberValues {get; set;}
+        public float Hours;
+        public float Multistate;
+        public int Males;
+        public int Females;
+        public MajorProgram MajorProgram; 
     }
 
 

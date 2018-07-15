@@ -54,14 +54,14 @@ namespace Kers.Models.Repositories
                 }
             }
 
-/* 
+            /* 
             var cacheKey = CacheKeys.StatsPerMonth + month.ToString() + year.ToString() + PlanningUnitId.ToString() + MajorProgramId.ToString();
             var cachedStats = _cache.GetString(cacheKey);
             StatsViewModel stats;
             if (!string.IsNullOrEmpty(cachedStats) && !refreshCache){
                 stats = JsonConvert.DeserializeObject<StatsViewModel>(cachedStats);
             }else{
- */
+            */
             var firstDay = new DateTime( year, month, 1, 0, 0, 0);
             var lastDay = new DateTime( year, month, DateTime.DaysInMonth(year, month), 23, 59, 59);
 

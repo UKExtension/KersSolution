@@ -8,11 +8,12 @@ import { Observable } from "rxjs/Observable";
     template: `
         <td>{{activity.majorProgram.name}}</td>
         <td>{{activity.hours}}</td>
-        <td>{{activity.audience}}</td>
+        <td>{{activity.multistate}}</td>
+        <td>{{activity.females + activity.males}}</td>
         <td *ngFor="let race of races | async">{{raceValue(race)}}</td>
         <td>{{ethnicity(2)}}</td>
-        <td>{{females()}}</td>
-        <td>{{males()}}</td>
+        <td>{{activity.females}}</td>
+        <td>{{activity.males}}</td>
         <td *ngFor="let opt of optionNumbers | async">{{optionValue(opt)}}</td>
         
     `
@@ -36,7 +37,6 @@ export class ActivityStatsProgramhRow implements OnInit {
     ngOnInit(){
         this.races= this.service.races();
         this.optionNumbers = this.service.optionnumbers();
-        
     }
 
     ngAfterViewInit(){
@@ -46,46 +46,25 @@ export class ActivityStatsProgramhRow implements OnInit {
 
     raceValue(race:Race){
         var val = 0;
-        for (var r of this.activity.revisions){
-            var valse = r.raceEthnicityValues.filter(v => v.raceId == race.id);
-            for(var v of valse){
-                val += v.amount;
-            }
+        var valse = this.activity.raceEthnicityValues.filter(v => v.raceId == race.id);
+        for(var v of valse){
+            val += v.amount;
         }
         return val;
     }
     ethnicity(ethnct:number){
         var val = 0;
-        for (var r of this.activity.revisions){
-            var valse = r.raceEthnicityValues.filter(v => v.ethnicityId == ethnct);
-            for(var v of valse){
-                val += v.amount;
-            }
+        var valse = this.activity.raceEthnicityValues.filter(v => v.ethnicityId == ethnct);
+        for(var v of valse){
+            val += v.amount;
         }
         return val;
     }
     optionValue(op:ActivityOptionNumber){
         var val = 0;
-        for (var r of this.activity.revisions){
-            var valse = r.activityOptionNumbers.filter(v => v.activityOptionNumberId == op.id);
-            for(var v of valse){
-                val += v.value;
-            }
-        }
-        return val;
-    }
-
-    males(){
-        var val = 0;
-        for (var r of this.activity.revisions){
-            val += r.male;
-        }
-        return val;
-    }
-    females(){
-        var val = 0;
-        for (var r of this.activity.revisions){
-            val += r.female;
+        var valse = this.activity.optionNumberValues.filter(v => v.activityOptionNumberId == op.id);
+        for(var v of valse){
+            val += v.value;
         }
         return val;
     }

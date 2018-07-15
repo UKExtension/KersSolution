@@ -67,14 +67,14 @@ export class ActivityService {
                 .catch(this.handleError);
     }
     summaryPerMonth(userId:number = 0){
-        var url = this.baseUrl + 'summaryPerMonth/' + userId;
+        var url = this.baseUrl + 'allContactsSummaryPerMonth/' + userId + '/2018';
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => res.json() )
                 .catch(this.handleError);
     }
 
     summaryPerProgram(userId:number = 0, fy:string = "0"){
-        var url = this.baseUrl + 'summaryPerProgram/' + userId + '/' + fy;
+        var url = this.baseUrl + 'allContactsSummaryPerProgram/' + userId + '/' + fy;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => res.json() )
                 .catch(this.handleError);
