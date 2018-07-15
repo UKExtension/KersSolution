@@ -4,6 +4,7 @@ import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber }
 import { Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { User } from "../../user/user.service";
+import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
@@ -28,17 +29,21 @@ export class ActivityStatsMonthComponent {
     {}
 
     ngOnInit(){
-        if(this.user == null){
-            this.activities = this.service.summaryPerMonth();
-        }else{
-            this.activities = this.service.summaryPerMonth(this.user.id);
-        }
+        
 
         
         this.races = this.service.races();
         this.optionNumbers = this.service.optionnumbers();
         
         
+    }
+
+    fiscalYearSwitched(event:FiscalYear){
+        if(this.user == null){
+            this.activities = this.service.summaryPerMonth(0,event.name);
+        }else{
+            this.activities = this.service.summaryPerMonth(this.user.id, event.name);
+        }
     }
 
 

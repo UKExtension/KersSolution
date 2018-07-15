@@ -66,8 +66,8 @@ export class ActivityService {
                 .map(res => <Activity[]>res.json() )
                 .catch(this.handleError);
     }
-    summaryPerMonth(userId:number = 0){
-        var url = this.baseUrl + 'allContactsSummaryPerMonth/' + userId + '/2018';
+    summaryPerMonth(userId:number = 0, fy:string = "0"){
+        var url = this.baseUrl + 'allContactsSummaryPerMonth/' + userId + '/'+fy;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => res.json() )
                 .catch(this.handleError);
