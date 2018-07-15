@@ -618,7 +618,7 @@ namespace Kers.Controllers
                                         ),
                                         MajorProgram = c.Key.MajorProgram
                                     });
-                result = new List<PerProgramContacts>();
+                //result = new List<PerProgramContacts>();
 
                 foreach(var mnth in numPerMonth){
                     var perProgramContacts = new PerProgramContacts();
