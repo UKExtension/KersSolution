@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ServicelogService, Servicelog } from "./servicelog.service";
+import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'servicelog-detail',
@@ -9,6 +10,9 @@ export class ServicelogDetailComponent {
     rowDefault =true;
     rowEdit = false;
     rowDelete = false;
+    currentFiscalYear:FiscalYear | null = null;
+    displayEdit = false;
+
     
     @Input() activity:Servicelog;
 
@@ -18,12 +22,21 @@ export class ServicelogDetailComponent {
     errorMessage: string;
 
     constructor( 
-        private service:ServicelogService
+        private service:ServicelogService,
+        private fiscalYearService:FiscalyearService
     )   
     {}
 
     ngOnInit(){
-       
+       this.fiscalYearService.current().subscribe(
+            res =>{
+                this.currentFiscalYear = res;
+
+                if( new Date(this.currentFiscalYear.start) < new Date(this.activity.activityDate) && new Date(this.currentFiscalYear.end) > new Date(this.activity.activityDate){
+                    this.displayEdit = true;
+                }
+            } 
+       );
        
        
     }

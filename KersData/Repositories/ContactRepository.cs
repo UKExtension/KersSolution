@@ -40,7 +40,7 @@ namespace Kers.Models.Repositories
                     var RaceEthnicities = new List<IRaceEthnicityValue>();
                     foreach( var rev in contactGroup.Ids){
 
-                        var cacheKey = "ContactLastRevision" + rev.ToString();
+                        var cacheKey = CacheKeys.ContactLastRevision + rev.ToString();
 
                         var cacheString = _cache.GetString(cacheKey);
                     
@@ -60,7 +60,7 @@ namespace Kers.Models.Repositories
                             var serialized = JsonConvert.SerializeObject(lstrvsn);
                             _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                             {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                             });         
                         }
                     }
@@ -510,7 +510,7 @@ namespace Kers.Models.Repositories
                         var serialized = JsonConvert.SerializeObject(lstrvsn);
                         _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                             {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                             });
                     }
                     unitRevisions.Add(lstrvsn);
@@ -563,7 +563,7 @@ namespace Kers.Models.Repositories
                         var serialized = JsonConvert.SerializeObject(lstrvsn);
                         _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                         });         
                     }
                 }

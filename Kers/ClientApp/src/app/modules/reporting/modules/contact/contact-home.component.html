@@ -2,7 +2,7 @@
     <div class="text-right">
                 <a class="btn btn-info btn-xs" *ngIf="!newContact" (click)="newContact = true">+ new statistical contact</a>
             </div>
-            <contact-form *ngIf="newContact" [fiscalYearSwitcher]="true" (onFormCancel)="newContact=false" (onFormSubmit)="newContactSubmitted($event)"></contact-form>
+            <contact-form *ngIf="newContact" [fiscalYearSwitcher]="false" (onFormCancel)="newContact=false" (onFormSubmit)="newContactSubmitted($event)"></contact-form>
         </div>
     <br><contact-list [byMonth]="byMonth" (onDeleted)="deleted($event)"></contact-list>
     <div *ngIf="numbContacts != 0" class="text-center">

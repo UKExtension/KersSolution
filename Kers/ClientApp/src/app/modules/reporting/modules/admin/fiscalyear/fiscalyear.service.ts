@@ -16,6 +16,7 @@ export class FiscalyearService {
     private pstns = null;
     private lctns = null;
     private years = null;
+    private currentServiceLogFiscalYear:FiscalYear | null = null;
 
     constructor( private http:AuthHttp, private location:Location){}
 
@@ -66,8 +67,15 @@ export class FiscalyearService {
 
     current(type:string = "serviceLog"){
         var url = this.baseUrl + "current/" + type;
+        if(type == "serviceLog" && this.currentServiceLogFiscalYear != null){
+            return Observable.of(this.currentServiceLogFiscalYear);
+        }
         return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => <FiscalYear>res.json())
+            .map(res => {
+                var fy = <FiscalYear>res.json();
+                if(type == "serviceLog") this.currentServiceLogFiscalYear = fy;
+                return fy;
+            })
             .catch(this.handleError);
     }
     next(type:string = "serviceLog"){

@@ -2,7 +2,7 @@
     <div class="text-right">
                 <a class="btn btn-info btn-xs" *ngIf="!newStory" (click)="newStory = true">+ new success story</a>
             </div>
-            <story-form *ngIf="newStory" (onFormCancel)="newStory=false" [fiscalYearSwitcher]="true" (onFormSubmit)="newStorySubmitted($event)"></story-form>
+            <story-form *ngIf="newStory" (onFormCancel)="newStory=false" [fiscalYearSwitcher]="false" (onFormSubmit)="newStorySubmitted($event)"></story-form>
         </div>
     <br><story-list [latest]="latest" (onDeleted)="deleted($event)"></story-list><br><br>
     <div *ngIf="numbStories != 0" class="text-center">

@@ -27,7 +27,7 @@
         </div>
         
     </div>
-    <div class="col-xs-2 text-right">
+    <div class="col-xs-2 text-right" *ngIf="displayEdit">
         <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
         <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
         <a class="btn btn-primary btn-xs" (click)="default()" *ngIf="!rowDefault"><i class="fa fa-close"></i> Close</a>

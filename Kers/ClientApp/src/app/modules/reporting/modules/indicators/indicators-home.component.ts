@@ -15,9 +15,7 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 
     These numbers are to be kept up to date PER INDIVIDUAL (YOU) - NOT THE COUNTY.<br>
 Simply update the numbers as needed throughout the fiscal year.<br>
-<strong>ENTER WHOLE NUMBERS ONLY.</strong><br><br>
-
-<fiscal-year-switcher [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+<strong>ENTER WHOLE NUMBERS ONLY.</strong><br>
 
 <div class="alert alert-success alert-dismissible fade in" role="alert" *ngIf="dataSubmitted">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
@@ -100,7 +98,39 @@ export class IndicatorsHomeComponent {
     }
 
     ngOnInit(){
+        this.fiscalYearService.current().subscribe(
+            res => {
 
+
+
+                var prgrms = [];
+                this.initiatives = null;
+                this.selectedProgram = null;
+                this.fiscalYear = res;
+                this.defaultTitle();
+                this.programsService.listInitiatives(this.fiscalYear.name).subscribe(
+                    i => {
+                        this.initiatives = i;
+                        
+                        i.forEach(
+                            function(initiative) {
+                                
+                                initiative.majorPrograms.forEach(
+                                    function(program){
+                                        prgrms.push(program);
+                                    }
+                                )
+                            }
+                            
+                        )
+                        this.programs = prgrms;
+                    },
+                    error =>  this.errorMessage = <any>error
+                );
+
+
+            }
+        )
         
     }
     onChange(programId) {
@@ -150,32 +180,7 @@ export class IndicatorsHomeComponent {
         );
     }
 
-    fiscalYearSwitched(event:FiscalYear){
-        var prgrms = [];
-        this.initiatives = null;
-        this.selectedProgram = null;
-        this.fiscalYear = event;
-        this.defaultTitle();
-        this.programsService.listInitiatives(event.name).subscribe(
-            i => {
-                this.initiatives = i;
-                
-                i.forEach(
-                    function(initiative) {
-                        
-                        initiative.majorPrograms.forEach(
-                            function(program){
-                                prgrms.push(program);
-                            }
-                        )
-                    }
-                    
-                )
-                this.programs = prgrms;
-            },
-            error =>  this.errorMessage = <any>error
-        );
-    }
+    
 
     defaultTitle(){
         this.reportingService.setTitle("Program Indicators for FY"+this.fiscalYear.name);
