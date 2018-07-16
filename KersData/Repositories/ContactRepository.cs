@@ -164,7 +164,7 @@ namespace Kers.Models.Repositories
 
 
 
-                var actvtsCacheKey = "AllActivitiesByEmployee" + type.ToString() + id.ToString() + fiscalYear.Name;
+                var actvtsCacheKey = "AllActivitiesByEmployee" + type.ToString() + id.ToString() + "+" + fiscalYear.Name;
                 var cachedActivities = _cache.GetString(actvtsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
@@ -192,7 +192,7 @@ namespace Kers.Models.Repositories
 
                 List<ContactPersonResult> contacts;
 
-                var contactsCacheKey = "ContactsByEmployee" + type.ToString() + id.ToString();
+                var contactsCacheKey = "ContactsByEmployee" + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
                 var cachedContacts = _cache.GetString(contactsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedContacts) && !refreshCache){
