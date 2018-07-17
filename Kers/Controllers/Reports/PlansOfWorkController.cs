@@ -178,12 +178,24 @@ namespace Kers.Controllers.Reports
             }
 
 
-            var lastRevisionIds = this.context.PlanOfWork
-                                        .Where( p => p.FiscalYear == fiscalYear)
-                                        .Select( p => p.Revisions.OrderBy( r => r.Created).Last().Id );
-
-
-
+            var FyPlansOfWork = this.context.PlanOfWork
+                                        .Where( p => p.FiscalYear.Id == fiscalYear.Id);
+            List<PlanOfWorkRevision> LastRevisions = new List<PlanOfWorkRevision>();
+            foreach( var plan in FyPlansOfWork){
+                var r = this.context.PlanOfWorkRevision.Where( v => v.PlanOfWorkId == plan.Id).Include( v => v.Map).OrderBy( v => v.Created ).Last();
+                if( 
+                    r.Mp1Id == id 
+                    ||
+                    r.Mp2Id == id
+                    ||
+                    r.Mp3Id == id
+                    ||
+                    r.Mp4Id == id
+                ){
+                    LastRevisions.Add( r );
+                }
+            }
+/* 
             var LastRevisions = await this.context.PlanOfWorkRevision
                                         .Where( r => lastRevisionIds.Contains(r.Id)
                                                         &&
@@ -199,7 +211,7 @@ namespace Kers.Controllers.Reports
                                         
                                         )
                                         .Include( r => r.Map)
-                                        .ToListAsync();
+                                        .ToListAsync(); */
 /* 
             var plansofwork = this.context.PlanOfWork
                                         .Where( p =>    (

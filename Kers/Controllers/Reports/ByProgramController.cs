@@ -54,11 +54,17 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("{type}/{id?}")]
-        public async Task<IActionResult> Index(int type, int id = 0)
+        [Route("{type}/{id?}/{fy?}")]
+        public async Task<IActionResult> Index(int type, int id = 0, string fy="0")
         {
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
+                return new StatusCodeResult(500);
+            }
             
-            var cacheKey = "ByMajorProgramData" + type.ToString() + id.ToString();
+            var cacheKey = "ByMajorProgramData" + type.ToString() + id.ToString() + "_" + fy;
             var cached = _cache.GetString(cacheKey);
             
             TableViewModel table;
@@ -72,7 +78,7 @@ namespace Kers.Controllers.Reports
 
                 List<ActivityMajorProgramResult> activities;
 
-                var actvtsCacheKey = "AllActivitiesByMajorProgram" + type.ToString() + id.ToString();
+                var actvtsCacheKey = "AllActivitiesByMajorProgram" + type.ToString() + id.ToString() + "_" + fy;
                 var cachedActivities = _cache.GetString(actvtsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedActivities)){
@@ -81,7 +87,7 @@ namespace Kers.Controllers.Reports
 
 
                     if(type == 0){
-                            activities = await DistrictActivities(id);
+                        activities = await DistrictActivities(id, fiscalYear);
                     }else{
                         return new StatusCodeResult(404);
                     }
@@ -97,14 +103,14 @@ namespace Kers.Controllers.Reports
 
 
                 List<ContactMajorProgramResult> contacts;
-                var contactsCacheKey = "ContactsByEmployee" + type.ToString() + id.ToString();
+                var contactsCacheKey = "ContactsByEmployee" + type.ToString() + id.ToString() + "_" + fy;
                 var cachedContacts = _cache.GetString(contactsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedContacts)){
                     contacts = JsonConvert.DeserializeObject<List<ContactMajorProgramResult>>(cachedContacts);
                 }else{
                     if(type == 0){
-                        contacts = await DistrictContacts(id);
+                        contacts = await DistrictContacts(id, fiscalYear);
                     }else{
                         contacts = new List<ContactMajorProgramResult>();
                     }
@@ -210,12 +216,12 @@ namespace Kers.Controllers.Reports
         
 
 
-        private async Task<List<ActivityMajorProgramResult>> DistrictActivities(int id){
+        private async Task<List<ActivityMajorProgramResult>> DistrictActivities(int id, FiscalYear fiscalYear){
             var activities = await this.context.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < currentFiscalYear.End 
+                                                                a.ActivityDate < fiscalYear.End 
                                                                 && 
-                                                                a.ActivityDate > currentFiscalYear.Start
+                                                                a.ActivityDate > fiscalYear.Start
                                                                 &&
                                                                 a.PlanningUnit.DistrictId == id
                                                             )
@@ -236,12 +242,12 @@ namespace Kers.Controllers.Reports
 
         }
 
-        private async Task<List<ContactMajorProgramResult>> DistrictContacts(int id){
+        private async Task<List<ContactMajorProgramResult>> DistrictContacts(int id, FiscalYear fiscalYear){
            var contacts = await this.context.Contact.
                                     Where( c => 
-                                                c.ContactDate < currentFiscalYear.End 
+                                                c.ContactDate < fiscalYear.End 
                                                 && 
-                                                c.ContactDate > currentFiscalYear.Start 
+                                                c.ContactDate > fiscalYear.Start 
                                                 && 
                                                 c.PlanningUnit.DistrictId == id
                                         )
@@ -256,6 +262,16 @@ namespace Kers.Controllers.Reports
                                         })
                                         .ToListAsync();
             return contacts;
+        }
+
+        public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepository.currentFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
         }
 
 

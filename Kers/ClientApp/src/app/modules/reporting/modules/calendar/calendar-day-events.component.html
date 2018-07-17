@@ -1,5 +1,5 @@
 <div class="text-right" *ngIf="viewDate <= today && !logOpened && !expenseOpened">
-    <a class="btn btn-info btn-xs" (click)="logOpened=true">+ new service log record</a> 
+    <a class="btn btn-info btn-xs" *ngIf="displayServiceLogEdits" (click)="logOpened=true">+ new service log record</a> 
     <a class="btn btn-info btn-xs" (click)="expenseOpened=true">+ new expense record</a>
 </div>
 <div>

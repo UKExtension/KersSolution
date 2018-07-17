@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
+import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
@@ -11,6 +12,8 @@ export class CalendarDayEventsComponent implements OnInit {
 
 
   private _viewDate:Date;
+  private displayServiceLogEdits = false;
+  currentFiscalYear:FiscalYear | null = null;
 
   get viewDate(){
     return this._viewDate;
@@ -32,9 +35,24 @@ export class CalendarDayEventsComponent implements OnInit {
   logOpened = false;
   expenseOpened = false;
 
-  constructor() { }
+  constructor(
+    private fiscalYearService:FiscalyearService
+  ) { }
 
   ngOnInit() {
+    this.fiscalYearService.current().subscribe(
+      res =>{
+          this.currentFiscalYear = res;
+
+          if( 
+              new Date(this.currentFiscalYear.start) <= new Date(this._viewDate) 
+              && 
+              new Date(this.currentFiscalYear.end) >= new Date(this._viewDate)
+          ){
+              this.displayServiceLogEdits = true;
+          }
+      } 
+ );
   }
 
   logSubmit(event){

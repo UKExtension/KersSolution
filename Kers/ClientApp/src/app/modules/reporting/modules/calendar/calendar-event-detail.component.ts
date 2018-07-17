@@ -2,6 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
 import { Expense, ExpenseService } from '../expense/expense.service';
 import { ServicelogService, Servicelog } from '../servicelog/servicelog.service';
+import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   selector: 'calendar-event-detail',
@@ -16,6 +17,7 @@ export class CalendarEventDetailComponent implements OnInit {
   activityEdit = false;
   expenseDelete = false;
   activityDelete = false;
+  allowActivityEdits = false;
 
   expense:Expense;
   activity:Servicelog;
@@ -24,12 +26,32 @@ export class CalendarEventDetailComponent implements OnInit {
 
   errorMessage:string;
 
+  currentFiscalYear:FiscalYear;
+
   constructor(
     private expenseService:ExpenseService,
-    private activityService:ServicelogService
+    private activityService:ServicelogService,
+    private fiscalYearService:FiscalyearService
   ) { }
 
   ngOnInit() {
+    if(this.event.meta.type == "expense"){
+      this.allowActivityEdits = true;
+    }else{
+      this.fiscalYearService.current().subscribe(
+            res =>{
+                this.currentFiscalYear = res;
+      
+                if( 
+                    new Date(this.currentFiscalYear.start) <= new Date(this.event.start) 
+                    && 
+                    new Date(this.currentFiscalYear.end) >= new Date(this.event.start)
+                ){
+                    this.allowActivityEdits = true;
+                }
+            } 
+      );
+    }
     
   }
 

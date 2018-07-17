@@ -4,7 +4,7 @@
       <span class="cal-event" [style.backgroundColor]="event.color?.primary"></span>
       {{event.title}}
   </div>
-  <div class="col-xs-4 text-right">
+  <div class="col-xs-4 text-right" *ngIf="allowActivityEdits">
       <a class="btn btn-info btn-xs" (click)="edit()"><i class="fa fa-pencil"></i> Edit</a>
       <a class="btn btn-info btn-xs" (click)="delete()"><i class="fa fa-trash-o"></i> Delete</a>
   </div>  

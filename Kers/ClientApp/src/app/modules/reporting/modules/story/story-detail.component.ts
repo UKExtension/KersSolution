@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {StoryService, Story} from './story.service';
+import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'story-detail',
@@ -9,6 +10,8 @@ export class StoryDetailComponent {
     rowDefault =true;
     rowEdit = false;
     rowDelete = false;
+    currentFiscalYear:FiscalYear;
+    displayEditButtons = false;
     
     @Input() story:Story;
 
@@ -17,12 +20,23 @@ export class StoryDetailComponent {
     errorMessage: string;
 
     constructor( 
-        private service:StoryService
+        private service:StoryService,
+        private fiscalYearService:FiscalyearService
     )   
     {}
 
     ngOnInit(){
-       
+        this.fiscalYearService.current().subscribe(
+            res =>{
+                this.currentFiscalYear = res;
+      
+                if( 
+                    this.currentFiscalYear.id == this.story.majorProgram.strategicInitiative.fiscalYear.id
+                ){
+                    this.displayEditButtons = true;
+                }
+            } 
+       );
        
        
     }

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {ContactService, ContactMonth, Contact} from './contact.service';
+import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'contact-detail',
@@ -9,6 +10,8 @@ export class ContactDetailComponent {
     rowDefault =true;
     rowEdit = false;
     rowDelete = false;
+    currentFiscalYear:FiscalYear;
+    displayEditButtons = false;
     
     @Input() contact:Contact;
 
@@ -17,12 +20,25 @@ export class ContactDetailComponent {
     errorMessage: string;
 
     constructor( 
-        private service:ContactService
+        private service:ContactService,
+        private fiscalYearService:FiscalyearService
     )   
     {}
 
     ngOnInit(){
-       
+        this.fiscalYearService.current().subscribe(
+            res =>{
+                this.currentFiscalYear = res;
+      
+                if( 
+                    new Date(this.currentFiscalYear.start) <= new Date(this.contact.contactDate) 
+                    && 
+                    new Date(this.currentFiscalYear.end) >= new Date(this.contact.contactDate)
+                ){
+                    this.displayEditButtons = true;
+                }
+            } 
+       );
        
        
     }
