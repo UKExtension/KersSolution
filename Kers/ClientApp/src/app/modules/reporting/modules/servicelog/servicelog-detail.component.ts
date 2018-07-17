@@ -32,7 +32,11 @@ export class ServicelogDetailComponent {
             res =>{
                 this.currentFiscalYear = res;
 
-                if( new Date(this.currentFiscalYear.start) < new Date(this.activity.activityDate) && new Date(this.currentFiscalYear.end) > new Date(this.activity.activityDate){
+                if( 
+                    new Date(this.currentFiscalYear.start) < new Date(this.activity.activityDate) 
+                    && 
+                    new Date(this.currentFiscalYear.end) > new Date(this.activity.activityDate)
+                ){
                     this.displayEdit = true;
                 }
             } 
