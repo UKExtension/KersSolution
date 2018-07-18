@@ -58,7 +58,12 @@ namespace Kers.Controllers.Reports
         [Route("")]
         public IActionResult Index()
         {
-            return View();
+            var activitiesWith2019MajPr = this.context.Activity.Where( a => a.MajorProgram.StrategicInitiative.FiscalYear.Name == "2019");
+            activitiesWith2019MajPr = activitiesWith2019MajPr.Where( a => a.ActivityDate.Month < 7 && a.ActivityDate.Year < 2019 );
+
+
+
+            return View(activitiesWith2019MajPr.ToList());
         }
 
 
