@@ -556,9 +556,7 @@ namespace Kers.Models.Repositories
                                 Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                                 Include(a => a.ContactRaceEthnicityValues).
                                 OrderBy(a => a.Created).Last();
-                        unitRevisions.Add(lstrvsn);
-                        OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
-                        RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
+                        
 
                         var serialized = JsonConvert.SerializeObject(lstrvsn);
                         _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
@@ -566,6 +564,9 @@ namespace Kers.Models.Repositories
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                         });         
                     }
+                    unitRevisions.Add(lstrvsn);
+                    OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
+                    RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
                 }
                 var unitInResults = result.Where( r => r.KersUser.Id == contactGroup.KersUser.Id).FirstOrDefault();
                 if(unitInResults == null){

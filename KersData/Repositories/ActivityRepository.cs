@@ -677,8 +677,7 @@ namespace Kers.Models.Repositories
                                     Include(a => a.ContactRaceEthnicityValues).
                                     OrderBy(a => a.Created).Last();
                             
-                            OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
-                            RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
+                            
 
                             var serialized = JsonConvert.SerializeObject(lstrvsn);
                             _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
@@ -687,6 +686,8 @@ namespace Kers.Models.Repositories
                             });         
                         }
                         unitRevisions.Add(lstrvsn);
+                        OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
+                        RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
                     }
                     var unitInResults = result.Where( r => r.PlanningUnit.Id == contactGroup.Unit.Id).FirstOrDefault();
                     if(unitInResults == null){
@@ -877,23 +878,21 @@ namespace Kers.Models.Repositories
                         ContactRevision lstrvsn;
                         if (!string.IsNullOrEmpty(cacheString)){
                             lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(cacheString);
-                            unitRevisions.Add(lstrvsn);
                         }else{
                             lstrvsn = coreContext.ContactRevision.
                                     Where(r => r.ContactId == rev).
                                     Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                                     Include(a => a.ContactRaceEthnicityValues).
                                     OrderBy(a => a.Created).Last();
-                            unitRevisions.Add(lstrvsn);
-                            OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
-                            RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
-
                             var serialized = JsonConvert.SerializeObject(lstrvsn);
                             _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                             {
                                 AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
                             });         
                         }
+                        unitRevisions.Add(lstrvsn);
+                        OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
+                        RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
                     }
                     var unitInResults = result.Where( r => r.MajorProgram.Id == contactGroup.MajorProgram.Id).FirstOrDefault();
                     if(unitInResults == null){
