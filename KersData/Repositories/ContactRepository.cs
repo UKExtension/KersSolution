@@ -543,7 +543,7 @@ namespace Kers.Models.Repositories
                 var RaceEthnicities = new List<IRaceEthnicityValue>();
                 foreach( var rev in contactGroup.Ids){
 
-                    var cacheKey = "ContactLastRevision" + rev.ToString();
+                    var cacheKey = "ContactLastRevision1" + rev.ToString();
 
                     var cacheString = _cache.GetString(cacheKey);
                 
