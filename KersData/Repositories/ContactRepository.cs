@@ -307,7 +307,7 @@ namespace Kers.Models.Repositories
                 var serialized = JsonConvert.SerializeObject(table);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(21)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
                     });
             }
 
@@ -554,7 +554,7 @@ namespace Kers.Models.Repositories
                 var RaceEthnicities = new List<IRaceEthnicityValue>();
                 foreach( var rev in contactGroup.Ids){
 
-                    var cacheKey = "ContactLastRevision1" + rev.ToString();
+                    var cacheKey = "ContactLastRevision" + rev.ToString();
 
                     var cacheString = _cache.GetString(cacheKey);
                 
