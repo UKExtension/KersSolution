@@ -458,6 +458,17 @@ namespace Kers.Models.Repositories
                                                         KersUser = c.Key.KersUser
                                                     })
                                                     .ToListAsync();
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
 
             return activities;
 
