@@ -78,7 +78,7 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
 
-            var table = await contactRepo.Data(fiscalYear, type, id);
+            var table = await contactRepo.DataByEmployee(fiscalYear, type, id);
 
             ViewData["Type"] = type;
             ViewData["Subtitle"] = types[type];
