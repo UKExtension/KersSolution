@@ -44,16 +44,19 @@ namespace Kers.Tasks
                     // Districts
                     var districts =  context.District;
                     foreach( var district in districts){
-                       var tbl = await repo.Data(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),0, district.Id, true);
+                       var tbl = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),0, district.Id, true);
+                       tbl = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),0, district.Id, true);
                        tables.Add(tbl);
                     }
                     // Planning Units
                     var units = context.PlanningUnit;
                     foreach( var unit in units){
-                        var tbl = await repo.Data(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),1, unit.Id, true);
-                       tables.Add(tbl);
+                        var tbl = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),1, unit.Id, true);
+                        tbl = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),1, unit.Id, true);
+                        tables.Add(tbl);
                     }
-                    var tblKSU = await repo.Data(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
+                    var tblKSU = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
+                    tblKSU = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
                     
                     tables.Add(tblKSU);
 

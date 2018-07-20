@@ -145,7 +145,7 @@ namespace Kers.Models.Repositories
                 }
             return result;
         }
-
+/* 
         public async Task<TableViewModel> Data(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false )
         {
 
@@ -619,7 +619,7 @@ namespace Kers.Models.Repositories
 
 
         
-
+ */
 
 
 
