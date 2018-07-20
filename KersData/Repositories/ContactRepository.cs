@@ -22,6 +22,8 @@ namespace Kers.Models.Repositories
 
         private KERScoreContext coreContext;
         private IDistributedCache _cache;
+
+        const int workDaysPerYear = 228;
         public ContactRepository(
             IDistributedCache _cache,
             KERScoreContext context
@@ -33,61 +35,7 @@ namespace Kers.Models.Repositories
         }
 
 
-        public List<PerUnitActivities> ProcessUnitContacts(List<ContactUnitResult> contacts, List<PerUnitActivities> result, IDistributedCache _cache){
-            foreach( var contactGroup in contacts ){
-                    var unitRevisions = new List<ContactRevision>();
-                    var OptionNumbers = new List<IOptionNumberValue>();
-                    var RaceEthnicities = new List<IRaceEthnicityValue>();
-                    foreach( var rev in contactGroup.Ids){
-
-                        var cacheKey = CacheKeys.ContactLastRevision + rev.ToString();
-
-                        var cacheString = _cache.GetString(cacheKey);
-                    
-                        ContactRevision lstrvsn;
-                        if (!string.IsNullOrEmpty(cacheString)){
-                            lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(cacheString);
-                        }else{
-                            lstrvsn = coreContext.ContactRevision.
-                                    Where(r => r.ContactId == rev).
-                                    Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
-                                    Include(a => a.ContactRaceEthnicityValues).
-                                    OrderBy(a => a.Created).Last();
-                            unitRevisions.Add(lstrvsn);
-                            OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
-                            RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
-
-                            var serialized = JsonConvert.SerializeObject(lstrvsn);
-                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
-                            });         
-                        }
-                    }
-                    var unitInResults = result.Where( r => r.PlanningUnit.Id == contactGroup.Unit.Id).FirstOrDefault();
-                    if(unitInResults == null){
-                        var actvts = new PerUnitActivities();
-                        actvts.RaceEthnicityValues = RaceEthnicities;
-                        actvts.OptionNumberValues = OptionNumbers;
-                        actvts.Hours = unitRevisions.Sum( r => r.Days) * 8;
-                        actvts.Audience = unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
-                        actvts.Male = unitRevisions.Sum( r => r.Male);
-                        actvts.Female = unitRevisions.Sum( r => r.Female);
-                        actvts.PlanningUnit = contactGroup.Unit;
-                        actvts.Multistate = unitRevisions.Sum(r => r.Multistate) * 8;
-                        result.Add(actvts);
-                    }else{
-                        unitInResults.RaceEthnicityValues.AddRange(RaceEthnicities);
-                        unitInResults.OptionNumberValues.AddRange(OptionNumbers);
-                        unitInResults.Hours += unitRevisions.Sum( r => r.Days) * 8;
-                        unitInResults.Audience += unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
-                        unitInResults.Male += unitRevisions.Sum( r => r.Male);
-                        unitInResults.Female += unitRevisions.Sum( r => r.Female);
-                        unitInResults.Multistate += unitRevisions.Sum(r => r.Multistate) * 8;
-                    }
-                }
-            return result;
-        }
+        
 
 
         public List<PerProgramActivities> ProcessMajorProgramContacts(List<ContactMajorProgramResult> contacts, List<PerProgramActivities> result, IDistributedCache _cache){
@@ -317,7 +265,61 @@ namespace Kers.Models.Repositories
 
 
 
+        public List<PerUnitActivities> ProcessUnitContacts(List<ContactUnitResult> contacts, List<PerUnitActivities> result, IDistributedCache _cache){
+            foreach( var contactGroup in contacts ){
+                    var unitRevisions = new List<ContactRevision>();
+                    var OptionNumbers = new List<IOptionNumberValue>();
+                    var RaceEthnicities = new List<IRaceEthnicityValue>();
+                    foreach( var rev in contactGroup.Ids){
 
+                        var cacheKey = CacheKeys.ContactLastRevision + rev.ToString();
+
+                        var cacheString = _cache.GetString(cacheKey);
+                    
+                        ContactRevision lstrvsn;
+                        if (!string.IsNullOrEmpty(cacheString)){
+                            lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(cacheString);
+                        }else{
+                            lstrvsn = coreContext.ContactRevision.
+                                    Where(r => r.ContactId == rev).
+                                    Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                                    Include(a => a.ContactRaceEthnicityValues).
+                                    OrderBy(a => a.Created).Last();
+                            unitRevisions.Add(lstrvsn);
+                            OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
+                            RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
+
+                            var serialized = JsonConvert.SerializeObject(lstrvsn);
+                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                            {
+                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                            });         
+                        }
+                    }
+                    var unitInResults = result.Where( r => r.PlanningUnit.Id == contactGroup.Unit.Id).FirstOrDefault();
+                    if(unitInResults == null){
+                        var actvts = new PerUnitActivities();
+                        actvts.RaceEthnicityValues = RaceEthnicities;
+                        actvts.OptionNumberValues = OptionNumbers;
+                        actvts.Hours = unitRevisions.Sum( r => r.Days) * 8;
+                        actvts.Audience = unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                        actvts.Male = unitRevisions.Sum( r => r.Male);
+                        actvts.Female = unitRevisions.Sum( r => r.Female);
+                        actvts.PlanningUnit = contactGroup.Unit;
+                        actvts.Multistate = unitRevisions.Sum(r => r.Multistate) * 8;
+                        result.Add(actvts);
+                    }else{
+                        unitInResults.RaceEthnicityValues.AddRange(RaceEthnicities);
+                        unitInResults.OptionNumberValues.AddRange(OptionNumbers);
+                        unitInResults.Hours += unitRevisions.Sum( r => r.Days) * 8;
+                        unitInResults.Audience += unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
+                        unitInResults.Male += unitRevisions.Sum( r => r.Male);
+                        unitInResults.Female += unitRevisions.Sum( r => r.Female);
+                        unitInResults.Multistate += unitRevisions.Sum(r => r.Multistate) * 8;
+                    }
+                }
+            return result;
+        }
 
 
 
@@ -619,7 +621,7 @@ namespace Kers.Models.Repositories
 
 
         
- */
+*/
 
 
 
@@ -764,8 +766,12 @@ namespace Kers.Models.Repositories
                         activities = await DistrictEmployeeGroupppedActivities(id, fiscalYear);
                     }else if(type == 1){
                         activities = await UnitEmployeeGroupppedActivities(id, fiscalYear);
-                    }else{
+                    }else if(type == 2){
                         activities = await KSUEmployeeGroupppedActivities(fiscalYear);
+                    }else if(type == 2){
+                        activities = await UKEmployeeGroupppedActivities(fiscalYear);
+                    }else{
+                        activities = await AllEmployeeGroupppedActivities(fiscalYear);
                     }
                     
                     
@@ -794,6 +800,10 @@ namespace Kers.Models.Repositories
                         contacts = await UnitEmployeeGroupppedContacts(id, fiscalYear);
                     }else if( type == 2){
                         contacts = await KSUEmployeeGroupppedContacts(fiscalYear);
+                    }else if( type == 3){
+                        contacts = await UKEmployeeGroupppedContacts(fiscalYear);
+                    }else{
+                        contacts = await AllEmployeeGroupppedContacts(fiscalYear);
                     }
                     var serializedContacts = JsonConvert.SerializeObject(contacts);
                     _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
@@ -864,6 +874,202 @@ namespace Kers.Models.Repositories
                     Row.Add(res.KersUser.RprtngProfile.PlanningUnit.Name);
                     Row.Add( res.KersUser.PersonalProfile.FirstName + " " + res.KersUser.PersonalProfile.LastName);
                     Row.Add((res.Hours / 8).ToString());
+                    Row.Add((res.Multistate / 8).ToString());
+                    Row.Add(res.Audience.ToString());
+                    i = 0;
+                    foreach( var race in Races){
+                        var raceAmount = res.RaceEthnicityValues.Where( v => v.RaceId == race.Id).Sum( r => r.Amount);
+                        Row.Add(raceAmount.ToString());
+                        totalPerRace[i] += raceAmount;
+                        i++;
+                    }
+                    i=0;
+                    foreach( var et in Ethnicities){
+                        var ethnAmount = res.RaceEthnicityValues.Where( v => v.EthnicityId == et.Id).Sum( r => r.Amount);
+                        Row.Add(ethnAmount.ToString());
+                        totalPerEthnicity[i] += ethnAmount;
+                        i++;
+                    }
+                    Row.Add(res.Male.ToString());
+                    Row.Add(res.Female.ToString());
+                    i=0;
+                    foreach( var opnmb in OptionNumbers){
+                        var optNmbAmount = res.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
+                        Row.Add( optNmbAmount.ToString());
+                        totalPerOptionNumber[i] += optNmbAmount;
+                        i++;
+                    }
+                    Rows.Add(Row);
+                }
+                table.Rows = Rows;
+                table.Foother = new List<string>{
+                            "Total", "", (TotalHours / 8).ToString(), (TotalMultistate / 8).ToString(), TotalAudience.ToString()
+                        };
+                i = 0;
+                foreach( var race in Races){
+                    table.Foother.Add(totalPerRace[i].ToString());
+                    i++;
+                }
+                i = 0;
+                foreach( var et in Ethnicities){
+                    table.Foother.Add(totalPerEthnicity[i].ToString());
+                    i++;
+                }
+                table.Foother.Add(TotalMale.ToString());
+                table.Foother.Add(TotalFemale.ToString());  
+                i = 0;
+                foreach( var opnmb in OptionNumbers){
+                    table.Foother.Add( totalPerOptionNumber[i].ToString());
+                    i++;
+                }
+
+                var serialized = JsonConvert.SerializeObject(table);
+                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(3)
+                    });
+            }
+
+            return table;
+        }
+
+
+        // type: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        public async Task<TableViewModel> DataByMajorProgram(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false )
+        {
+
+            var cacheKey = CacheKeys.ByMajorProgramContactData + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+            var cachedTypes = _cache.GetString(cacheKey);
+            TableViewModel table;
+            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
+                table = JsonConvert.DeserializeObject<TableViewModel>(cachedTypes);
+            }else{
+
+
+                table = new TableViewModel();
+
+                List<ActivityGrouppedResult> activities;
+
+
+
+
+                var actvtsCacheKey = "AllActivitiesGrouppedByMajorProgram" + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+                var cachedActivities = _cache.GetString(actvtsCacheKey);
+
+                if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
+                    activities = JsonConvert.DeserializeObject<List<ActivityGrouppedResult>>(cachedActivities);
+                }else{
+
+                    if(type == 0){
+                        activities = await DistrictProgramGroupppedActivities(id, fiscalYear);
+                    }else if(type == 1){
+                        activities = await UnitProgramGroupppedActivities(id, fiscalYear);
+                    }else if(type == 2){
+                        activities = await KSUProgramGroupppedActivities(fiscalYear);
+                    }else if(type == 2){
+                        activities = await UKProgramGroupppedActivities(fiscalYear);
+                    }else{
+                        activities = await AllProgramGroupppedActivities(fiscalYear);
+                    }
+                    
+                    
+                    var serializedActivities = JsonConvert.SerializeObject(activities);
+                    _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
+                        });
+
+
+                }
+                var result = ProcessGrouppedActivities(activities);
+
+                List<ContactGrouppedResult> contacts;
+
+                var contactsCacheKey = "ContactsGrouppedByMajorProgram" + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+                var cachedContacts = _cache.GetString(contactsCacheKey);
+
+                if (!string.IsNullOrEmpty(cachedContacts) && !refreshCache){
+                    contacts = JsonConvert.DeserializeObject<List<ContactGrouppedResult>>(cachedContacts);
+                }else{
+                    contacts = new List<ContactGrouppedResult>();
+                    if(type == 0){
+                        contacts = await DistrictProgramGroupppedContacts(id, fiscalYear);
+                    }else if(type == 1){
+                        contacts = await UnitProgramGroupppedContacts(id, fiscalYear);
+                    }else if( type == 2){
+                        contacts = await KSUProgramGroupppedContacts(fiscalYear);
+                    }else if( type == 3){
+                        contacts = await UKProgramGroupppedContacts(fiscalYear);
+                    }else{
+                        contacts = await AllProgramGroupppedContacts(fiscalYear);
+                    }
+                    var serializedContacts = JsonConvert.SerializeObject(contacts);
+                    _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
+                        });
+                }
+
+                result = ProcessGrouppedContacts(contacts, result);
+
+
+                List<PerProgramActivities> programResult = new List<PerProgramActivities>();
+                foreach( var res in result ){
+                    var programGroup = new PerProgramActivities();
+                    programGroup.Audience = res.Audience;
+                    programGroup.Female = res.Female;
+                    programGroup.Male = res.Male;
+                    programGroup.Hours = res.Hours;
+                    programGroup.Multistate = res.Multistate;
+                    programGroup.OptionNumberValues = res.OptionNumberValues;
+                    programGroup.RaceEthnicityValues = res.RaceEthnicityValues;
+                    programGroup.MajorProgram = await coreContext.MajorProgram.Where( u => u.Id == res.GroupId)
+                                                    .FirstOrDefaultAsync();
+                    programResult.Add(programGroup);
+                }
+
+
+                programResult = programResult.OrderBy( r => r.MajorProgram.order).ToList();
+
+
+
+                table.Header = new List<string>{
+                                "Major Program", "Days", "FTE", "Multistate", "Total Contacts"
+                            };
+                var Races = this.coreContext.Race.OrderBy(r => r.Order);
+                var Ethnicities = this.coreContext.Ethnicity.OrderBy( e => e.Order);
+                var OptionNumbers = this.coreContext.ActivityOptionNumber.OrderBy( n => n.Order);
+                foreach( var race in Races){
+                    table.Header.Add(race.Name);
+                }
+                foreach( var ethn in Ethnicities){
+                    table.Header.Add(ethn.Name);
+                }
+                table.Header.Add("Male");
+                table.Header.Add("Female");
+                foreach( var opnmb in OptionNumbers){
+                    table.Header.Add(opnmb.Name);
+                }
+                var Rows = new List<List<string>>();
+                float TotalHours = 0;
+                float TotalMultistate = 0;
+                int TotalAudience = 0;
+                int TotalMale = 0;
+                int TotalFemale = 0;
+                int[] totalPerRace = new int[Races.Count()];
+                int[] totalPerEthnicity = new int[Ethnicities.Count()];
+                int[] totalPerOptionNumber = new int[OptionNumbers.Count()];
+                int i = 0;
+                foreach(var res in programResult){
+                    TotalHours += res.Hours;
+                    TotalAudience += res.Audience;
+                    TotalMale += res.Male;
+                    TotalFemale += res.Female;
+                    TotalMultistate += res.Multistate;
+                    var Row = new List<string>();
+                    Row.Add(res.MajorProgram.Name);
+                    Row.Add((res.Hours / 8).ToString());
+                    Row.Add( (res.Hours / (8 * workDaysPerYear) ).ToString("0.000"));
                     Row.Add((res.Multistate / 8).ToString());
                     Row.Add(res.Audience.ToString());
                     i = 0;
@@ -1106,6 +1312,437 @@ namespace Kers.Models.Repositories
                                         .ToListAsync();
             return contacts;
         }
+
+        private async Task<List<ActivityGrouppedResult>> UKEmployeeGroupppedActivities(FiscalYear fiscalYear){
+            var activities = await this.coreContext.Activity
+                                                    .Where( a => 
+                                                                a.ActivityDate < fiscalYear.End 
+                                                                && 
+                                                                a.ActivityDate > fiscalYear.Start
+                                                                &&
+                                                                a.KersUser.RprtngProfile.Institution.Code != "21000-1890"
+                                                            )
+                                                    .GroupBy(e => new {
+                                                        KersUser = e.KersUser
+                                                    })
+                                                    .Select(c => new ActivityGrouppedResult{
+                                                        Ids = c.Select(
+                                                            s => s.Id
+                                                        ).ToList(),
+                                                        Hours = c.Sum(s => s.Hours),
+                                                        Audience = c.Sum(s => s.Audience),
+                                                        GroupId = c.Key.KersUser.Id
+                                                    })
+                                                    .ToListAsync();
+
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> UKEmployeeGroupppedContacts(FiscalYear fiscalYear){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < fiscalYear.End 
+                                                && 
+                                                c.ContactDate > fiscalYear.Start 
+                                                &&
+                                                c.KersUser.RprtngProfile.Institution.Code != "21000-1890"
+                                        )
+                                        .GroupBy(e => new {
+                                            User = e.KersUser
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.User.Id
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+        private async Task<List<ActivityGrouppedResult>> AllEmployeeGroupppedActivities(FiscalYear fiscalYear){
+            var activities = await this.coreContext.Activity
+                                                    .Where( a => 
+                                                                a.ActivityDate < fiscalYear.End 
+                                                                && 
+                                                                a.ActivityDate > fiscalYear.Start
+                                                            )
+                                                    .GroupBy(e => new {
+                                                        KersUser = e.KersUser
+                                                    })
+                                                    .Select(c => new ActivityGrouppedResult{
+                                                        Ids = c.Select(
+                                                            s => s.Id
+                                                        ).ToList(),
+                                                        Hours = c.Sum(s => s.Hours),
+                                                        Audience = c.Sum(s => s.Audience),
+                                                        GroupId = c.Key.KersUser.Id
+                                                    })
+                                                    .ToListAsync();
+
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> AllEmployeeGroupppedContacts(FiscalYear fiscalYear){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < fiscalYear.End 
+                                                && 
+                                                c.ContactDate > fiscalYear.Start 
+                                                &&
+                                                c.KersUser.RprtngProfile.Institution.Code != "21000-1890"
+                                        )
+                                        .GroupBy(e => new {
+                                            User = e.KersUser
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.User.Id
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+
+
+        private async Task<List<ActivityGrouppedResult>> DistrictProgramGroupppedActivities(int id, FiscalYear fiscalYear){
+            var activities = await this.coreContext.Activity
+                                                    .Where( a => 
+                                                                a.ActivityDate < fiscalYear.End 
+                                                                && 
+                                                                a.ActivityDate > fiscalYear.Start
+                                                                &&
+                                                                a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
+                                                            )
+                                                    .GroupBy(e => new {
+                                                        ProgramId = e.MajorProgramId
+                                                    })
+                                                    .Select(c => new ActivityGrouppedResult{
+                                                        Ids = c.Select(
+                                                            s => s.Id
+                                                        ).ToList(),
+                                                        Hours = c.Sum(s => s.Hours),
+                                                        Audience = c.Sum(s => s.Audience),
+                                                        GroupId = c.Key.ProgramId
+                                                    })
+                                                    .ToListAsync();
+
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
+            
+            
+            
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> DistrictProgramGroupppedContacts(int id, FiscalYear fiscalYear){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < fiscalYear.End 
+                                                && 
+                                                c.ContactDate > fiscalYear.Start 
+                                                && 
+                                                c.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
+                                        )
+                                        .GroupBy(e => new {
+                                            ProgramId = e.MajorProgramId
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.ProgramId
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+
+        private async Task<List<ActivityGrouppedResult>> UnitProgramGroupppedActivities(int id, FiscalYear fiscalYear){
+            var activities = await this.coreContext.Activity
+                                                    .Where( a => 
+                                                                a.ActivityDate < fiscalYear.End 
+                                                                && 
+                                                                a.ActivityDate > fiscalYear.Start
+                                                                &&
+                                                                a.KersUser.RprtngProfile.PlanningUnitId == id
+                                                            )
+                                                    .GroupBy(e => new {
+                                                        ProgramId = e.MajorProgramId
+                                                    })
+                                                    .Select(c => new ActivityGrouppedResult{
+                                                        Ids = c.Select(
+                                                            s => s.Id
+                                                        ).ToList(),
+                                                        Hours = c.Sum(s => s.Hours),
+                                                        Audience = c.Sum(s => s.Audience),
+                                                        GroupId = c.Key.ProgramId
+                                                    })
+                                                    .ToListAsync();
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
+
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> UnitProgramGroupppedContacts(int id, FiscalYear fiscalYear){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < fiscalYear.End 
+                                                && 
+                                                c.ContactDate > fiscalYear.Start 
+                                                && 
+                                                c.KersUser.RprtngProfile.PlanningUnitId == id
+                                        )
+                                        .GroupBy(e => new {
+                                            ProgramId = e.MajorProgramId
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.ProgramId
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+
+        private async Task<List<ActivityGrouppedResult>> KSUProgramGroupppedActivities(FiscalYear fiscalYear){
+            var activities = await this.coreContext.Activity
+                                                    .Where( a => 
+                                                                a.ActivityDate < fiscalYear.End 
+                                                                && 
+                                                                a.ActivityDate > fiscalYear.Start
+                                                                &&
+                                                                a.KersUser.RprtngProfile.Institution.Code == "21000-1890"
+                                                            )
+                                                    .GroupBy(e => new {
+                                                        ProgramId = e.MajorProgramId
+                                                    })
+                                                    .Select(c => new ActivityGrouppedResult{
+                                                        Ids = c.Select(
+                                                            s => s.Id
+                                                        ).ToList(),
+                                                        Hours = c.Sum(s => s.Hours),
+                                                        Audience = c.Sum(s => s.Audience),
+                                                        GroupId = c.Key.ProgramId
+                                                    })
+                                                    .ToListAsync();
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
+
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> KSUProgramGroupppedContacts(FiscalYear fiscalYear){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < fiscalYear.End 
+                                                && 
+                                                c.ContactDate > fiscalYear.Start 
+                                                &&
+                                                c.KersUser.RprtngProfile.Institution.Code == "21000-1890"
+                                        )
+                                        .GroupBy(e => new {
+                                            ProgramId = e.MajorProgramId
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.ProgramId
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+        private async Task<List<ActivityGrouppedResult>> UKProgramGroupppedActivities(FiscalYear fiscalYear){
+            var activities = await this.coreContext.Activity
+                                                    .Where( a => 
+                                                                a.ActivityDate < fiscalYear.End 
+                                                                && 
+                                                                a.ActivityDate > fiscalYear.Start
+                                                                &&
+                                                                a.KersUser.RprtngProfile.Institution.Code != "21000-1890"
+                                                            )
+                                                    .GroupBy(e => new {
+                                                        ProgramId = e.MajorProgramId
+                                                    })
+                                                    .Select(c => new ActivityGrouppedResult{
+                                                        Ids = c.Select(
+                                                            s => s.Id
+                                                        ).ToList(),
+                                                        Hours = c.Sum(s => s.Hours),
+                                                        Audience = c.Sum(s => s.Audience),
+                                                        GroupId = c.Key.ProgramId
+                                                    })
+                                                    .ToListAsync();
+
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> UKProgramGroupppedContacts(FiscalYear fiscalYear){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < fiscalYear.End 
+                                                && 
+                                                c.ContactDate > fiscalYear.Start 
+                                                &&
+                                                c.KersUser.RprtngProfile.Institution.Code != "21000-1890"
+                                        )
+                                        .GroupBy(e => new {
+                                            ProgramId = e.MajorProgramId
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.ProgramId
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+        private async Task<List<ActivityGrouppedResult>> AllProgramGroupppedActivities(FiscalYear fiscalYear){
+            var activities = await this.coreContext.Activity
+                                                    .Where( a => 
+                                                                a.ActivityDate < fiscalYear.End 
+                                                                && 
+                                                                a.ActivityDate > fiscalYear.Start
+                                                            )
+                                                    .GroupBy(e => new {
+                                                        ProgramId = e.MajorProgramId
+                                                    })
+                                                    .Select(c => new ActivityGrouppedResult{
+                                                        Ids = c.Select(
+                                                            s => s.Id
+                                                        ).ToList(),
+                                                        Hours = c.Sum(s => s.Hours),
+                                                        Audience = c.Sum(s => s.Audience),
+                                                        GroupId = c.Key.ProgramId
+                                                    })
+                                                    .ToListAsync();
+
+            foreach( var activity in activities){
+                var males = 0;
+                var females = 0;
+                foreach( var perUserId in activity.Ids ){
+                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
+                    males += last.Male;
+                    females += last.Female;
+                }
+                activity.Male = males;
+                activity.Female = females;
+            }
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> AllProgramGroupppedContacts(FiscalYear fiscalYear){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < fiscalYear.End 
+                                                && 
+                                                c.ContactDate > fiscalYear.Start 
+                                                &&
+                                                c.KersUser.RprtngProfile.Institution.Code != "21000-1890"
+                                        )
+                                        .GroupBy(e => new {
+                                            ProgramId = e.MajorProgramId
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.ProgramId
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

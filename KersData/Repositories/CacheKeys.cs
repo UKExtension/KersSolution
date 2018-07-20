@@ -22,6 +22,7 @@ namespace Kers.Models.Repositories
         public static string StateAllContactsData = "StateAllContactsData";
         public static string StateByMajorProgram = "ActivityStateByMajorProgram";
         public static string ByEmployeeContactsData = "ByEmployeeContactsData";
+        public static string ByMajorProgramContactData = "ByMajorProgramContactData";
 
         //List<ActivityUnitResult>
         public static string AllActivitiesByPlanningUnit = "AllActivitiesByPlanningUnit";

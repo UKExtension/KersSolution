@@ -37,7 +37,7 @@ namespace Kers.Tasks
                     var fiscalYearRepo = new FiscalYearRepository( context );
                     var repo = new ActivityRepository(cache, context);
                     var startTime = DateTime.Now;
-                    var str = await repo.ContactsByCountyByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog), true);
+                    var str = await repo.ContactsByCountyByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog), true);
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
                                     "TableViewModel", str, 

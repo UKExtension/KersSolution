@@ -35,9 +35,21 @@ namespace Kers.Tasks
                 try{
                     var cache = scope.ServiceProvider.GetService<IDistributedCache>();
                     var fiscalYearRepo = new FiscalYearRepository( context );
-                    var repo = new ActivityRepository(cache, context);
+
+                    var repo = new ContactRepository(cache, context);
                     var startTime = DateTime.Now;
-                    var str = repo.ReportsStateAll(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog), true);
+
+
+                    var str = repo.DataByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog), 2);
+                    str = repo.DataByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog), 4);
+                    str = repo.DataByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog), 3);
+                    str = repo.DataByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog), 3);
+                    str = repo.DataByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog), 2);
+                    str = repo.DataByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog), 4);
+                    
+                    //var str = repo.ReportsStateAll(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog), true);
+                    
+                    
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
                                     "ActivityReportsStateAllTask", str, 

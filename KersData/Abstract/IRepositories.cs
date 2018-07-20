@@ -54,20 +54,21 @@ namespace Kers.Models.Abstract
         List<ActivityRevision> PerMonth(KersUser user, int year, int month, string order);
         List<PerUnitActivities> ProcessUnitActivities(List<ActivityUnitResult> activities, IDistributedCache _cache);
         List<PerProgramActivities> ProcessMajorProgramActivities(List<ActivityMajorProgramResult> activities, IDistributedCache _cache);
-        List<PerPersonActivities> ProcessPersonActivities(List<ActivityPersonResult> activities, IDistributedCache _cache);
+        //List<PerPersonActivities> ProcessPersonActivities(List<ActivityPersonResult> activities, IDistributedCache _cache);
         List<int> LastActivityRevisionIds( FiscalYear fiscalYear, IDistributedCache _cache);
-        TableViewModel ReportsStateAll(FiscalYear fiscalYear, bool refreshCache = false);
+        //TableViewModel ReportsStateAll(FiscalYear fiscalYear, bool refreshCache = false);
         Task<TableViewModel> ContactsByCountyByMajorProgram(FiscalYear fiscalYear, bool refreshCache = false);
-        Task<TableViewModel> StateByMajorProgram(FiscalYear fiscalYear, int type = 0, bool refreshCache = false);
+        //Task<TableViewModel> StateByMajorProgram(FiscalYear fiscalYear, int type = 0, bool refreshCache = false);
         Task<List<ProgramDataViewModel>> TopProgramsPerMonth(int year = 0, int month = 0, int amount = 5, int PlanningUnitId = 0, bool refreshCache = false);
     }
 
     public interface IContactRepository: IEntityBaseRepository<Contact>{
-        List<PerUnitActivities> ProcessUnitContacts(List<ContactUnitResult> contacts, List<PerUnitActivities> result, IDistributedCache _cache);
+        //List<PerUnitActivities> ProcessUnitContacts(List<ContactUnitResult> contacts, List<PerUnitActivities> result, IDistributedCache _cache);
         List<PerProgramActivities> ProcessMajorProgramContacts(List<ContactMajorProgramResult> contacts, List<PerProgramActivities> result, IDistributedCache _cache);
         //List<PerPersonActivities> ProcessPersonContacts(List<ContactPersonResult> contacts, List<PerPersonActivities> result, IDistributedCache _cache);
         //Task<TableViewModel> Data(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false );
         Task<TableViewModel> DataByEmployee(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false );
+        Task<TableViewModel> DataByMajorProgram(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false );
         Task<StatsViewModel> StatsPerMonth( int year = 0, int month = 0, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false);
     }
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}

@@ -73,7 +73,8 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
 
-            var table = activityRepo.ReportsStateAll(fiscalYear);
+            //var table = activityRepo.ReportsStateAll(fiscalYear);
+            var table = contactRepo.DataByMajorProgram(fiscalYear, 4);
             return View(table);
         }
 
@@ -87,7 +88,13 @@ namespace Kers.Controllers.Reports
             if(fiscalYear == null){
                 return new StatusCodeResult(500);
             }
-            var table = await activityRepo.StateByMajorProgram(fiscalYear, type);
+            var repoType = 4;
+            if(type == 1){
+                repoType = 3;
+            }else if( type == 2 ){
+                repoType = 2;
+            }
+            var table = await contactRepo.DataByMajorProgram(fiscalYear, repoType);
             return View(table);
         }
 
