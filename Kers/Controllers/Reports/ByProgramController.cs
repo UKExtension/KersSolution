@@ -63,7 +63,10 @@ namespace Kers.Controllers.Reports
                 //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
                 return new StatusCodeResult(500);
             }
-            
+
+            var table = await contactRepo.DataByMajorProgram(fiscalYear, type == 1 ? 0 : type, id);
+
+    /*         
             var cacheKey = "ByMajorProgramData" + type.ToString() + id.ToString() + "_" + fy;
             var cached = _cache.GetString(cacheKey);
             
@@ -210,7 +213,7 @@ namespace Kers.Controllers.Reports
                     });
 
             }
-
+ */
             return View(table);
         }
         
