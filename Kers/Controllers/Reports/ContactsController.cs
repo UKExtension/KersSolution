@@ -64,7 +64,7 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("[action]/{fy?}")]
-        public IActionResult StateAll(string fy = "0")
+        public async Task<IActionResult> StateAll(string fy = "0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
 
@@ -74,7 +74,7 @@ namespace Kers.Controllers.Reports
             }
 
             //var table = activityRepo.ReportsStateAll(fiscalYear);
-            var table = contactRepo.DataByMajorProgram(fiscalYear, 4);
+            var table = await contactRepo.DataByEmployee(fiscalYear, 4);
             return View(table);
         }
 

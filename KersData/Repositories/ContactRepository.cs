@@ -1012,7 +1012,7 @@ namespace Kers.Models.Repositories
 
                 result = ProcessGrouppedContacts(contacts, result);
 
-
+                var defaultMajorProgram = await coreContext.MajorProgram.Where( u => u.Name == "Administrative Functions").FirstOrDefaultAsync();
                 List<PerProgramActivities> programResult = new List<PerProgramActivities>();
                 foreach( var res in result ){
                     var programGroup = new PerProgramActivities();
@@ -1025,7 +1025,12 @@ namespace Kers.Models.Repositories
                     programGroup.RaceEthnicityValues = res.RaceEthnicityValues;
                     programGroup.MajorProgram = await coreContext.MajorProgram.Where( u => u.Id == res.GroupId)
                                                     .FirstOrDefaultAsync();
+                    if(programGroup.MajorProgram == null){
+                        programGroup.MajorProgram = defaultMajorProgram;
+                    }
                     programResult.Add(programGroup);
+                    
+                    
                 }
 
 
@@ -1099,7 +1104,7 @@ namespace Kers.Models.Repositories
                 }
                 table.Rows = Rows;
                 table.Foother = new List<string>{
-                            "Total", "", (TotalHours / 8).ToString(), (TotalMultistate / 8).ToString(), TotalAudience.ToString()
+                            "Total", (TotalHours / 8).ToString(),(TotalHours / (8 * workDaysPerYear) ).ToString("0.000") , (TotalMultistate / 8).ToString(), TotalAudience.ToString()
                         };
                 i = 0;
                 foreach( var race in Races){
