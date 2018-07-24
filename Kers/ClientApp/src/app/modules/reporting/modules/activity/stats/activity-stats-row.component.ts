@@ -16,9 +16,9 @@ import { Observable } from "rxjs/Observable";
         <td>{{ethnicity(2)}}</td>
         <td>{{activity.female}}</td>
         <td>{{activity.male}}</td>
-        <td>{{optionValue('Youth (18 and under)')}}</td>
-        <td>{{optionValue('Adult Volunteers')}}</td>
-        <td>{{optionValue('Indirect')}}</td>
+        <td>{{optionValue('Number of Youth Participants (18 and under)')}}</td>
+        <td>{{optionValue('Number of Adult Volunteers')}}</td>
+        <td>{{optionValue('Number of Indirect Contacts')}}</td>
     `
 })
 export class ActivityStatsRow implements OnInit {
