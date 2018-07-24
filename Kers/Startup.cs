@@ -168,11 +168,10 @@ namespace Kers
             services.AddSingleton<IScheduledTask, SnapIndividualContactTotalsTask>();
             services.AddSingleton<IScheduledTask, SnapEstimatedSizeofAudiencesReachedTask>();
             services.AddSingleton<IScheduledTask, SnapSessionTypebyMonthTask>();
+            services.AddSingleton<IScheduledTask, SnapIndirectByEmployeeTask>();
             services.AddSingleton<IScheduledTask, ActivityReportsStateAllTask>();
             services.AddSingleton<IScheduledTask, ActivityContactsByCountyByMajorProgramTask>();
-            services.AddSingleton<IScheduledTask, ActivityStateByMajorProgramTask>();
             services.AddSingleton<IScheduledTask, ActivityPerEmployeeReportsTask>();
-            services.AddSingleton<IScheduledTask, SnapIndirectByEmployeeTask>();
 
 
             services.AddScheduler((sender, args) =>
