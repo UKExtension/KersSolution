@@ -42,9 +42,15 @@ namespace Kers.Controllers.Reports
         }
 
         [HttpGet]
-        [Route("storiescounties/{id?}", Name = "StoryCounty")]
-        public async Task<IActionResult> StoriesCounty(int id = 0)
+        [Route("storiescounties/{fy?}/{id?}", Name = "StoryCounty")]
+        public async Task<IActionResult> StoriesCounty(int id = 0, string fy="0")
         {
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
+                return new StatusCodeResult(500);
+            }
             var units = await this.context.PlanningUnit.OrderBy(l => l.order).ToListAsync();
             var model = new UnitStoryViewModel();
             model.PlanningUnits = units;
@@ -53,17 +59,27 @@ namespace Kers.Controllers.Reports
                 if(unit != null){
                     model.PlanningUnit = unit;
                     var stories = this.context.Story.
-                                            Where( s => s.KersUser.RprtngProfile.PlanningUnit == unit)
+                                            Where( s => 
+                                                        s.KersUser.RprtngProfile.PlanningUnit == unit
+                                                        )
                                             .Include(s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.PersonalProfile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude(u => u.PlanningUnit)
                                             //.Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
                                             .Include( s => s.Revisions ).ThenInclude( r => r.StoryOutcome)
-                                            .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
+                                            .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram).ThenInclude( p => p.StrategicInitiative).ThenInclude( i => i.FiscalYear)
                                             .ToList();
-                    model.Stories = this.storyViewModelList(stories);
+                    var fyStories = new List<Story>();
+                    foreach( var story in stories ){
+                        var lastRev = story.Revisions.OrderBy( r => r.Created).Last();
+                        if( lastRev.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear ){
+                            fyStories.Add( story );
+                        }
+                    }
+                    model.Stories = this.storyViewModelList(fyStories);
                 }
             }
+            ViewData["FiscalYear"] = fiscalYear;
             return View(model);
         }
 
@@ -105,6 +121,7 @@ namespace Kers.Controllers.Reports
                     model.Stories = this.storyViewModelList(stories);
                 }
             }
+            ViewData["FiscalYear"] = fiscalYear;
             return View(model);
         }
 

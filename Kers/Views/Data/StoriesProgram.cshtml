@@ -1,7 +1,8 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    ViewData["Title"] = "Success Stories By MajorProgram";
-    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    ViewData["Title"] = "Success Stories By MajorProgram FY"+FiscalYear.Name;
+    ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");
 }
 @model Kers.Models.ViewModels.ProgramStoryViewModel
 

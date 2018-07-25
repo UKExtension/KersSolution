@@ -1,7 +1,8 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    ViewData["Title"] = "Statistical Contacts";
-    ViewData["Subtitle"] = " by Major Program";
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    ViewData["Title"] += "Statistical Contacts by Major Program for FY" + FiscalYear.Name;
+    ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");
 }
 @model Kers.Models.ViewModels.TableViewModel
 <div class="text-right">

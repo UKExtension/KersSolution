@@ -69,6 +69,7 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("[action]/{type}/{id?}/{fy?}")]
+        // type: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
         public async Task<IActionResult> Data(int type, int id = 0, string fy="0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
@@ -81,6 +82,7 @@ namespace Kers.Controllers.Reports
             var table = await contactRepo.DataByEmployee(fiscalYear, type, id);
 
             ViewData["Type"] = type;
+            ViewData["FiscalYear"] = fiscalYear;
             ViewData["Subtitle"] = types[type];
             if(type == 0){
                 ViewData["Title"] = this.context.District.Find(id).Name;
@@ -91,152 +93,7 @@ namespace Kers.Controllers.Reports
 
             return View(table);
         }
-/* 
-        private async Task<List<ActivityPersonResult>> DistrictActivities(int id){
-            var activities = await this.context.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < currentFiscalYear.End 
-                                                                && 
-                                                                a.ActivityDate > currentFiscalYear.Start
-                                                                &&
-                                                                a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        KersUser = e.KersUser
-                                                    })
-                                                    .Select(c => new ActivityPersonResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        KersUser = c.Key.KersUser
-                                                    })
-                                                    .ToListAsync();
 
-            return activities;
-
-        }
-
-        private async Task<List<ContactPersonResult>> DistrictContacts(int id){
-           var contacts = await this.context.Contact.
-                                    Where( c => 
-                                                c.ContactDate < currentFiscalYear.End 
-                                                && 
-                                                c.ContactDate > currentFiscalYear.Start 
-                                                && 
-                                                c.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
-                                        )
-                                        .GroupBy(e => new {
-                                            User = e.KersUser
-                                        })
-                                        .Select(c => new ContactPersonResult{
-                                            Ids = c.Select(
-                                                s => s.Id
-                                            ).ToList(),
-                                            KersUser = c.Key.User
-                                        })
-                                        .ToListAsync();
-            return contacts;
-        }
-
-
-        private async Task<List<ActivityPersonResult>> UnitActivities(int id){
-            var activities = await this.context.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < currentFiscalYear.End 
-                                                                && 
-                                                                a.ActivityDate > currentFiscalYear.Start
-                                                                &&
-                                                                a.KersUser.RprtngProfile.PlanningUnitId == id
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        KersUser = e.KersUser
-                                                    })
-                                                    .Select(c => new ActivityPersonResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        KersUser = c.Key.KersUser
-                                                    })
-                                                    .ToListAsync();
-
-            return activities;
-
-        }
-
-        private async Task<List<ContactPersonResult>> UnitContacts(int id){
-           var contacts = await this.context.Contact.
-                                    Where( c => 
-                                                c.ContactDate < currentFiscalYear.End 
-                                                && 
-                                                c.ContactDate > currentFiscalYear.Start 
-                                                && 
-                                                c.KersUser.RprtngProfile.PlanningUnitId == id
-                                        )
-                                        .GroupBy(e => new {
-                                            User = e.KersUser
-                                        })
-                                        .Select(c => new ContactPersonResult{
-                                            Ids = c.Select(
-                                                s => s.Id
-                                            ).ToList(),
-                                            KersUser = c.Key.User
-                                        })
-                                        .ToListAsync();
-            return contacts;
-        }
-
-
-        private async Task<List<ActivityPersonResult>> KSUActivities(){
-            var activities = await this.context.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < currentFiscalYear.End 
-                                                                && 
-                                                                a.ActivityDate > currentFiscalYear.Start
-                                                                &&
-                                                                a.KersUser.RprtngProfile.Institution.Code == "21000-1890"
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        KersUser = e.KersUser
-                                                    })
-                                                    .Select(c => new ActivityPersonResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        KersUser = c.Key.KersUser
-                                                    })
-                                                    .ToListAsync();
-
-            return activities;
-
-        }
-
-        private async Task<List<ContactPersonResult>> KSUContacts(){
-           var contacts = await this.context.Contact.
-                                    Where( c => 
-                                                c.ContactDate < currentFiscalYear.End 
-                                                && 
-                                                c.ContactDate > currentFiscalYear.Start 
-                                                &&
-                                                c.KersUser.RprtngProfile.Institution.Code == "21000-1890"
-                                        )
-                                        .GroupBy(e => new {
-                                            User = e.KersUser
-                                        })
-                                        .Select(c => new ContactPersonResult{
-                                            Ids = c.Select(
-                                                s => s.Id
-                                            ).ToList(),
-                                            KersUser = c.Key.User
-                                        })
-                                        .ToListAsync();
-            return contacts;
-        } */
 
         public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
             FiscalYear fiscalYear;

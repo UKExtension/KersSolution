@@ -54,7 +54,8 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("{type}/{id?}/{fy?}")]
+        [Route("{type}/{fy?}/{id?}/")]
+        // type: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
         public async Task<IActionResult> Index(int type, int id = 0, string fy="0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
@@ -63,157 +64,20 @@ namespace Kers.Controllers.Reports
                 //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
                 return new StatusCodeResult(500);
             }
+            if( type == 0 ){
+               ViewData["Title"] = this.context.District.Find( id ).Name;
+            }else if( type == 1 ){
+                ViewData["Title"] = this.context.PlanningUnit.Find( id ).Name;
+            }else if( type == 2) {
+                ViewData["Title"] = "KSU";
+            }else if ( type == 3){
+                ViewData["Title"] = "UK";
+            }
 
+            ViewData["FiscalYear"] = fiscalYear;
             var table = await contactRepo.DataByMajorProgram(fiscalYear, type == 1 ? 0 : type, id);
 
-    /*         
-            var cacheKey = "ByMajorProgramData" + type.ToString() + id.ToString() + "_" + fy;
-            var cached = _cache.GetString(cacheKey);
-            
-            TableViewModel table;
-
-
-            if (!string.IsNullOrEmpty(cached)){
-                table = JsonConvert.DeserializeObject<TableViewModel>(cached);
-            }else{
-
-
-
-                List<ActivityMajorProgramResult> activities;
-
-                var actvtsCacheKey = "AllActivitiesByMajorProgram" + type.ToString() + id.ToString() + "_" + fy;
-                var cachedActivities = _cache.GetString(actvtsCacheKey);
-
-                if (!string.IsNullOrEmpty(cachedActivities)){
-                    activities = JsonConvert.DeserializeObject<List<ActivityMajorProgramResult>>(cachedActivities);
-                }else{
-
-
-                    if(type == 0){
-                        activities = await DistrictActivities(id, fiscalYear);
-                    }else{
-                        return new StatusCodeResult(404);
-                    }
-
-                    var serializedActivities = JsonConvert.SerializeObject(activities);
-                    _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
-                        });
-
-                }
-                var result = activityRepo.ProcessMajorProgramActivities(activities,  _cache);
-
-
-                List<ContactMajorProgramResult> contacts;
-                var contactsCacheKey = "ContactsByEmployee" + type.ToString() + id.ToString() + "_" + fy;
-                var cachedContacts = _cache.GetString(contactsCacheKey);
-
-                if (!string.IsNullOrEmpty(cachedContacts)){
-                    contacts = JsonConvert.DeserializeObject<List<ContactMajorProgramResult>>(cachedContacts);
-                }else{
-                    if(type == 0){
-                        contacts = await DistrictContacts(id, fiscalYear);
-                    }else{
-                        contacts = new List<ContactMajorProgramResult>();
-                    }
-                    var serializedContacts = JsonConvert.SerializeObject(contacts);
-                    _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
-                        });
-                }
-                result = contactRepo.ProcessMajorProgramContacts(contacts, result, _cache);
-
-                result = result.OrderBy( r => r.MajorProgram.PacCode).ToList();
-
-
-                table = new TableViewModel();
-
-
-                table.Header = new List<string>{
-                                "Major Program", "Days", "FTE", "Multistate", "Total Contacts"
-                            };
-                var Races = this.context.Race.OrderBy(r => r.Order);
-                var Ethnicities = this.context.Ethnicity.OrderBy( e => e.Order);
-                var OptionNumbers = this.context.ActivityOptionNumber.OrderBy( n => n.Order);
-                foreach( var race in Races){
-                    table.Header.Add(race.Name);
-                }
-                foreach( var ethn in Ethnicities){
-                    table.Header.Add(ethn.Name);
-                }
-                foreach( var opnmb in OptionNumbers){
-                    table.Header.Add(opnmb.Name);
-                }
-                var Rows = new List<List<string>>();
-                float TotalHours = 0;
-                float TotalMultistate = 0;
-                int TotalAudience = 0;
-                int[] totalPerRace = new int[Races.Count()];
-                int[] totalPerEthnicity = new int[Ethnicities.Count()];
-                int[] totalPerOptionNumber = new int[OptionNumbers.Count()];
-                int i = 0;
-                foreach(var res in result){
-                    TotalHours += res.Hours;
-                    TotalAudience += res.Audience;
-                    TotalMultistate += res.Multistate;
-                    var Row = new List<string>();
-                    Row.Add(res.MajorProgram.Name + " (" + res.MajorProgram.PacCode + ")");
-                    Row.Add((res.Hours / 8).ToString());
-                    Row.Add( (res.Hours / (8 * workDaysPerYear) ).ToString("0.000"));
-                    Row.Add((res.Multistate / 8).ToString());
-                    Row.Add(res.Audience.ToString());
-                    i = 0;
-                    foreach( var race in Races){
-                        var raceAmount = res.RaceEthnicityValues.Where( v => v.RaceId == race.Id).Sum( r => r.Amount);
-                        Row.Add(raceAmount.ToString());
-                        totalPerRace[i] += raceAmount;
-                        i++;
-                    }
-                    i=0;
-                    foreach( var et in Ethnicities){
-                        var ethnAmount = res.RaceEthnicityValues.Where( v => v.EthnicityId == et.Id).Sum( r => r.Amount);
-                        Row.Add(ethnAmount.ToString());
-                        totalPerEthnicity[i] += ethnAmount;
-                        i++;
-                    }
-                    i=0;
-                    foreach( var opnmb in OptionNumbers){
-                        var optNmbAmount = res.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
-                        Row.Add( optNmbAmount.ToString());
-                        totalPerOptionNumber[i] += optNmbAmount;
-                        i++;
-                    }
-                    Rows.Add(Row);
-                }
-                table.Rows = Rows;
-                table.Foother = new List<string>{
-                            "Total", (TotalHours / 8).ToString(), (TotalHours / (8 * workDaysPerYear)).ToString("0.000"), (TotalMultistate / 8).ToString(), TotalAudience.ToString()
-                        };
-                i = 0;
-                foreach( var race in Races){
-                    table.Foother.Add(totalPerRace[i].ToString());
-                    i++;
-                }
-                i = 0;
-                foreach( var et in Ethnicities){
-                    table.Foother.Add(totalPerEthnicity[i].ToString());
-                    i++;
-                }
-                i = 0;
-                foreach( var opnmb in OptionNumbers){
-                    table.Foother.Add( totalPerOptionNumber[i].ToString());
-                    i++;
-                }
-                var serialized = JsonConvert.SerializeObject(table);
-                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
-                    });
-
-            }
- */
+    
             return View(table);
         }
         

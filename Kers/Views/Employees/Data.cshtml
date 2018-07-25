@@ -1,12 +1,19 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
     if(ViewData["Title"] == null){
         ViewData["Title"] = "Statistical Cotnacts Per Person";
     }
+    ViewData["Title"] += " Report for FY" + FiscalYear.Name;
     if(ViewData["Subtitle"] == null){
-        ViewData["Subtitle"] = " Statistical Contact Reports";
+        ViewData["Subtitle"] = "Statistical Cotnacts";
     }
+    ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");
     var type = ViewData["Type"] as int?;
+    if( type == 2 ){
+        ViewData["Title"]  = "KSU " + ViewData["Title"];
+    }
+
 }
 @model Kers.Models.ViewModels.TableViewModel
 <div class="text-right">

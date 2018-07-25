@@ -73,7 +73,7 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
 
-            //var table = activityRepo.ReportsStateAll(fiscalYear);
+            ViewData["FiscalYear"] = fiscalYear;
             var table = await contactRepo.DataByEmployee(fiscalYear, 4);
             return View(table);
         }
@@ -89,12 +89,19 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             var repoType = 4;
+
+
+            
+
             if(type == 1){
                 repoType = 3;
+                ViewData["Title"] = "UK ";
             }else if( type == 2 ){
                 repoType = 2;
+                ViewData["Title"] = "KSU ";
             }
             var table = await contactRepo.DataByMajorProgram(fiscalYear, repoType);
+            ViewData["FiscalYear"] = fiscalYear;
             return View(table);
         }
 
@@ -104,58 +111,14 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> ContactsByCountyByMajorProgram(string fy = "0")
         {
             
-            
-            /* 
-            var counties = await this.context.PlanningUnit
-                                    .Where( u => 
-                                                u.District != null
-                                                &&
-                                                u.Name.Substring( u.Name.Length - 3) == "CES"
-                                           )
-                                    .OrderBy( u => u.Name)
-                                    .ToListAsync();
-            var majorPrograms = await this.context.MajorProgram
-                                    .Where( u => 
-                                                
-                                                u.StrategicInitiative.FiscalYear == fiscalYearRepository.currentFiscalYear(FiscalYearType.ServiceLog)
-                                           )
-                                    .OrderBy( u => u.Name)
-                                    .ToListAsync();
-            var header = new List<string>();
-            header.Add( "Counties" );
-            foreach( var program in majorPrograms){
-                header.Add(program.Name);
-            }
-            var rows = new List<List<string>>();
-            foreach( var county in counties ){
-                var row = new List<string>();
-                row.Add( county.Name );
-
-                // Add county numbers
-                foreach( var prgrm in majorPrograms){
-                    var sm = context.Activity.Where( a => a.MajorProgramId == prgrm.Id && a.PlanningUnitId == county.Id && a.ActivityDate.Year < 2018).Sum(s => s.Audience);
-                    row.Add(sm.ToString());
-                }
-
-                rows.Add(row);
-
-            }
-
-
-
-            var table = new TableViewModel();
-            table.Header = header;
-            table.Rows = rows;
-            table.Foother = new List<string>();
-
-
-             */
             FiscalYear fiscalYear = GetFYByName(fy);
+            
 
             if(fiscalYear == null){
                 //this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", "Reports", "Error");
                 return new StatusCodeResult(500);
             }
+            ViewData["FiscalYear"] = fiscalYear;
             var table = await activityRepo.ContactsByCountyByMajorProgram(fiscalYear);
             return View(table);
         }
