@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,15 +15,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Kers.Tasks
 {
-    public class ActivityPerEmployeeReportsTask : TaskBase, IScheduledTask
+    public class ActivityPerMajorProgramTask : TaskBase, IScheduledTask
     {
         IServiceProvider serviceProvider;
-        public ActivityPerEmployeeReportsTask(
+        public ActivityPerMajorProgramTask(
             IServiceProvider serviceProvider
         ){
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "52 3 * * *";
+        public string Schedule => "52 2 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -45,52 +44,51 @@ namespace Kers.Tasks
                     // Districts
                     var districts =  context.District;
                     foreach( var district in districts){
-                       var tbl = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),0, district.Id, true);
+                       var tbl = await repo.DataByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),0, district.Id, true);
                        if(RndInt == 1){
-                           tbl = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),0, district.Id, true);
+                           tbl = await repo.DataByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),0, district.Id, true);
                        }
                        tables.Add(tbl);
                     }
                     // Planning Units
                     var units = context.PlanningUnit;
                     foreach( var unit in units){
-                        var tbl = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),1, unit.Id, true);
+                        var tbl = await repo.DataByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),1, unit.Id, true);
                         if(RndInt == 2){
-                            tbl = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),1, unit.Id, true);
+                            tbl = await repo.DataByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),1, unit.Id, true);
                         }
                         tables.Add(tbl);
                     }
                     // KSU
-                    var tblKSU = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
+                    var tblKSU = await repo.DataByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
                     if( RndInt == 3 ){
-                        tblKSU = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
+                        tblKSU = await repo.DataByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
                     }
                     tables.Add(tblKSU);
 
                     // UK
-                    var tblUK = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),3, 0, true);
+                    var tblUK = await repo.DataByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),3, 0, true);
                     if( RndInt == 4 ){
-                        tblUK = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),3, 0, true);
+                        tblUK = await repo.DataByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),3, 0, true);
                     }
                     tables.Add(tblUK);
 
                     // ALL
-                    var tblAll = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),4, 0, true);
+                    var tblAll = await repo.DataByMajorProgram(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),4, 0, true);
                     if( RndInt == 5 ){
-                        tblAll = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),4, 0, true);
+                        tblAll = await repo.DataByMajorProgram(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),4, 0, true);
                     }
                     tables.Add(tblAll);
-
-
+                    
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
-                                    "ActivityPerEmployeeReportsTask", tables, 
-                                    "Activity Per Employee Reports Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    "ActivityReportsStateAllTask", tables, 
+                                    "Activity Reports State All Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
                                 );
                 }catch( Exception e){
                     await LogError(context, 
-                                    "ActivityPerEmployeeReportsTask", e, 
-                                    "Activity Per Employee Reports Task failed"
+                                    "ActivityReportsStateAllTask", e, 
+                                    "Activity Reports State All Task failed"
                             );
                 }
                 
