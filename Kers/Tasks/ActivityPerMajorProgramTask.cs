@@ -82,13 +82,13 @@ namespace Kers.Tasks
                     
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
-                                    "ActivityReportsStateAllTask", tables, 
-                                    "Activity Reports State All Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    "ActivityPerMajorProgramTask", tables, 
+                                    "Activity Per Major Program Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
                                 );
                 }catch( Exception e){
                     await LogError(context, 
-                                    "ActivityReportsStateAllTask", e, 
-                                    "Activity Reports State All Task failed"
+                                    "ActivityPerMajorProgramTask", e, 
+                                    "Activity Per Major Program Task failed"
                             );
                 }
                 
