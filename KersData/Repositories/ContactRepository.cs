@@ -193,46 +193,141 @@ namespace Kers.Models.Repositories
             return stats;
         }
 
+        /********************************************************/
+        // Generate Contacts Reports Groupped by Employee
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // grouppedBy: 0 Employee, 1 MajorProgram
+        /********************************************************/
+        public async Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( FiscalYear fiscalYear, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false ){
+            List<ActivityGrouppedResult> activities;
+
+            var actvtsCacheKey = "AllActivitiesGroupped" + filter.ToString() + "_" + grouppedBy.ToString() + "_" + id.ToString() + "_" + fiscalYear.Name;
+            var cachedActivities = _cache.GetString(actvtsCacheKey);
+
+            if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
+                activities = JsonConvert.DeserializeObject<List<ActivityGrouppedResult>>(cachedActivities);
+            }else{
+                if( grouppedBy == 0){ 
+                    if(filter == 0){
+                        activities = await DistrictEmployeeGroupppedActivities(id, fiscalYear);
+                    }else if(filter == 1){
+                        activities = await UnitEmployeeGroupppedActivities(id, fiscalYear);
+                    }else if(filter == 2){
+                        activities = await KSUEmployeeGroupppedActivities(fiscalYear);
+                    }else if(filter == 2){
+                        activities = await UKEmployeeGroupppedActivities(fiscalYear);
+                    }else{
+                        activities = await AllEmployeeGroupppedActivities(fiscalYear);
+                    }
+                }else{
+                    if(filter == 0){
+                        activities = await DistrictProgramGroupppedActivities(id, fiscalYear);
+                    }else if(filter == 1){
+                        activities = await UnitProgramGroupppedActivities(id, fiscalYear);
+                    }else if(filter == 2){
+                        activities = await KSUProgramGroupppedActivities(fiscalYear);
+                    }else if(filter == 3){
+                        activities = await UKProgramGroupppedActivities(fiscalYear);
+                    }else{
+                        activities = await AllProgramGroupppedActivities(fiscalYear);
+                    }
+                }
+                
+                var serializedActivities = JsonConvert.SerializeObject(activities);
+                _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
+                    });
+
+
+            }
+            var result = ProcessGrouppedActivities(activities);
+
+            List<ContactGrouppedResult> contacts;
+
+            var contactsCacheKey = "ContactsGroupped" + filter.ToString() + "_" + grouppedBy.ToString() + "_" + id.ToString() + "_" + fiscalYear.Name;
+            var cachedContacts = _cache.GetString(contactsCacheKey);
+
+            if (!string.IsNullOrEmpty(cachedContacts) && !refreshCache){
+                contacts = JsonConvert.DeserializeObject<List<ContactGrouppedResult>>(cachedContacts);
+            }else{
+                contacts = new List<ContactGrouppedResult>();
+                if( grouppedBy == 0){
+                    if(filter == 0){
+                        contacts = await DistrictEmployeeGroupppedContacts(id, fiscalYear);
+                    }else if(filter == 1){
+                        contacts = await UnitEmployeeGroupppedContacts(id, fiscalYear);
+                    }else if( filter == 2){
+                        contacts = await KSUEmployeeGroupppedContacts(fiscalYear);
+                    }else if( filter == 3){
+                        contacts = await UKEmployeeGroupppedContacts(fiscalYear);
+                    }else{
+                        contacts = await AllEmployeeGroupppedContacts(fiscalYear);
+                    }
+                }else{
+                    if(filter == 0){
+                        contacts = await DistrictProgramGroupppedContacts(id, fiscalYear);
+                    }else if(filter == 1){
+                        contacts = await UnitProgramGroupppedContacts(id, fiscalYear);
+                    }else if( filter == 2){
+                        contacts = await KSUProgramGroupppedContacts(fiscalYear);
+                    }else if( filter == 3){
+                        contacts = await UKProgramGroupppedContacts(fiscalYear);
+                    }else{
+                        contacts = await AllProgramGroupppedContacts(fiscalYear);
+                    }
+                }
+                var serializedContacts = JsonConvert.SerializeObject(contacts);
+                _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
+                    });
+            }
+
+            result = ProcessGrouppedContacts(contacts, result);
+            return result;
+        } 
+
 
 
 
         /********************************************************/
         // Generate Contacts Reports Groupped by Employee
-        // type: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
         /********************************************************/
 
-        public async Task<TableViewModel> DataByEmployee(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false )
+        public async Task<TableViewModel> DataByEmployee(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false )
         {
 
-            var cacheKey = CacheKeys.ByEmployeeContactsData + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+            var cacheKey = CacheKeys.ByEmployeeContactsData + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
             var cachedTypes = _cache.GetString(cacheKey);
             TableViewModel table;
             if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
                 table = JsonConvert.DeserializeObject<TableViewModel>(cachedTypes);
             }else{
-
+                var result = this.GetActivitiesAndContactsAsync( fiscalYear, filter, 0, id, refreshCache);
 
                 table = new TableViewModel();
 
-                List<ActivityGrouppedResult> activities;
+ /*                List<ActivityGrouppedResult> activities;
 
 
 
 
-                var actvtsCacheKey = "AllActivitiesGrouppedByEmployee" + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+                var actvtsCacheKey = "AllActivitiesGrouppedByEmployee" + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
                 var cachedActivities = _cache.GetString(actvtsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
                     activities = JsonConvert.DeserializeObject<List<ActivityGrouppedResult>>(cachedActivities);
                 }else{
 
-                    if(type == 0){
+                    if(filter == 0){
                         activities = await DistrictEmployeeGroupppedActivities(id, fiscalYear);
-                    }else if(type == 1){
+                    }else if(filter == 1){
                         activities = await UnitEmployeeGroupppedActivities(id, fiscalYear);
-                    }else if(type == 2){
+                    }else if(filter == 2){
                         activities = await KSUEmployeeGroupppedActivities(fiscalYear);
-                    }else if(type == 2){
+                    }else if(filter == 3){
                         activities = await UKEmployeeGroupppedActivities(fiscalYear);
                     }else{
                         activities = await AllEmployeeGroupppedActivities(fiscalYear);
@@ -251,20 +346,20 @@ namespace Kers.Models.Repositories
 
                 List<ContactGrouppedResult> contacts;
 
-                var contactsCacheKey = "ContactsGrouppedByEmployee" + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+                var contactsCacheKey = "ContactsGrouppedByEmployee" + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
                 var cachedContacts = _cache.GetString(contactsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedContacts) && !refreshCache){
                     contacts = JsonConvert.DeserializeObject<List<ContactGrouppedResult>>(cachedContacts);
                 }else{
                     contacts = new List<ContactGrouppedResult>();
-                    if(type == 0){
+                    if(filter == 0){
                         contacts = await DistrictEmployeeGroupppedContacts(id, fiscalYear);
-                    }else if(type == 1){
+                    }else if(filter == 1){
                         contacts = await UnitEmployeeGroupppedContacts(id, fiscalYear);
-                    }else if( type == 2){
+                    }else if( filter == 2){
                         contacts = await KSUEmployeeGroupppedContacts(fiscalYear);
-                    }else if( type == 3){
+                    }else if( filter == 3){
                         contacts = await UKEmployeeGroupppedContacts(fiscalYear);
                     }else{
                         contacts = await AllEmployeeGroupppedContacts(fiscalYear);
@@ -277,10 +372,11 @@ namespace Kers.Models.Repositories
                 }
 
                 result = ProcessGrouppedContacts(contacts, result);
-
+ */
+                
 
                 List<PerPersonActivities> userResult = new List<PerPersonActivities>();
-                foreach( var res in result ){
+                foreach( var res in await result ){
                     var personGroup = new PerPersonActivities();
                     personGroup.Audience = res.Audience;
                     personGroup.Female = res.Female;
@@ -406,11 +502,11 @@ namespace Kers.Models.Repositories
         }
 
 
-        // type: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
-        public async Task<TableViewModel> DataByMajorProgram(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false )
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        public async Task<TableViewModel> DataByMajorProgram(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false )
         {
 
-            var cacheKey = CacheKeys.ByMajorProgramContactData + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+            var cacheKey = CacheKeys.ByMajorProgramContactData + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
             var cachedTypes = _cache.GetString(cacheKey);
             TableViewModel table;
             if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
@@ -420,25 +516,30 @@ namespace Kers.Models.Repositories
 
                 table = new TableViewModel();
 
+
+
+/* 
+
+
                 List<ActivityGrouppedResult> activities;
 
 
 
 
-                var actvtsCacheKey = "AllActivitiesGrouppedByMajorProgram" + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+                var actvtsCacheKey = "AllActivitiesGrouppedByMajorProgram" + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
                 var cachedActivities = _cache.GetString(actvtsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
                     activities = JsonConvert.DeserializeObject<List<ActivityGrouppedResult>>(cachedActivities);
                 }else{
 
-                    if(type == 0){
+                    if(filter == 0){
                         activities = await DistrictProgramGroupppedActivities(id, fiscalYear);
-                    }else if(type == 1){
+                    }else if(filter == 1){
                         activities = await UnitProgramGroupppedActivities(id, fiscalYear);
-                    }else if(type == 2){
+                    }else if(filter == 2){
                         activities = await KSUProgramGroupppedActivities(fiscalYear);
-                    }else if(type == 2){
+                    }else if(filter == 3){
                         activities = await UKProgramGroupppedActivities(fiscalYear);
                     }else{
                         activities = await AllProgramGroupppedActivities(fiscalYear);
@@ -457,20 +558,20 @@ namespace Kers.Models.Repositories
 
                 List<ContactGrouppedResult> contacts;
 
-                var contactsCacheKey = "ContactsGrouppedByMajorProgram" + type.ToString() + id.ToString() + "_" + fiscalYear.Name;
+                var contactsCacheKey = "ContactsGrouppedByMajorProgram" + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
                 var cachedContacts = _cache.GetString(contactsCacheKey);
 
                 if (!string.IsNullOrEmpty(cachedContacts) && !refreshCache){
                     contacts = JsonConvert.DeserializeObject<List<ContactGrouppedResult>>(cachedContacts);
                 }else{
                     contacts = new List<ContactGrouppedResult>();
-                    if(type == 0){
+                    if(filter == 0){
                         contacts = await DistrictProgramGroupppedContacts(id, fiscalYear);
-                    }else if(type == 1){
+                    }else if(filter == 1){
                         contacts = await UnitProgramGroupppedContacts(id, fiscalYear);
-                    }else if( type == 2){
+                    }else if( filter == 2){
                         contacts = await KSUProgramGroupppedContacts(fiscalYear);
-                    }else if( type == 3){
+                    }else if( filter == 3){
                         contacts = await UKProgramGroupppedContacts(fiscalYear);
                     }else{
                         contacts = await AllProgramGroupppedContacts(fiscalYear);
@@ -483,7 +584,9 @@ namespace Kers.Models.Repositories
                 }
 
                 result = ProcessGrouppedContacts(contacts, result);
+ */
 
+                var result = await this.GetActivitiesAndContactsAsync( fiscalYear, filter, 1, id, refreshCache);
                 var defaultMajorProgram = await coreContext.MajorProgram.Where( u => u.Name == "Administrative Functions").FirstOrDefaultAsync();
                 List<PerProgramActivities> programResult = new List<PerProgramActivities>();
                 foreach( var res in result ){
