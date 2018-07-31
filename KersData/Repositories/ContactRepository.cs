@@ -193,11 +193,11 @@ namespace Kers.Models.Repositories
             return stats;
         }
 
-        /********************************************************/
-        // Generate Contacts Reports Groupped by Employee
+        /*****************************************************************/
+        // Generate Contacts Reports Groupped by Employee or Major Program
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
         // grouppedBy: 0 Employee, 1 MajorProgram
-        /********************************************************/
+        /*******************************************************************/
         public async Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( FiscalYear fiscalYear, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false ){
             List<ActivityGrouppedResult> activities;
 

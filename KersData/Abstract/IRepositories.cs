@@ -70,6 +70,14 @@ namespace Kers.Models.Abstract
         Task<TableViewModel> DataByEmployee(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false );
         Task<TableViewModel> DataByMajorProgram(FiscalYear fiscalYear, int type = 0, int id = 0, bool refreshCache = false );
         Task<StatsViewModel> StatsPerMonth( int year = 0, int month = 0, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false);
+        
+        /*****************************************************************/
+        // Generate Contacts Reports Groupped by Employee or Major Program
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // grouppedBy: 0 Employee, 1 MajorProgram
+        /*******************************************************************/
+        Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( FiscalYear fiscalYear, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false );
+    
     }
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
