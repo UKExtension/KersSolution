@@ -214,7 +214,7 @@ namespace Kers.Models.Repositories
                         activities = await UnitEmployeeGroupppedActivities(id, fiscalYear);
                     }else if(filter == 2){
                         activities = await KSUEmployeeGroupppedActivities(fiscalYear);
-                    }else if(filter == 2){
+                    }else if(filter == 3){
                         activities = await UKEmployeeGroupppedActivities(fiscalYear);
                     }else{
                         activities = await AllEmployeeGroupppedActivities(fiscalYear);
