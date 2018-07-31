@@ -195,11 +195,11 @@ namespace Kers.Models.Contexts
             modelBuilder.Entity<ActivityRevision>()
                 .Property(b => b.SnapCopiesBW)
                 .HasDefaultValue(0);
-            /* 
+           // Workplace = 1 is the default value
             modelBuilder.Entity<ExpenseRevision>()
                 .Property(b => b.StartingLocationType)
-                .HasDefaultValue(0);
-
+                .HasDefaultValue(1);
+ /* 
             modelBuilder.Entity<ExpenseRevision>()
                 .Property(b => b.StartingLocationOther)
                 .HasDefaultValue(""); 
