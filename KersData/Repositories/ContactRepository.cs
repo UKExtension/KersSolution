@@ -1002,8 +1002,6 @@ namespace Kers.Models.Repositories
                                                 c.ContactDate < fiscalYear.End 
                                                 && 
                                                 c.ContactDate > fiscalYear.Start 
-                                                &&
-                                                c.KersUser.RprtngProfile.Institution.Code != "21000-1890"
                                         )
                                         .GroupBy(e => new {
                                             User = e.KersUser
@@ -1302,8 +1300,6 @@ namespace Kers.Models.Repositories
                                                 c.ContactDate < fiscalYear.End 
                                                 && 
                                                 c.ContactDate > fiscalYear.Start 
-                                                &&
-                                                c.KersUser.RprtngProfile.Institution.Code != "21000-1890"
                                         )
                                         .GroupBy(e => new {
                                             ProgramId = e.MajorProgramId
