@@ -160,6 +160,7 @@ export interface Expense{
     id:number,
     expenseDate:Date,
     expenseId:number,
+    startingLocationType:number,
     expenseLocation:string,
     isOvernight: boolean,
     programCategoryId: number,

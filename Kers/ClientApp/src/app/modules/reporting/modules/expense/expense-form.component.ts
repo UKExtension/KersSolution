@@ -54,6 +54,7 @@ export class ExpenseFormComponent {
                                     month: date.getMonth() + 1,
                                     day: date.getDate()}
                                 }, Validators.required],
+              startingLocationType: [ 1, Validators.required],
               expenseLocation: ['', Validators.required],
               isOvernight: false,
               programCategoryId: ["", Validators.required],

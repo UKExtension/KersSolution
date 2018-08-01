@@ -7,6 +7,8 @@ import {AffirmativeHomeComponent} from './affirmative-home.component';
 import {AffirmativeFormComponent} from './affirmative-form.component';
 import {AffirmativeReportsHomeComponent} from './reports/affirmative-reports-home.component';
 
+import { PlanningunitService } from '../planningunit/planningunit.service';
+
 import {AffirmativeService} from './affirmative.service';
 import { AffirmativeHomeReportComponent } from './affirmative-home-report.component';
 
@@ -18,7 +20,8 @@ import { AffirmativeHomeReportComponent } from './affirmative-home-report.compon
                   AffirmativeReportsHomeComponent
                 ],
   providers:    [
-                  AffirmativeService
+                  AffirmativeService,
+                  PlanningunitService
                 ],
   exports:      [
                   AffirmativeReportsHomeComponent

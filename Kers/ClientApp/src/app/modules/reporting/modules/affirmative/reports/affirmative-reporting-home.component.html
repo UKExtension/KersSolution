@@ -10,7 +10,7 @@
 <div>
 	
 AFFIRMATIVE ACTION PLAN FOR {{selectedFiscalYear.start | date:'mediumDate'}} - {{selectedFiscalYear.end | date:'mediumDate'}}<br><br>
-Serving All the People of <span *ngIf="user">{{user.rprtngProfile.planningUnit.name}}</span><br><br>
+Serving All the People of <span *ngIf="user">{{(unit | async)?.name}}</span><br><br>
 Cooperative Extension Service<br><br>
 University of Kentucky<br><br>
 Cooperative Extension Programs<br><br>

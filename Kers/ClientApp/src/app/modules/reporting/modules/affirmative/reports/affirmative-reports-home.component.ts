@@ -11,6 +11,9 @@ import {    AffirmativeService,
 import { Router } from "@angular/router";
 import {UserService, User} from '../../user/user.service';
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
+import { PlanningUnit } from '../../plansofwork/plansofwork.service';
+import { PlanningunitService } from '../../planningunit/planningunit.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
     selector: 'affirmative-report',
@@ -24,6 +27,7 @@ export class AffirmativeReportsHomeComponent {
     loading = true;
     
     @Input() unitId:number = 0;
+    unit:Observable<PlanningUnit>;
 
     makeupDiversityGroups: MakeupDiversityGroup[];
     advisoryGroups: AdvisoryGroup[];
@@ -40,12 +44,15 @@ export class AffirmativeReportsHomeComponent {
         private service: AffirmativeService,
         private userService: UserService,
         private router: Router,
+        private unitService:PlanningunitService,
         private cdRef:ChangeDetectorRef
     )   
     {}
 
     ngOnInit(){
-        this.counter = 0;       
+        this.counter = 0;   
+        
+        this.unit = this.unitService.id(this.unitId);
 
         this.userService.current().subscribe(
             res => this.user = <User>res,

@@ -31,6 +31,21 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="startingLocationType">Starting Location:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <select name="startingLocationType" formControlName="startingLocationType" class="form-control col-md-7 col-xs-12">
+                    <option value="1">Workplace</option>
+                    <option value="2">Home</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="expenseLocation">Destination(s):</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="expenseLocation" id="expenseLocation" formControlName="expenseLocation" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="programCategory">Program Category:</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <select name="programCategoryId" formControlName="programCategoryId" class="form-control col-md-7 col-xs-12">
@@ -40,17 +55,12 @@
             </div>
         </div>
         <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="businessPurpose">Business Purpose:</label>
-                <div class="col-md-9 col-sm-9 col-xs-12">
-                        <input type="text" name="businessPurpose" id="businessPurpose" formControlName="businessPurpose" class="form-control col-md-7 col-xs-12">
-                </div>
-            </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="expenseLocation">Destination(s):</label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="businessPurpose">Business Purpose:</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="text" name="expenseLocation" id="expenseLocation" formControlName="expenseLocation" class="form-control col-md-7 col-xs-12">
+                    <input type="text" name="businessPurpose" id="businessPurpose" formControlName="businessPurpose" class="form-control col-md-7 col-xs-12">
             </div>
         </div>
+        
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fundingSourceMileageId">Mileage Funding Source: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
