@@ -13,6 +13,8 @@ namespace Kers.Models.Entities.KERScore
         public KersUser KersUser {get;set;}
         public int? PlanningUnitId {get;set;}
         public PlanningUnit PlanningUnit {get;set;}
+        public int? MajorProgramId {get; set;}
+        public MajorProgram MajorProgram {get; set;}
         public List<StoryRevision> Revisions {get;set;}
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
