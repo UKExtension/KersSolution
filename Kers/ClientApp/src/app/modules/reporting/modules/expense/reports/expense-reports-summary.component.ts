@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth, ExpenseSummary } from '../expense.service';
 import { saveAs } from 'file-saver';
 import { User } from "../../user/user.service";
+import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'expense-reports-summary',
@@ -24,7 +25,8 @@ import { User } from "../../user/user.service";
                             <th class="text-right">LODGING</th>
                             <th class="text-right">REGISTRATION</th>
                             <th class="text-right">OTHER</th>
-                            <th class="text-right">TOTALS</th>
+                            <th class="text-right">MTD TOTALS</th>
+                            <th class="text-right">YTD</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,12 +39,23 @@ import { User } from "../../user/user.service";
                             <td class="text-right">{{summary.registration | currency:'USD':'symbol':'1.2-2'}}</td>
                             <td class="text-right">{{summary.other | currency:'USD':'symbol':'1.2-2'}}</td>
                             <td class="text-right">{{summary.total | currency:'USD':'symbol':'1.2-2'}}</td>
+                            <td class="text-right" *ngIf="fiscalYearSummaries">{{ytd(summary.fundingSource.id) | currency:'USD':'symbol':'1.2-2'}}</td>
+                        </tr>
+                        <tr *ngFor="let blank of blankRows">
+                            <td>{{blank.fundingSource.name}}</td>
+                            <td class="text-right">0</td>
+                            <td class="text-right">$0.00</td>
+                            <td class="text-right">$0.00</td>
+                            <td class="text-right">$0.00</td>
+                            <td class="text-right">$0.00</td>
+                            <td class="text-right">$0.00</td>
+                            <td class="text-right">$0.00</td>
+                            <td class="text-right">{{blank.total | currency:'USD':'symbol':'1.2-2'}}</td>
                         </tr>
                         
                     </tbody>
                 </table>
             </div>
-            <div class="ln_solid"></div>
             <!--
             <div>Hours reported on Supplemental Nutrition Assistance Program (SNAP): {{snapHours}}</div>
             -->
@@ -95,8 +108,12 @@ export class ExpenseReportsSummaryComponent {
     summaries: ExpenseSummary[] = [];
     snapHours:number = 0;
 
+    fiscalYearSummaries: ExpenseSummary[];
+    blankRows: ExpenseSummary[];
+
     constructor( 
-        private service:ExpenseService
+        private service:ExpenseService,
+        private fiscalYearService: FiscalyearService
     )   
     {}
 
@@ -105,6 +122,25 @@ export class ExpenseReportsSummaryComponent {
         if(this.user != null){
             this.userid = this.user.id;
         }
+
+        this.fiscalYearService.forDate( new Date(this.year.year, this.month.month, 15) )
+            .subscribe(
+                res => {
+                    var fiscalYear = res;
+                    
+                    this.service.SummariesPerPeriod( fiscalYear.start, new Date(this.year.year, this.month.month + 1, 0))
+                        .subscribe(
+                            res =>
+                            {
+                                this.fiscalYearSummaries = res;
+                            }
+                        )
+                
+                }
+            )
+
+
+
 /*
         this.service.snapHours(this.month.month, this.userid).subscribe(
             res => {
@@ -152,8 +188,18 @@ export class ExpenseReportsSummaryComponent {
             var expenseNonMileage = this.monthExpenses.filter( e => e.fundingSourceNonMileageId == source.id);
             this.summarize(source, expensesMileage, expenseNonMileage);
         }
+        this.getBlankRows();
         this.loading = false;
-    }   
+    }
+    
+    getBlankRows(){
+        this.blankRows = [];
+        for( let row of this.fiscalYearSummaries){
+            if( this.summaries.filter( s => s.fundingSource.id == row.fundingSource.id ).length == 0 ){
+                this.blankRows.push(row);
+            }
+        }
+    }
 
     print(){
         this.pdfLoading = true;
@@ -246,6 +292,16 @@ export class ExpenseReportsSummaryComponent {
             return (expense.mealRateDinnerCustom == undefined ? 0 : expense.mealRateDinnerCustom );
         }
         return 0;
+    }
+
+    ytd( fundingSourceId:number ){
+        var summary = this.fiscalYearSummaries.filter( s => s.fundingSource.id == fundingSourceId );
+        if( summary.length > 0 ){
+            return summary[0].total;
+        }else{
+            return 0;
+        }
+        
     }
 
 }

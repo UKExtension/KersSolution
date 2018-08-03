@@ -136,11 +136,23 @@ export class ExpenseService {
         var url = this.baseUrl + 'fysummaries/' + userId + '/' + fiscalYearName;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => {
-                    var ret = res.json();
+                    var ret = <ExpenseSummary[]>res.json();
                     return ret;
                 } )
                 .catch(this.handleError);
     }
+
+
+    SummariesPerPeriod(start:Date, end:Date, userId:number = 0){
+        var url = this.baseUrl + 'summariesPerPeriod/' + start.toISOString() + '/' + end.toISOString() + '/' + userId;
+        return this.http.get(this.location.prepareExternalUrl(url))
+                .map(res => {
+                    var ret = <ExpenseSummary[]>res.json();
+                    return ret;
+                } )
+                .catch(this.handleError);
+    }
+
 
     getRequestOptions(){
         return new RequestOptions(

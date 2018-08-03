@@ -199,6 +199,19 @@ namespace Kers.Controllers
             return new OkObjectResult(expenseRepo.SummariesPerFiscalYear( user, fYear));
         }
 
+        [HttpGet("summariesPerPeriod/{start}/{end}/{userId?}/")]
+        [Authorize]
+        public IActionResult SummariesPerPeriod(DateTime start, DateTime end, int userId=0){
+            KersUser user;
+            if(userId == 0){
+                user = this.CurrentUser();
+            }else{
+                user = this.context.KersUser.Where(u => u.Id == userId).Include(u => u.RprtngProfile).FirstOrDefault();
+            }
+            
+            return new OkObjectResult(expenseRepo.SummariesPerPeriod( user, start, end ));
+        }
+
 
         //public List<ExpenseSummary> SummariesPerFiscalYear(KersUser user, FiscalYear fiscalYear)
 
