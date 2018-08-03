@@ -135,7 +135,10 @@ export class ExpenseService {
     fiscalYearSummaries(userId:number = 0, fiscalYearName:string = ""){
         var url = this.baseUrl + 'fysummaries/' + userId + '/' + fiscalYearName;
         return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Expense[]>res.json() )
+                .map(res => {
+                    var ret = res.json();
+                    return ret;
+                } )
                 .catch(this.handleError);
     }
 

@@ -66,10 +66,11 @@ namespace Kers.Models.Repositories
             return revs;
         }
 
-        public List<ExpenseRevision> PerFiscalYear(KersUser user, FiscalYear fiscalYear){
+
+        public List<ExpenseRevision> PerPeriod(KersUser user, DateTime start, DateTime end){
             
             var lastExpenses = coreContext.Expense.
-                                Where(e=>e.KersUser == user && e.ExpenseDate <= fiscalYear.End && e.ExpenseDate >= fiscalYear.Start).
+                                Where(e=>e.KersUser == user && e.ExpenseDate <= end && e.ExpenseDate >= start).
                                 Include(e=>e.Revisions).ThenInclude( r => r.FundingSourceNonMileage).
                                 Include(e=>e.Revisions).ThenInclude( r => r.FundingSourceMileage).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
@@ -87,12 +88,17 @@ namespace Kers.Models.Repositories
             return revs;
         }
 
-        public List<ExpenseSummary> SummariesPerFiscalYear(KersUser user, FiscalYear fiscalYear){
+
+        public List<ExpenseSummary> SummariesPerPeriod(KersUser user, DateTime start, DateTime end){
             
-            var expenses = PerFiscalYear(user, fiscalYear);
-            var mileageRate = MileageRate(user);
+            var expenses = PerPeriod( user, start, end);
+            var mileageRate = MileageRate(user, end.Year, end.Month);
 
             return DivideByType(expenses, mileageRate);
+        }
+
+        public List<ExpenseSummary> SummariesPerFiscalYear(KersUser user, FiscalYear fiscalYear){
+            return SummariesPerPeriod(user, fiscalYear.Start, fiscalYear.End);
         }
 
 

@@ -43,7 +43,8 @@
 
 
 
-<h2>EXPENSE TOTALS BY FUNDING SOURCE FOR FISCAL YEAR 2018 (7/1/2017 - 6/30/2018)</h2>
+<h2 *ngIf="expenseFiscalYear">EXPENSE TOTALS BY FUNDING SOURCE FOR FISCAL YEAR {{expenseFiscalYear.name}} ({{expenseFiscalYear.start | date:"mediumDate"}} - {{expenseFiscalYear.end | date:"mediumDate"}})</h2>
+<fiscal-year-switcher [initially]="'previous'" [showNext]="false" (onSwitched)="expenseTotalsFySwitched($event)"></fiscal-year-switcher><br><br>
 <div class="table-responsive">
 <div>
 	<table class="table table-bordered table-striped" cellspacing="0" rules="all" border="1" id="ctl00_MainContent_GridViewEmployeeExpenseSummaryByFundingSourceYTD" style="border-collapse:collapse;">
@@ -58,7 +59,7 @@
                 {{smr.fundingSource.name}} <br>
             </td>
             <td align="right">
-                {{smr.total | currency:'USD':true:'1.2-2' }}
+                {{smr.total | currency:'USD':"symbol":'1.2-2' }}
             <br>
             </td>
 		</tr>

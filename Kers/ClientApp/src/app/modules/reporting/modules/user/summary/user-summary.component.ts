@@ -54,6 +54,7 @@ export class UserSummaryComponent {
     latestActivities:Observable<Activity[]>;
     expenseSummaries: Observable<ExpenseSummary>[];
     inServiceEnrolment;
+    expenseFiscalYear:FiscalYear = null;
     hoursAttended = 0;
 
 
@@ -87,7 +88,7 @@ export class UserSummaryComponent {
                     
                     
                     
-                    this.expenseSummaries = this.expenseService.fiscalYearSummaries(user.id);
+                    
                     
                     this.reportingService.setSubtitle(this.user.personalProfile.firstName + " " +this.user.personalProfile.lastName);
                     this.reportingService.setTitle("Employee Summary");
@@ -138,6 +139,11 @@ export class UserSummaryComponent {
 
     storiesFySwitched(event:FiscalYear){
         this.latestStories = this.storyService.latestByUser(this.user.id, 85, event.name);
+    }
+
+    expenseTotalsFySwitched(event:FiscalYear){
+        this.expenseFiscalYear = event;
+        this.expenseSummaries = this.expenseService.fiscalYearSummaries(this.user.id,event.name);
     }
 
 

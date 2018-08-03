@@ -45,6 +45,7 @@ namespace Kers.Models.Abstract
         List<ExpenseSummary> Summaries(KersUser user, int year, int month);
         List<ExpenseRevision> PerMonth(KersUser user, int year, int month, string order);
         List<ExpenseSummary> SummariesPerFiscalYear(KersUser user, FiscalYear fiscalYear);
+        List<ExpenseSummary> SummariesPerPeriod(KersUser user, DateTime start, DateTime end);
         float Breakfast(ExpenseRevision expense);
         float Lunch(ExpenseRevision expense);
         float Dinner(ExpenseRevision expense);

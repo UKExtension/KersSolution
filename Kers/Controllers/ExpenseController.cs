@@ -188,9 +188,9 @@ namespace Kers.Controllers
             }
             FiscalYear fYear;
             if(fiscalYear == ""){
-                fYear = fiscalYearRepo.currentFiscalYear("serviceLog");
+                fYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
             }else{
-                fYear = fiscalYearRepo.GetSingle( y => y.Name == fiscalYear);
+                fYear = fiscalYearRepo.GetSingle( y => y.Name == fiscalYear && y.Type == FiscalYearType.ServiceLog);
                 if(fYear == null){
                     this.Log( user ,"ExpenseRevision", "Fiscal Year not found in generating summaries per year.", "Expense", "Error");
                     return new StatusCodeResult(500);
