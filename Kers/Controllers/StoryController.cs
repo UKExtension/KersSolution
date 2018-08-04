@@ -295,6 +295,7 @@ namespace Kers.Controllers
                 story.MajorProgram = this.context.MajorProgram.Where( m => m.Id == story.MajorProgramId)
                                             .Include(m => m.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
                                             .FirstOrDefault();
+                str.MajorProgramId = story.MajorProgramId;
                 str.Revisions = new List<StoryRevision>();
                 str.Revisions.Add(story);
                 context.Add(str); 
@@ -319,6 +320,7 @@ namespace Kers.Controllers
                 story.MajorProgram = this.context.MajorProgram.Where( m => m.Id == story.MajorProgramId)
                                             .Include(m => m.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
                                             .FirstOrDefault();
+                stEntity.MajorProgramId = story.MajorProgramId;
                 stEntity.Revisions.Add(story);
                 stEntity.Updated = DateTime.Now;
                 context.SaveChanges();
