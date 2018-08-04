@@ -123,16 +123,20 @@ export class ExpenseReportsSummaryComponent {
             this.userid = this.user.id;
         }
 
-        this.fiscalYearService.forDate( new Date(this.year.year, this.month.month, 15) )
+        this.fiscalYearService.forDate( new Date(this.year.year, this.month.month - 1, 15) )
             .subscribe(
                 res => {
                     var fiscalYear = res;
                     
-                    this.service.SummariesPerPeriod( fiscalYear.start, new Date(this.year.year, this.month.month + 1, 0))
+                    this.service.SummariesPerPeriod( fiscalYear.start, new Date(this.year.year, this.month.month, 0,23, 59, 59), this.userid)
                         .subscribe(
                             res =>
                             {
                                 this.fiscalYearSummaries = res;
+                                if(this.loading == true ){
+                                    this.getBlankRows();
+                                    this.loading = false;
+                                }
                             }
                         )
                 
@@ -188,8 +192,12 @@ export class ExpenseReportsSummaryComponent {
             var expenseNonMileage = this.monthExpenses.filter( e => e.fundingSourceNonMileageId == source.id);
             this.summarize(source, expensesMileage, expenseNonMileage);
         }
-        this.getBlankRows();
-        this.loading = false;
+       
+        if( this.fiscalYearSummaries != null){
+            this.getBlankRows();
+            this.loading = false;
+        }
+        
     }
     
     getBlankRows(){
