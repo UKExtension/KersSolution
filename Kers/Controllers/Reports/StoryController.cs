@@ -36,6 +36,7 @@ namespace Kers.Controllers.Reports
 
         public IActionResult Index()
         {
+            /* 
             var stories = context.Story;
             foreach( var story in stories ){
                 var last = context.StoryRevision.Where( r => r.StoryId == story.Id)
@@ -43,7 +44,7 @@ namespace Kers.Controllers.Reports
                 story.MajorProgramId = last.MajorProgramId;
             }
             context.SaveChanges();
-
+ */
             return View();
         }
 
