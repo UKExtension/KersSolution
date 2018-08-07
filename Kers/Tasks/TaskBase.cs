@@ -14,7 +14,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Kers.Tasks
 {
-    // uses https://theysaidso.com/api/
     public class TaskBase
     {
         //KERScoreContext context;

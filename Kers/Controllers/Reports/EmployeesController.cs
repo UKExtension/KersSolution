@@ -23,6 +23,8 @@ using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.ViewModels;
 using Microsoft.Extensions.Caching.Memory;
 using Kers.Models.Data;
+using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 
 namespace Kers.Controllers.Reports
 {
@@ -37,13 +39,16 @@ namespace Kers.Controllers.Reports
         IContactRepository contactRepo;
         private FiscalYear currentFiscalYear;
 
+        private IConfiguration _configuration;
+
         string[] types = new string[]{ "District Reports", "Planning Unit Report", "KSU" };
         public EmployeesController( 
                     KERScoreContext context,
                     IFiscalYearRepository fiscalYearRepository,
                     IDistributedCache _cache,
                     IActivityRepository activityRepo,
-                    IContactRepository contactRepo
+                    IContactRepository contactRepo,
+                    IConfiguration Configuration
             ){
            this.context = context;
            this.fiscalYearRepository = fiscalYearRepository;
@@ -51,6 +56,7 @@ namespace Kers.Controllers.Reports
            this._cache = _cache;
            this.activityRepo = activityRepo;
            this.contactRepo = contactRepo;
+           _configuration = Configuration;
         }
 
 
@@ -58,12 +64,17 @@ namespace Kers.Controllers.Reports
         [Route("")]
         public IActionResult Index()
         {
-            var activitiesWith2019MajPr = this.context.Activity.Where( a => a.MajorProgram.StrategicInitiative.FiscalYear.Name == "2019");
-            activitiesWith2019MajPr = activitiesWith2019MajPr.Where( a => a.ActivityDate.Month < 7 && a.ActivityDate.Year < 2019 );
+            var optionsBuilder = new DbContextOptionsBuilder<KersReportingContext>();
+            optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:connKersReporting"]);
 
+            using (var context = new KersReportingContext(optionsBuilder.Options))
+            {
+                var theList = context.vInServiceQualtricsSurveysToCreate.ToList();
+                
+            }
+            
 
-
-            return View(activitiesWith2019MajPr.ToList());
+            return View();
         }
 
 
@@ -109,5 +120,27 @@ namespace Kers.Controllers.Reports
         
        
     }
+
+
+    class KersReportingContext:DbContext{
+        public KersReportingContext(DbContextOptions<KersReportingContext> options)
+        : base(options)
+        { }
+
+        public virtual DbSet<vInServiceQualtricsSurveysToCreate> vInServiceQualtricsSurveysToCreate { get; set; }
+    }
+
+    public partial class vInServiceQualtricsSurveysToCreate
+    {
+        [Key]
+        public int rID {get;set;}
+        public string tID {get; set;}
+        public string trainDateBegin {get;set;}
+        public string  tTitle {get;set;}
+        public string qualtricsTitle {get;set;}
+    }
+
+
+
 
 }
