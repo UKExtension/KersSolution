@@ -103,9 +103,9 @@ namespace Kers.Controllers.Reports
         [Route("[action]/{fy?}/{countyId?}", Name = "AffirmativeAction")]
         public async Task<IActionResult> AffirmativeAction(string fy = "0", int countyId = 0)
         {
-            var units = this.context.PlanningUnit.OrderBy(l => l.order).ToListAsync();
+            
             FiscalYear fiscalYear = GetFYByName(fy);
-
+            var units = this.context.PlanningUnit.OrderBy(l => l.order).ToListAsync();
             if(fiscalYear == null){
                 return new StatusCodeResult(500);
             }
