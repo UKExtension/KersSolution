@@ -215,6 +215,13 @@ namespace Kers.Controllers
 					pdfCanvas.DrawText(text, 43, 204, getPaint(18.0f, 1));
 					text = user.ExtensionPosition.Title + ", " + user.RprtngProfile.PlanningUnit.Name;
 					pdfCanvas.DrawText(text, 43, 222, getPaint(12.0f));
+					if(user.RprtngProfile.PlanningUnit.Address != null ){
+						text = user.RprtngProfile.PlanningUnit.Address;
+						pdfCanvas.DrawText(text, 43, 238, getPaint(9.0f));
+						text = user.RprtngProfile.PlanningUnit.City + ", KY " + user.RprtngProfile.PlanningUnit.Zip;
+						pdfCanvas.DrawText(text, 43, 251, getPaint(9.0f));
+					}
+					
 
 					pdfCanvas.DrawText("Summary", 43, 300, getPaint(20.0f));
 
