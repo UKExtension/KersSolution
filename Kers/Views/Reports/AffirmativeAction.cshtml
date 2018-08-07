@@ -1,16 +1,43 @@
-<fiscal-year-switcher [initially]="'current'" (onSwitched)="selectFiscalYear($event)" (onLoaded)="yearsLoaded($event)"></fiscal-year-switcher><br><br>
+@model Kers.Models.Entities.KERScore.AffirmativeActionPlanRevision;
 
-<loading *ngIf="loading"></loading>
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
 
 
-<div class="col-md-12 col-sm-12 col-xs-12" *ngIf="!loading">
-<div *ngIf="plan==null">Affirmative Action Plan is not Submitted</div>
-<div *ngIf="plan!=null">
+    var units = ViewData["units"] as List<Kers.Models.Entities.KERScore.PlanningUnit>; 
+    var unit = ViewData["unit"] as Kers.Models.Entities.KERScore.PlanningUnit; 
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+	var MakeupDiversityGroups = ViewData["MakeupDiversityGroups"] as List<Kers.Models.Entities.KERScore.AffirmativeMakeupDiversityTypeGroup>;
+	var AdvisoryGroups = ViewData["AdvisoryGroups"] as List<Kers.Models.Entities.KERScore.AffirmativeAdvisoryGroupType>;
+    var SummaryDiversityType = ViewData["SummaryDiversityType"] as List<Kers.Models.Entities.KERScore.AffirmativeSummaryDiversityType>;
+	ViewData["Subtitle"] = unit == null ? "Counties" : unit.Name ;
+    ViewData["Title"] = "Affirmative Action Report for FY" + FiscalYear.Name;
+}
 
-<div>
+
+<br><br>
+<div class="row">
+    <label class="col-md-2">Select Planning Unit</label>
+    <div class="col-md-8">
+        <select asp-for="@unit.Id" asp-items="@(new SelectList(@units,"Id","Name"))" class="form-control" onchange="location = '@Url.RouteUrl("AffirmativeAction", new { countyId = "" })' + '/' + this.value;">
+            <option>-- select --</option>
+        </select>
+    </div>
+</div><br><br>
+@if(unit != null)
+{
+    @if(Model == null){
+        <p>Affirmative Action Report is not Submitted.</p>
+    }else{
+        
+        
+
+
+
+        <div>
 	
-AFFIRMATIVE ACTION PLAN FOR {{selectedFiscalYear.start | date:'mediumDate'}} - {{selectedFiscalYear.end | date:'mediumDate'}}<br><br>
-Serving All the People of {{(unit | async)?.name}}<br><br>
+AFFIRMATIVE ACTION PLAN FOR @FiscalYear.Start.ToString("MMM dd, yyyy") - @FiscalYear.End.ToString("MMM dd, yyyy")<br><br>
+Serving All the People of @unit.Name<br><br>
 Cooperative Extension Service<br><br>
 University of Kentucky<br><br>
 Cooperative Extension Programs<br><br>
@@ -170,17 +197,17 @@ The best available data will be used to determine the demographic composition of
 <hr>
 
 <span id="ctl00_MainContent_ListView1_ctrl0_LabelCountyName" style="font-weight:bold;">COUNTY: &nbsp;&nbsp;&nbsp;</span>
-<span id="ctl00_MainContent_ListView1_ctrl0_LabelCountyNameValue">{{(unit | async)?.name}}</span>
+<span id="ctl00_MainContent_ListView1_ctrl0_LabelCountyNameValue">@unit.Name</span>
 <br><br>
 
 <span id="ctl00_MainContent_ListView1_ctrl0_LabelAgentsInvolved" style="font-weight:bold;">AGENTS INVOLVED: &nbsp;&nbsp;&nbsp;</span>
-<span id="ctl00_MainContent_ListView1_ctrl0_LabelAgentsInvolvedValue">{{plan.agents}}</span>
+<span id="ctl00_MainContent_ListView1_ctrl0_LabelAgentsInvolvedValue">@Model.Agents</span>
 <br><br>
 <p>
 <strong>Brief description</strong>
 of the county reflecting diversity in demographics, program audiences, available resources, and the county program.  This statement should describe the current state of affairs yet expose the areas where improvement is needed.
 </p>
-<p [innerHtml]="plan.description"></p>
+<p>@Html.Raw(Model.Description)</p>
 
 
 <p>&nbsp;&nbsp;</p>
@@ -194,38 +221,80 @@ of the county reflecting diversity in demographics, program audiences, available
 			<thead>
 				<tr>
 					<th rowspan="2">ADVISORY GROUP</th>
-					<ng-container *ngFor="let group of makeupDiversityGroups">
-						<ng-container *ngIf="group.render">
-							<th [attr.colspan]="group.types.length">{{group.name}}</th>
-						</ng-container>
-						<ng-container *ngIf="!group.render">
-							<ng-container *ngFor="let type of group.types">
-								<th  [attr.rowspan]="2">{{type.name}}</th>
-							</ng-container>
-						</ng-container>
-						
-					</ng-container>
+
+					@foreach( var group in MakeupDiversityGroups )
+					{
+						@if(group.Render)
+						{
+							<th colspan="@group.Types.Count">@group.Name</th>
+						}
+						else
+						{
+							@foreach( var type in group.Types)
+							{
+								<th  rowspan="2">@type.Name</th>
+							}
+							
+						}
+					}
+				
+
+					
 					
 				</tr>
 				<tr>
-					<ng-container *ngFor="let group of makeupDiversityGroups">
-						<ng-container *ngIf="group.render">
-							<th *ngFor="let type of group.types">{{type.name}}</th>
-						</ng-container>
-					</ng-container>
-				</tr>                 
+					@foreach( var group in MakeupDiversityGroups )
+					{
+						@if( group.Render )
+						{
+							@foreach( var type in group.Types)
+							{
+								<th>@type.Name</th>
+							}
+						}
+					}
+				</tr>
+                
 			</thead>
 			<tbody>
-				<tr *ngFor="let aGroup of advisoryGroups; let gi = index">
-					<td>{{aGroup.name}}</td>
-					<ng-container *ngFor="let group of makeupDiversityGroups">
-						<td *ngFor="let type of group.types; let i = index">
-							
-								{{cnt(type)}}
-								
-						</td>
-					</ng-container>
-				</tr>
+				@foreach( var aGroup in AdvisoryGroups )
+				{
+					<tr>
+						<td>@aGroup.Name</td>
+						@foreach( var makeupGroup in MakeupDiversityGroups )
+						{
+							@foreach( var type in makeupGroup.Types)
+							{
+								<td>
+									@if( Model.MakeupValues.Where( v => v.DiversityTypeId == type.Id && v.GroupTypeId == aGroup.Id).FirstOrDefault() == null )
+									{
+										<p>0</p>
+									}
+									else
+									{
+										@if( @Model.MakeupValues.Where( v => v.DiversityTypeId == type.Id && v.GroupTypeId == aGroup.Id).FirstOrDefault().Value == "")
+										{
+											@if( type.Type == "number")
+											{
+												<p>0</p>
+											}
+											else
+											{
+												<p></p>	
+											}
+											
+										}
+										else
+										{
+											<p>@Model.MakeupValues.Where( v => v.DiversityTypeId == type.Id && v.GroupTypeId == aGroup.Id).FirstOrDefault().Value</p>
+										}
+									}
+								</td>
+							}
+						}
+					</tr>
+				}
+				
 			</tbody>
 		</table>
 	</div>
@@ -239,7 +308,7 @@ of the county reflecting diversity in demographics, program audiences, available
 <strong>Affirmative Action Goals</strong>
 This is the state of affairs county programs are working toward in terms of reaching all audiences.  These goals will come about as a result of examining the makeup of advisory committees, geographic, age, racial and gender participation in programs, and the variety of programming opportunities provided to extension audiences.  <strong>As you list your goals, include the initials of the agents responsible for setting that particular goal.</strong>
 </p>
-<p [innerHtml]="plan.goals"></p>
+<p>@Html.Raw(@Model.Goals)</p>
 
 
 <p>&nbsp;&nbsp;</p>
@@ -251,7 +320,7 @@ This is the state of affairs county programs are working toward in terms of reac
 <strong>Action Strategies to accomplish the above identified Affirmative Action Goals</strong>
 Action strategies should be as specific as possible and should include those efforts the county staff intends to initiate during this program year.  Efforts will be related to strengthening councils and leadership, providing more diversity in these groups as well as actual programming and outreach efforts from the county Plan of Work.  <strong>As you list your efforts to achieve identified goals, include the initials of the agents responsible for carrying out each particular effort.</strong> 
 </p>
-<p [innerHtml]="plan.strategies"></p>
+<p>@Html.Raw(@Model.Strategies)</p>
 
 
 <p>&nbsp;&nbsp;</p>
@@ -264,7 +333,7 @@ Action strategies should be as specific as possible and should include those eff
 <strong>What specific efforts have you made</strong>
 to comply with Civil Rights and Affirmative Action Guidelines and the goals and strategies established in the County Affirmative Action Plan above? <strong>Efforts should relate to the planned efforts and goals identified above and again are identified by the initials of individual agents involved.</strong>
 </p>
-<p *ngIf="plan.efforts" [innerHtml]="plan.efforts"></p>
+<p>@Html.Raw(@Model.Efforts)</p>
 
 <p>&nbsp;&nbsp;</p>
 
@@ -272,7 +341,7 @@ to comply with Civil Rights and Affirmative Action Guidelines and the goals and 
 <strong>What success have you had</strong>
  in increasing minority or other under represented groups’ participation in your program? <strong>(Identify successes with initials of agents involved.)</strong>
 </p>
-<p *ngIf="plan.success" [innerHtml]="plan.success"></p>
+<p>@Html.Raw(@Model.Success)</p>
 <br><br>
 
 <p>From the previous chart where you reported council membership, summarize below the number of meetings and minority/female involvement in the past year.</p>
@@ -283,16 +352,36 @@ to comply with Civil Rights and Affirmative Action Guidelines and the goals and 
 		<thead>
 			<tr>
 				<th>ADVISORY GROUP</th>
-				<th *ngFor="let diversity of summaryDevirsity">{{diversity.name}}</th>
+				@foreach( var divType in SummaryDiversityType )
+				{
+					<th>@divType.Name</th>
+				}
+				
 			</tr>                 
 		</thead>
 		<tbody>
-			<tr *ngFor="let aGroup of advisoryGroups">
-				<td>{{aGroup.name}}</td>
-				<td *ngFor="let diversity of summaryDevirsity">
-					{{ 0 + cntSummary()}}
-				</td>
-			</tr>
+			@foreach( var advGroup in AdvisoryGroups )
+			{
+					<tr>
+						<td>@advGroup.Name</td>
+						@foreach( var divType in SummaryDiversityType )
+						{
+							<td>
+								@if( @Model.SummaryValues.Where( v => v.DiversityTypeId == divType.Id && v.GroupTypeId == advGroup.Id).FirstOrDefault().Value == "")
+										{
+											
+												<p>0</p>
+											
+											
+										}
+										else
+										{
+											<p>@Model.SummaryValues.Where( v => v.DiversityTypeId == divType.Id && v.GroupTypeId == advGroup.Id).FirstOrDefault().Value</p>
+										}
+							</td>
+						}
+					</tr>
+			}
 		</tbody>
 	</table>
 </div>
@@ -640,6 +729,21 @@ Discrimination and Harassment</strong></p>
 
 <br><br><br>
 
-</div>
-<div class="text-right" *ngIf="unitId==0"><a class="btn btn-default btn-xs" href="https://kers.ca.uky.edu/kers_mobile/ReportAffirmativeActionPlan.aspx">Affirmative Action Reports Archive</a></div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+}
+
+
+

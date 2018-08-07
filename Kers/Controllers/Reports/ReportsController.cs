@@ -29,19 +29,21 @@ namespace Kers.Controllers.Reports
         KERScoreContext context;
         IStoryRepository storyRepo;
         IActivityRepository activityRepo;
-
+        IFiscalYearRepository fiscalYearRepo;
         IContactRepository contactRepo;
 
         public ReportsController( 
                     KERScoreContext context,
                     IStoryRepository storyRepo,
                     IContactRepository contactRepo,
-                    IActivityRepository activityRepo
+                    IActivityRepository activityRepo,
+                    IFiscalYearRepository fiscalYearRepo
             ){
             this.context = context;
             this.storyRepo = storyRepo;
             this.contactRepo = contactRepo;
             this.activityRepo = activityRepo;
+            this.fiscalYearRepo = fiscalYearRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -97,7 +99,63 @@ namespace Kers.Controllers.Reports
             return View();
         }
 
+        [HttpGet]
+        [Route("[action]/{fy?}/{countyId?}", Name = "AffirmativeAction")]
+        public async Task<IActionResult> AffirmativeAction(string fy = "0", int countyId = 0)
+        {
+            var units = this.context.PlanningUnit.OrderBy(l => l.order).ToListAsync();
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            ViewData["FiscalYear"] = fiscalYear;
+            
+            
+
+            AffirmativeActionPlanRevision model = null;
+            if(countyId != 0){
+                var unit = await this.context.PlanningUnit.Where( u => u.Id == countyId).FirstOrDefaultAsync();
+                if(unit == null ){
+                    return new StatusCodeResult(500);
+                }
+                ViewData["Unit"] = unit;
+                var plan = await context.AffirmativeActionPlan.Where( p => p.FiscalYear == fiscalYear && p.PlanningUnit == unit ).FirstOrDefaultAsync();
+                if( plan != null){
+                    var MakeupDiversityGroups = this.context.AffirmativeMakeupDiversityTypeGroup
+                                                        .Where( g => true )
+                                                        .Include( g => g.Types)
+                                                        .OrderBy( g => g.Order ).ToListAsync();
+                    var AdvisoryGroups = this.context.AffirmativeAdvisoryGroupType.Where( t => true ).OrderBy( t => t.Order ).ToListAsync();
+                    var SummaryDiversityType = this.context.AffirmativeSummaryDiversityType.Where( t => true ).OrderBy( t => t.Order ).ToListAsync();
+                    model = await context.AffirmativeActionPlanRevision
+                                    .Where( r => r.AffirmativeActionPlan == plan )
+                                    .Include( r => r.MakeupValues)
+                                    .Include( r => r.SummaryValues)
+                                    .OrderBy( r => r.Created )
+                                    .LastOrDefaultAsync();
+                    ViewData["MakeupDiversityGroups"] = await MakeupDiversityGroups;
+                    ViewData["AdvisoryGroups"] = await AdvisoryGroups;
+                    ViewData["SummaryDiversityType"] = await SummaryDiversityType;
+                }
+            }
+
+            ViewData["Units"] = await units;
+            
+            return View( model);
+
+
+        }
         
+        private FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
+        }
 
 
     }
