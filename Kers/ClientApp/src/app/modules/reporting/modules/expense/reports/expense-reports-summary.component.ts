@@ -74,12 +74,16 @@ import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
                             </tbody></table>
                             <br><br><br><br>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="print()" *ngIf="!pdfLoading" ><i class="fa fa-download"></i> Detailed Monthly Report</button><br><br>
                                     <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
                                 </div>
-                                <div class="col-md-6">
-                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip()" *ngIf="!pdfTripLoading" ><i class="fa fa-download"></i> Monthly Mileage Log</button><br><br>
+                                <div class="col-md-4">
+                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip()" *ngIf="!pdfTripLoading" ><i class="fa fa-download"></i> Day Trips Mileage Log</button><br><br>
+                                    <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip(true)" *ngIf="!pdfTripLoading" ><i class="fa fa-download"></i> Overnight Trips Mileage Log</button><br><br>
                                     <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
                                 </div>
                             </div>
@@ -225,13 +229,13 @@ export class ExpenseReportsSummaryComponent {
         )
     }
 
-    printTrip(){
+    printTrip(isOvernight:boolean = false){
         this.pdfTripLoading = true;
         var userid = 0;
         if(this.user != null){
             userid = this.user.id;
         }
-        this.service.pdfTrip(this.year.year, this.month.month, userid).subscribe(
+        this.service.pdfTrip(this.year.year, this.month.month, userid, isOvernight).subscribe(
             data => {
                 var blob = new Blob([data], {type: 'application/pdf'});
                 saveAs(blob, "ExpensesMileageReport_" + this.year.year + "_" + this.month.month + ".pdf");

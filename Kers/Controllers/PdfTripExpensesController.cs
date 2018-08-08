@@ -47,9 +47,9 @@ namespace Kers.Controllers
         }
 
 
-		[HttpGet("tripexpenses/{year}/{month}/{userId?}")]
+		[HttpGet("tripexpenses/{year}/{month}/{userId?}/{overnight?}")]
         [Authorize]
-		public IActionResult TripExpenses(int year, int month, int userId = 0)
+		public IActionResult TripExpenses(int year, int month, int userId = 0, Boolean overnight = false)
         {
 			
 
@@ -71,7 +71,7 @@ namespace Kers.Controllers
 
                 var expenses = this.expenseRepo.PerMonth(user, year, month, "asc");
 
-                var dayExpenses = expenses.Where( e => !e.isOvernight && e.Mileage != 0);
+                var dayExpenses = expenses.Where( e => e.isOvernight == overnight && e.Mileage != 0);
 
 				var dataObjext = new TripExpenses(dayExpenses.ToList());
 				var pagesData = dataObjext.getData();
