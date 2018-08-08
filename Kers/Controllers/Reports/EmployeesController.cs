@@ -25,6 +25,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Kers.Models.Data;
 using Microsoft.Extensions.Configuration;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
+using System.Web;
 
 namespace Kers.Controllers.Reports
 {
@@ -70,7 +72,28 @@ namespace Kers.Controllers.Reports
             using (var context = new KersReportingContext(optionsBuilder.Options))
             {
                 var theList = context.vInServiceQualtricsSurveysToCreate.ToList();
+                var qualtricsApiHost = _configuration["QualtricsApi:sApiHost"];
+                var qualtricsUser = _configuration["QualtricsApi:sUser"];
+                var qualtricsToken = _configuration["QualtricsApi:sToken"];
+                var qualtricsFormat = _configuration["QualtricsApi:sFormat"];
+                var qualtricsVersion = _configuration["QualtricsApi:sVersion"];
+                var qualtricsImportFormat = _configuration["QualtricsApi:sImportFormat"];
+                var qualtricsActivate = _configuration["QualtricsApi:sActivate"];
                 
+                var uri = qualtricsApiHost + 
+                "Request=getSurveys&User=" + HttpUtility.UrlEncode(qualtricsUser) + 
+                "&Token=" + qualtricsToken + 
+                "&Format=" + qualtricsFormat + 
+                "&Version=" + qualtricsVersion;
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Accept.Clear();
+                
+
+                var result = client.GetAsync(uri).Result;
+                var data = result.Content.ReadAsStringAsync().Result;
+
+            
+            
             }
             
 

@@ -16,6 +16,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Web;
 
 namespace Kers.Tasks
 {
@@ -27,7 +28,7 @@ namespace Kers.Tasks
         ){
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "52 5 * * *";
+        public string Schedule => "52 8 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -43,6 +44,7 @@ namespace Kers.Tasks
                     var startTime = DateTime.Now;
                     
                     var tables = new List<vInServiceQualtricsSurveysToCreate>();
+                    var data = "";
                     var _configuration = scope.ServiceProvider.GetService<IConfiguration>();
                     var optionsBuilder = new DbContextOptionsBuilder<KersReportingContext>();
                     optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:connKersReporting"]);
@@ -50,13 +52,36 @@ namespace Kers.Tasks
                     using (var contexReportingt = new KersReportingContext(optionsBuilder.Options))
                     {
                         tables = contexReportingt.vInServiceQualtricsSurveysToCreate.ToList();
+
+
+                        var qualtricsApiHost = _configuration["QualtricsApi:sApiHost"];
+                        var qualtricsUser = _configuration["QualtricsApi:sUser"];
+                        var qualtricsToken = _configuration["QualtricsApi:sToken"];
+                        var qualtricsFormat = _configuration["QualtricsApi:sFormat"];
+                        var qualtricsVersion = _configuration["QualtricsApi:sVersion"];
+                        var qualtricsImportFormat = _configuration["QualtricsApi:sImportFormat"];
+                        var qualtricsActivate = _configuration["QualtricsApi:sActivate"];
+                        
+                        var uri = qualtricsApiHost + 
+                        "Request=getSurveys&User=" + HttpUtility.UrlEncode(qualtricsUser) + 
+                        "&Token=" + qualtricsToken + 
+                        "&Format=" + qualtricsFormat + 
+                        "&Version=" + qualtricsVersion;
+                        var client = new HttpClient();
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        
+
+                        var result = client.GetAsync(uri).Result;
+                        data = result.Content.ReadAsStringAsync().Result;
+
+
                         
                     }
 
                     
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
-                                    "InServiceQualtricsTask", tables, 
+                                    "InServiceQualtricsTask", data, 
                                     "InService Qualtrics Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
                                 );
                 }catch( Exception e){
