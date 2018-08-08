@@ -100,8 +100,8 @@ export class ExpenseService {
                 .catch(this.handleError);
     }
 
-    pdfTrip(year:number, month:number, id:number = 0){
-        return this.http.get(this.location.prepareExternalUrl('/api/PdfTripExpenses/tripexpenses/' + year + '/' + month + '/' + id ), { responseType: ResponseContentType.Blob })
+    pdfTrip(year:number, month:number, id:number = 0, isOvernight:boolean = false){
+        return this.http.get(this.location.prepareExternalUrl('/api/PdfTripExpenses/tripexpenses/' + year + '/' + month + '/' + id + '/' + isOvernight ), { responseType: ResponseContentType.Blob })
                 .map((res:Response) => {
                     var pd = res.blob();
                     return pd;
