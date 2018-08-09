@@ -31,7 +31,7 @@ namespace Kers.Tasks
         ){
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "52 22 * * *";
+        public string Schedule => "52 1 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -75,7 +75,7 @@ namespace Kers.Tasks
                             + "&Version=" + qualtricsVersion
                             + "&ImportFormat=" + qualtricsImportFormat
                             + "&Activate=" + qualtricsActivate
-                            + "&Name=" + HttpUtility.UrlEncode(training.tTitle)
+                            + "&Name=" + HttpUtility.UrlEncode(training.qualtricsTitle)
                             + "&URL=" + HttpUtility.UrlEncode(sSurveyURL);
                             
                             try
