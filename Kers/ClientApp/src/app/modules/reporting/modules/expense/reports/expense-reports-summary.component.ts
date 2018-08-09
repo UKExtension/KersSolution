@@ -83,8 +83,8 @@ import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
                                     <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
                                 </div>
                                 <div class="col-md-4">
-                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip(true)" *ngIf="!pdfTripLoading" ><i class="fa fa-download"></i> Overnight Trips Mileage Log</button><br><br>
-                                    <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
+                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip(true)" *ngIf="!pdfTripLoadingOvernight" ><i class="fa fa-download"></i> Overnight Trips Mileage Log</button><br><br>
+                                    <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
                                 </div>
                             </div>
                          </div>
@@ -100,6 +100,7 @@ export class ExpenseReportsSummaryComponent {
     loading = false;
     pdfLoading = false;
     pdfTripLoading = false;
+    pdfTripLoadingOvernight = false;
 
     errorMessage: string;
     @Input() month;
@@ -230,7 +231,13 @@ export class ExpenseReportsSummaryComponent {
     }
 
     printTrip(isOvernight:boolean = false){
-        this.pdfTripLoading = true;
+        if( isOvernight )
+        {
+            this.pdfTripLoadingOvernight = true;
+        }else{
+            this.pdfTripLoading = true;
+        }
+        
         var userid = 0;
         if(this.user != null){
             userid = this.user.id;
@@ -240,6 +247,7 @@ export class ExpenseReportsSummaryComponent {
                 var blob = new Blob([data], {type: 'application/pdf'});
                 saveAs(blob, "ExpensesMileageReport_" + this.year.year + "_" + this.month.month + ".pdf");
                 this.pdfTripLoading = false;
+                this.pdfTripLoadingOvernight = false;
             },
             err => console.error(err)
         )

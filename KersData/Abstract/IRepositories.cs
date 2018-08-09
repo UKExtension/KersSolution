@@ -86,6 +86,7 @@ namespace Kers.Models.Abstract
         FiscalYear nextFiscalYear(string type);
         FiscalYear previoiusFiscalYear( string type );
         FiscalYear byName(string name, string type);
+        FiscalYear byDate(DateTime date);
     }
     public interface IAffirmativeActionPlanRevisionRepository: IEntityBaseRepository<AffirmativeActionPlanRevision>{}
     public interface ISnapDirectRepository{

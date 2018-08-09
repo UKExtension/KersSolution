@@ -29,6 +29,7 @@ namespace Kers.Controllers
 
 		IExpenseRepository expenseRepo;
 		KERS_SNAPED2017Context snapContext;
+		IFiscalYearRepository fiscalYearRepo;
 
 		const int width = 612;
 		const int height = 792;
@@ -46,12 +47,14 @@ namespace Kers.Controllers
 			IExpenseRepository expenseRepo,
 			KERS_SNAPED2017Context snapContext,
 			IHostingEnvironment env,
-			IMemoryCache _cache
+			IMemoryCache _cache,
+			IFiscalYearRepository fiscalYearRepo
         ):
 		base(_context, userRepo, mainContext, _cache){
             
 			this.expenseRepo = expenseRepo;
 			this.snapContext = snapContext;
+			this.fiscalYearRepo = fiscalYearRepo;
 			
 			
         }
@@ -233,11 +236,26 @@ namespace Kers.Controllers
 					header.Add("LODGING");
 					header.Add("REGISTRATION");
 					header.Add("OTHER");
-					header.Add("TOTALS");
+					header.Add("MTD TOTALS");
+					header.Add("YTD");
 
 					SummaryTableRow(pdfCanvas, header, 360);
 
 					var smr = expenseRepo.Summaries(user, year, month);
+					var fiscalYear = fiscalYearRepo.byDate( new DateTime(year, month, 15) );
+					DateTime endOfMonth = new DateTime(year, 
+                                   month, 
+                                   DateTime.DaysInMonth(year, 
+                                                        month));
+					var yearTotals = expenseRepo.SummariesPerPeriod( user, fiscalYear.Start, endOfMonth );
+
+
+					var blancRows = new List<ExpenseSummary>();
+					foreach( var yearTotalRow in yearTotals ){
+						if( !smr.Where( s => s.fundingSource.Id == yearTotalRow.fundingSource.Id).Any()){
+							blancRows.Add( yearTotalRow );
+						}
+					}
 
 					var lineIndex = 0;
 					foreach( var exp in smr){
@@ -250,6 +268,27 @@ namespace Kers.Controllers
 						line.Add("$" + exp.registration.ToString("0.00"));
 						line.Add("$" + exp.other.ToString("0.00"));
 						line.Add("$" + exp.total.ToString("0.00"));
+						float totl = 0;
+						var yearTotal = yearTotals.Where( t => t.fundingSource.Id == exp.fundingSource.Id ).FirstOrDefault();
+						if( yearTotal != null ){
+							totl = yearTotal.total;
+						}
+						line.Add("$" + totl.ToString("0.00"));
+						SummaryTableRow(pdfCanvas, line, 390 + (30*lineIndex));
+						lineIndex++;
+
+					}
+					foreach( var blanc in blancRows){
+						var line = new List<String>();
+						line.Add(blanc.fundingSource.Name);
+						line.Add("0");
+						line.Add("$0.00");
+						line.Add("$0.00");
+						line.Add("$0.00");
+						line.Add("$0.00");
+						line.Add("$0.00");
+						line.Add("$0.00");
+						line.Add("$" + blanc.total.ToString("0.00"));
 						SummaryTableRow(pdfCanvas, line, 390 + (30*lineIndex));
 						lineIndex++;
 
@@ -290,11 +329,11 @@ namespace Kers.Controllers
 
 
 		private void SummaryTableRow( SKCanvas pdfCanvas, List<string> data, int y, int x = 43){
-			var paint = getPaint(7.5f, 2);
+			var paint = getPaint(7.1f, 2);
 			pdfCanvas.DrawText(data[0], x, y,  paint);
-			paint = getPaint(7.5f, 2 , 0xFF000000, SKTextAlign.Right);
-			for(var i = 1; i<8; i++){
-				pdfCanvas.DrawText(data[i], x + 165 + ( 50 * i), y,  paint);
+			paint = getPaint(7.1f, 2 , 0xFF000000, SKTextAlign.Right);
+			for(var i = 1; i<9; i++){
+				pdfCanvas.DrawText(data[i], x + 156 + ( 45 * i), y,  paint);
 			}
 			SKPaint thinLinePaint = new SKPaint
 											{

@@ -82,7 +82,7 @@ namespace Kers.Controllers
 					AddPageInfo(pdfCanvas, currentPageNumber, pagesData.Count(), user, new DateTime(year, month, 1), "Mileage Log", "landscape");
 					if(pg.header){
 						AddUkLogo(pdfCanvas, 16, 31);
-                		SummaryLandscapeInfo(pdfCanvas, year, month, user, "Mileage Log");
+                		SummaryLandscapeInfo(pdfCanvas, year, month, user, "Mileage Log", overnight);
 						runningY += dataObjext.GetHeaderHeight();
 					}
 					foreach( var exp in pg.data){

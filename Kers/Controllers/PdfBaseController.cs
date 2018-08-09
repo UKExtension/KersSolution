@@ -124,11 +124,17 @@ namespace Kers.Controllers
             pdfCanvas.DrawText("Summary", 43, 300, getPaint(20.0f));
         }
 
-		public void SummaryLandscapeInfo(SKCanvas pdfCanvas, int year, int month, KersUser user, string Ttl = "Monthly Expenses Report"){
+		public void SummaryLandscapeInfo(SKCanvas pdfCanvas, int year, int month, KersUser user, string Ttl = "Monthly Expenses Report", bool isOvernight = false){
 			var date = new DateTime(year, month, 1);
 			var text = date.ToString("MMMM yyyy");
 			pdfCanvas.DrawText(text, 250, 80, getPaint(20.0f, 1, 0xFF000000));
 			pdfCanvas.DrawText(Ttl, 250, 102, getPaint(20.0f, 3, 0xFF000000));
+			if( isOvernight ){
+				text = "Overnight Trips";
+			}else{
+				text = "Day Trips";
+			}
+			pdfCanvas.DrawText(text, 250, 112, getPaint(9.0f));
 			text = user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName;
 			pdfCanvas.DrawText(text, 400, 80, getPaint(18.0f, 1));
 			text = user.ExtensionPosition.Title;
