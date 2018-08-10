@@ -242,7 +242,7 @@ namespace Kers.Controllers
 					SummaryTableRow(pdfCanvas, header, 360);
 
 					var smr = expenseRepo.Summaries(user, year, month);
-					var fiscalYear = fiscalYearRepo.byDate( new DateTime(year, month, 15) );
+					var fiscalYear = fiscalYearRepo.byDate( new DateTime(year, month, 15), FiscalYearType.ServiceLog );
 					DateTime endOfMonth = new DateTime(year, 
                                    month, 
                                    DateTime.DaysInMonth(year, 

@@ -39,10 +39,10 @@ namespace Kers.Models.Repositories
                         .FirstOrDefault();
         }
 
-        public FiscalYear byDate(DateTime date){
+        public FiscalYear byDate(DateTime date, string type){
             return this.coreContext
                         .FiscalYear
-                        .Where( y => y.Start < date && y.End > date)
+                        .Where( y => y.Start < date && y.End > date && y.Type == type)
                         .FirstOrDefault();
         }
 
