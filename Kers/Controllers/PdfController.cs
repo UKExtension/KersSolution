@@ -246,7 +246,7 @@ namespace Kers.Controllers
 					DateTime endOfMonth = new DateTime(year, 
                                    month, 
                                    DateTime.DaysInMonth(year, 
-                                                        month));
+                                                        month), 23, 59, 59);
 					var yearTotals = expenseRepo.SummariesPerPeriod( user, fiscalYear.Start, endOfMonth );
 
 
@@ -261,7 +261,7 @@ namespace Kers.Controllers
 					foreach( var exp in smr){
 						var line = new List<String>();
 						line.Add(exp.fundingSource.Name);
-						line.Add(exp.miles.ToString());
+						line.Add( Math.Round(exp.miles, 2).ToString());
 						line.Add("$" + exp.mileageCost.ToString("0.00"));
 						line.Add("$" + exp.meals.ToString("0.00"));
 						line.Add("$" + exp.lodging.ToString("0.00"));

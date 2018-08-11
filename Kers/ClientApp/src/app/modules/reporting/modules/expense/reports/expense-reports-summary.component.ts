@@ -32,7 +32,7 @@ import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
                     <tbody>
                         <tr *ngFor="let summary of summaries">
                             <td>{{summary.fundingSource.name}}</td>
-                            <td class="text-right">{{summary.miles}}</td>
+                            <td class="text-right">{{summary.miles | number:'0.0-2'}}</td>
                             <td class="text-right">{{summary.mileageCost | currency:'USD':'symbol':'1.2-2'}}</td>
                             <td class="text-right">{{summary.meals | currency:'USD':'symbol':'1.2-2'}}</td>
                             <td class="text-right">{{summary.lodging | currency:'USD':'symbol':'1.2-2'}}</td>
