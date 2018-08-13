@@ -9,8 +9,20 @@ import { User } from "../../user/user.service";
   <div *ngIf="!loading">
         <div class="col-md-12 col-sm-12 col-xs-12" *ngFor="let expense of monthExpenses">
             <div class="ln_solid"></div>
-                <h3>{{expense.expenseDate| date:'mediumDate'}}</h3>
-                <p><strong>Location: </strong>{{expense.expenseLocation}}</p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 style="margin-bottom:0;">{{expense.expenseDate| date:'mediumDate'}}</h3>
+                        <p *ngIf="expense.isOvernight">Overnight Trip</p>
+                        <p *ngIf="!expense.isOvernight">Day Trip</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <div><strong>Starting Location: </strong>{{expense.startingLocationType == 2 ? "Home" : "Workplace"}}</div>
+                        <div><strong>Destination(s): </strong>{{expense.expenseLocation}}</div>
+                        <div><strong>Business Purpose: </strong>{{expense.businessPurpose}}</div>
+                        <div *ngIf="expense.comment != ''"><strong>Comment: </strong>{{expense.comment}}</div>
+                    </div>
+                </div>
+                
 
                 <div class="row invoice-info">
                     <div class="col-sm-6 invoice-col">
