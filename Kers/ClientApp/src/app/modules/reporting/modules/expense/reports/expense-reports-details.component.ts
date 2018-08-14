@@ -38,7 +38,7 @@ import { User } from "../../user/user.service";
                         <p *ngIf="expense.fundingSourceNonMileage">
                             <strong>Expense Funding: </strong><br>{{expense.fundingSourceNonMileage.name}}
                         </p>
-                        <div class="row">
+                        <div class="row" *ngIf="expense.isOvernight">
                             <div class="col-md-4"><strong>Breakfast: </strong>{{ breakfast(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
                             <div class="col-md-4"><strong>Lunch: </strong>{{ lunch(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
                             <div class="col-md-4"><strong>Dinner: </strong>{{ dinner(expense)| currency:'USD':'symbol':'1.2-2'}}</div>

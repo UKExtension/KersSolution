@@ -107,7 +107,7 @@ namespace Kers.Controllers
 		private int table(SKCanvas pdfCanvas, List<ExpenseNumLines> expenses, int x, int y, Boolean header = true, string title = "", float total = 0){
             var rowHeight = 15;
             var beginningY = y;
-            int[] verticalLinesX = { 0, 74, 360, 650, 700, 746 };
+            int[] verticalLinesX = { 0, 74, 154, 415, 650, 700, 746 };
             SKPaint thinLinePaint = new SKPaint
 											{
 												Style = SKPaintStyle.Stroke,
@@ -122,11 +122,12 @@ namespace Kers.Controllers
                 pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
 			    pdfCanvas.DrawLine(x, y + rowHeight, x + 746, y + rowHeight, thinLinePaint);
                 pdfCanvas.DrawLine(x, y + rowHeight - 0.5f, x + 746, y + rowHeight - 0.5f, thinLinePaint);
-                pdfCanvas.DrawText("Date", x + 10, y + 11, getPaint(10.0f, 1));
-                pdfCanvas.DrawText("Destination(s)", x + 78, y + 11, getPaint(10.0f, 1));
-                pdfCanvas.DrawText("Business Purpose", x + 364, y + 11, getPaint(10.0f, 1));
-                pdfCanvas.DrawText("Program", x + 652, y + 11, getPaint(10.0f, 1));
-                pdfCanvas.DrawText("Mileage", x + 704, y + 11, getPaint(10.0f, 1));
+                pdfCanvas.DrawText("Date", x + 4, y + 11, getPaint(9.5f, 1));
+				pdfCanvas.DrawText("Starting Location", x + 76, y + 11, getPaint(9.35f, 1));
+                pdfCanvas.DrawText("Destination(s)", x + 158, y + 11, getPaint(9.5f, 1));
+                pdfCanvas.DrawText("Business Purpose", x + 419, y + 11, getPaint(9.5f, 1));
+                pdfCanvas.DrawText("Program", x + 652, y + 11, getPaint(9.5f, 1));
+                pdfCanvas.DrawText("Mileage", x + 704, y + 11, getPaint(9.5f, 1));
                 DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, y, 15);
                 y += rowHeight;
             }else{
@@ -140,21 +141,26 @@ namespace Kers.Controllers
 				if(expense.expense.ProgramCategory != null){
 					pdfCanvas.DrawText(expense.expense.ProgramCategory.ShortName, x + 655, y + 11, getPaint(10.0f));
 				}
-				pdfCanvas.DrawText(expense.expense.Mileage.ToString(), x + 737, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
-                var locationLines = SplitLineToMultiline(expense.expense.ExpenseLocation, 58);
+				pdfCanvas.DrawText(Math.Round(expense.expense.Mileage, 2).ToString(), x + 737, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+				var startingLocation = "Workplace";
+				if( expense.expense.StartingLocationType == 2 ){
+					startingLocation = "Home";
+				}
+				pdfCanvas.DrawText(startingLocation, x + 77, y + 11, getPaint(10.0f));
+                var locationLines = SplitLineToMultiline(expense.expense.ExpenseLocation, 52);
                 var locationLinesY = y;
                 var locationLinesHight = 0;
                 foreach( var line in locationLines){
-                    pdfCanvas.DrawText(line, x + 78, locationLinesY + 11, getPaint(10.0f));
+                    pdfCanvas.DrawText(line, x + 158, locationLinesY + 11, getPaint(10.0f));
                     locationLinesY += rowHeight;
                     locationLinesHight += rowHeight;
                 }
 
-                var businessPurposeLines = SplitLineToMultiline(expense.expense.BusinessPurpose, 58);
+                var businessPurposeLines = SplitLineToMultiline(expense.expense.BusinessPurpose, 52);
                 var purposeLinesY = y;
                 var purposeLineHight = 0;
                 foreach( var line in businessPurposeLines){
-                    pdfCanvas.DrawText(line, x + 364, purposeLinesY + 11, getPaint(10.0f));
+                    pdfCanvas.DrawText(line, x + 420, purposeLinesY + 11, getPaint(10.0f));
                     purposeLinesY += rowHeight;
                     purposeLineHight += rowHeight;
                 }
@@ -168,7 +174,7 @@ namespace Kers.Controllers
             }
 			if(total != 0){
 				pdfCanvas.DrawText("Total: ", x + 4, y + 13, getPaint(10.0f, 1));
-				pdfCanvas.DrawText(total.ToString(), x + 737, y + 13, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
+				pdfCanvas.DrawText(Math.Round(total, 2).ToString(), x + 737, y + 13, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
 			}
             return i;
         }

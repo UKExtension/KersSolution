@@ -145,6 +145,7 @@ export class ExpenseReportsMonthComponent {
                 var blob = new Blob([data], {type: 'application/pdf'});
                 saveAs(blob, "ExpensesReport_" + this.year.year + "_" + this.month.month + ".pdf");
                 this.pdfLoading = false;
+                this.pdfMenuOpen = false;
             },
             err => console.error(err)
         )
@@ -168,6 +169,7 @@ export class ExpenseReportsMonthComponent {
                 saveAs(blob, "ExpensesMileageReport_" + this.year.year + "_" + this.month.month + ".pdf");
                 this.pdfTripLoading = false;
                 this.pdfTripLoadingOvernight = false;
+                this.pdfMenuOpen = false;
             },
             err => console.error(err)
         )

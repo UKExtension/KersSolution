@@ -165,16 +165,17 @@ namespace Kers.Controllers
 			if(expense.FundingSourceMileage != null){
 				pdfCanvas.DrawText("Mileage Funding: ", 43, startingY + 64, getPaint(9.0f));
 				pdfCanvas.DrawText(expense.FundingSourceMileage.Name, 43, startingY + 74, getPaint(9.0f, 2));
+				pdfCanvas.DrawText("Miles: ", 43, startingY + 86, getPaint(9.0f));
+				pdfCanvas.DrawText(expense.Mileage.ToString(), 71, startingY + 86, getPaint(9.0f, 2));
+				if(expense.departTime != null){
+					pdfCanvas.DrawText("Time Departed: ", 43, startingY + 105, getPaint(9.0f));
+					pdfCanvas.DrawText(expense.departTime?.ToString("hh:mm tt"), 108, startingY + 105, getPaint(9.0f, 2));
+				}if(expense.returnTime != null){
+					pdfCanvas.DrawText("Time Returned: ", 43, startingY + 117, getPaint(9.0f));
+					pdfCanvas.DrawText(expense.returnTime?.ToString("hh:mm tt"), 108, startingY + 117, getPaint(9.0f, 2));
+				}
 			}
-			pdfCanvas.DrawText("Miles: ", 43, startingY + 86, getPaint(9.0f));
-			pdfCanvas.DrawText(expense.Mileage.ToString(), 71, startingY + 86, getPaint(9.0f, 2));
-			if(expense.departTime != null){
-				pdfCanvas.DrawText("Time Departed: ", 43, startingY + 105, getPaint(9.0f));
-				pdfCanvas.DrawText(expense.departTime?.ToString("hh:mm tt"), 108, startingY + 105, getPaint(9.0f, 2));
-			}if(expense.returnTime != null){
-				pdfCanvas.DrawText("Time Returned: ", 43, startingY + 117, getPaint(9.0f));
-				pdfCanvas.DrawText(expense.returnTime?.ToString("hh:mm tt"), 108, startingY + 117, getPaint(9.0f, 2));
-			}
+			
 			
 
 			// Right Column
@@ -227,40 +228,42 @@ namespace Kers.Controllers
 			if(expense.FundingSourceNonMileage != null){
 				pdfCanvas.DrawText("Expense Funding: ", 300, startingY + 64, getPaint(9.0f));
 				pdfCanvas.DrawText(expense.FundingSourceNonMileage.Name, 300, startingY + 74, getPaint(9.0f, 2));
-			}
-			if( expense.isOvernight ){
-				pdfCanvas.DrawText("Breakfast: ", 300, startingY + 86, getPaint(9.0f));
-				pdfCanvas.DrawText("$"+expenseRepo.Breakfast(expense).ToString("0.00"), 344, startingY + 86, getPaint(9.0f, 2));
-				pdfCanvas.DrawText("Lunch: ", 400, startingY + 86, getPaint(9.0f));
-				pdfCanvas.DrawText("$"+expenseRepo.Lunch(expense).ToString("0.00"), 455, startingY + 86, getPaint(9.0f, 2));
-				pdfCanvas.DrawText("Dinner: ", 510, startingY + 86, getPaint(9.0f));
-				pdfCanvas.DrawText("$"+expenseRepo.Dinner(expense).ToString("0.00"), 543, startingY + 86, getPaint(9.0f, 2));
+				if( expense.isOvernight ){
+					pdfCanvas.DrawText("Breakfast: ", 300, startingY + 86, getPaint(9.0f));
+					pdfCanvas.DrawText("$"+expenseRepo.Breakfast(expense).ToString("0.00"), 344, startingY + 86, getPaint(9.0f, 2));
+					pdfCanvas.DrawText("Lunch: ", 400, startingY + 86, getPaint(9.0f));
+					pdfCanvas.DrawText("$"+expenseRepo.Lunch(expense).ToString("0.00"), 455, startingY + 86, getPaint(9.0f, 2));
+					pdfCanvas.DrawText("Dinner: ", 510, startingY + 86, getPaint(9.0f));
+					pdfCanvas.DrawText("$"+expenseRepo.Dinner(expense).ToString("0.00"), 543, startingY + 86, getPaint(9.0f, 2));
+				}
+				
+
+				pdfCanvas.DrawText("Lodging: ", 300, startingY + 98, getPaint(9.0f));
+				pdfCanvas.DrawText("$"+expense.Lodging.ToString("0.00"), 344, startingY + 98, getPaint(9.0f, 2));
+				pdfCanvas.DrawText("Registration: ", 400, startingY + 98, getPaint(9.0f));
+				pdfCanvas.DrawText("$"+expense.Registration.ToString("0.00"), 455, startingY + 98, getPaint(9.0f, 2));
+				pdfCanvas.DrawText("Other: ", 510, startingY + 98, getPaint(9.0f));
+				pdfCanvas.DrawText("$"+expense.otherExpenseCost.ToString("0.00"), 543, startingY + 98, getPaint(9.0f, 2));
+				if(expense.otherExpenseExplanation != null && expense.otherExpenseExplanation != ""){
+					pdfCanvas.DrawText("Other Expense Explanation: ", 255, startingY + 110, getPaint(9.0f));
+					List<string> otherExpenseExplanationLines = SplitLineToMultiline(expense.otherExpenseExplanation, 87);
+					var YCommentLocation = startingY + 122;
+					var index = 0;
+					foreach( var otherExpenseExplanationLine in otherExpenseExplanationLines ){
+						index++;
+						if( index > 1 ){
+							pdfCanvas.DrawText(otherExpenseExplanationLine + " ...", 255, YCommentLocation, getPaint(9.0f, 2));
+							break;
+						}else{
+							pdfCanvas.DrawText(otherExpenseExplanationLine, 255, YCommentLocation, getPaint(9.0f, 2));
+						}
+						YCommentLocation += 10;
+					}
+				}
+
 			}
 			
-
-			pdfCanvas.DrawText("Lodging: ", 300, startingY + 98, getPaint(9.0f));
-			pdfCanvas.DrawText("$"+expense.Lodging.ToString("0.00"), 344, startingY + 98, getPaint(9.0f, 2));
-			pdfCanvas.DrawText("Registration: ", 400, startingY + 98, getPaint(9.0f));
-			pdfCanvas.DrawText("$"+expense.Registration.ToString("0.00"), 455, startingY + 98, getPaint(9.0f, 2));
-			pdfCanvas.DrawText("Other: ", 510, startingY + 98, getPaint(9.0f));
-			pdfCanvas.DrawText("$"+expense.otherExpenseCost.ToString("0.00"), 543, startingY + 98, getPaint(9.0f, 2));
-
-			if(expense.otherExpenseExplanation != null && expense.otherExpenseExplanation != ""){
-				pdfCanvas.DrawText("Other Expense Explanation: ", 255, startingY + 110, getPaint(9.0f));
-				List<string> otherExpenseExplanationLines = SplitLineToMultiline(expense.otherExpenseExplanation, 87);
-				var YCommentLocation = startingY + 122;
-				var index = 0;
-				foreach( var otherExpenseExplanationLine in otherExpenseExplanationLines ){
-					index++;
-					if( index > 1 ){
-						pdfCanvas.DrawText(otherExpenseExplanationLine + " ...", 255, YCommentLocation, getPaint(9.0f, 2));
-						break;
-					}else{
-						pdfCanvas.DrawText(otherExpenseExplanationLine, 255, YCommentLocation, getPaint(9.0f, 2));
-					}
-					YCommentLocation += 10;
-				}
-			}
+			
 
 		}
 
