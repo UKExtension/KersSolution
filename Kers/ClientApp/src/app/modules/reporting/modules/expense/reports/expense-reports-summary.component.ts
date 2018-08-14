@@ -79,11 +79,11 @@ import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
                                     <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
                                 </div>
                                 <div class="col-md-4">
-                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip()" *ngIf="!pdfTripLoading" ><i class="fa fa-download"></i> Day Trips Mileage Log</button><br><br>
+                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip()" *ngIf="!pdfTripLoading" ><i class="fa fa-download"></i> Mileage Log - Day Trips</button><br><br>
                                     <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
                                 </div>
                                 <div class="col-md-4">
-                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip(true)" *ngIf="!pdfTripLoadingOvernight" ><i class="fa fa-download"></i> Overnight Trips Mileage Log</button><br><br>
+                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip(true)" *ngIf="!pdfTripLoadingOvernight" ><i class="fa fa-download"></i> Mileage Log - Overnight Trips</button><br><br>
                                     <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
                                 </div>
                             </div>

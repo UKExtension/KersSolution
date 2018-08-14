@@ -264,7 +264,7 @@ namespace Kers.Controllers
 
 
                 pdfCanvas.DrawLine(x + 400, y, x + 700, y, thinLinePaint);
-                pdfCanvas.DrawText("Authorized Reviewer", x + 505, y + 12, getPaint(10.0f));
+                pdfCanvas.DrawText("Authorized Reviewer Printed Name", x + 475, y + 12, getPaint(10.0f));
 
 				pdfCanvas.DrawLine(x + 400, y + 60, x + 700, y + 60, thinLinePaint);
                 pdfCanvas.DrawText("Authorized Reviewer Signature & Date",  x + 470, y + 72, getPaint(10.0f));

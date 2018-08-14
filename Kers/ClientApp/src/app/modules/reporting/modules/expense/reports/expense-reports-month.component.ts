@@ -51,11 +51,11 @@ import { User } from "../../user/user.service";
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a (click)="printTrip(true)" *ngIf="!pdfTripLoadingOvernight">Overnight Trips Mileage Log</a>
-                        <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
-                        </li>
-                        <li><a (click)="printTrip()" *ngIf="!pdfTripLoading" >Day Trips Mileage Log</a>
+                        <li><a (click)="printTrip()" *ngIf="!pdfTripLoading" >Mileage Log - Day Trips</a>
                         <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
+                        </li>
+                        <li><a (click)="printTrip(true)" *ngIf="!pdfTripLoadingOvernight">Mileage Log - Overnight Trips</a>
+                        <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
                         </li>
                         <li class="divider"></li>
                         <li><a (click)="print()" *ngIf="rowDefault && !pdfLoading">Detailed Monthly Report</a>
