@@ -136,18 +136,18 @@ namespace Kers.Controllers
 			}
 			pdfCanvas.DrawText(text, 250, 112, getPaint(9.0f));
 			text = user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName;
-			pdfCanvas.DrawText(text, 400, 80, getPaint(18.0f, 1));
+			pdfCanvas.DrawText(text, 400, 80, getPaint(17.0f, 1));
 			text = user.ExtensionPosition.Title;
-			pdfCanvas.DrawText(text, 400, 95, getPaint(12.0f));
+			pdfCanvas.DrawText(text, 400, 95, getPaint(10.5f));
 			text = user.RprtngProfile.PlanningUnit.Name;
 			pdfCanvas.DrawText(text, 400, 107, getPaint(10.0f));
 			if(user.RprtngProfile.PlanningUnit.Address != null ){
 				text = user.RprtngProfile.PlanningUnit.FullName;
-				pdfCanvas.DrawText(text, 550, 83, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(text, 554, 80, getPaint(10.0f, 1));
 				text = user.RprtngProfile.PlanningUnit.Address;
-				pdfCanvas.DrawText(text, 550, 95, getPaint(10.0f));
+				pdfCanvas.DrawText(text, 554, 95, getPaint(10.0f));
 				text = user.RprtngProfile.PlanningUnit.City + ", KY " + user.RprtngProfile.PlanningUnit.Zip;
-				pdfCanvas.DrawText(text, 550, 107, getPaint(10.0f));
+				pdfCanvas.DrawText(text, 554, 107, getPaint(10.0f));
 			}
 			//pdfCanvas.DrawText("Summary", 43, 300, getPaint(20.0f));
 		}

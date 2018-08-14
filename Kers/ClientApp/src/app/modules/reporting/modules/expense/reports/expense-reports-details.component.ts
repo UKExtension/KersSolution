@@ -29,7 +29,7 @@ import { User } from "../../user/user.service";
                         <p *ngIf="expense.fundingSourceMileage">
                             <strong>Mileage Funding: </strong><br>{{expense.fundingSourceMileage.name}}
                         </p>
-                        <div><strong>Miles: </strong>{{expense.mileage}}</div>
+                        <div *ngIf="expense.fundingSourceMileage"><strong>Miles: </strong>{{expense.mileage}}</div>
                         <div *ngIf="expense.departTime"><strong>Time Departed: </strong>{{expense.departTime | date:'shortTime'}}</div>
                         <div *ngIf="expense.returnTime"><strong>Time Returned: </strong>{{expense.returnTime | date:'shortTime'}}</div>
                     </div>
@@ -38,12 +38,12 @@ import { User } from "../../user/user.service";
                         <p *ngIf="expense.fundingSourceNonMileage">
                             <strong>Expense Funding: </strong><br>{{expense.fundingSourceNonMileage.name}}
                         </p>
-                        <div class="row" *ngIf="expense.isOvernight">
+                        <div class="row" *ngIf="expense.isOvernight && expense.fundingSourceNonMileage">
                             <div class="col-md-4"><strong>Breakfast: </strong>{{ breakfast(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
                             <div class="col-md-4"><strong>Lunch: </strong>{{ lunch(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
                             <div class="col-md-4"><strong>Dinner: </strong>{{ dinner(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
                         </div>
-                        <div class="row">
+                        <div class="row" *ngIf="expense.fundingSourceNonMileage">
                             <div class="col-md-4"><strong>Lodging: </strong>{{ expense.lodging | currency:'USD':'symbol':'1.2-2'}}</div>
                             <div class="col-md-4"><strong>Registration: </strong>{{ expense.registration | currency:'USD':'symbol':'1.2-2'}}</div>
                             <div class="col-md-4"><strong>Other: </strong>{{ expense.otherExpenseCost| currency:'USD':'symbol':'1.2-2'}}</div>
