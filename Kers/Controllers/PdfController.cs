@@ -187,7 +187,7 @@ namespace Kers.Controllers
 			if( expense.StartingLocationType == 2){
 				startingLocation = "Home";
 			}
-			pdfCanvas.DrawText("Starting Location: ", 179, startingY + 12, getPaint(9.0f));
+			pdfCanvas.DrawText("Starting Location: ", 181, startingY + 12, getPaint(9.0f));
 			pdfCanvas.DrawText(startingLocation, 255, startingY + 12, getPaint(9.0f, 2));
 
 			pdfCanvas.DrawText("Program Category:", 440, startingY + 12, getPaint(9.0f));
