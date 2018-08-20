@@ -36,8 +36,11 @@ namespace Kers.Controllers.Reports
            this.context = context;
            this.fiscalYearRepo = fiscalYearRepo;
         }
-        public IActionResult Index()
+        [HttpGet]
+        [Route("{fy?}")]
+        public IActionResult Index(string fy="0")
         {
+            ViewData["fy"] = fy;
             return View();
         }
 

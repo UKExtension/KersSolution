@@ -2,36 +2,40 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "State Statistical Contact Reports";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var fy = ViewData["fy"] as string;
+    if( fy == "0"){
+      fy = "2018";
+    }
 }
 
 <div class="bs-glyphicons">
     <ul class="bs-glyphicons-list">
       <li>
         <a asp-controller="Contacts"  asp-action="Index">
-          <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+          <span class="glyphicon glyphicon-menu-left" aria-hidden="true" asp-route-fy="@fy"></span>
           <span class="glyphicon-class">Back to Statistical Contact Summaries</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Contacts"  asp-action="StateAll" asp-route-fy="2018">
+        <a asp-controller="Contacts"  asp-action="StateAll" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">Statewide Summary (UK &amp; KSU)</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Contacts"  asp-action="StateByMajorProgram" asp-route-type="0" asp-route-fy="2018">
+        <a asp-controller="Contacts"  asp-action="StateByMajorProgram" asp-route-type="0" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">By Major Program</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Contacts"  asp-action="StateByMajorProgram" asp-route-type="1" asp-route-fy="2018">
+        <a asp-controller="Contacts"  asp-action="StateByMajorProgram" asp-route-type="1" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">By Major Program - UK</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Contacts"  asp-action="StateByMajorProgram" asp-route-type="2" asp-route-fy="2018">
+        <a asp-controller="Contacts"  asp-action="StateByMajorProgram" asp-route-type="2" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">By Major Program - KSU</span>
         </a>

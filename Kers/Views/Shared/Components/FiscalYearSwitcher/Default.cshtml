@@ -1,0 +1,30 @@
+@model List<Kers.Models.Entities.KERScore.FiscalYear>;
+@{
+    var urlString = ViewData["urlString"] as string;
+    var selected = ViewData["selected"] as Kers.Models.Entities.KERScore.FiscalYear;
+}
+
+@if(@Model != null)
+{
+    <div>Fiscal Year: 
+    @foreach( var year in Model ){
+        if( year != selected )
+        {
+            if(urlString != "")
+            {
+                var url = urlString.Replace("{name}", year.Name).Replace("{id}", year.Id.ToString());
+                <a href="@url">@year.Name</a> @:| 
+            }
+            else
+            {
+                <a asp-route-fy="@year.Name">@year.Name</a> @:|
+            }
+            
+        }
+        else
+        {
+            <strong>@year.Name</strong> @:|
+        }
+    }
+    </div>
+}

@@ -2,6 +2,7 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "Plans of Work By Planning Unit";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var fy = ViewData["fy"] as string;
 }
 @model List<Kers.Models.Entities.KERScore.PlanningUnit>
 
@@ -16,7 +17,7 @@
         @if(Model != null){
             @foreach( var unit in Model){
                 <li>
-                    <a asp-controller="PlansOfWork"  asp-action="PlansByCounty" asp-route-id=@unit.Id>
+                    <a asp-controller="PlansOfWork"  asp-action="PlansByCounty" asp-route-id=@unit.Id asp-route-fy=@fy>
                     <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
                     <span class="glyphicon-class">@unit.Name.Substring(0, @unit.Name.Length - 11)</span>
                     </a>

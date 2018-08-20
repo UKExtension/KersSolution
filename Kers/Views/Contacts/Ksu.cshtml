@@ -2,5 +2,9 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "State Statistical Contact Reports";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var fy = ViewData["fy"] as string;
+    if( fy == "0"){
+      fy = "2018";
+    }
 }
 Ksu

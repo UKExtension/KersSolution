@@ -50,15 +50,17 @@ namespace Kers.Controllers.Reports
            this.contactRepo = contactRepo;
         }
         [HttpGet]
-        [Route("")]
-        public IActionResult Index()
+        [Route("{fy?}")]
+        public IActionResult Index(string fy="0")
         {
+            ViewData["fy"] = fy;
             return View();
         }
         [HttpGet]
-        [Route("[action]")]
-        public IActionResult State()
+        [Route("[action]/{fy?}")]
+        public IActionResult State(string fy="0")
         {
+            ViewData["fy"] = fy;
             return View();
         }
 
@@ -130,17 +132,17 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("[action]")]
-        public IActionResult  Districts()
+        [Route("[action]/{fy?}")]
+        public IActionResult  Districts(string fy = "0")
         {
 
             var districts =  this.context.District.ToList();
-
+            ViewData["fy"] = fy;
             return View(districts);
         }
         [HttpGet]
-        [Route("[action]")]
-        public async Task<IActionResult> County()
+        [Route("[action]/{fy?}")]
+        public async Task<IActionResult> County(string fy = "0")
         {
             var counties = await this.context.PlanningUnit
                                     .Where( u => 
@@ -150,11 +152,12 @@ namespace Kers.Controllers.Reports
                                            )
                                     .OrderBy( u => u.Name)
                                     .ToListAsync();
+            ViewData["fy"] = fy;
             return View(counties);
         }
         [HttpGet]
-        [Route("[action]")]
-        public async Task<IActionResult> Units()
+        [Route("[action]/{fy?}")]
+        public async Task<IActionResult> Units(string fy = "0")
         {
             var units = await this.context.PlanningUnit
                                     .Where( u => 
@@ -164,12 +167,14 @@ namespace Kers.Controllers.Reports
                                            )
                                     .OrderBy( u => u.Name)
                                     .ToListAsync();
+            ViewData["fy"] = fy;
             return View(units);
         }
         [HttpGet]
-        [Route("[action]")]
-        public IActionResult Ksu()
+        [Route("[action]/{fy?}")]
+        public IActionResult Ksu(string fy = "0")
         {
+            ViewData["fy"] = fy;
             return View();
         }
 

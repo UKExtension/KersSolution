@@ -13,32 +13,40 @@ namespace Kers.Controllers.Reports.ViewComponents
     public class FiscalYearSwitcherViewComponent : ViewComponent
     {
         private readonly KERScoreContext context;
+        private IFiscalYearRepository fiscalYearRepo;
 
-        public FiscalYearSwitcherViewComponent(KERScoreContext context){
+        public FiscalYearSwitcherViewComponent(
+                                    KERScoreContext context,
+                                    IFiscalYearRepository fiscalYearRepo
+                                    ){
             this.context = context;
+            this.fiscalYearRepo = fiscalYearRepo;
         }
-        // initially: next, current, previous
-        public async Task<IViewComponentResult> InvokeAsync( string type = "serviceLog", string initially = "next", bool showNext = true){
+        // selected: next, current, previous, [year name]
+        // urlString replacement patern {name} | {id} will be replaced with the fiscal year name or id
+        public async Task<IViewComponentResult> InvokeAsync( string type = "serviceLog", string selected = "next", bool showNext = true, string urlString = ""){
             
 
-            var users = context.KersUser.Where( u => u.PersonalProfile.Bio != null && u.PersonalProfile.Bio.Length > 100 && u.PersonalProfile.UploadImage != null);
+            var FiscalYear = context.FiscalYear.Where( f => f.Type == type);
+            if( !showNext ){
+                FiscalYear = FiscalYear.Where( y => y.Start <= DateTime.Now );
+            }
+            ViewData["urlString"] = urlString;
 
-            if( PlanningUnitId != 0 ){
-                users = users.Where( u => u.RprtngProfile.PlanningUnitId == PlanningUnitId);
+            ViewData["selected"] = fiscalYearRepo.currentFiscalYear(type);
+            if(selected == "next"){
+                ViewData["selected"] = fiscalYearRepo.nextFiscalYear( type );
+            }else if( selected == "previous"){
+                ViewData["selected"] = fiscalYearRepo.previoiusFiscalYear( type );
+            }else{
+                var yearByName = context.FiscalYear.Where( y => y.Name == selected && y.Type == type);
+                if( yearByName.Any() ){
+                    ViewData["selected"] = await yearByName.FirstOrDefaultAsync();
+                }
             }
 
-            int total = users.Count();
-            Random rndm = new Random();
-            int offset = rndm.Next(0, total);
 
-            users = users
-                        .Include( u => u.PersonalProfile ).ThenInclude( p => p.UploadImage ).ThenInclude( i => i.UploadFile )
-                        .Include( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit )
-                        .Include( u => u.ExtensionPosition);
-
-            var user = await users.Skip(offset).FirstOrDefaultAsync();
-
-            return View(user);
+            return View(await FiscalYear.ToListAsync());
         }
         
     }

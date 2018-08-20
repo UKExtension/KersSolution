@@ -2,6 +2,10 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "Statistical Contact Summaries";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var fy = ViewData["fy"] as string;
+    if( fy == "0"){
+      fy = "2018";
+    }
 }
 
 
@@ -9,36 +13,36 @@
     <ul class="bs-glyphicons-list">
       <li>
         <a asp-controller="Data"  asp-action="Index">
-          <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+          <span class="glyphicon glyphicon-menu-left" aria-hidden="true" asp-route-fy="@fy"></span>
           <span class="glyphicon-class">Back to Data</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Contacts"  asp-action="State">
+        <a asp-controller="Contacts"  asp-action="State" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">State Reports</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Contacts"  asp-action="Districts">
+        <a asp-controller="Contacts"  asp-action="Districts" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">Districts</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Contacts"  asp-action="County">
+        <a asp-controller="Contacts"  asp-action="County" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">County Extension Offices</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Contacts"  asp-action="Units">
+        <a asp-controller="Contacts"  asp-action="Units" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">Planning Units</span>
         </a>
       </li>
       <li>
-        <a asp-controller="Employees"  asp-action="Data" asp-route-type="2" asp-route-id="0" asp-route-fy="2018">
+        <a asp-controller="Employees"  asp-action="Data" asp-route-type="2" asp-route-id="0" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
           <span class="glyphicon-class">Kentucky State University</span>
         </a>

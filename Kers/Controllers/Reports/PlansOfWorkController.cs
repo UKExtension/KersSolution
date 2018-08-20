@@ -81,8 +81,8 @@ namespace Kers.Controllers.Reports
             return View(plan);
         }
 
-        [HttpGet("countylist")]
-        public async Task<IActionResult> Countylist(){
+        [HttpGet("countylist/{fy?}")]
+        public async Task<IActionResult> Countylist(string fy = "0"){
 
             List<PlanningUnit> counties;
             var cacheKey = "CountiesList";
@@ -104,6 +104,7 @@ namespace Kers.Controllers.Reports
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                         });
             }
+            ViewData["fy"] = fy;
             return View(counties);
         }
 
@@ -142,7 +143,7 @@ namespace Kers.Controllers.Reports
                     new Exception("No Fiscal Year with Provided Identifier.");
                 }
             }
-
+            ViewData["fy"] = fiscalYear.Name;
             var plansofwork = await this.context.PlanOfWork
                                         .Where( p =>    p.PlanningUnit.Id == id
                                                         && 
@@ -165,21 +166,17 @@ namespace Kers.Controllers.Reports
 
 
 
-        [HttpGet("plansbyprogram/{id}/{fy?}")]
-        public async Task<IActionResult> PlansByProgram(int id, string fy = "0"){
-            FiscalYear fiscalYear;
-            if(fy == "0"){
-                fiscalYear = currentFiscalYear;
-            }else{
-                fiscalYear = await this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "serviceLog").FirstOrDefaultAsync();
-                if( fiscalYear == null){
-                    new Exception("No Fiscal Year with Provided Identifier.");
-                }
-            }
+        [HttpGet("plansbyprogram/{id}")]
+        public async Task<IActionResult> PlansByProgram(int id){
+            
+            var program = await context.MajorProgram.Where( p => p.Id == id )
+                                .Include( p => p.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
+                                .FirstOrDefaultAsync();
 
+            FiscalYear fiscalYear = program.StrategicInitiative.FiscalYear;
 
             var FyPlansOfWork = this.context.PlanOfWork
-                                        .Where( p => p.FiscalYear.Id == fiscalYear.Id);
+                                        .Where( p => p.FiscalYear == fiscalYear);
             List<PlanOfWorkRevision> LastRevisions = new List<PlanOfWorkRevision>();
             foreach( var plan in FyPlansOfWork){
                 var r = this.context.PlanOfWorkRevision.Where( v => v.PlanOfWorkId == plan.Id).Include( v => v.Map).OrderBy( v => v.Created ).Last();
@@ -195,40 +192,7 @@ namespace Kers.Controllers.Reports
                     LastRevisions.Add( r );
                 }
             }
-/* 
-            var LastRevisions = await this.context.PlanOfWorkRevision
-                                        .Where( r => lastRevisionIds.Contains(r.Id)
-                                                        &&
-                                                        (
-                                                           r.Mp1Id == id 
-                                                           ||
-                                                           r.Mp2Id == id
-                                                           ||
-                                                           r.Mp3Id == id
-                                                           ||
-                                                           r.Mp4Id == id
-                                                        )
-                                        
-                                        )
-                                        .Include( r => r.Map)
-                                        .ToListAsync(); */
-/* 
-            var plansofwork = this.context.PlanOfWork
-                                        .Where( p =>    (
-                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp1Id == id
-                                                        ||
-                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp2Id == id
-                                                        ||
-                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp3Id == id 
-                                                        ||
-                                                        p.Revisions.OrderBy( r => r.Created).Last().Mp4.Id == id
-                                                        )
-                                                        && 
-                                                        p.FiscalYear == fiscalYear
-                                                )
-                                        .Include( p => p.PlanningUnit)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Map);
- */
+
             List<PlanOfWorkViewModel> plans = new List<PlanOfWorkViewModel>();
             foreach( var plan in LastRevisions){
                 var pow = new PlanOfWorkViewModel();
@@ -244,6 +208,7 @@ namespace Kers.Controllers.Reports
                 plans.Add(pow);
             }
             ViewData["ProgramId"] = id;
+            ViewData["fy"] = fiscalYear.Name;
             return View(plans);
         }
 
