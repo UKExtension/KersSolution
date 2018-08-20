@@ -92,17 +92,15 @@ namespace Kers.Controllers.Reports
         [Route("storiesprogram/{id?}/{fy?}", Name = "StoryProgram")]
         public async Task<IActionResult> StoriesProgram(int id = 0, string fy = "0")
         {
-            FiscalYear fiscalYear = GetFYByName(fy);
 
-            if(fiscalYear == null){
-                
-                return new StatusCodeResult(500);
-            }
-            var programs = await this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear == fiscalYear).OrderBy(l => l.order).ToListAsync();
+            
+            FiscalYear fiscalYear;
             var model = new ProgramStoryViewModel();
-            model.MajorPrograms = programs;
+            
             if(id != 0){
-                var program = await this.context.MajorProgram.Where( u => u.Id == id).FirstOrDefaultAsync();
+                var program = await this.context.MajorProgram.Where( u => u.Id == id)
+                                        .Include( p => p.StrategicInitiative).ThenInclude( i => i .FiscalYear)
+                                        .FirstOrDefaultAsync();
                 if(program != null){
                     model.MajorProgram = program;
 
@@ -122,8 +120,19 @@ namespace Kers.Controllers.Reports
                                             .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
                                             .ToListAsync();
                     model.Stories = this.storyViewModelList(stories);
+                    
+                }
+                fiscalYear = program.StrategicInitiative.FiscalYear;
+            }else{
+                fiscalYear = GetFYByName(fy);
+
+                if(fiscalYear == null){
+                    
+                    return new StatusCodeResult(500);
                 }
             }
+            var programs = await this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear == fiscalYear).OrderBy(l => l.order).ToListAsync();
+            model.MajorPrograms = programs;
             ViewData["FiscalYear"] = fiscalYear;
             return View(model);
         }

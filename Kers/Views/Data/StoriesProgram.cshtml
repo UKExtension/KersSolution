@@ -1,6 +1,7 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    ViewData["fy"] = FiscalYear.Name;
     ViewData["Title"] = "Success Stories By MajorProgram FY"+FiscalYear.Name;
     ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");
 }
@@ -10,7 +11,7 @@
 <div class="row">
     <label class="col-md-2">Select Major Program</label>
     <div class="col-md-8">
-        <select asp-for="MajorProgram.Id" asp-items="@(new SelectList(Model.MajorPrograms,"Id","Name"))" class="form-control" onchange="location = '@Url.RouteUrl("StoryProgram", new { id = "" })' + '/' + this.value + '/2018';">
+        <select asp-for="MajorProgram.Id" asp-items="@(new SelectList(Model.MajorPrograms,"Id","Name"))" class="form-control" onchange="location = '@Url.RouteUrl("StoryProgram", new { id = "", })' + '/' + this.value;">
             <option>-- select --</option>
         </select>
     </div>

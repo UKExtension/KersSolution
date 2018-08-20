@@ -131,12 +131,12 @@ namespace Kers.Controllers.Reports
                 indicators.Add( intv );
             }
             
-                
+            ViewData["fy"] = fy;
             return View(indicators);
         }
 
-        [HttpGet("countylist")]
-        public async Task<IActionResult> Countylist(){
+        [HttpGet("countylist/{fy?}")]
+        public async Task<IActionResult> Countylist(string fy="0"){
 
             List<PlanningUnit> counties;
             var cacheKey = "CountiesList";
@@ -158,6 +158,7 @@ namespace Kers.Controllers.Reports
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                         });
             }
+            ViewData["fy"] = fy;
             return View(counties);
         }
 
