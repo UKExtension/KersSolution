@@ -69,69 +69,23 @@ namespace Kers.Controllers.Reports
         [Route("")]
         public IActionResult Index()
         {
-            /* 
-            var optionsBuilder = new DbContextOptionsBuilder<KersReportingContext>();
-            optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:connKersReporting"]);
-
-            using (var contexReporting = new KersReportingContext(optionsBuilder.Options))
-                    {
-                        var trainings = contexReporting.vInServiceQualtricsSurveysToCreate.ToList();
-
-                        var qualtricsApiHost = _configuration["QualtricsApi:sApiHost"];
-                        var qualtricsUser = _configuration["QualtricsApi:sUser"];
-                        var qualtricsToken = _configuration["QualtricsApi:sToken"];
-                        var qualtricsFormat = _configuration["QualtricsApi:sFormat"];
-                        var qualtricsVersion = _configuration["QualtricsApi:sVersion"];
-                        var qualtricsImportFormat = _configuration["QualtricsApi:sImportFormat"];
-                        var qualtricsActivate = _configuration["QualtricsApi:sActivate"];
-                        var client = new HttpClient();
-                        
-                        foreach( var training in trainings ){
-
-                            string sSurveyURL = "https://kers.ca.uky.edu/CES/rpt/zQualtricsInServiceEvaluationSurveyText.aspx?t=" + training.tID;
-
-                            String url = qualtricsApiHost
-                            + "Request=importSurvey"
-                            + "&User=" + HttpUtility.UrlEncode(qualtricsUser)
-                            + "&Token=" + qualtricsToken
-                            + "&Format=" + qualtricsFormat
-                            + "&Version=" + qualtricsVersion
-                            + "&ImportFormat=" + qualtricsImportFormat
-                            + "&Activate=" + qualtricsActivate
-                            + "&Name=" + HttpUtility.UrlEncode(training.qualtricsTitle)
-                            + "&URL=" + HttpUtility.UrlEncode(sSurveyURL);
-                            
-                            try
-                            {
-                                client.DefaultRequestHeaders.Accept.Clear();
-                                var result = client.GetAsync(url).Result;
-                                var data = result.Content.ReadAsStringAsync().Result;
-                                XDocument xmlDoc = new XDocument();
-                                    try
-                                    {
-                                        xmlDoc = XDocument.Parse(data);
-                                        String surveyID = xmlDoc.Root.Element("Result").Value;
-                                        var commandText = "UPDATE [UKCA_Reporting]..[zInServiceTrainingCatalog] SET qualtricsSurveyID = @p1 WHERE rID = @p2";;
-                                        var surveyParameter = new SqlParameter("@p1", surveyID);
-                                        var trainingParameter = new SqlParameter("@p2", training.tID);
-                                        contexReporting.Database.ExecuteSqlCommand(commandText, parameters: new[] {
-                                                                                                        surveyParameter, trainingParameter
-                                                                                    });
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        
-                                    }
-                            }
-                            catch (WebException e)
-                            {
-                                  
-                            }
-                        }
-                    }
+            var revsWith2019MP = context.ActivityRevision.Where( a => a.ActivityDate < new DateTime( 2018, 7, 1) );
+            revsWith2019MP = revsWith2019MP.Where( r => r.MajorProgram.StrategicInitiative.FiscalYear.Name == "2019");
+            revsWith2019MP = revsWith2019MP
+                                    .Include( r => r.MajorProgram);
             
- */
-            return View();
+            foreach( var rev in revsWith2019MP ){
+                var mp2018 = context.MajorProgram.Where( m => m.StrategicInitiative.FiscalYear.Name == "2018" && m.Name == rev.MajorProgram.Name).FirstOrDefault();
+                if( mp2018 != null){
+                    rev.MajorProgram = mp2018;
+                    var actvt = context.Activity.Where( a => a.Id == rev.ActivityId ).FirstOrDefault();
+                    actvt.MajorProgram = mp2018;
+                }
+                
+
+            }
+           //context.SaveChanges();
+            return View(revsWith2019MP);
         }
 
 

@@ -3,6 +3,9 @@
 
         ViewData["Title"] = "Sample";
 
-
 }
+@model IEnumerable< Kers.Models.Entities.KERScore.ActivityRevision>
 
+@foreach( var rev in Model ){
+    <p>@rev.Title (@rev.MajorProgram.Name) - @rev.ActivityDate: @rev.Created</p>
+}
