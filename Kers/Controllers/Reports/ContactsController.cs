@@ -126,6 +126,85 @@ namespace Kers.Controllers.Reports
         }
 
 
+        
+
+
+
+        [HttpGet]
+        [Route("[action]/{filter?}/{id?}/{fy?}")]
+        public async Task<IActionResult> DataByMonthByMajorProgram(int filter = 1, int id = 0, string fy = "0")
+        {
+            
+            FiscalYear fiscalYear = GetFYByName(fy);
+            
+
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            ViewData["FiscalYear"] = fiscalYear;
+
+
+            List< List< PerGroupActivities >> result = await this.DataByMonth(fiscalYear, filter, 1, id);
+
+
+            var output = new List< List< Kers.Models.Data.PerProgramActivities >>();
+
+            float totalHours = 0;
+            int totalContacts = 0;
+            float totalMultistate = 0;
+            int totalActivities = 0;
+            foreach( var MonthResult in result){
+                var MonthData = new List<Kers.Models.Data.PerProgramActivities>();
+                foreach( var res in MonthResult ){
+                    var ProgramActivities = new Kers.Models.Data.PerProgramActivities();
+                    ProgramActivities.Audience = res.Audience;
+                    ProgramActivities.Female = res.Female;
+                    ProgramActivities.Hours = res.Hours;
+                    ProgramActivities.MajorProgram = this.context.MajorProgram.Find( res.GroupId );
+                    ProgramActivities.Male = res.Male;
+                    ProgramActivities.Multistate = res.Multistate;
+                    ProgramActivities.OptionNumberValues = res.OptionNumberValues;
+                    ProgramActivities.RaceEthnicityValues = res.RaceEthnicityValues;
+                    MonthData.Add( ProgramActivities );
+                    totalHours += res.Hours;
+                    totalContacts += res.Audience;
+                    totalMultistate += res.Multistate;
+                    totalActivities ++;
+
+                }
+                output.Add(MonthData);
+            }
+            ViewData["totalHours"] = totalHours;
+            ViewData["totalContacts"] = totalContacts;
+            ViewData["totalMultistate"] = totalMultistate;
+            ViewData["totalActivities"] = totalActivities;
+
+
+            
+            return View(output);
+        }
+        
+
+        [HttpGet]
+        [Route("[action]/{filter?}/{id?}/{fy?}")]
+        public async Task<IActionResult> DataByMonthByEmployee(int filter = 1, int id = 0, string fy = "0")
+        {
+            
+            FiscalYear fiscalYear = GetFYByName(fy);
+            
+
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            ViewData["FiscalYear"] = fiscalYear;
+
+
+            var result = await this.DataByMonth(fiscalYear, filter, 0, id);
+            
+            return View(result);
+        }
+
+
 
 
         
@@ -216,7 +295,7 @@ namespace Kers.Controllers.Reports
         {
             FiscalYear fiscalYear = GetFYByName("2018");
             //Get All Data for the fy by employee
-            var result = contactRepo.GetActivitiesAndContactsAsync(fiscalYear,4);
+            var result = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End,4);
 
             List<PerPersonActivities> userResult = new List<PerPersonActivities>();
             foreach( var res in await result ){
@@ -439,6 +518,26 @@ namespace Kers.Controllers.Reports
         }
 
 
+        private async Task<List<List<PerGroupActivities>>> DataByMonth(FiscalYear fiscalYear, int filter = 1, int grouppedBy = 1, int id = 0)
+        {
+
+            var result = new List<List<PerGroupActivities>>();
+
+            for (DateTime dt = fiscalYear.Start; dt <= fiscalYear.End; dt = dt.AddMonths(1))
+            {
+                /*****************************************************************/
+                // Generate Contacts Reports Groupped by Employee or Major Program
+                // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+                // grouppedBy: 0 Employee, 1 MajorProgram
+                /*******************************************************************/
+                var first = new DateTime( dt.Year, dt.Month, 1, 0, 0, 0);
+                var last = new DateTime( dt.Year, dt.Month , DateTime.DaysInMonth(dt.Year, dt.Month), 23, 59, 59 );
+
+                List<PerGroupActivities> activities = await contactRepo.GetActivitiesAndContactsAsync( first, last, filter, grouppedBy, id, false, 102 );
+                result.Add( activities );
+            }            
+            return result;
+        }
 
         public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
             FiscalYear fiscalYear;

@@ -41,7 +41,7 @@ namespace Kers.Models.Repositories
             List<ProgramDataViewModel> data;
 
 
-            // If not month or year is provided, get the last month
+            // If no month or year is provided, get the last month
             if( year == 0 || month == 0){
                 var currentDate = DateTime.Now;
                 month = currentDate.Month;

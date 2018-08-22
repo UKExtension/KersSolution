@@ -198,10 +198,10 @@ namespace Kers.Models.Repositories
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
         // grouppedBy: 0 Employee, 1 MajorProgram
         /*******************************************************************/
-        public async Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( FiscalYear fiscalYear, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false ){
+        public async Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 2 ){
             List<ActivityGrouppedResult> activities;
 
-            var actvtsCacheKey = "AllActivitiesGroupped" + filter.ToString() + "_" + grouppedBy.ToString() + "_" + id.ToString() + "_" + fiscalYear.Name;
+            var actvtsCacheKey = "AllActivitiesGroupped" + filter.ToString() + "_" + grouppedBy.ToString() + "_" + id.ToString() + "_" + start.ToString("s") + end.ToString("s");
             var cachedActivities = _cache.GetString(actvtsCacheKey);
 
             if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
@@ -209,34 +209,34 @@ namespace Kers.Models.Repositories
             }else{
                 if( grouppedBy == 0){ 
                     if(filter == 0){
-                        activities = await DistrictEmployeeGroupppedActivities(id, fiscalYear);
+                        activities = await DistrictEmployeeGroupppedActivities(id, start, end);
                     }else if(filter == 1){
-                        activities = await UnitEmployeeGroupppedActivities(id, fiscalYear);
+                        activities = await UnitEmployeeGroupppedActivities(id, start, end);
                     }else if(filter == 2){
-                        activities = await KSUEmployeeGroupppedActivities(fiscalYear);
+                        activities = await KSUEmployeeGroupppedActivities(start, end);
                     }else if(filter == 3){
-                        activities = await UKEmployeeGroupppedActivities(fiscalYear);
+                        activities = await UKEmployeeGroupppedActivities(start, end);
                     }else{
-                        activities = await AllEmployeeGroupppedActivities(fiscalYear);
+                        activities = await AllEmployeeGroupppedActivities(start, end);
                     }
                 }else{
                     if(filter == 0){
-                        activities = await DistrictProgramGroupppedActivities(id, fiscalYear);
+                        activities = await DistrictProgramGroupppedActivities(id, start, end);
                     }else if(filter == 1){
-                        activities = await UnitProgramGroupppedActivities(id, fiscalYear);
+                        activities = await UnitProgramGroupppedActivities(id, start, end);
                     }else if(filter == 2){
-                        activities = await KSUProgramGroupppedActivities(fiscalYear);
+                        activities = await KSUProgramGroupppedActivities(start, end);
                     }else if(filter == 3){
-                        activities = await UKProgramGroupppedActivities(fiscalYear);
+                        activities = await UKProgramGroupppedActivities(start, end);
                     }else{
-                        activities = await AllProgramGroupppedActivities(fiscalYear);
+                        activities = await AllProgramGroupppedActivities(start, end);
                     }
                 }
                 
                 var serializedActivities = JsonConvert.SerializeObject(activities);
                 _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
                     });
 
 
@@ -245,7 +245,7 @@ namespace Kers.Models.Repositories
 
             List<ContactGrouppedResult> contacts;
 
-            var contactsCacheKey = "ContactsGroupped" + filter.ToString() + "_" + grouppedBy.ToString() + "_" + id.ToString() + "_" + fiscalYear.Name;
+            var contactsCacheKey = "ContactsGroupped" + filter.ToString() + "_" + grouppedBy.ToString() + "_" + id.ToString() + "_" + start.ToString("s") + end.ToString("s");
             var cachedContacts = _cache.GetString(contactsCacheKey);
 
             if (!string.IsNullOrEmpty(cachedContacts) && !refreshCache){
@@ -254,33 +254,33 @@ namespace Kers.Models.Repositories
                 contacts = new List<ContactGrouppedResult>();
                 if( grouppedBy == 0){
                     if(filter == 0){
-                        contacts = await DistrictEmployeeGroupppedContacts(id, fiscalYear);
+                        contacts = await DistrictEmployeeGroupppedContacts(id, start, end);
                     }else if(filter == 1){
-                        contacts = await UnitEmployeeGroupppedContacts(id, fiscalYear);
+                        contacts = await UnitEmployeeGroupppedContacts(id, start, end);
                     }else if( filter == 2){
-                        contacts = await KSUEmployeeGroupppedContacts(fiscalYear);
+                        contacts = await KSUEmployeeGroupppedContacts(start, end);
                     }else if( filter == 3){
-                        contacts = await UKEmployeeGroupppedContacts(fiscalYear);
+                        contacts = await UKEmployeeGroupppedContacts(start, end);
                     }else{
-                        contacts = await AllEmployeeGroupppedContacts(fiscalYear);
+                        contacts = await AllEmployeeGroupppedContacts(start, end);
                     }
                 }else{
                     if(filter == 0){
-                        contacts = await DistrictProgramGroupppedContacts(id, fiscalYear);
+                        contacts = await DistrictProgramGroupppedContacts(id, start, end);
                     }else if(filter == 1){
-                        contacts = await UnitProgramGroupppedContacts(id, fiscalYear);
+                        contacts = await UnitProgramGroupppedContacts(id, start, end);
                     }else if( filter == 2){
-                        contacts = await KSUProgramGroupppedContacts(fiscalYear);
+                        contacts = await KSUProgramGroupppedContacts(start, end);
                     }else if( filter == 3){
-                        contacts = await UKProgramGroupppedContacts(fiscalYear);
+                        contacts = await UKProgramGroupppedContacts(start, end);
                     }else{
-                        contacts = await AllProgramGroupppedContacts(fiscalYear);
+                        contacts = await AllProgramGroupppedContacts(start, end);
                     }
                 }
                 var serializedContacts = JsonConvert.SerializeObject(contacts);
                 _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
                     });
             }
 
@@ -305,76 +305,9 @@ namespace Kers.Models.Repositories
             if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
                 table = JsonConvert.DeserializeObject<TableViewModel>(cachedTypes);
             }else{
-                var result = this.GetActivitiesAndContactsAsync( fiscalYear, filter, 0, id, refreshCache);
+                var result = this.GetActivitiesAndContactsAsync( fiscalYear.Start, fiscalYear.End , filter, 0, id, refreshCache);
 
                 table = new TableViewModel();
-
- /*                List<ActivityGrouppedResult> activities;
-
-
-
-
-                var actvtsCacheKey = "AllActivitiesGrouppedByEmployee" + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
-                var cachedActivities = _cache.GetString(actvtsCacheKey);
-
-                if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
-                    activities = JsonConvert.DeserializeObject<List<ActivityGrouppedResult>>(cachedActivities);
-                }else{
-
-                    if(filter == 0){
-                        activities = await DistrictEmployeeGroupppedActivities(id, fiscalYear);
-                    }else if(filter == 1){
-                        activities = await UnitEmployeeGroupppedActivities(id, fiscalYear);
-                    }else if(filter == 2){
-                        activities = await KSUEmployeeGroupppedActivities(fiscalYear);
-                    }else if(filter == 3){
-                        activities = await UKEmployeeGroupppedActivities(fiscalYear);
-                    }else{
-                        activities = await AllEmployeeGroupppedActivities(fiscalYear);
-                    }
-                    
-                    
-                    var serializedActivities = JsonConvert.SerializeObject(activities);
-                    _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
-                        });
-
-
-                }
-                var result = ProcessGrouppedActivities(activities);
-
-                List<ContactGrouppedResult> contacts;
-
-                var contactsCacheKey = "ContactsGrouppedByEmployee" + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
-                var cachedContacts = _cache.GetString(contactsCacheKey);
-
-                if (!string.IsNullOrEmpty(cachedContacts) && !refreshCache){
-                    contacts = JsonConvert.DeserializeObject<List<ContactGrouppedResult>>(cachedContacts);
-                }else{
-                    contacts = new List<ContactGrouppedResult>();
-                    if(filter == 0){
-                        contacts = await DistrictEmployeeGroupppedContacts(id, fiscalYear);
-                    }else if(filter == 1){
-                        contacts = await UnitEmployeeGroupppedContacts(id, fiscalYear);
-                    }else if( filter == 2){
-                        contacts = await KSUEmployeeGroupppedContacts(fiscalYear);
-                    }else if( filter == 3){
-                        contacts = await UKEmployeeGroupppedContacts(fiscalYear);
-                    }else{
-                        contacts = await AllEmployeeGroupppedContacts(fiscalYear);
-                    }
-                    var serializedContacts = JsonConvert.SerializeObject(contacts);
-                    _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
-                        });
-                }
-
-                result = ProcessGrouppedContacts(contacts, result);
- */
-                
-
                 List<PerPersonActivities> userResult = new List<PerPersonActivities>();
                 foreach( var res in await result ){
                     var personGroup = new PerPersonActivities();
@@ -512,81 +445,8 @@ namespace Kers.Models.Repositories
             if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
                 table = JsonConvert.DeserializeObject<TableViewModel>(cachedTypes);
             }else{
-
-
                 table = new TableViewModel();
-
-
-
-/* 
-
-
-                List<ActivityGrouppedResult> activities;
-
-
-
-
-                var actvtsCacheKey = "AllActivitiesGrouppedByMajorProgram" + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
-                var cachedActivities = _cache.GetString(actvtsCacheKey);
-
-                if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
-                    activities = JsonConvert.DeserializeObject<List<ActivityGrouppedResult>>(cachedActivities);
-                }else{
-
-                    if(filter == 0){
-                        activities = await DistrictProgramGroupppedActivities(id, fiscalYear);
-                    }else if(filter == 1){
-                        activities = await UnitProgramGroupppedActivities(id, fiscalYear);
-                    }else if(filter == 2){
-                        activities = await KSUProgramGroupppedActivities(fiscalYear);
-                    }else if(filter == 3){
-                        activities = await UKProgramGroupppedActivities(fiscalYear);
-                    }else{
-                        activities = await AllProgramGroupppedActivities(fiscalYear);
-                    }
-                    
-                    
-                    var serializedActivities = JsonConvert.SerializeObject(activities);
-                    _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
-                        });
-
-
-                }
-                var result = ProcessGrouppedActivities(activities);
-
-                List<ContactGrouppedResult> contacts;
-
-                var contactsCacheKey = "ContactsGrouppedByMajorProgram" + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
-                var cachedContacts = _cache.GetString(contactsCacheKey);
-
-                if (!string.IsNullOrEmpty(cachedContacts) && !refreshCache){
-                    contacts = JsonConvert.DeserializeObject<List<ContactGrouppedResult>>(cachedContacts);
-                }else{
-                    contacts = new List<ContactGrouppedResult>();
-                    if(filter == 0){
-                        contacts = await DistrictProgramGroupppedContacts(id, fiscalYear);
-                    }else if(filter == 1){
-                        contacts = await UnitProgramGroupppedContacts(id, fiscalYear);
-                    }else if( filter == 2){
-                        contacts = await KSUProgramGroupppedContacts(fiscalYear);
-                    }else if( filter == 3){
-                        contacts = await UKProgramGroupppedContacts(fiscalYear);
-                    }else{
-                        contacts = await AllProgramGroupppedContacts(fiscalYear);
-                    }
-                    var serializedContacts = JsonConvert.SerializeObject(contacts);
-                    _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)
-                        });
-                }
-
-                result = ProcessGrouppedContacts(contacts, result);
- */
-
-                var result = await this.GetActivitiesAndContactsAsync( fiscalYear, filter, 1, id, refreshCache);
+                var result = await this.GetActivitiesAndContactsAsync( fiscalYear.Start, fiscalYear.End, filter, 1, id, refreshCache);
                 var defaultMajorProgram = await coreContext.MajorProgram.Where( u => u.Name == "Administrative Functions").FirstOrDefaultAsync();
                 List<PerProgramActivities> programResult = new List<PerProgramActivities>();
                 foreach( var res in result ){
@@ -720,12 +580,12 @@ namespace Kers.Models.Repositories
 
 
 
-        private async Task<List<ActivityGrouppedResult>> DistrictEmployeeGroupppedActivities(int id, FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> DistrictEmployeeGroupppedActivities(int id, DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                                 &&
                                                                 a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
                                                             )
@@ -760,12 +620,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> DistrictEmployeeGroupppedContacts(int id, FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> DistrictEmployeeGroupppedContacts(int id, DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                                 && 
                                                 c.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
                                         )
@@ -783,12 +643,12 @@ namespace Kers.Models.Repositories
         }
 
 
-        private async Task<List<ActivityGrouppedResult>> UnitEmployeeGroupppedActivities(int id, FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> UnitEmployeeGroupppedActivities(int id, DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                                 &&
                                                                 a.KersUser.RprtngProfile.PlanningUnitId == id
                                                             )
@@ -820,12 +680,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> UnitEmployeeGroupppedContacts(int id, FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> UnitEmployeeGroupppedContacts(int id, DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                                 && 
                                                 c.KersUser.RprtngProfile.PlanningUnitId == id
                                         )
@@ -843,12 +703,12 @@ namespace Kers.Models.Repositories
         }
 
 
-        private async Task<List<ActivityGrouppedResult>> KSUEmployeeGroupppedActivities(FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> KSUEmployeeGroupppedActivities(DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                                 &&
                                                                 a.KersUser.RprtngProfile.Institution.Code == "21000-1890"
                                                             )
@@ -880,12 +740,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> KSUEmployeeGroupppedContacts(FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> KSUEmployeeGroupppedContacts(DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                                 &&
                                                 c.KersUser.RprtngProfile.Institution.Code == "21000-1890"
                                         )
@@ -902,12 +762,12 @@ namespace Kers.Models.Repositories
             return contacts;
         }
 
-        private async Task<List<ActivityGrouppedResult>> UKEmployeeGroupppedActivities(FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> UKEmployeeGroupppedActivities(DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                                 &&
                                                                 a.KersUser.RprtngProfile.Institution.Code != "21000-1890"
                                                             )
@@ -939,12 +799,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> UKEmployeeGroupppedContacts(FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> UKEmployeeGroupppedContacts(DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                                 &&
                                                 c.KersUser.RprtngProfile.Institution.Code != "21000-1890"
                                         )
@@ -961,12 +821,12 @@ namespace Kers.Models.Repositories
             return contacts;
         }
 
-        private async Task<List<ActivityGrouppedResult>> AllEmployeeGroupppedActivities(FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> AllEmployeeGroupppedActivities(DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                             )
                                                     .GroupBy(e => new {
                                                         KersUser = e.KersUser
@@ -996,12 +856,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> AllEmployeeGroupppedContacts(FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> AllEmployeeGroupppedContacts(DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                         )
                                         .GroupBy(e => new {
                                             User = e.KersUser
@@ -1018,12 +878,12 @@ namespace Kers.Models.Repositories
 
 
 
-        private async Task<List<ActivityGrouppedResult>> DistrictProgramGroupppedActivities(int id, FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> DistrictProgramGroupppedActivities(int id, DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                                 &&
                                                                 a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
                                                             )
@@ -1058,12 +918,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> DistrictProgramGroupppedContacts(int id, FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> DistrictProgramGroupppedContacts(int id, DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                                 && 
                                                 c.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
                                         )
@@ -1081,14 +941,14 @@ namespace Kers.Models.Repositories
         }
 
 
-        private async Task<List<ActivityGrouppedResult>> UnitProgramGroupppedActivities(int id, FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> UnitProgramGroupppedActivities(int id, DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                                 &&
-                                                                a.KersUser.RprtngProfile.PlanningUnitId == id
+                                                                a.PlanningUnitId == id
                                                             )
                                                     .GroupBy(e => new {
                                                         ProgramId = e.MajorProgramId
@@ -1118,14 +978,14 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> UnitProgramGroupppedContacts(int id, FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> UnitProgramGroupppedContacts(int id, DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                                 && 
-                                                c.KersUser.RprtngProfile.PlanningUnitId == id
+                                                c.PlanningUnitId == id
                                         )
                                         .GroupBy(e => new {
                                             ProgramId = e.MajorProgramId
@@ -1141,12 +1001,12 @@ namespace Kers.Models.Repositories
         }
 
 
-        private async Task<List<ActivityGrouppedResult>> KSUProgramGroupppedActivities(FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> KSUProgramGroupppedActivities(DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                                 &&
                                                                 a.KersUser.RprtngProfile.Institution.Code == "21000-1890"
                                                             )
@@ -1178,12 +1038,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> KSUProgramGroupppedContacts(FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> KSUProgramGroupppedContacts(DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                                 &&
                                                 c.KersUser.RprtngProfile.Institution.Code == "21000-1890"
                                         )
@@ -1200,12 +1060,12 @@ namespace Kers.Models.Repositories
             return contacts;
         }
 
-        private async Task<List<ActivityGrouppedResult>> UKProgramGroupppedActivities(FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> UKProgramGroupppedActivities(DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                                 &&
                                                                 a.KersUser.RprtngProfile.Institution.Code != "21000-1890"
                                                             )
@@ -1237,12 +1097,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> UKProgramGroupppedContacts(FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> UKProgramGroupppedContacts(DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                                 &&
                                                 c.KersUser.RprtngProfile.Institution.Code != "21000-1890"
                                         )
@@ -1259,12 +1119,12 @@ namespace Kers.Models.Repositories
             return contacts;
         }
 
-        private async Task<List<ActivityGrouppedResult>> AllProgramGroupppedActivities(FiscalYear fiscalYear){
+        private async Task<List<ActivityGrouppedResult>> AllProgramGroupppedActivities(DateTime start, DateTime end){
             var activities = await this.coreContext.Activity
                                                     .Where( a => 
-                                                                a.ActivityDate < fiscalYear.End 
+                                                                a.ActivityDate < end 
                                                                 && 
-                                                                a.ActivityDate > fiscalYear.Start
+                                                                a.ActivityDate > start
                                                             )
                                                     .GroupBy(e => new {
                                                         ProgramId = e.MajorProgramId
@@ -1294,12 +1154,12 @@ namespace Kers.Models.Repositories
 
         }
 
-        private async Task<List<ContactGrouppedResult>> AllProgramGroupppedContacts(FiscalYear fiscalYear){
+        private async Task<List<ContactGrouppedResult>> AllProgramGroupppedContacts(DateTime start, DateTime end){
            var contacts = await this.coreContext.Contact.
                                     Where( c => 
-                                                c.ContactDate < fiscalYear.End 
+                                                c.ContactDate < end 
                                                 && 
-                                                c.ContactDate > fiscalYear.Start 
+                                                c.ContactDate > start 
                                         )
                                         .GroupBy(e => new {
                                             ProgramId = e.MajorProgramId
@@ -1313,25 +1173,6 @@ namespace Kers.Models.Repositories
                                         .ToListAsync();
             return contacts;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public List<PerGroupActivities> ProcessGrouppedActivities(List<ActivityGrouppedResult> activities){
             var result = new List<PerGroupActivities>();
