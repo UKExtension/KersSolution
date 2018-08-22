@@ -1,6 +1,7 @@
 @{
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    ViewData["Title"] = "State Statistical Contact Reports";
+    ViewData["Title"] = "Statistical Contact Report for FY" + FiscalYear.Name;
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
 
     var totalHours = ViewData["totalHours"] as float?;
@@ -8,45 +9,61 @@
     var totalMultistate = ViewData["totalMultistate"] as float?;
     var totalActivities = ViewData["totalActivities"] as int? ;
 
+    var unit = ViewData["unit"] as Kers.Models.Entities.KERScore.PlanningUnit;
+    var district = ViewData["district"] as Kers.Models.Entities.KERScore.District;
+
+
+    var monthsForTheGraph = ViewData["months"] as string;
+    var hoursForTheGraph = ViewData["hours"] as string;
+
 }
 @model List<List<Kers.Models.Data.PerProgramActivities>>
 
+@if( unit != null )
+{
+    <h3>@unit.Name <small>@FiscalYear.Start.ToString("MMM d, yyyy") - @FiscalYear.End.ToString("MMM d, yyyy")</small></h3>
+    
+}
+else if( district != null)
+{
+    <h3>@district.Name <small>@FiscalYear.Start.ToString("MMM d, yyyy") - @FiscalYear.End.ToString("MMM d, yyyy")</small></h3>
+}
 
 
 <div class="row top_tiles">
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-clock-o"></i></div>
-                  <div class="count">@totalHours</div>
-                  <h3>Total Hours</h3>
-                  <p>Contributed.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-comments-o"></i></div>
-                  <div class="count">@totalContacts</div>
-                  <h3>Contacts</h3>
-                  <p>with Individuals.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-code-fork"></i></div>
-                  <div class="count">@totalMultistate</div>
-                  <h3>Hours</h3>
-                  <p>of Multistate Efforts.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
-                  <div class="count">@totalActivities</div>
-                  <h3>Number of activities</h3>
-                  <p>Performed.</p>
-                </div>
-              </div>
-            </div>
+    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="tile-stats">
+        <div class="icon"><i class="fa fa-clock-o"></i></div>
+        <div class="count">@totalHours</div>
+        <h3>Total Hours</h3>
+        <p>Contributed.</p>
+    </div>
+    </div>
+    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="tile-stats">
+        <div class="icon"><i class="fa fa-comments-o"></i></div>
+        <div class="count">@totalContacts</div>
+        <h3>Contacts</h3>
+        <p>with Individuals.</p>
+    </div>
+    </div>
+    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="tile-stats">
+        <div class="icon"><i class="fa fa-code-fork"></i></div>
+        <div class="count">@totalMultistate</div>
+        <h3>Hours</h3>
+        <p>of Multistate Efforts.</p>
+    </div>
+    </div>
+    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="tile-stats">
+        <div class="icon"><i class="fa fa-check-square-o"></i></div>
+        <div class="count">@totalActivities</div>
+        <h3>Number of activities</h3>
+        <p>Performed.</p>
+    </div>
+    </div>
+</div>
 
 
 
@@ -60,7 +77,7 @@
               <div class="col-md-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Transaction Summary <small>Weekly progress</small></h2>
+                    <h2>Hours <small>Per Month</small></h2>
                     <div class="filter">
                       <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
                         <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -71,8 +88,9 @@
                   </div>
                   <div class="x_content">
                     <div class="col-md-9 col-sm-12 col-xs-12">
-                      <div class="demo-container" style="height:280px">
-                        <div id="chart_plot_02" class="demo-placeholder" style="padding: 0px; position: relative;"><canvas class="flot-base" width="1578" height="560" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 789px; height: 280px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 74px; text-align: center;">23/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 148px; text-align: center;">25/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 222px; text-align: center;">27/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 295px; text-align: center;">29/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 369px; text-align: center;">31/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 443px; text-align: center;">02/09/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 517px; text-align: center;">04/09/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 591px; text-align: center;">06/09/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 665px; text-align: center;">08/09/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 739px; text-align: center;">10/09/18</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 246px; left: 12px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 205px; left: 6px; text-align: right;">20</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 164px; left: 6px; text-align: right;">40</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 123px; left: 6px; text-align: right;">60</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 82px; left: 6px; text-align: right;">80</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 41px; left: 0px; text-align: right;">100</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 0px; left: 0px; text-align: right;">120</div></div></div><canvas class="flot-overlay" width="1578" height="560" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 789px; height: 280px;"></canvas><div class="legend"><div style="position: absolute; width: 71px; height: 16px; top: -17px; right: 22px; background-color: rgb(255, 255, 255); opacity: 0.85;"> </div><table style="position:absolute;top:-17px;right:22px;;font-size:smaller;color:#3f3f3f"><tbody><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(150,202,89);overflow:hidden"></div></div></td><td class="legendLabel">Email Sent&nbsp;&nbsp;</td></tr></tbody></table></div></div>
+                      <div class="demo-container" style="height:380px;">
+                        <div id="main" class="demo-placeholder" style="height:380px; margin-right: 30px;">
+                        </div>
                       </div>
                       <div class="tiles">
                         <div class="col-md-4 tile">
@@ -179,3 +197,70 @@
                 </div>
               </div>
             </div>
+
+
+@section scripts
+{
+   <script type="text/javascript" src="@Url.Content("https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts-en.min.js")"></script>
+   <script>
+      
+	 
+
+
+        var dom = document.getElementById("main");
+var myChart = echarts.init(dom);
+
+
+option = {
+    color: ['#3398DB'],
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            
+            type : 'shadow'        
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis : [
+        {
+            type : 'category',
+            data : @Html.Raw(monthsForTheGraph),
+            axisTick: {
+                alignWithLabel: true
+            }
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'Hours',
+            type:'bar',
+            barWidth: '60%',
+            data: @Html.Raw(hoursForTheGraph)
+        }
+    ]
+};
+
+
+
+    myChart.setOption(option, true);
+
+
+        $(window).on('resize', function(){
+            if(myChart != null && myChart != undefined){
+                myChart.resize();
+            }
+        });
+
+    </script>
+}
+
+

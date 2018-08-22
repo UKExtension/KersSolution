@@ -134,14 +134,27 @@ namespace Kers.Controllers.Reports
         [Route("[action]/{filter?}/{id?}/{fy?}")]
         public async Task<IActionResult> DataByMonthByMajorProgram(int filter = 1, int id = 0, string fy = "0")
         {
-            
+            // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
             FiscalYear fiscalYear = GetFYByName(fy);
-            
-
             if(fiscalYear == null){
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
+
+
+            if( filter == 1 ){
+                ViewData["unit"] = context.PlanningUnit.Where( u => u.Id == id ).FirstOrDefault();
+                if(ViewData["unit"] == null){
+                    return new StatusCodeResult(500);
+                }
+            }else if( filter == 0 ){
+                ViewData["district"] = context.District.Where( u => u.Id == id ).FirstOrDefault();
+                if(ViewData["district"] == null){
+                    return new StatusCodeResult(500);
+                }
+            }else if( filter > 4 ){
+                return new StatusCodeResult(500);
+            }
 
 
             List< List< PerGroupActivities >> result = await this.DataByMonth(fiscalYear, filter, 1, id);
@@ -149,12 +162,20 @@ namespace Kers.Controllers.Reports
 
             var output = new List< List< Kers.Models.Data.PerProgramActivities >>();
 
+            var months = new List<string>();
+            var hours = new List<string>();
+
+            var runningDate = new DateTime( fiscalYear.Start.Year, fiscalYear.Start.Month, 28);
+
             float totalHours = 0;
             int totalContacts = 0;
             float totalMultistate = 0;
             int totalActivities = 0;
             foreach( var MonthResult in result){
                 var MonthData = new List<Kers.Models.Data.PerProgramActivities>();
+                months.Add( "'" + runningDate.ToString("MM/yyyy") + "'");
+                runningDate = runningDate.AddMonths( 1 );
+                hours.Add( MonthResult.Sum( s => s.Hours ).ToString());
                 foreach( var res in MonthResult ){
                     var ProgramActivities = new Kers.Models.Data.PerProgramActivities();
                     ProgramActivities.Audience = res.Audience;
@@ -180,6 +201,11 @@ namespace Kers.Controllers.Reports
             ViewData["totalActivities"] = totalActivities;
 
 
+            var monthsString = "[" + months.Aggregate((i, j) => i  + "," +  j) + "]";
+
+            ViewData["months"] = monthsString;
+            ViewData["hours"] = "[" + hours.Aggregate((i, j) => i + "," + j) + "]";
+
             
             return View(output);
         }
@@ -189,6 +215,7 @@ namespace Kers.Controllers.Reports
         [Route("[action]/{filter?}/{id?}/{fy?}")]
         public async Task<IActionResult> DataByMonthByEmployee(int filter = 1, int id = 0, string fy = "0")
         {
+            // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
             
             FiscalYear fiscalYear = GetFYByName(fy);
             
