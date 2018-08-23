@@ -16,6 +16,12 @@
     var monthsForTheGraph = ViewData["months"] as string;
     var hoursForTheGraph = ViewData["hours"] as string;
 
+
+    var colors = "[\"#26B99A\", \"#34495E\", \"#BDC3C7\", \"#3498DB\", \"#9B59B6\", \"#8abb6f\", \"#759c6a\", \"#bfd3b7\"]";
+
+    var programsForTheLegend = ViewData["programsForTheLegend"] as string;
+    var ProgramsHoursGraphDataList = ViewData["ProgramsHoursGraphDataList"] as string;
+
 }
 @model List<List<Kers.Models.Data.PerProgramActivities>>
 
@@ -211,8 +217,51 @@ else if( district != null)
 var myChart = echarts.init(dom);
 
 
+
+
+option1 = {
+                title: {
+                    text: "Graph title",
+                    subtext: "Graph Sub-text"
+                },
+                tooltip: {
+                    trigger: "axis"
+                },
+                legend: {
+                    data: @Html.Raw(programsForTheLegend)
+                },
+                toolbox: {
+                    show: !1
+                },
+                calculable: !1,
+                xAxis: [{
+                    type: "category",
+                    data: ["1?", "2?", "3?", "4?", "5?", "6?", "7?", "8?", "9?", "10?", "11?", "12?"]
+                }],
+                yAxis: [{
+                    type: "value"
+                }],
+                series: @Html.Raw(ProgramsHoursGraphDataList)
+            };
+
+
+
+
+
+
 option = {
-    color: ['#3398DB'],
+  title: {
+                    text: "Graph title",
+                    subtext: "Graph Sub-text"
+                },
+    color: @Html.Raw(colors),
+    legend: {
+        data: @Html.Raw(programsForTheLegend)
+    },
+    toolbox: {
+        show: !1
+    },
+    calculable: !1,
     tooltip : {
         trigger: 'axis',
         axisPointer : {            
@@ -239,15 +288,10 @@ option = {
             type : 'value'
         }
     ],
-    series : [
-        {
-            name:'Hours',
-            type:'bar',
-            barWidth: '60%',
-            data: @Html.Raw(hoursForTheGraph)
-        }
-    ]
+    series : @Html.Raw(ProgramsHoursGraphDataList)
 };
+
+
 
 
 
@@ -259,6 +303,26 @@ option = {
                 myChart.resize();
             }
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     </script>
 }

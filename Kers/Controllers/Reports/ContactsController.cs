@@ -164,7 +164,6 @@ namespace Kers.Controllers.Reports
 
             var months = new List<string>();
             var hours = new List<string>();
-
             var runningDate = new DateTime( fiscalYear.Start.Year, fiscalYear.Start.Month, 28);
 
             float totalHours = 0;
@@ -206,10 +205,108 @@ namespace Kers.Controllers.Reports
             ViewData["months"] = monthsString;
             ViewData["hours"] = "[" + hours.Aggregate((i, j) => i + "," + j) + "]";
 
+
+
+            
+
+            var returnList = new List<Kers.Models.Data.PerProgramActivities>();
+
+            var currentMonthNum = 0;
+
+            var ProgramDataPerMonth = new List<ProgramDataPerMonth>();
+
+            foreach( var month in output ){
+                foreach( var program in month ){
+                    if( program.MajorProgram != null ){
+                        var existingProgram = returnList.Where( r => r.MajorProgram == program.MajorProgram).FirstOrDefault();
+                        if( existingProgram == null ){
+
+                            var programEntry = new ProgramDataPerMonth();
+                            programEntry.MajorProgram = program.MajorProgram;
+                            programEntry.Audience = new List<int>();
+                            programEntry.Hours = new List<float>();
+                            programEntry.Male = new List<int>();
+                            programEntry.Female = new List<int>();
+                            programEntry.Multistate = new List<float>();
+                            for( var i = 0; i < currentMonthNum; i++ ){
+                                programEntry.Audience.Add(0);
+                                programEntry.Hours.Add(0);
+                                programEntry.Male.Add(0);
+                                programEntry.Female.Add( 0 );
+                                programEntry.Multistate.Add( 0 );
+                            }
+                            programEntry.Audience.Add( program.Audience );
+                            programEntry.Hours.Add( program.Hours );
+                            programEntry.Male.Add( program.Male );
+                            programEntry.Female.Add( program.Female );
+                            programEntry.Multistate.Add( program.Multistate );
+
+                            ProgramDataPerMonth.Add(programEntry);
+
+                            existingProgram = new Kers.Models.Data.PerProgramActivities();
+                            existingProgram.Audience = program.Audience;
+                            existingProgram.Female = program.Female;
+                            existingProgram.Hours = program.Hours;
+                            existingProgram.MajorProgram = program.MajorProgram;
+                            existingProgram.Male = program.Male;
+                            existingProgram.Multistate = program.Multistate;
+                            existingProgram.OptionNumberValues = program.OptionNumberValues;
+                            existingProgram.RaceEthnicityValues = program.RaceEthnicityValues;
+                            returnList.Add(existingProgram);
+
+                        }else{
+                            existingProgram.Audience += program.Audience;
+                            existingProgram.Female += program.Female;
+                            existingProgram.Hours += program.Hours;
+                            existingProgram.Male += program.Male;
+                            existingProgram.Multistate += program.Multistate;
+                            existingProgram.OptionNumberValues.AddRange( program.OptionNumberValues );
+                            existingProgram.RaceEthnicityValues.AddRange(program.RaceEthnicityValues);
+
+                            var programEntry = ProgramDataPerMonth.Where( p => p.MajorProgram == program.MajorProgram ).First();
+                            programEntry.Audience.Add(program.Audience);
+                            programEntry.Female.Add(program.Female);
+                            programEntry.Hours.Add(program.Hours);
+                            programEntry.Male.Add(program.Male);
+                            programEntry.Multistate.Add(program.Multistate);
+
+                        }
+                    }
+                    foreach( var inPrograms in ProgramDataPerMonth ){
+                        if(  !month.Where( m => m.MajorProgram == inPrograms.MajorProgram ).Any()){
+                            inPrograms.Audience.Add( 0 );
+                            inPrograms.Male.Add( 0 );
+                            inPrograms.Female.Add( 0 );
+                            inPrograms.Hours.Add(0);
+                            inPrograms.Multistate.Add(0);
+                        }
+                    }
+                }
+                currentMonthNum++;
+            }
+
+            ProgramDataPerMonth = ProgramDataPerMonth.OrderBy(p => p.MajorProgram.Name ).ToList();
+
+            
+            var ProgramsListOfStrings = new List<string>();
+            var ProgramsHoursGraphDataList = new List<string>();
+            foreach(var theProgram in ProgramDataPerMonth ){
+                ProgramsListOfStrings.Add( "\"" + theProgram.MajorProgram.Name + "\"" );
+                ProgramsHoursGraphDataList.Add("{ name: \""+theProgram.MajorProgram.Name+"\", type: \"bar\", data: [" + string.Join(",", theProgram.Hours.Select(n => n.ToString()).ToArray())+"],}");
+            }
+
+            ViewData["programsForTheLegend"] = "[" + string.Join(",", ProgramsListOfStrings.ToArray() ) + "]";
+            ViewData["ProgramsHoursGraphDataList"] = "[" + string.Join(",", ProgramsHoursGraphDataList.ToArray() ) + "]";
+
+
             
             return View(output);
         }
-        
+
+
+
+
+
 
         [HttpGet]
         [Route("[action]/{filter?}/{id?}/{fy?}")]
@@ -584,6 +681,16 @@ namespace Kers.Controllers.Reports
     public class PersonIndicator{
         public KersUser KersUser;
         public List<ProgramIndicatorValue> Indicators;
+    }
+
+    public class ProgramDataPerMonth{
+        public MajorProgram MajorProgram;
+        public List<float> Hours;
+        public List<int> Audience;
+        public List<int> Male;
+        public List<int> Female;
+        public List<float> Multistate;
+
     }
 
 
