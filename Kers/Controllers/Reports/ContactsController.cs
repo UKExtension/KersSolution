@@ -217,7 +217,7 @@ namespace Kers.Controllers.Reports
 
             foreach( var month in output ){
                 foreach( var program in month ){
-                    if( program.MajorProgram != null ){
+                    //if( program.MajorProgram != null ){
                         var existingProgram = returnList.Where( r => r.MajorProgram == program.MajorProgram).FirstOrDefault();
                         if( existingProgram == null ){
 
@@ -281,18 +281,23 @@ namespace Kers.Controllers.Reports
                             inPrograms.Multistate.Add(0);
                         }
                     }
-                }
+                //}
                 currentMonthNum++;
             }
 
-            ProgramDataPerMonth = ProgramDataPerMonth.OrderBy(p => p.MajorProgram.Name ).ToList();
+            ProgramDataPerMonth = ProgramDataPerMonth
+                                    .Where( p => p.MajorProgram != null )
+                                    .OrderByDescending( p => p.Audience.Sum(s => s))
+                                    .Take(5)
+                                    .OrderBy(p => p.MajorProgram.Name )
+                                    .ToList();
 
             
             var ProgramsListOfStrings = new List<string>();
             var ProgramsHoursGraphDataList = new List<string>();
             foreach(var theProgram in ProgramDataPerMonth ){
                 ProgramsListOfStrings.Add( "\"" + theProgram.MajorProgram.Name + "\"" );
-                ProgramsHoursGraphDataList.Add("{ name: \""+theProgram.MajorProgram.Name+"\", type: \"bar\", data: [" + string.Join(",", theProgram.Hours.Select(n => n.ToString()).ToArray())+"],}");
+                ProgramsHoursGraphDataList.Add("{ name: \""+theProgram.MajorProgram.Name+"\", type: \"bar\", data: [" + string.Join(",", theProgram.Audience.Select(n => n.ToString()).ToArray())+"],}");
             }
 
             ViewData["programsForTheLegend"] = "[" + string.Join(",", ProgramsListOfStrings.ToArray() ) + "]";
@@ -676,7 +681,6 @@ namespace Kers.Controllers.Reports
 
 
     }
-
 
     public class PersonIndicator{
         public KersUser KersUser;
