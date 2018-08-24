@@ -23,6 +23,7 @@
     var ProgramsHoursGraphDataList = ViewData["ProgramsHoursGraphDataList"] as string;
 
     var ProgramDataPerMonth = ViewData["ProgramDataPerMonth"] as List<Kers.Controllers.Reports.ProgramDataPerMonth>;
+    var ProgramsGendersGraphDataList = ViewData["ProgramsGendersGraphDataList"] as string;
 
 }
 @model List<List<Kers.Models.Data.PerProgramActivities>>
@@ -99,7 +100,7 @@ else if( district != null)
                         <div class="col-md-4 tile">
                           <span>Total Sessions</span>
                           <h2>231,809</h2>
-                          <span class="sparkline11 graph" style="height: 160px;"><canvas width="198" height="40" style="display: inline-block; width: 198px; height: 40px; vertical-align: top;"></canvas></span>
+                          <div id="byProgram" style="height:180px; margin-right: 3px;"></div>
                         </div>
                         <div class="col-md-4 tile">
                           <span>Total Revenue</span>
@@ -157,35 +158,31 @@ else if( district != null)
 	 
 
 
-        var dom = document.getElementById("main");
+var dom = document.getElementById("byProgram");
 var myChart = echarts.init(dom);
 
+var chartGender = echarts.init(document.getElementById("main"))
 
 
-
-option1 = {
-                title: {
-                    text: "Graph title",
-                    subtext: "Graph Sub-text"
+optionGender = {
+    title: {
+                    text: "Contacts",
+                    subtext: "Top 5 Programs per Month"
                 },
-                tooltip: {
-                    trigger: "axis"
-                },
-                legend: {
-                    data: @Html.Raw(programsForTheLegend)
-                },
-                toolbox: {
-                    show: !1
-                },
-                calculable: !1,
-                xAxis: [{
-                    type: "category",
-                    data: ["1?", "2?", "3?", "4?", "5?", "6?", "7?", "8?", "9?", "10?", "11?", "12?"]
-                }],
-                yAxis: [{
-                    type: "value"
-                }],
-                series: @Html.Raw(ProgramsHoursGraphDataList)
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    color: @Html.Raw(colors),
+    xAxis: {},
+    yAxis: {},
+    series: [{
+        symbolSize: 20,
+        data: @Html.Raw(ProgramsGendersGraphDataList),
+        type: 'scatter'
+    }]
             };
 
 
@@ -194,7 +191,7 @@ option1 = {
 
 
 option = {
-  title: {
+    title: {
                     text: "Contacts",
                     subtext: "Top 5 Programs per Month"
                 },
@@ -240,11 +237,14 @@ option = {
 
 
     myChart.setOption(option, true);
-
+    chartGender.setOption(optionGender, true);
 
         $(window).on('resize', function(){
             if(myChart != null && myChart != undefined){
                 myChart.resize();
+            }
+            if(chartGender != null && chartGender != undefined){
+                chartGender.resize();
             }
         });
 

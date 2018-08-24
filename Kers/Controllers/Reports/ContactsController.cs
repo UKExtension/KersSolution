@@ -285,6 +285,14 @@ namespace Kers.Controllers.Reports
                 currentMonthNum++;
             }
 
+
+           
+            var ProgramsGendersGraphDataList = new List<string>();
+            foreach( var theProgram in ProgramDataPerMonth ){
+                ProgramsGendersGraphDataList.Add(" ["+theProgram.Male.Sum(s => s)+", "+theProgram.Female.Sum(s => s)+", \""+theProgram.MajorProgram.Name+"\"]");
+            }
+            ViewData["ProgramsGendersGraphDataList"] = "[" + string.Join(",", ProgramsGendersGraphDataList.ToArray() ) + "]";
+
             ProgramDataPerMonth = ProgramDataPerMonth
                                     .Where( p => p.MajorProgram != null )
                                     .OrderByDescending( p => p.Audience.Sum(s => s))
