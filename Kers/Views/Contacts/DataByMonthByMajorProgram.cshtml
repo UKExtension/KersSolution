@@ -22,6 +22,8 @@
     var programsForTheLegend = ViewData["programsForTheLegend"] as string;
     var ProgramsHoursGraphDataList = ViewData["ProgramsHoursGraphDataList"] as string;
 
+    var ProgramDataPerMonth = ViewData["ProgramDataPerMonth"] as List<Kers.Controllers.Reports.ProgramDataPerMonth>;
+
 }
 @model List<List<Kers.Models.Data.PerProgramActivities>>
 
@@ -84,12 +86,7 @@ else if( district != null)
                 <div class="x_panel">
                   <div class="x_title">
                     <h2>Hours <small>Per Month</small></h2>
-                    <div class="filter">
-                      <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                        <span>July 23, 2018 - August 21, 2018</span> <b class="caret"></b>
-                      </div>
-                    </div>
+                    
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
@@ -121,80 +118,27 @@ else if( district != null)
                     <div class="col-md-3 col-sm-12 col-xs-12">
                       <div>
                         <div class="x_title">
-                          <h2>Top Profiles</h2>
-                          <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            </li>
-                            <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                              <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Settings 1</a>
-                                </li>
-                                <li><a href="#">Settings 2</a>
-                                </li>
-                              </ul>
-                            </li>
-                            <li><a class="close-link"><i class="fa fa-close"></i></a>
-                            </li>
-                          </ul>
+                          <h2>Top Major Programs</h2>
+                          
                           <div class="clearfix"></div>
                         </div>
                         <ul class="list-unstyled top_profiles scroll-view">
-                          <li class="media event">
-                            <a class="pull-left border-aero profile_thumb">
-                              <i class="fa fa-user aero"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
-                          <li class="media event">
-                            <a class="pull-left border-green profile_thumb">
-                              <i class="fa fa-user green"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
-                          <li class="media event">
-                            <a class="pull-left border-blue profile_thumb">
-                              <i class="fa fa-user blue"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
-                          <li class="media event">
-                            <a class="pull-left border-aero profile_thumb">
-                              <i class="fa fa-user aero"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
-                          <li class="media event">
-                            <a class="pull-left border-green profile_thumb">
-                              <i class="fa fa-user green"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
+
+                          @foreach( var prgrmData in ProgramDataPerMonth )
+                          {
+                            <li class="media event">
+                              <div class="media-body">
+                                <a class="title" href="#">@prgrmData.MajorProgram.Name</a>
+                                <p><strong>@prgrmData.Audience.Sum(s => s)</strong> Contacts (@prgrmData.Male.Sum(s => s) Male, @prgrmData.Female.Sum(s => s) Female)</p>
+                                <p> <small>@prgrmData.Hours.Sum(s => s) Hours</small>
+                                </p>
+                              </div>
+                            </li>
+                          }
+                          
+                          
+
+
                         </ul>
                       </div>
                     </div>
@@ -251,8 +195,8 @@ option1 = {
 
 option = {
   title: {
-                    text: "Graph title",
-                    subtext: "Graph Sub-text"
+                    text: "Contacts",
+                    subtext: "Top 5 Programs per Month"
                 },
     color: @Html.Raw(colors),
     legend: {

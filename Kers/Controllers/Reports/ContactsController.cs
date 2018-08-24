@@ -295,13 +295,16 @@ namespace Kers.Controllers.Reports
             
             var ProgramsListOfStrings = new List<string>();
             var ProgramsHoursGraphDataList = new List<string>();
+            var ProgramLength = 15;
             foreach(var theProgram in ProgramDataPerMonth ){
-                ProgramsListOfStrings.Add( "\"" + theProgram.MajorProgram.Name + "\"" );
-                ProgramsHoursGraphDataList.Add("{ name: \""+theProgram.MajorProgram.Name+"\", type: \"bar\", data: [" + string.Join(",", theProgram.Audience.Select(n => n.ToString()).ToArray())+"],}");
+                var shortenedProgramName = (theProgram.MajorProgram.Name.Length > ProgramLength ? theProgram.MajorProgram.Name.Substring(0, ProgramLength) + "..." : theProgram.MajorProgram.Name);
+                ProgramsListOfStrings.Add( "\"" + shortenedProgramName + "\"" );
+                ProgramsHoursGraphDataList.Add("{ name: \""+shortenedProgramName+"\", type: \"bar\", data: [" + string.Join(",", theProgram.Audience.Select(n => n.ToString()).ToArray())+"],}");
             }
 
             ViewData["programsForTheLegend"] = "[" + string.Join(",", ProgramsListOfStrings.ToArray() ) + "]";
             ViewData["ProgramsHoursGraphDataList"] = "[" + string.Join(",", ProgramsHoursGraphDataList.ToArray() ) + "]";
+            ViewData["ProgramDataPerMonth"] = ProgramDataPerMonth;
 
 
             
