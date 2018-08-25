@@ -290,7 +290,7 @@ namespace Kers.Controllers.Reports
            
             var ProgramsGendersGraphDataList = new List<string>();
             foreach( var theProgram in ProgramDataPerMonth ){
-                ProgramsGendersGraphDataList.Add(" ["+theProgram.Male.Sum(s => s)+", "+theProgram.Female.Sum(s => s)+", \""+theProgram.MajorProgram.Name+"\"]");
+                ProgramsGendersGraphDataList.Add(" ["+theProgram.Female.Sum(s => s)+", "+theProgram.Male.Sum(s => s)+", \""+theProgram.MajorProgram.Name+"\"]");
             }
             ViewData["ProgramsGendersGraphDataList"] = "[" + string.Join(",", ProgramsGendersGraphDataList.ToArray() ) + "]";
 

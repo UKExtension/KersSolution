@@ -178,17 +178,17 @@ options[0] = {
             type: 'shadow'
         },
         formatter: function (params, ticket, callback) {
-          return params.data[2] + '<br>Male: ' + params.data[0] + ', Female: ' + params.data[1];
+          return params.data[2] + '<br>Female: ' + params.data[0] + ', Male: ' + params.data[1];
       }
     },
     color: @Html.Raw(colors),
     xAxis: {
-      name: "Male",
+      name: "Female",
       nameLocation: "center",
       nameGap: 22
     },
     yAxis: {
-      name: "Female",
+      name: "Male",
       nameLocation: "center",
       nameGap: 22
     },
