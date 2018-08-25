@@ -17,7 +17,9 @@
     var hoursForTheGraph = ViewData["hours"] as string;
 
 
-    var colors = "[\"#26B99A\", \"#34495E\", \"#BDC3C7\", \"#3498DB\", \"#9B59B6\", \"#8abb6f\", \"#759c6a\", \"#bfd3b7\"]";
+    var colors1 = "[\"#26B99A\", \"#34495E\", \"#BDC3C7\", \"#3498DB\", \"#9B59B6\", \"#8abb6f\", \"#759c6a\", \"#bfd3b7\"]";
+    var colors = "[\"#96CA59\", \"#3F97EB\", \"#72c380\", \"#6f7a8a\", \"#f7cb38\", \"#5a8022\", \"#2c7282\"]";
+    Random random = new Random();
 
     var programsForTheLegend = ViewData["programsForTheLegend"] as string;
     var ProgramsHoursGraphDataList = ViewData["ProgramsHoursGraphDataList"] as string;
@@ -97,17 +99,17 @@ else if( district != null)
                         </div>
                       </div>
                       <div class="tiles">
-                        <div class="col-md-4 tile">
+                        <div id="tileChart1" class="col-md-4 tile">
                           <span>Total Sessions</span>
                           <h2>231,809</h2>
                           <div id="byProgram" style="height:180px; margin-right: 3px;"></div>
                         </div>
-                        <div class="col-md-4 tile">
+                        <div  id="tileChart2" class="col-md-4 tile">
                           <span>Total Revenue</span>
                           <h2>$231,809</h2>
                           <span class="sparkline22 graph" style="height: 160px;"><canvas width="200" height="40" style="display: inline-block; width: 200px; height: 40px; vertical-align: top;"></canvas></span>
                         </div>
-                        <div class="col-md-4 tile">
+                        <div  id="tileChart1" class="col-md-4 tile">
                           <span>Total Sessions</span>
                           <h2>231,809</h2>
                           <span class="sparkline11 graph" style="height: 160px;"><canvas width="198" height="40" style="display: inline-block; width: 198px; height: 40px; vertical-align: top;"></canvas></span>
@@ -163,24 +165,42 @@ var myChart = echarts.init(dom);
 
 var chartGender = echarts.init(document.getElementById("main"))
 
+var options = [];
+var charts = [];
 
-optionGender = {
+options[0] = {
     title: {
                     text: "Contacts",
                     subtext: "Top 5 Programs per Month"
                 },
     tooltip: {
-        trigger: 'axis',
         axisPointer: {
             type: 'shadow'
-        }
+        },
+        formatter: function (params, ticket, callback) {
+          return params.data[2] + '<br>Male: ' + params.data[0] + ', Female: ' + params.data[1];
+      }
     },
     color: @Html.Raw(colors),
-    xAxis: {},
-    yAxis: {},
+    xAxis: {
+      name: "Male",
+      nameLocation: "center",
+      nameGap: 22
+    },
+    yAxis: {
+      name: "Female",
+      nameLocation: "center",
+      nameGap: 22
+    },
     series: [{
         symbolSize: 20,
         data: @Html.Raw(ProgramsGendersGraphDataList),
+        itemStyle: {
+          color: function (params) {
+              var colors = @Html.Raw(colors);
+              return colors[Math.floor(Math.random() * colors.length)];
+          }
+        } ,
         type: 'scatter'
     }]
             };
@@ -197,6 +217,7 @@ option = {
                 },
     color: @Html.Raw(colors),
     legend: {
+        type: 'scroll',
         data: @Html.Raw(programsForTheLegend)
     },
     toolbox: {
@@ -237,7 +258,7 @@ option = {
 
 
     myChart.setOption(option, true);
-    chartGender.setOption(optionGender, true);
+    chartGender.setOption(options[0], true);
 
         $(window).on('resize', function(){
             if(myChart != null && myChart != undefined){

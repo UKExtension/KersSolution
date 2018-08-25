@@ -285,7 +285,8 @@ namespace Kers.Controllers.Reports
                 currentMonthNum++;
             }
 
-
+            ProgramDataPerMonth = ProgramDataPerMonth
+                                    .Where( p => p.MajorProgram != null ).ToList();
            
             var ProgramsGendersGraphDataList = new List<string>();
             foreach( var theProgram in ProgramDataPerMonth ){
@@ -294,7 +295,6 @@ namespace Kers.Controllers.Reports
             ViewData["ProgramsGendersGraphDataList"] = "[" + string.Join(",", ProgramsGendersGraphDataList.ToArray() ) + "]";
 
             ProgramDataPerMonth = ProgramDataPerMonth
-                                    .Where( p => p.MajorProgram != null )
                                     .OrderByDescending( p => p.Audience.Sum(s => s))
                                     .Take(5)
                                     .OrderBy(p => p.MajorProgram.Name )
