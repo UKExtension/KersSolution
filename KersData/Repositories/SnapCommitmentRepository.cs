@@ -245,7 +245,11 @@ namespace Kers.Models.Repositories
                     
                     row += user.RprtngProfile.PlanningUnit.Name + ",";
                     row += string.Concat( "\"", user.RprtngProfile.Name, "\"") + ",";
-                    row += user.ExtensionPosition.Code + ",";
+                    if(this.context.zEmpProfileRole.Where( r => r.User.Id == user.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
+                        row += string.Concat( "\"", user.ExtensionPosition.Code, ", CNTMNGR\"") + ",";
+                    }else{
+                        row += string.Concat( "\"", user.ExtensionPosition.Code, "\"") + ",";
+                    }
                     var spclt = "";
                     if(user.Specialties != null){
                         foreach( var s in user.Specialties){
@@ -339,7 +343,11 @@ namespace Kers.Models.Repositories
                     
                     row += user.RprtngProfile.PlanningUnit.Name + ",";
                     row += string.Concat( "\"", user.RprtngProfile.Name, "\"") + ",";
-                    row += user.ExtensionPosition.Code + ",";
+                    if(this.context.zEmpProfileRole.Where( r => r.User.Id == user.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
+                        row += string.Concat( "\"", user.ExtensionPosition.Code, ", CNTMNGR\"") + ",";
+                    }else{
+                        row += string.Concat( "\"", user.ExtensionPosition.Code, "\"") + ",";
+                    }
                     var spclt = "";
                     if(user.Specialties != null){
                         foreach( var s in user.Specialties){

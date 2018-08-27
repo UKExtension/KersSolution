@@ -209,6 +209,7 @@ namespace Kers.Models.Repositories
                 keys.Add("YearMonth");
                 keys.Add("YearMonthName");
                 keys.Add("PersonName");
+                keys.Add("Title");
                 keys.Add("PlanningUnit");
                 keys.Add("District");
                 keys.Add("Program(s)");
@@ -235,6 +236,8 @@ namespace Kers.Models.Repositories
                                         a => new {
                                             //SnapPolicy = a.Revisions.OrderBy( r => r.Created).Last().SnapPolicy,
                                             ActivityDate = a.ActivityDate,
+                                            User = a.KersUser,
+                                            Position = a.KersUser.ExtensionPosition.Code,
                                             PersonalProfile = a.KersUser.PersonalProfile,
                                             PlanningUnit = a.KersUser.RprtngProfile.PlanningUnit,
                                             Hours = a.Hours,
@@ -250,6 +253,11 @@ namespace Kers.Models.Repositories
                         var row = meeting.ActivityDate.ToString("yyyyMM") + ",";
                         row += meeting.ActivityDate.ToString("yyyy-MMM") + ",";
                         row += meeting.PersonalProfile.FirstName + meeting.PersonalProfile.LastName + ",";
+                        if(this.context.zEmpProfileRole.Where( r => r.User.Id == meeting.User.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
+                            row += string.Concat( "\"", meeting.Position, ", CNTMNGR\"") + ",";
+                        }else{
+                            row += string.Concat( "\"", meeting.Position, "\"") + ",";
+                        }
                         row += meeting.PlanningUnit.Name + ",";
                         row += meeting.PlanningUnit.DistrictId + ",";
                         var prgrms = "";

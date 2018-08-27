@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kers.Models.Entities.KERScore
 {
+    [Table("zEmpProfileRoles")]
     public partial class zEmpProfileRole:IEntityBase
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

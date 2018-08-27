@@ -106,8 +106,11 @@ namespace Kers.Models.Repositories
                 foreach( var k in grouped){
                     var row = fiscalYear.Name + ",";
                     row += string.Concat( "\"", k.Profile.Name, "\"") + ",";
-                    row += string.Concat( "\"", k.Position.Code, "\"") + ",";
-
+                    if(this.context.zEmpProfileRole.Where( r => r.User.Id == k.User.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
+                        row += string.Concat( "\"", k.Position.Code, ", CNTMNGR\"") + ",";
+                    }else{
+                        row += string.Concat( "\"", k.Position.Code, "\"") + ",";
+                    }
                     var spclt = "";
                     var sp = this.context.KersUser.Where( r => r.Id == k.User.Id).Include( u => u.Specialties).ThenInclude( s => s.Specialty).FirstOrDefault();
                     foreach( var s in sp.Specialties){
@@ -701,7 +704,11 @@ namespace Kers.Models.Repositories
                     var row = fiscalYear.Name + ",";
                     row += string.Concat("\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
                     row += string.Concat("\"", userData.User.RprtngProfile.Name, "\"") + ",";
-                    row += string.Concat("\"", userData.User.ExtensionPosition.Code, "\"") + ",";
+                    if(this.context.zEmpProfileRole.Where( r => r.User.Id == userData.User.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
+                        row += string.Concat( "\"", userData.User.ExtensionPosition.Code, ", CNTMNGR\"") + ",";
+                    }else{
+                        row += string.Concat( "\"", userData.User.ExtensionPosition.Code, "\"") + ",";
+                    }
                     var spclt = "";
                     foreach( var sp in userData.User.Specialties){
                         spclt += " " + sp.Specialty.Code;
@@ -890,8 +897,11 @@ namespace Kers.Models.Repositories
                     row += string.Concat( "\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
                     row += userData.User.RprtngProfile.PersonId + ",";
                     row += string.Concat( "\"", userData.User.RprtngProfile.Name, "\"") + ",";
-                    row += string.Concat( "\"", userData.User.ExtensionPosition.Code, "\"") + ",";
-
+                    if(this.context.zEmpProfileRole.Where( r => r.User.Id == userData.User.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
+                        row += string.Concat( "\"", userData.User.ExtensionPosition.Code, ", CNTMNGR\"") + ",";
+                    }else{
+                        row += string.Concat( "\"", userData.User.ExtensionPosition.Code, "\"") + ",";
+                    }
                     var spclt = "";
                     foreach( var sp in userData.User.Specialties){
                         spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);

@@ -30,6 +30,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<ExtensionPosition> ExtensionPosition {get;set;}
         public virtual DbSet<Specialty> Specialty {get;set;}
         public virtual DbSet<KersUserSpecialty> KersUserSpecialty {get;set;}
+        public virtual DbSet<zEmpProfileRole> zEmpProfileRole {get;set;}
         public virtual DbSet<Interest> Interest {get;set;}
         public virtual DbSet<InterestProfile> InterestProfile {get;set;}
         public virtual DbSet<PersonalEmail> PersonalEmail {get;set;}
