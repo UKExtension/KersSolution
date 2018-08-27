@@ -287,6 +287,8 @@ namespace Kers.Controllers.Reports
 
             ProgramDataPerMonth = ProgramDataPerMonth
                                     .Where( p => p.MajorProgram != null ).ToList();
+
+            ViewData["AllProgramsData"] = ProgramDataPerMonth.OrderByDescending( p => p.Audience.Sum(s => s)).ToList();
            
             var ProgramsGendersGraphDataList = new List<string>();
             foreach( var theProgram in ProgramDataPerMonth ){
@@ -303,15 +305,20 @@ namespace Kers.Controllers.Reports
             
             var ProgramsListOfStrings = new List<string>();
             var ProgramsHoursGraphDataList = new List<string>();
+            var ProgramsContactsByProgramSeries = new List<string>();
             var ProgramLength = 15;
             foreach(var theProgram in ProgramDataPerMonth ){
                 var shortenedProgramName = (theProgram.MajorProgram.Name.Length > ProgramLength ? theProgram.MajorProgram.Name.Substring(0, ProgramLength) + "..." : theProgram.MajorProgram.Name);
                 ProgramsListOfStrings.Add( "\"" + shortenedProgramName + "\"" );
-                ProgramsHoursGraphDataList.Add("{ name: \""+shortenedProgramName+"\", type: \"bar\", data: [" + string.Join(",", theProgram.Audience.Select(n => n.ToString()).ToArray())+"],}");
+                ProgramsContactsByProgramSeries.Add("{ name: \""+shortenedProgramName+"\", type: \"bar\", data: [" + string.Join(",", theProgram.Audience.Select(n => n.ToString()).ToArray())+"],}");
+                ProgramsHoursGraphDataList.Add("{ name: \""+shortenedProgramName+"\", type: \"line\", smooth: !0, itemStyle: { normal: { areaStyle: { type: \"default\" } } }, data: [" + string.Join(",", theProgram.Hours.Select(n => n.ToString()).ToArray())+"]  }");
             }
 
             ViewData["programsForTheLegend"] = "[" + string.Join(",", ProgramsListOfStrings.ToArray() ) + "]";
             ViewData["ProgramsHoursGraphDataList"] = "[" + string.Join(",", ProgramsHoursGraphDataList.ToArray() ) + "]";
+
+            ViewData["ProgramsContactsByProgramSeries"] = "[" + string.Join(",", ProgramsContactsByProgramSeries.ToArray() ) + "]";
+
             ViewData["ProgramDataPerMonth"] = ProgramDataPerMonth;
 
 

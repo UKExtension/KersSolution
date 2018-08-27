@@ -23,8 +23,12 @@
 
     var programsForTheLegend = ViewData["programsForTheLegend"] as string;
     var ProgramsHoursGraphDataList = ViewData["ProgramsHoursGraphDataList"] as string;
+    var ProgramsContactsByProgramSeries = ViewData["ProgramsContactsByProgramSeries"] as string;
+
+    
 
     var ProgramDataPerMonth = ViewData["ProgramDataPerMonth"] as List<Kers.Controllers.Reports.ProgramDataPerMonth>;
+    var AllProgramsData = ViewData["AllProgramsData"] as List<Kers.Controllers.Reports.ProgramDataPerMonth>;
     var ProgramsGendersGraphDataList = ViewData["ProgramsGendersGraphDataList"] as string;
 
 }
@@ -40,7 +44,23 @@ else if( district != null)
     <h3>@district.Name <small>@FiscalYear.Start.ToString("MMM d, yyyy") - @FiscalYear.End.ToString("MMM d, yyyy")</small></h3>
 }
 
-
+<style>
+    .main-container .graph{
+        height: 380px;
+    }
+    .main-container{
+        height: 430px;
+    }
+    .tile{
+        cursor:pointer !important;
+        width: 33%;
+    }
+    .tiles .graph{
+        height: 190px;
+        margin-top: -40px;
+        margin-left: -10px;
+    }
+</style>
 <div class="row top_tiles">
     <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
@@ -78,78 +98,78 @@ else if( district != null)
 
 
 
-
-
-
-
-
-
 <div class="row">
-              <div class="col-md-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Hours <small>Per Month</small></h2>
-                    
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    <div class="col-md-9 col-sm-12 col-xs-12">
-                      <div class="demo-container" style="height:380px;">
-                        <div id="main" class="demo-placeholder" style="height:380px; margin-right: 30px;">
-                        </div>
-                      </div>
-                      <div class="tiles">
-                        <div id="tileChart1" class="col-md-4 tile">
-                          <span>Total Sessions</span>
-                          <h2>231,809</h2>
-                          <div id="byProgram" style="height:180px; margin-right: 3px;"></div>
-                        </div>
-                        <div  id="tileChart2" class="col-md-4 tile">
-                          <span>Total Revenue</span>
-                          <h2>$231,809</h2>
-                          <span class="sparkline22 graph" style="height: 160px;"><canvas width="200" height="40" style="display: inline-block; width: 200px; height: 40px; vertical-align: top;"></canvas></span>
-                        </div>
-                        <div  id="tileChart1" class="col-md-4 tile">
-                          <span>Total Sessions</span>
-                          <h2>231,809</h2>
-                          <span class="sparkline11 graph" style="height: 160px;"><canvas width="198" height="40" style="display: inline-block; width: 198px; height: 40px; vertical-align: top;"></canvas></span>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <div class="col-md-3 col-sm-12 col-xs-12">
-                      <div>
-                        <div class="x_title">
-                          <h2>Top Major Programs</h2>
-                          
-                          <div class="clearfix"></div>
-                        </div>
-                        <ul class="list-unstyled top_profiles scroll-view">
-
-                          @foreach( var prgrmData in ProgramDataPerMonth )
-                          {
-                            <li class="media event">
-                              <div class="media-body">
-                                <a class="title" href="#">@prgrmData.MajorProgram.Name</a>
-                                <p><strong>@prgrmData.Audience.Sum(s => s)</strong> Contacts (@prgrmData.Male.Sum(s => s) Male, @prgrmData.Female.Sum(s => s) Female)</p>
-                                <p> <small>@prgrmData.Hours.Sum(s => s) Hours</small>
-                                </p>
-                              </div>
-                            </li>
-                          }
-                          
-                          
-
-
-                        </ul>
-                      </div>
-                    </div>
-
-                  </div>
+    <div class="col-md-12">
+        <div class="x_panel">
+        <div class="x_title">
+            <h2>Statistical Contacts</h2>
+            
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="col-md-9 col-sm-12 col-xs-12">
+            <div class="main-container">
+                <div id="Chart0" class="demo-placeholder">
+                    <span>Male, Female Distribution</span>
+                    <h2>Per Major Program</h2>
+                    <div class="graph"></div>
                 </div>
-              </div>
             </div>
+            <div class="tiles">
+                <div class="col-md-4 tile">
+                    <div id="Chart1">
+                        <span>Top 5 Major Programs</span>
+                        <h2>Contacts per Month</h2>
+                        <div class="graph"></div>
+                    </div>
+                </div>
+                <div  class="col-md-4 tile">
+                    <div id="Chart2">
+                        <span>Subtitle </span>
+                        <h2>Title</h2>
+                        <div class="graph"></div>
+                    </div>
+                </div>
+                <div  class="col-md-4 tile">
+                    <div id="Chart3">
+                        <span>Top 5 Major Programs </span>
+                        <h2>Hours per Month</h2>
+                        <div class="graph"></div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
+            <div>
+                <div class="x_title">
+                <h2>Top Major Programs</h2>
+                
+                <div class="clearfix"></div>
+                </div>
+                <ul class="list-unstyled top_profiles scroll-view">
+
+                @foreach( var prgrmData in AllProgramsData.Take(7) )
+                {
+                    <li class="media event">
+                    <div class="media-body">
+                        <a class="title" asp-controller="MajorProgram"  asp-action="Program" asp-route-id=@prgrmData.MajorProgram.Id>@prgrmData.MajorProgram.Name</a>
+                        <p><strong>@prgrmData.Audience.Sum(s => s)</strong> Contacts (@prgrmData.Male.Sum(s => s) Male, @prgrmData.Female.Sum(s => s) Female)</p>
+                        <p> <small>@prgrmData.Hours.Sum(s => s) Hours</small>
+                        </p>
+                    </div>
+                    </li>
+                }
+                
+                </ul>
+            </div>
+            </div>
+
+        </div>
+        </div>
+    </div>
+</div>
 
 
 @section scripts
@@ -159,121 +179,175 @@ else if( district != null)
       
 	 
 
+    var options = [];
+    var charts = [];
+    var chartPlaceholders = ["Chart0","Chart1","Chart2", "Chart3"];
 
-var dom = document.getElementById("byProgram");
-var myChart = echarts.init(dom);
-
-var chartGender = echarts.init(document.getElementById("main"))
-
-var options = [];
-var charts = [];
-
-options[0] = {
-    title: {
-                    text: "Contacts",
-                    subtext: "Top 5 Programs per Month"
-                },
-    tooltip: {
-        axisPointer: {
-            type: 'shadow'
+    options[0] = {
+        tooltip: {
+            axisPointer: {
+                type: 'shadow'
+            },
+            formatter: function (params, ticket, callback) {
+                return params.data[2] + '<br>Female: ' + params.data[0] + ', Male: ' + params.data[1];
+            }
         },
-        formatter: function (params, ticket, callback) {
-          return params.data[2] + '<br>Female: ' + params.data[0] + ', Male: ' + params.data[1];
-      }
-    },
-    color: @Html.Raw(colors),
-    xAxis: {
-      name: "Female",
-      nameLocation: "center",
-      nameGap: 22
-    },
-    yAxis: {
-      name: "Male",
-      nameLocation: "center",
-      nameGap: 22
-    },
-    series: [{
-        symbolSize: 20,
-        data: @Html.Raw(ProgramsGendersGraphDataList),
-        itemStyle: {
-          color: function (params) {
-              var colors = @Html.Raw(colors);
-              return colors[Math.floor(Math.random() * colors.length)];
-          }
-        } ,
-        type: 'scatter'
-    }]
+        color: @Html.Raw(colors),
+        xAxis: {
+        name: "Female",
+        nameLocation: "center",
+        nameGap: 22
+        },
+        yAxis: {
+        name: "Male",
+        nameLocation: "center",
+        nameGap: 22
+        },
+        series: [{
+            symbolSize: 20,
+            data: @Html.Raw(ProgramsGendersGraphDataList),
+            itemStyle: {
+            color: function (params) {
+                var colors = @Html.Raw(colors);
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            } ,
+            type: 'scatter'
+        }]
+    };
+
+
+
+
+
+
+    options[1] = {
+        color: @Html.Raw(colors),
+        legend: {
+            type: 'scroll',
+            data: @Html.Raw(programsForTheLegend)
+        },
+        toolbox: {
+            show: !1
+        },
+        calculable: !1,
+        tooltip : {
+            trigger: 'axis',
+            axisPointer : {            
+                type : 'shadow'        
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis : [
+            {
+                type : 'category',
+                data : @Html.Raw(monthsForTheGraph),
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : @Html.Raw(ProgramsContactsByProgramSeries)
+    };
+
+    options[2] = {
+            tooltip: {},
+            legend: {
+                data:['Sales']
+            },
+            xAxis: {
+                data: ["shirt","cardign","chiffon shirt","pants","heels","socks"]
+            },
+            yAxis: {},
+            series: [{
+                name: 'Sales',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+
+        options[3] = {
+                tooltip: {
+                    trigger: "axis"
+                },
+                legend: {
+                    x: 220,
+                    y: 40,
+                    data: @Html.Raw(programsForTheLegend)
+                },
+                calculable: !6,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : @Html.Raw(monthsForTheGraph),
+                        boundaryGap: !1
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series: @Html.Raw(ProgramsHoursGraphDataList)
             };
 
-
-
-
-
-
-option = {
-    title: {
-                    text: "Contacts",
-                    subtext: "Top 5 Programs per Month"
-                },
-    color: @Html.Raw(colors),
-    legend: {
-        type: 'scroll',
-        data: @Html.Raw(programsForTheLegend)
-    },
-    toolbox: {
-        show: !1
-    },
-    calculable: !1,
-    tooltip : {
-        trigger: 'axis',
-        axisPointer : {            
-            type : 'shadow'        
-        }
-    },
-    grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-    },
-    xAxis : [
-        {
-            type : 'category',
-            data : @Html.Raw(monthsForTheGraph),
-            axisTick: {
-                alignWithLabel: true
-            }
-        }
-    ],
-    yAxis : [
-        {
-            type : 'value'
-        }
-    ],
-    series : @Html.Raw(ProgramsHoursGraphDataList)
-};
-
-
-
-
-
-    myChart.setOption(option, true);
-    chartGender.setOption(options[0], true);
+        initCharts();
 
         $(window).on('resize', function(){
-            if(myChart != null && myChart != undefined){
-                myChart.resize();
-            }
-            if(chartGender != null && chartGender != undefined){
-                chartGender.resize();
-            }
+            resizeCharts();
         });
 
 
+        function initCharts(){
+            var theId = $("#main");
+            for( i = 0; i < 4; i++)
+            {
+                charts[i] = echarts.init($("#" + chartPlaceholders[i] + " .graph")[0]);
+                if( i > 0) {
+                    options[i].legend.show = false;
+                }
+                charts[i].setOption(options[i]);
+            }
+        }
+        function resizeCharts(){
+            for( i = 0; i < 4; i++)
+            {
+                if(charts[i] != null && charts[i] != undefined){
+                    charts[i].resize();
+                }
+            }
+        }
 
 
 
 
+        $(".tile").click( function(){
+            var current = $( ".main-container" ).children().first();
+            var currentIndex = +current.attr('id').slice(-1);
+            if(options[currentIndex].legend != null && options[currentIndex].legend != undefined){
+                options[currentIndex].legend.show = false;
+                charts[currentIndex].setOption(options[currentIndex]);  
+            }
+            var clicked = $(this).children().first();
+            var clickedIndex = +clicked.attr('id').slice(-1);
+            if(options[clickedIndex].legend != null && options[clickedIndex].legend != undefined){
+                options[clickedIndex].legend.show = true;
+                charts[clickedIndex].setOption(options[clickedIndex]);
+            }
+            $( ".main-container" ).append( clicked );
+            $(this).append(current);
+            resizeCharts()
+        })
 
 
 
