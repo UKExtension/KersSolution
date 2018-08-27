@@ -290,8 +290,8 @@ namespace Kers.Controllers
 		List<ExpenseNumLines> _nonCountyExpenses;
 		List<ExpenseMileageLogPageData> pages = new List<ExpenseMileageLogPageData>();
 		string[] nonCountySourceNames = new string[]{"State", "Federal"};
-		int locationLinesCharacterLength = 58;
-		int businessPurposeLinesCharacterLength = 58;
+		int locationLinesCharacterLength = 52;
+		int businessPurposeLinesCharacterLength = 50;
 
 		//********************************/
 		// Dimensions definition         //
