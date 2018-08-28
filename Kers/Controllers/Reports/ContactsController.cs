@@ -322,6 +322,84 @@ namespace Kers.Controllers.Reports
             ViewData["ProgramDataPerMonth"] = ProgramDataPerMonth;
 
 
+
+
+
+
+
+            
+
+            var FilteredActivities = context.Activity.Where( a => 
+                                                                    a.ActivityDate > fiscalYear.Start
+                                                                    &&
+                                                                    a.ActivityDate < fiscalYear.End
+                                                                );
+
+            if(filter == 1 ){
+                //Planning Unit
+                FilteredActivities = FilteredActivities.Where( a => a.PlanningUnitId == id);
+            }else if(filter == 0){
+                //District
+                FilteredActivities = FilteredActivities.Where( a => a.PlanningUnit.DistrictId == id);   
+            }else if( filter == 2 ){
+                //KSU
+            }else if ( filter == 3){
+                //UK
+            }
+
+            var EmployeeActivities = FilteredActivities.GroupBy( a => 
+                                                    new {
+                                                        User = a.KersUser
+                                                    }
+                                                )
+                                                .Select( s => new {
+                                                        User = s.Key,
+                                                        Activities = s.Select(a => a)
+                                                    }   
+                                                );
+
+
+
+            var EmployeeDataForTheGraph = new List<string>();
+
+            foreach( var EmployeeData in EmployeeActivities ){
+                var name = context.KersUser.Where( u => u.Id == EmployeeData.User.User.Id).Include( u => u.RprtngProfile).First();
+                EmployeeDataForTheGraph.Add("{ \"name\": \""+name.RprtngProfile.Name+"\", \"symbolSize\": 3, \"category\": \"Employees\", \"draggable\": \"true\", \"value\": "+EmployeeData.Activities.Count()+"}");
+            }
+
+            var MajorProgramActivities = FilteredActivities.GroupBy( a => new {
+                                                        MajorProgram = a.MajorProgram
+                                                    }
+                                                )
+                                                .Select( s => new {
+                                                        MajorProgram = s.Key,
+                                                        Activities = s.Select(a => a)
+                                                    }   
+                                                );
+
+            var ProgramDataForTheGraph = new List<string>();
+
+            var LinksDataForTheGraph = new List<string>();
+
+            foreach( var ProgramData in MajorProgramActivities ){
+                ProgramDataForTheGraph.Add("{ \"name\": \""+ProgramData.MajorProgram.MajorProgram.Name+"\", \"symbolSize\": 3, \"category\": \"Major Programs\", \"draggable\": \"true\", \"value\": "+ProgramData.Activities.Count()+"}");
+                
+                var ProgramDataGrouppedByEmployee = ProgramData.Activities.GroupBy( a => a.KersUserId ).Select( s => s );
+                foreach( var GrouppedProgramData in ProgramDataGrouppedByEmployee ){
+                    var TargetName = context.KersUser.Where( u => u.Id == GrouppedProgramData.Key).Include( u => u.RprtngProfile).First();
+                    LinksDataForTheGraph.Add("{ \"source\": \""+ProgramData.MajorProgram.MajorProgram.Name+"\",\"target\": \""+TargetName.RprtngProfile.Name+"\"}");
+                }
+                
+            }
+
+            ViewData["GraphCategories"] = "[\"Employees\", \"Major Programs\", \"Success Stories\"]";
+            ViewData["GraphData"] = "[" 
+                                        + string.Join(",", EmployeeDataForTheGraph.ToArray() ) 
+                                        + ","
+                                        + string.Join(",", ProgramDataForTheGraph.ToArray() )
+                                        + "]";
+            ViewData["GraphLinks"] = "[" + string.Join(",", LinksDataForTheGraph.ToArray() ) + "]";
+
             
             return View(output);
         }

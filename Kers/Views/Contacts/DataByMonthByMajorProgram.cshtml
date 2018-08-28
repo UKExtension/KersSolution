@@ -31,6 +31,11 @@
     var AllProgramsData = ViewData["AllProgramsData"] as List<Kers.Controllers.Reports.ProgramDataPerMonth>;
     var ProgramsGendersGraphDataList = ViewData["ProgramsGendersGraphDataList"] as string;
 
+
+    var GraphCategories = ViewData["GraphCategories"] as string;
+    var GraphData = ViewData["GraphData"] as string;
+    var GraphLinks = ViewData["GraphLinks"] as string;
+
 }
 @model List<List<Kers.Models.Data.PerProgramActivities>>
 
@@ -261,20 +266,63 @@ else if( district != null)
     };
 
     options[2] = {
-            tooltip: {},
-            legend: {
-                data:['Sales']
-            },
-            xAxis: {
-                data: ["shirt","cardign","chiffon shirt","pants","heels","socks"]
-            },
-            yAxis: {},
-            series: [{
-                name: 'Sales',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-            }]
-        };
+     title: {
+         text: '人民的名义关系图谱'
+     },
+     tooltip: {
+         formatter: function(x) {
+             return x.data.des;
+         }
+     },
+     series: [{
+         type: 'graph',
+         layout: 'force',
+         symbolSize: 58,
+         roam: true,
+         edgeSymbol: ['circle', 'arrow'],
+         // edgeSymbolSize: [80, 10],
+         edgeLabel: {
+             normal: {
+                 textStyle: {
+                     fontSize: 20
+                 }
+             }
+         },
+         force: {
+             repulsion: 2500,
+             edgeLength: [10, 50]
+         },
+         draggable: true,
+         itemStyle: {
+             normal: {
+                 color: '#4b565b'
+             }
+         },
+         lineStyle: {
+             normal: {
+                 width: 2,
+                 color: '#4b565b'
+
+             }
+         },
+         edgeLabel: {
+             normal: {
+                 show: true,
+                 formatter: function(x) {
+                     return x.data.name;
+                 }
+             }
+         },
+         label: {
+             normal: {
+                 show: true,
+                 textStyle: {}
+             }
+         },
+         data: @Html.Raw(GraphData),
+         links: @Html.Raw(GraphLinks)
+     }]
+ };
 
         options[3] = {
                 tooltip: {
@@ -314,7 +362,9 @@ else if( district != null)
             {
                 charts[i] = echarts.init($("#" + chartPlaceholders[i] + " .graph")[0]);
                 if( i > 0) {
-                    options[i].legend.show = false;
+                    if( options[i].legend != null && options[i].legend != undefined ){
+                        options[i].legend.show = false;
+                    }
                 }
                 charts[i].setOption(options[i]);
             }
