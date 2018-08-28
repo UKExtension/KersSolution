@@ -266,63 +266,16 @@ else if( district != null)
     };
 
     options[2] = {
-     title: {
-         text: '人民的名义关系图谱'
-     },
-     tooltip: {
-         formatter: function(x) {
-             return x.data.des;
-         }
-     },
-     series: [{
-         type: 'graph',
-         layout: 'force',
-         symbolSize: 58,
-         roam: true,
-         edgeSymbol: ['circle', 'arrow'],
-         // edgeSymbolSize: [80, 10],
-         edgeLabel: {
-             normal: {
-                 textStyle: {
-                     fontSize: 20
-                 }
-             }
-         },
-         force: {
-             repulsion: 2500,
-             edgeLength: [10, 50]
-         },
-         draggable: true,
-         itemStyle: {
-             normal: {
-                 color: '#4b565b'
-             }
-         },
-         lineStyle: {
-             normal: {
-                 width: 2,
-                 color: '#4b565b'
-
-             }
-         },
-         edgeLabel: {
-             normal: {
-                 show: true,
-                 formatter: function(x) {
-                     return x.data.name;
-                 }
-             }
-         },
-         label: {
-             normal: {
-                 show: true,
-                 textStyle: {}
-             }
-         },
-         data: @Html.Raw(GraphData),
-         links: @Html.Raw(GraphLinks)
-     }]
- };
+        
+            legend:  @Html.Raw(GraphCategories),
+            series: [{
+                type: 'graph',
+                layout: 'none',
+                categories:  @Html.Raw(GraphCategories),
+                data: @Html.Raw(GraphData),
+                links: @Html.Raw(GraphLinks)
+            }]
+        };
 
         options[3] = {
                 tooltip: {
