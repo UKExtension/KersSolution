@@ -265,7 +265,54 @@ else if( district != null)
         series : @Html.Raw(ProgramsContactsByProgramSeries)
     };
 
+    var GraphCategories = [{ name: "Employees"}, { name: "Major Programs"}, { name: "Success Stories"}];
+
     options[2] = {
+        color: @Html.Raw(colors),
+        tooltip: {
+            formatter: function(x) {
+                return x.data.des;
+            }
+        },
+        legend: {
+            // selectedMode: 'single',
+            data: GraphCategories.map(function (a) {
+                return a.name;
+            })
+        },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [{
+            type: 'graph',
+            layout: 'circular',
+            circular: {
+                    rotateLabel: true
+                },
+            label: {
+                normal: {
+                    show: true,
+                    textStyle: {}
+                }
+            },
+            categories: GraphCategories,
+            data: @Html.Raw(GraphData),
+            links: @Html.Raw(GraphLinks),
+            label: {
+                normal: {
+                    show: true,
+                    textStyle: {}
+                }
+            },
+            lineStyle: {
+                normal: {
+                    color: 'source',
+                    curveness: 0.3
+                }
+            }
+        }]
+    };
+    
+    var idd = {
         
             legend:  @Html.Raw(GraphCategories),
             series: [{
