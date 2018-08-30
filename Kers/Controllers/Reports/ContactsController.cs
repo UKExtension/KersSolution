@@ -364,7 +364,7 @@ namespace Kers.Controllers.Reports
 
             foreach( var EmployeeData in EmployeeActivities ){
                 var name = context.KersUser.Where( u => u.Id == EmployeeData.User.User.Id).Include( u => u.RprtngProfile).First();
-                EmployeeDataForTheGraph.Add("{ \"name\": \""+name.RprtngProfile.Name+"\", \"category\": \"Employees\", \"draggable\": \"true\", \"value\": "+EmployeeData.Activities.Count()+"}");
+                EmployeeDataForTheGraph.Add("{ \"name\": \""+name.RprtngProfile.Name+"\", \"category\": \"Employees\",\"label\":{\"normal\":{\"show\":true,\"textStyle\":{\"color\":\"#72c380\"}}},\"symbolSize\":"+EmployeeData.Activities.Count()+",\"value\": "+EmployeeData.Activities.Count()+"}");
             }
 
             var MajorProgramActivities = FilteredActivities.GroupBy( a => new {
@@ -382,7 +382,7 @@ namespace Kers.Controllers.Reports
             var LinksDataForTheGraph = new List<string>();
 
             foreach( var ProgramData in MajorProgramActivities ){
-                ProgramDataForTheGraph.Add("{ \"name\": \""+ProgramData.MajorProgram.MajorProgram.Name+"\", \"category\": \"Major Programs\", \"draggable\": \"true\", \"value\": "+ProgramData.Activities.Count()+"}");
+                ProgramDataForTheGraph.Add("{ \"name\": \""+ProgramData.MajorProgram.MajorProgram.Name+"\", \"label\":{\"normal\":{\"show\":true,\"textStyle\":{\"color\":\"#6f7a8a\"}}}, \"category\": \"Major Programs\",\"symbolSize\":"+ProgramData.Activities.Count()+", \"value\": "+ProgramData.Activities.Count()+"}");
                 
                 var ProgramDataGrouppedByEmployee = ProgramData.Activities.GroupBy( a => a.KersUserId ).Select( s => s );
                 foreach( var GrouppedProgramData in ProgramDataGrouppedByEmployee ){
