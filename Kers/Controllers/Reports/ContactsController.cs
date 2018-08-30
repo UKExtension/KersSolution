@@ -335,16 +335,26 @@ namespace Kers.Controllers.Reports
                                                                     a.ActivityDate < fiscalYear.End
                                                                 );
 
+            var FilteredStories = context.Story.Where( s =>
+                                                                    s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear
+                                                                );
+
             if(filter == 1 ){
                 //Planning Unit
                 FilteredActivities = FilteredActivities.Where( a => a.PlanningUnitId == id);
+                FilteredStories = FilteredStories.Where( s => s.PlanningUnitId == id );
             }else if(filter == 0){
                 //District
                 FilteredActivities = FilteredActivities.Where( a => a.PlanningUnit.DistrictId == id);   
+                FilteredStories = FilteredStories.Where( s => s.PlanningUnit.DistrictId == id );
             }else if( filter == 2 ){
                 //KSU
+                FilteredActivities = FilteredActivities.Where( a => a.KersUser.RprtngProfile.Institution.Code == "21000-1890"); 
+                FilteredStories = FilteredStories.Where( s => s.KersUser.RprtngProfile.Institution.Code == "21000-1890" );
             }else if ( filter == 3){
                 //UK
+                FilteredActivities = FilteredActivities.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890"); 
+                FilteredStories = FilteredStories.Where( s => s.KersUser.RprtngProfile.Institution.Code != "21000-1890" );
             }
 
             var EmployeeActivities = FilteredActivities.GroupBy( a => 
@@ -358,13 +368,19 @@ namespace Kers.Controllers.Reports
                                                     }   
                                                 );
 
-
-
             var EmployeeDataForTheGraph = new List<string>();
 
             foreach( var EmployeeData in EmployeeActivities ){
                 var name = context.KersUser.Where( u => u.Id == EmployeeData.User.User.Id).Include( u => u.RprtngProfile).First();
-                EmployeeDataForTheGraph.Add("{ \"name\": \""+name.RprtngProfile.Name+"\", \"category\": \"Employees\",\"label\":{\"normal\":{\"show\":true,\"textStyle\":{\"color\":\"#72c380\"}}},\"symbolSize\":"+Math.Max(EmployeeData.Activities.Count(), 15)+",\"value\": "+EmployeeData.Activities.Count()+"}");
+                EmployeeDataForTheGraph.Add(
+                                "{ \"name\": \"" + name.RprtngProfile.Name + "\","
+                                + " \"category\": \"Employees\","
+                                + "\"label\":{\"normal\":{"
+                                + "\"show\":"+(EmployeeData.Activities.Count() > 3 ? "true" : "false" ) + ","
+                                + "\"textStyle\":{\"color\":\"#72c380\"}}},"
+                                + "\"symbolSize\":"+Math.Min(EmployeeData.Activities.Count(), 15) + ","
+                                + "\"value\": "+EmployeeData.Activities.Count() + "}"
+                );
             }
 
             var MajorProgramActivities = FilteredActivities.GroupBy( a => new {
@@ -376,27 +392,70 @@ namespace Kers.Controllers.Reports
                                                         Activities = s.Select(a => a)
                                                     }   
                                                 );
+            var MajorProgramStories = FilteredStories.GroupBy( a => new {
+                                                        MajorProgram = a.MajorProgram
+                                                    }
+                                                )
+                                                .Select( s => new {
+                                                        MajorProgram = s.Key,
+                                                        Stories = s.Select(a => a)
+                                                    }   
+                                                );
 
             var ProgramDataForTheGraph = new List<string>();
 
             var LinksDataForTheGraph = new List<string>();
 
+            int LabelLength = 15;
+
             foreach( var ProgramData in MajorProgramActivities ){
-                ProgramDataForTheGraph.Add("{ \"name\": \""+ProgramData.MajorProgram.MajorProgram.Name+"\", \"label\":{\"normal\":{\"show\":true,\"textStyle\":{\"color\":\"#6f7a8a\"}}}, \"category\": \"Major Programs\",\"symbolSize\":"+Math.Max(ProgramData.Activities.Count(), 15)+", \"value\": "+ProgramData.Activities.Count()+"}");
+                var shortenedProgramName = (ProgramData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? ProgramData.MajorProgram.MajorProgram.Name.Substring( 0, LabelLength ) + "..." : ProgramData.MajorProgram.MajorProgram.Name);
+                ProgramDataForTheGraph.Add(
+                                            "{ \"name\": \"" + shortenedProgramName + "\", "
+                                            + "\"label\":{\"normal\":{\"show\":"
+                                            + (ProgramData.Activities.Count() > 20 ? "true" : "false" )
+                                            +",\"textStyle\":{\"color\":\"#6f7a8a\"}}}, "
+                                            + "\"category\": \"Major Programs\",\"symbolSize\":" + Math.Min(ProgramData.Activities.Count(), 15) + ", "
+                                            + "\"value\": "+ProgramData.Activities.Count()+"}");
                 
                 var ProgramDataGrouppedByEmployee = ProgramData.Activities.GroupBy( a => a.KersUserId ).Select( s => s );
                 foreach( var GrouppedProgramData in ProgramDataGrouppedByEmployee ){
                     var TargetName = context.KersUser.Where( u => u.Id == GrouppedProgramData.Key).Include( u => u.RprtngProfile).First();
-                    LinksDataForTheGraph.Add("{ \"source\": \""+ProgramData.MajorProgram.MajorProgram.Name+"\",\"target\": \""+TargetName.RprtngProfile.Name+"\"}");
+                    LinksDataForTheGraph.Add("{ \"source\": \"" + shortenedProgramName + "\",\"target\": \"" + TargetName.RprtngProfile.Name+"\"}");
                 }
                 
             }
+
+
+            var StoryDataForTheGraph = new List<string>();
+
+
+            foreach( var StoryData in MajorProgramStories ){
+                var shortenedProgramName = (StoryData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? StoryData.MajorProgram.MajorProgram.Name.Substring( 0, LabelLength ) + "..." : StoryData.MajorProgram.MajorProgram.Name);
+                foreach( var story in StoryData.Stories){
+                    var lastRev = context.StoryRevision.Where( s => s.StoryId == story.Id ).OrderBy( s => s.Created ).Last();
+                    var shortenedStoryTitle = lastRev.Title.Count() > LabelLength ? lastRev.Title.Substring( 0, LabelLength ) + "..." : lastRev.Title;
+                    StoryDataForTheGraph.Add(
+                                            "{ \"name\": \"" + shortenedStoryTitle + "\", "
+                                            + "\"label\":{\"normal\":{\"show\":true"
+                                            +",\"textStyle\":{\"color\":\"#f7cb38\"}}}, "
+                                            + "\"category\": \"Success Stories\",\"symbolSize\":5, "
+                                            + "\"value\": 1}");
+                    LinksDataForTheGraph.Add("{ \"source\": \"" + shortenedProgramName + "\",\"target\": \"" + shortenedStoryTitle +"\"}");
+                    var author = context.KersUser.Where( u => u.Id == story.KersUserId).Include( u => u.RprtngProfile).First();
+                    LinksDataForTheGraph.Add("{ \"source\": \"" + author.RprtngProfile.Name + "\",\"target\": \"" + shortenedStoryTitle +"\"}");
+                }                
+            }
+
+
 
             ViewData["GraphCategories"] = "[\"Employees\", \"Major Programs\", \"Success Stories\"]";
             ViewData["GraphData"] = "[" 
                                         + string.Join(",", EmployeeDataForTheGraph.ToArray() ) 
                                         + ","
                                         + string.Join(",", ProgramDataForTheGraph.ToArray() )
+                                        + ","
+                                        + string.Join(",", StoryDataForTheGraph.ToArray() )
                                         + "]";
             ViewData["GraphLinks"] = "[" + string.Join(",", LinksDataForTheGraph.ToArray() ) + "]";
 

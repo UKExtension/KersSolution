@@ -130,8 +130,8 @@ else if( district != null)
                 </div>
                 <div  class="col-md-4 tile">
                     <div id="Chart2">
-                        <span>Subtitle </span>
-                        <h2>Title</h2>
+                        <span>Employees, Programs, Stories </span>
+                        <h2>Connections</h2>
                         <div class="graph"></div>
                     </div>
                 </div>
@@ -271,7 +271,12 @@ else if( district != null)
         color: @Html.Raw(colors),
         tooltip: {
             formatter: function(x) {
-                return x.data.des;
+                if(x.dataType == 'node'){
+                    return x.marker + ' ' + x.data.name + '<br>' + x.data.value;
+                }else{
+                    return x.data.source + '<br>' + x.data.target;
+                }
+                    
             }
         },
         legend: {
@@ -312,17 +317,7 @@ else if( district != null)
         }]
     };
     
-    var idd = {
-        
-            legend:  @Html.Raw(GraphCategories),
-            series: [{
-                type: 'graph',
-                layout: 'none',
-                categories:  @Html.Raw(GraphCategories),
-                data: @Html.Raw(GraphData),
-                links: @Html.Raw(GraphLinks)
-            }]
-        };
+    
 
         options[3] = {
                 tooltip: {
