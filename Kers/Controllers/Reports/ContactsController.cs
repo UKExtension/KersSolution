@@ -373,7 +373,7 @@ namespace Kers.Controllers.Reports
             foreach( var EmployeeData in EmployeeActivities ){
                 var name = context.KersUser.Where( u => u.Id == EmployeeData.User.User.Id).Include( u => u.RprtngProfile).First();
                 EmployeeDataForTheGraph.Add(
-                                "{ \"name\": \"" + name.RprtngProfile.Name + "\","
+                                "\n{ \"name\": \"" + System.Net.WebUtility.HtmlEncode(name.RprtngProfile.Name) + "\","
                                 + " \"category\": \"Employees\","
                                 + "\"label\":{\"normal\":{"
                                 + "\"show\":"+(EmployeeData.Activities.Count() > 3 ? "true" : "false" ) + ","
@@ -409,9 +409,9 @@ namespace Kers.Controllers.Reports
             int LabelLength = 15;
 
             foreach( var ProgramData in MajorProgramActivities ){
-                var shortenedProgramName = (ProgramData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? ProgramData.MajorProgram.MajorProgram.Name.Substring( 0, LabelLength ) + "..." : ProgramData.MajorProgram.MajorProgram.Name);
+                var shortenedProgramName = System.Net.WebUtility.HtmlEncode(ProgramData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? ProgramData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : ProgramData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", ""));
                 ProgramDataForTheGraph.Add(
-                                            "{ \"name\": \"" + shortenedProgramName + "\", "
+                                            "\n{ \"name\": \"" + shortenedProgramName + "\", "
                                             + "\"label\":{\"normal\":{\"show\":"
                                             + (ProgramData.Activities.Count() > 20 ? "true" : "false" )
                                             +",\"textStyle\":{\"color\":\"#6f7a8a\"}}}, "
@@ -421,7 +421,7 @@ namespace Kers.Controllers.Reports
                 var ProgramDataGrouppedByEmployee = ProgramData.Activities.GroupBy( a => a.KersUserId ).Select( s => s );
                 foreach( var GrouppedProgramData in ProgramDataGrouppedByEmployee ){
                     var TargetName = context.KersUser.Where( u => u.Id == GrouppedProgramData.Key).Include( u => u.RprtngProfile).First();
-                    LinksDataForTheGraph.Add("{ \"source\": \"" + shortenedProgramName + "\",\"target\": \"" + TargetName.RprtngProfile.Name+"\"}");
+                    LinksDataForTheGraph.Add("\n{ \"source\": \"" + shortenedProgramName + "\",\"target\": \"" + System.Net.WebUtility.HtmlEncode(TargetName.RprtngProfile.Name)+"\"}");
                 }
                 
             }
@@ -431,37 +431,37 @@ namespace Kers.Controllers.Reports
 
 
             foreach( var StoryData in MajorProgramStories ){
-                var shortenedProgramName = (StoryData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? StoryData.MajorProgram.MajorProgram.Name.Substring( 0, LabelLength ) + "..." : StoryData.MajorProgram.MajorProgram.Name);
+                var shortenedProgramName = System.Net.WebUtility.HtmlEncode(StoryData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? StoryData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : StoryData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", ""));
                 if( !MajorProgramActivities.Where( a => a.MajorProgram == StoryData.MajorProgram).Any()){
-                    ProgramDataForTheGraph.Add(
-                                            "{ \"name\": \"" + shortenedProgramName + "\", "
+                   /*  ProgramDataForTheGraph.Add(
+                                            "\n{ \"name\": \"" + shortenedProgramName + "\", "
                                             + "\"label\":{\"normal\":{\"show\":false"
                                             +",\"textStyle\":{\"color\":\"#6f7a8a\"}}}, "
                                             + "\"category\": \"Major Programs\",\"symbolSize\":6, "
-                                            + "\"value\": 0}");   
+                                            + "\"value\": 0}");    */
                 }
                 foreach( var story in StoryData.Stories){
                     var lastRev = context.StoryRevision.Where( s => s.StoryId == story.Id ).OrderBy( s => s.Created ).Last();
                     var shortenedStoryTitle = lastRev.Title.Count() > LabelLength ? lastRev.Title.Substring( 0, LabelLength ) + "..." : lastRev.Title;
                     StoryDataForTheGraph.Add(
-                                            "{ \"name\": \"" + shortenedStoryTitle + "\", "
+                                            "\n{ \"name\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\", "
                                             + "\"label\":{\"normal\":{\"show\":true"
                                             +",\"textStyle\":{\"color\":\"#f7cb38\"}}}, "
                                             + "\"category\": \"Success Stories\",\"symbolSize\":5, "
                                             + "\"value\": 1}");
-                    LinksDataForTheGraph.Add("{ \"source\": \"" + shortenedProgramName + "\",\"target\": \"" + shortenedStoryTitle +"\"}");
+                    LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\",\"target\": \"" + shortenedProgramName +"\"}");
                     var author = context.KersUser.Where( u => u.Id == story.KersUserId).Include( u => u.RprtngProfile).First();
                     if( !EmployeeActivities.Where( e => e.User.User == author).Any()){
-                        EmployeeDataForTheGraph.Add(
-                                "{ \"name\": \"" + author.RprtngProfile.Name + "\","
+                       /*  EmployeeDataForTheGraph.Add(
+                                "\n{ \"name\": \"" + author.RprtngProfile.Name + "\","
                                 + " \"category\": \"Employees\","
                                 + "\"label\":{\"normal\":{"
                                 + "\"show\":false ,"
                                 + "\"textStyle\":{\"color\":\"#72c380\"}}},"
                                 + "\"symbolSize\":5,"
-                                + "\"value\": 0}");
+                                + "\"value\": 0}"); */
                     }
-                    LinksDataForTheGraph.Add("{ \"source\": \"" + author.RprtngProfile.Name + "\",\"target\": \"" + shortenedStoryTitle +"\"}");
+                    LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(author.RprtngProfile.Name) + "\",\"target\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) +"\"}");
                 }                
             }
 

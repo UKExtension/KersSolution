@@ -292,12 +292,6 @@ else if( district != null)
             layout: 'circular',
             circular: {
                     rotateLabel: true
-                },
-            label: {
-                normal: {
-                    show: true,
-                    textStyle: {}
-                }
             },
             categories: GraphCategories,
             data: @Html.Raw(GraphData),
@@ -343,9 +337,9 @@ else if( district != null)
                 ],
                 series: @Html.Raw(ProgramsHoursGraphDataList)
             };
-
-        initCharts();
-
+        $( document ).ready(function() {
+            initCharts();
+        });
         $(window).on('resize', function(){
             resizeCharts();
         });
