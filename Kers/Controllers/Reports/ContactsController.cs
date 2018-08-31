@@ -432,6 +432,14 @@ namespace Kers.Controllers.Reports
 
             foreach( var StoryData in MajorProgramStories ){
                 var shortenedProgramName = (StoryData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? StoryData.MajorProgram.MajorProgram.Name.Substring( 0, LabelLength ) + "..." : StoryData.MajorProgram.MajorProgram.Name);
+                if( !MajorProgramActivities.Where( a => a.MajorProgram == StoryData.MajorProgram).Any()){
+                    ProgramDataForTheGraph.Add(
+                                            "{ \"name\": \"" + shortenedProgramName + "\", "
+                                            + "\"label\":{\"normal\":{\"show\":false"
+                                            +",\"textStyle\":{\"color\":\"#6f7a8a\"}}}, "
+                                            + "\"category\": \"Major Programs\",\"symbolSize\":6, "
+                                            + "\"value\": 0}");   
+                }
                 foreach( var story in StoryData.Stories){
                     var lastRev = context.StoryRevision.Where( s => s.StoryId == story.Id ).OrderBy( s => s.Created ).Last();
                     var shortenedStoryTitle = lastRev.Title.Count() > LabelLength ? lastRev.Title.Substring( 0, LabelLength ) + "..." : lastRev.Title;
@@ -443,6 +451,16 @@ namespace Kers.Controllers.Reports
                                             + "\"value\": 1}");
                     LinksDataForTheGraph.Add("{ \"source\": \"" + shortenedProgramName + "\",\"target\": \"" + shortenedStoryTitle +"\"}");
                     var author = context.KersUser.Where( u => u.Id == story.KersUserId).Include( u => u.RprtngProfile).First();
+                    if( !EmployeeActivities.Where( e => e.User.User == author).Any()){
+                        EmployeeDataForTheGraph.Add(
+                                "{ \"name\": \"" + author.RprtngProfile.Name + "\","
+                                + " \"category\": \"Employees\","
+                                + "\"label\":{\"normal\":{"
+                                + "\"show\":false ,"
+                                + "\"textStyle\":{\"color\":\"#72c380\"}}},"
+                                + "\"symbolSize\":5,"
+                                + "\"value\": 0}");
+                    }
                     LinksDataForTheGraph.Add("{ \"source\": \"" + author.RprtngProfile.Name + "\",\"target\": \"" + shortenedStoryTitle +"\"}");
                 }                
             }
