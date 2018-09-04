@@ -366,7 +366,8 @@ namespace Kers.Controllers.Reports
                                                         User = s.Key,
                                                         Activities = s.Select(a => a)
                                                     }   
-                                                );
+                                                ).OrderByDescending( s => s.Activities.Count())
+                                                .Take(10);
 
             var EmployeeDataForTheGraph = new List<string>();
 
@@ -391,7 +392,8 @@ namespace Kers.Controllers.Reports
                                                         MajorProgram = s.Key,
                                                         Activities = s.Select(a => a)
                                                     }   
-                                                );
+                                                ).OrderByDescending( s => s.Activities.Count())
+                                                .Take(14);
             var MajorProgramStories = FilteredStories.GroupBy( a => new {
                                                         MajorProgram = a.MajorProgram
                                                     }
@@ -400,7 +402,7 @@ namespace Kers.Controllers.Reports
                                                         MajorProgram = s.Key,
                                                         Stories = s.Select(a => a)
                                                     }   
-                                                );
+                                                ).Take(10);
 
             var ProgramDataForTheGraph = new List<string>();
 
@@ -447,7 +449,7 @@ namespace Kers.Controllers.Reports
                                             "\n{ \"name\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\", "
                                             + "\"label\":{\"normal\":{\"show\":true"
                                             +",\"textStyle\":{\"color\":\"#f7cb38\"}}}, "
-                                            + "\"category\": \"Success Stories\",\"symbolSize\":5, "
+                                            + "\"category\": \"Success Stories\",\"symbolSize\":15, "
                                             + "\"value\": 1}");
                     LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\",\"target\": \"" + shortenedProgramName +"\"}");
                     var author = context.KersUser.Where( u => u.Id == story.KersUserId).Include( u => u.RprtngProfile).First();
