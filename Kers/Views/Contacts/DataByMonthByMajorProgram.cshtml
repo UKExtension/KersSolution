@@ -66,112 +66,89 @@ else if( district != null)
         margin-left: -10px;
     }
 </style>
-<div class="row top_tiles">
-    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="tile-stats">
-        <div class="icon"><i class="fa fa-clock-o"></i></div>
-        <div class="count">@totalHours</div>
-        <h3>Total Hours</h3>
-        <p>Contributed.</p>
-    </div>
-    </div>
-    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="tile-stats">
-        <div class="icon"><i class="fa fa-comments-o"></i></div>
-        <div class="count">@totalContacts</div>
-        <h3>Contacts</h3>
-        <p>with Individuals.</p>
-    </div>
-    </div>
-    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="tile-stats">
-        <div class="icon"><i class="fa fa-code-fork"></i></div>
-        <div class="count">@totalMultistate</div>
-        <h3>Hours</h3>
-        <p>of Multistate Efforts.</p>
-    </div>
-    </div>
-    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="tile-stats">
-        <div class="icon"><i class="fa fa-check-square-o"></i></div>
-        <div class="count">@totalActivities</div>
-        <h3>Number of activities</h3>
-        <p>Performed.</p>
-    </div>
-    </div>
-</div>
+@await Html.PartialAsync("TopStatsFiscalYearPartial")
 
+<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+    <li role="presentation" class=""><a asp-controller="Reports"  asp-action="County" asp-route-fy="@FiscalYear.Name" asp-route-id=@unit.Id>Summary</a>
+    </li>
+    <li role="presentation" class="active"><a asp-controller="Contacts"  asp-action="DataByMonthByMajorProgram" asp-route-fy="@FiscalYear.Name" asp-route-id=@unit.Id>Data by Major Program</a>
+    </li>
+    <li role="presentation" class=""><a asp-controller="Contacts"  asp-action="DataByMonthByEmployee" asp-route-fy="@FiscalYear.Name" asp-route-id=@unit.Id>Employee Contribution Data</a>
+    </li>
+</ul>
 
 
 <div class="row">
     <div class="col-md-12">
-        <div class="x_panel">
-        <div class="x_title">
-            <h2>Statistical Contacts</h2>
-            
-            <div class="clearfix"></div>
-        </div>
-        <div class="x_content">
-            <div class="col-md-9 col-sm-12 col-xs-12">
-            <div class="main-container">
-                <div id="Chart0" class="demo-placeholder">
-                    <span>Male, Female Distribution</span>
-                    <h2>Per Major Program</h2>
-                    <div class="graph"></div>
-                </div>
-            </div>
-            <div class="tiles">
-                <div class="col-md-4 tile">
-                    <div id="Chart1">
-                        <span>Top 5 Major Programs</span>
-                        <h2>Contacts per Month</h2>
-                        <div class="graph"></div>
-                    </div>
-                </div>
-                <div  class="col-md-4 tile">
-                    <div id="Chart2">
-                        <span>Employees, Programs, Stories </span>
-                        <h2>Connections</h2>
-                        <div class="graph"></div>
-                    </div>
-                </div>
-                <div  class="col-md-4 tile">
-                    <div id="Chart3">
-                        <span>Top 5 Major Programs </span>
-                        <h2>Hours per Month</h2>
-                        <div class="graph"></div>
-                    </div>
-                </div>
-            </div>
-
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-            <div>
+        <div class="panel">
                 <div class="x_title">
-                <h2>Top Major Programs</h2>
-                
-                <div class="clearfix"></div>
+                    <h2>Statistical Contacts by Major Program</h2>
+                    
+                    <div class="clearfix"></div>
                 </div>
-                <ul class="list-unstyled top_profiles scroll-view">
-
-                @foreach( var prgrmData in AllProgramsData.Take(7) )
-                {
-                    <li class="media event">
-                    <div class="media-body">
-                        <a class="title" asp-controller="MajorProgram"  asp-action="Program" asp-route-id=@prgrmData.MajorProgram.Id>@prgrmData.MajorProgram.Name</a>
-                        <p><strong>@prgrmData.Audience.Sum(s => s)</strong> Contacts (@prgrmData.Male.Sum(s => s) Male, @prgrmData.Female.Sum(s => s) Female)</p>
-                        <p> <small>@prgrmData.Hours.Sum(s => s) Hours</small>
-                        </p>
+                <div class="x_content">
+                    <div class="col-md-9 col-sm-12 col-xs-12">
+                    <div class="main-container">
+                        <div id="Chart0" class="demo-placeholder">
+                            <span>Male, Female Distribution</span>
+                            <h2>Per Major Program</h2>
+                            <div class="graph"></div>
+                        </div>
                     </div>
-                    </li>
-                }
-                
-                </ul>
-            </div>
-            </div>
+                    <div class="tiles">
+                        <div class="col-md-4 tile">
+                            <div id="Chart1">
+                                <span>Top 5 Major Programs</span>
+                                <h2>Contacts per Month</h2>
+                                <div class="graph"></div>
+                            </div>
+                        </div>
+                        <div  class="col-md-4 tile">
+                            <div id="Chart2">
+                                <span>Employees, Programs, Stories </span>
+                                <h2>Connections</h2>
+                                <div class="graph"></div>
+                            </div>
+                        </div>
+                        <div  class="col-md-4 tile">
+                            <div id="Chart3">
+                                <span>Top 5 Major Programs </span>
+                                <h2>Hours per Month</h2>
+                                <div class="graph"></div>
+                            </div>
+                        </div>
+                    </div>
 
-        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div>
+                        <div class="x_title">
+                        <h2>Top Major Programs</h2>
+                        
+                        <div class="clearfix"></div>
+                        </div>
+                        <ul class="list-unstyled top_profiles scroll-view">
+
+                        @foreach( var prgrmData in AllProgramsData.Take(7) )
+                        {
+                            <li class="media event">
+                            <div class="media-body">
+                                <a class="title" asp-controller="MajorProgram"  asp-action="Program" asp-route-id=@prgrmData.MajorProgram.Id>@prgrmData.MajorProgram.Name</a>
+                                <p><strong>@prgrmData.Audience.Sum(s => s)</strong> Contacts (@prgrmData.Male.Sum(s => s) Male, @prgrmData.Female.Sum(s => s) Female)</p>
+                                <p> <small>@prgrmData.Hours.Sum(s => s) Hours</small>
+                                </p>
+                            </div>
+                            </li>
+                        }
+                        
+                        </ul>
+                    </div>
+                    </div>
+
+
+                </div>
+                <div class="clearfix"></div>
         </div>
     </div>
 </div>

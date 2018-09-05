@@ -131,7 +131,7 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("[action]/{filter?}/{id?}/{fy?}")]
+        [Route("[action]/{filter?}/{id?}/{fy?}", Name = "ContactsDataByMonthByMajorProgram")]
         public async Task<IActionResult> DataByMonthByMajorProgram(int filter = 1, int id = 0, string fy = "0")
         {
             // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
@@ -434,14 +434,14 @@ namespace Kers.Controllers.Reports
 
             foreach( var StoryData in MajorProgramStories ){
                 var shortenedProgramName = System.Net.WebUtility.HtmlEncode(StoryData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? StoryData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : StoryData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", ""));
-                if( !MajorProgramActivities.Where( a => a.MajorProgram == StoryData.MajorProgram).Any()){
-                   /*  ProgramDataForTheGraph.Add(
+                /* if( !MajorProgramActivities.Where( a => a.MajorProgram == StoryData.MajorProgram).Any()){
+                    ProgramDataForTheGraph.Add(
                                             "\n{ \"name\": \"" + shortenedProgramName + "\", "
                                             + "\"label\":{\"normal\":{\"show\":false"
                                             +",\"textStyle\":{\"color\":\"#6f7a8a\"}}}, "
                                             + "\"category\": \"Major Programs\",\"symbolSize\":6, "
-                                            + "\"value\": 0}");    */
-                }
+                                            + "\"value\": 1}");   
+                } */
                 foreach( var story in StoryData.Stories){
                     var lastRev = context.StoryRevision.Where( s => s.StoryId == story.Id ).OrderBy( s => s.Created ).Last();
                     var shortenedStoryTitle = lastRev.Title.Count() > LabelLength ? lastRev.Title.Substring( 0, LabelLength ) + "..." : lastRev.Title;
@@ -450,19 +450,19 @@ namespace Kers.Controllers.Reports
                                             + "\"label\":{\"normal\":{\"show\":true"
                                             +",\"textStyle\":{\"color\":\"#f7cb38\"}}}, "
                                             + "\"category\": \"Success Stories\",\"symbolSize\":15, "
-                                            + "\"value\": 1}");
+                                            + "\"value\":1}");
                     LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\",\"target\": \"" + shortenedProgramName +"\"}");
                     var author = context.KersUser.Where( u => u.Id == story.KersUserId).Include( u => u.RprtngProfile).First();
-                    if( !EmployeeActivities.Where( e => e.User.User == author).Any()){
-                       /*  EmployeeDataForTheGraph.Add(
+                    /* if( !EmployeeActivities.Where( e => e.User.User == author).Any()){
+                        EmployeeDataForTheGraph.Add(
                                 "\n{ \"name\": \"" + author.RprtngProfile.Name + "\","
                                 + " \"category\": \"Employees\","
                                 + "\"label\":{\"normal\":{"
                                 + "\"show\":false ,"
                                 + "\"textStyle\":{\"color\":\"#72c380\"}}},"
                                 + "\"symbolSize\":5,"
-                                + "\"value\": 0}"); */
-                    }
+                                + "\"value\": 1}");
+                    } */
                     LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(author.RprtngProfile.Name) + "\",\"target\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) +"\"}");
                 }                
             }

@@ -1,6 +1,6 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-   
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
     var conty = ViewData["County"] as Kers.Models.Entities.KERScore.PlanningUnit;
     ViewData["Title"] = conty.Name;
@@ -19,7 +19,14 @@
     dataAsString += "]";
 }
 @await Html.PartialAsync("TopStatsPartial")
-
+<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+    <li role="presentation" class="active"><a asp-controller="Reports"  asp-action="County" asp-route-fy="@FiscalYear.Name" asp-route-id=@conty.Id>Summary</a>
+    </li>
+    <li role="presentation" class=""><a asp-controller="Contacts"  asp-action="DataByMonthByMajorProgram"  asp-route-fy="@FiscalYear.Name" asp-route-filter="1" asp-route-id=@conty.Id>Data by Major Program</a>
+    </li>
+    <li role="presentation" class=""><a asp-controller="Contacts"  asp-action="DataByMonthByEmployee" asp-route-fy="@FiscalYear.Name" asp-route-id=@conty.Id>Employee Contribution Data</a>
+    </li>
+</ul>
 <div class="row">
   <div class="col-md-8 col-sm-8 col-xs-12">
     @await Component.InvokeAsync("MainStory", new {PlanningUnitId = conty.Id})

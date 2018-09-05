@@ -1,0 +1,42 @@
+@{
+    var totalHours = ViewData["totalHours"] as float?;
+    var totalContacts = ViewData["totalContacts"] as int?;
+    var totalMultistate = ViewData["totalMultistate"] as float?;
+    var totalActivities = ViewData["totalActivities"] as int? ;
+
+}
+
+<div class="row top_tiles">
+    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="tile-stats">
+        <div class="icon"><i class="fa fa-clock-o"></i></div>
+        <div class="count">@totalHours</div>
+        <h3>Total Hours</h3>
+        <p>Contributed.</p>
+    </div>
+    </div>
+    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="tile-stats">
+        <div class="icon"><i class="fa fa-comments-o"></i></div>
+        <div class="count">@totalContacts</div>
+        <h3>Contacts</h3>
+        <p>with Individuals.</p>
+    </div>
+    </div>
+    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="tile-stats">
+        <div class="icon"><i class="fa fa-code-fork"></i></div>
+        <div class="count">@totalMultistate</div>
+        <h3>Hours</h3>
+        <p>of Multistate Efforts.</p>
+    </div>
+    </div>
+    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="tile-stats">
+        <div class="icon"><i class="fa fa-check-square-o"></i></div>
+        <div class="count">@totalActivities</div>
+        <h3>Number of activities</h3>
+        <p>Performed.</p>
+    </div>
+    </div>
+</div>

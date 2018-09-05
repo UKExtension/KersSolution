@@ -77,9 +77,14 @@ namespace Kers.Controllers.Reports
         }
 
         [HttpGet]
-        [Route("county/{id}")]
-        public async Task<IActionResult> County(int id)
+        [Route("county/{id}/{fy?}")]
+        public async Task<IActionResult> County(int id, string fy="0")
         {
+            FiscalYear fiscalYear = GetFYByName(fy);
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            ViewData["FiscalYear"] = fiscalYear;
 
             ViewData["County"] = await this.context
                                 .PlanningUnit.Where( p => p.Id == id )
