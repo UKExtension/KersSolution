@@ -1,178 +1,380 @@
 @{
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    ViewData["Title"] = "State Statistical Contact Reports";
+    ViewData["Title"] = "Statistical Contact Report for FY" + FiscalYear.Name;
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+
+    var unit = ViewData["unit"] as Kers.Models.Entities.KERScore.PlanningUnit;
+    var district = ViewData["district"] as Kers.Models.Entities.KERScore.District;
+
+
+    var monthsForTheGraph = ViewData["months"] as string;
+    var hoursForTheGraph = ViewData["hours"] as string;
+
+
+    var colors1 = "[\"#26B99A\", \"#34495E\", \"#BDC3C7\", \"#3498DB\", \"#9B59B6\", \"#8abb6f\", \"#759c6a\", \"#bfd3b7\"]";
+    var colors = "[\"#72c380\", \"#6f7a8a\", \"#f7cb38\",\"#96CA59\", \"#3F97EB\", \"#5a8022\", \"#2c7282\"]";
+    Random random = new Random();
+
+    var programsForTheLegend = ViewData["personssForTheLegend"] as string;
+    var ProgramsHoursGraphDataList = ViewData["PrersonsHoursGraphDataList"] as string;
+    var ProgramsContactsByProgramSeries = ViewData["PersonsContactsByProgramSeries"] as string;
+
+    
+
+    var ProgramDataPerMonth = ViewData["PersonDataPerMonth"] as List<Kers.Controllers.Reports.PersonDataPerMonth>;
+    var AllPersonssData = ViewData["AllPersonssData"] as List<Kers.Controllers.Reports.PersonDataPerMonth>;
+    var ProgramsGendersGraphDataList = ViewData["ProgramsGendersGraphDataList"] as string;
+
+
+    var GraphCategories = ViewData["GraphCategories"] as string;
+    var GraphData = ViewData["GraphData"] as string;
+    var GraphLinks = ViewData["GraphLinks"] as string;
+
 }
-@model List<List<Kers.Models.Data.PerEmployeeActivities>>
+@model List<List<Kers.Models.Data.PerPersonActivities>>
 
+@if( unit != null )
+{
+    <h3>@unit.Name <small>@FiscalYear.Start.ToString("MMM d, yyyy") - @FiscalYear.End.ToString("MMM d, yyyy")</small></h3>
+    
+}
+else if( district != null)
+{
+    <h3>@district.Name <small>@FiscalYear.Start.ToString("MMM d, yyyy") - @FiscalYear.End.ToString("MMM d, yyyy")</small></h3>
+}
 
+<style>
+    .main-container .graph{
+        height: 380px;
+    }
+    .main-container{
+        height: 430px;
+    }
+    .tile{
+        cursor:pointer !important;
+        width: 33%;
+    }
+    .tiles .graph{
+        height: 190px;
+        margin-top: -40px;
+        margin-left: -10px;
+    }
+</style>
+@await Html.PartialAsync("TopStatsFiscalYearPartial")
 
-
-
-
-<div class="row top_tiles">
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-comments-o"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
-                </div>
-              </div>
-            </div>
-
-
-
-
-
-
-
+<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+    <li role="presentation" class=""><a asp-controller="Reports"  asp-action="County" asp-route-fy="@FiscalYear.Name" asp-route-id=@unit.Id>Summary</a>
+    </li>
+    <li role="presentation" class=""><a asp-controller="Contacts"  asp-action="DataByMonthByMajorProgram" asp-route-fy="@FiscalYear.Name" asp-route-filter="1" asp-route-id=@unit.Id>Data by Major Program</a>
+    </li>
+    <li role="presentation" class="active"><a asp-controller="Contacts"  asp-action="DataByMonthByEmployee" asp-route-fy="@FiscalYear.Name" asp-route-filter="1" asp-route-id=@unit.Id>Employee Contribution Data</a>
+    </li>
+</ul>
 
 
 <div class="row">
-              <div class="col-md-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Transaction Summary <small>Weekly progress</small></h2>
-                    <div class="filter">
-                      <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                        <span>July 23, 2018 - August 21, 2018</span> <b class="caret"></b>
-                      </div>
-                    </div>
+    <div class="col-md-12">
+        <div class="panel">
+                <div class="x_title">
+                    <h2>Statistical Contacts by Employee</h2>
+                    
                     <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
+                </div>
+                <div class="x_content">
                     <div class="col-md-9 col-sm-12 col-xs-12">
-                      <div class="demo-container" style="height:280px">
-                        <div id="chart_plot_02" class="demo-placeholder" style="padding: 0px; position: relative;"><canvas class="flot-base" width="1578" height="560" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 789px; height: 280px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 74px; text-align: center;">23/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 148px; text-align: center;">25/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 222px; text-align: center;">27/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 295px; text-align: center;">29/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 369px; text-align: center;">31/08/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 443px; text-align: center;">02/09/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 517px; text-align: center;">04/09/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 591px; text-align: center;">06/09/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 665px; text-align: center;">08/09/18</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 65px; top: 264px; left: 739px; text-align: center;">10/09/18</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 246px; left: 12px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 205px; left: 6px; text-align: right;">20</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 164px; left: 6px; text-align: right;">40</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 123px; left: 6px; text-align: right;">60</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 82px; left: 6px; text-align: right;">80</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 41px; left: 0px; text-align: right;">100</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 0px; left: 0px; text-align: right;">120</div></div></div><canvas class="flot-overlay" width="1578" height="560" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 789px; height: 280px;"></canvas><div class="legend"><div style="position: absolute; width: 71px; height: 16px; top: -17px; right: 22px; background-color: rgb(255, 255, 255); opacity: 0.85;"> </div><table style="position:absolute;top:-17px;right:22px;;font-size:smaller;color:#3f3f3f"><tbody><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(150,202,89);overflow:hidden"></div></div></td><td class="legendLabel">Email Sent&nbsp;&nbsp;</td></tr></tbody></table></div></div>
-                      </div>
-                      <div class="tiles">
-                        <div class="col-md-4 tile">
-                          <span>Total Sessions</span>
-                          <h2>231,809</h2>
-                          <span class="sparkline11 graph" style="height: 160px;"><canvas width="198" height="40" style="display: inline-block; width: 198px; height: 40px; vertical-align: top;"></canvas></span>
+                    <div class="main-container">
+                        <div id="Chart0" class="demo-placeholder">
+                            <span>Male, Female Distribution</span>
+                            <h2>Per Employee</h2>
+                            <div class="graph"></div>
                         </div>
+                    </div>
+                    <div class="tiles">
                         <div class="col-md-4 tile">
-                          <span>Total Revenue</span>
-                          <h2>$231,809</h2>
-                          <span class="sparkline22 graph" style="height: 160px;"><canvas width="200" height="40" style="display: inline-block; width: 200px; height: 40px; vertical-align: top;"></canvas></span>
+                            <div id="Chart1">
+                                <span>Top 5 Employees</span>
+                                <h2>Contacts per Month</h2>
+                                <div class="graph"></div>
+                            </div>
                         </div>
-                        <div class="col-md-4 tile">
-                          <span>Total Sessions</span>
-                          <h2>231,809</h2>
-                          <span class="sparkline11 graph" style="height: 160px;"><canvas width="198" height="40" style="display: inline-block; width: 198px; height: 40px; vertical-align: top;"></canvas></span>
+                        <div  class="col-md-4 tile">
+                            <div id="Chart2">
+                                <span>Employees, Programs, Stories </span>
+                                <h2>Connections</h2>
+                                <div class="graph"></div>
+                            </div>
                         </div>
-                      </div>
+                        <div  class="col-md-4 tile">
+                            <div id="Chart3">
+                                <span>Top 5 Employees </span>
+                                <h2>Hours per Month</h2>
+                                <div class="graph"></div>
+                            </div>
+                        </div>
+                    </div>
 
                     </div>
 
                     <div class="col-md-3 col-sm-12 col-xs-12">
-                      <div>
+                    <div>
                         <div class="x_title">
-                          <h2>Top Profiles</h2>
-                          <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            </li>
-                            <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                              <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Settings 1</a>
-                                </li>
-                                <li><a href="#">Settings 2</a>
-                                </li>
-                              </ul>
-                            </li>
-                            <li><a class="close-link"><i class="fa fa-close"></i></a>
-                            </li>
-                          </ul>
-                          <div class="clearfix"></div>
+                        <h2>Top Employees</h2>
+                        
+                        <div class="clearfix"></div>
                         </div>
                         <ul class="list-unstyled top_profiles scroll-view">
-                          <li class="media event">
-                            <a class="pull-left border-aero profile_thumb">
-                              <i class="fa fa-user aero"></i>
-                            </a>
+
+                        @foreach( var prgrmData in AllPersonssData.Take(7) )
+                        {
+                            <li class="media event">
                             <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
+                                <a class="title" asp-controller="MajorProgram"  asp-action="Program" asp-route-id=@prgrmData.KersUser.Id>@prgrmData.KersUser.PersonalProfile.FirstName @prgrmData.KersUser.PersonalProfile.LastName</a>
+                                <p><strong>@prgrmData.Audience.Sum(s => s)</strong> Contacts (@prgrmData.Male.Sum(s => s) Male, @prgrmData.Female.Sum(s => s) Female)</p>
+                                <p> <small>@prgrmData.Hours.Sum(s => s) Hours</small>
+                                </p>
                             </div>
-                          </li>
-                          <li class="media event">
-                            <a class="pull-left border-green profile_thumb">
-                              <i class="fa fa-user green"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
-                          <li class="media event">
-                            <a class="pull-left border-blue profile_thumb">
-                              <i class="fa fa-user blue"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
-                          <li class="media event">
-                            <a class="pull-left border-aero profile_thumb">
-                              <i class="fa fa-user aero"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
-                          <li class="media event">
-                            <a class="pull-left border-green profile_thumb">
-                              <i class="fa fa-user green"></i>
-                            </a>
-                            <div class="media-body">
-                              <a class="title" href="#">Ms. Mary Jane</a>
-                              <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                              <p> <small>12 Sales Today</small>
-                              </p>
-                            </div>
-                          </li>
+                            </li>
+                        }
+                        
                         </ul>
-                      </div>
+                    </div>
                     </div>
 
-                  </div>
+
                 </div>
-              </div>
-            </div>
+                <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+   <script type="text/javascript" src="@Url.Content("https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts-en.min.js")"></script>
+   <script>
+      
+	 
+
+    var options = [];
+    var charts = [];
+    var chartPlaceholders = ["Chart0","Chart1","Chart2", "Chart3"];
+
+    options[0] = {
+        tooltip: {
+            axisPointer: {
+                type: 'shadow'
+            },
+            formatter: function (params, ticket, callback) {
+                return params.data[2] + '<br>Female: ' + params.data[0] + ', Male: ' + params.data[1];
+            }
+        },
+        color: @Html.Raw(colors),
+        xAxis: {
+        name: "Female",
+        nameLocation: "center",
+        nameGap: 22
+        },
+        yAxis: {
+        name: "Male",
+        nameLocation: "center",
+        nameGap: 22
+        },
+        series: [{
+            symbolSize: 20,
+            data: @Html.Raw(ProgramsGendersGraphDataList),
+            itemStyle: {
+            color: function (params) {
+                var colors = @Html.Raw(colors);
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            } ,
+            type: 'scatter'
+        }]
+    };
+
+
+
+
+
+
+    options[1] = {
+        color: @Html.Raw(colors),
+        legend: {
+            type: 'scroll',
+            data: @Html.Raw(programsForTheLegend)
+        },
+        toolbox: {
+            show: !1
+        },
+        calculable: !1,
+        tooltip : {
+            trigger: 'axis',
+            axisPointer : {            
+                type : 'shadow'        
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis : [
+            {
+                type : 'category',
+                data : @Html.Raw(monthsForTheGraph),
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : @Html.Raw(ProgramsContactsByProgramSeries)
+    };
+
+    var GraphCategories = [{ name: "Employees"}, { name: "Major Programs"}, { name: "Success Stories"}];
+
+    options[2] = {
+        color: @Html.Raw(colors),
+        tooltip: {
+            formatter: function(x) {
+                if(x.dataType == 'node'){
+                    return x.marker + ' ' + x.data.name + '<br>' + x.data.value;
+                }else{
+                    return x.data.source + '<br>' + x.data.target;
+                }
+                    
+            }
+        },
+        legend: {
+            // selectedMode: 'single',
+            data: GraphCategories.map(function (a) {
+                return a.name;
+            })
+        },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [{
+            type: 'graph',
+            layout: 'circular',
+            circular: {
+                    rotateLabel: true
+            },
+            categories: GraphCategories,
+            data: @Html.Raw(GraphData),
+            links: @Html.Raw(GraphLinks),
+            label: {
+                normal: {
+                    show: true,
+                    textStyle: {}
+                }
+            },
+            lineStyle: {
+                normal: {
+                    color: 'source',
+                    curveness: 0.3
+                }
+            }
+        }]
+    };
+    
+    
+
+        options[3] = {
+                tooltip: {
+                    trigger: "axis"
+                },
+                legend: {
+                    x: 220,
+                    y: 40,
+                    data: @Html.Raw(programsForTheLegend)
+                },
+                calculable: !6,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : @Html.Raw(monthsForTheGraph),
+                        boundaryGap: !1
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series: @Html.Raw(ProgramsHoursGraphDataList)
+            };
+        $( document ).ready(function() {
+            initCharts();
+        });
+        $(window).on('resize', function(){
+            resizeCharts();
+        });
+
+
+        function initCharts(){
+            var theId = $("#main");
+            for( i = 0; i < 4; i++)
+            {
+                charts[i] = echarts.init($("#" + chartPlaceholders[i] + " .graph")[0]);
+                if( i > 0) {
+                    if( options[i].legend != null && options[i].legend != undefined ){
+                        options[i].legend.show = false;
+                    }
+                }
+                charts[i].setOption(options[i]);
+            }
+        }
+        function resizeCharts(){
+            for( i = 0; i < 4; i++)
+            {
+                if(charts[i] != null && charts[i] != undefined){
+                    charts[i].resize();
+                }
+            }
+        }
+
+
+
+
+        $(".tile").click( function(){
+            var current = $( ".main-container" ).children().first();
+            var currentIndex = +current.attr('id').slice(-1);
+            if(options[currentIndex].legend != null && options[currentIndex].legend != undefined){
+                options[currentIndex].legend.show = false;
+                charts[currentIndex].setOption(options[currentIndex]);  
+            }
+            var clicked = $(this).children().first();
+            var clickedIndex = +clicked.attr('id').slice(-1);
+            if(options[clickedIndex].legend != null && options[clickedIndex].legend != undefined){
+                options[clickedIndex].legend.show = true;
+                charts[clickedIndex].setOption(options[clickedIndex]);
+            }
+            $( ".main-container" ).append( clicked );
+            $(this).append(current);
+            resizeCharts()
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+}
+
+

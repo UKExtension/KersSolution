@@ -60,7 +60,7 @@ namespace Kers.Controllers.Reports
             var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 4, 0, false, 100);
             float[] SummariesArray = fiscalYearSummaries.ToArray();
 
-                        ViewData["totalHours"] = SummariesArray[0];
+            ViewData["totalHours"] = SummariesArray[0];
             ViewData["totalContacts"] = (int) SummariesArray[1];
             ViewData["totalMultistate"] = SummariesArray[2];
             ViewData["totalActivities"] = (int) SummariesArray[3];

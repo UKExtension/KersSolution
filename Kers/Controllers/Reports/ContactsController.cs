@@ -492,20 +492,206 @@ namespace Kers.Controllers.Reports
         [Route("[action]/{filter?}/{id?}/{fy?}")]
         public async Task<IActionResult> DataByMonthByEmployee(int filter = 1, int id = 0, string fy = "0")
         {
+            
             // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
-            
             FiscalYear fiscalYear = GetFYByName(fy);
-            
-
             if(fiscalYear == null){
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
 
+            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 4, id, false, 100);
+            float[] SummariesArray = fiscalYearSummaries.ToArray();
+
+            ViewData["totalHours"] = SummariesArray[0];
+            ViewData["totalContacts"] = (int) SummariesArray[1];
+            ViewData["totalMultistate"] = SummariesArray[2];
+            ViewData["totalActivities"] = (int) SummariesArray[3];
+            if( filter == 1 ){
+                ViewData["unit"] = context.PlanningUnit.Where( u => u.Id == id ).FirstOrDefault();
+                if(ViewData["unit"] == null){
+                    return new StatusCodeResult(500);
+                }
+            }else if( filter == 0 ){
+                ViewData["district"] = context.District.Where( u => u.Id == id ).FirstOrDefault();
+                if(ViewData["district"] == null){
+                    return new StatusCodeResult(500);
+                }
+            }else if( filter > 4 ){
+                return new StatusCodeResult(500);
+            }
+
 
             var result = await this.DataByMonth(fiscalYear, filter, 0, id);
+
+
+
+            var output = new List< List< Kers.Models.Data.PerPersonActivities >>();
+
+            var months = new List<string>();
+            var hours = new List<string>();
+            var runningDate = new DateTime( fiscalYear.Start.Year, fiscalYear.Start.Month, 28);
+
+            foreach( var MonthResult in result){
+                var MonthData = new List<Kers.Models.Data.PerPersonActivities>();
+                months.Add( "'" + runningDate.ToString("MM/yyyy") + "'");
+                runningDate = runningDate.AddMonths( 1 );
+                hours.Add( MonthResult.Sum( s => s.Hours ).ToString());
+                foreach( var res in MonthResult ){
+                    var ProgramActivities = new Kers.Models.Data.PerPersonActivities();
+                    ProgramActivities.Audience = res.Audience;
+                    ProgramActivities.Female = res.Female;
+                    ProgramActivities.Hours = res.Hours;
+                    ProgramActivities.KersUser = await this.context.KersUser
+                                                        .Where( u => u.Id == res.GroupId )
+                                                        .Include( u => u.PersonalProfile )
+                                                        .FirstOrDefaultAsync();
+                    ProgramActivities.Male = res.Male;
+                    ProgramActivities.Multistate = res.Multistate;
+                    ProgramActivities.OptionNumberValues = res.OptionNumberValues;
+                    ProgramActivities.RaceEthnicityValues = res.RaceEthnicityValues;
+                    MonthData.Add( ProgramActivities );
+
+
+                }
+                output.Add(MonthData);
+            }
+
+
+
+            var monthsString = "[" + months.Aggregate((i, j) => i  + "," +  j) + "]";
+
+            ViewData["months"] = monthsString;
+            ViewData["hours"] = "[" + hours.Aggregate((i, j) => i + "," + j) + "]";
+
+
+
             
-            return View(result);
+
+            var returnList = new List<Kers.Models.Data.PerPersonActivities>();
+
+            var currentMonthNum = 0;
+
+            var PersonDataPerMonth = new List<PersonDataPerMonth>();
+
+            foreach( var month in output ){
+                foreach( var person in month ){
+                    //if( program.MajorProgram != null ){
+                        var existingPerson = returnList.Where( r => r.KersUser == person.KersUser).FirstOrDefault();
+                        if( existingPerson == null ){
+
+                            var personEntry = new PersonDataPerMonth();
+                            personEntry.KersUser = person.KersUser;
+                            personEntry.Audience = new List<int>();
+                            personEntry.Hours = new List<float>();
+                            personEntry.Male = new List<int>();
+                            personEntry.Female = new List<int>();
+                            personEntry.Multistate = new List<float>();
+                            for( var i = 0; i < currentMonthNum; i++ ){
+                                personEntry.Audience.Add(0);
+                                personEntry.Hours.Add(0);
+                                personEntry.Male.Add(0);
+                                personEntry.Female.Add( 0 );
+                                personEntry.Multistate.Add( 0 );
+                            }
+                            personEntry.Audience.Add( person.Audience );
+                            personEntry.Hours.Add( person.Hours );
+                            personEntry.Male.Add( person.Male );
+                            personEntry.Female.Add( person.Female );
+                            personEntry.Multistate.Add( person.Multistate );
+
+                            PersonDataPerMonth.Add(personEntry);
+
+                            existingPerson = new Kers.Models.Data.PerPersonActivities();
+                            existingPerson.Audience = person.Audience;
+                            existingPerson.Female = person.Female;
+                            existingPerson.Hours = person.Hours;
+                            existingPerson.KersUser = person.KersUser;
+                            existingPerson.Male = person.Male;
+                            existingPerson.Multistate = person.Multistate;
+                            existingPerson.OptionNumberValues = person.OptionNumberValues;
+                            existingPerson.RaceEthnicityValues = person.RaceEthnicityValues;
+                            returnList.Add(existingPerson);
+
+                        }else{
+                            existingPerson.Audience += person.Audience;
+                            existingPerson.Female += person.Female;
+                            existingPerson.Hours += person.Hours;
+                            existingPerson.Male += person.Male;
+                            existingPerson.Multistate += person.Multistate;
+                            existingPerson.OptionNumberValues.AddRange( person.OptionNumberValues );
+                            existingPerson.RaceEthnicityValues.AddRange(person.RaceEthnicityValues);
+
+                            var personEntry = PersonDataPerMonth.Where( p => p.KersUser == person.KersUser ).First();
+                            personEntry.Audience.Add(person.Audience);
+                            personEntry.Female.Add(person.Female);
+                            personEntry.Hours.Add(person.Hours);
+                            personEntry.Male.Add(person.Male);
+                            personEntry.Multistate.Add(person.Multistate);
+
+                        }
+                    }
+                    foreach( var inPerson in PersonDataPerMonth ){
+                        if(  !month.Where( m => m.KersUser == inPerson.KersUser ).Any()){
+                            inPerson.Audience.Add( 0 );
+                            inPerson.Male.Add( 0 );
+                            inPerson.Female.Add( 0 );
+                            inPerson.Hours.Add(0);
+                            inPerson.Multistate.Add(0);
+                        }
+                    }
+                //}
+                currentMonthNum++;
+            }
+
+            PersonDataPerMonth = PersonDataPerMonth
+                                    .Where( p => p.KersUser != null ).ToList();
+
+            ViewData["AllPersonssData"] = PersonDataPerMonth.OrderByDescending( p => p.Audience.Sum(s => s)).ToList();
+           
+            var PersonsGendersGraphDataList = new List<string>();
+            foreach( var thePerson in PersonDataPerMonth ){
+                PersonsGendersGraphDataList.Add(" ["+thePerson.Female.Sum(s => s)+", "+thePerson.Male.Sum(s => s)+", \""+thePerson.KersUser.PersonalProfile.FirstName + " " + thePerson.KersUser.PersonalProfile.LastName +"\"]");
+            }
+            ViewData["ProgramsGendersGraphDataList"] = "[" + string.Join(",", PersonsGendersGraphDataList.ToArray() ) + "]";
+
+            PersonDataPerMonth = PersonDataPerMonth
+                                    .OrderByDescending( p => p.Audience.Sum(s => s))
+                                    .Take(5)
+                                    .OrderBy(p => p.KersUser.PersonalProfile.FirstName )
+                                    .ToList();
+
+            
+            var PersonsListOfStrings = new List<string>();
+            var PrersonsHoursGraphDataList = new List<string>();
+            var PersonsContactsByProgramSeries = new List<string>();
+            var PersonLength = 15;
+            foreach(var thePerson in PersonDataPerMonth ){
+                var name = thePerson.KersUser.PersonalProfile.FirstName + " " + thePerson.KersUser.PersonalProfile.LastName;
+                var shortenedPersonName = (name.Length > PersonLength ? name.Substring(0, PersonLength) + "..." : name);
+                PersonsListOfStrings.Add( "\"" + shortenedPersonName + "\"" );
+                PersonsContactsByProgramSeries.Add("{ name: \""+shortenedPersonName+"\", type: \"bar\", data: [" + string.Join(",", thePerson.Audience.Select(n => n.ToString()).ToArray())+"],}");
+                PrersonsHoursGraphDataList.Add("{ name: \""+shortenedPersonName+"\", type: \"line\", smooth: !0, itemStyle: { normal: { areaStyle: { type: \"default\" } } }, data: [" + string.Join(",", thePerson.Hours.Select(n => n.ToString()).ToArray())+"]  }");
+            }
+
+            ViewData["personssForTheLegend"] = "[" + string.Join(",", PersonsListOfStrings.ToArray() ) + "]";
+            ViewData["PrersonsHoursGraphDataList"] = "[" + string.Join(",", PrersonsHoursGraphDataList.ToArray() ) + "]";
+
+            ViewData["PersonsContactsByProgramSeries"] = "[" + string.Join(",", PersonsContactsByProgramSeries.ToArray() ) + "]";
+
+            ViewData["PersonDataPerMonth"] = PersonDataPerMonth;
+
+
+
+
+
+
+
+
+
+
+            
+            return View(output);
         }
 
 
@@ -864,6 +1050,16 @@ namespace Kers.Controllers.Reports
 
     public class ProgramDataPerMonth{
         public MajorProgram MajorProgram;
+        public List<float> Hours;
+        public List<int> Audience;
+        public List<int> Male;
+        public List<int> Female;
+        public List<float> Multistate;
+
+    }
+
+    public class PersonDataPerMonth{
+        public KersUser KersUser;
         public List<float> Hours;
         public List<int> Audience;
         public List<int> Male;
