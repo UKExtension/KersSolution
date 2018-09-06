@@ -1,7 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    ViewData["Title"] = "Impacts";
-    ViewData["Subtitle"] = "Kentucky Extension";  
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    ViewData["Title"] = "Statistical Contact Report for FY" + FiscalYear.Name;
+    ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");  
 
 
     var topPrograms = ViewData["TopPrograms"] as List<Kers.Models.ViewModels.ProgramDataViewModel>; 
@@ -19,7 +20,7 @@
     dataAsString += "]";
 
 }
-@await Html.PartialAsync("TopStatsPartial")
+@await Html.PartialAsync("TopStatsFiscalYearPartial")
 
 <div class="row">
   <div class="col-md-8 col-sm-8 col-xs-12">

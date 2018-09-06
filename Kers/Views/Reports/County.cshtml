@@ -17,8 +17,9 @@
     }
     programNamesAsString += "]";
     dataAsString += "]";
+
 }
-@await Html.PartialAsync("TopStatsPartial")
+@await Html.PartialAsync("TopStatsFiscalYearPartial")
 <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
     <li role="presentation" class="active"><a asp-controller="Reports"  asp-action="County" asp-route-fy="@FiscalYear.Name" asp-route-id=@conty.Id>Summary</a>
     </li>

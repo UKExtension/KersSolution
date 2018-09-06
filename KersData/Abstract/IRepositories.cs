@@ -78,6 +78,12 @@ namespace Kers.Models.Abstract
         // grouppedBy: 0 Employee, 1 MajorProgram
         /*******************************************************************/
         Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 2 );
+        /***********************************************************************************************/
+        // Generate Contacts Reports Groupped by Employee or Major Program
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // Returns List with Indexes: 0 Total Hours, 1 Contacts, 2 Multistate Hours, 3 Number of Activities
+        /***********************************************************************************************/
+        Task<List<float>> GetPerPeriodSummaries( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 2 );
     
     }
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}

@@ -46,8 +46,28 @@ namespace Kers.Controllers.Reports
             this.fiscalYearRepo = fiscalYearRepo;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        [Route("{fy?}")]
+        public async Task<IActionResult> Index(string fy="0")
         {
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            ViewData["FiscalYear"] = fiscalYear;
+
+            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 4, 0, false, 100);
+            float[] SummariesArray = fiscalYearSummaries.ToArray();
+
+                        ViewData["totalHours"] = SummariesArray[0];
+            ViewData["totalContacts"] = (int) SummariesArray[1];
+            ViewData["totalMultistate"] = SummariesArray[2];
+            ViewData["totalActivities"] = (int) SummariesArray[3];
+
+
+
+
             var StatsLastMonth = await contactRepo.StatsPerMonth();
             ViewData["StatsLastMonth"] = StatsLastMonth;
             DateTime ago = DateTime.Now.AddMonths(-2);
@@ -85,6 +105,16 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
+
+
+            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 1, id, false, 100);
+            float[] SummariesArray = fiscalYearSummaries.ToArray();
+
+            ViewData["totalHours"] = SummariesArray[0];
+            ViewData["totalContacts"] = (int) SummariesArray[1];
+            ViewData["totalMultistate"] = SummariesArray[2];
+            ViewData["totalActivities"] = (int) SummariesArray[3];
+            
 
             ViewData["County"] = await this.context
                                 .PlanningUnit.Where( p => p.Id == id )

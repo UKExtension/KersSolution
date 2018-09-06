@@ -193,6 +193,96 @@ namespace Kers.Models.Repositories
             return stats;
         }
 
+
+
+        /***********************************************************************************************/
+        // Generate Contacts Reports Groupped by Employee or Major Program
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // Returns List with Indexes: 0 Total Hours, 1 Contacts, 2 Multistate Hours, 3 Number of Activities
+        /***********************************************************************************************/
+        public async Task<List<float>> GetPerPeriodSummaries( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 2 ){
+            
+
+            var cacheKey = CacheKeys.FilteredContactSummaries + filter.ToString() + id.ToString() + "_" + start.ToString("s") + end.ToString("s");
+            var cachedTypes = await _cache.GetStringAsync(cacheKey);
+            List<float> result;
+            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
+                result = JsonConvert.DeserializeObject<List<float>>(cachedTypes);
+            }else{
+
+                float TotalHours = 0;
+                int TotalContacts = 0;
+                float TotalMultistate = 0;
+                int TotalNumActivities = 0;
+
+                var activities = this.coreContext.Activity.Where( a => a.ActivityDate < end && a.ActivityDate > start );
+                if( filter ==  0 ){
+                    activities = activities.Where( a => a.PlanningUnit.District != null && a.PlanningUnit.District.Id == id );
+                }else if( filter == 1 ){
+                    activities = activities.Where( a => a.PlanningUnitId == id );
+                }else if( filter == 2 ){
+                    activities = activities.Where( a => a.KersUser.RprtngProfile.Institution.Code == "21000-1890");
+                }else if( filter == 3 ){
+                    activities = activities.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890");
+                }
+
+                var activitiesCount = activities.CountAsync();
+                foreach( var activity in activities ){
+                    var lastRev = await coreContext.ActivityRevision.Where( a => a.ActivityId == activity.Id )
+                                        .OrderBy( r => r.Created ).LastAsync();
+                    var lastRevFull = await coreContext.ActivityRevision.Where( a => a.Id == lastRev.Id )
+                                                .Include( a => a.ActivityOptionSelections ).ThenInclude( s => s.ActivityOption)
+                                                .FirstOrDefaultAsync();
+                    if( lastRevFull.ActivityOptionSelections.Where( s => s.ActivityOption.Name == "Multistate effort?").Any()){
+                        TotalMultistate += lastRevFull.Hours;
+                    }
+                    
+                    TotalHours += activity.Hours;
+                    TotalContacts += activity.Audience;
+                }
+
+                var contacts = this.coreContext.Contact.Where( a => a.ContactDate < end && a.ContactDate > start );
+                if( filter ==  0 ){
+                    contacts = contacts.Where( a => a.PlanningUnit.District != null && a.PlanningUnit.District.Id == id );
+                }else if( filter == 1 ){
+                    contacts = contacts.Where( a => a.PlanningUnitId == id );
+                }else if( filter == 2 ){
+                    contacts = contacts.Where( a => a.KersUser.RprtngProfile.Institution.Code == "21000-1890");
+                }else if( filter == 3 ){
+                    contacts = contacts.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890");
+                }
+
+                var contactsCount = contacts.CountAsync();
+
+                foreach( var contact in contacts ){
+                    var lastRev = await coreContext.ContactRevision.Where( a => a.ContactId == contact.Id )
+                                        .OrderBy( r => r.Created ).LastAsync();
+                    TotalMultistate += lastRev.Multistate;
+                    TotalHours += contact.Days * 8;
+                    TotalContacts += contact.Audience;
+                }
+
+                TotalNumActivities = await activitiesCount;
+                TotalNumActivities += await contactsCount;
+                result = new List<float>();
+                result.Add(TotalHours);
+                result.Add(TotalContacts);
+                result.Add(TotalMultistate);
+                result.Add(TotalNumActivities);
+
+                var serialized = JsonConvert.SerializeObject(result);
+                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
+                    });
+
+
+            }
+            return result;
+        }
+
+
+
         /*****************************************************************/
         // Generate Contacts Reports Groupped by Employee or Major Program
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
