@@ -252,7 +252,7 @@ namespace Kers.Models.Repositories
                     contacts = contacts.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890");
                 }
 
-                var contactsCount = contacts.CountAsync();
+                
 
                 foreach( var contact in contacts ){
                     var lastRev = await coreContext.ContactRevision.Where( a => a.ContactId == contact.Id )
@@ -263,6 +263,7 @@ namespace Kers.Models.Repositories
                 }
                 var activitiesCount = activities.CountAsync();
                 TotalNumActivities = await activitiesCount;
+                var contactsCount = contacts.CountAsync();
                 TotalNumActivities += await contactsCount;
                 result = new List<float>();
                 result.Add(TotalHours);
