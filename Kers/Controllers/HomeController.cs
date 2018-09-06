@@ -86,6 +86,10 @@ namespace Kers.Controllers
                     usr =  this.mContext.zEmpRptProfiles.OrderBy( i => Guid.NewGuid() ).FirstOrDefault();
                     loginViewModel.Username = usr.linkBlueID;
                 }else{
+                    var length = loginViewModel.Username.Length;
+                    if( length > 8 && loginViewModel.Username.Substring( length - 8, 8) == "@uky.edu"){
+                        loginViewModel.Username = loginViewModel.Username.Substring( 0, length - 8 );
+                    }
                     usr = mContext.zEmpRptProfiles.Where(p => p.linkBlueID == loginViewModel.Username).FirstOrDefault();
                     if(usr == null){
                         noProfileUser = mContext.SAP_HR_ACTIVE.Where(u=>u.Userid == loginViewModel.Username).FirstOrDefault();
@@ -168,8 +172,16 @@ namespace Kers.Controllers
             client.DefaultRequestHeaders.Accept.Clear();
             String uri = "https://kers.ca.uky.edu/kers_mobile/Handler.ashx";
 
+            var length = loginViewModel.Username.Length;
+            var username = loginViewModel.Username;
+            if( length > 8 && loginViewModel.Username.Substring( length - 8, 8) == "@uky.edu"){
+                username = username.Substring( 0, length - 8 );
+            }
+
+
+
             Dictionary<string, string> pairs = new Dictionary<string,string>();
-            pairs.Add("username", loginViewModel.Username);
+            pairs.Add("username", username);
             pairs.Add("password", loginViewModel.Password);
             FormUrlEncodedContent formContent = new FormUrlEncodedContent(pairs);
 
