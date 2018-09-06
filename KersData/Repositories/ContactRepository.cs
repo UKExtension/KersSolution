@@ -226,7 +226,7 @@ namespace Kers.Models.Repositories
                     activities = activities.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890");
                 }
 
-                var activitiesCount = activities.CountAsync();
+                
                 foreach( var activity in activities ){
                     var lastRev = await coreContext.ActivityRevision.Where( a => a.ActivityId == activity.Id )
                                         .OrderBy( r => r.Created ).LastAsync();
@@ -261,7 +261,7 @@ namespace Kers.Models.Repositories
                     TotalHours += contact.Days * 8;
                     TotalContacts += contact.Audience;
                 }
-
+                var activitiesCount = activities.CountAsync();
                 TotalNumActivities = await activitiesCount;
                 TotalNumActivities += await contactsCount;
                 result = new List<float>();
