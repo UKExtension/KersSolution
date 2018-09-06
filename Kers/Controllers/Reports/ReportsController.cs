@@ -80,9 +80,14 @@ namespace Kers.Controllers.Reports
             return View();
         }
         [HttpGet]
-        [Route("counties")]
-        public async Task<IActionResult> Counties()
+        [Route("counties/{fy?}")]
+        public async Task<IActionResult> Counties(string fy="0")
         {
+            FiscalYear fiscalYear = GetFYByName(fy);
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            ViewData["FiscalYear"] = fiscalYear;
             var counties = await this.context.PlanningUnit.
                                 Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
                                 Include( c => c.District).

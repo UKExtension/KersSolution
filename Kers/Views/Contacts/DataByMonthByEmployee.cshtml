@@ -32,7 +32,7 @@
     var GraphLinks = ViewData["GraphLinks"] as string;
 
 }
-@model List<List<Kers.Models.Data.PerPersonActivities>>
+@model Kers.Models.ViewModels.TableViewModel
 
 @if( unit != null )
 {
@@ -147,6 +147,22 @@ else if( district != null)
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="x_title">
+                <h2>Statistical Contacts Data</h2>
+                
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+            @Html.Partial("TablePartial")
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
 
 
 @section scripts
@@ -240,47 +256,17 @@ else if( district != null)
     var GraphCategories = [{ name: "Employees"}, { name: "Major Programs"}, { name: "Success Stories"}];
 
     options[2] = {
-        color: @Html.Raw(colors),
-        tooltip: {
-            formatter: function(x) {
-                if(x.dataType == 'node'){
-                    return x.marker + ' ' + x.data.name + '<br>' + x.data.value;
-                }else{
-                    return x.data.source + '<br>' + x.data.target;
-                }
-                    
-            }
-        },
-        legend: {
-            // selectedMode: 'single',
-            data: GraphCategories.map(function (a) {
-                return a.name;
-            })
-        },
-        animationDurationUpdate: 1500,
-        animationEasingUpdate: 'quinticInOut',
-        series: [{
-            type: 'graph',
-            layout: 'circular',
-            circular: {
-                    rotateLabel: true
-            },
-            categories: GraphCategories,
-            data: @Html.Raw(GraphData),
-            links: @Html.Raw(GraphLinks),
-            label: {
-                normal: {
-                    show: true,
-                    textStyle: {}
-                }
-            },
-            lineStyle: {
-                normal: {
-                    color: 'source',
-                    curveness: 0.3
-                }
-            }
-        }]
+    xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line'
+    }]
     };
     
     

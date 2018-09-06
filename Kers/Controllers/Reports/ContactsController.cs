@@ -683,7 +683,7 @@ namespace Kers.Controllers.Reports
 
 
 
-
+            var table = await contactRepo.DataByEmployee(fiscalYear, 1, id);
 
 
 
@@ -691,7 +691,7 @@ namespace Kers.Controllers.Reports
 
 
             
-            return View(output);
+            return View(table);
         }
 
 

@@ -1,6 +1,7 @@
 @model List<Kers.Controllers.Reports.DistrictViewModel>
 
 @{
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "Counties";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
@@ -25,7 +26,7 @@
                         @foreach( var county in district.Counties)
                         {
                         <a asp-controller="Reports" 
-   asp-action="County" 
+   asp-action="County" asp-route-fy="@FiscalYear.Name" 
    asp-route-id="@county.Id" class="btn btn-default">@county.Name.Substring(0, county.Name.Length - 11)</a>
                         
                         }
