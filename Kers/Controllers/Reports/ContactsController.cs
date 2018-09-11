@@ -76,6 +76,7 @@ namespace Kers.Controllers.Reports
             }
 
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             var table = await contactRepo.DataByEmployee(fiscalYear, 4);
             return View(table);
         }
@@ -104,6 +105,7 @@ namespace Kers.Controllers.Reports
             }
             var table = await contactRepo.DataByMajorProgram(fiscalYear, repoType);
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             return View(table);
         }
 
@@ -121,6 +123,7 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             var table = await activityRepo.ContactsByCountyByMajorProgram(fiscalYear);
             return View(table);
         }
@@ -140,7 +143,15 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
 
+            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, filter, id);
+            float[] SummariesArray = fiscalYearSummaries.ToArray();
+
+            ViewData["totalHours"] = SummariesArray[0];
+            ViewData["totalContacts"] = (int) SummariesArray[1];
+            ViewData["totalMultistate"] = SummariesArray[2];
+            ViewData["totalActivities"] = (int) SummariesArray[3];
 
             if( filter == 1 ){
                 ViewData["unit"] = context.PlanningUnit.Where( u => u.Id == id ).FirstOrDefault();
@@ -166,10 +177,7 @@ namespace Kers.Controllers.Reports
             var hours = new List<string>();
             var runningDate = new DateTime( fiscalYear.Start.Year, fiscalYear.Start.Month, 28);
 
-            float totalHours = 0;
-            int totalContacts = 0;
-            float totalMultistate = 0;
-            int totalActivities = 0;
+
             foreach( var MonthResult in result){
                 var MonthData = new List<Kers.Models.Data.PerProgramActivities>();
                 months.Add( "'" + runningDate.ToString("MM/yyyy") + "'");
@@ -186,18 +194,10 @@ namespace Kers.Controllers.Reports
                     ProgramActivities.OptionNumberValues = res.OptionNumberValues;
                     ProgramActivities.RaceEthnicityValues = res.RaceEthnicityValues;
                     MonthData.Add( ProgramActivities );
-                    totalHours += res.Hours;
-                    totalContacts += res.Audience;
-                    totalMultistate += res.Multistate;
-                    totalActivities ++;
-
                 }
                 output.Add(MonthData);
             }
-            ViewData["totalHours"] = totalHours;
-            ViewData["totalContacts"] = totalContacts;
-            ViewData["totalMultistate"] = totalMultistate;
-            ViewData["totalActivities"] = totalActivities;
+
 
 
             var monthsString = "[" + months.Aggregate((i, j) => i  + "," +  j) + "]";
@@ -322,12 +322,6 @@ namespace Kers.Controllers.Reports
             ViewData["ProgramDataPerMonth"] = ProgramDataPerMonth;
 
 
-
-
-
-
-
-            
 
             var FilteredActivities = context.Activity.Where( a => 
                                                                     a.ActivityDate > fiscalYear.Start
@@ -499,14 +493,17 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
 
-            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 4, id, false, 100);
+            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, filter, id);
             float[] SummariesArray = fiscalYearSummaries.ToArray();
 
             ViewData["totalHours"] = SummariesArray[0];
             ViewData["totalContacts"] = (int) SummariesArray[1];
             ViewData["totalMultistate"] = SummariesArray[2];
             ViewData["totalActivities"] = (int) SummariesArray[3];
+
+
             if( filter == 1 ){
                 ViewData["unit"] = context.PlanningUnit.Where( u => u.Id == id ).FirstOrDefault();
                 if(ViewData["unit"] == null){
@@ -784,6 +781,7 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> Person()
         {
             FiscalYear fiscalYear = GetFYByName("2018");
+            ViewData["fy"] = fiscalYear.Name;
             //Get All Data for the fy by employee
             var result = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End,4);
 
@@ -1003,7 +1001,7 @@ namespace Kers.Controllers.Reports
             }
             table.Rows = Rows;
             table.Foother = new List<string>();
-
+            ViewData["fy"] = fiscalYear.Name;
             return View(table);
         }
 

@@ -35,67 +35,6 @@ namespace Kers.Models.Repositories
         }
 
 
-        
-
-
-        public List<PerProgramActivities> ProcessMajorProgramContacts(List<ContactMajorProgramResult> contacts, List<PerProgramActivities> result, IDistributedCache _cache){
-            foreach( var contactGroup in contacts ){
-                    var unitRevisions = new List<ContactRevision>();
-                    var OptionNumbers = new List<IOptionNumberValue>();
-                    var RaceEthnicities = new List<IRaceEthnicityValue>();
-                    foreach( var rev in contactGroup.Ids){
-
-                        var cacheKey = "ContactLastRevision" + rev.ToString();
-
-                        var cacheString = _cache.GetString(cacheKey);
-                    
-                        ContactRevision lstrvsn;
-                        if (!string.IsNullOrEmpty(cacheString)){
-                            lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(cacheString);
-                        }else{
-                            lstrvsn = coreContext.ContactRevision.
-                                    Where(r => r.ContactId == rev).
-                                    Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
-                                    Include(a => a.ContactRaceEthnicityValues).
-                                    OrderBy(a => a.Created).Last();
-                            unitRevisions.Add(lstrvsn);
-                            OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
-                            RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
-
-                            var serialized = JsonConvert.SerializeObject(lstrvsn);
-                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
-                            });         
-                        }
-                    }
-                    var unitInResults = result.Where( r => r.MajorProgram.Id == contactGroup.MajorProgram.Id).FirstOrDefault();
-                    if(unitInResults == null){
-                        var actvts = new PerProgramActivities();
-                        actvts.RaceEthnicityValues = RaceEthnicities;
-                        actvts.OptionNumberValues = OptionNumbers;
-                        actvts.Hours = unitRevisions.Sum( r => r.Days) * 8;
-                        actvts.Audience = unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
-                        actvts.Male = unitRevisions.Sum( r => r.Male);
-                        actvts.Female = unitRevisions.Sum( r => r.Female);
-                        actvts.MajorProgram = contactGroup.MajorProgram;
-                        actvts.Multistate = unitRevisions.Sum(r => r.Multistate) * 8;
-                        result.Add(actvts);
-                    }else{
-                        unitInResults.RaceEthnicityValues.AddRange(RaceEthnicities);
-                        unitInResults.OptionNumberValues.AddRange(OptionNumbers);
-                        unitInResults.Hours += unitRevisions.Sum( r => r.Days) * 8;
-                        unitInResults.Audience += unitRevisions.Sum( r => r.Male) + unitRevisions.Sum( r => r.Female);
-                        unitInResults.Male = unitRevisions.Sum( r => r.Male);
-                        unitInResults.Female = unitRevisions.Sum( r => r.Female);
-                        unitInResults.Multistate += unitRevisions.Sum(r => r.Multistate) * 8;
-                    }
-                }
-            return result;
-        }
-
-
-
         public async Task<StatsViewModel> StatsPerMonth( int year = 0, int month = 0, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false )
         {
             // If not month or year is provided, get the last month
@@ -200,7 +139,7 @@ namespace Kers.Models.Repositories
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
         // Returns List with Indexes: 0 Total Hours, 1 Contacts, 2 Multistate Hours, 3 Number of Activities
         /***********************************************************************************************/
-        public async Task<List<float>> GetPerPeriodSummaries( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 2 ){
+        public async Task<List<float>> GetPerPeriodSummaries( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
             
 
             var cacheKey = CacheKeys.FilteredContactSummaries + filter.ToString() + id.ToString() + "_" + start.ToString("s") + end.ToString("s");
@@ -209,62 +148,48 @@ namespace Kers.Models.Repositories
             if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
                 result = JsonConvert.DeserializeObject<List<float>>(cachedTypes);
             }else{
-
                 float TotalHours = 0;
                 int TotalContacts = 0;
                 float TotalMultistate = 0;
                 int TotalNumActivities = 0;
-
-                var activities = this.coreContext.Activity.Where( a => a.ActivityDate < end && a.ActivityDate > start );
-                if( filter ==  0 ){
-                    activities = activities.Where( a => a.PlanningUnit.District != null && a.PlanningUnit.District.Id == id );
-                }else if( filter == 1 ){
-                    activities = activities.Where( a => a.PlanningUnitId == id );
-                }else if( filter == 2 ){
-                    activities = activities.Where( a => a.KersUser.RprtngProfile.Institution.Code == "21000-1890");
-                }else if( filter == 3 ){
-                    activities = activities.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890");
+                var revs = await this.LastActivityRevisionIds(start, end, filter, id );
+                // Divide revs into batches as SQL server is having trouble to process more then several thousands at once
+                var FilteredActivities = new List<ActivityRevision>();
+                var batchCount = 10000;
+                for(var i = 0; i <= revs.Count(); i += batchCount){
+                    var currentBatch = revs.Skip(i).Take(batchCount);
+                    FilteredActivities.AddRange(  await coreContext.ActivityRevision
+                                            .Where( r => currentBatch.Contains( r.Id ))
+                                            .Include( a => a.ActivityOptionSelections ).ThenInclude( s => s.ActivityOption)
+                                            .ToListAsync()
+                                        );
                 }
-
-                
-                foreach( var activity in activities ){
-                    var lastRev = await coreContext.ActivityRevision.Where( a => a.ActivityId == activity.Id )
-                                        .OrderBy( r => r.Created ).LastAsync();
-                    var lastRevFull = await coreContext.ActivityRevision.Where( a => a.Id == lastRev.Id )
-                                                .Include( a => a.ActivityOptionSelections ).ThenInclude( s => s.ActivityOption)
-                                                .FirstOrDefaultAsync();
-                    if( lastRevFull.ActivityOptionSelections.Where( s => s.ActivityOption.Name == "Multistate effort?").Any()){
-                        TotalMultistate += lastRevFull.Hours;
+                foreach( var activity in FilteredActivities ){
+                    if( activity.ActivityOptionSelections.Where( s => s.ActivityOption.Name == "Multistate effort?").Any()){
+                        TotalMultistate += activity.Hours;
                     }
                     
                     TotalHours += activity.Hours;
-                    TotalContacts += activity.Audience;
+                    TotalContacts += activity.Male + activity.Female;
                 }
 
-                var contacts = this.coreContext.Contact.Where( a => a.ContactDate < end && a.ContactDate > start );
-                if( filter ==  0 ){
-                    contacts = contacts.Where( a => a.PlanningUnit.District != null && a.PlanningUnit.District.Id == id );
-                }else if( filter == 1 ){
-                    contacts = contacts.Where( a => a.PlanningUnitId == id );
-                }else if( filter == 2 ){
-                    contacts = contacts.Where( a => a.KersUser.RprtngProfile.Institution.Code == "21000-1890");
-                }else if( filter == 3 ){
-                    contacts = contacts.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890");
+                var contactRevs = await this.LastContactRevisionIds(start, end, filter, id );
+                var FilteredContacts = new List<ContactRevision>();
+                for(var i = 0; i <= contactRevs.Count(); i += batchCount){
+                    var currentBatch = contactRevs.Skip(i).Take(batchCount);
+                    FilteredContacts.AddRange(  await coreContext.ContactRevision
+                                            .Where( r => currentBatch.Contains( r.Id ))
+                                            .ToListAsync()
+                                        );
                 }
 
-                
-
-                foreach( var contact in contacts ){
-                    var lastRev = await coreContext.ContactRevision.Where( a => a.ContactId == contact.Id )
-                                        .OrderBy( r => r.Created ).LastAsync();
-                    TotalMultistate += lastRev.Multistate;
+                foreach( var contact in FilteredContacts ){
                     TotalHours += contact.Days * 8;
-                    TotalContacts += contact.Audience;
+                    TotalContacts += contact.Male + contact.Female;
+                    TotalMultistate += contact.Multistate * 8;
                 }
-                var activitiesCount = activities.CountAsync();
-                TotalNumActivities = await activitiesCount;
-                var contactsCount = contacts.CountAsync();
-                TotalNumActivities += await contactsCount;
+                TotalNumActivities = revs.Count;
+                TotalNumActivities += contactRevs.Count();
                 result = new List<float>();
                 result.Add(TotalHours);
                 result.Add(TotalContacts);
@@ -272,6 +197,17 @@ namespace Kers.Models.Repositories
                 result.Add(TotalNumActivities);
 
                 var serialized = JsonConvert.SerializeObject(result);
+
+                // If keep cache is not specified, figure it out depending on the past or current period
+                if( keepCacheInDays == 0 ){
+                    if( end < DateTime.Now ){
+                        keepCacheInDays = 200;
+                    }else{
+                        keepCacheInDays = 3;
+                    }
+                }
+
+
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
@@ -1368,6 +1304,105 @@ namespace Kers.Models.Repositories
                 }
             }
             return result;
+        }
+
+
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Major Program, 6 Employee
+        public async Task<List<int>> LastActivityRevisionIds( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
+            var cacheKey = CacheKeys.ActivityLastRevisionIdsPerPeriod + filter.ToString() + "_" + id.ToString() + start.ToString("s") + end.ToString("s");
+            var cacheString = await _cache.GetStringAsync(cacheKey);
+            List<int> ids;
+            if (!string.IsNullOrEmpty(cacheString)){
+                ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
+            }else{
+                ids = new List<int>();
+                var activities = coreContext.Activity.
+                    Where(r => r.ActivityDate > start && r.ActivityDate < end);
+                if( filter ==  0 ){
+                    activities = activities.Where( a => a.PlanningUnit.District != null && a.PlanningUnit.District.Id == id );
+                }else if( filter == 1 ){
+                    activities = activities.Where( a => a.PlanningUnitId == id );
+                }else if( filter == 2 ){
+                    activities = activities.Where( a => a.KersUser.RprtngProfile.Institution.Code == "21000-1890");
+                }else if( filter == 3 ){
+                    activities = activities.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890");
+                }else if( filter == 5 ){
+                    activities = activities.Where( a => a.MajorProgramId == id);
+                }else if( filter == 6 ){
+                    activities = activities.Where( a => a.KersUserId == id);
+                }
+                activities = activities.Include( r => r.Revisions);
+                foreach( var actvt in activities){
+                    var rev = actvt.Revisions.OrderBy( r => r.Created );
+                    var last = rev.Last();
+                    ids.Add(last.Id);
+                }
+                    
+                var serialized = JsonConvert.SerializeObject(ids);
+
+                // If keep cache is not specified, figure it out depending on the past or current period
+                if( keepCacheInDays == 0 ){
+                    if( end < DateTime.Now ){
+                        keepCacheInDays = 200;
+                    }else{
+                        keepCacheInDays = 3;
+                    }
+                }
+                await _cache.SetStringAsync(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
+                    });
+            }
+            return ids;
+        }
+
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Major Program, 6 Employee
+        public async Task<List<int>> LastContactRevisionIds( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
+            var cacheKey = CacheKeys.ContactsLastRevisionIdsPerPeriod + filter.ToString() + "_" + id.ToString() + start.ToString("s") + end.ToString("s");
+            var cacheString = await _cache.GetStringAsync(cacheKey);
+            List<int> ids;
+            if (!string.IsNullOrEmpty(cacheString)){
+                ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
+            }else{
+                ids = new List<int>();
+                var contacts = coreContext.Contact.
+                    Where(r => r.ContactDate > start && r.ContactDate < end);
+                if( filter ==  0 ){
+                    contacts = contacts.Where( a => a.PlanningUnit.District != null && a.PlanningUnit.District.Id == id );
+                }else if( filter == 1 ){
+                    contacts = contacts.Where( a => a.PlanningUnitId == id );
+                }else if( filter == 2 ){
+                    contacts = contacts.Where( a => a.KersUser.RprtngProfile.Institution.Code == "21000-1890");
+                }else if( filter == 3 ){
+                    contacts = contacts.Where( a => a.KersUser.RprtngProfile.Institution.Code != "21000-1890");
+                }else if( filter == 5 ){
+                    contacts = contacts.Where( a => a.MajorProgramId == id);
+                }else if( filter == 6 ){
+                    contacts = contacts.Where( a => a.KersUserId == id);
+                }
+                contacts = contacts.Include( r => r.Revisions);
+                foreach( var cntct in contacts){
+                    var rev = cntct.Revisions.OrderBy( r => r.Created );
+                    var last = rev.Last();
+                    ids.Add(last.Id);
+                }
+                    
+                var serialized = JsonConvert.SerializeObject(ids);
+
+                // If keep cache is not specified, figure it out depending on the past or current period
+                if( keepCacheInDays == 0 ){
+                    if( end < DateTime.Now ){
+                        keepCacheInDays = 200;
+                    }else{
+                        keepCacheInDays = 3;
+                    }
+                }
+                await _cache.SetStringAsync(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
+                    });
+            }
+            return ids;
         }
 
 

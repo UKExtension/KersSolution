@@ -58,9 +58,12 @@ namespace Kers.Controllers.Reports
                 fiscalYear = currentFiscalYear;
             }else{
                 fiscalYear = await context.FiscalYear.FindAsync( fy );
+                if( fiscalYear == null ){
+                    this.fiscalYearRepository.previoiusFiscalYear("serviceLog");
+                }
             }
 
-
+            ViewData["fy"] = fiscalYear.Name;
             var initiatives = await context.StrategicInitiative.Where( i => i.FiscalYear == fiscalYear)
                                 .Include( i => i.MajorPrograms )
                                 .ToListAsync();

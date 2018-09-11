@@ -75,6 +75,7 @@ namespace Kers.Controllers.Reports
             }
 
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             var table = await contactRepo.DataByMajorProgram(fiscalYear, type == 1 ? 0 : type, id);
 
     

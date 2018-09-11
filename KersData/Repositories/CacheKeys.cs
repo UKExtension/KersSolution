@@ -7,6 +7,8 @@ namespace Kers.Models.Repositories
         
         
         public static string ActivityLastRevisionIdsPerFiscalYear = "ActivityLastRevisionIdsPerFiscalYear";
+        public static string ActivityLastRevisionIdsPerPeriod = "ActivityLastRevisionIdsPerPeriod";
+        public static string ContactsLastRevisionIdsPerPeriod = "ContactsLastRevisionIdsPerPeriod";
         public static string ActivityLastRevision = "ActivityLastRevision";
         public static string ContactLastRevision = "ContactLastRevision";
         public static string LastStoryRevisionIds = "LastStoryRevisionIds";

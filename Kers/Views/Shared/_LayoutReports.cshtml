@@ -1,3 +1,9 @@
+@{
+    var fy = ViewData["fy"] as string;
+    if( fy == "0"){
+      fy = "2018";
+    }
+}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -144,7 +150,13 @@
 
 
                       </nav> <!-- /#main-menu -->
-                              </div>
+                    
+              <div class="row">
+                <div class="col-xs-12 text-right fiscal-year-switcher">
+                  @await Component.InvokeAsync("FiscalYearSwitcher", new { selected = @ViewData["fy"], showNext = false, showDetails = true })
+                </div>
+              </div>
+              </div>
             </div>
           </div>
       </div>
@@ -156,7 +168,7 @@
 
     <div class="container-fluid" style="padding: 0 40px;">
         <div class="x_title"><br>
-            <h2>@ViewData["Title"] <small>@ViewData["Subtitle"]</small></h2>
+            <h2>@ViewData["Title"]<small>@ViewData["Subtitle"]</small></h2>
             <ul class="nav navbar-right panel_toolbox">
                 
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
@@ -179,6 +191,7 @@
             
             <div class="clearfix"></div>
         </div>
+        
         @RenderBody()
     </div>
 

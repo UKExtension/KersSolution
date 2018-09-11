@@ -121,7 +121,7 @@ namespace Kers.Controllers.Reports
                     new Exception("No Fiscal Year with Provided Identifier.");
                 }
             }
-            
+            ViewData["fy"] = fiscalYear.Name;
             programs = await this.context.MajorProgram.
                                 Where(m => m.StrategicInitiative.FiscalYear == fiscalYear).
                                 OrderBy(c => c.PacCode).ToListAsync();

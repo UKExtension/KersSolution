@@ -24,7 +24,7 @@ namespace Kers.Controllers.Reports.ViewComponents
         }
         // selected: next, current, previous, [year name]
         // urlString replacement patern {name} | {id} will be replaced with the fiscal year name or id
-        public async Task<IViewComponentResult> InvokeAsync( string type = "serviceLog", string selected = "next", bool showNext = true, string urlString = ""){
+        public async Task<IViewComponentResult> InvokeAsync( string type = "serviceLog", string selected = "next", bool showNext = true, string urlString = "", bool showDetails = false){
             
 
             var FiscalYear = context.FiscalYear.Where( f => f.Type == type);
@@ -32,12 +32,13 @@ namespace Kers.Controllers.Reports.ViewComponents
                 FiscalYear = FiscalYear.Where( y => y.Start <= DateTime.Now );
             }
             ViewData["urlString"] = urlString;
+            ViewData["showDetails"] = showDetails;
 
-            ViewData["selected"] = fiscalYearRepo.currentFiscalYear(type);
+            ViewData["selected"] = fiscalYearRepo.previoiusFiscalYear(type);
             if(selected == "next"){
                 ViewData["selected"] = fiscalYearRepo.nextFiscalYear( type );
-            }else if( selected == "previous"){
-                ViewData["selected"] = fiscalYearRepo.previoiusFiscalYear( type );
+            }else if( selected == "current"){
+                ViewData["selected"] = fiscalYearRepo.currentFiscalYear( type );
             }else{
                 var yearByName = context.FiscalYear.Where( y => y.Name == selected && y.Type == type);
                 if( yearByName.Any() ){

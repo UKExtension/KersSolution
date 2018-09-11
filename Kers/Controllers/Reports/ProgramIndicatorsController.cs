@@ -131,7 +131,7 @@ namespace Kers.Controllers.Reports
                 indicators.Add( intv );
             }
             
-            ViewData["fy"] = fy;
+            ViewData["fy"] = fiscalYear.Name;
             return View(indicators);
         }
 

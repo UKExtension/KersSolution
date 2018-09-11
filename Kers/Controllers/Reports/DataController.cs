@@ -83,6 +83,7 @@ namespace Kers.Controllers.Reports
                 }
             }
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             return View(model);
         }
 
@@ -134,6 +135,7 @@ namespace Kers.Controllers.Reports
             var programs = await this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear == fiscalYear).OrderBy(l => l.order).ToListAsync();
             model.MajorPrograms = programs;
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             return View(model);
         }
 

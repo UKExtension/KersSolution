@@ -81,15 +81,6 @@ svg.uk-lockup--white{
   padding: 0 40px;
 }
 
-
-
-
-
-
-
-
-
-
 .social-icon:before {
     font-family: "cafe-social";
     font-style: normal;
@@ -107,11 +98,13 @@ svg.uk-lockup--white{
     -moz-osx-font-smoothing: grayscale;
     content: attr(data-icon); }
   
-  .uk-toolbar {
-    width: 100%;
-    background: #2C2A29; }
-    .uk-toolbar .col-xs-12 a, .uk-toolbar .col-xs-12 a:visited, .uk-toolbar .col-xs-12 a:focus {
-      color: #FFF; }
+.uk-toolbar {
+  width: 100%;
+  background: #2C2A29; 
+}
+.uk-toolbar .col-xs-12 a, .uk-toolbar .col-xs-12 a:visited, .uk-toolbar .col-xs-12 a:focus {
+  color: #FFF; 
+}
     .uk-toolbar .container .navbar div {
       padding-left: 0;
       padding-right: 0; }
@@ -122,27 +115,28 @@ svg.uk-lockup--white{
     .uk-toolbar .input-append {
       padding: 5px 0px; }
   
-  .links, .links a {
-    font-size: 13px;
-    font-family: "Muli", "Helvetica Neue", Helvetica, sans-serif, sans-serif;
-    line-height: 65px;
-    padding-right: 15px;
-    text-transform: uppercase; }
-    .links:last-of-type, .links a:last-of-type {
-      padding-right: 0; }
-    .links:hover, .links a:hover {
-      text-decoration: none;
-      color: #1897D4; }
-    .links.inline li, .links a.inline li {
-      display: inline-block; }
-  
-  .banner {
-    background-color: #f5f5f5;
-    background-image: url("http://extension.ca.uky.edu/sites/extension.ca.uky.edu/files/styles/cafe_site_banner_2017/public/cafe_site_details_site_header/banner_fence_closeup.jpg?itok=HrsmT3jR");
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    text-shadow: 1px 1px 0px #000, 2px 2px 10px #000; }
+.links, .links a {
+  font-size: 13px;
+  font-family: "Muli", "Helvetica Neue", Helvetica, sans-serif, sans-serif;
+  line-height: 65px;
+  padding-right: 15px;
+  text-transform: uppercase; 
+}
+  .links:last-of-type, .links a:last-of-type {
+    padding-right: 0; }
+  .links:hover, .links a:hover {
+    text-decoration: none;
+    color: #1897D4; }
+  .links.inline li, .links a.inline li {
+    display: inline-block; }
+
+.banner {
+  background-color: #f5f5f5;
+  background-image: url("http://extension.ca.uky.edu/sites/extension.ca.uky.edu/files/styles/cafe_site_banner_2017/public/cafe_site_details_site_header/banner_fence_closeup.jpg?itok=HrsmT3jR");
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-shadow: 1px 1px 0px #000, 2px 2px 10px #000; }
   
   .site-banner {
     padding-left: 0;
@@ -230,20 +224,7 @@ svg.uk-lockup--white{
     line-height: 30px;
     text-shadow: 1px 1px 1px #000;
     margin-left: 5px; }
-  
-  /*
-  @media (min-width:768px) {
-    header.header {
-      height: 185px;
-    }
-    .front header.header {
-      height: 400px;
-    }
-    .front .site-banner {
-      margin-top: -15px;
-    }
-  }
-  */
+
   .uk-global-header {
     background-color: #143887; }
     .uk-global-header .logo-container {
@@ -293,7 +274,8 @@ svg.uk-lockup--white{
   @media (max-width: 768px) {
     .uk-toolbar .links, .uk-toolbar .links a {
       font-size: 13px;
-      line-height: 42px; } }
+      line-height: 42px; } 
+  }
   
   a.uk-global-header__myUK {
     display: block;
@@ -311,65 +293,63 @@ svg.uk-lockup--white{
   @media (min-width: 980px) {
     .uk-global-header .navbar .btn-navbar {
       display: inline-block;
-      float: right; } }
+      float: right; 
+    } 
+  }
   
-  .navbar-toggle {
-    margin-top: 0;
-    margin-bottom: 0;
-    float: inherit;
-    width: 100%;
-    color: white;
-    padding: 0;
-    text-align: center; }
-    .navbar-toggle h3 {
-      margin: 10px 0; }
-    .navbar-toggle:hover, .navbar-toggle:active {
-      cursor: pointer;
-      text-decoration: none; }
-  
-  .uk-global-menu-band {
-    margin-bottom: 1px; }
-    .uk-global-menu-band .navbar {
-      margin-bottom: 0;
-      padding-left: 0;
-      padding-right: 0;
-      border: none; }
-  
-
-
-
-
-
-
-
-
-
-
-        .social-icon:before {
-          font-family: "cafe-social";
-          font-style: normal;
-          font-weight: normal;
-          speak: none;
-          display: inline-block;
-          text-decoration: inherit;
-          width: 1em;
-          margin-right: .2em;
-          text-align: center;
-          font-variant: normal;
-          text-transform: none;
-          line-height: 1.1em;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-          content: attr(data-icon); }
-        
-        .uk-toolbar {
-          width: 100%;
-          background: #2C2A29; }
-          .uk-toolbar .col-xs-12 a, .uk-toolbar .col-xs-12 a:visited, .uk-toolbar .col-xs-12 a:focus {
-            color: #FFF; }
-          .uk-toolbar .container .navbar div {
-            padding-left: 0;
-            padding-right: 0; }
+.navbar-toggle {
+  margin-top: 0;
+  margin-bottom: 0;
+  float: inherit;
+  width: 100%;
+  color: white;
+  padding: 0;
+  text-align: center; 
+}
+.navbar-toggle h3 {
+  margin: 10px 0; 
+}
+.navbar-toggle:hover, .navbar-toggle:active {
+  cursor: pointer;
+  text-decoration: none; 
+}
+.uk-global-menu-band {
+  margin-bottom: 1px; 
+}
+.uk-global-menu-band .navbar {
+  margin-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border: none; 
+}
+.social-icon:before {
+  font-family: "cafe-social";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1.1em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: attr(data-icon); 
+}
+.uk-toolbar {
+  width: 100%;
+  background: #2C2A29; 
+}
+.uk-toolbar .col-xs-12 a, .uk-toolbar .col-xs-12 a:visited, .uk-toolbar .col-xs-12 a:focus {
+  color: #FFF; 
+}
+.uk-toolbar .container .navbar div {
+  padding-left: 0;
+  padding-right: 0; 
+}
           .uk-toolbar nav {
             display: inline-block; }
           .uk-toolbar .input-append, .uk-toolbar .input-append form {
@@ -485,19 +465,6 @@ svg.uk-lockup--white{
           text-shadow: 1px 1px 1px #000;
           margin-left: 5px; }
         
-        /*
-        @media (min-width:768px) {
-          header.header {
-            height: 185px;
-          }
-          .front header.header {
-            height: 400px;
-          }
-          .front .site-banner {
-            margin-top: -15px;
-          }
-        }
-        */
         .uk-global-header {
           background-color: #143887; }
           .uk-global-header .logo-container {
@@ -562,11 +529,7 @@ svg.uk-lockup--white{
           width: 300px;
           margin: 0 auto; }
         
-        @media (min-width: 980px) {
-          .uk-global-header .navbar .btn-navbar {
-            display: inline-block;
-            float: right; } }
-        
+
         .navbar-toggle {
           margin-top: 0;
           margin-bottom: 0;
@@ -623,13 +586,7 @@ svg.uk-lockup--white{
           background: none;
           border-bottom: 4px solid #1b4ab3; }
         
-        /*
-          @media (max-width: 992px) {
-            #appendedInputButton {
-              max-width: 105px;
-            }
-          }
-          */
+
         @media (min-width: 768px) {
           #navigation.navbar {
             padding-left: 0;
@@ -1032,4 +989,13 @@ svg.uk-lockup--white{
           display: table;
           content: "";
           line-height: 0; }
-        
+
+
+@media (min-width: 768px) {
+  .fiscal-year-switcher{
+    margin-top: -47px;
+  }
+}
+.fiscal-year-switcher{
+  padding-right: 20px;
+}

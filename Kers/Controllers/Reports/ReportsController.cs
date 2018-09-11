@@ -56,8 +56,9 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
 
-            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 4, 0, false, 100);
+            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 4, 0, false);
             float[] SummariesArray = fiscalYearSummaries.ToArray();
 
             ViewData["totalHours"] = SummariesArray[0];
@@ -88,6 +89,7 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             var counties = await this.context.PlanningUnit.
                                 Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
                                 Include( c => c.District).
@@ -110,6 +112,7 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
 
 
             var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 1, id, false, 100);
@@ -150,7 +153,7 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
-            
+            ViewData["fy"] = fiscalYear.Name;
             
 
             AffirmativeActionPlanRevision model = null;
@@ -190,9 +193,12 @@ namespace Kers.Controllers.Reports
         private FiscalYear GetFYByName(string fy, string type = "serviceLog"){
             FiscalYear fiscalYear;
             if(fy == "0"){
-                fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
+                fiscalYear = this.fiscalYearRepo.previoiusFiscalYear(type);
             }else{
                 fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+                if(fiscalYear == null ){
+                    fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
+                }
             }
             return fiscalYear;
         }

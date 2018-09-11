@@ -100,11 +100,13 @@ namespace Kers.Controllers.Reports
                 
                 return new StatusCodeResult(500);
             }
+            
 
             var table = await contactRepo.DataByEmployee(fiscalYear, type, id);
 
             ViewData["Type"] = type;
             ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             ViewData["Subtitle"] = types[type];
             if(type == 0){
                 ViewData["Title"] = this.context.District.Find(id).Name;
