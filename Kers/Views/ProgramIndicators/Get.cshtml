@@ -45,7 +45,7 @@
         </table>
         @if( id == 0 )
         {
-            <p>Counties Reporting: </p>
+            <p>Counties Reporting: @ReportingCountiesPerProgram.Where( p => p.MajorProgram == prgrm ).First().UnitsToString </p>
         }
     }
 }
