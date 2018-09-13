@@ -9,6 +9,8 @@
       fy = "2018";
     }
     ViewData["Title"] = "Program Indicators for FY" + fy;
+    var ReportingCountiesPerProgram = ViewData["ReportingCountiesPerProgram"] as List<Kers.Controllers.Reports.ReportingCountiesPerProgram>;
+    var id = ViewData["id"] as int?;
 }
 
 <h3>@county</h3>
@@ -41,5 +43,9 @@
                 }
             </tbody>
         </table>
+        @if( id == 0 )
+        {
+            <p>Counties Reporting: </p>
+        }
     }
 }

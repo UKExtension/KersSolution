@@ -91,7 +91,7 @@ namespace Kers.Controllers.Reports
                                                     Indicators = g.Select( d => d ).OrderBy( d => d.order)
                                                 }).ToListAsync();
 
-
+            var ReportingCountiesPerProgram = new List<ReportingCountiesPerProgram>();
 
             foreach( var initiative in initiatives){
                 var intv = new StrategicInitiativeIndicatorsViewModel();
@@ -99,6 +99,23 @@ namespace Kers.Controllers.Reports
                 intv.Code = initiative.PacCode;
                 intv.Indicators = new List<MajorProgramIndicatorsViewModel>();
                 foreach(var program in initiative.MajorPrograms){
+
+
+                    if( id == 0 ){
+                        var allIndicators = context.ProgramIndicatorValue
+                                                .Where( v => v.ProgramIndicator.MajorProgram == program )
+                                                .GroupBy( v => v.KersUser.RprtngProfile.PlanningUnit)
+                                                .Select( v => new {
+                                                    Unit = v.Key,
+                                                    Reported = v.Sum( l => l.Value )
+                                                });
+                        var reported = allIndicators.Where( i => i.Reported != 0).Select( s => s.Unit ).ToList();
+                        var reporting = new ReportingCountiesPerProgram();
+                        reporting.Units = reported;
+                        reporting.MajorProgram = program;
+                        ReportingCountiesPerProgram.Add(reporting);
+                    }
+
                     var programViewModel = new MajorProgramIndicatorsViewModel();
                     programViewModel.Title = program.Name;
                     programViewModel.Code = program.PacCode;
@@ -132,6 +149,8 @@ namespace Kers.Controllers.Reports
             }
             
             ViewData["fy"] = fiscalYear.Name;
+            ViewData["id"] = id;
+            ViewData["ReportingCountiesPerProgram"] = ReportingCountiesPerProgram;
             return View(indicators);
         }
 
@@ -190,6 +209,11 @@ namespace Kers.Controllers.Reports
         public int Amount;
         public string Description;
 
+    }
+
+    public class ReportingCountiesPerProgram{
+        public MajorProgram MajorProgram;
+        public List<PlanningUnit> Units;
     }
 
 
