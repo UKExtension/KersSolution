@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    var fy = ViewData["fy"] as string;
     ViewData["Title"] = "Statistical Contact Report for FY" + FiscalYear.Name;
     ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");  
 
@@ -63,7 +64,8 @@
                                       <td style="font-size: 12px">
                                       <p><i class="fa fa-square" style="color: @colors[index];"></i><a asp-controller="MajorProgram" 
                                     asp-action="Program" 
-                                    asp-route-id="@progrm.Program.Id">@progrm.Program.Name.Substring(0,Math.Min(@progrm.Program.Name.Length, 19))...</a> </p>
+                                    asp-route-id="@progrm.Program.Id"
+                                    >@progrm.Program.Name.Substring(0,Math.Min(@progrm.Program.Name.Length, 19))...</a> </p>
                                       </td>
                                       @{
                                       int percent = (int)Math.Round((double)(100 * progrm.DirectContacts) / (double)topProgramsSum);
@@ -81,7 +83,7 @@
 
               <div class="clearfix"></div>
                 <div style="padding-top: 30px;">
-                  <a asp-controller="MajorProgram" asp-action="Index" class="btn btn-sm btn-primary">Discover Major Programs</a>
+                  <a asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy" class="btn btn-sm btn-primary">Discover Major Programs</a>
                 </div>
                 
               </div>

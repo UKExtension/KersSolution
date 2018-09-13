@@ -82,11 +82,11 @@ namespace Kers.Models.Repositories
             return revs;
         }
 
-        public async Task<StoryViewModel> LastStoryWithImages(int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false){
+        public async Task<StoryViewModel> LastStoryWithImages(FiscalYear fiscalYear = null, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false){
 
             StoryViewModel story;
             
-            var cacheKey = CacheKeys.LastStoryWithImages + PlanningUnitId.ToString() + MajorProgramId.ToString();
+            var cacheKey = CacheKeys.LastStoryWithImages + PlanningUnitId.ToString() + MajorProgramId.ToString() + fiscalYear == null ? "null" : fiscalYear.Name;
             var cacheString = _cache.GetString(cacheKey);
 
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
@@ -98,8 +98,11 @@ namespace Kers.Models.Repositories
                 if( PlanningUnitId == 0 && MajorProgramId == 0){
 
                     var Last = this.context.StoryRevision
-                                        .Where( s => s.StoryImages.Count() > 0 )
-                                        .Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
+                                        .Where( s => s.StoryImages.Count() > 0 );
+                    if( fiscalYear != null ){
+                        Last = Last.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear );
+                    }
+                    Last = Last.Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
                                         .Include( s => s.MajorProgram )
                                         .OrderBy( s => s.Created );
                 
@@ -129,7 +132,9 @@ namespace Kers.Models.Repositories
                 }else{
                     //Planning unit or Major Program is selected
                     var stories = context.Story.Where(s => true);
-                    
+                    if( fiscalYear != null ){
+                        stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear );
+                    }
                     if( PlanningUnitId != 0 ){
                         stories = stories.Where( s => s.PlanningUnitId == PlanningUnitId);
                     }

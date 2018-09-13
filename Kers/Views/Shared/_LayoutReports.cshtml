@@ -151,11 +151,11 @@
 
                       </nav> <!-- /#main-menu -->
                     
-              <div class="row">
-                <div class="col-xs-12 text-right fiscal-year-switcher">
+
+                <div class="text-right fiscal-year-switcher">
                   @await Component.InvokeAsync("FiscalYearSwitcher", new { selected = @ViewData["fy"], showNext = false, showDetails = true })
                 </div>
-              </div>
+
               </div>
             </div>
           </div>
@@ -172,20 +172,20 @@
             <ul class="nav navbar-right panel_toolbox">
                 
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
-                    <a asp-controller="Reports" asp-action="Index" >Home</a>
+                    <a asp-controller="Reports" asp-action="Index" asp-route-fy="@fy">Home</a>
                 </li>
                 <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "People" ? "active" : "")">
-                    <a asp-controller="People" asp-action="Index" >People</a>
+                    <a asp-controller="People" asp-action="Index" asp-route-fy="@fy">People</a>
                 </li>
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Counties" ? "active" : "")">
-                    <a asp-controller="Reports" asp-action="Counties" >Counties</a>
+                    <a asp-controller="Reports" asp-action="Counties" asp-route-fy="@fy">Counties</a>
                 </li>
                 <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "MajorProgram" ? "active" : "")">
-                    <a asp-controller="MajorProgram" asp-action="Index" >Programs</a>
+                    <a asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy">Programs</a>
                 </li>
                 
                 <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
-                    <a asp-controller="Data" asp-action="Index">Data</a>
+                    <a asp-controller="Data" asp-action="Index" asp-route-fy="@fy">Data</a>
                 </li>
             </ul>
             

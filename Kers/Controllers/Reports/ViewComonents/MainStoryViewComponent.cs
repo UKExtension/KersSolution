@@ -18,10 +18,10 @@ namespace Kers.Controllers.Reports.ViewComponents
             this.storyRepo = storyRepo;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(
+        public async Task<IViewComponentResult> InvokeAsync( FiscalYear FiscalYear = null,
         int PlanningUnitId = 0, int MajorProgramId = 0)
         {
-            var story = await storyRepo.LastStoryWithImages( PlanningUnitId, MajorProgramId );
+            var story = await storyRepo.LastStoryWithImages( FiscalYear, PlanningUnitId, MajorProgramId );
             if( story != null && story.Story != null ){
                 var str = System.Text.RegularExpressions.Regex.Replace(story.Story, "<[^>]*>", string.Empty);
                 ViewData["Extract"] = str.Substring(0, Math.Min(str.Length, 500));

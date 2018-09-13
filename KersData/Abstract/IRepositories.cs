@@ -61,6 +61,7 @@ namespace Kers.Models.Abstract
         Task<TableViewModel> ContactsByCountyByMajorProgram(FiscalYear fiscalYear, bool refreshCache = false);
         //Task<TableViewModel> StateByMajorProgram(FiscalYear fiscalYear, int type = 0, bool refreshCache = false);
         Task<List<ProgramDataViewModel>> TopProgramsPerMonth(int year = 0, int month = 0, int amount = 5, int PlanningUnitId = 0, bool refreshCache = false);
+        Task<List<ProgramDataViewModel>> TopProgramsPerFiscalYear(FiscalYear FiscalYear, int amount = 5, int PlanningUnitId = 0, bool refreshCache = false);
     }
 
     public interface IContactRepository: IEntityBaseRepository<Contact>{
@@ -142,7 +143,7 @@ namespace Kers.Models.Abstract
     public interface IStoryRepository: IEntityBaseRepository<Story>{
         List<int> LastStoryRevisionIds( FiscalYear fiscalYear);
         List<StoryRevision> LastStoryRevisions( FiscalYear fiscalYear);
-        Task<StoryViewModel> LastStoryWithImages(int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false);
+        Task<StoryViewModel> LastStoryWithImages(FiscalYear fiscalYear = null, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false);
         Task<List<StoryViewModel>> LastStories( int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false );
         Task<List<StoryViewModel>> LastStoriesByUser( int userId, int amount = 4, bool refreshCache = false );
     }

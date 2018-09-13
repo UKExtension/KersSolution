@@ -6,6 +6,7 @@
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
     var lngth = Convert.ToString(ViewData["CurrentLength"]);
     var srt = Convert.ToString(ViewData["CurrentSort"]);
+    var fy = ViewData["fy"] as string;
     var srch = Convert.ToString(ViewData["CurrentFilter"]);
     var units = ViewData["Units"] as List<Kers.Models.Entities.KERScore.PlanningUnit>;
     var positions = ViewData["Position"] as List<Kers.Models.Entities.KERScore.ExtensionPosition>;

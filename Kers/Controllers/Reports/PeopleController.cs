@@ -47,7 +47,7 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet]
-        [Route("", Name = "PeopleSearch")]
+        [Route("{fy?}", Name = "PeopleSearch")]
         public async Task<ActionResult> Index(
             string currentFilter,
             string searchString,
@@ -55,7 +55,8 @@ namespace Kers.Controllers.Reports
             string sortOrder = "alphabetically",
             int planningUnitId = 0,
             int extensionPositionId = 0,
-            int length = 18
+            int length = 18,
+            string fy = "0"
         )
         {
 
@@ -111,25 +112,14 @@ namespace Kers.Controllers.Reports
                         .Include( u => u.ExtensionPosition);
 
             var list = await PaginatedList<KersUser>.CreateAsync(users.AsNoTracking(), page ?? 1, pageSize);
-
+            ViewData["fy"] = fy;
 
             return View(list);
-
-            /* 
-            var searchCrigeria = new SearchCriteriaViewModel();
-            searchCrigeria.Skip = 0;
-            searchCrigeria.Take = length;
-            searchCrigeria.OrderBy = "name";
-            searchCrigeria.SearchString = SearchString;
-
-            var users = await userRepo.Search(searchCrigeria);
- 
-            return View(users);*/
         }
 
         [HttpGet]
-        [Route("person/{id}")]
-        public async Task<ActionResult> Person(int id)
+        [Route("person/{id}/{fy?}")]
+        public async Task<ActionResult> Person(int id, string fy="0")
         {
             var person = await context.KersUser.Where( u => u.Id == id)
                         .Include( u => u.ExtensionPosition)
@@ -144,6 +134,7 @@ namespace Kers.Controllers.Reports
             var stories = await this.storyRepo.LastStoriesByUser( person.Id );
 
             ViewData["stories"] = stories;
+            ViewData["fy"] = fy;
 
             return View(person);
         }

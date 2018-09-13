@@ -74,7 +74,7 @@ namespace Kers.Controllers.Reports
             DateTime ago = DateTime.Now.AddMonths(-2);
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
-            var TopPrograms = await activityRepo.TopProgramsPerMonth();
+            var TopPrograms = await activityRepo.TopProgramsPerFiscalYear(fiscalYear);
             ViewData["TopPrograms"] = TopPrograms;
             var sum = TopPrograms.Sum( a => a.DirectContacts );
             ViewData["TopProgramsAudienceSum"] = sum;

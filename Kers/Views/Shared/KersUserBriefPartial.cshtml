@@ -1,4 +1,9 @@
 @model Kers.Models.Entities.KERScore.KersUser
+
+@{
+    var fy = ViewData["fy"] as string;
+}
+
 <div class="col-md-4 col-sm-4 col-xs-12 profile_details">
     <div class="well profile_view">
         <div class="col-sm-12">
@@ -22,7 +27,7 @@
         
             <div class="col-xs-12 col-sm-6 emphasis">
                 
-                <a href="~/Reports/People/person/@Model.Id" class="btn btn-primary btn-xs">
+                <a href="~/Reports/People/person/@Model.Id/@fy" class="btn btn-primary btn-xs">
                 <i class="fa fa-user"> </i> View Profile
                 </a>
             </div>

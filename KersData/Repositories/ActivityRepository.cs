@@ -90,6 +90,55 @@ namespace Kers.Models.Repositories
 
 
 
+
+        public async Task<List<ProgramDataViewModel>> TopProgramsPerFiscalYear(FiscalYear FiscalYear, int amount = 5, int PlanningUnitId = 0, bool refreshCache = false){
+            
+            
+            
+            List<ProgramDataViewModel> data;
+
+            var cacheKey = CacheKeys.TopProgramsPerFiscalYear + FiscalYear.Name;
+            var cachedStats = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cachedStats) && !refreshCache){
+                data = JsonConvert.DeserializeObject<List<ProgramDataViewModel>>(cachedStats);
+            }else{
+
+                var activities = this.coreContext.Activity.Where( a => a.ActivityDate > FiscalYear.Start && a.ActivityDate < FiscalYear.End );
+
+                if( PlanningUnitId != 0) {
+                    activities = activities.Where( a => a.PlanningUnitId == PlanningUnitId );
+                }
+
+                // Exclude Administrative Functions and PSD programs
+
+                activities = activities.Where( a => a.MajorProgram.Name != "Administrative Functions" && a.MajorProgram.Name != "Staff Development");
+
+
+                data = await activities.GroupBy( a => a.MajorProgram )
+                                    .Select( g => new ProgramDataViewModel {
+                                        Program = g.Key,
+                                        DirectContacts = g.Sum( a => a.Audience ),
+                                        Hours = g.Sum( a => a.Hours )
+                                    })
+                                    .OrderByDescending( g => g.DirectContacts )
+                                    .Take( amount )
+                                    .ToListAsync();
+                var serialized = JsonConvert.SerializeObject(data);
+
+                var keepCacheInDays = 3;
+                if( FiscalYear.End < DateTime.Now ){
+                        keepCacheInDays = 200;
+                }
+                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
+                    });
+            }
+            return data;
+        }
+
+
+
         public List<int> LastActivityRevisionIds( FiscalYear fiscalYear, IDistributedCache _cache){
             var cacheKey = "ActivityLastRevisionIdsPerFiscalYear" + fiscalYear.Name;
             var cacheString = _cache.GetString(cacheKey);

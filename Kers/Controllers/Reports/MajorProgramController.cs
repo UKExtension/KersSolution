@@ -51,17 +51,10 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("{fy?}")]
-        public async Task<IActionResult> Index(int fy = 0)
+        public async Task<IActionResult> Index(string fy = "0")
         {
-            FiscalYear fiscalYear;
-            if( fy == 0 ){
-                fiscalYear = currentFiscalYear;
-            }else{
-                fiscalYear = await context.FiscalYear.FindAsync( fy );
-                if( fiscalYear == null ){
-                    this.fiscalYearRepository.previoiusFiscalYear("serviceLog");
-                }
-            }
+            FiscalYear fiscalYear = GetFYByName(fy);
+            
 
             ViewData["fy"] = fiscalYear.Name;
             var initiatives = await context.StrategicInitiative.Where( i => i.FiscalYear == fiscalYear)
@@ -76,7 +69,10 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> Program(int id)
         {
             
-            var Program = context.MajorProgram.FindAsync(id);
+            var Program = await context.MajorProgram
+                                .Where( m => m.Id == id)
+                                .Include( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear)
+                                .FirstOrDefaultAsync();
             var lastMonth = DateTime.Now.AddMonths(-1);
             var StatsLastMonth = await contactRepo.StatsPerMonth(lastMonth.Year,lastMonth.Month,0, id);
             ViewData["StatsLastMonth"] = StatsLastMonth;
@@ -84,11 +80,21 @@ namespace Kers.Controllers.Reports
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month, 0, id );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
             ViewData["Indicators"] = await initiativeRepo.IndicatorSumPerMajorProgram( id );
+            var fiscalYear = Program.StrategicInitiative.FiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
 
-
-            return View(await Program);
+            return View( Program );
         }
-
+        
+        public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepository.currentFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            return fiscalYear;
+        }
 
         
 
