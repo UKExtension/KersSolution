@@ -86,7 +86,7 @@ namespace Kers.Models.Repositories
 
             StoryViewModel story;
             
-            var cacheKey = CacheKeys.LastStoryWithImages + PlanningUnitId.ToString() + MajorProgramId.ToString() + fiscalYear == null ? "null" : fiscalYear.Name;
+            var cacheKey = CacheKeys.LastStoryWithImages + PlanningUnitId.ToString() + MajorProgramId.ToString() + (fiscalYear == null ? "null" : fiscalYear.Name);
             var cacheString = _cache.GetString(cacheKey);
 
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
