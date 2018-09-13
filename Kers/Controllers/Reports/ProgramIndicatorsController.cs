@@ -113,7 +113,7 @@ namespace Kers.Controllers.Reports
                         var reporting = new ReportingCountiesPerProgram();
                         reporting.Units = reported;
                         reporting.MajorProgram = program;
-                        reporting.UnitsToString = string.Join(", ", reporting.Units.Select(x => x.Name.Substring(0, x.Name.Length - 11)));
+                        reporting.UnitsToString = string.Join(", ", reporting.Units.OrderBy(s => s.Name).Select(x => x.Name.Substring(0, x.Name.Length - 11)));
                         ReportingCountiesPerProgram.Add(reporting);
                     }
 
