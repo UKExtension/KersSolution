@@ -102,33 +102,34 @@ namespace Kers.Models.Repositories
                     if( fiscalYear != null ){
                         Last = Last.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear );
                     }
-                    Last = Last.Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
+                    if(Last.Any()){
+                        Last = Last.Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
                                         .Include( s => s.MajorProgram )
                                         .OrderBy( s => s.Created );
                 
-                    var LastRevWithImages = await Last.LastAsync();
-                    
-                    story.StoryId = LastRevWithImages.StoryId;
-                    story.Title = LastRevWithImages.Title;
-                    story.Story = LastRevWithImages.Story;
-                    story.ImageName = LastRevWithImages.StoryImages.Last().UploadImage.UploadFile.Name;
+                        var LastRevWithImages = await Last.LastAsync();
+                        
+                        story.StoryId = LastRevWithImages.StoryId;
+                        story.Title = LastRevWithImages.Title;
+                        story.Story = LastRevWithImages.Story;
+                        story.ImageName = LastRevWithImages.StoryImages.Last().UploadImage.UploadFile.Name;
 
-                    //Find Landscape Image if available.
-                    foreach( var img in LastRevWithImages.StoryImages){
-                        if( img.UploadImage.Width > img.UploadImage.Height){
-                            story.ImageName = img.UploadImage.UploadFile.Name;
-                            break;
+                        //Find Landscape Image if available.
+                        foreach( var img in LastRevWithImages.StoryImages){
+                            if( img.UploadImage.Width > img.UploadImage.Height){
+                                story.ImageName = img.UploadImage.UploadFile.Name;
+                                break;
+                            }
                         }
+
+                        story.KersUser = context.Story.Where( s => s.Id == LastRevWithImages.StoryId)
+                                            .Include( s => s.KersUser ).ThenInclude( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
+                                            .Include( s => s.KersUser ).ThenInclude( u => u.PersonalProfile )
+                                            .FirstOrDefault().KersUser;
+                        story.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
+                        story.MajorProgram = LastRevWithImages.MajorProgram;
+                        story.Updated = LastRevWithImages.Created;
                     }
-
-                    story.KersUser = context.Story.Where( s => s.Id == LastRevWithImages.StoryId)
-                                        .Include( s => s.KersUser ).ThenInclude( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
-                                        .Include( s => s.KersUser ).ThenInclude( u => u.PersonalProfile )
-                                        .FirstOrDefault().KersUser;
-                    story.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
-                    story.MajorProgram = LastRevWithImages.MajorProgram;
-                    story.Updated = LastRevWithImages.Created;
-
                 }else{
                     //Planning unit or Major Program is selected
                     var stories = context.Story.Where(s => true);
@@ -239,11 +240,11 @@ namespace Kers.Models.Repositories
             
         }
 
-        public async Task<List<StoryViewModel>> LastStories( int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false ){
+        public async Task<List<StoryViewModel>> LastStories( FiscalYear fiscalYear = null, int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false ){
             
             List<StoryViewModel> lastStories;
             
-            var cacheKey = CacheKeys.LastStories + PlanningUnitId.ToString() + MajorProgramId.ToString() + amount.ToString();
+            var cacheKey = CacheKeys.LastStories + PlanningUnitId.ToString() + MajorProgramId.ToString() + amount.ToString() + (fiscalYear == null ? "null" : fiscalYear.Name);
             var cacheString = _cache.GetString(cacheKey);
 
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
@@ -254,7 +255,12 @@ namespace Kers.Models.Repositories
                     Last = new List<Story>();
 
 
-                    var RevsPerProgram = context.StoryRevision.Where( r => r.MajorProgramId == MajorProgramId ).Take( amount * 5 );
+                    var RevsPerProgram = context.StoryRevision.Where( r => r.MajorProgramId == MajorProgramId );
+
+                    if( fiscalYear != null ){
+                        RevsPerProgram = RevsPerProgram.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear );
+                    }
+                    RevsPerProgram = RevsPerProgram.Take( amount * 5 );
 
                     var GrouppedByStory = RevsPerProgram
                                                 .GroupBy( r => r.StoryId )
@@ -273,6 +279,11 @@ namespace Kers.Models.Repositories
 
                 }else{
                     var LastQuery = this.context.Story.Where( s => true );
+
+                    if( fiscalYear != null ){
+                        LastQuery = LastQuery.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear );
+                    }
+
                     if( PlanningUnitId != 0 ){
                         LastQuery = LastQuery.Where( s => s.PlanningUnitId == PlanningUnitId );
                     }
@@ -326,11 +337,11 @@ namespace Kers.Models.Repositories
             return lastStories;
         }
 
-        public async Task<List<StoryViewModel>> LastStoriesByUser( int userId, int amount = 4, bool refreshCache = false ){
+        public async Task<List<StoryViewModel>> LastStoriesByUser( int userId, FiscalYear fiscalYear = null, int amount = 4, bool refreshCache = false ){
             
             List<StoryViewModel> lastStories;
             
-            var cacheKey = CacheKeys.LastStoriesByUser + userId.ToString()+ "_" + amount.ToString();
+            var cacheKey = CacheKeys.LastStoriesByUser + userId.ToString()+ "_" + amount.ToString() + (fiscalYear == null ? "null" : fiscalYear.Name);
             var cacheString = _cache.GetString(cacheKey);
 
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
@@ -340,7 +351,9 @@ namespace Kers.Models.Repositories
                 List<Story> Last;
                 
                 var LastQuery = this.context.Story.Where( s => s.KersUserId == userId );
-                
+                if( fiscalYear != null ){
+                    LastQuery = LastQuery.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear );
+                }
                 Last = await LastQuery.OrderByDescending( s => s.Updated ).Take( amount ).ToListAsync();
                 
 

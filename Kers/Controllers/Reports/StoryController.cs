@@ -34,8 +34,11 @@ namespace Kers.Controllers.Reports
            this.context = context;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        [Route("{fy?}")]
+        public IActionResult Index(string fy="0")
         {
+            ViewData["fy"] = fy;
             /* 
             var stories = context.Story;
             foreach( var story in stories ){
@@ -51,8 +54,8 @@ namespace Kers.Controllers.Reports
 
         
         [HttpGet]
-        [Route("{id}", Name="ReportsFullStory")]
-        public async Task<IActionResult> GetAction(int id){
+        [Route("{id}/{fy?}", Name="ReportsFullStory")]
+        public async Task<IActionResult> GetAction(int id, string fy="0"){
             var story = await this.context.Story.Where( s => s.Id == id)
                                             .Include(s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
                                             .Include(s => s.KersUser).ThenInclude( u => u.PersonalProfile)
@@ -84,6 +87,7 @@ namespace Kers.Controllers.Reports
             }else{
                 strViewModel.ImageName = "";
             }
+            ViewData["fy"] = fy;
             return View(strViewModel);
         }
         

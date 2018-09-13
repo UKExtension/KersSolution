@@ -18,7 +18,7 @@ namespace Kers.Controllers.Reports.ViewComponents
             this.context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync( int PlanningUnitId = 0 ){
+        public async Task<IViewComponentResult> InvokeAsync( int PlanningUnitId = 0, FiscalYear fiscalYear = null ){
             
 
             var users = context.KersUser.Where( u => u.PersonalProfile.Bio != null && u.PersonalProfile.Bio.Length > 100 && u.PersonalProfile.UploadImage != null);
@@ -37,6 +37,8 @@ namespace Kers.Controllers.Reports.ViewComponents
                         .Include( u => u.ExtensionPosition);
 
             var user = await users.Skip(offset).FirstOrDefaultAsync();
+
+            ViewData["fy"] = fiscalYear == null ? "0" : fiscalYear.Name;
 
             return View(user);
         }

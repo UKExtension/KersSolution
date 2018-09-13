@@ -18,9 +18,9 @@ namespace Kers.Controllers.Reports.ViewComponents
             this.storyRepo = storyRepo;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync( int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0 )
+        public async Task<IViewComponentResult> InvokeAsync( FiscalYear fiscalYear = null, int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0 )
         {
-            var stories = await storyRepo.LastStories( amount, PlanningUnitId, MajorProgramId );
+            var stories = await storyRepo.LastStories( fiscalYear, amount, PlanningUnitId, MajorProgramId );
            
             return View(stories);
         }

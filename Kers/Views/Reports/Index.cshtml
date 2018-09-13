@@ -99,10 +99,10 @@
                 <div class="clearfix"></div>
               </div>
               <div class="panel-body">
-                @await Component.InvokeAsync("FeaturedPerson")
+                @await Component.InvokeAsync("FeaturedPerson", new {FiscalYear = FiscalYear})
                 <div class="clearfix"></div>
                 <div style="padding-top: 30px;">
-                  <a asp-controller="People" asp-action="Index" class="btn btn-sm btn-primary">Meet Our People</a>
+                  <a asp-controller="People" asp-action="Index" asp-route-fy="@fy" class="btn btn-sm btn-primary">Meet Our People</a>
                 </div>
             </div>
           </div>
@@ -112,7 +112,7 @@
         </div>
       </div>
       <div class="col-md-4 col-sm-4 col-xs-12">
-        @await Component.InvokeAsync("LatestStories")
+        @await Component.InvokeAsync("LatestStories", new {FiscalYear = FiscalYear})
       </div>
     </div> 
 
