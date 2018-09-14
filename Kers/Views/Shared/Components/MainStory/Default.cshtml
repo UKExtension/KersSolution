@@ -1,6 +1,7 @@
 @model Kers.Models.ViewModels.StoryViewModel;
 @{
     var extract = ViewData["Extract"] as string;
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
 }
 
 @if( Model != null )
@@ -21,7 +22,7 @@
                         <span>@Html.TimeAgo(@Model.Updated)</span> by <a>@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</a>
                     </div>
                     <p>@extract...</p>
-                    <p><a href="~/reports/Story/@Model.StoryId">Read More</a></p>
+                    <p><a asp-route="ReportsFullStory" asp-route-fy="@FiscalYear.Name" asp-route-id="@Model.StoryId">Read More</a></p>
                 </div>
                 <div class="col-md-8">
                     <img src="@Url.RouteUrl("ProcessImage", new { filename = @Model.ImageName, mode="crop", w=900, h=500 })" alt="@Model.Title" class="img-responsive" />

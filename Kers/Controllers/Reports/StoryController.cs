@@ -54,7 +54,7 @@ namespace Kers.Controllers.Reports
 
         
         [HttpGet]
-        [Route("{id}/{fy?}", Name="ReportsFullStory")]
+        [Route("s/{id}/{fy?}", Name="ReportsFullStory")]
         public async Task<IActionResult> GetAction(int id, string fy="0"){
             var story = await this.context.Story.Where( s => s.Id == id)
                                             .Include(s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)

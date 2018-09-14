@@ -149,8 +149,8 @@
                     <input type="checkbox" id="isSnap" formControlName="isSnap">
                     <div class="slider round" (click)="onSnapEdChecked()"></div>
                 </label>
-                <p *ngIf="snapFiscalYear17"><br>
-                    Snap Ed reporting for the Fiscal Year 2017 is over.<br> Changing Activity Date to current Fiscal Year Will Allow you to submit or edit Snap Ed Records.
+                <p *ngIf="isPastSnapFiscalYear"><br>
+                    Snap Ed reporting for the Fiscal Year 2018 is over.<br> Changing Activity Date to current Fiscal Year Will Allow you to submit or edit Snap Ed Records.
                 </p>
             </div>
         </div>
@@ -246,16 +246,6 @@
                                 <snap-policy-partners formControlName="snapPolicyPartnerValue"></snap-policy-partners>
                             </div>
                         </div>
-                        <!--
-                        <div class="row">
-                            <div class="col-sm-offset-3 col-sm-9" style="padding: 5px 0 45px 20px;">
-                                <p>If your PSE was on a project below please click to answer a few questions.</p>
-                                <p><strong><a href="https://redcap.uky.edu/redcap/surveys/?s=F9EP3XX7EC" target="_blank">Farmers Market/ Farm to School</a></strong></p>
-                                <p>OR</p>
-                                <p><strong><a href="https://redcap.uky.edu/redcap/surveys/?s=WFM9D37M4R" target="_blank">School Wellness/ Smarter Lunchroom</a></strong></p>
-                            </div>
-                        </div>
-                    -->
                     </div>
             </div>
             <div formGroupName="snapIndirect" [hidden]="!hasIndirect">

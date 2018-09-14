@@ -71,7 +71,8 @@ export class ServicelogFormComponent implements OnInit{
     // Snap Policy
     snapPolicy = false;
 
-    snapFiscalYear17 = false;
+    isPastSnapFiscalYear = false;
+    previousFiscalYear = 2017;
 
     options:object;
     errorMessage:string;
@@ -150,12 +151,12 @@ export class ServicelogFormComponent implements OnInit{
 
     //Disable Snap Ed Checkbox for the 2017 fiscal year on date change
     onDateChanged(event: IMyDateModel) {
-        if(event.date.year <= 2017 && event.date.month < 10){
-            this.snapFiscalYear17 = true;
+        if(event.date.year <= this.previousFiscalYear && event.date.month < 10){
+            this.isPastSnapFiscalYear = true;
             this.activityForm.patchValue({isSnap:false});
             this.snapEligable = false;
         }else{
-            this.snapFiscalYear17 = false;
+            this.isPastSnapFiscalYear = false;
         }
         var date = event.jsdate;
         if(  this.fiscalYear.start > date || this.fiscalYear.end < date   ){
@@ -357,10 +358,10 @@ export class ServicelogFormComponent implements OnInit{
         if(this.activity == null){
             var dtNow = new Date();
             
-            if( dtNow.getFullYear() <= 2017 && dtNow.getMonth() < 9){
-                this.snapFiscalYear17 = true;
+            if( dtNow.getFullYear() <= this.previousFiscalYear && dtNow.getMonth() < 9){
+                this.isPastSnapFiscalYear = true;
             }else{
-                this.snapFiscalYear17 = false;
+                this.isPastSnapFiscalYear = false;
             }
 
 
@@ -378,11 +379,11 @@ export class ServicelogFormComponent implements OnInit{
 
         }else{
             let date = new Date(this.activity.activityDate);
-            if( date.getFullYear() <= 2017 && date.getMonth() < 9){
-                this.snapFiscalYear17 = true;
+            if( date.getFullYear() <= this.previousFiscalYear && date.getMonth() < 9){
+                this.isPastSnapFiscalYear = true;
                 this.activityForm.patchValue({isSnap:false});
             }else{
-                this.snapFiscalYear17 = false;
+                this.isPastSnapFiscalYear = false;
             }
             this.patch();
         }
@@ -530,15 +531,6 @@ export class ServicelogFormComponent implements OnInit{
 
     checkIfAdmin(event){
         this.checkIfAdminValue(+event.target.value);
-        /*
-        if(this.adminPrograms.indexOf(+event.target.value) > -1){
-            this.isAdmin = true;
-            this.activityForm.patchValue({snapAdmin: true});
-        }else{
-            this.isAdmin = false;
-            this.activityForm.patchValue({snapAdmin: false});
-        }
-        */
     }
 
     checkIfAdminValue(programId:number){

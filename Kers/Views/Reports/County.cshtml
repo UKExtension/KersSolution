@@ -30,7 +30,7 @@
 </ul>
 <div class="row">
   <div class="col-md-8 col-sm-8 col-xs-12">
-    @await Component.InvokeAsync("MainStory", new {PlanningUnitId = conty.Id})
+    @await Component.InvokeAsync("MainStory", new {PlanningUnitId = conty.Id, FiscalYear = FiscalYear})
     <div class="row">
           <!-- Start to do list -->
           <div class="col-md-6 col-sm-6 col-xs-12">
@@ -101,7 +101,7 @@
                 <div class="clearfix"></div>
               </div>
               <div class="panel-body">
-                @await Component.InvokeAsync("FeaturedPerson", new {PlanningUnitId = conty.Id})
+                @await Component.InvokeAsync("FeaturedPerson", new {PlanningUnitId = conty.Id, FiscalYear = FiscalYear})
               </div>
             </div>
 
@@ -206,7 +206,7 @@
 
 
 
-          @await Component.InvokeAsync("LatestStories", new {PlanningUnitId = conty.Id})
+          @await Component.InvokeAsync("LatestStories", new {PlanningUnitId = conty.Id, FiscalYear = FiscalYear})
       </div>
     </div>
 
