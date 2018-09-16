@@ -68,7 +68,7 @@ namespace Kers.Controllers.Reports
                         select s;
             
 
-            stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == "fy");
+            stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy);
             if(planningUnitId != 0 ){
                 stories = stories.Where( u => u.PlanningUnitId == planningUnitId );
             }
