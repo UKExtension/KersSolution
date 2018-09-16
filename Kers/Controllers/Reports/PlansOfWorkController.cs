@@ -166,9 +166,9 @@ namespace Kers.Controllers.Reports
 
 
 
-        [HttpGet("plansbyprogram/{id}")]
-        public async Task<IActionResult> PlansByProgram(int id){
-            
+        [HttpGet("plansbyprogram/{id}/{fy?}")]
+        public async Task<IActionResult> PlansByProgram(int id, string fy = "0"){
+                
             var program = await context.MajorProgram.Where( p => p.Id == id )
                                 .Include( p => p.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
                                 .FirstOrDefaultAsync();

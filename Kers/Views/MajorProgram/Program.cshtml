@@ -5,9 +5,10 @@
     ViewData["Title"] = Model.Name;
     ViewData["Subtitle"] = "Major Program";
     var indicators = ViewData["Indicators"] as List<Kers.Models.ViewModels.ProgramIndicatorSumViewModel>;
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
 }
 
-@await Html.PartialAsync("TopStatsPartial")
+@await Html.PartialAsync("TopStatsFiscalYearPartial")
 
 
 <div class="row">
@@ -38,7 +39,7 @@
                 </div>
               </div>
             
-            @await Component.InvokeAsync("MainStory", new {MajorProgramId = Model.Id})
+            @await Component.InvokeAsync("MainStory", new {MajorProgramId = Model.Id, FiscalYear = FiscalYear})
             <div class="col-xs-12">
                 <div class="panel">
                 <div class="x_title">
@@ -48,13 +49,13 @@
                 <div class="bs-glyphicons text-center">
                     <ul class="bs-glyphicons-list">
                     <li>
-                        <a href="~/reports/PlansOfWork/plansbyprogram/@Model.Id">
+                        <a asp-controller="PlansOfWork"  asp-action="PlansByProgram" asp-route-id="@Model.Id" asp-route-fy="@FiscalYear.Name">
                         <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
                         <span class="glyphicon-class">Plans of Work</span>
                         </a>
                     </li>
                     <li>
-                        <a href="~/reports/Data/storiesprogram/@Model.Id">
+                        <a asp-controller="Data"  asp-action="StoriesProgram" asp-route-id="@Model.Id" asp-route-fy="@FiscalYear.Name">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                         <span class="glyphicon-class">Success Stories</span>
                         </a>
@@ -78,6 +79,6 @@
         
     </div>
     <div class="col-md-4 col-sm-4 col-xs-12">
-        @await Component.InvokeAsync("LatestStories", new {MajorProgramId = Model.Id})
+        @await Component.InvokeAsync("LatestStories", new {MajorProgramId = Model.Id, FiscalYear = FiscalYear})
     </div>
 </div>

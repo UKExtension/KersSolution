@@ -23,7 +23,7 @@
                                             <a asp-route="ReportsFullStory" asp-route-fy="@fy" asp-route-id="@theStory.StoryId">@theStory.Title</a>
                                         </h2>
                             <div class="byline" style="padding-bottom: .35em;">
-                        <span>@Html.TimeAgo(@theStory.Updated)</span> by <a>@theStory.KersUser.PersonalProfile.FirstName @theStory.KersUser.PersonalProfile.LastName</a>
+                        <span>@Html.TimeAgo(@theStory.Updated)</span> by <a asp-controller="People" asp-action="Person" asp-route-id="@theStory.KersUser.Id" asp-route-fy="@fy" >@theStory.KersUser.PersonalProfile.FirstName @theStory.KersUser.PersonalProfile.LastName</a>
                     </div>
                             <p class="excerpt">
                             

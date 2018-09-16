@@ -136,7 +136,7 @@ namespace Kers.Models.Repositories
 
         /***********************************************************************************************/
         // Generate Contacts Reports Groupped by Employee or Major Program
-        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Major Program, 6 Employee
         // Returns List with Indexes: 0 Total Hours, 1 Contacts, 2 Multistate Hours, 3 Number of Activities
         /***********************************************************************************************/
         public async Task<List<float>> GetPerPeriodSummaries( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){

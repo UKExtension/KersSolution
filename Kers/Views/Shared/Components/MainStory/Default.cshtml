@@ -19,7 +19,7 @@
                 <div class="dashboard-widget-content">
                 <div class="col-md-4">
                     <div class="byline" style="padding-bottom: .35em;">
-                        <span>@Html.TimeAgo(@Model.Updated)</span> by <a>@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</a>
+                        <span>@Html.TimeAgo(@Model.Updated)</span> by <a asp-controller="People" asp-action="Person" asp-route-id="@Model.KersUser.Id" asp-route-fy="@FiscalYear.Name">@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</a>
                     </div>
                     <p>@extract...</p>
                     <p><a asp-route="ReportsFullStory" asp-route-fy="@FiscalYear.Name" asp-route-id="@Model.StoryId">Read More</a></p>

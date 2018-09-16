@@ -72,19 +72,29 @@ namespace Kers.Controllers.Reports
                                 .Where( m => m.Id == id)
                                 .Include( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear)
                                 .FirstOrDefaultAsync();
-            var lastMonth = DateTime.Now.AddMonths(-1);
-            var StatsLastMonth = await contactRepo.StatsPerMonth(lastMonth.Year,lastMonth.Month,0, id);
-            ViewData["StatsLastMonth"] = StatsLastMonth;
-            DateTime ago = DateTime.Now.AddMonths(-2);
-            var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month, 0, id );
-            ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
             ViewData["Indicators"] = await initiativeRepo.IndicatorSumPerMajorProgram( id );
+            FiscalYear fiscalYear;
+
             if( fy == "0"){
-                var fiscalYear = Program.StrategicInitiative.FiscalYear;
+                fiscalYear = Program.StrategicInitiative.FiscalYear;
                 ViewData["fy"] = fiscalYear.Name;
-            }else{
+            }else{ 
+                fiscalYear = GetFYByName(fy);
                 ViewData["fy"] = fy;
             }
+
+            ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fy;
+            var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 5, id);
+            float[] SummariesArray = fiscalYearSummaries.ToArray();
+
+            ViewData["totalHours"] = SummariesArray[0];
+            ViewData["totalContacts"] = (int) SummariesArray[1];
+            ViewData["totalMultistate"] = SummariesArray[2];
+            ViewData["totalActivities"] = (int) SummariesArray[3];
+
+
+
             return View( Program );
         }
         
