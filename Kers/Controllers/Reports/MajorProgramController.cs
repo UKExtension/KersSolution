@@ -65,10 +65,9 @@ namespace Kers.Controllers.Reports
             return View(initiatives);
         }
         [HttpGet]
-        [Route("program/{id}")]
-        public async Task<IActionResult> Program(int id)
+        [Route("program/{id}/{fy?}")]
+        public async Task<IActionResult> Program(int id, string fy = "0")
         {
-            
             var Program = await context.MajorProgram
                                 .Where( m => m.Id == id)
                                 .Include( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear)
@@ -80,9 +79,12 @@ namespace Kers.Controllers.Reports
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month, 0, id );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
             ViewData["Indicators"] = await initiativeRepo.IndicatorSumPerMajorProgram( id );
-            var fiscalYear = Program.StrategicInitiative.FiscalYear;
-            ViewData["fy"] = fiscalYear.Name;
-
+            if( fy == "0"){
+                var fiscalYear = Program.StrategicInitiative.FiscalYear;
+                ViewData["fy"] = fiscalYear.Name;
+            }else{
+                ViewData["fy"] = fy;
+            }
             return View( Program );
         }
         

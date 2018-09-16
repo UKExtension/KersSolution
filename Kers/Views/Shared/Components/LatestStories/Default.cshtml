@@ -1,6 +1,10 @@
 @model List<Kers.Models.ViewModels.StoryViewModel>;
 @{
     var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    var fy = "0";
+    if(FiscalYear != null ){
+        fy = FiscalYear.Name;
+    }
 }
 <div class="panel">
     <div class="x_title">
@@ -16,7 +20,7 @@
                         <div class="block">
                         <div class="block_content">
                             <h2 class="title">
-                                            <a asp-route="ReportsFullStory" asp-route-fy="@FiscalYear.Name" asp-route-id="@theStory.StoryId">@theStory.Title</a>
+                                            <a asp-route="ReportsFullStory" asp-route-fy="@fy" asp-route-id="@theStory.StoryId">@theStory.Title</a>
                                         </h2>
                             <div class="byline" style="padding-bottom: .35em;">
                         <span>@Html.TimeAgo(@theStory.Updated)</span> by <a>@theStory.KersUser.PersonalProfile.FirstName @theStory.KersUser.PersonalProfile.LastName</a>
@@ -27,7 +31,7 @@
                                 var stryn = System.Text.RegularExpressions.Regex.Replace(@theStory.Story, "<[^>]*>", string.Empty);
                             }
                     
-                            @stryn.Substring(0, Math.Min(stryn.Length, 200))... <a asp-route="ReportsFullStory" asp-route-fy="@FiscalYear.Name" asp-route-id="@theStory.StoryId">Read&nbsp;More</a>
+                            @stryn.Substring(0, Math.Min(stryn.Length, 200))... <a asp-route="ReportsFullStory" asp-route-fy="@fy" asp-route-id="@theStory.StoryId">Read&nbsp;More</a>
                             </p>
                         </div>
                         </div>
@@ -35,6 +39,6 @@
                 }
             </ul>
         </div>
-        <a asp-controller="Story" asp-action="Index" asp-route-fy="@FiscalYear.Name" class="btn btn-sm btn-primary">More Stories</a>
+        <a asp-controller="Story" asp-action="Index" asp-route-fy="@fy" class="btn btn-sm btn-primary">More Stories</a>
     </div>
 </div>

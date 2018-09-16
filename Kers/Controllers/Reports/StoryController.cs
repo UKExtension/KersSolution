@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Kers.Models.ViewModels;
+using KersData.Models;
 
 namespace Kers.Controllers.Reports
 {
@@ -36,19 +37,68 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("{fy?}")]
-        public IActionResult Index(string fy="0")
+        public async Task<IActionResult> Index(
+            string currentFilter,
+            string searchString,
+            int? page,
+            string sortOrder = "alphabetically",
+            int planningUnitId = 0,
+            int length = 18,
+            string fy="0")
         {
-            ViewData["fy"] = fy;
-            /* 
-            var stories = context.Story;
-            foreach( var story in stories ){
-                var last = context.StoryRevision.Where( r => r.StoryId == story.Id)
-                            .OrderBy( r => r.Created ).Last();
-                story.MajorProgramId = last.MajorProgramId;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentLength"] = length;
+            ViewData["Units"] = this.context.PlanningUnit.OrderBy( u => u.order).ToList();
+            ViewData["Position"] = this.context.ExtensionPosition.OrderBy( u => u.order).ToList();
+
+            ViewBag.CurrentUnit = planningUnitId;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }else{
+                searchString = currentFilter;
             }
-            context.SaveChanges();
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var stories = from s in context.Story
+                        select s;
+            
+            if(planningUnitId != 0 ){
+                stories = stories.Where( u => u.PlanningUnitId == planningUnitId );
+            }
+            
+            
+            switch (sortOrder)
+            {
+
+                case "position":
+                    stories = stories.OrderBy(s => s.KersUser.ExtensionPosition.Title);
+                    break;
+                case "unit":
+                    stories = stories.OrderBy(s => s.PlanningUnit.Name);
+                    break;
+                default:
+                    stories = stories.OrderBy(s => s.KersUser.PersonalProfile.FirstName).ThenBy( s => s.KersUser.PersonalProfile.LastName);
+                    break;
+            }
+/* 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                stories = stories.Where(s => s.PersonalProfile.LastName.Contains(searchString)
+                                    || s.PersonalProfile.FirstName.Contains(searchString));
+            }
  */
-            return View();
+            int pageSize = length;
+            stories = stories.Include( u => u.Revisions ).ThenInclude( p => p.StoryImages).ThenInclude( p => p.UploadImage).ThenInclude( i => i.UploadFile )
+                        .Include(u => u.KersUser.PersonalProfile)
+                        .Include( u => u.MajorProgram);
+
+            var list = await PaginatedList<Story>.CreateAsync(stories.AsNoTracking(), page ?? 1, pageSize);
+            ViewData["fy"] = fy;
+
+            return View(list);
         }
 
 
