@@ -41,17 +41,19 @@ namespace Kers.Controllers.Reports
             string currentFilter,
             string searchString,
             int? page,
-            string sortOrder = "alphabetically",
+            string sortOrder = "newest",
             int planningUnitId = 0,
+            int programId = 0,
             int length = 18,
             string fy="0")
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentLength"] = length;
             ViewData["Units"] = this.context.PlanningUnit.OrderBy( u => u.order).ToList();
-            ViewData["Position"] = this.context.ExtensionPosition.OrderBy( u => u.order).ToList();
+            ViewData["Program"] = this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear.Name == fy).OrderBy( u => u.order).ToList();
 
             ViewBag.CurrentUnit = planningUnitId;
+            ViewBag.CurrentProgram = programId;
 
             if (searchString != null)
             {
@@ -68,19 +70,24 @@ namespace Kers.Controllers.Reports
             if(planningUnitId != 0 ){
                 stories = stories.Where( u => u.PlanningUnitId == planningUnitId );
             }
+            if(programId != 0 ){
+                stories = stories.Where( u => u.MajorProgramId == programId );
+            }
             
             
             switch (sortOrder)
             {
 
-                case "position":
-                    stories = stories.OrderBy(s => s.KersUser.ExtensionPosition.Title);
+                case "oldest":
+                    stories = stories.OrderBy(s => s.Updated);
                     break;
-                case "unit":
-                    stories = stories.OrderBy(s => s.PlanningUnit.Name);
+                case "author":
+                    stories = stories
+                            .OrderBy(s => s.KersUser.PersonalProfile.FirstName)
+                            .ThenBy(s => s.KersUser.PersonalProfile.LastName);
                     break;
                 default:
-                    stories = stories.OrderBy(s => s.KersUser.PersonalProfile.FirstName).ThenBy( s => s.KersUser.PersonalProfile.LastName);
+                    stories = stories.OrderByDescending(s => s.Updated);
                     break;
             }
 /* 

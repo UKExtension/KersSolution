@@ -9,8 +9,10 @@
     var fy = ViewData["fy"] as string;
     var srch = Convert.ToString(ViewData["CurrentFilter"]);
     var units = ViewData["Units"] as List<Kers.Models.Entities.KERScore.PlanningUnit>;
+    var programs = ViewData["Program"] as List<Kers.Models.Entities.KERScore.MajorProgram>;
     //var positions = ViewData["Position"] as List<Kers.Models.Entities.KERScore.ExtensionPosition>;
     int currUnit = (int) ViewBag.CurrentUnit;
+    int currProgram = (int) ViewBag.CurrentProgram;
     
 }
 
@@ -21,19 +23,20 @@
 .search-filters label{
     font-weight: normal;
 }
+@@media (min-width: 1200px) {
+    .story-brief{
+        min-height: 290px;
+    }
+}
 </style>
 
 
-<form asp-controller="People" asp-action="Index" method="get" class="form-inline">
+<form asp-controller="Story" asp-action="Index" method="get" class="form-inline">
     <div class="search-filters">
-        <div class="form-group">
-            <label class="sr-only" for="SearchString">Search</label>
-            <input type="search" class="form-control input-sm" name="SearchString" value="@srch" placeholder="Search"></label>
-        </div>
 
         <div class="form-group">
             <label for="planningUnitId">&nbsp;&nbsp;&nbsp;Planning Unit</label>
-            <select class="form-control" name="planningUnitId" onchange="this.form.submit()">
+            <select class="form-control" name="planningUnitId" onchange="this.form.submit()"  style="max-width: 300px;">
                 <option>-- Select --</option>
                 @foreach( var unit in units )
                 {
@@ -50,6 +53,26 @@
                 
             </select>
         </div>
+
+        <div class="form-group">
+            <label for="programId">&nbsp;&nbsp;&nbsp;Major Program</label>
+            <select class="form-control" name="programId" onchange="this.form.submit()" style="max-width: 300px;">
+                <option>-- Select --</option>
+                @foreach( var program in programs )
+                {
+                    if(program.Id == @currProgram)
+                    {
+                        <option value="@program.Id" selected="selected">@program.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@program.Id">@program.Name</option>
+                    }
+                    
+                }
+                
+            </select>
+        </div>
         
         
 
@@ -60,41 +83,41 @@
                 Order By: 
                 <div class="btn-group" data-toggle="buttons">
                         
-                        @if(srt == "alphabetically")
+                        @if(srt == "newest")
                         {
-                        <label class="btn btn-default active" onclick="document.getElementById('alphabetically').checked=true; this.form.submit();">
-                            <input type="radio" name="SortOrder" id="alphabetically" value="alphabetically" checked="checked"> Alphabetically
+                        <label class="btn btn-default active" onclick="document.getElementById('newest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="newest" value="newest" checked="checked"> Newest
                         </label>
                         }
                         else
                         {
-                        <label class="btn btn-default" onclick="document.getElementById('alphabetically').checked=true; this.form.submit();">
-                                <input type="radio" name="SortOrder" id="alphabetically" value="alphabetically"> Alphabetically
+                        <label class="btn btn-default" onclick="document.getElementById('newest').checked=true; this.form.submit();">
+                                <input type="radio" name="SortOrder" id="newest" value="newest"> Newest
                         </label>
                         }
 
-                        @if(srt == "unit")
+                        @if(srt == "oldest")
                         {  
-                        <label class="btn btn-default active" onclick="document.getElementById('unit').checked=true; this.form.submit();">
-                            <input type="radio" name="SortOrder" id="unit" value="unit"  checked="checked"> Unit
+                        <label class="btn btn-default active" onclick="document.getElementById('oldest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="oldest" value="oldest"  checked="checked"> Oldest
                         </label>
                         }
                         else
                         {
-                        <label class="btn btn-default" onclick="document.getElementById('unit').checked=true; this.form.submit();">
-                            <input type="radio" name="SortOrder" id="unit" value="unit"> Unit
+                        <label class="btn btn-default" onclick="document.getElementById('oldest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="oldest" value="oldest"> Oldest
                         </label>  
                         }
-                        @if(srt == "position")
+                        @if(srt == "author")
                         {  
-                        <label class="btn btn-default active" onclick="document.getElementById('position').checked=true; this.form.submit();">
-                            <input type="radio" name="SortOrder" id="position" value="position"  checked="checked"> Position
+                        <label class="btn btn-default active" onclick="document.getElementById('author').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="author" value="author"  checked="checked"> Author
                         </label>
                         }
                         else
                         {
-                        <label class="btn btn-default" onclick="document.getElementById('position').checked=true; this.form.submit();">
-                            <input type="radio" name="SortOrder" id="position" value="position"> Position
+                        <label class="btn btn-default" onclick="document.getElementById('author').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="author" value="author"> Author
                         </label>
                         }
                     </div>
@@ -196,6 +219,7 @@
                             asp-route-page="@(Model.PageIndex - 1)"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
                             asp-route-planningUnitId=@currUnit
+                            asp-route-programId=@currProgram
                             class="">Previous</a>
                     </li>
                     @{
@@ -212,6 +236,7 @@
                             asp-route-page="@i"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
                             asp-route-planningUnitId=@currUnit
+                            asp-route-programId=@currProgram
                         >@i</a></li>
                     }
                     <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
@@ -221,6 +246,7 @@
                             asp-route-page="@(Model.PageIndex + 1)"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
                             asp-route-planningUnitId=@currUnit
+                            asp-route-programId=@currProgram
                             class="" >Next</a></li>
                 </ul>
             </div>
