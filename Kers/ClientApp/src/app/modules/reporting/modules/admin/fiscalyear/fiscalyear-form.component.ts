@@ -69,10 +69,14 @@ export class FiscalyearFormComponent implements OnInit{
     ngOnInit(){
         if(this.fiscalyear){
             this.fiscalyearForm.patchValue(this.fiscalyear);
-            var start = new Date(this.fiscalyear.start);
-            var end = new Date(this.fiscalyear.end);
-            var availableAt = new Date(this.fiscalyear.availableAt);
-            var extendedTo = new Date(this.fiscalyear.extendedTo);
+            var startParts = this.fiscalyear.start.toString().split(/[^0-9]/);
+            var start = new Date(+startParts[0], +startParts[1] -1, +startParts[2]);
+            var endParts = this.fiscalyear.end.toString().split(/[^0-9]/);
+            var end = new Date(+endParts[0], +endParts[1] -1, +endParts[2]);
+            var availableAtParts = this.fiscalyear.availableAt.toString().split(/[^0-9]/);
+            var availableAt = new Date(+availableAtParts[0], +availableAtParts[1] -1, +availableAtParts[2]);
+            var extendedToParts = this.fiscalyear.extendedTo.toString().split(/[^0-9]/);
+            var extendedTo = new Date(+extendedToParts[0], +extendedToParts[1] -1, +extendedToParts[2]);
             this.fiscalyearForm.patchValue({
                 start: {
                     date: {
