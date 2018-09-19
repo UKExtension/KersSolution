@@ -73,18 +73,28 @@ namespace Kers.Controllers.Reports
                                 .Include( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear)
                                 .FirstOrDefaultAsync();
             ViewData["Indicators"] = await initiativeRepo.IndicatorSumPerMajorProgram( id );
-            FiscalYear fiscalYear;
+            FiscalYear fiscalYear = Program.StrategicInitiative.FiscalYear;
 
             if( fy == "0"){
-                fiscalYear = Program.StrategicInitiative.FiscalYear;
                 ViewData["fy"] = fiscalYear.Name;
             }else{ 
-                fiscalYear = GetFYByName(fy);
-                ViewData["fy"] = fy;
+
+                if( fy != fiscalYear.Name ){
+                    var toFY = GetFYByName(fy);
+                    if( toFY != null ){
+                        var programWithTheSameName = await context.MajorProgram.Where( p => p.Name == Program.Name && p.StrategicInitiative.FiscalYear == toFY ).FirstOrDefaultAsync();
+                        if(programWithTheSameName != null ){
+                            return RedirectToAction("Program", new {id=programWithTheSameName.Id});
+                        }
+                        return RedirectToAction("Index", "Reports", new {fy=toFY.Name});
+                    }else{
+                        return RedirectToAction("Index", "Reports", new {fy=fy});
+                    }
+                }
             }
 
             ViewData["FiscalYear"] = fiscalYear;
-            ViewData["fy"] = fy;
+            ViewData["fy"] = fiscalYear.Name;
             var fiscalYearSummaries = await contactRepo.GetPerPeriodSummaries(fiscalYear.Start, fiscalYear.End, 5, id);
             float[] SummariesArray = fiscalYearSummaries.ToArray();
 

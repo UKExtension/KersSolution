@@ -170,12 +170,12 @@ else if( district != null)
    <script type="text/javascript" src="@Url.Content("https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts-en.min.js")"></script>
    <script>
       
-	 
+	
 
     var options = [];
     var charts = [];
     var chartPlaceholders = ["Chart0","Chart1","Chart2", "Chart3"];
-
+    @await Component.InvokeAsync("eCharts")
     options[0] = {
         tooltip: {
             axisPointer: {
@@ -255,19 +255,7 @@ else if( district != null)
 
     var GraphCategories = [{ name: "Employees"}, { name: "Major Programs"}, { name: "Success Stories"}];
 
-    options[2] = {
-    xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    },
-    yAxis: {
-        type: 'value'
-    },
-    series: [{
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: 'line'
-    }]
-    };
+    
     
     
 
