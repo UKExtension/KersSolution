@@ -663,13 +663,33 @@ namespace Kers.Controllers.Reports
             var PrersonsHoursGraphDataList = new List<string>();
             var PersonsContactsByProgramSeries = new List<string>();
             var PersonLength = 15;
+
+            var PeopleHoursForTheRadar = new List<float>();
+            var PeopleContactsForTheRadar = new List<int>();
+
             foreach(var thePerson in PersonDataPerMonth ){
                 var name = thePerson.KersUser.PersonalProfile.FirstName + " " + thePerson.KersUser.PersonalProfile.LastName;
                 var shortenedPersonName = (name.Length > PersonLength ? name.Substring(0, PersonLength) + "..." : name);
                 PersonsListOfStrings.Add( "\"" + shortenedPersonName + "\"" );
                 PersonsContactsByProgramSeries.Add("{ name: \""+shortenedPersonName+"\", type: \"bar\", data: [" + string.Join(",", thePerson.Audience.Select(n => n.ToString()).ToArray())+"],}");
                 PrersonsHoursGraphDataList.Add("{ name: \""+shortenedPersonName+"\", type: \"line\", smooth: !0, itemStyle: { normal: { areaStyle: { type: \"default\" } } }, data: [" + string.Join(",", thePerson.Hours.Select(n => n.ToString()).ToArray())+"]  }");
+                
+
+
+                PeopleHoursForTheRadar.Add(thePerson.Hours.Sum( p => p ));
+                PeopleContactsForTheRadar.Add( thePerson.Audience.Sum( p => p) );
+            
             }
+
+
+            var maxHours = PeopleHoursForTheRadar.Max( h => h);
+            var maxContacts = PeopleContactsForTheRadar.Max( c => c );
+
+
+            ViewData["peopleForTheRadar"] = string.Join(",", PersonDataPerMonth.Select( p => "{ name:" + "\"" + p.KersUser.PersonalProfile.FirstName + " " + p.KersUser.PersonalProfile.LastName + "\"" + ", max:1}" ).ToArray() );
+            ViewData["hoursForTheRadar"] = string.Join(",", PeopleHoursForTheRadar.Select( h => (h/maxHours).ToString() ).ToArray());
+            ViewData["contactsForTheRadar"] = string.Join(",", PeopleHoursForTheRadar.Select( h => (h/maxContacts).ToString() ).ToArray());
+
 
             ViewData["personssForTheLegend"] = "[" + string.Join(",", PersonsListOfStrings.ToArray() ) + "]";
             ViewData["PrersonsHoursGraphDataList"] = "[" + string.Join(",", PrersonsHoursGraphDataList.ToArray() ) + "]";

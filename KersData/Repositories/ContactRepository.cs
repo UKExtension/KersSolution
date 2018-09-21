@@ -231,9 +231,22 @@ namespace Kers.Models.Repositories
             var actvtsCacheKey = "AllActivitiesGroupped" + filter.ToString() + "_" + grouppedBy.ToString() + "_" + id.ToString() + "_" + start.ToString("s") + end.ToString("s");
             var cachedActivities = _cache.GetString(actvtsCacheKey);
 
+
+            var cacheDaysSpan = 350;
+            if(keepCacheInDays == 0){
+                var today = DateTime.Now;
+                if(start < today && end.Ticks > today.Ticks){
+                    cacheDaysSpan = 7;
+                }
+            }else{
+                cacheDaysSpan = keepCacheInDays;
+            }
+
+
             if (!string.IsNullOrEmpty(cachedActivities) && !refreshCache){
                 activities = JsonConvert.DeserializeObject<List<ActivityGrouppedResult>>(cachedActivities);
             }else{
+                
                 if( grouppedBy == 0){ 
                     if(filter == 0){
                         activities = await DistrictEmployeeGroupppedActivities(id, start, end);
@@ -263,7 +276,7 @@ namespace Kers.Models.Repositories
                 var serializedActivities = JsonConvert.SerializeObject(activities);
                 _cache.SetString(actvtsCacheKey, serializedActivities, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cacheDaysSpan)
                     });
 
 
@@ -306,15 +319,7 @@ namespace Kers.Models.Repositories
                 }
                 result = ProcessGrouppedContacts(contacts, result);
                 var serializedContacts = JsonConvert.SerializeObject(contacts);
-                var cacheDaysSpan = 350;
-                if(keepCacheInDays == 0){
-                    var today = DateTime.Now;
-                    if(start < today && end.Ticks > today.Ticks){
-                        cacheDaysSpan = 7;
-                    }
-                }else{
-                    cacheDaysSpan = keepCacheInDays;
-                }
+                
                 
                 _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
                     {

@@ -16,7 +16,7 @@
     var colors = "[\"#72c380\", \"#6f7a8a\", \"#f7cb38\",\"#96CA59\", \"#3F97EB\", \"#5a8022\", \"#2c7282\"]";
     Random random = new Random();
 
-    var programsForTheLegend = ViewData["personssForTheLegend"] as string;
+    var personsForTheLegend = ViewData["personssForTheLegend"] as string;
     var ProgramsHoursGraphDataList = ViewData["PrersonsHoursGraphDataList"] as string;
     var ProgramsContactsByProgramSeries = ViewData["PersonsContactsByProgramSeries"] as string;
 
@@ -30,6 +30,12 @@
     var GraphCategories = ViewData["GraphCategories"] as string;
     var GraphData = ViewData["GraphData"] as string;
     var GraphLinks = ViewData["GraphLinks"] as string;
+
+    var peopleForTheRadar = ViewData["peopleForTheRadar"] as string;
+    var hoursForTheRadar = ViewData["hoursForTheRadar"] as string;
+    var contactsForTheRadar = ViewData["contactsForTheRadar"] as string;
+
+
 
 }
 @model Kers.Models.ViewModels.TableViewModel
@@ -214,7 +220,7 @@ else if( district != null)
         color: @Html.Raw(colors),
         legend: {
             type: 'scroll',
-            data: @Html.Raw(programsForTheLegend)
+            data: @Html.Raw(personsForTheLegend)
         },
         toolbox: {
             show: !1
@@ -255,7 +261,7 @@ else if( district != null)
         
         tooltip: {},
         legend: {
-            data: ['Allocated Budget）', 'Actual Spending）']
+            data: ['Hours', 'Contacts']
         },
         radar: {
             //shape: 'circle',
@@ -267,14 +273,7 @@ else if( district != null)
                     padding: [3, 5]
             }
             },
-            indicator: [
-                { name: '（sales）', max: 6500},
-                { name: '（Administration）', max: 16000},
-                { name: '（Information Techology）', max: 30000},
-                { name: '（Customer Support）', max: 38000},
-                { name: '（Development）', max: 52000},
-                { name: '（Marketing）', max: 25000}
-            ]
+            indicator: [ @Html.Raw(peopleForTheRadar) ]
         },
         series: [{
             name: 'Budget vs spending）',
@@ -282,12 +281,12 @@ else if( district != null)
             // areaStyle: {normal: {}},
             data : [
                 {
-                    value : [4300, 10000, 28000, 35000, 50000, 19000],
-                    name : '(Allocated Budget）'
+                    value : [@Html.Raw(hoursForTheRadar)],
+                    name : '(Hours）'
                 },
                 {
-                    value : [5000, 14000, 28000, 31000, 42000, 21000],
-                    name : '(Actual Spending）'
+                    value : [@Html.Raw(contactsForTheRadar)],
+                    name : '(Contacts）'
                 }
             ]
         }]
@@ -302,7 +301,7 @@ else if( district != null)
                 legend: {
                     x: 220,
                     y: 40,
-                    data: @Html.Raw(programsForTheLegend)
+                    data: @Html.Raw(personsForTheLegend)
                 },
                 calculable: !6,
                 xAxis : [
