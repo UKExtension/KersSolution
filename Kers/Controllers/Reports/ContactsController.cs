@@ -688,7 +688,7 @@ namespace Kers.Controllers.Reports
 
             ViewData["peopleForTheRadar"] = string.Join(",", PersonDataPerMonth.Select( p => "{ name:" + "\"" + p.KersUser.PersonalProfile.FirstName + " " + p.KersUser.PersonalProfile.LastName + "\"" + ", max:1}" ).ToArray() );
             ViewData["hoursForTheRadar"] = string.Join(",", PeopleHoursForTheRadar.Select( h => (h/maxHours).ToString() ).ToArray());
-            ViewData["contactsForTheRadar"] = string.Join(",", PeopleHoursForTheRadar.Select( h => (h/maxContacts).ToString() ).ToArray());
+            ViewData["contactsForTheRadar"] = string.Join(",", PeopleContactsForTheRadar.Select( h => (h/maxContacts).ToString() ).ToArray());
 
 
             ViewData["personssForTheLegend"] = "[" + string.Join(",", PersonsListOfStrings.ToArray() ) + "]";
