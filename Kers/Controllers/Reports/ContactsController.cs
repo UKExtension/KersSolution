@@ -665,7 +665,7 @@ namespace Kers.Controllers.Reports
             var PersonLength = 15;
 
             var PeopleHoursForTheRadar = new List<float>();
-            var PeopleContactsForTheRadar = new List<int>();
+            var PeopleContactsForTheRadar = new List<float>();
 
             foreach(var thePerson in PersonDataPerMonth ){
                 var name = thePerson.KersUser.PersonalProfile.FirstName + " " + thePerson.KersUser.PersonalProfile.LastName;
