@@ -1021,7 +1021,7 @@ namespace Kers.Controllers.Reports
                 var first = new DateTime( dt.Year, dt.Month, 1, 0, 0, 0);
                 var last = new DateTime( dt.Year, dt.Month , DateTime.DaysInMonth(dt.Year, dt.Month), 23, 59, 59 );
 
-                List<PerGroupActivities> activities = await contactRepo.GetActivitiesAndContactsAsync( first, last, filter, grouppedBy, id, false, 102 );
+                List<PerGroupActivities> activities = await contactRepo.GetActivitiesAndContactsAsync( first, last, filter, grouppedBy, id );
                 result.Add( activities );
             }            
             return result;

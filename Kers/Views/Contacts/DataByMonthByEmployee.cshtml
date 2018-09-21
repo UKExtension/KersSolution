@@ -175,7 +175,7 @@ else if( district != null)
     var options = [];
     var charts = [];
     var chartPlaceholders = ["Chart0","Chart1","Chart2", "Chart3"];
-    @await Component.InvokeAsync("eCharts")
+    
     options[0] = {
         tooltip: {
             axisPointer: {
@@ -208,10 +208,6 @@ else if( district != null)
             type: 'scatter'
         }]
     };
-
-
-
-
 
 
     options[1] = {
@@ -255,7 +251,47 @@ else if( district != null)
 
     var GraphCategories = [{ name: "Employees"}, { name: "Major Programs"}, { name: "Success Stories"}];
 
-    
+    options[2] = {
+        
+        tooltip: {},
+        legend: {
+            data: ['Allocated Budget）', 'Actual Spending）']
+        },
+        radar: {
+            //shape: 'circle',
+            name: {
+                textStyle: {
+                    color: '#fff',
+                    backgroundColor: '#999',
+                    borderRadius: 3,
+                    padding: [3, 5]
+            }
+            },
+            indicator: [
+                { name: '（sales）', max: 6500},
+                { name: '（Administration）', max: 16000},
+                { name: '（Information Techology）', max: 30000},
+                { name: '（Customer Support）', max: 38000},
+                { name: '（Development）', max: 52000},
+                { name: '（Marketing）', max: 25000}
+            ]
+        },
+        series: [{
+            name: 'Budget vs spending）',
+            type: 'radar',
+            // areaStyle: {normal: {}},
+            data : [
+                {
+                    value : [4300, 10000, 28000, 35000, 50000, 19000],
+                    name : '(Allocated Budget）'
+                },
+                {
+                    value : [5000, 14000, 28000, 31000, 42000, 21000],
+                    name : '(Actual Spending）'
+                }
+            ]
+        }]
+    };
     
     
 

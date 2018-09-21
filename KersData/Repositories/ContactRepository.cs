@@ -225,7 +225,7 @@ namespace Kers.Models.Repositories
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
         // grouppedBy: 0 Employee, 1 MajorProgram
         /*******************************************************************/
-        public async Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 2 ){
+        public async Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
             List<ActivityGrouppedResult> activities;
 
             var actvtsCacheKey = "AllActivitiesGroupped" + filter.ToString() + "_" + grouppedBy.ToString() + "_" + id.ToString() + "_" + start.ToString("s") + end.ToString("s");
@@ -304,14 +304,23 @@ namespace Kers.Models.Repositories
                         contacts = await AllProgramGroupppedContacts(start, end);
                     }
                 }
+                result = ProcessGrouppedContacts(contacts, result);
                 var serializedContacts = JsonConvert.SerializeObject(contacts);
+                var cacheDaysSpan = 350;
+                if(keepCacheInDays == 0){
+                    var today = DateTime.Now;
+                    if(start < today && end.Ticks > today.Ticks){
+                        cacheDaysSpan = 7;
+                    }
+                }else{
+                    cacheDaysSpan = keepCacheInDays;
+                }
+                
                 _cache.SetString(contactsCacheKey, serializedContacts, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(keepCacheInDays)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cacheDaysSpan)
                     });
             }
-
-            result = ProcessGrouppedContacts(contacts, result);
             return result;
         } 
 

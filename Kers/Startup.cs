@@ -173,6 +173,7 @@ namespace Kers
             services.AddSingleton<IScheduledTask, ActivityContactsByCountyByMajorProgramTask>();
             services.AddSingleton<IScheduledTask, ActivityPerEmployeeReportsTask>();
             services.AddSingleton<IScheduledTask, InServiceQualtricsTask>();
+            services.AddSingleton<IScheduledTask, GetActivitiesAndContactsTask>();
 
             services.AddScheduler((sender, args) =>
             {
