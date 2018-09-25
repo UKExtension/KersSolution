@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber } from '../activity.service';
+import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber, Ethnicity } from '../activity.service';
 
 import { Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
@@ -30,12 +30,8 @@ export class ActivityStatsMonthComponent {
 
     ngOnInit(){
         
-
-        
         this.races = this.service.races();
         this.optionNumbers = this.service.optionnumbers();
-        
-        
     }
 
     fiscalYearSwitched(event:FiscalYear){
@@ -44,6 +40,53 @@ export class ActivityStatsMonthComponent {
         }else{
             this.activities = this.service.summaryPerMonth(this.user.id, event.name);
         }
+    }
+
+    totalHours( actvts:Activity[]){
+        var total = actvts.map( a => a.hours).reduce( (one, two) => one + two);
+        return total;
+    }
+    totalMultistate( actvts){
+        var total = actvts.map( a => a.multistate).reduce( (one, two) => one + two);
+        return total;
+    }
+    totalContacts( actvts){
+        var total = actvts.map( a => a.males + a.females).reduce( (one, two) => one + two);
+        return total;
+    }
+    raceValue(race:Race, actvts){
+
+        var filtered = actvts.map( a => a.raceEthnicityValues );
+        filtered = [].concat.apply([], filtered);
+        filtered = filtered.filter( a => a.raceId== race.id);
+        var total = filtered.map( r => r.amount).reduce( (one, two) => one + two);
+        return total;
+    }
+
+    ethnicityValue( ethnicityId, actvts){
+
+        var filtered = actvts.map( a => a.raceEthnicityValues );
+        filtered = [].concat.apply([], filtered);
+        filtered = filtered.filter( a => a.ethnicityId== ethnicityId);
+        var total = filtered.map( r => r.amount).reduce( (one, two) => one + two);
+        return total;
+    }
+    totalMales( actvts){
+        var total = actvts.map( a => a.males ).reduce( (one, two) => one + two);
+        return total;
+    }
+    totalFemales( actvts){
+        var total = actvts.map( a => a.females).reduce( (one, two) => one + two);
+        return total;
+    }
+
+    optionNumberValue( optionNumber:ActivityOptionNumber, actvts){
+
+        var filtered = actvts.map( a => a.optionNumberValues );
+        filtered = [].concat.apply([], filtered);
+        filtered = filtered.filter( a => a.activityOptionNumberId== optionNumber.id);
+        var total = filtered.map( r => r.value).reduce( (one, two) => one + two);
+        return total;
     }
 
 

@@ -41,6 +41,17 @@
                     
                     <tbody>
                         <tr *ngFor="let activity of activities | async" [activityStatsMonthRow]="activity"></tr>
+                        <tr *ngIf="activities | async as actvts">
+                            <td><strong>Total</strong></td>
+                            <td><strong>{{totalHours(actvts)}}</strong></td>
+                            <td><strong>{{totalMultistate( actvts)}}</strong></td>
+                            <td><strong>{{totalContacts(actvts)}}</strong></td>
+                            <td *ngFor="let race of races | async"><strong>{{raceValue(race, actvts)}}</strong></td>
+                            <td><strong>{{ethnicityValue(2, actvts)}}</strong></td>
+                            <td><strong>{{totalFemales( actvts)}}</strong></td>
+                            <td><strong>{{totalMales( actvts)}}</strong></td>
+                            <td *ngFor="let opt of optionNumbers | async"><strong>{{optionNumberValue(opt, actvts)}}</strong></td>
+                        </tr>
                     </tbody>
                 </table>
                 <loading *ngIf="!(activities | async)"></loading>

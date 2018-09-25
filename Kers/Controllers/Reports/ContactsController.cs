@@ -699,15 +699,8 @@ namespace Kers.Controllers.Reports
             ViewData["PersonDataPerMonth"] = PersonDataPerMonth;
 
 
-
             var table = await contactRepo.DataByEmployee(fiscalYear, 1, id);
 
-
-
-
-
-
-            
             return View(table);
         }
 
