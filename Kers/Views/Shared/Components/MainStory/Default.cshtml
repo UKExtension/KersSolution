@@ -35,10 +35,10 @@
     </div>
     @if(more != null)
     {
-        <div class="row">
+        <div class="row" style="box-shadow: rgba(0, 0, 0, 0.0470588) 0px 1px 1px 0px; margin-bottom:7px;">
             @foreach(var str in more)
             {
-                <div class="col-md-4">
+                <div class="col-sm-4">
                     <img src="@Url.RouteUrl("ProcessImage", new { filename = @str.ImageName, mode="crop", w=300, h=200 })" alt="@str.Title" class="img-responsive" />
                     <h5>@str.Title</h5>
                 </div>
