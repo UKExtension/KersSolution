@@ -247,26 +247,26 @@ namespace Kers.Models.Repositories
                 activities = JsonConvert.DeserializeObject<List<ActivityGrouppedResult>>(cachedActivities);
             }else{
                 
-                if( grouppedBy == 0){ 
-                    if(filter == 0){
+                if( grouppedBy == GrouppedByKeys.Employee){ 
+                    if(filter == FilterKeys.District){
                         activities = await DistrictEmployeeGroupppedActivities(id, start, end);
-                    }else if(filter == 1){
+                    }else if(filter == FilterKeys.PlanningUnit){
                         activities = await UnitEmployeeGroupppedActivities(id, start, end);
-                    }else if(filter == 2){
+                    }else if(filter == FilterKeys.KSU){
                         activities = await KSUEmployeeGroupppedActivities(start, end);
-                    }else if(filter == 3){
+                    }else if(filter == FilterKeys.UK){
                         activities = await UKEmployeeGroupppedActivities(start, end);
                     }else{
                         activities = await AllEmployeeGroupppedActivities(start, end);
                     }
                 }else{
-                    if(filter == 0){
+                    if(filter == FilterKeys.District){
                         activities = await DistrictProgramGroupppedActivities(id, start, end);
-                    }else if(filter == 1){
+                    }else if(filter == FilterKeys.PlanningUnit){
                         activities = await UnitProgramGroupppedActivities(id, start, end);
-                    }else if(filter == 2){
+                    }else if(filter == FilterKeys.KSU){
                         activities = await KSUProgramGroupppedActivities(start, end);
-                    }else if(filter == 3){
+                    }else if(filter == FilterKeys.UK){
                         activities = await UKProgramGroupppedActivities(start, end);
                     }else{
                         activities = await AllProgramGroupppedActivities(start, end);
@@ -292,26 +292,26 @@ namespace Kers.Models.Repositories
                 contacts = JsonConvert.DeserializeObject<List<ContactGrouppedResult>>(cachedContacts);
             }else{
                 contacts = new List<ContactGrouppedResult>();
-                if( grouppedBy == 0){
-                    if(filter == 0){
+                if( grouppedBy == GrouppedByKeys.Employee){
+                    if(filter == FilterKeys.District){
                         contacts = await DistrictEmployeeGroupppedContacts(id, start, end);
-                    }else if(filter == 1){
+                    }else if(filter == FilterKeys.PlanningUnit){
                         contacts = await UnitEmployeeGroupppedContacts(id, start, end);
-                    }else if( filter == 2){
+                    }else if( filter == FilterKeys.KSU){
                         contacts = await KSUEmployeeGroupppedContacts(start, end);
-                    }else if( filter == 3){
+                    }else if( filter == FilterKeys.UK){
                         contacts = await UKEmployeeGroupppedContacts(start, end);
                     }else{
                         contacts = await AllEmployeeGroupppedContacts(start, end);
                     }
                 }else{
-                    if(filter == 0){
+                    if(filter == FilterKeys.District){
                         contacts = await DistrictProgramGroupppedContacts(id, start, end);
-                    }else if(filter == 1){
+                    }else if(filter == FilterKeys.PlanningUnit){
                         contacts = await UnitProgramGroupppedContacts(id, start, end);
-                    }else if( filter == 2){
+                    }else if( filter == FilterKeys.KSU){
                         contacts = await KSUProgramGroupppedContacts(start, end);
-                    }else if( filter == 3){
+                    }else if( filter == FilterKeys.UK){
                         contacts = await UKProgramGroupppedContacts(start, end);
                     }else{
                         contacts = await AllProgramGroupppedContacts(start, end);

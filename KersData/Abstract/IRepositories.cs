@@ -141,9 +141,10 @@ namespace Kers.Models.Abstract
         Task<string> SuggestedIncentiveItems(FiscalYear fiscalYear, bool refreshCache = false);
     }
     public interface IStoryRepository: IEntityBaseRepository<Story>{
-        List<int> LastStoryRevisionIds( FiscalYear fiscalYear);
+        List<int> LastStoryRevisionIds( FiscalYear fiscalYear, int filter = 4, int id = 0);
         List<StoryRevision> LastStoryRevisions( FiscalYear fiscalYear);
         Task<StoryViewModel> LastStoryWithImages(FiscalYear fiscalYear = null, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false);
+        Task<List<StoryViewModel>> LastStoriesWithImages(FiscalYear fiscalYear = null, int filter = 4, int id = 0, int amount = 6, bool refreshCache = false, int keepCacheInDays = 0);
         Task<List<StoryViewModel>> LastStories(FiscalYear fiscalYear = null, int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false );
         Task<List<StoryViewModel>> LastStoriesByUser( int userId, FiscalYear fiscalYear = null, int amount = 4, bool refreshCache = false );
     }

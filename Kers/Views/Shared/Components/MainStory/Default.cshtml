@@ -1,6 +1,7 @@
 @model Kers.Models.ViewModels.StoryViewModel;
 @{
     var extract = ViewData["Extract"] as string;
+    var more = ViewData["More"] as List<Kers.Models.ViewModels.StoryViewModel>;
     var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
 }
 
@@ -32,4 +33,13 @@
             </div>
         </div>
     </div>
+    @if(more != null)
+    {
+        <div class="row">
+            @foreach(let str in more)
+            {
+                <div class="col-md-4">@str.Title</div>
+            }
+        </div>
+    }
 }

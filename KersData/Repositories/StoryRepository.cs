@@ -28,8 +28,8 @@ namespace Kers.Models.Repositories
         }
 
 
-        public List<int> LastStoryRevisionIds( FiscalYear fiscalYear){
-            var cacheKey = CacheKeys.LastStoryRevisionIds + fiscalYear.Name;
+        public List<int> LastStoryRevisionIds( FiscalYear fiscalYear, int filter = 4, int id = 0){
+            var cacheKey = CacheKeys.LastStoryRevisionIds + fiscalYear.Name + "_" + filter.ToString();
             var cacheString = _cache.GetString(cacheKey);
             List<int> ids;
             if (!string.IsNullOrEmpty(cacheString)){
@@ -37,17 +37,33 @@ namespace Kers.Models.Repositories
             }else{
                 ids = new List<int>();
                 var stories = context.Story
-                                .Where(r => r.Created > fiscalYear.Start && r.Created < fiscalYear.End)
-                                .Include( r => r.Revisions);
+                                .Where(r => r.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear);
+                if( filter == FilterKeys.PlanningUnit){
+                    stories = stories.Where( s => s.PlanningUnitId == id );
+                }else if( filter == FilterKeys.MajorProgram ){
+                    stories = stories.Where( s => s.MajorProgramId == id);
+                }else if( filter == FilterKeys.Employee ){
+                    stories = stories.Where( s => s.KersUserId == id );
+                }
+                stories = stories.Include( r => r.Revisions);
+                stories = stories.OrderByDescending( s => s.Updated );
                 foreach( var story in stories){
                     var rev = story.Revisions.OrderBy( r => r.Created );
                     var last = rev.Last();
                     ids.Add(last.Id);
                 }
                 var serialized = JsonConvert.SerializeObject(ids);
+                
+                var cacheDaysSpan = 30;
+
+                var today = DateTime.Now;
+                if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
+                    cacheDaysSpan = 2;
+                }
+
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cacheDaysSpan)
                     });
             }
             return ids;
@@ -239,6 +255,47 @@ namespace Kers.Models.Repositories
 
             
         }
+
+
+
+
+        public async Task<List<StoryViewModel>> LastStoriesWithImages(FiscalYear fiscalYear = null, int filter = 4, int id = 0, int amount = 6, bool refreshCache = false, int keepCacheInDays = 0){
+            var ids = LastStoryRevisionIds( fiscalYear, filter, id);
+            var stories = new List<StoryViewModel>();
+            foreach( var revId in ids ){
+                var rev = context.StoryRevision.Where( s => s.Id == revId).Include( r => r.StoryImages );
+                if( rev.Where(s => s.StoryImages.Count > 0).Any() ){
+                    var theStoryRev = context.StoryRevision.Where( s => s.Id == revId)
+                                .Include(r => r.StoryImages).ThenInclude( v => v.UploadImage ).ThenInclude( f => f.UploadFile)
+                                .Include( r => r.MajorProgram);
+                    var theStory = await theStoryRev.FirstOrDefaultAsync();
+                    var uploadFile = theStory.StoryImages.OrderBy( s => s.Created).Last().UploadImage;
+                    if( theStory != null && uploadFile != null ){
+                        var model = new StoryViewModel();
+                        model.Updated = theStory.Created;
+                        model.Title = theStory.Title;
+                        model.StoryOutcome = theStory.StoryOutcome;
+                        model.StoryId = theStory.StoryId;
+                        model.Story = theStory.Story;
+                        model.MajorProgram = theStory.MajorProgram;
+                        var parentStrory = await context.Story.Where( s => s.Id == theStory.StoryId)
+                                                    .Include( r => r.PlanningUnit)
+                                                    .Include( r => r.KersUser ).ThenInclude( u => u.PersonalProfile )
+                                                    .FirstAsync();
+                        model.PlanningUnit = parentStrory.PlanningUnit;
+                        model.KersUser = parentStrory.KersUser;
+                        model.ImageName = uploadFile.UploadFile.Name;
+                        stories.Add( model );
+                    }
+                    if( stories.Count >= amount ) break;
+                }
+            }
+            return stories;
+        
+        }
+
+
+
 
         public async Task<List<StoryViewModel>> LastStories( FiscalYear fiscalYear = null, int amount = 4, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false ){
             
