@@ -29,7 +29,7 @@ namespace Kers.Models.Repositories
 
 
         public List<int> LastStoryRevisionIds( FiscalYear fiscalYear, int filter = 4, int id = 0){
-            var cacheKey = CacheKeys.LastStoryRevisionIds + fiscalYear.Name + "_" + filter.ToString();
+            var cacheKey = CacheKeys.LastStoryRevisionIds + fiscalYear.Name + "_" + filter.ToString() + "_" + id.ToString();
             var cacheString = _cache.GetString(cacheKey);
             List<int> ids;
             if (!string.IsNullOrEmpty(cacheString)){
