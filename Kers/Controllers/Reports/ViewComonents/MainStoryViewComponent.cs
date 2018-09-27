@@ -38,9 +38,9 @@ namespace Kers.Controllers.Reports.ViewComponents
 
 
             if(stories.Count > 0 ){
-                int n = 10;
+                int n = stories.Count;
                 int[] array = new int[n + 1];
-                for (int i = 0; i <= n; i++)
+                for (int i = 0; i < n; i++)
                 {
                     array[i] = i;
                 }
