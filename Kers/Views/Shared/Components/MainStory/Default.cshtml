@@ -39,8 +39,10 @@
             @foreach(var str in more)
             {
                 <div class="col-sm-4">
-                    <img src="@Url.RouteUrl("ProcessImage", new { filename = @str.ImageName, mode="crop", w=300, h=200 })" alt="@str.Title" class="img-responsive" />
-                    <h5>@str.Title</h5>
+                    <a asp-route="ReportsFullStory" asp-route-fy="@FiscalYear.Name" asp-route-id="@str.StoryId">
+                        <img src="@Url.RouteUrl("ProcessImage", new { filename = @str.ImageName, mode="crop", w=300, h=200 })" alt="@str.Title" class="img-responsive" />
+                        <h5>@str.Title</h5>
+                    </a>
                 </div>
             }
         </div>
