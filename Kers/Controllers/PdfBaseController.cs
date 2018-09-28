@@ -77,7 +77,7 @@ namespace Kers.Controllers
 							var strm = new MemoryStream(dbRow.Content);
 							typeface = SKTypeface.FromStream( strm );
 						} */
-						typeface = SKTypeface.FromFile("ReportFont/"+typefaceNames[i] + ".ttf");
+						typeface = SKTypeface.FromFile("Assets/Fonts/"+typefaceNames[i] + ".ttf");
 
 						// Save data in cache.
 						_cache.Set(cacheKey, typeface, cacheEntryOptions);
