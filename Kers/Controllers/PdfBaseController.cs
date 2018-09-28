@@ -59,20 +59,30 @@ namespace Kers.Controllers
 
 			if (!_cache.TryGetValue(typefacesCacheKey, out typefaces))
             {
-                typefaces = new SKTypeface[typefaceNames.Length];
-
-				for(var i = 0; i < typefaceNames.Length; i++){
-					var dbRow = _context.UploadFile.Where(f => f.Name == typefaceNames[i] + ".ttf").FirstOrDefault();
-					if(dbRow != null){
-						var strm = new MemoryStream(dbRow.Content);
-						typefaces[i] = SKTypeface.FromStream( strm );
-					}
-				}
-                // Set cache options.
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
                     .SetAbsoluteExpiration(TimeSpan.FromDays(190));
+                
+				typefaces = new SKTypeface[typefaceNames.Length];
 
+				for(var i = 0; i < typefaceNames.Length; i++){
+
+					var cacheKey = "HNtypeface" + typefaceNames[i];
+					SKTypeface typeface = null;
+					if (!_cache.TryGetValue(cacheKey, out typeface))
+            		{
+
+						var dbRow = _context.UploadFile.Where(f => f.Name == typefaceNames[i] + ".ttf").FirstOrDefault();
+						if(dbRow != null){
+							var strm = new MemoryStream(dbRow.Content);
+							typeface = SKTypeface.FromStream( strm );
+						}
+						
+						// Save data in cache.
+						_cache.Set(cacheKey, typeface, cacheEntryOptions);
+					}
+					typefaces[i] = typeface;
+				}              
                 // Save data in cache.
                 _cache.Set(typefacesCacheKey, typefaces, cacheEntryOptions);
             }
