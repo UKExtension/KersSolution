@@ -71,13 +71,14 @@ namespace Kers.Controllers
 					SKTypeface typeface = null;
 					if (!_cache.TryGetValue(cacheKey, out typeface))
             		{
-
+/* 
 						var dbRow = _context.UploadFile.Where(f => f.Name == typefaceNames[i] + ".ttf").FirstOrDefault();
 						if(dbRow != null){
 							var strm = new MemoryStream(dbRow.Content);
 							typeface = SKTypeface.FromStream( strm );
-						}
-						
+						} */
+						typeface = SKTypeface.FromFile("ReportFont/"+typefaceNames[i] + ".ttf");
+
 						// Save data in cache.
 						_cache.Set(cacheKey, typeface, cacheEntryOptions);
 					}
