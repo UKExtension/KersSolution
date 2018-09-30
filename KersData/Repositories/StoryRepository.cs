@@ -260,35 +260,62 @@ namespace Kers.Models.Repositories
 
 
         public async Task<List<StoryViewModel>> LastStoriesWithImages(FiscalYear fiscalYear = null, int filter = 4, int id = 0, int amount = 6, bool refreshCache = false, int keepCacheInDays = 0){
-            var ids = LastStoryRevisionIds( fiscalYear, filter, id);
-            var stories = new List<StoryViewModel>();
-            foreach( var revId in ids ){
-                var rev = context.StoryRevision.Where( s => s.Id == revId).Include( r => r.StoryImages );
-                if( rev.Where(s => s.StoryImages.Count > 0).Any() ){
-                    var theStoryRev = context.StoryRevision.Where( s => s.Id == revId)
-                                .Include(r => r.StoryImages).ThenInclude( v => v.UploadImage ).ThenInclude( f => f.UploadFile)
-                                .Include( r => r.MajorProgram);
-                    var theStory = await theStoryRev.FirstOrDefaultAsync();
-                    var uploadFile = theStory.StoryImages.OrderBy( s => s.Created).Last().UploadImage;
-                    if( theStory != null && uploadFile != null ){
-                        var model = new StoryViewModel();
-                        model.Updated = theStory.Created;
-                        model.Title = theStory.Title;
-                        model.StoryOutcome = theStory.StoryOutcome;
-                        model.StoryId = theStory.StoryId;
-                        model.Story = theStory.Story;
-                        model.MajorProgram = theStory.MajorProgram;
-                        var parentStrory = await context.Story.Where( s => s.Id == theStory.StoryId)
-                                                    .Include( r => r.PlanningUnit)
-                                                    .Include( r => r.KersUser ).ThenInclude( u => u.PersonalProfile )
-                                                    .FirstAsync();
-                        model.PlanningUnit = parentStrory.PlanningUnit;
-                        model.KersUser = parentStrory.KersUser;
-                        model.ImageName = uploadFile.UploadFile.Name;
-                        stories.Add( model );
+            
+            
+
+            List<StoryViewModel> stories;
+            
+            var cacheKey = CacheKeys.LastStoriesWithImages + fiscalYear.Name + filter.ToString() + id.ToString() + amount.ToString();
+            var cacheString = _cache.GetString(cacheKey);
+
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                stories = JsonConvert.DeserializeObject<List<StoryViewModel>>(cacheString);
+            }else{
+                stories = new List<StoryViewModel>();
+                var ids = LastStoryRevisionIds( fiscalYear, filter, id);
+
+                foreach( var revId in ids ){
+                    var rev = context.StoryRevision.Where( s => s.Id == revId).Include( r => r.StoryImages );
+                    if( rev.Where(s => s.StoryImages.Count > 0).Any() ){
+                        var theStoryRev = context.StoryRevision.Where( s => s.Id == revId)
+                                    .Include(r => r.StoryImages).ThenInclude( v => v.UploadImage ).ThenInclude( f => f.UploadFile)
+                                    .Include( r => r.MajorProgram);
+                        var theStory = await theStoryRev.FirstOrDefaultAsync();
+                        var uploadFile = theStory.StoryImages.OrderBy( s => s.Created).Last().UploadImage;
+                        if( theStory != null && uploadFile != null ){
+                            var model = new StoryViewModel();
+                            model.Updated = theStory.Created;
+                            model.Title = theStory.Title;
+                            model.StoryOutcome = theStory.StoryOutcome;
+                            model.StoryId = theStory.StoryId;
+                            model.Story = theStory.Story;
+                            model.MajorProgram = theStory.MajorProgram;
+                            var parentStrory = await context.Story.Where( s => s.Id == theStory.StoryId)
+                                                        .Include( r => r.PlanningUnit)
+                                                        .Include( r => r.KersUser ).ThenInclude( u => u.PersonalProfile )
+                                                        .FirstAsync();
+                            model.PlanningUnit = parentStrory.PlanningUnit;
+                            model.KersUser = parentStrory.KersUser;
+                            model.ImageName = uploadFile.UploadFile.Name;
+                            stories.Add( model );
+                        }
+                        if( stories.Count >= amount ) break;
                     }
-                    if( stories.Count >= amount ) break;
                 }
+                var cacheDaysSpan = keepCacheInDays;
+                if( cacheDaysSpan == 0 ){
+                    var today = DateTime.Now;
+                    if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
+                        cacheDaysSpan = 2;
+                    }else{
+                        cacheDaysSpan = 110;
+                    }
+                }
+                var serialized = JsonConvert.SerializeObject(stories);
+                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cacheDaysSpan)
+                    });
             }
             return stories;
         
