@@ -39,7 +39,7 @@ namespace Kers.Controllers.Reports.ViewComponents
 
             if(stories.Count > 0 ){
                 int n = stories.Count;
-                int[] array = new int[n + 1];
+                int[] array = new int[n];
                 for (int i = 0; i < n; i++)
                 {
                     array[i] = i;
@@ -50,8 +50,8 @@ namespace Kers.Controllers.Reports.ViewComponents
                 ViewData["Extract"] = str.Substring(0, Math.Min(str.Length, 500));
                 if( array.Count() > 3 ){
                     var More = new List<StoryViewModel>();
-                    for( int i = 1; i < 4; i++ ){
-                        More.Add(stories[array[i]]);
+                    for( int j = 1; j < 4; j++ ){
+                        More.Add(stories[array[j]]);
                     }
                     ViewData["More"] = More;
                 }
