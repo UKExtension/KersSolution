@@ -30,7 +30,7 @@ namespace Kers.Controllers.Reports.ViewComponents
             }else if( MajorProgramId != 0 ){
                 stories = await storyRepo.LastStoriesWithImages( FiscalYear, FilterKeys.MajorProgram, MajorProgramId, NumStories);
             }else{
-                stories = await storyRepo.LastStoriesWithImages( FiscalYear, FilterKeys.All, NumStories);
+                stories = await storyRepo.LastStoriesWithImages( FiscalYear, FilterKeys.All, 0, NumStories);
             }
 
 
