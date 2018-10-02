@@ -13,12 +13,13 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="panel">
             <div class="x_title">
-                <h2>@Model.Title <small>Featured Success Story</small></h2>
+                <h2>Stories</h2>
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body">
                 <div class="dashboard-widget-content">
                 <div class="col-md-4">
+                    <h2 style="margin-top:0;"><a asp-route="ReportsFullStory" asp-route-fy="@FiscalYear.Name" asp-route-id="@Model.StoryId">@Model.Title</a></h2>
                     <div class="byline" style="padding-bottom: .35em;">
                         <span>@Html.TimeAgo(@Model.Updated)</span> by <a asp-controller="People" asp-action="Person" asp-route-id="@Model.KersUser.Id" asp-route-fy="@FiscalYear.Name">@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</a>
                     </div>
