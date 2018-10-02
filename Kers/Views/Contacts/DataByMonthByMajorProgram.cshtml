@@ -389,17 +389,17 @@ else if( district != null)
         });
 
         $('#resize-full').click(function(){
+            $(".main-container").height(560);
             $(this).hide();
             $('#resize-small').show();
             $( "#main-content" ).addClass( "overlay" );
-            $(".main-container").height(560);
             resizeCharts();
         });
         $('#resize-small').click(function(){
+            $(".main-container").height(430);
             $(this).hide();
             $('#resize-full').show();
             $( "#main-content" ).removeClass( "overlay" );
-            $(".main-container").height(430);
             resizeCharts();
         });
 
