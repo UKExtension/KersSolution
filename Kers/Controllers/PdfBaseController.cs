@@ -138,7 +138,7 @@ namespace Kers.Controllers
 		public void SummaryLandscapeInfo(SKCanvas pdfCanvas, int year, int month, KersUser user, string Ttl = "Monthly Expenses Report", bool isOvernight = false){
 			var date = new DateTime(year, month, 1);
 			var text = date.ToString("MMMM yyyy");
-			pdfCanvas.DrawText(text, 250, 80, getPaint(20.0f, 1, 0xFF000000));
+			pdfCanvas.DrawText(text, 250, 80, getPaint(18.0f, 1, 0xFF000000));
 			pdfCanvas.DrawText(Ttl, 250, 102, getPaint(20.0f, 3, 0xFF000000));
 			if( isOvernight ){
 				text = "Overnight Trips";
