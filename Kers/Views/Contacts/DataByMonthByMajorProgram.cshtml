@@ -65,6 +65,24 @@ else if( district != null)
         margin-top: -40px;
         margin-left: -10px;
     }
+    .overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 10;
+    }
+    .resize{
+        position: absolute;
+        top: 10px; 
+        right: 10px; 
+        width:30px;
+        height:30px;
+        font-size: 24px; 
+        cursor:pointer;
+    }
 </style>
 @await Html.PartialAsync("TopStatsFiscalYearPartial")
 
@@ -87,14 +105,16 @@ else if( district != null)
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <div class="col-md-9 col-sm-12 col-xs-12">
-                    <div class="main-container">
-                        <div id="Chart0" class="demo-placeholder">
-                            <span>Male, Female Distribution</span>
-                            <h2>Per Major Program</h2>
-                            <div class="graph"></div>
+                    <div id="main-content" class="col-md-9 col-sm-12 col-xs-12">
+                        <div id="resize-full" class="resize"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span></div>
+                        <div id="resize-small" class="resize" style="display:none;"><span class="glyphicon glyphicon-resize-small" aria-hidden="true"></span></div>
+                        <div class="main-container">
+                            <div id="Chart0" class="demo-placeholder">
+                                <span>Male, Female Distribution</span>
+                                <h2>Per Major Program</h2>
+                                <div class="graph"></div>
+                            </div>
                         </div>
-                    </div>
                     <div class="tiles">
                         <div class="col-md-4 tile">
                             <div id="Chart1">
@@ -258,6 +278,9 @@ else if( district != null)
         },
         legend: {
             // selectedMode: 'single',
+            orient:"vertical",
+            left: 3,
+            bottom: 3,
             data: GraphCategories.map(function (a) {
                 return a.name;
             })
@@ -363,7 +386,22 @@ else if( district != null)
             $( ".main-container" ).append( clicked );
             $(this).append(current);
             resizeCharts()
-        })
+        });
+
+        $('#resize-full').click(function(){
+            $(this).hide();
+            $('#resize-small').show();
+            $( "#main-content" ).addClass( "overlay" );
+            $(".main-container").height(560);
+            resizeCharts();
+        });
+        $('#resize-small').click(function(){
+            $(this).hide();
+            $('#resize-full').show();
+            $( "#main-content" ).removeClass( "overlay" );
+            $(".main-container").height(430);
+            resizeCharts();
+        });
 
 
 
