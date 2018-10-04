@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {ReportingService} from '../../../../components/reporting/reporting.service';
 import { UserService, User, PlanningUnit } from '../../../user/user.service';
-import { Observable } from 'rxjs/Observable';
 import { FiscalyearService, FiscalYear } from '../../../admin/fiscalyear/fiscalyear.service';
 import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetReimbursementsCounty } from '../../../admin/snaped/snaped-admin.service';
 
@@ -13,8 +12,10 @@ import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetRei
         <strong>Error: </strong> {{errorMessage}}
     </div>
     <div *ngIf="user">
+    <fiscal-year-switcher [type]="'snapEd'" [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+    <br>
         <div class="col-xs-12">
-            <snape-ed-stats [user]="user"></snape-ed-stats>
+            <snape-ed-stats *ngIf="fiscalYear" [user]="user" [fiscalYear]="fiscalYear"></snape-ed-stats>
         </div>
         <snape-ed-commitment-stats *ngIf="fiscalYear" [user]="user" [fiscalYear]="fiscalYear"></snape-ed-commitment-stats>
         <br><br>
@@ -95,12 +96,12 @@ export class ServicelogSnapedReportComponent {
     {}
 
     ngOnInit(){
-        this.fiscalyearService.current('snapEd').subscribe(
+        /* this.fiscalyearService.current('snapEd').subscribe(
             res => {
               this.fiscalYear = res;
             },
             err => this.errorMessage = <any>err
-          );
+          ); */
         this.userService.current().subscribe(
             res => {
                 this.user = <User>res;
@@ -166,6 +167,15 @@ export class ServicelogSnapedReportComponent {
         }else{
             this.isSnapEdAssistant = false;
         }
+    }
+
+    fiscalYearSwitched(event:FiscalYear){
+        this.fiscalYear = null;
+        var scope = this;
+        setTimeout(function(){
+            
+            scope.fiscalYear = event;
+        }, 200);
     }
 
     defaultTitle(){

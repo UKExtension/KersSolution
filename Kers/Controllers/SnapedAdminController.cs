@@ -155,11 +155,16 @@ namespace Kers.Controllers
 
 
 
-        [HttpPost("assistantreimbursements/{userId}")]
+        [HttpPost("assistantreimbursements/{userId}/{fy?}")]
         [Authorize]
-        public IActionResult AddAssistantReimbursment(int userId, [FromBody] SnapBudgetReimbursementsNepAssistant budget){
+        public IActionResult AddAssistantReimbursment(int userId, [FromBody] SnapBudgetReimbursementsNepAssistant budget, string fy = "0"){
             if(budget != null){
-                var fiscalYear = this.fiscalRepo.currentFiscalYear("snapEd");
+                FiscalYear fiscalYear;
+                if(fy == "0"){
+                    fiscalYear = this.fiscalRepo.currentFiscalYear("snapEd");
+                }else{
+                    fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "snapEd").FirstOrDefault();
+                }
                 budget.By = budget.UpdatedBy = this.CurrentUser();
                 budget.ReimbursmentTime = DateTime.Now;
                 budget.Updated = DateTime.Now;
@@ -315,12 +320,18 @@ namespace Kers.Controllers
             return new OkObjectResult(assistants);
         }
 
-        [HttpGet("countybudget/{countyId?}")]
-        public IActionResult CountyBudget(int countyId = 0){
+        [HttpGet("countybudget/{countyId?}/{fy?}")]
+        public IActionResult CountyBudget(int countyId = 0, string fy = "0"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalRepo.currentFiscalYear("snapEd");
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "snapEd").FirstOrDefault();
+            }
             float bg = 0;
-            var budget = this.context.SnapCountyBudget.Where( b => b.PlanningUnitId == countyId).FirstOrDefault();
+            var budget = this.context.SnapCountyBudget.Where( b => b.PlanningUnitId == countyId && b.FiscalYear == fiscalYear).FirstOrDefault();
             if(budget == null){
-                var defaultBudget = this.context.SnapBudgetAllowance.Find(2);
+                var defaultBudget = this.context.SnapBudgetAllowance.Where( b => b.FiscalYear == fiscalYear && b.BudgetDescription == "SNAP Ed County Budget (separate from NEP Assistant Budget)").FirstOrDefault();
                 bg = defaultBudget.AnnualBudget;
             }else{
                 bg = budget.AnnualBudget;

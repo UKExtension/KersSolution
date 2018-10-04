@@ -6,10 +6,11 @@
 <div class="text-right"><a class="btn btn-default btn-xs" routerLink="/reporting/admin/snaped">Snap-Ed Admin Dashboard</a></div>
 <div *ngIf="assistant">
     
-        
-    <snape-ed-stats [user]="assistant" (onCalculated)="storeHours($event)"></snape-ed-stats>
+    <fiscal-year-switcher [type]="'snapEd'" [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+    <br>
+    <snape-ed-stats *ngIf="fiscalYear" [fiscalYear]="fiscalYear" [user]="assistant" (onCalculated)="storeHours($event)"></snape-ed-stats>
     
-    <snape-ed-commitment-stats [fiscalYear]="fiscalYear" [user]="assistant"></snape-ed-commitment-stats>
+    <snape-ed-commitment-stats *ngIf="fiscalYear" [fiscalYear]="fiscalYear" [user]="assistant"></snape-ed-commitment-stats>
     <a (click)="ccond = !ccond" style="cursor:pointer;"><i class="fa fa-plus-square" *ngIf="!ccond"></i><i class="fa fa-minus-square" *ngIf="ccond"></i> Change Committed Hours </a>
     <div class="row" *ngIf="ccond">
         <div class="well">

@@ -43,11 +43,11 @@ export class SnapedUserComponent {
     {}
 
     ngOnInit(){
-      this.fiscalyearService.current('snapEd').subscribe(
+      /* this.fiscalyearService.current('snapEd').subscribe(
         res => {
           this.fiscalYear = res;
         }
-      );
+      ); */
       this.route.params
             .switchMap( (params: Params) => this.userService.byId(params['id'])).
             subscribe(
@@ -95,6 +95,15 @@ export class SnapedUserComponent {
           }
         );
         */
+    }
+
+    fiscalYearSwitched(event:FiscalYear){
+      this.fiscalYear = null;
+      var scope = this;
+      setTimeout(function(){
+          
+          scope.fiscalYear = event;
+      }, 200);
     }
 
     checkIfAssistant(user:User):boolean{

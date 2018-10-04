@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { PlanningUnit, User } from '../../user/user.service';
 import { SnapedService } from '../snaped.service';
 import { Observable } from 'rxjs/Observable';
+import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
@@ -11,6 +12,7 @@ import { Observable } from 'rxjs/Observable';
 export class ServicelogSnapedStatsComponent { 
     @Input() planningUnit: PlanningUnit;
     @Input() user:User | null = null;
+    @Input() fiscalYear:FiscalYear;
 
     @Output() onCalculated = new EventEmitter<number>();
 
@@ -32,7 +34,7 @@ export class ServicelogSnapedStatsComponent {
     ngOnInit(){
       this.loading = true;
       if(this.user != null){
-          this.service.statsPerIndividual(this.user.id).subscribe(
+          this.service.statsPerIndividual(this.user.id, this.fiscalYear.name).subscribe(
             res => {
               this.stats = res;
               this.processStats();

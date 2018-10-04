@@ -45,15 +45,15 @@ export class SnapedService {
                 .catch(this.handleError);
     }
 
-    statsPerIndividual(userId:number){
-        var url = this.baseUrl + 'userstats/' + userId;
+    statsPerIndividual(userId:number, fy:string = "0"){
+        var url = this.baseUrl + 'userstats/' + userId + '/' + fy;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => res.json() )
                 .catch(this.handleError);
     }
 
-    commitmentPerIndividual(userId:number){
-        var url = this.baseUrl + 'commitments/' + userId;
+    commitmentPerIndividual(userId:number, fy:string = "0"){
+        var url = this.baseUrl + 'commitments/' + userId + '/' + fy;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => res.json() )
                 .catch(this.handleError);

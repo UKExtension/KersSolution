@@ -34,7 +34,7 @@ export class SnapedCommitmentStatsComponent {
           res => {
             this.projectTypes = res;
             if(this.user != null){
-              this.service.commitmentPerIndividual(this.user.id).subscribe(
+              this.service.commitmentPerIndividual(this.user.id, this.fiscalYear.name).subscribe(
                 res => {
                   this.commitments = res;
                 },

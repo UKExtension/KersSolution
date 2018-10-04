@@ -199,12 +199,11 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet("userstats/{userId}")]
+        [HttpGet("userstats/{userId}/{fy?}")]
         [Authorize]
-        public IActionResult Userstats(int userId){
+        public IActionResult Userstats(int userId, string fy="0"){
 
-            var fiscalYear = this.fiscalYearRepo.currentFiscalYear("snapEd");
-            
+            var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
             var numPerMonth = context.Activity.
                                 Where( e=>
                                         e.KersUser.Id == userId 
