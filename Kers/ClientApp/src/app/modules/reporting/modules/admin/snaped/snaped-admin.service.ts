@@ -108,8 +108,8 @@ export class SnapedAdminService {
 
 
 
-    countyBudget(countyId:number = 0){
-        var url = this.baseUrl + "countybudget/"+countyId;
+    countyBudget(countyId:number = 0, fy:string="0"){
+        var url = this.baseUrl + "countybudget/"+countyId + '/' + fy;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => <number>res.json())
                 .catch(this.handleError);

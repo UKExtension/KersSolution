@@ -107,42 +107,49 @@ export class ServicelogSnapedReportComponent {
                 this.user = <User>res;
                 this.county = this.user.rprtngProfile.planningUnit;
                 this.checkIfAssistant();
-                if(this.isSnapEdAssistant){
-                    this.service.assistantReimbursments(this.user.id).subscribe(
-                        res => {
-                          this.reimbursments = <SnapBudgetReimbursementsNepAssistant[]>res;
-                          this.service.assistantBudget().subscribe(
-                            res => {
-                              this.budget = <number>res;
-                              this.calculateTotalReinbursments();
-                            },
-                            err => this.errorMessage = <any> res
-                          );
-                        },
-                        err => this.errorMessage = <any> res
-                      );
-                }
-                
-
-
-                  this.service.countyBudget(this.county.id).subscribe(
-                    res=>{
-                      this.countyBudget = <number>res;
-                    },
-                    err => this.errorMessage = <any>err
-                  );
-                  this.service.countyReimbursments(this.county.id).subscribe(
-                    res => {
-                      this.countyReimbursements = res;
-                      this.calculateTotalCountyReinbursments();
-                    },
-                    err => this.errorMessage = <any>err
-                  )
             },
             err => this.errorMessage = <any>err
         );
         this.defaultTitle();
     }
+
+    getDefaultBudgets(){
+        if(this.isSnapEdAssistant){
+            this.service.assistantReimbursments(this.user.id).subscribe(
+                res => {
+                  this.reimbursments = <SnapBudgetReimbursementsNepAssistant[]>res;
+                  this.service.assistantBudget().subscribe(
+                    res => {
+                      this.budget = <number>res;
+                      this.calculateTotalReinbursments();
+                    },
+                    err => this.errorMessage = <any> res
+                  );
+                },
+                err => this.errorMessage = <any> err
+            );
+        }
+        
+
+
+        this.service.countyBudget(this.county.id, this.fiscalYear.name).subscribe(
+            res=>{
+                console.log(res);
+                this.countyBudget = <number>res;
+                this.service.countyReimbursments(this.county.id).subscribe(
+                    res => {
+                        this.countyReimbursements = res;
+                        this.calculateTotalCountyReinbursments();
+                    },
+                    err => this.errorMessage = <any>err
+                )
+            },
+            err => this.errorMessage = <any>err
+        );
+            
+    }
+
+
     calculateTotalReinbursments(){
         this.totalReimbursementsAmount = 0;
         for( let r of this.reimbursments){
@@ -175,6 +182,7 @@ export class ServicelogSnapedReportComponent {
         setTimeout(function(){
             
             scope.fiscalYear = event;
+            scope.getDefaultBudgets();
         }, 200);
     }
 

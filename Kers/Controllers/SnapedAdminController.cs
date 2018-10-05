@@ -338,9 +338,15 @@ namespace Kers.Controllers
             }
             return new OkObjectResult(bg);
         }
-        [HttpGet("assistantbudget")]
-        public IActionResult AssistantBudget(){
-            var defaultBudget = this.context.SnapBudgetAllowance.Find(1).AnnualBudget;
+        [HttpGet("assistantbudget/{fy?}")]
+        public IActionResult AssistantBudget( string fy = "0" ){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalRepo.currentFiscalYear("snapEd");
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "snapEd").FirstOrDefault();
+            }
+            var defaultBudget = this.context.SnapBudgetAllowance.Where( b => b.FiscalYear == fiscalYear && b.BudgetDescription == "SNAP Ed NEP Assistant Budget").FirstOrDefault();
             return new OkObjectResult(defaultBudget);
         }
 
