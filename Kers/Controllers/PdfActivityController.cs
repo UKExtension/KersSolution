@@ -209,7 +209,9 @@ namespace Kers.Controllers
 			pdfCanvas.DrawText(activity.Hours.ToString(), 185, startingY + 65, getPaint(10.0f, 2));
 			
 
-			var cleanned = Regex.Replace(activity.Description, "<.*?>", String.Empty).Trim();
+			var cleanned = Kers.HtmlHelpers.StripHtmlHelper.StripHtml(activity.Description).Trim();
+			
+			//var cleanned =Regex.Replace(activity.Description, "<.*?>", String.Empty).Trim();
 			var lines = SplitLineToMultiline(cleanned, 110);
 
 			var StartY = startingY + 85;
