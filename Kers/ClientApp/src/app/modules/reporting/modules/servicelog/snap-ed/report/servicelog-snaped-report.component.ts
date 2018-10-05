@@ -115,11 +115,12 @@ export class ServicelogSnapedReportComponent {
 
     getDefaultBudgets(){
         if(this.isSnapEdAssistant){
-            this.service.assistantReimbursments(this.user.id).subscribe(
+            this.service.assistantReimbursments(this.user.id, this.fiscalYear.name).subscribe(
                 res => {
                   this.reimbursments = <SnapBudgetReimbursementsNepAssistant[]>res;
-                  this.service.assistantBudget().subscribe(
+                  this.service.assistantBudget(this.fiscalYear.name).subscribe(
                     res => {
+                        console.log(res);
                       this.budget = <number>res;
                       this.calculateTotalReinbursments();
                     },
@@ -134,9 +135,8 @@ export class ServicelogSnapedReportComponent {
 
         this.service.countyBudget(this.county.id, this.fiscalYear.name).subscribe(
             res=>{
-                console.log(res);
                 this.countyBudget = <number>res;
-                this.service.countyReimbursments(this.county.id).subscribe(
+                this.service.countyReimbursments(this.county.id, this.fiscalYear.name).subscribe(
                     res => {
                         this.countyReimbursements = res;
                         this.calculateTotalCountyReinbursments();

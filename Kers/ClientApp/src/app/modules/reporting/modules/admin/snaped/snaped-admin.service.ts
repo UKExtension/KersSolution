@@ -38,8 +38,8 @@ export class SnapedAdminService {
                 .catch(this.handleError);
     }
 
-    assistantBudget(){
-        var url = this.baseUrl + "assistantbudget";
+    assistantBudget(fiscalYear:string = "0"){
+        var url = this.baseUrl + "assistantbudget" + '/' + fiscalYear;
         return this.http.get(this.location.prepareExternalUrl(url))
             .map(res => <number>res.json())
             .catch(this.handleError);

@@ -347,7 +347,7 @@ namespace Kers.Controllers
                 fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "snapEd").FirstOrDefault();
             }
             var defaultBudget = this.context.SnapBudgetAllowance.Where( b => b.FiscalYear == fiscalYear && b.BudgetDescription == "SNAP Ed NEP Assistant Budget").FirstOrDefault();
-            return new OkObjectResult(defaultBudget);
+            return new OkObjectResult(defaultBudget.AnnualBudget);
         }
 
     }
