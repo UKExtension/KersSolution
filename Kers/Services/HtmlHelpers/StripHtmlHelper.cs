@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
+
 namespace Kers.HtmlHelpers
 {
     public static class StripHtmlHelper
@@ -19,8 +20,9 @@ namespace Kers.HtmlHelpers
 
         public static string StripHtml(this string input)
         {
-            string result = System.Text.RegularExpressions.Regex.Replace(input, "<[^>]*>|&nbsp;|&rsquo;", string.Empty);
-    
+            string result = System.Text.RegularExpressions.Regex
+                            .Replace(input, "<[^>]*>|&nbsp;|&rsquo;|&#39;|&quot;", string.Empty);
+            result = System.Net.WebUtility.HtmlDecode(result);
             return result;
         }
 

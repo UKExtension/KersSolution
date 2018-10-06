@@ -46,7 +46,7 @@ namespace Kers.Controllers.Reports.ViewComponents
                 }
                 Shuffle(array);
                 story = stories[array[0]];
-                var str = System.Text.RegularExpressions.Regex.Replace(story.Story, "<[^>]*>", string.Empty);
+                var str = Kers.HtmlHelpers.StripHtmlHelper.StripHtml(story.Story);
                 ViewData["Extract"] = str.Substring(0, Math.Min(str.Length, 500));
                 if( array.Count() > 3 ){
                     var More = new List<StoryViewModel>();

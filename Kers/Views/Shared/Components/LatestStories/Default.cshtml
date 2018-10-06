@@ -28,7 +28,8 @@
                             <p class="excerpt">
                             
                                 @{
-                                var stryn = System.Text.RegularExpressions.Regex.Replace(@theStory.Story, "<[^>]*>", string.Empty);
+                                   var stryn = Html.StripHtml(@theStory.Story);
+                                //var stryn = System.Text.RegularExpressions.Regex.Replace(@theStory.Story, "<[^>]*>", string.Empty);
                             }
                     
                             @stryn.Substring(0, Math.Min(stryn.Length, 200))... <a asp-route="ReportsFullStory" asp-route-fy="@fy" asp-route-id="@theStory.StoryId">Read&nbsp;More</a>
