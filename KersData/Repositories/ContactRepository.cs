@@ -1236,14 +1236,16 @@ namespace Kers.Models.Repositories
                             Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                             Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                             Include(a => a.RaceEthnicityValues).
-                            OrderBy(a => a.Created).Last();
+                            OrderBy(a => a.Created).LastOrDefault();
                         var serialized = JsonConvert.SerializeObject(lstrvsn);
                         _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                             {
                                 AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                             });
                     }
-                    GroupRevisions.Add(lstrvsn);
+                    if(lstrvsn != null){
+                        GroupRevisions.Add(lstrvsn);
+                    }
                     OptionNumbers.AddRange(lstrvsn.ActivityOptionNumbers);
                     RaceEthnicities.AddRange(lstrvsn.RaceEthnicityValues);
                 }
@@ -1282,7 +1284,7 @@ namespace Kers.Models.Repositories
                                 Where(r => r.ContactId == rev).
                                 Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                                 Include(a => a.ContactRaceEthnicityValues).
-                                OrderBy(a => a.Created).Last();
+                                OrderBy(a => a.Created).LastOrDefault();
                         
 
                         var serialized = JsonConvert.SerializeObject(lstrvsn);
@@ -1291,7 +1293,9 @@ namespace Kers.Models.Repositories
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                         });         
                     }
-                    GroupRevisions.Add(lstrvsn);
+                    if(lstrvsn != null ){
+                        GroupRevisions.Add(lstrvsn);
+                    }
                     OptionNumbers.AddRange(lstrvsn.ContactOptionNumbers);
                     RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
                 }
