@@ -1245,9 +1245,10 @@ namespace Kers.Models.Repositories
                     }
                     if(lstrvsn != null){
                         GroupRevisions.Add(lstrvsn);
+                        OptionNumbers.AddRange(lstrvsn.ActivityOptionNumbers);
+                        RaceEthnicities.AddRange(lstrvsn.RaceEthnicityValues);
                     }
-                    OptionNumbers.AddRange(lstrvsn.ActivityOptionNumbers);
-                    RaceEthnicities.AddRange(lstrvsn.RaceEthnicityValues);
+                   
                 }
 
                 var actvts = new PerGroupActivities();
