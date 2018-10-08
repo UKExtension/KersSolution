@@ -102,14 +102,17 @@ namespace Kers.Controllers
                 logs = logs.Where( i => i.Type == type );
             }
             logs = logs.
-                        Include(l => l.User).
-                            ThenInclude(u => u.PersonalProfile).
-                            ThenInclude(pr => pr.UploadImage).
-                            ThenInclude(pr => pr.UploadFile).
                         OrderByDescending( l => l.Time).
                         Take(theAmount);
             foreach(var log in logs){
-                if(log.User != null && log.User.PersonalProfile != null ){
+
+                if(log.UserId != null ){
+                    log.User = _context.KersUser
+                                    .Where( u => u.Id == log.UserId)
+                                    .Include( u => u.PersonalProfile)
+                                        .ThenInclude( p => p.UploadImage)
+                                        .ThenInclude( i => i.UploadFile )
+                                    .FirstOrDefault();
                     if(log.User.PersonalProfile.UploadImage != null){
                         log.User.PersonalProfile.UploadImage.UploadFile.Content = null;
                     }

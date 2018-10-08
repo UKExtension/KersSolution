@@ -67,6 +67,10 @@ export class LogHomeComponent implements OnInit {
         this.searchTermStream.next("");
     }
 
+    update(){
+        this.searchTermStream.next("");
+    }
+
     
 
     onSearch(event){

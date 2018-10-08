@@ -1,5 +1,6 @@
 
     <input type="text" placeholder="search by user's name" (keyup)="onSearch($event)" /> <br>
+    <div style="float: right; width: 30px; height: 30px; cursor: pointer;" (click)="update()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></div>
     <a (click)="condition = !condition"><i class="fa fa-minus-square" *ngIf="condition"></i>
      <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options <span class="text-muted">(date range, type )</span></a>
     <div class="row">

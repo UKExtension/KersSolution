@@ -24,6 +24,7 @@ namespace Kers.Models.Entities.KERScore
         public string Ip {get; set;}
         public string Agent {get; set;}
         public KersUser User {get;set;}
+        public int? UserId {get;set;}
 
     }
 }
