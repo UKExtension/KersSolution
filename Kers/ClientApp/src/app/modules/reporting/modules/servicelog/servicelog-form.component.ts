@@ -23,7 +23,7 @@ export class ServicelogFormComponent implements OnInit{
 
 
 
-    adminPrograms = [36, 37];
+    adminPrograms = [36, 37, 236, 206];
     isAdmin = false;
 
     @Input() activity:Servicelog = null;
