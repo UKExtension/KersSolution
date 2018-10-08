@@ -3,15 +3,19 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "Success Story";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var fy = ViewData["fy"] as string;
 }
 @model Kers.Models.ViewModels.StoryViewModel
 <br><br>
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
         <h3>@Model.Title</h3>
-        <p><strong>Author: </strong>@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</p>
-        <p><strong>Planning Unit: </strong>@Model.PlanningUnit.Name</p>
-        <p><strong>Major Program: </strong>@Model.MajorProgram.Name</p>
+        <p><strong>Author: </strong><a asp-controller="People" asp-action="Person" asp-route-id="@Model.KersUser.Id" asp-route-fy="@fy" >@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</a></p>
+        <p><strong>Planning Unit: </strong><a asp-controller="Reports" asp-action="County" asp-route-id="@Model.PlanningUnit.Id" asp-route-fy="@fy">@Model.PlanningUnit.Name</a></p>
+        <p><strong>Major Program: </strong><a asp-controller="MajorProgram" 
+                                    asp-action="Program" 
+                                    asp-route-id="@Model.MajorProgram.Id"
+                                    >@Model.MajorProgram.Name</a></p>
         @if(@Model.PlanOfWork != null){
             <p><strong>Plan of Work: </strong>@Model.PlanOfWork.Title</p>
         }

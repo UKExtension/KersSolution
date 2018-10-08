@@ -122,6 +122,8 @@ namespace Kers.Controllers.Reports
                                             //.Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
                                             .Include( s => s.Revisions ).ThenInclude( r => r.StoryOutcome)
                                             .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
+                                                .ThenInclude( m => m.StrategicInitiative)
+                                                .ThenInclude( i => i.FiscalYear)
                                             .FirstOrDefaultAsync();
 
             if(story == null){
@@ -145,6 +147,9 @@ namespace Kers.Controllers.Reports
                 strViewModel.ImageName = firstImage.UploadImage.UploadFile.Name;
             }else{
                 strViewModel.ImageName = "";
+            }
+            if( fy == "0"){
+                fy = lastRevision.MajorProgram.StrategicInitiative.FiscalYear.Name;
             }
             ViewData["fy"] = fy;
             return View(strViewModel);
