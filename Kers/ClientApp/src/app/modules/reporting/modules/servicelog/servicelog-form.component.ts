@@ -49,7 +49,7 @@ export class ServicelogFormComponent implements OnInit{
     hasIndirect = false;
     hasDirect = false;
 
-    adminPrograms = [36, 37, 236, 206];
+    //adminPrograms = [36, 37, 236, 206];
     adminProgramsCodes = [7001, 7002];
     isAdmin = false;
 
@@ -148,9 +148,22 @@ export class ServicelogFormComponent implements OnInit{
                     this.checkIfAdminValue(this.activity.majorProgramId);
                 }else{
                     if(this.isNewAdmin){
-                        this.activityForm.patchValue({majorProgramId: this.adminPrograms[2], isSnap: true});
-                        this.checkIfAdminValue(this.adminPrograms[2]);
-                        this.snapEligable = true;
+
+
+                        //Find Major Program Id of the Admin Functions Pac Code
+                        var program:MajorProgram;
+                        for( var initiative of this.initiatives ){
+                            var adm = initiative.majorPrograms.filter( m => m.pacCode == this.adminProgramsCodes[1] );
+                            if( adm.length > 0 ){
+                                program = adm[0];
+                                break;
+                            }
+                        }
+                        if(program != undefined){
+                            this.activityForm.patchValue({majorProgramId: program.id, isSnap: true});
+                            this.checkIfAdminValue(program.id);
+                            this.snapEligable = true;
+                        }
                     }
                 }
             },
