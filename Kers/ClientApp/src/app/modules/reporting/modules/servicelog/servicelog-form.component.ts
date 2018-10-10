@@ -22,10 +22,6 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
 export class ServicelogFormComponent implements OnInit{ 
 
 
-
-    adminPrograms = [36, 37, 236, 206];
-    isAdmin = false;
-
     @Input() activity:Servicelog = null;
     @Input() activityId:number;
     @Input() activityDate:Date;
@@ -52,6 +48,10 @@ export class ServicelogFormComponent implements OnInit{
     snapEligable = false;
     hasIndirect = false;
     hasDirect = false;
+
+    adminPrograms = [36, 37, 236, 206];
+    adminProgramsCodes = [7001, 7002];
+    isAdmin = false;
 
     raceEthnicityIndex = 0;
 
@@ -141,7 +141,12 @@ export class ServicelogFormComponent implements OnInit{
 
     getInitiatives( fy:FiscalYear ){
         this.programsService.listInitiatives( fy.name ).subscribe(
-            i => this.initiatives = i,
+            i => {
+                this.initiatives = i;
+                if(this.activity != null){
+                    this.checkIfAdminValue(this.activity.majorProgramId);
+                }
+            },
             error =>  this.errorMessage = <any>error
         );
     }
@@ -423,7 +428,7 @@ export class ServicelogFormComponent implements OnInit{
         if(this.activity.isPolicy){
             this.snapPolicy = true;
         }
-        this.checkIfAdminValue(this.activity.majorProgramId);
+        
         
     }
 
@@ -534,12 +539,24 @@ export class ServicelogFormComponent implements OnInit{
     }
 
     checkIfAdminValue(programId:number){
-        if(this.adminPrograms.indexOf(programId) > -1){
-            this.isAdmin = true;
-            this.activityForm.patchValue({snapAdmin: true});
-        }else{
-            this.isAdmin = false;
-            this.activityForm.patchValue({snapAdmin: false});
+
+        var program:MajorProgram;
+        for( var initiative of this.initiatives ){
+            var adm = initiative.majorPrograms.filter( m => m.id == programId );
+            if( adm.length > 0 ){
+                program = adm[0];
+                break;
+            }
+        }
+        
+        if(program != undefined){
+            if(this.adminProgramsCodes.indexOf(program.pacCode) > -1 ){   
+                this.isAdmin = true;
+                this.activityForm.patchValue({snapAdmin: true});
+            }else{
+                this.isAdmin = false;
+                this.activityForm.patchValue({snapAdmin: false});
+            }
         }
     }
 

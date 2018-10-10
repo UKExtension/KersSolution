@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivityService, ActivityOptionNumber, Race } from '../../activity/activity.service';
 import {Contact, ContactService} from '../contact.service';
 
 import { Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
+import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
+import { User } from '../../user/user.service';
 
 
 @Component({
   templateUrl: 'contact-stats-program.component.html'
 })
 export class ContactStatsProgramComponent { 
-
+    @Input() user:User;
 
     errorMessage: string;
     activities:Observable<{}[]>;
@@ -32,17 +34,26 @@ export class ContactStatsProgramComponent {
 
     ngOnInit(){
         
-        this.activities = this.contactService.summaryPerProgram().share();
+        
         this.races = this.service.races();
         this.optionNumbers = this.service.optionnumbers();
+        
+        
+        
+    }
+
+    fiscalYearSwitched(event:FiscalYear){
+        if(this.user == null){
+            this.activities = this.service.summaryPerProgram(0, event.name );
+        }else{
+            this.activities = this.service.summaryPerProgram(this.user.id, event.name);
+        }
         this.activities.subscribe(
             res=>{
                 this.createChart(res);
             },
             err => this.errorMessage = <any> err
         );
-        
-        
     }
 
     createChart(activities){
@@ -71,6 +82,20 @@ export class ContactStatsProgramComponent {
                 }
             },
             calculable : true,
+            title: [{
+                text: 'Hours',
+                subtext: 'by Major Program',
+                x: '25%',
+                y: '20%',
+
+                textAlign: 'center'
+            }, {
+                text: 'Audience',
+                subtext: 'by Major Program',
+                x: '75%',
+                y: '20%',
+                textAlign: 'center'
+            }],
             series : [  this.daysSeries(activities),
                         this.audienceSeries(activities)
             ]
@@ -84,7 +109,7 @@ export class ContactStatsProgramComponent {
         var pieData = [];
 
         for( var dt of activities){
-            pieData.push(dt.program[0].progr.name);
+            pieData.push(dt.majorProgram.name);
         }
 
         return pieData;
@@ -97,16 +122,25 @@ export class ContactStatsProgramComponent {
         var pieData = [];
 
         for( var dt of activities){
-            var d = {value: dt.days, name: dt.program[0].progr.name};
+            var d = {value: dt.hours, name: dt.majorProgram.name};
             pieData.push(d);
         }
 
 
         var serie = {
-                    name:'Days per Major Program',
+                    name:'Hours per Major Program',
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{b}<br/>{c} hours ({d}%)"
+                    },
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    },
                     type:'pie',
-                    radius : [30, 110],
-                    center : ['25%', '50%'],
+                    radius : [20, 90],
+                    center : ['25%', '70%'],
                     roseType : 'radius',
                     data: pieData
                 }
@@ -122,7 +156,7 @@ export class ContactStatsProgramComponent {
         var pieData = [];
 
         for( var dt of activities){
-            var d = {value: (dt.females + dt.males), name: dt.program[0].progr.name};
+            var d = {value: (dt.audience), name: dt.majorProgram.name};
             pieData.push(d);
         }
 
@@ -132,8 +166,17 @@ export class ContactStatsProgramComponent {
         var serie = {
                     name:'Audience by Major Program',
                     type:'pie',
-                    radius : [30, 110],
-                    center : ['75%', '50%'],
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{b}<br/>Audience {c} ({d}%)"
+                    },
+                    radius : [20, 90],
+                    center : ['75%', '70%'],
                     roseType : 'radius',
                     data: pieData
                 };

@@ -23,8 +23,6 @@ import {ContactStatsProgramhRow} from './stats/contact-stats-program-row.compone
 
 
 import {ContactService} from './contact.service';
-import { ActivityStatsRow } from '../activity/stats/activity-stats-row.component';
-import { ActivityStatsMonthRow } from '../activity/stats/activity-stats-month-row.component';
  
 
 
@@ -48,9 +46,7 @@ import { ActivityStatsMonthRow } from '../activity/stats/activity-stats-month-ro
                     ContactStatsMonthComponent,
                     ContactStatsMonthRow,
                     ContactStatsProgramComponent,
-                    ContactStatsProgramhRow,
-                    ActivityStatsRow,
-                    ActivityStatsMonthRow
+                    ContactStatsProgramhRow
                  
                 ],
   providers:    [  

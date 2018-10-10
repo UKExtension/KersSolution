@@ -1,4 +1,4 @@
-<br><br><fiscal-year-switcher *ngIf="fiscalYearSwitcher" [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+<br>
  <div class="row" *ngIf="!user">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="dashboard_graph">
@@ -15,6 +15,9 @@
 
           </div>
         <div class="row">
+            <div class="col-xs-12">
+                <fiscal-year-switcher *ngIf="fiscalYearSwitcher" [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher><br>
+            </div>
             <div class="fa-hover col-md-3 col-sm-4 col-xs-12"><a (click)="showChart = !showChart"><i class="fa fa-bar-chart" style="cursor:pointer;"></i></a>
             </div>
             <div *ngIf="showChart">

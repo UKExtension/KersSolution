@@ -6,15 +6,15 @@ import { Observable } from "rxjs/Observable";
 @Component({
     selector: '[contactStatsMonthRow]',
     template: `
-        <td nowrap>{{activity.year}}-{{activity.month}}</td>
-        <td>{{activity.days}}</td>
-        <td>{{activity.multistate}}</td>
-        <td>{{activity.males + activity.females}}</td>
-        <td *ngFor="let race of races | async">{{raceValue(race)}}</td>
-        <td>{{ethnicity(2)}}</td>
-        <td>{{activity.females}}</td>
-        <td>{{activity.males}}</td>
-        <td *ngFor="let opt of optionNumbers | async">{{optionValue(opt)}}</td>
+    <td nowrap>{{activity.year}}-{{activity.month}}</td>
+    <td>{{activity.hours}}</td>
+    <td>{{activity.multistate}}</td>
+    <td>{{activity.females+activity.males}}</td>
+    <td *ngFor="let race of races | async">{{raceValue(race)}}</td>
+    <td>{{ethnicity(2)}}</td>
+    <td>{{activity.females}}</td>
+    <td>{{activity.males}}</td>
+    <td *ngFor="let opt of optionNumbers | async">{{optionValue(opt)}}</td>
         
     `
 })
@@ -25,7 +25,7 @@ export class ContactStatsMonthRow implements OnInit {
     races:Observable<Race[]>;
     optionNumbers:Observable<ActivityOptionNumber[]>
     errrorMessage:string;
-
+    multistate:number;
 
     constructor( 
         private service:ActivityService
@@ -40,32 +40,26 @@ export class ContactStatsMonthRow implements OnInit {
 
     raceValue(race:Race){
         var val = 0;
-        for (var r of this.activity.races){
-            var valse = r.revs.filter(v => v.raceId == race.id);
-            for(var v of valse){
-                val += v.amount;
-            }
+        var valse = this.activity.raceEthnicityValues.filter(v => v.raceId == race.id);
+        for(var v of valse){
+            val += v.amount;
         }
         return val;
     }
     ethnicity(ethnct:number){
         var val = 0;
-        for (var r of this.activity.races){
-            var valse = r.revs.filter(v => v.ethnicityId == ethnct);
-            for(var v of valse){
-                val += v.amount;
-            }
+        var valse = this.activity.raceEthnicityValues.filter(v => v.ethnicityId == ethnct);
+        for(var v of valse){
+            val += v.amount;
         }
         return val;
     }
     optionValue(op:ActivityOptionNumber){
         var val = 0;
-        for (var r of this.activity.optionNumbers){
-            var valse = r.revs.filter(v => v.activityOptionNumberId == op.id);
-            for(var v of valse){
-                val += v.value;
-            }
-        } 
+        var valse = this.activity.optionNumberValues.filter(v => v.activityOptionNumberId == op.id);
+        for(var v of valse){
+            val += v.value;
+        }
         return val;
     }
 }

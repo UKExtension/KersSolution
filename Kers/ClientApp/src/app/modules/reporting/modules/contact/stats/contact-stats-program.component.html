@@ -15,8 +15,9 @@
 
           </div>
         <div class="row">
-            
-
+            <div class="col-xs-12">
+                <fiscal-year-switcher [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher><br>
+            </div>
             <div class="fa-hover col-md-3 col-sm-4 col-xs-12"><a (click)="showChart = !showChart"><i class="fa fa-bar-chart" style="cursor:pointer;"></i></a>
             </div>
             <div *ngIf="showChart">
@@ -34,14 +35,15 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th nowrap>Major Program</th>
-                                <th>Days</th>
-                                <th>Total Contacts</th>
-                                <th *ngFor="let race of races | async">{{race.name}}</th>
-                                <th>Hispanic</th>
-                                <th>Female</th>
-                                <th>Male</th>
-                                <th *ngFor="let opt of optionNumbers | async">{{opt.name}}</th>
+                                    <th nowrap>Major Program</th>
+                                    <th>Hours</th>
+                                    <th>Multi-State</th>
+                                    <th>Total Contacts</th>
+                                    <th *ngFor="let race of races | async">{{race.name}}</th>
+                                    <th>Hispanic</th>
+                                    <th>Female</th>
+                                    <th>Male</th>
+                                    <th *ngFor="let opt of optionNumbers | async">{{opt.name}}</th>
                             </tr>
                         </thead>
                         

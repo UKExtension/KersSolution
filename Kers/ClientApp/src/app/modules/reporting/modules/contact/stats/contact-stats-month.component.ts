@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { ActivityService, Race, ActivityOptionNumber, Activity } from '../../activity/activity.service';
 import {ContactService, Contact} from '../contact.service';
 
-import { Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 import { User } from '../../user/user.service';
@@ -20,8 +19,7 @@ export class ContactStatsMonthComponent {
     races:Observable<Race[]>;
     optionNumbers:Observable<ActivityOptionNumber[]> 
 
-    constructor( 
-        private router: Router,
+    constructor(
         private service:ActivityService,
         private contactService:ContactService
     )   

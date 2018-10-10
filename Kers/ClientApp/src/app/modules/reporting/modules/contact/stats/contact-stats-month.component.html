@@ -39,7 +39,7 @@
                         </thead>
                         
                         <tbody>
-                            <tr *ngFor="let activity of activities | async" [activityStatsMonthRow]="activity"></tr>
+                            <tr *ngFor="let activity of activities | async" [contactStatsMonthRow]="activity"></tr>
                             <tr *ngIf="activities | async as actvts">
                                 <td><strong>Total</strong></td>
                                 <td><strong>{{totalHours(actvts)}}</strong></td>
