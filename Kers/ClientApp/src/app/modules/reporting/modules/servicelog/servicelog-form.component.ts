@@ -144,7 +144,14 @@ export class ServicelogFormComponent implements OnInit{
             i => {
                 this.initiatives = i;
                 if(this.activity != null){
+                    this.patch();
                     this.checkIfAdminValue(this.activity.majorProgramId);
+                }else{
+                    if(this.isNewAdmin){
+                        this.activityForm.patchValue({majorProgramId: this.adminPrograms[2], isSnap: true});
+                        this.checkIfAdminValue(this.adminPrograms[2]);
+                        this.snapEligable = true;
+                    }
                 }
             },
             error =>  this.errorMessage = <any>error
@@ -345,11 +352,7 @@ export class ServicelogFormComponent implements OnInit{
         this.myDatePickerOptions.editableDateField = false;
         this.myDatePickerOptions.showClearDateBtn = false;
         
-        if(this.isNewAdmin){
-            this.activityForm.patchValue({majorProgramId: this.adminPrograms[0], isSnap: true});
-            this.checkIfAdminValue(this.adminPrograms[0]);
-            this.snapEligable = true;
-        }
+        
         if(this.isNewDirect || this.isNewIndirect){
             this.activityForm.patchValue({isSnap: true});
             this.snapEligable = true;
@@ -380,7 +383,7 @@ export class ServicelogFormComponent implements OnInit{
                     }});
             }
 
-
+            this.logLoading = false;
 
         }else{
             let date = new Date(this.activity.activityDate);
@@ -390,10 +393,10 @@ export class ServicelogFormComponent implements OnInit{
             }else{
                 this.isPastSnapFiscalYear = false;
             }
-            this.patch();
+            
         }
 
-        this.logLoading = false;
+        
     }
 
     patch(){
@@ -429,7 +432,7 @@ export class ServicelogFormComponent implements OnInit{
             this.snapPolicy = true;
         }
         
-        
+        this.logLoading = false;
     }
 
     
