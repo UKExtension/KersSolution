@@ -16,7 +16,9 @@
 
           </div>
         <div class="row">
-            
+            <div class="col-xs-12">
+                <fiscal-year-switcher [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher><br>
+            </div>
             <div class="col-xs-12">
                 <div *ngIf="(activities | async)?.length == 0">No Statistical contact records.</div>
                 <div class="table-responsive" *ngIf="(activities | async)?.length != 0">
@@ -37,7 +39,18 @@
                         </thead>
                         
                         <tbody>
-                            <tr *ngFor="let activity of activities | async" [contactStatsMonthRow]="activity"></tr>
+                            <tr *ngFor="let activity of activities | async" [activityStatsMonthRow]="activity"></tr>
+                            <tr *ngIf="activities | async as actvts">
+                                <td><strong>Total</strong></td>
+                                <td><strong>{{totalHours(actvts)}}</strong></td>
+                                <td><strong>{{totalMultistate( actvts)}}</strong></td>
+                                <td><strong>{{totalContacts(actvts)}}</strong></td>
+                                <td *ngFor="let race of races | async"><strong>{{raceValue(race, actvts)}}</strong></td>
+                                <td><strong>{{ethnicityValue(2, actvts)}}</strong></td>
+                                <td><strong>{{totalFemales( actvts)}}</strong></td>
+                                <td><strong>{{totalMales( actvts)}}</strong></td>
+                                <td *ngFor="let opt of optionNumbers | async"><strong>{{optionNumberValue(opt, actvts)}}</strong></td>
+                            </tr>
                         </tbody>
                     </table>
                     <loading *ngIf="!(activities | async)"></loading>
