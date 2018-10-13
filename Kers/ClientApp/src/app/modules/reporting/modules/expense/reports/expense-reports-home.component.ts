@@ -46,6 +46,6 @@ export class ExpenseReportsHomeComponent {
 
 
     defaultTitle(){
-        this.reportingService.setTitle("Expense Records Reports");
+        this.reportingService.setTitle("Mileage Records Reports");
     }
 }

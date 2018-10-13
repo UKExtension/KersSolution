@@ -157,7 +157,7 @@ else if( district != null)
                         {
                             <li class="media event">
                             <div class="media-body">
-                                <a class="title" asp-controller="MajorProgram"  asp-action="Program" asp-route-id=@prgrmData.KersUser.Id>@prgrmData.KersUser.PersonalProfile.FirstName @prgrmData.KersUser.PersonalProfile.LastName</a>
+                                <a class="title" asp-controller="People"  asp-action="Person" asp-route-id=@prgrmData.KersUser.Id>@prgrmData.KersUser.PersonalProfile.FirstName @prgrmData.KersUser.PersonalProfile.LastName</a>
                                 <p><strong>@prgrmData.Audience.Sum(s => s)</strong> Contacts (@prgrmData.Male.Sum(s => s) Male, @prgrmData.Female.Sum(s => s) Female)</p>
                                 <p> <small>@prgrmData.Hours.Sum(s => s) Hours</small>
                                 </p>

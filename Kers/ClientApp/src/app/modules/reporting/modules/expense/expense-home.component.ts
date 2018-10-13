@@ -8,7 +8,7 @@ import { Router } from "@angular/router";
   template: `
         <div>
             <div class="text-right">
-                <a class="btn btn-info btn-xs" *ngIf="!newExpense" (click)="newExpense = true">+ new expense record</a>
+                <a class="btn btn-info btn-xs" *ngIf="!newExpense" (click)="newExpense = true">+ new mileage record</a>
             </div>
             <expense-form *ngIf="newExpense" (onFormCancel)="newExpense=false" (onFormSubmit)="newExpenseSubmitted($event)"></expense-form>
         </div>
@@ -127,6 +127,6 @@ export class ExpenseHomeComponent {
     }
 
     defaultTitle(){
-        this.reportingService.setTitle("Expense Records");
+        this.reportingService.setTitle("Mileage Records");
     }
 }

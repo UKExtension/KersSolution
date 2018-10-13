@@ -13,7 +13,7 @@ import { Component, OnInit } from '@angular/core';
           </div>
           <div class="x_content">  
             <a routerLink="/reporting/servicelog" class="btn btn-dark btn-lg btn-block">Service Log</a>
-            <a routerLink="/reporting/expense" class="btn btn-dark btn-lg btn-block">Expense Records</a>
+            <a routerLink="/reporting/expense" class="btn btn-dark btn-lg btn-block">Mileage Records</a>
             <a routerLink="/reporting/story" class="btn btn-dark btn-lg btn-block">Success Stories</a>
           </div>
         </div>

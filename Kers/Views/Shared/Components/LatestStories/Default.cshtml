@@ -1,6 +1,8 @@
 @model List<Kers.Models.ViewModels.StoryViewModel>;
 @{
     var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    var PlanningUnitId = ViewData["PlanningUnitId"] as int?;
+    var MajorProgramId = ViewData["MajorProgramId"] as int?;
     var fy = "0";
     if(FiscalYear != null ){
         fy = FiscalYear.Name;
@@ -40,6 +42,18 @@
                 }
             </ul>
         </div>
-        <a asp-controller="Story" asp-action="Index" asp-route-fy="@fy" class="btn btn-sm btn-primary">More Stories</a>
+        @if(PlanningUnitId != 0)
+        {
+            <a asp-controller="Story" asp-action="Index" asp-route-fy="@fy" asp-route-planningUnitId="@PlanningUnitId" class="btn btn-sm btn-primary">More Stories</a>
+        }
+        else if (MajorProgramId != 0)
+        {
+            <a asp-controller="Story" asp-action="Index" asp-route-fy="@fy" asp-route-programId="@MajorProgramId" class="btn btn-sm btn-primary">More Stories</a>
+        }
+        else
+        {
+            <a asp-controller="Story" asp-action="Index" asp-route-fy="@fy" class="btn btn-sm btn-primary">More Stories</a>
+        }
+        
     </div>
 </div>
