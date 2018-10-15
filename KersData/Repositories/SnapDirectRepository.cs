@@ -144,10 +144,10 @@ namespace Kers.Models.Repositories
                     result += row + "\n";
                     
                 }
-
+                
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     });
 
             }
@@ -197,7 +197,7 @@ namespace Kers.Models.Repositories
                 }
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     }); 
             }
             return result;
@@ -250,7 +250,7 @@ namespace Kers.Models.Repositories
                 }
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     }); 
             }
             return result;
@@ -299,7 +299,7 @@ namespace Kers.Models.Repositories
                 }
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     }); 
             }
             return result;
@@ -343,7 +343,7 @@ namespace Kers.Models.Repositories
 
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 2 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     }); 
             }
             return result;
@@ -406,7 +406,7 @@ namespace Kers.Models.Repositories
                 }
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     }); 
 
             }
@@ -519,9 +519,10 @@ namespace Kers.Models.Repositories
                     row += indirects.ToString();
                     result += row + "\n";
                 }
+                
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     }); 
             }
             return result;
@@ -635,7 +636,7 @@ namespace Kers.Models.Repositories
                 }
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     }); 
             }
             return result;
@@ -763,7 +764,7 @@ namespace Kers.Models.Repositories
                 }
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     }); 
             
             
@@ -839,7 +840,7 @@ namespace Kers.Models.Repositories
                 }
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     });
 
             }
@@ -933,7 +934,7 @@ namespace Kers.Models.Repositories
                     result += row + "\n";
                     _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                         });
                 }
             }
@@ -1000,7 +1001,7 @@ namespace Kers.Models.Repositories
                     result += row + "\n";
                     _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                         }); 
                 }
             }
@@ -1073,7 +1074,7 @@ namespace Kers.Models.Repositories
                     result += row + "\n";
                     _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( 12 )
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                         }); 
                 }
             }

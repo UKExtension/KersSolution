@@ -243,12 +243,23 @@ namespace Kers.Models.Repositories
             return perMonth;
         }
 
+        protected int getCacheSpan(FiscalYear fiscalYear){
+            int cacheDaysSpan = 350;
+            var today = DateTime.Now;
+            if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
+                cacheDaysSpan = 3;
+            }
+            return cacheDaysSpan;
+        }
+
         protected string StripHTML(string htmlString){
 
             string pattern = @"<(.|\n)*?>";
 
             return Regex.Replace(htmlString, pattern, string.Empty);
         }
+
+        
 
 
     }
