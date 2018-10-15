@@ -43,6 +43,11 @@ namespace Kers.Tasks
                     var repo = new SnapDirectRepository(context, cache, mainContext);
                     var startTime = DateTime.Now;
                     var str = repo.TotalByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
+                    Random rnd = new Random();
+                    int RndInt = rnd.Next(1, 53);
+                    if( RndInt == 2 ){
+                        str = repo.TotalByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.SnapEd), true);
+                    }
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
                                         "SnapSummaryByEmployeeTask", str, 

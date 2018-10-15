@@ -38,6 +38,11 @@ namespace Kers.Tasks
                     var repo = new SnapFinancesRepository(context, cache);
                     var startTime = DateTime.Now;
                     var str = repo.CopiesSummarybyCountyNotAgents(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
+                    Random rnd = new Random();
+                    int RndInt = rnd.Next(1, 53);
+                    if( RndInt == 2 ){
+                        str = repo.CopiesSummarybyCountyNotAgents(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.SnapEd), true);
+                    }
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
                                     "SnapCopiesSummarybyCountyNotAgentsTask", str, 
