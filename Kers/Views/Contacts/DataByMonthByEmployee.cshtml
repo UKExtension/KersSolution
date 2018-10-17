@@ -35,6 +35,9 @@
     var hoursForTheRadar = ViewData["hoursForTheRadar"] as string;
     var contactsForTheRadar = ViewData["contactsForTheRadar"] as string;
 
+    var maxHours = ViewData["maxHours"] as float?;
+    var maxContacts = ViewData["maxContacts"] as float?;
+
 
 
 }
@@ -281,7 +284,18 @@ else if( district != null)
 
     options[2] = {
         
-        tooltip: {},
+        tooltip: {
+            formatter: function (params, ticket, callback) {
+                var ret = params.data.name + "<br>";
+                var people = [ @Html.Raw(peopleForTheRadar) ];
+                console.log(params);
+                var max = ( params.data.name != "(Contacts）" ? @maxHours : @maxContacts );
+                for( var i = 0; i < params.data.value.length; i++){
+                    ret += "<br>" + people[i].name + ": " + Math.round(+params.data.value[i] * max); 
+                }
+                return ret;
+            }
+        },
         legend: {
             orient:"vertical",
             left: 3,

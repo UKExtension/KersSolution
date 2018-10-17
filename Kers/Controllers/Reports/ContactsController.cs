@@ -685,7 +685,8 @@ namespace Kers.Controllers.Reports
             var maxHours = PeopleHoursForTheRadar.Max( h => h);
             var maxContacts = PeopleContactsForTheRadar.Max( c => c );
 
-
+            ViewData["maxHours"] = maxHours;
+            ViewData["maxContacts"] = maxContacts;
             ViewData["peopleForTheRadar"] = string.Join(",", PersonDataPerMonth.Select( p => "{ name:" + "\"" + p.KersUser.PersonalProfile.FirstName + " " + p.KersUser.PersonalProfile.LastName + "\"" + ", max:1}" ).ToArray() );
             ViewData["hoursForTheRadar"] = string.Join(",", PeopleHoursForTheRadar.Select( h => (h/maxHours).ToString() ).ToArray());
             ViewData["contactsForTheRadar"] = string.Join(",", PeopleContactsForTheRadar.Select( h => (h/maxContacts).ToString() ).ToArray());
