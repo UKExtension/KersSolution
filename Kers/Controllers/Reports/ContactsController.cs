@@ -1025,14 +1025,14 @@ namespace Kers.Controllers.Reports
 
             var result = new List<List<PerGroupActivities>>();
 
-
+/* 
             var cacheKey = CacheKeys.ReportsDataByMonth + filter.ToString() + id.ToString() + "_" + grouppedBy.ToString() + "_" + fiscalYear.Name;
             var cachedTypes = await _cache.GetStringAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedTypes)){
                 result = JsonConvert.DeserializeObject<List<List<PerGroupActivities>>>(cachedTypes);
             }else{
-
+ */
                 for (DateTime dt = fiscalYear.Start; dt <= fiscalYear.End; dt = dt.AddMonths(1))
                 {
                     /*****************************************************************/
@@ -1046,11 +1046,11 @@ namespace Kers.Controllers.Reports
                     List<PerGroupActivities> activities = await contactRepo.GetActivitiesAndContactsAsync( first, last, filter, grouppedBy, id );
                     result.Add( activities );
                 }    
-                _cache.SetString(cacheKey, JsonConvert.SerializeObject(result), new DistributedCacheEntryOptions
+      /*           _cache.SetString(cacheKey, JsonConvert.SerializeObject(result), new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     });      
-            }  
+            }  */ 
             return result;
         }
 
