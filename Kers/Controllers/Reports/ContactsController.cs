@@ -1025,19 +1025,32 @@ namespace Kers.Controllers.Reports
 
             var result = new List<List<PerGroupActivities>>();
 
-            for (DateTime dt = fiscalYear.Start; dt <= fiscalYear.End; dt = dt.AddMonths(1))
-            {
-                /*****************************************************************/
-                // Generate Contacts Reports Groupped by Employee or Major Program
-                // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
-                // grouppedBy: 0 Employee, 1 MajorProgram
-                /*******************************************************************/
-                var first = new DateTime( dt.Year, dt.Month, 1, 0, 0, 0);
-                var last = new DateTime( dt.Year, dt.Month , DateTime.DaysInMonth(dt.Year, dt.Month), 23, 59, 59 );
 
-                List<PerGroupActivities> activities = await contactRepo.GetActivitiesAndContactsAsync( first, last, filter, grouppedBy, id );
-                result.Add( activities );
-            }            
+            var cacheKey = CacheKeys.ReportsDataByMonth + filter.ToString() + id.ToString() + "_" + grouppedBy.ToString() + "_" + fiscalYear.Name;
+            var cachedTypes = await _cache.GetStringAsync(cacheKey);
+
+            if (!string.IsNullOrEmpty(cachedTypes)){
+                result = JsonConvert.DeserializeObject<List<List<PerGroupActivities>>>(cachedTypes);
+            }else{
+
+                for (DateTime dt = fiscalYear.Start; dt <= fiscalYear.End; dt = dt.AddMonths(1))
+                {
+                    /*****************************************************************/
+                    // Generate Contacts Reports Groupped by Employee or Major Program
+                    // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+                    // grouppedBy: 0 Employee, 1 MajorProgram
+                    /*******************************************************************/
+                    var first = new DateTime( dt.Year, dt.Month, 1, 0, 0, 0);
+                    var last = new DateTime( dt.Year, dt.Month , DateTime.DaysInMonth(dt.Year, dt.Month), 23, 59, 59 );
+
+                    List<PerGroupActivities> activities = await contactRepo.GetActivitiesAndContactsAsync( first, last, filter, grouppedBy, id );
+                    result.Add( activities );
+                }    
+                _cache.SetString(cacheKey, JsonConvert.SerializeObject(result), new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
+                    });      
+            }  
             return result;
         }
 
@@ -1049,6 +1062,15 @@ namespace Kers.Controllers.Reports
                 fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
             }
             return fiscalYear;
+        }
+
+        protected int getCacheSpan(FiscalYear fiscalYear){
+            int cacheDaysSpan = 350;
+            var today = DateTime.Now;
+            if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
+                cacheDaysSpan = 3;
+            }
+            return cacheDaysSpan;
         }
 
 
