@@ -79,6 +79,7 @@ namespace Kers.Models.Abstract
         // grouppedBy: 0 Employee, 1 MajorProgram
         /*******************************************************************/
         Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 2 );
+        Task<List<PerGroupSummary>> GetActivitiesAndContactsSummaryAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 );
         /***********************************************************************************************/
         // Generate Contacts Reports Groupped by Employee or Major Program
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All

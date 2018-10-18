@@ -219,6 +219,29 @@ namespace Kers.Models.Repositories
         }
 
 
+        /*****************************************************************/
+        // Generate Contacts Reports Groupped by Employee or Major Program
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // grouppedBy: 0 Employee, 1 MajorProgram
+        /*******************************************************************/
+        public async Task<List<PerGroupSummary>> GetActivitiesAndContactsSummaryAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
+            var result = await this.GetActivitiesAndContactsAsync(start, end, filter, grouppedBy, id, refreshCache, keepCacheInDays);
+            var output = new List<PerGroupSummary>();
+            foreach( var res in result){
+                output.Add( new PerGroupSummary(){ 
+                                    Hours = res.Hours,
+                                    Multistate = res.Multistate,
+                                    Audience = res.Audience,
+                                    Male = res.Male,
+                                    Female = res.Female,
+                                    GroupId = res.GroupId
+                                }
+                        );
+
+            }
+            return output;
+        }
+
 
         /*****************************************************************/
         // Generate Contacts Reports Groupped by Employee or Major Program
