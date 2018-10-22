@@ -9,7 +9,7 @@
 @model Kers.Models.ViewModels.StoryViewModel
 <br><br>
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-lg-9">
         <h3>@Model.Title</h3>
         <p><strong>Author: </strong><a asp-controller="People" asp-action="Person" asp-route-id="@Model.KersUser.Id" asp-route-fy="@fy" >@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</a></p>
         <p><strong>Planning Unit: </strong><a asp-controller="Reports" asp-action="County" asp-route-id="@Model.PlanningUnit.Id" asp-route-fy="@fy">@Model.PlanningUnit.Name</a></p>
@@ -31,7 +31,7 @@
 <hr>
 <br><br>
     </div>
-    <div class="col-md-2">
+    <div class="col-lg-3">
         @await Component.InvokeAsync("FilteredStories", new {FiscalYear = FiscalYear,  amount = 2, filter = 6, id = Model.KersUser.Id})
         @await Component.InvokeAsync("FilteredStories", new {FiscalYear = FiscalYear,  amount = 2, filter = 1, id = Model.PlanningUnit.Id})
         @await Component.InvokeAsync("FilteredStories", new {FiscalYear = FiscalYear,  amount = 2, filter = 5, id = Model.MajorProgram.Id})
