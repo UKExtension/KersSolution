@@ -20,7 +20,6 @@ namespace Kers.Models.Repositories
         public static string ActivitiesPerFyPerUserPerMajorProgram = "ActivitiesPerFyPerUserPerMajorProgram";
         public static string FilteredContactSummaries = "ContactSummariesPerGroup";
         public static string TopProgramsPerFiscalYear = "TopProgramsPerFiscalYear";
-        public static string LastStoriesWithImages = "LastStoriesWithImages";
         public static string ReportsDataByMonth = "ReportsDataByMonth";
 
         //TableViewModel
@@ -38,6 +37,11 @@ namespace Kers.Models.Repositories
 
         //List<PlanningUnit>
         public static string CountiesList = "CountiesList";
+
+        //List<StoryViewModel>
+        public static string LastStoriesWithoutImages = "LastStoriesWithoutImages";
+
+        public static string LastStoriesWithImages = "LastStoriesWithImages";
 
         /***************************
         //Snap Ed

@@ -98,171 +98,10 @@ namespace Kers.Models.Repositories
             return revs;
         }
 
-        public async Task<StoryViewModel> LastStoryWithImages(FiscalYear fiscalYear = null, int PlanningUnitId = 0, int MajorProgramId = 0, bool refreshCache = false){
-
-            StoryViewModel story;
-            
-            var cacheKey = CacheKeys.LastStoryWithImages + PlanningUnitId.ToString() + MajorProgramId.ToString() + (fiscalYear == null ? "null" : fiscalYear.Name);
-            var cacheString = _cache.GetString(cacheKey);
-
-            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
-                story = JsonConvert.DeserializeObject<StoryViewModel>(cacheString);
-            }else{
-
-                story = new StoryViewModel();
-
-                if( PlanningUnitId == 0 && MajorProgramId == 0){
-
-                    var Last = this.context.StoryRevision
-                                        .Where( s => s.StoryImages.Count() > 0 );
-                    if( fiscalYear != null ){
-                        Last = Last.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear );
-                    }
-                    if(Last.Any()){
-                        Last = Last.Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
-                                        .Include( s => s.MajorProgram )
-                                        .OrderBy( s => s.Created );
-                
-                        var LastRevWithImages = await Last.LastAsync();
-                        
-                        story.StoryId = LastRevWithImages.StoryId;
-                        story.Title = LastRevWithImages.Title;
-                        story.Story = LastRevWithImages.Story;
-                        story.ImageName = LastRevWithImages.StoryImages.Last().UploadImage.UploadFile.Name;
-
-                        //Find Landscape Image if available.
-                        foreach( var img in LastRevWithImages.StoryImages){
-                            if( img.UploadImage.Width > img.UploadImage.Height){
-                                story.ImageName = img.UploadImage.UploadFile.Name;
-                                break;
-                            }
-                        }
-
-                        story.KersUser = context.Story.Where( s => s.Id == LastRevWithImages.StoryId)
-                                            .Include( s => s.KersUser ).ThenInclude( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
-                                            .Include( s => s.KersUser ).ThenInclude( u => u.PersonalProfile )
-                                            .FirstOrDefault().KersUser;
-                        story.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
-                        story.MajorProgram = LastRevWithImages.MajorProgram;
-                        story.Updated = LastRevWithImages.Created;
-                    }
-                }else{
-                    //Planning unit or Major Program is selected
-                    var stories = context.Story.Where(s => true);
-                    if( fiscalYear != null ){
-                        stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear );
-                    }
-                    if( PlanningUnitId != 0 ){
-                        stories = stories.Where( s => s.PlanningUnitId == PlanningUnitId);
-                    }
-                    Story theStory = null;
-                    StoryRevision theStoryRevision = null;
-
-                    foreach( var stry in stories){
-                        var storyRevision = context.StoryRevision.Where( s => s.StoryId == stry.Id );
-                        if(MajorProgramId != 0 ){
-                            storyRevision = storyRevision.Where( r => r.MajorProgramId == MajorProgramId);
-                        }
-                        if(storyRevision.Count() > 0 ){
-                            storyRevision = storyRevision
-                                            .Include( s => s.StoryImages)
-                                            .OrderBy(r => r.Created);
-                            var last = await storyRevision.LastAsync();
-                            if( last.StoryImages != null && last.StoryImages.Count() > 0 ){
-                                theStory = stry;
-                                theStoryRevision = last;
-                                break;
-                            }
-                        }
-                    }
-                    if(theStory == null || theStoryRevision == null){
-                        if( stories != null && stories.Count() > 0){
-                            theStory = stories.Last();
-                            story.StoryId = theStory.Id;
-
-                            var fullRevision = await context.StoryRevision.Where( r => r.StoryId == theStory.Id)
-                                            .Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
-                                            .Include( s => s.MajorProgram )
-                                            .OrderBy( s => s.Created ).LastAsync();
-
-                            story.Title = fullRevision.Title;
-                            story.Story = fullRevision.Story;
-                            story.ImageName = "32c5386951efbb7aa9e4c8b1e13dc4f3dcedbe5f.jpg";
-                            story.KersUser = context.Story.Where( s => s.Id == theStory.Id)
-                                            .Include( s => s.KersUser ).ThenInclude( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
-                                            .Include( s => s.KersUser ).ThenInclude( u => u.PersonalProfile )
-                                            .FirstOrDefault().KersUser;
-                            story.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
-                            story.MajorProgram = fullRevision.MajorProgram;
-                            story.Updated = fullRevision.Created;
-                        }
-                        
-                        //
-                    }else{
-
-
-                        story.StoryId = theStory.Id;
-                        story.Title = theStoryRevision.Title;
-                        story.Story = theStoryRevision.Story;
-
-                        var fullRevision = await context.StoryRevision.Where( r => r.Id == theStoryRevision.Id)
-                                        .Include( s => s.StoryImages).ThenInclude( i => i.UploadImage ).ThenInclude( u => u.UploadFile )
-                                        .Include( s => s.MajorProgram )
-                                        .OrderBy( s => s.Created ).LastAsync();
-
-
-
-
-                        story.ImageName = fullRevision.StoryImages.Last().UploadImage.UploadFile.Name;
-                        
-
-                        //Find Landscape Image if available.
-                        foreach( var img in fullRevision.StoryImages){
-                            if( img.UploadImage.Width > img.UploadImage.Height){
-                                story.ImageName = img.UploadImage.UploadFile.Name;
-                                break;
-                            }
-                        }
-
-                        story.KersUser = context.Story.Where( s => s.Id == theStory.Id)
-                                        .Include( s => s.KersUser ).ThenInclude( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
-                                        .Include( s => s.KersUser ).ThenInclude( u => u.PersonalProfile )
-                                        .FirstOrDefault().KersUser;
-                        story.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
-                        story.MajorProgram = fullRevision.MajorProgram;
-                        story.Updated = fullRevision.Created;
-
-                    }
-
-                }
-
-
-                // Get rid of the story that do not match the Major Program
-                if( MajorProgramId != 0 && story.MajorProgram.Id != MajorProgramId ){
-                    story = null;
-                }
-
-                var serialized = JsonConvert.SerializeObject(story);
-                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(5)
-                    });
-
-
-            }
-
-            return story;
-
-            
-        }
-
-
-
+        
 
         public async Task<List<StoryViewModel>> LastStoriesWithImages(FiscalYear fiscalYear = null, int filter = 4, int id = 0, int amount = 6, bool refreshCache = false, int keepCacheInDays = 0){
             
-            
-
             List<StoryViewModel> stories;
             
             var cacheKey = CacheKeys.LastStoriesWithImages + fiscalYear.Name + filter.ToString() + id.ToString() + amount.ToString();
@@ -320,6 +159,69 @@ namespace Kers.Models.Repositories
             return stories;
         
         }
+
+
+        public async Task<List<StoryViewModel>> LastStoriesWithoutImages(FiscalYear fiscalYear = null, int filter = 4, int id = 0, int amount = 6, bool refreshCache = false, int keepCacheInDays = 0){
+            
+            List<StoryViewModel> stories;
+            
+            var cacheKey = CacheKeys.LastStoriesWithoutImages + fiscalYear.Name + filter.ToString() + id.ToString() + amount.ToString();
+            var cacheString = _cache.GetString(cacheKey);
+
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                stories = JsonConvert.DeserializeObject<List<StoryViewModel>>(cacheString);
+            }else{
+                stories = new List<StoryViewModel>();
+                var ids = LastStoryRevisionIds( fiscalYear, filter, id);
+
+                foreach( var revId in ids ){
+                    var rev = context.StoryRevision.Where( s => s.Id == revId).Include( r => r.StoryImages );
+                    if( rev.Where(s => s.StoryImages.Count > 0).Any() ){
+                        var theStoryRev = context.StoryRevision.Where( s => s.Id == revId)
+                                    .Include(r => r.StoryImages).ThenInclude( v => v.UploadImage ).ThenInclude( f => f.UploadFile)
+                                    .Include( r => r.MajorProgram);
+                        var theStory = await theStoryRev.FirstOrDefaultAsync();
+                        var uploadFile = theStory.StoryImages.OrderBy( s => s.Created).Last().UploadImage;
+                        if( theStory != null && uploadFile == null ){
+                            var model = new StoryViewModel();
+                            model.Updated = theStory.Created;
+                            model.Title = theStory.Title;
+                            model.StoryOutcome = theStory.StoryOutcome;
+                            model.StoryId = theStory.StoryId;
+                            model.Story = theStory.Story;
+                            model.MajorProgram = theStory.MajorProgram;
+                            var parentStrory = await context.Story.Where( s => s.Id == theStory.StoryId)
+                                                        .Include( r => r.PlanningUnit)
+                                                        .Include( r => r.KersUser ).ThenInclude( u => u.PersonalProfile )
+                                                        .FirstAsync();
+                            model.PlanningUnit = parentStrory.PlanningUnit;
+                            model.KersUser = parentStrory.KersUser;
+                            stories.Add( model );
+                        }
+                        if( stories.Count >= amount ) break;
+                    }
+                }
+                var cacheDaysSpan = keepCacheInDays;
+                if( cacheDaysSpan == 0 ){
+                    var today = DateTime.Now;
+                    if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
+                        cacheDaysSpan = 2;
+                    }else{
+                        cacheDaysSpan = 110;
+                    }
+                }
+                var serialized = JsonConvert.SerializeObject(stories);
+                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cacheDaysSpan)
+                    });
+            }
+            return stories;
+        
+        }
+
+
+
 
 
 
@@ -468,8 +370,6 @@ namespace Kers.Models.Repositories
                             }
                         }
                     }
-                    
-
                     story.KersUser = context.KersUser.Where( s => s.Id == userId)
                                         .Include( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit )
                                         .Include( u => u.PersonalProfile )
@@ -479,10 +379,6 @@ namespace Kers.Models.Repositories
                     story.Updated = lastRev.Created;
                     lastStories.Add(story);
                 }
-
-
-
-
                 var serialized = JsonConvert.SerializeObject(lastStories);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {

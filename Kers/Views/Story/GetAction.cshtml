@@ -4,11 +4,12 @@
     ViewData["Title"] = "Success Story";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
     var fy = ViewData["fy"] as string;
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
 }
 @model Kers.Models.ViewModels.StoryViewModel
 <br><br>
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-10">
         <h3>@Model.Title</h3>
         <p><strong>Author: </strong><a asp-controller="People" asp-action="Person" asp-route-id="@Model.KersUser.Id" asp-route-fy="@fy" >@Model.KersUser.PersonalProfile.FirstName @Model.KersUser.PersonalProfile.LastName</a></p>
         <p><strong>Planning Unit: </strong><a asp-controller="Reports" asp-action="County" asp-route-id="@Model.PlanningUnit.Id" asp-route-fy="@fy">@Model.PlanningUnit.Name</a></p>
@@ -26,7 +27,13 @@
         <environment names="Staging,Production">
             <div class="fr-view">@Html.Raw(@Model.Story.Replace("fileuploads", "/core/fileuploads"))</div>
         </environment>
-        
+        <br><br>
+<hr>
+<br><br>
+    </div>
+    <div class="col-md-2">
+        @await Component.InvokeAsync("FilteredStories", new {FiscalYear = FiscalYear,  amount = 2, filter = 6, id = Model.KersUser.Id})
+        @await Component.InvokeAsync("FilteredStories", new {FiscalYear = FiscalYear,  amount = 2, filter = 1, id = Model.PlanningUnit.Id})
+        @await Component.InvokeAsync("FilteredStories", new {FiscalYear = FiscalYear,  amount = 2, filter = 5, id = Model.MajorProgram.Id})
     </div>
 </div>
-<br><br>

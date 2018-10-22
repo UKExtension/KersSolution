@@ -29,10 +29,13 @@ namespace Kers.Controllers.Reports
     public class StoryController : Controller
     {
         KERScoreContext context;
+        IFiscalYearRepository fiscalYearRepo;
         public StoryController( 
-                    KERScoreContext context
+                    KERScoreContext context,
+                    IFiscalYearRepository fiscalYearRepo
             ){
            this.context = context;
+           this.fiscalYearRepo = fiscalYearRepo;
         }
 
         [HttpGet]
@@ -106,6 +109,7 @@ namespace Kers.Controllers.Reports
 
             var list = await PaginatedList<Story>.CreateAsync(stories.AsNoTracking(), page ?? 1, pageSize);
             ViewData["fy"] = fy;
+            ViewData["FiscalYear"] = GetFYByName(fy);
 
             return View(list);
         }
@@ -152,9 +156,22 @@ namespace Kers.Controllers.Reports
                 fy = lastRevision.MajorProgram.StrategicInitiative.FiscalYear.Name;
             }
             ViewData["fy"] = fy;
+            ViewData["FiscalYear"] = GetFYByName(fy);
             return View(strViewModel);
         }
         
+        private FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepo.previoiusFiscalYear(type);
+            }else{
+                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+                if(fiscalYear == null ){
+                    fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
+                }
+            }
+            return fiscalYear;
+        }
 
 
     }
