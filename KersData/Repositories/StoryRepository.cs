@@ -176,28 +176,27 @@ namespace Kers.Models.Repositories
 
                 foreach( var revId in ids ){
                     var rev = context.StoryRevision.Where( s => s.Id == revId).Include( r => r.StoryImages );
-                    if( rev.Where(s => s.StoryImages.Count > 0).Any() ){
+                    if( rev.Where(s => s.StoryImages == null || s.StoryImages.Count == 0).Any() ){
                         var theStoryRev = context.StoryRevision.Where( s => s.Id == revId)
                                     .Include(r => r.StoryImages).ThenInclude( v => v.UploadImage ).ThenInclude( f => f.UploadFile)
                                     .Include( r => r.MajorProgram);
                         var theStory = await theStoryRev.FirstOrDefaultAsync();
-                        var uploadFile = theStory.StoryImages.OrderBy( s => s.Created).Last().UploadImage;
-                        if( theStory != null && uploadFile == null ){
-                            var model = new StoryViewModel();
-                            model.Updated = theStory.Created;
-                            model.Title = theStory.Title;
-                            model.StoryOutcome = theStory.StoryOutcome;
-                            model.StoryId = theStory.StoryId;
-                            model.Story = theStory.Story;
-                            model.MajorProgram = theStory.MajorProgram;
-                            var parentStrory = await context.Story.Where( s => s.Id == theStory.StoryId)
-                                                        .Include( r => r.PlanningUnit)
-                                                        .Include( r => r.KersUser ).ThenInclude( u => u.PersonalProfile )
-                                                        .FirstAsync();
-                            model.PlanningUnit = parentStrory.PlanningUnit;
-                            model.KersUser = parentStrory.KersUser;
-                            stories.Add( model );
-                        }
+                        
+                        var model = new StoryViewModel();
+                        model.Updated = theStory.Created;
+                        model.Title = theStory.Title;
+                        model.StoryOutcome = theStory.StoryOutcome;
+                        model.StoryId = theStory.StoryId;
+                        model.Story = theStory.Story;
+                        model.MajorProgram = theStory.MajorProgram;
+                        var parentStrory = await context.Story.Where( s => s.Id == theStory.StoryId)
+                                                    .Include( r => r.PlanningUnit)
+                                                    .Include( r => r.KersUser ).ThenInclude( u => u.PersonalProfile )
+                                                    .FirstAsync();
+                        model.PlanningUnit = parentStrory.PlanningUnit;
+                        model.KersUser = parentStrory.KersUser;
+                        stories.Add( model );
+                        
                         if( stories.Count >= amount ) break;
                     }
                 }
