@@ -476,6 +476,7 @@ namespace Kers.Controllers.Reports
         [Route("[action]/{filter?}/{id?}/{fy?}")]
         public async Task<IActionResult> DataByMonthByEmployee(int filter = 1, int id = 0, string fy = "0")
         {
+            var MaxEmployeeNum = 15;
             
             // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
             FiscalYear fiscalYear = GetFYByName(fy);
@@ -625,7 +626,7 @@ namespace Kers.Controllers.Reports
 
             PersonDataPerMonth = PersonDataPerMonth
                                     .OrderByDescending( p => p.Audience.Sum(s => s))
-                                    .Take(5)
+                                    .Take(MaxEmployeeNum)
                                     .OrderBy(p => p.KersUser.PersonalProfile.FirstName )
                                     .ToList();
 
