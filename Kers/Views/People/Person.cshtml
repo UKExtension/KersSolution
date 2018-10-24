@@ -1,6 +1,7 @@
 @model Kers.Models.Entities.KERScore.KersUser
 
 @{
+    var fy = ViewData["fy"] as string;
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "Person";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
@@ -157,12 +158,12 @@
                         <p class="month">@story.Updated.ToString("MMMM")</p>
                     </div>
                     <div class="message_wrapper">
-                        <h4 class="heading">@story.Title</h4>
+                        <h4 class="heading"><a asp-route="ReportsFullStory" asp-route-fy="@fy" asp-route-id="@story.StoryId">@story.Title</a></h4>
                         <blockquote class="message">@Html.StripHtml(@story.Story).Substring(0, Math.Min(@Html.StripHtml(@story.Story).Length, 200))...</blockquote>
                         <br>
                         <p class="url">
                         <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                        <a href="~/reports/Story/@story.StoryId"><i class="fa fa-align-left"></i> Full Story</a>
+                        <a asp-route="ReportsFullStory" asp-route-fy="@fy" asp-route-id="@story.StoryId"><i class="fa fa-align-left"></i> Full Story</a>
                         </p>
                     </div>
                 </li>

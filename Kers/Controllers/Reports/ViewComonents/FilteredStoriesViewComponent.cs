@@ -34,7 +34,7 @@ namespace Kers.Controllers.Reports.ViewComponents
             }else{
                 stories.AddRange(await storyRepo.LastStoriesWithoutImages(fiscalYear, filter, id, amount));
             }
-            ViewData["Title"] = "More Stories";
+            ViewData["Title"] = "Stories";
             if(stories.Count > 0){
                 if( filter == FilterKeys.Employee ){
                     ViewData["Title"] += " by " + stories.First().KersUser.PersonalProfile.FirstName + " " + stories.First().KersUser.PersonalProfile.LastName;
