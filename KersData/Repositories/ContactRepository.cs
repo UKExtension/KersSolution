@@ -137,7 +137,7 @@ namespace Kers.Models.Repositories
         /***********************************************************************************************/
         // Generate Contacts Reports Groupped by Employee or Major Program
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Major Program, 6 Employee
-        // Returns List with Indexes: 0 Total Hours, 1 Contacts, 2 Multistate Hours, 3 Number of Activities
+        // Returns List with Indexes: 0 Total Hours, 1 Contacts, 2 Multistate Hours, 3 Number of Adult Volantiers
         /***********************************************************************************************/
         public async Task<List<float>> GetPerPeriodSummaries( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
             
@@ -151,6 +151,7 @@ namespace Kers.Models.Repositories
                 float TotalHours = 0;
                 int TotalContacts = 0;
                 float TotalMultistate = 0;
+                int TotalVoluntiers = 0;
                 int TotalNumActivities = 0;
                 var revs = await this.LastActivityRevisionIds(start, end, filter, id );
                 // Divide revs into batches as SQL server is having trouble to process more then several thousands at once
@@ -161,6 +162,7 @@ namespace Kers.Models.Repositories
                     FilteredActivities.AddRange(  await coreContext.ActivityRevision
                                             .Where( r => currentBatch.Contains( r.Id ))
                                             .Include( a => a.ActivityOptionSelections ).ThenInclude( s => s.ActivityOption)
+                                            .Include( a => a.ActivityOptionNumbers).ThenInclude( n => n.ActivityOptionNumber)
                                             .ToListAsync()
                                         );
                 }
@@ -168,6 +170,9 @@ namespace Kers.Models.Repositories
                     if( activity.ActivityOptionSelections.Where( s => s.ActivityOption.Name == "Multistate effort?").Any()){
                         TotalMultistate += activity.Hours;
                     }
+
+                    TotalVoluntiers += activity.ActivityOptionNumbers.Where( s => s.ActivityOptionNumber.Name == "Number of Adult Volunteers").Sum( d => d.Value );
+                    
                     
                     TotalHours += activity.Hours;
                     TotalContacts += activity.Male + activity.Female;
@@ -179,12 +184,13 @@ namespace Kers.Models.Repositories
                     var currentBatch = contactRevs.Skip(i).Take(batchCount);
                     FilteredContacts.AddRange(  await coreContext.ContactRevision
                                             .Where( r => currentBatch.Contains( r.Id ))
+                                            .Include( r => r.ContactOptionNumbers ).ThenInclude( n => n.ActivityOptionNumber)
                                             .ToListAsync()
                                         );
                 }
 
                 foreach( var contact in FilteredContacts ){
-                    TotalHours += contact.Days * 8;
+                    TotalVoluntiers += contact.ContactOptionNumbers.Where( s => s.ActivityOptionNumber.Name == "Number of Adult Volunteers").Sum( d => d.Value );
                     TotalContacts += contact.Male + contact.Female;
                     TotalMultistate += contact.Multistate * 8;
                 }
@@ -194,7 +200,7 @@ namespace Kers.Models.Repositories
                 result.Add(TotalHours);
                 result.Add(TotalContacts);
                 result.Add(TotalMultistate);
-                result.Add(TotalNumActivities);
+                result.Add(TotalVoluntiers);
 
                 var serialized = JsonConvert.SerializeObject(result);
 
