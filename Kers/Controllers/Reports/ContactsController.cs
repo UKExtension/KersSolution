@@ -640,7 +640,7 @@ namespace Kers.Controllers.Reports
             var PeopleContactsForTheRadar = new List<float>();
 
             foreach(var thePerson in PersonDataPerMonth ){
-                var name = thePerson.KersUser.PersonalProfile.FirstName + " " + thePerson.KersUser.PersonalProfile.LastName;
+                var name = thePerson.KersUser.PersonalProfile.FirstName.Replace("\"", "") + " " + thePerson.KersUser.PersonalProfile.LastName.Replace("\"", "");
                 var shortenedPersonName = (name.Length > PersonLength ? name.Substring(0, PersonLength) + "..." : name);
                 PersonsListOfStrings.Add( "\"" + shortenedPersonName + "\"" );
                 PersonsContactsByProgramSeries.Add("{ name: \""+shortenedPersonName+"\", type: \"bar\", data: [" + string.Join(",", thePerson.Audience.Select(n => n.ToString()).ToArray())+"],}");
@@ -659,7 +659,7 @@ namespace Kers.Controllers.Reports
 
             ViewData["maxHours"] = maxHours;
             ViewData["maxContacts"] = maxContacts;
-            ViewData["peopleForTheRadar"] = string.Join(",", PersonDataPerMonth.Select( p => "{ name:" + "\"" + p.KersUser.PersonalProfile.FirstName + " " + p.KersUser.PersonalProfile.LastName + "\"" + ", max:1}" ).ToArray() );
+            ViewData["peopleForTheRadar"] = string.Join(",", PersonDataPerMonth.Select( p => "{ name:" + "\"" + p.KersUser.PersonalProfile.FirstName.Replace("\"", "") + " " + p.KersUser.PersonalProfile.LastName.Replace("\"", "") + "\"" + ", max:1}" ).ToArray() );
             ViewData["hoursForTheRadar"] = string.Join(",", PeopleHoursForTheRadar.Select( h => (h/maxHours).ToString() ).ToArray());
             ViewData["contactsForTheRadar"] = string.Join(",", PeopleContactsForTheRadar.Select( h => (h/maxContacts).ToString() ).ToArray());
             ViewData["personssForTheLegend"] = "[" + string.Join(",", PersonsListOfStrings.ToArray() ) + "]";
