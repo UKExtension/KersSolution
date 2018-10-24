@@ -620,7 +620,7 @@ namespace Kers.Controllers.Reports
            
             var PersonsGendersGraphDataList = new List<string>();
             foreach( var thePerson in PersonDataPerMonth ){
-                PersonsGendersGraphDataList.Add(" ["+thePerson.Female.Sum(s => s)+", "+thePerson.Male.Sum(s => s)+", \""+thePerson.KersUser.PersonalProfile.FirstName + " " + thePerson.KersUser.PersonalProfile.LastName +"\"]");
+                PersonsGendersGraphDataList.Add(" ["+thePerson.Female.Sum(s => s)+", "+thePerson.Male.Sum(s => s)+", \""+thePerson.KersUser.PersonalProfile.FirstName.Replace("\"", "") + " " + thePerson.KersUser.PersonalProfile.LastName.Replace("\"", "") +"\"]");
             }
             ViewData["ProgramsGendersGraphDataList"] = "[" + string.Join(",", PersonsGendersGraphDataList.ToArray() ) + "]";
 
