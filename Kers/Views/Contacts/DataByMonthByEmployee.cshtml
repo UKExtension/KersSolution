@@ -124,7 +124,7 @@ else if( district != null)
                     <div class="tiles">
                         <div class="col-md-4 tile">
                             <div id="Chart1">
-                                <span>Top 5 Employees</span>
+                                <span>Employees</span>
                                 <h2>Contacts per Month</h2>
                                 <div class="graph"></div>
                             </div>
@@ -138,7 +138,7 @@ else if( district != null)
                         </div>
                         <div  class="col-md-4 tile">
                             <div id="Chart3">
-                                <span>Top 5 Employees </span>
+                                <span>Employees </span>
                                 <h2>Hours per Month</h2>
                                 <div class="graph"></div>
                             </div>
@@ -150,13 +150,13 @@ else if( district != null)
                     <div class="col-md-3 col-sm-12 col-xs-12">
                     <div>
                         <div class="x_title">
-                        <h2>Top Employees</h2>
+                        <h2>County Extension Staff</h2>
                         
                         <div class="clearfix"></div>
                         </div>
                         <ul class="list-unstyled top_profiles scroll-view">
 
-                        @foreach( var prgrmData in AllPersonssData.Take(7) )
+                        @foreach( var prgrmData in AllPersonssData )
                         {
                             <li class="media event">
                             <div class="media-body">
