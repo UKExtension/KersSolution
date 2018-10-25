@@ -367,7 +367,7 @@ namespace Kers.Controllers.Reports
                                 + "\"show\":"+(EmployeeData.Activities.Count() > 3 ? "true" : "false" ) + ","
                                 + "\"textStyle\":{\"color\":\"#72c380\"}}},"
                                 + "\"symbolSize\":"+Math.Min(EmployeeData.Activities.Count(), 15) + ","
-                                + "\"value\": "+EmployeeData.Activities.Count() + "}"
+                                + "\"value\": 1}"
                 );
             }
 
@@ -405,7 +405,7 @@ namespace Kers.Controllers.Reports
                                             + (ProgramData.Activities.Count() > 20 ? "true" : "false" )
                                             +",\"textStyle\":{\"color\":\"#6f7a8a\"}}}, "
                                             + "\"category\": \"Major Programs\",\"symbolSize\":" + Math.Min(ProgramData.Activities.Count(), 15) + ", "
-                                            + "\"value\": "+ProgramData.Activities.Count()+"}");
+                                            + "\"value\": 1}");
                 
                 var ProgramDataGrouppedByEmployee = ProgramData.Activities.GroupBy( a => a.KersUserId ).Select( s => s );
                 foreach( var GrouppedProgramData in ProgramDataGrouppedByEmployee ){
@@ -636,33 +636,30 @@ namespace Kers.Controllers.Reports
             var PersonsContactsByProgramSeries = new List<string>();
             var PersonLength = 15;
 
-            var PeopleHoursForTheRadar = new List<float>();
-            var PeopleContactsForTheRadar = new List<float>();
+            var PeopleHours = new List<string>();
+            var PeopleContacts = new List<string>();
 
             foreach(var thePerson in PersonDataPerMonth ){
                 var name = thePerson.KersUser.PersonalProfile.FirstName.Replace("\"", "") + " " + thePerson.KersUser.PersonalProfile.LastName.Replace("\"", "");
                 var shortenedPersonName = (name.Length > PersonLength ? name.Substring(0, PersonLength) + "..." : name);
                 PersonsListOfStrings.Add( "\"" + shortenedPersonName + "\"" );
+                
                 PersonsContactsByProgramSeries.Add("{ name: \""+shortenedPersonName+"\", type: \"bar\", data: [" + string.Join(",", thePerson.Audience.Select(n => n.ToString()).ToArray())+"],}");
                 PrersonsHoursGraphDataList.Add("{ name: \""+shortenedPersonName+"\", type: \"line\", smooth: !0, itemStyle: { normal: { areaStyle: { type: \"default\" } } }, data: [" + string.Join(",", thePerson.Hours.Select(n => n.ToString()).ToArray())+"]  }");
                 
 
 
-                PeopleHoursForTheRadar.Add(thePerson.Hours.Sum( p => p ));
-                PeopleContactsForTheRadar.Add( thePerson.Audience.Sum( p => p) );
+                PeopleHours.Add("{value:" + thePerson.Hours.Sum( p => p ).ToString() + ", name:\"" + shortenedPersonName + "\"}");
+                PeopleContacts.Add( "{value:" + thePerson.Audience.Sum( p => p).ToString()  + ", name:\"" + shortenedPersonName + "\"}");
             
             }
 
 
-            var maxHours = PeopleHoursForTheRadar.Max( h => h);
-            var maxContacts = PeopleContactsForTheRadar.Max( c => c );
 
-            ViewData["maxHours"] = maxHours;
-            ViewData["maxContacts"] = maxContacts;
-            ViewData["peopleForTheRadar"] = string.Join(",", PersonDataPerMonth.Select( p => "{ name:" + "\"" + p.KersUser.PersonalProfile.FirstName.Replace("\"", "") + " " + p.KersUser.PersonalProfile.LastName.Replace("\"", "") + "\"" + ", max:1}" ).ToArray() );
-            ViewData["hoursForTheRadar"] = string.Join(",", PeopleHoursForTheRadar.Select( h => (h/maxHours).ToString() ).ToArray());
-            ViewData["contactsForTheRadar"] = string.Join(",", PeopleContactsForTheRadar.Select( h => (h/maxContacts).ToString() ).ToArray());
-            ViewData["personssForTheLegend"] = "[" + string.Join(",", PersonsListOfStrings.ToArray() ) + "]";
+
+            ViewData["hours"] = string.Join(",", PeopleHours.ToArray());
+            ViewData["contacts"] = string.Join(",", PeopleContacts.ToArray());
+            ViewData["people"] = "[" + string.Join(",", PersonsListOfStrings.ToArray() ) + "]";
             ViewData["PrersonsHoursGraphDataList"] = "[" + string.Join(",", PrersonsHoursGraphDataList.ToArray() ) + "]";
             ViewData["PersonsContactsByProgramSeries"] = "[" + string.Join(",", PersonsContactsByProgramSeries.ToArray() ) + "]";
             ViewData["PersonDataPerMonth"] = PersonDataPerMonth;

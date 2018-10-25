@@ -31,12 +31,9 @@
     var GraphData = ViewData["GraphData"] as string;
     var GraphLinks = ViewData["GraphLinks"] as string;
 
-    var peopleForTheRadar = ViewData["peopleForTheRadar"] as string;
-    var hoursForTheRadar = ViewData["hoursForTheRadar"] as string;
-    var contactsForTheRadar = ViewData["contactsForTheRadar"] as string;
-
-    var maxHours = ViewData["maxHours"] as float?;
-    var maxContacts = ViewData["maxContacts"] as float?;
+    var people = ViewData["people"] as string;
+    var hours = ViewData["hours"] as string;
+    var contacts = ViewData["contacts"] as string;
 
 
 
@@ -132,7 +129,7 @@ else if( district != null)
                         <div  class="col-md-4 tile">
                             <div id="Chart2">
                                 <span>Contacts and Hours per Employee</span>
-                                <h2>Relation</h2>
+                                <h2>Comparison</h2>
                                 <div class="graph"></div>
                             </div>
                         </div>
@@ -171,12 +168,10 @@ else if( district != null)
                         </ul>
                     </div>
                     </div>
-
-
                 </div>
-                <div class="clearfix"></div>
         </div>
     </div>
+    <div class="clearfix"></div>
 </div>
 <div class="row">
     <div class="col-md-12">
@@ -245,7 +240,7 @@ else if( district != null)
         color: @Html.Raw(colors),
         legend: {
             type: 'scroll',
-            data: @Html.Raw(personsForTheLegend)
+            data: @Html.Raw(people)
         },
         toolbox: {
             show: !1
@@ -283,52 +278,33 @@ else if( district != null)
     var GraphCategories = [{ name: "Employees"}, { name: "Major Programs"}, { name: "Success Stories"}];
 
     options[2] = {
-        
+        color: @Html.Raw(colors),
         tooltip: {
-            formatter: function (params, ticket, callback) {
-                var ret = params.data.name + "<br>";
-                var people = [ @Html.Raw(peopleForTheRadar) ];
-                console.log(params);
-                var max = ( params.data.name != "(Contacts）" ? @maxHours : @maxContacts );
-                for( var i = 0; i < params.data.value.length; i++){
-                    ret += "<br>" + people[i].name + ": " + Math.round(+params.data.value[i] * max); 
-                }
-                return ret;
-            }
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
-            orient:"vertical",
-            left: 3,
-            bottom: 3,
-            data: ['Hours', 'Contacts']
+            orient: 'vertical',
+            x: 'left',
+            data: @Html.Raw(people)
         },
-        radar: {
-            //shape: 'circle',
-            name: {
-                textStyle: {
-                    color: '#fff',
-                    backgroundColor: '#999',
-                    borderRadius: 3,
-                    padding: [3, 5]
-            }
-            },
-            indicator: [ @Html.Raw(peopleForTheRadar) ]
-        },
-        series: [{
-            name: 'Budget vs spending）',
-            type: 'radar',
-            // areaStyle: {normal: {}},
-            data : [
-                {
-                    value : [@Html.Raw(hoursForTheRadar)],
-                    name : '(Hours）'
+        series: [
+            {
+                name:'Hours',
+                type:'pie',
+                label: {
+                    show: false
                 },
-                {
-                    value : [@Html.Raw(contactsForTheRadar)],
-                    name : '(Contacts）'
-                }
-            ]
-        }]
+                radius: [0, '30%'],
+                data:[@Html.Raw(hours)]
+            },
+            {
+                name:'Contacts',
+                type:'pie',
+                radius: ['40%', '55%'],
+                data:[@Html.Raw(contacts)]
+            }
+        ]
     };
     
     
@@ -340,7 +316,7 @@ else if( district != null)
                 legend: {
                     x: 220,
                     y: 40,
-                    data: @Html.Raw(personsForTheLegend)
+                    data: @Html.Raw(people)
                 },
                 calculable: !6,
                 xAxis : [
