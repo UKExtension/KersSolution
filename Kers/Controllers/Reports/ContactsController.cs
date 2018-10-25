@@ -395,7 +395,7 @@ namespace Kers.Controllers.Reports
 
             var LinksDataForTheGraph = new List<string>();
 
-            int LabelLength = 15;
+            int LabelLength = 25;
 
             foreach( var ProgramData in MajorProgramActivities ){
                 var shortenedProgramName = System.Net.WebUtility.HtmlEncode(ProgramData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? ProgramData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : ProgramData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", ""));
