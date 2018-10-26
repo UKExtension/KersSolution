@@ -395,7 +395,7 @@ namespace Kers.Controllers.Reports
 
             var LinksDataForTheGraph = new List<string>();
 
-            int LabelLength = 25;
+            int LabelLength = 20;
 
             foreach( var ProgramData in MajorProgramActivities ){
                 var shortenedProgramName = System.Net.WebUtility.HtmlEncode(ProgramData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? ProgramData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : ProgramData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", ""));
@@ -417,6 +417,7 @@ namespace Kers.Controllers.Reports
 
 
             var StoryDataForTheGraph = new List<string>();
+            var StoryTitles = new List<string>();
 
 
             foreach( var StoryData in MajorProgramStories ){
@@ -432,25 +433,28 @@ namespace Kers.Controllers.Reports
                 foreach( var story in StoryData.Stories){
                     var lastRev = context.StoryRevision.Where( s => s.StoryId == story.Id ).OrderBy( s => s.Created ).Last();
                     var shortenedStoryTitle = lastRev.Title.Count() > LabelLength ? lastRev.Title.Substring( 0, LabelLength ) + "..." : lastRev.Title;
-                    StoryDataForTheGraph.Add(
-                                            "\n{ \"name\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\", "
-                                            + "\"label\":{\"normal\":{\"show\":true"
-                                            +",\"textStyle\":{\"color\":\"#f7cb38\"}}}, "
-                                            + "\"category\": \"Success Stories\",\"symbolSize\":15, "
-                                            + "\"value\":1}");
-                    LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\",\"target\": \"" + shortenedProgramName +"\"}");
-                    var author = context.KersUser.Where( u => u.Id == story.KersUserId).Include( u => u.RprtngProfile).First();
-                    /* if( !EmployeeActivities.Where( e => e.User.User == author).Any()){
-                        EmployeeDataForTheGraph.Add(
-                                "\n{ \"name\": \"" + author.RprtngProfile.Name + "\","
-                                + " \"category\": \"Employees\","
-                                + "\"label\":{\"normal\":{"
-                                + "\"show\":false ,"
-                                + "\"textStyle\":{\"color\":\"#72c380\"}}},"
-                                + "\"symbolSize\":5,"
-                                + "\"value\": 1}");
-                    } */
-                    LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(author.RprtngProfile.Name) + "\",\"target\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) +"\"}");
+                    if( !StoryTitles.Where( s => s == shortenedStoryTitle).Any() ){
+                        StoryTitles.Add(shortenedStoryTitle);
+                        StoryDataForTheGraph.Add(
+                                                "\n{ \"name\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\", "
+                                                + "\"label\":{\"normal\":{\"show\":true"
+                                                +",\"textStyle\":{\"color\":\"#f7cb38\"}}}, "
+                                                + "\"category\": \"Success Stories\",\"symbolSize\":15, "
+                                                + "\"value\":1}");
+                        LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) + "\",\"target\": \"" + shortenedProgramName +"\"}");
+                        var author = context.KersUser.Where( u => u.Id == story.KersUserId).Include( u => u.RprtngProfile).First();
+                        /* if( !EmployeeActivities.Where( e => e.User.User == author).Any()){
+                            EmployeeDataForTheGraph.Add(
+                                    "\n{ \"name\": \"" + author.RprtngProfile.Name + "\","
+                                    + " \"category\": \"Employees\","
+                                    + "\"label\":{\"normal\":{"
+                                    + "\"show\":false ,"
+                                    + "\"textStyle\":{\"color\":\"#72c380\"}}},"
+                                    + "\"symbolSize\":5,"
+                                    + "\"value\": 1}");
+                        } */
+                        LinksDataForTheGraph.Add("\n{ \"source\": \"" + System.Net.WebUtility.HtmlEncode(author.RprtngProfile.Name) + "\",\"target\": \"" + System.Net.WebUtility.HtmlEncode(shortenedStoryTitle) +"\"}");
+                    }
                 }                
             }
 
