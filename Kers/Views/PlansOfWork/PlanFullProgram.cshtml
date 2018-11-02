@@ -9,7 +9,7 @@
 <div class="text-right">
         <a asp-controller="PlansOfWork"  asp-action="PlansByProgram" asp-route-id=@programid class="btn btn-default btn-xs">Back to the Program</a><br>
 </div>
-@Html.Partial("PlanFullPartial")
+@await Html.PartialAsync("PlanFullPartial")
 <div class="text-right">
         <a asp-controller="PlansOfWork"  asp-action="PlansByProgram" asp-route-id=@programid class="btn btn-default btn-xs">Back to the Program</a><br>
 </div>
