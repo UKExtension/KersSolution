@@ -82,7 +82,7 @@ namespace Kers.Controllers.Reports
         }
         [HttpGet]
         [Route("counties/{fy?}")]
-        public async Task<IActionResult> Counties(string fy="0")
+        public IActionResult Counties(string fy="0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
             if(fiscalYear == null){
@@ -90,7 +90,7 @@ namespace Kers.Controllers.Reports
             }
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
-            var counties = await this.context.PlanningUnit.
+            var counties = this.context.PlanningUnit.
                                 Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
                                 Include( c => c.District).
                                 GroupBy( c => c.District )
@@ -99,7 +99,7 @@ namespace Kers.Controllers.Reports
                                                 Counties = g.Select( a => a).OrderBy( c => c.Name).ToList()
                                             }
                                         )
-                                .OrderBy(c => c.District.Name).ToListAsync();
+                                .OrderBy(c => c.District.Name).ToList();
             return View(counties);
         }
 
