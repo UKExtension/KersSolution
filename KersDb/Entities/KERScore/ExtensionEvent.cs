@@ -2,6 +2,7 @@ namespace Kers.Models.Entities.KERScore
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.IO;
     using System.Runtime.Serialization;
@@ -13,6 +14,8 @@ namespace Kers.Models.Entities.KERScore
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public partial class ExtensionEvent
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
     
         /// <summary>
         /// Gets or sets has attachments.
@@ -47,14 +50,16 @@ namespace Kers.Models.Entities.KERScore
         /// The date, time, and time zone that the event starts.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "start", Required = Newtonsoft.Json.Required.Default)]
-        public ExtensionEventDateTimeTimeZone Start { get; set; }
+        public DateTimeOffset Start { get; set; }
+        //public ExtensionEventDateTimeTimeZone Start { get; set; }
     
         /// <summary>
         /// Gets or sets end.
         /// The date, time, and time zone that the event ends.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "end", Required = Newtonsoft.Json.Required.Default)]
-        public ExtensionEventDateTimeTimeZone End { get; set; }
+        public DateTimeOffset End { get; set; }
+        //public ExtensionEventDateTimeTimeZone End { get; set; }
     
         /// <summary>
         /// Gets or sets location.
@@ -140,14 +145,14 @@ namespace Kers.Models.Entities.KERScore
         /// The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "createdDateTime", Required = Newtonsoft.Json.Required.Default)]
-        public DateTime? CreatedDateTime { get; set; }
+        public DateTimeOffset? CreatedDateTime { get; set; }
     
         /// <summary>
         /// Gets or sets last modified date time.
         /// The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "lastModifiedDateTime", Required = Newtonsoft.Json.Required.Default)]
-        public DateTime? LastModifiedDateTime { get; set; }
+        public DateTimeOffset? LastModifiedDateTime { get; set; }
 
     
     }
