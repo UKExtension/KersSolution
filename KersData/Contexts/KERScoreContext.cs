@@ -211,6 +211,11 @@ namespace Kers.Models.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CountyEventPlanningUnit>()
+                .HasKey(t => new { t.CountyEventId, t.PlanningUnitId });
+            
+            modelBuilder.Entity<CountyEventProgramCategory>()
+                .HasKey(t => new { t.CountyEventId, t.ProgramCategoryId });
             
             
             modelBuilder.Entity<ActivityOption>()
@@ -224,11 +229,7 @@ namespace Kers.Models.Contexts
             modelBuilder.Entity<ExpenseRevision>()
                 .Property(b => b.StartingLocationType)
                 .HasDefaultValue(1);
- /* 
-            modelBuilder.Entity<ExpenseRevision>()
-                .Property(b => b.StartingLocationOther)
-                .HasDefaultValue(""); 
- */
+
             modelBuilder.Entity<SnapDirectAges>()
                 .Property(b => b.Active)
                 .HasDefaultValue(true);

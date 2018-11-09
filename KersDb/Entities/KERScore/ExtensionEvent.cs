@@ -141,6 +141,13 @@ namespace Kers.Models.Entities.KERScore
         public string OnlineMeetingUrl { get; set; }
 
         /// <summary>
+        /// Gets or sets Images Associated with the Event.
+        /// A list of images that are uploaded to the Event
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "ExtensionEventImages", Required = Newtonsoft.Json.Required.Default)]
+        public ICollection<ExtensionEventImage> ExtensionEventImages {get;set;}
+
+        /// <summary>
         /// Gets or sets created date time.
         /// The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'
         /// </summary>
