@@ -2,6 +2,8 @@ namespace Kers.Models.Entities.KERScore
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using System.IO;
     using System.Runtime.Serialization;
     using Newtonsoft.Json;
@@ -12,6 +14,8 @@ namespace Kers.Models.Entities.KERScore
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public partial class PhysicalAddress
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets street.

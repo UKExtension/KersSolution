@@ -171,6 +171,30 @@ namespace Kers.Models.Contexts
         public virtual DbSet<StoryOutcome> StoryOutcome {get;set;}
         public virtual DbSet <StoryImage> StoryImage {get;set;}
 
+        
+        /***************************************/
+        //  Extension Events
+        /***************************************/
+
+        public virtual DbSet<ExtensionEvent> ExtensionEvent {get;set;}
+        public virtual DbSet<ExtensionEventGeoCoordinates> ExtensionEventGeoCoordinates {get;set;}
+        public virtual DbSet<ExtensionEventLocation> ExtensionEventLocation {get;set;}
+        public virtual DbSet<ExtensionEventPatternedRecurrence> ExtensionEventPatternedRecurrence {get;set;}
+        public virtual DbSet<ExtensionEventRecurrencePattern> ExtensionEventRecurrencePattern {get;set;}
+        public virtual DbSet<ExtensionEventRecurrenceRange> ExtensionEventRecurrenceRange {get;set;}
+        public virtual DbSet<PhysicalAddress> PhysicalAddress {get;set;}
+
+        /***************************************/
+        //  Extension InService Training
+        /***************************************/
+
+        public virtual DbSet<Training> Training {get;set;}
+        public virtual DbSet<TrainingCancelEnrollmentWindow> TrainingCancelEnrollmentWindow {get;set;}
+        public virtual DbSet<TrainingEnrollment> TrainingEnrollment {get;set;}
+        public virtual DbSet<TainingInstructionalHour> TainingInstructionalHour {get;set;}
+        public virtual DbSet<TainingRegisterWindow> TainingRegisterWindow {get;set;}
+        
+
         /***************************************/
         //  Scheduled Tasks
         /***************************************/
