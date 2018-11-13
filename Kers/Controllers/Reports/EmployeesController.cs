@@ -69,6 +69,22 @@ namespace Kers.Controllers.Reports
         [Route("")]
         public IActionResult Index()
         {
+
+            // Include County into program indicator values
+
+            var pind = context.ProgramIndicatorValue.Where( a => true );
+            foreach( var ind in pind ){
+                if(ind.PlanningUnitId == 0){
+                    var user = context.KersUser.Where( u => u.Id == ind.KersUserId).Include( u => u.RprtngProfile ).FirstOrDefault();
+                    ind.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
+                    ind.CreatedDateTime = DateTimeOffset.Now;
+                    ind.LastModifiedDateTime = DateTimeOffset.Now;
+                }
+            }
+
+
+
+            /* 
             var revsWith2019MP = context.ActivityRevision.Where( a => a.ActivityDate < new DateTime( 2018, 7, 1) );
             revsWith2019MP = revsWith2019MP.Where( r => r.MajorProgram.StrategicInitiative.FiscalYear.Name == "2019");
             revsWith2019MP = revsWith2019MP
@@ -83,9 +99,9 @@ namespace Kers.Controllers.Reports
                 }
                 
 
-            }
-           //context.SaveChanges();
-            return View(revsWith2019MP);
+            } */
+            context.SaveChanges();
+            return View();
         }
 
 

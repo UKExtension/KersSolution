@@ -186,9 +186,13 @@ namespace Kers.Controllers
                             ProgramIndicatorValue.Where(l=>l.KersUser == user && l.ProgramIndicatorId == val.ProgramIndicatorId).
                             FirstOrDefault();
                 if(v==null){
-                    val.KersUser = user;
+                    val.KersUser = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
+                    val.PlanningUnitId = val.KersUser.RprtngProfile.PlanningUnitId;
+                    val.CreatedDateTime = DateTimeOffset.Now;
+                    val.LastModifiedDateTime = DateTimeOffset.Now;
                     this.context.ProgramIndicatorValue.Add(val);
                 }else{
+                    v.LastModifiedDateTime = DateTimeOffset.Now;
                     v.Value = val.Value;
                 }
             }

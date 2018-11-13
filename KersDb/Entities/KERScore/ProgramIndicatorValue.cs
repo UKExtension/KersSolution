@@ -13,9 +13,13 @@ namespace Kers.Models.Entities.KERScore
         public int Id { get; set; }
         public int KersUserId {get;set;}
         public KersUser KersUser {get;set;}
+        public int PlanningUnitId {get;set;}
+        public PlanningUnit PlanningUnit {get;set;}
         public int ProgramIndicatorId {get;set;}
         public ProgramIndicator ProgramIndicator {get;set;}
         public int Value {get; set;}
+        public DateTimeOffset? CreatedDateTime { get; set; }
+        public DateTimeOffset? LastModifiedDateTime { get; set; }
 
     }
 }
