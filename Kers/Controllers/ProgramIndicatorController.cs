@@ -200,7 +200,7 @@ namespace Kers.Controllers
                 }
             }
             this.context.SaveChanges();
-
+            this.Log( indicatoValues, "ProgramIndicator", "Program Indicators Numbers Submitted." );
             return new OkObjectResult(indicatoValues);
             
         }
