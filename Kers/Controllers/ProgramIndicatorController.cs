@@ -171,8 +171,10 @@ namespace Kers.Controllers
             if(program==null){
                 return NotFound(new {Error = "Major Program not Found"});
             }
+            var user = CurrentUser();
+            user = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
             var indicatorValues = this.context.ProgramIndicatorValue.
-                            Where(p=>p.ProgramIndicator.MajorProgram == program && p.KersUser == CurrentUser()).
+                            Where(p=>p.ProgramIndicator.MajorProgram == program && p.KersUser == user && p.PlanningUnitId == user.RprtngProfile.PlanningUnitId).
                             OrderBy(o=>o.ProgramIndicator.order);
             return new OkObjectResult(indicatorValues);
             
@@ -181,12 +183,13 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult ValuesUpdate(int id, [FromBody] List<ProgramIndicatorValue> indicatoValues){
             var user = CurrentUser();
+            user = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
             foreach(var val in indicatoValues){
                 var v = this.context.
-                            ProgramIndicatorValue.Where(l=>l.KersUser == user && l.ProgramIndicatorId == val.ProgramIndicatorId).
+                            ProgramIndicatorValue.Where(l=>l.KersUser == user && l.PlanningUnitId == user.RprtngProfile.PlanningUnitId && l.ProgramIndicatorId == val.ProgramIndicatorId).
                             FirstOrDefault();
                 if(v==null){
-                    val.KersUser = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
+                    val.KersUser = user;
                     val.PlanningUnitId = val.KersUser.RprtngProfile.PlanningUnitId;
                     val.CreatedDateTime = DateTimeOffset.Now;
                     val.LastModifiedDateTime = DateTimeOffset.Now;

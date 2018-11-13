@@ -104,7 +104,7 @@ namespace Kers.Controllers.Reports
                     if( id == 0 ){
                         var allIndicators = context.ProgramIndicatorValue
                                                 .Where( v => v.ProgramIndicator.MajorProgram == program )
-                                                .GroupBy( v => v.KersUser.RprtngProfile.PlanningUnit)
+                                                .GroupBy( v => v.PlanningUnit)
                                                 .Select( v => new {
                                                     Unit = v.Key,
                                                     Reported = v.Sum( l => l.Value )
@@ -135,7 +135,7 @@ namespace Kers.Controllers.Reports
                                                             .Where( v => 
                                                                         v.ProgramIndicatorId == indctr.Id 
                                                                             &&
-                                                                        v.KersUser.RprtngProfile.PlanningUnitId == id
+                                                                        v.PlanningUnitId == id
                                                                         )
                                                             .Sum( d => d.Value);
                             }
