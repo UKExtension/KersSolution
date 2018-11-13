@@ -217,7 +217,10 @@ namespace Kers.Models.Contexts
             modelBuilder.Entity<CountyEventProgramCategory>()
                 .HasKey(t => new { t.CountyEventId, t.ProgramCategoryId });
             
-            
+            modelBuilder.Entity<Story>()
+                .Property(b => b.HasImages)
+                .HasDefaultValue(false);
+                
             modelBuilder.Entity<ActivityOption>()
                 .Property(b => b.Active)
                 .HasDefaultValue(true);
