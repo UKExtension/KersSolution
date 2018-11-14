@@ -140,6 +140,7 @@ export class SnapedHomeComponent {
 
     fiscalYearSwitched(event:FiscalYear){
       this.fiscalYear = event;
+      this.reportingService.addStats('');
       this.service.reported(this.fiscalYear.name).subscribe(
         res=>{
           this.reported = res;
