@@ -71,7 +71,7 @@ namespace Kers.Controllers.Reports
         {
 
             // Mark if story has image in the main entity
-
+/* 
             var stories = this.context.Story;
 
             foreach( var story in stories ){
@@ -83,7 +83,7 @@ namespace Kers.Controllers.Reports
                 story.HasImages = lastRev.StoryImages.Count > 0;
             }
 
-
+ */
 
 
             // Include County into program indicator values
@@ -116,7 +116,7 @@ namespace Kers.Controllers.Reports
                 
 
             } */
-            context.SaveChanges();
+           // context.SaveChanges();
             return View();
         }
 
