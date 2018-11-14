@@ -156,12 +156,20 @@ namespace Kers.Models.Repositories
                                                                     c.ActivityDate.Year == months[i].Year
                                                                     &&
                                                                     c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
-                                                                );
+                                                                )
+                                                                .Include( a => a.Revisions);
+                        entity.Revs = new List<ActivityRevision>();
+                        foreach( var act in byMonth){
+                            entity.Revs.Add(act.Revisions.OrderBy( a => a.Created.ToString("s")).Last());
+                        }
+                        /* 
                         var activityRevisionsPerMonty = byMonth
                                 .Select( a => a.Revisions.OrderBy(r => r.Created).Last())
                                 .Where( e => e.SnapDirect != null)
                                 .ToList();
                         entity.Revs = activityRevisionsPerMonty;
+ */
+                        entity.Revs = entity.Revs.Where(r => r.SnapDirectId != null ).ToList();
                         entity.Month = months[i].Month;
                         entity.Year = months[i].Year;
 
@@ -209,14 +217,20 @@ namespace Kers.Models.Repositories
                                                                     c.ActivityDate.Year == months[i].Year
                                                                     &&
                                                                     c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
-                                                            );
+                                                            )
+                                                                .Include( a => a.Revisions);
+                        entity.Revs = new List<ActivityRevision>();
+                        foreach( var act in byMonth){
+                            entity.Revs.Add(act.Revisions.OrderBy( a => a.Created.ToString("s")).Last());
+                        }
+                        /* 
                         var activityRevisionsPerMonty = byMonth
                                 .Select( a => a.Revisions.OrderBy(r => r.Created).Last())
-                                .Where( e => 
-                                            e.SnapIndirect != null
-                                        )
+                                .Where( e => e.SnapDirect != null)
                                 .ToList();
                         entity.Revs = activityRevisionsPerMonty;
+ */
+                        entity.Revs = entity.Revs.Where(r => r.SnapIndirectId != null ).ToList();
                         entity.Month = months[i].Month;
                         entity.Year = months[i].Year;
 

@@ -167,7 +167,7 @@ namespace Kers.Models.Repositories
                         
                 keys.Add("YearMonth");
                 keys.Add("YearMonthName");
-                var methods = context.SnapIndirectReached.Where(m => m.Active && m.FiscalYear == fiscalYear).OrderBy( m => m.order);
+                var methods = context.SnapIndirectReached.Where(m => m.Active).OrderBy( m => m.order);
                 foreach( var met in methods){
                     keys.Add(string.Concat( "\"", met.Name, "\""));
                 }
@@ -215,7 +215,7 @@ namespace Kers.Models.Repositories
     
                 keys.Add("YearMonth");
                 keys.Add("YearMonthName");
-                var types = context.SnapDirectSessionType.Where(m => m.Active && m.FiscalYear == fiscalYear).OrderBy( m => m.order);
+                var types = context.SnapDirectSessionType.Where(m => m.Active).OrderBy( m => m.order);
                 foreach( var met in types){
                     keys.Add(string.Concat( "\"", met.Name, " Number Delivered\""));
                     keys.Add(string.Concat( "\"", met.Name, " Min Minutes\""));
@@ -267,7 +267,7 @@ namespace Kers.Models.Repositories
                         
                 keys.Add("YearMonth");
                 keys.Add("YearMonthName");
-                var methods = context.SnapIndirectMethod.Where(m => m.Active && m.FiscalYear == fiscalYear).OrderBy( m => m.order);
+                var methods = context.SnapIndirectMethod.Where(m => m.Active).OrderBy( m => m.order);
                 foreach( var met in methods){
                     keys.Add(string.Concat( "\"", met.Name, "\""));
                 }
@@ -376,7 +376,7 @@ namespace Kers.Models.Repositories
                 }while(i < difference);
 
                     result = string.Join(",", keys.ToArray()) + "\n";
-                    var settings = this.context.SnapDirectDeliverySite.Where( d => d.FiscalYearId == fiscalYear.Id && d.Active).OrderBy(d => d.order).ToList();
+                    var settings = this.context.SnapDirectDeliverySite.Where( d => d.Active).OrderBy(d => d.order).ToList();
                     
                     var snapPerMonth = new List<int>[difference];
                     for( i = 0; i< difference; i++){
@@ -386,11 +386,15 @@ namespace Kers.Models.Repositories
                                                                                 a.ActivityDate.Year == months[i].Year
                                                                                 &&
                                                                                 a.KersUser.RprtngProfile.Institution.Code == "21000-1862"
-                                                                        );
-                        var activitiesWithSnapDirect = activitiesPerMonth
-                                                        .Select( v => v.Revisions.OrderBy( r => r.Created.ToString("s")).Last())
-                                                        .Where( a => a.SnapDirect != null)
-                                                        .ToList();
+                                                                        )
+                                                                        .Include(a => a.Revisions);
+                        
+                        var lastRevs = new List<ActivityRevision>();
+
+                        foreach(var act in activitiesPerMonth){
+                            lastRevs.Add( act.Revisions.OrderBy( r => r.Created.ToString("s")).Last() );
+                        }                        
+                        var activitiesWithSnapDirect = lastRevs.Where( a => a.SnapDirectId != null).ToList();
                         snapPerMonth[i] = activitiesWithSnapDirect.Select( s => s.SnapDirectId??0 ).Where( a => a != 0).ToList();
                     }
                     

@@ -67,7 +67,7 @@ namespace Kers.Models.Repositories
                                                                 User = k.Select( a => a.User)
                                                             }
                                                     );
-                var partners = this.context.SnapPolicyAimed.Where( p => p.Active && p.FiscalYear == fiscalYear).ToList();
+                var partners = this.context.SnapPolicyAimed.Where( p => p.Active).ToList();
                 foreach( var byMonth in groupedByMonth){
                     var revisionIds = byMonth.Revisions.Select( a => a.Id);
                     //List of revisions per this month with policy data
@@ -154,7 +154,7 @@ namespace Kers.Models.Repositories
                                                                 Revisions = k.Select( a => a.Revision)
                                                             }
                                                     );
-                var partners = this.context.SnapPolicyPartner.Where( p => p.Active && p.FiscalYear == fiscalYear).ToList();
+                var partners = this.context.SnapPolicyPartner.Where( p => p.Active).ToList();
                 foreach( var byMonth in groupedByMonth){
                     var revisionIds = byMonth.Revisions.Select( a => a.Id);
                     var byPartner = context.ActivityRevision
