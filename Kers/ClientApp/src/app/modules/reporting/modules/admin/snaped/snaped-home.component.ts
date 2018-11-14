@@ -6,7 +6,7 @@ import { saveAs } from 'file-saver';
 
 @Component({
   template: `
-    <fiscal-year-switcher [type]="'snapEd'" [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+    <fiscal-year-switcher [type]="'snapEd'" [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
     <br><br><div>
       <a (click)="ccond = !ccond" style="cursor:pointer;"><i class="fa fa-plus-square" *ngIf="!ccond"></i><i class="fa fa-minus-square" *ngIf="ccond"></i> Counties </a>
       <div *ngIf="ccond">
@@ -81,22 +81,7 @@ export class SnapedHomeComponent {
     {}
 
     ngOnInit(){
-        this.service.reported().subscribe(
-          res=>{
-            this.reported = res;
-            this.service.commited().subscribe(
-              res => {
-                this.committed = res;
-                /* this.fiscalyearService.current('snapEd').subscribe(
-                  res => {
-                    this.fiscalYear = res;
-                    this.addStats();
-                  }
-                ) */
-              }
-            )
-          }
-        );
+        
         this.reportingService.setTitle("Snap-Ed Admin Dashboard");
     }
 
@@ -155,7 +140,18 @@ export class SnapedHomeComponent {
 
     fiscalYearSwitched(event:FiscalYear){
       this.fiscalYear = event;
-      this.addStats();
+      this.service.reported(this.fiscalYear.name).subscribe(
+        res=>{
+          this.reported = res;
+          this.service.commited(this.fiscalYear.name).subscribe(
+            res => {
+              this.committed = res;
+              this.addStats();
+            }
+          )
+        }
+      );
+      
     }
 
 
