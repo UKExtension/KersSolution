@@ -70,8 +70,24 @@ namespace Kers.Controllers.Reports
         public IActionResult Index()
         {
 
-            // Include County into program indicator values
+            // Mark if story has image in the main entity
 
+            var stories = this.context.Story;
+
+            foreach( var story in stories ){
+                var lastRev = context.StoryRevision
+                                    .Where( s => s.StoryId == story.Id)
+                                    .Include( s => s.StoryImages)
+                                    .OrderBy( s => s.Created)
+                                    .Last();
+                story.HasImages = lastRev.StoryImages.Count > 0;
+            }
+
+
+
+
+            // Include County into program indicator values
+/* 
             var pind = context.ProgramIndicatorValue.Where( a => true );
             foreach( var ind in pind ){
                 if(ind.PlanningUnitId == 0){
@@ -82,7 +98,7 @@ namespace Kers.Controllers.Reports
                 }
             }
 
-
+ */
 
             /* 
             var revsWith2019MP = context.ActivityRevision.Where( a => a.ActivityDate < new DateTime( 2018, 7, 1) );

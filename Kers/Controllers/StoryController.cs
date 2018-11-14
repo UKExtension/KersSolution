@@ -298,6 +298,7 @@ namespace Kers.Controllers
                 str.MajorProgramId = story.MajorProgramId;
                 str.Revisions = new List<StoryRevision>();
                 str.Revisions.Add(story);
+                str.HasImages = story.StoryImages.Count > 0;
                 context.Add(str); 
                 this.Log(str,"Story", "Success Story Added.");
                 context.SaveChanges();
@@ -321,6 +322,7 @@ namespace Kers.Controllers
                                             .Include(m => m.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
                                             .FirstOrDefault();
                 stEntity.MajorProgramId = story.MajorProgramId;
+                stEntity.HasImages = story.StoryImages.Count > 0;
                 stEntity.Revisions.Add(story);
                 stEntity.Updated = DateTime.Now;
                 context.SaveChanges();
