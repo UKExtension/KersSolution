@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Kers.Models.Contexts;
 using Kers.Models.Entities.KERScore;
 using Kers.Services;
+using SkiaSharp;
 
 namespace Kers.Services.FroalaWisiwyg
 {
@@ -74,6 +75,7 @@ namespace Kers.Services.FroalaWisiwyg
             
             UploadImage im = new UploadImage();
             im.UploadFile = upResult;
+            im.Name = upResult.Name;
             context.Add(im);
             context.SaveChanges();
 

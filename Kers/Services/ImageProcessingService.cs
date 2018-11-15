@@ -328,7 +328,7 @@ namespace Kers.Services
         }
         
 
-        private SKBitmap LoadBitmap(Stream stream, out SKCodecOrigin origin){
+        public SKBitmap LoadBitmap(Stream stream, out SKCodecOrigin origin){
             using (var s = new SKManagedStream(stream))
             {
                 using (var codec = SKCodec.Create(s))
