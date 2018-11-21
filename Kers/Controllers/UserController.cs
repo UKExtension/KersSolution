@@ -30,7 +30,7 @@ namespace Kers.Controllers
         private KERScoreContext _context;
         private IMembershipService _service;
         private IDistributedCache _cache;
-
+        IFiscalYearRepository fiscalYearRepo;
         private int DefaultNumberOfItems{
             get
             {
@@ -42,12 +42,14 @@ namespace Kers.Controllers
                                 KERSmainContext _mContext,
                                 KERScoreContext _context,
                                 IDistributedCache _cache,
-                                IMembershipService _service
+                                IMembershipService _service,
+                                IFiscalYearRepository fiscalYearRepo
                             ){
             this._mContext = _mContext;
             this._context = _context;
             this._service = _service;
             this._cache = _cache;
+            this.fiscalYearRepo = fiscalYearRepo;
         }
 
         [HttpGet()]
@@ -437,8 +439,8 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet("InServiceEnrolment/{userId?}")]
-        public IActionResult InServiceEnrolment(int userId=0){
+        [HttpGet("InServiceEnrolment/{userId?}/{fy?}")]
+        public IActionResult InServiceEnrolment(int userId=0, string fy = "0"){
             KersUser user;
             if(userId == 0){
                 var curentUserId = CurrentUserId();
@@ -447,9 +449,14 @@ namespace Kers.Controllers
                 user = this._context.KersUser.Where(u => u.Id == userId).Include(u => u.RprtngProfile).FirstOrDefault();
             }
 
+            var fiscalYear = GetFYByName(fy);
+            var start = fiscalYear.Start.ToString("yyyyMMdd");
+            var end = fiscalYear.End.ToString("yyyyMMdd");
+            
+
             var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
-            String uri = "https://kers.ca.uky.edu/kers_mobile/HandlerInService.ashx?Id=" + user.RprtngProfile.PersonId;
+            String uri = "https://kers.ca.uky.edu/kers_mobile/HandlerInService.ashx?Id=" + user.RprtngProfile.PersonId + "&Start=" + start + "&End=" + end;
 
 
 
@@ -491,6 +498,19 @@ namespace Kers.Controllers
 
         private string CurrentUserId(){
             return User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        }
+
+        private FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = this.fiscalYearRepo.previoiusFiscalYear(type);
+            }else{
+                fiscalYear = this._context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+                if(fiscalYear == null ){
+                    fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
+                }
+            }
+            return fiscalYear;
         }
         
     }

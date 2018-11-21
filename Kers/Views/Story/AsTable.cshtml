@@ -1,0 +1,290 @@
+@model KersData.Models.PaginatedList<Kers.Models.Entities.KERScore.Story>
+
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = "Success Stories";
+    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var lngth = Convert.ToString(ViewData["CurrentLength"]);
+    var srt = Convert.ToString(ViewData["CurrentSort"]);
+    var fy = ViewData["fy"] as string;
+    var srch = Convert.ToString(ViewData["CurrentFilter"]);
+    var units = ViewData["Units"] as List<Kers.Models.Entities.KERScore.PlanningUnit>;
+    var programs = ViewData["Program"] as List<Kers.Models.Entities.KERScore.MajorProgram>;
+    //var positions = ViewData["Position"] as List<Kers.Models.Entities.KERScore.ExtensionPosition>;
+    int currUnit = (int) ViewBag.CurrentUnit;
+    int currProgram = (int) ViewBag.CurrentProgram;
+    
+}
+
+<style>
+.search-filters{
+    padding-bottom: 2em;
+}
+.search-filters label{
+    font-weight: normal;
+}
+@@media (min-width: 1200px) {
+    .story-brief{
+        min-height: 290px;
+    }
+}
+</style>
+
+as table
+<form asp-controller="Story" asp-action="Index" method="get" class="form-inline">
+    <div class="search-filters">
+
+        <div class="form-group">
+            <label for="planningUnitId">&nbsp;&nbsp;&nbsp;Planning Unit</label>
+            <select class="form-control" name="planningUnitId" onchange="this.form.submit()"  style="max-width: 300px;">
+                <option value="0">-- Select --</option>
+                @foreach( var unit in units )
+                {
+                    if(unit.Id == @currUnit)
+                    {
+                        <option value="@unit.Id" selected="selected">@unit.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@unit.Id">@unit.Name</option>
+                    }
+                    
+                }
+                
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="programId">&nbsp;&nbsp;&nbsp;Major Program</label>
+            <select class="form-control" name="programId" onchange="this.form.submit()" style="max-width: 300px;">
+                <option value="0">-- Select --</option>
+                @foreach( var program in programs )
+                {
+                    if(program.Id == @currProgram)
+                    {
+                        <option value="@program.Id" selected="selected">@program.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@program.Id">@program.Name</option>
+                    }
+                    
+                }
+                
+            </select>
+        </div>
+        
+        
+
+
+
+        <div class="form-group" style="float: right">
+            <label>
+                Order By: 
+                <div class="btn-group" data-toggle="buttons">
+                        
+                        @if(srt == "newest")
+                        {
+                        <label class="btn btn-default active" onclick="document.getElementById('newest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="newest" value="newest" checked="checked"> Newest
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('newest').checked=true; this.form.submit();">
+                                <input type="radio" name="SortOrder" id="newest" value="newest"> Newest
+                        </label>
+                        }
+
+                        @if(srt == "oldest")
+                        {  
+                        <label class="btn btn-default active" onclick="document.getElementById('oldest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="oldest" value="oldest"  checked="checked"> Oldest
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('oldest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="oldest" value="oldest"> Oldest
+                        </label>  
+                        }
+                        @if(srt == "author")
+                        {  
+                        <label class="btn btn-default active" onclick="document.getElementById('author').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="author" value="author"  checked="checked"> Author
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('author').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="author" value="author"> Author
+                        </label>
+                        }
+                    </div>
+            </label>
+        </div>
+
+
+
+
+    </div>
+    
+  
+
+
+
+<div id="datatable-keytable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+    
+    <div class="row">
+    
+                      <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                        
+                      </div>
+
+                      <div class="clearfix"></div>
+<table>
+    <thead>
+        <tr>
+            <th>Fiscal Year</th>
+            <th>Planning Unit</th>
+            <th>Major Programm</th>
+            <th>Author</th>
+            <th>Title</th>
+            <th>Story</th>
+        </tr>
+    </thead>
+    
+                       @foreach( var story in Model)
+                        {
+                            var last = story.Revisions.OrderBy( r => r.Created ).Last();
+                            @if(@story.PlanningUnit != null)
+                            {
+                                <tr>
+                                    <td>@fy</td>
+                                    <td>@story.PlanningUnit.Name</td>
+                                    <td>@story.MajorProgram.Name</td>
+                                    <td>@story.KersUser.PersonalProfile.FirstName @story.KersUser.PersonalProfile.LastName </td>
+                                    <td>@last.Title</td>
+                                    <td>@Html.StripHtml(@last.Story)</td>
+                                </tr>
+                            }
+                            
+                        }
+</table>
+    </div>
+    <div class="row">
+        @{
+            var from = (Model.PageIndex - 1) * Model.PageSize + 1;
+            var to = from + Model.Count() - 1;
+        }
+        <div class="col-sm-4">
+            <div class="dataTables_info" id="datatable-keytable_info" role="status" aria-live="polite">Showing @from to @to of @Model.TotalItems entries</div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label>Show
+                    <select name="length" 
+                            class="form-control input-sm"
+                            id="length"
+                            onchange="this.form.submit()"
+                            >
+                        
+                        @if( lngth == "18")
+                        {
+                                <option value="18" selected="selected" >18</option>
+                        }
+                        else
+                        {
+                            <option value="18" >18</option>
+                        }
+                        @if( lngth == "36")
+                        {
+                                <option value="36" selected="selected" >36</option>
+                        }
+                        else
+                        {
+                            <option value="36" >36</option>
+                        }
+
+                        @if( lngth == "72")
+                        {
+                                <option value="72" selected="selected" >72</option>
+                        }
+                        else
+                        {
+                            <option value="72" >72</option>
+                        }
+                        
+                        @if( lngth == "144")
+                        {
+                                <option value="144" selected="selected" >144</option>
+                        }
+                        else
+                        {
+                            <option value="144" >144</option>
+                        }
+                    </select> entries
+                </label>
+            </div>
+        </div>
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+            var active = "";
+        }
+        <div class="col-sm-5">
+            <div class="text-right" >
+                <ul class="pagination" style="margin-top:0">
+                    <li class="paginate_button previous @prevDisabled" id="datatable-keytable_previous">
+                        <a asp-action="AsTable"
+                            asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-length="@ViewData["CurrentLength"]"
+                            asp-route-page="@(Model.PageIndex - 1)"
+                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            asp-route-planningUnitId=@currUnit
+                            asp-route-programId=@currProgram
+                            class="">Previous</a>
+                    </li>
+                    @{
+                        var start = Math.Max(1, Model.PageIndex - 6);
+                        var end = Math.Min(Model.PageIndex + 6, Model.TotalPages );
+                    }
+                    @for( var i = start; i <= end; i++ )
+                    {
+                        active = Model.PageIndex == i ? "active" : "";
+                        <li class="paginate_button @active"><a 
+                            asp-action="AsTable"
+                            asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-length="@ViewData["CurrentLength"]"
+                            asp-route-page="@i"
+                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            asp-route-planningUnitId=@currUnit
+                            asp-route-programId=@currProgram
+                        >@i</a></li>
+                    }
+                    <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
+                        <a  asp-action="AsTable"
+                            asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-length="@ViewData["CurrentLength"]"
+                            asp-route-page="@(Model.PageIndex + 1)"
+                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            asp-route-planningUnitId=@currUnit
+                            asp-route-programId=@currProgram
+                            class="" >Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+    </div>
+</div>
+                
+            
+
+                      
+</div>
+</form>
