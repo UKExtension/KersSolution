@@ -65,8 +65,8 @@ export class UserService {
         
     }
 
-    InServiceEnrolment(id:number){
-        var url = this.baseUrl + "InServiceEnrolment/" + id;
+    InServiceEnrolment(id:number, fy:string){
+        var url = this.baseUrl + "InServiceEnrolment/" + id + "/" + fy;
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res =>{ 
                     return  res.json();

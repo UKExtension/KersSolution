@@ -99,8 +99,8 @@
 
 
 <h2>CES IN-SERVICE ENROLLMENT</h2>
+<fiscal-year-switcher *ngIf="user" [initially]="'current'" [showNext]="false" (onSwitched)="inServiceFiscalYearSwitched($event)"></fiscal-year-switcher><br>
 <div class="table-responsive" *ngIf="inServiceEnrolment">
-
     <table class="table table-bordered table-striped" *ngIf="inServiceEnrolment.length == 0">
         <tbody>
             <tr>

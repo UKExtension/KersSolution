@@ -96,15 +96,7 @@ export class UserSummaryComponent {
                         this.profilePicSrc = this.location.prepareExternalUrl('/image/crop/250/250/' + this.user.personalProfile.uploadImage.uploadFile.name);
                     }
 
-                    this.service.InServiceEnrolment(this.user.id).subscribe(
-                        res => {
-                            this.inServiceEnrolment = res;
-                            for( let el of this.inServiceEnrolment){
-                                if(el[3] == 'Yes') this.hoursAttended += +el[2];
-                            }
-                        },
-                        err => this.errorMessage = <any>err
-                    )
+                    
 
 
             }
@@ -146,6 +138,17 @@ export class UserSummaryComponent {
         this.expenseSummaries = this.expenseService.fiscalYearSummaries(this.user.id,event.name);
     }
 
+    inServiceFiscalYearSwitched(event:FiscalYear){
+        this.service.InServiceEnrolment(this.user.id, event.name).subscribe(
+            res => {
+                this.inServiceEnrolment = res;
+                for( let el of this.inServiceEnrolment){
+                    if(el[3] == 'Yes') this.hoursAttended += +el[2];
+                }
+            },
+            err => this.errorMessage = <any>err
+        )
+    }
 
     ngOnDestroy(){
         this.reportingService.setTitle( 'Kentucky Extension Reporting System' );
