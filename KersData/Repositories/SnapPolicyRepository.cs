@@ -231,8 +231,7 @@ namespace Kers.Models.Repositories
                                                                             &&
                                                                             a.KersUser.RprtngProfile.Institution.Code == "21000-1862"
                                                                         );
-                var activitiesWithPolicy = activitiesThisFiscalYear.Where( r => r.Revisions.Last().SnapPolicy != null).OrderBy( a => a.ActivityDate.Year).ThenBy( a => a.ActivityDate.Month).ThenBy(a => a.KersUser.PersonalProfile.FirstName);
-                var policyMeetings = activitiesWithPolicy.Select(
+                var meetings = activitiesThisFiscalYear.Select(
                                         a => new {
                                             //SnapPolicy = a.Revisions.OrderBy( r => r.Created).Last().SnapPolicy,
                                             ActivityDate = a.ActivityDate,
@@ -244,10 +243,13 @@ namespace Kers.Models.Repositories
                                             Programs = a.KersUser.Specialties,
                                             Revisions = a.Revisions
                                         }
-                                    )
-                                    .ToList();
+                                    );
+                var activitiesWithPolicy = meetings
+                         .OrderBy( a => a.ActivityDate)
+                            .ThenBy(a => a.PersonalProfile.FirstName);
+                
                 var specialties = context.Specialty.ToList();
-                foreach( var meeting in policyMeetings){
+                foreach( var meeting in activitiesWithPolicy){
                     var LastRevision = meeting.Revisions.OrderBy(r => r.Created).Last();
                     if(LastRevision.SnapPolicyId != null){
                         var row = meeting.ActivityDate.ToString("yyyyMM") + ",";
