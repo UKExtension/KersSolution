@@ -890,12 +890,35 @@ namespace Kers.Models.Repositories
 
 
                 var byUser = SnapData.GroupBy( s => s.User.Id).Select( 
-                                            d => new {
+                                            d => new UserRevisions{
                                                 User = d.Select( s => s.User ).Last(),
-                                                Revisions = d.Select( s => s.Revision )
+                                                Revisions = d.Select( s => s.Revision ).ToList()
                                             }
-                                        )
-                                        .OrderBy(d => d.User.RprtngProfile.PlanningUnit.DistrictId).ThenBy( d => d.User.RprtngProfile.PlanningUnit.Name).ThenBy( d => d.User.RprtngProfile.Name);
+                                        ).ToList();
+                                        
+
+                var commitmentst = context.SnapEd_Commitment
+                                        .Where( c => c.FiscalYear == fiscalYear)
+                                        .GroupBy( c => c.KersUser)
+                                        .Select( c => c.Key);
+                
+                foreach( var userWithCommitment in commitmentst ){
+                    if( !byUser.Where( u => u.User == userWithCommitment).Any() ){
+                        var commtmntUser = context.KersUser.Where( u => u == userWithCommitment)
+                                                .Include( u => u.RprtngProfile)
+                                                    .ThenInclude( p => p.PlanningUnit)
+                                                    .ThenInclude( n => n.District)
+                                                .Include( u => u.ExtensionPosition)
+                                                .Include( u => u.Specialties)
+                                                    .ThenInclude( s => s.Specialty)
+                                                .FirstOrDefault();
+                        byUser.Add(new UserRevisions{User = commtmntUser, Revisions = new List<ActivityRevision>()});
+                    }
+                }
+
+                byUser = byUser.OrderBy(d => d.User.RprtngProfile.PlanningUnit.DistrictId)
+                                .ThenBy( d => d.User.RprtngProfile.PlanningUnit.Name)
+                                .ThenBy( d => d.User.RprtngProfile.Name).ToList();
 
                 foreach( var userData in byUser){
                     var row = userData.User.RprtngProfile.PlanningUnit.DistrictId + ",";
