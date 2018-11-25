@@ -903,7 +903,7 @@ namespace Kers.Models.Repositories
                                         .Select( c => c.Key);
                 
                 foreach( var userWithCommitment in commitmentst ){
-                    if( !byUser.Where( u => u.User == userWithCommitment).Any() ){
+                    if( !byUser.Where( u => u.User.Id == userWithCommitment.Id).Any() ){
                         var commtmntUser = context.KersUser.Where( u => u == userWithCommitment)
                                                 .Include( u => u.RprtngProfile)
                                                     .ThenInclude( p => p.PlanningUnit)
