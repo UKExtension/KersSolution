@@ -97,7 +97,9 @@ namespace Kers.Models.Repositories
                     if(last.SnapDirectId != null || last.SnapIndirect != null){
                         var perPers = new UserRevisionData();
                         perPers.Revision = last;
-                        perPers.User = context.KersUser.Find( act.KersUserId );
+                        perPers.User = context.KersUser.Where( u => u.Id == act.KersUserId )
+                                        .Include( u => u.RprtngProfile)
+                                        .FirstOrDefault();
                         FilteredPerPerson.Add(perPers);
                     }
                 }
@@ -107,7 +109,8 @@ namespace Kers.Models.Repositories
                                 .Select( s => new {
                                     User = s.Key,
                                     Revs = s.Select( r => r.Revision)
-                                });
+                                })
+                                .OrderBy( g => g.User.RprtngProfile.Name);
 
 
                 foreach( var k in grouped){
