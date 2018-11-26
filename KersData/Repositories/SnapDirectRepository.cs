@@ -72,52 +72,66 @@ namespace Kers.Models.Repositories
                                     Where( e =>
                                                 e.ActivityDate > fiscalYear.Start 
                                                 &&
-                                                e.ActivityDate < fiscalYear.End 
+                                                e.ActivityDate < fiscalYear.End /* 
                                                 && 
                                                     (
                                                         e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapDirect != null 
                                                         || 
                                                         e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().SnapIndirect != null
-                                                    ) 
+                                                    )  */
                                                 &&
                                                 e.KersUser.RprtngProfile.Institution.Code == "21000-1862"
-                                            )
+                                            );/* 
                                     .Select( s => new {
-                                        Last = s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
+                                        Last = new ActivityRevision(){ActivityId = s.Id},//s.Revisions.Where(r => true).OrderBy(r => r.Created.ToString("s")).Last(),
                                         User = s.KersUser,
                                         Profile = s.KersUser.RprtngProfile,
                                         Unit = s.KersUser.RprtngProfile.PlanningUnit,
                                         Position = s.KersUser.ExtensionPosition
                                     })
-                                    .OrderBy(e => e.User.RprtngProfile.Name).ToList();
+                                    .OrderBy(e => e.User.RprtngProfile.Name).ToList(); */
+                var FilteredPerPerson = new List<UserRevisionData>();
+                foreach( var act in perPerson){
+                    var last = context.ActivityRevision.Where( a => a.ActivityId == act.Id )
+                                    .OrderBy( r => r.Created ).Last();
+                    if(last.SnapDirectId != null || last.SnapIndirect != null){
+                        var perPers = new UserRevisionData();
+                        perPers.Revision = last;
+                        perPers.User = context.KersUser.Find( act.KersUserId );
+                        FilteredPerPerson.Add(perPers);
+                    }
+                }
                 
-                
-                var grouped = perPerson.Where( r => true)
+                var grouped = FilteredPerPerson.Where( r => true)
                                 .GroupBy( p => p.User)
                                 .Select( s => new {
                                     User = s.Key,
-                                    Revs = s.Select( r => r.Last),
-                                    Profile = s.Select( r => r.Profile).First(),
-                                    Unit = s.Select( r => r.Unit).First(),
-                                    Position = s.Select( r => r.Position).First(),
+                                    Revs = s.Select( r => r.Revision)
                                 });
 
 
                 foreach( var k in grouped){
+                    var theUser = this.context.KersUser.Where( u => u == k.User )
+                                        .Include( u => u.RprtngProfile)
+                                            .ThenInclude( p => p.PlanningUnit)
+                                        .Include( u => u.ExtensionPosition)
+                                        .Include( u => u.Specialties)
+                                            .ThenInclude( s => s.Specialty)
+                                        .FirstOrDefault();
                     var row = fiscalYear.Name + ",";
-                    row += string.Concat( "\"", k.Profile.Name, "\"") + ",";
-                    if(this.context.zEmpProfileRole.Where( r => r.User.Id == k.User.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
-                        row += string.Concat( "\"", k.Position.Code, ", CNTMNGR\"") + ",";
+                    row += string.Concat( "\"", theUser.RprtngProfile.Name, "\"") + ",";
+                    if(this.context.zEmpProfileRole.Where( r => r.User.Id == theUser.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
+                        row += string.Concat( "\"", theUser.ExtensionPosition.Code, ", CNTMNGR\"") + ",";
                     }else{
-                        row += string.Concat( "\"", k.Position.Code, "\"") + ",";
+                        row += string.Concat( "\"", theUser.ExtensionPosition.Code, "\"") + ",";
                     }
                     var spclt = "";
-                    var sp = this.context.KersUser.Where( r => r.Id == k.User.Id).Include( u => u.Specialties).ThenInclude( s => s.Specialty).FirstOrDefault();
-                    foreach( var s in sp.Specialties){
+                    
+                    foreach( var s in theUser.Specialties){
                         spclt += " " + s.Specialty.Code;
                     }
                     row += string.Concat( "\"", spclt, "\"") + ",";
-                    row += string.Concat( "\"", k.Unit.Name, "\"") + ",";
+                    row += string.Concat( "\"", theUser.RprtngProfile.PlanningUnit.Name, "\"") + ",";
                     row += k.Revs.Sum( r => r.Hours).ToString() + ",";
 
 
