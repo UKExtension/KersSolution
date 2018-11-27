@@ -1,0 +1,77 @@
+<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Error: </strong> {{errorMessage}}
+</div>
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!expense">New County Vehicle</h2>
+        <h2 *ngIf="expense">Edit County Vehicle Record</h2><br>
+    </div>
+    <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="vehicleForm">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="make">Make:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="make" id="make" formControlName="make" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="model">Model:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="model" id="model" formControlName="model" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="year">Model Year:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="year" id="year" formControlName="year" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="licenseTag">License Tag:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="licenseTag" id="licenseTag" formControlName="licenseTag" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="color">Color:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="color" id="color" formControlName="color" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comments">Comments:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <textarea name="comments" id="comments" formControlName="comments" class="form-control"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="enabled">Enabled:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12" style="padding-top: 6px;">
+                <input type="checkbox" id="enabled" formControlName="enabled" />               
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="datePurchesed">Date Purchesed:</label>
+            <div class="col-md-5 col-sm-7 col-xs-8">
+                <my-date-picker [options]="myDatePickerOptions" formControlName="datePurchesed"></my-date-picker>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateDisposed">Date Disposed:</label>
+            <div class="col-md-5 col-sm-7 col-xs-8">
+                <my-date-picker [options]="myDatePickerOptions" formControlName="dateDisposed"></my-date-picker>
+            </div>
+        </div>
+        
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                <button type="submit" [disabled]="vehicleForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+        
+    </form>
+</div>

@@ -20,6 +20,8 @@ namespace Kers.Models.Entities.KERScore
         public float Odometer {get;set;}
         public string Color {get;set;}
         public bool Enabled {get;set;}
+        [Column(TypeName = "text")]
+        public string Comments {get;set;}
         [Column(TypeName="date")]
         public DateTime DatePurchased {get;set;}
         [Column(TypeName="date")]

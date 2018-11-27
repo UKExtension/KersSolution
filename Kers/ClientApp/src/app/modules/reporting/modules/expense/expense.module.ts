@@ -18,10 +18,16 @@ import {ExpenseReportsSummaryComponent } from './reports/expense-reports-summary
 
 import { RouterModule } from "@angular/router";
 import {ExpenseService} from './expense.service';
+import { VehicleComponent } from './vehicle/vehicle.component';
+import { VehicleCountyComponent } from './vehicle/vehicle-county.component';
+import { VehicleFormComponent } from './vehicle/vehicle-form.component';
+import { VehicleService } from './vehicle/vehicle.service';
+import { PlanningunitModule } from '../planningunit/planningunit.module';
 
 @NgModule({
   imports:      [ SharedModule,
                   MyDatePickerModule,
+                  PlanningunitModule,
                   RouterModule.forChild([
                       {   path: '', 
                           component: ExpenseComponent,
@@ -33,7 +39,15 @@ import {ExpenseService} from './expense.service';
                                 {
                                     path: 'reports',
                                     component: ExpenseReportsHomeComponent,
-                                }  
+                                },  
+                                {
+                                    path: 'vehicle',
+                                    component: VehicleComponent,
+                                },  
+                                {
+                                    path: 'vehicle/county/:id',
+                                    component: VehicleCountyComponent,
+                                }   
                               ]
 
                       
@@ -51,9 +65,15 @@ import {ExpenseService} from './expense.service';
                   ExpenseReportsYearComponent,
                   ExpenseReportsMonthComponent,
                   ExpenseReportsDetailsComponent,
-                  ExpenseReportsSummaryComponent 
+                  ExpenseReportsSummaryComponent,
+                  VehicleComponent,
+                  VehicleCountyComponent,
+                  VehicleFormComponent 
                 ],
-  providers:    [ ExpenseService ],
+  providers:    [ 
+                    ExpenseService,
+                    VehicleService
+                ],
   exports:      [
                   ExpenseReportsHomeComponent,
                   ExpenseFormComponent
