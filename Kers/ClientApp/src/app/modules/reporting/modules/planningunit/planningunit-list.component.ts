@@ -12,6 +12,7 @@ export class PlanningunitListComponent implements OnInit{
     
 
     @Input() justCounties:boolean = true;
+    @Input() districtId:number | null = null;
     @Input() link:string;
 
     counties:Observable<PlanningUnit[]>;

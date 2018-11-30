@@ -41,6 +41,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="odometer">Odometer:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="number" name="odometer" id="odometer" formControlName="odometer" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comments">Comments:</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                     <textarea name="comments" id="comments" formControlName="comments" class="form-control"></textarea>
@@ -53,15 +59,15 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="datePurchesed">Date Purchesed:</label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="datePurchased">Date Purchased:</label>
             <div class="col-md-5 col-sm-7 col-xs-8">
-                <my-date-picker [options]="myDatePickerOptions" formControlName="datePurchesed"></my-date-picker>
+                <my-date-picker [options]="myDatePickerOptions" formControlName="datePurchased"></my-date-picker>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateDisposed">Date Disposed:</label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateDispossed">Date Dispossed:</label>
             <div class="col-md-5 col-sm-7 col-xs-8">
-                <my-date-picker [options]="myDatePickerOptions" formControlName="dateDisposed"></my-date-picker>
+                <my-date-picker [options]="myDatePickerOptions" formControlName="dateDispossed"></my-date-picker>
             </div>
         </div>
         

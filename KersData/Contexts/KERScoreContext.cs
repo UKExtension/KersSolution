@@ -103,6 +103,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<ExpenseFundingSource> ExpenseFundingSource {get;set;}
         public virtual DbSet<ExpenseMealRate> ExpenseMealRate {get;set;}
         public virtual DbSet<ExpenseMileageRate> ExpenseMileageRate {get;set;}
+        public virtual DbSet<CountyVehicle> CountyVehicle {get;set;}
         
         /***************************************/
         //  Service Log

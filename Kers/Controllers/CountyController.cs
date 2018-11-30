@@ -48,30 +48,31 @@ namespace Kers.Controllers
                 var unit = CurrentPlanningUnit();
                 id = unit.Id;
             }
-            var county = this.context.PlanningUnit.
-                                Where(c=>c.Id == id).
-                                FirstOrDefault();
+            var county = this.context.PlanningUnit
+                                .Where(c=>c.Id == id)
+                                .Include( c => c.Vehicles)
+                                .FirstOrDefault();
             return new OkObjectResult(county);
         }
 
-        [HttpGet("countylist")]
-        public async Task<IActionResult> Countylist(){
+        [HttpGet("countylist/{DistrictId?}")]
+        public async Task<IActionResult> Countylist(int DistrictId = 0){
 
             List<PlanningUnit> counties;
 
            
             
-            var cacheKey = CacheKeys.CountiesList;
+            var cacheKey = CacheKeys.CountiesList + DistrictId.ToString();
             var cached = _cache.GetString(cacheKey);
 
             if (!string.IsNullOrEmpty(cached)){
                 counties = JsonConvert.DeserializeObject<List<PlanningUnit>>(cached);
             }else{
             
-            
-                counties = await this.context.PlanningUnit.
-                                Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
-                                OrderBy(c => c.Name).ToListAsync();
+                var countiesQuery = this.context.PlanningUnit.
+                                Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES");
+                if(DistrictId != 0) countiesQuery = countiesQuery.Where( c => c.DistrictId == DistrictId);
+                counties = await countiesQuery.OrderBy(c => c.Name).ToListAsync();
                 
 
                 var serializedCounties = JsonConvert.SerializeObject(counties);
@@ -118,6 +119,57 @@ namespace Kers.Controllers
 
 
 
+        [HttpPost("vehicle")]
+        [Authorize]
+        public IActionResult AddVehicle( [FromBody] CountyVehicle vehicle){
+            if(vehicle != null){
+                var user = this.CurrentUser();
+                vehicle.AddedBy = user;
+                vehicle.CreatedDateTime = DateTimeOffset.Now;
+                vehicle.LastModifiedDateTime = DateTimeOffset.Now;
+                context.Add(vehicle);  
+                this.Log(vehicle,"CountyVehicle", "County Vehicle Added.");
+                context.SaveChanges();
+                return new OkObjectResult(vehicle);
+            }else{
+                this.Log( vehicle ,"CountyVehicle", "Error in adding County Vehicle attempt.", "Expense", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+        [HttpPut("vehicle/{id}")]
+        public IActionResult UpdateVehicle( int id, [FromBody] CountyVehicle vehicle){
+           
+            
+            var entity = context.CountyVehicle.Find(id);
+
+            if(entity != null){
+                entity.Make = vehicle.Make;
+                entity.Model = vehicle.Model;
+                entity.LicenseTag = vehicle.LicenseTag;
+                entity.Color = vehicle.Color;
+                entity.Odometer = vehicle.Odometer;
+                entity.Year = vehicle.Year;
+                entity.Enabled = vehicle.Enabled;
+                entity.DatePurchased = vehicle.DatePurchased;
+                entity.DateDispossed = vehicle.DateDispossed;
+                entity.LastModifiedDateTime = DateTimeOffset.Now;
+                context.SaveChanges();
+                this.Log(entity,"CountyVehicle", "CountyVehicle Updated.");
+                return new OkObjectResult(entity);
+            }else{
+                this.Log( vehicle ,"CountyVehicle", "Not Found CountyVehicle in update attempt.", "CountyVehicle", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+
+
+
         private KersUser userByLinkBlueId(string linkBlueId){
             var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.linkBlueID == linkBlueId).
@@ -139,6 +191,7 @@ namespace Kers.Controllers
                             FirstOrDefault();
             return  this.context.PlanningUnit.
                     Where( p=>p.Code == profile.planningUnitID).
+                    Include( p => p.Vehicles).
                     FirstOrDefault();
         }
     }

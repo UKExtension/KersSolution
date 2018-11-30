@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'vehicle',
+  selector: 'vehicle-district',
   template: `
     <p>
     <planningunit-list [link]="'/reporting/expense/vehicle/county/'"></planningunit-list>
@@ -10,7 +10,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
   `,
   styles: []
 })
-export class VehicleComponent implements OnInit {
+export class VehicleDistrictComponent implements OnInit {
 
   constructor(
     private reportingService: ReportingService,

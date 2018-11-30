@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 import {AuthHttp} from '../../../authentication/auth.http';
 import {Role} from '../admin/roles/roles.service';
+import { Vehicle } from '../expense/vehicle/vehicle.service';
 
 
 @Injectable()
@@ -333,6 +334,7 @@ export class PlanningUnit{
         public webSite:string,
         public email:string,
         public reportsExtension:boolean,
+        public vehicles:Vehicle[],
         public fipsCode?:number,
         public districtId?:number,
         public geoFeature?:string,

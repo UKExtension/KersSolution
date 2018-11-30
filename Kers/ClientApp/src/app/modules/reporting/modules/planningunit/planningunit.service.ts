@@ -22,8 +22,8 @@ export class PlanningunitService {
 
 
 
-    counties():Observable<PlanningUnit[]>{
-        var url = this.baseUrl + 'countylist';
+    counties(districtId:number | null = null):Observable<PlanningUnit[]>{
+        var url = this.baseUrl + 'countylist' + (districtId == null ? '' : '/' + districtId);
         return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res =>{ 
                     let counties = <PlanningUnit[]>res.json();

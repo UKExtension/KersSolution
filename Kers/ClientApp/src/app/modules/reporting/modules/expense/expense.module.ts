@@ -23,6 +23,8 @@ import { VehicleCountyComponent } from './vehicle/vehicle-county.component';
 import { VehicleFormComponent } from './vehicle/vehicle-form.component';
 import { VehicleService } from './vehicle/vehicle.service';
 import { PlanningunitModule } from '../planningunit/planningunit.module';
+import { VehicleDistrictComponent } from './vehicle/vehicle-district.component';
+import { VehicleListDetailComponent } from './vehicle/vehicle-list-detail.component';
 
 @NgModule({
   imports:      [ SharedModule,
@@ -47,7 +49,11 @@ import { PlanningunitModule } from '../planningunit/planningunit.module';
                                 {
                                     path: 'vehicle/county/:id',
                                     component: VehicleCountyComponent,
-                                }   
+                                },  
+                                {
+                                    path: 'vehicle/district/:id',
+                                    component: VehicleDistrictComponent,
+                                }    
                               ]
 
                       
@@ -68,7 +74,9 @@ import { PlanningunitModule } from '../planningunit/planningunit.module';
                   ExpenseReportsSummaryComponent,
                   VehicleComponent,
                   VehicleCountyComponent,
-                  VehicleFormComponent 
+                  VehicleDistrictComponent,
+                  VehicleFormComponent,
+                  VehicleListDetailComponent 
                 ],
   providers:    [ 
                     ExpenseService,
