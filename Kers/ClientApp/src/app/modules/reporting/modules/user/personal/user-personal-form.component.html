@@ -16,7 +16,7 @@
                 <div class="form-group profile_details" *ngIf="user">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="firstName">Profile Image:</label>
                     <div class="col-md-5 col-sm-5 col-xs-10 profile_view">
-                        <profile-image-picker [userId]="user.id" formControlName="uploadImageId"></profile-image-picker>
+                        <image-picker [userId]="user.id" formControlName="uploadImageId"></image-picker>
                     </div>
                 </div>
                 <div class="form-group">

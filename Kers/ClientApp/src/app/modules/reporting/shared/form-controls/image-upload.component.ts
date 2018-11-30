@@ -1,25 +1,29 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import {UserService} from '../user.service';
 import {Location} from '@angular/common';
+import { Http } from '@angular/http';
 
 @Component({
-  selector: 'profile-image-picker',
+  selector: 'image-picker',
   template: `
             <img [froalaEditor]="options" [(froalaModel)]="imgObj" alt="Profile Image" class="col-xs-5 img-circle">
   `,
     providers:[  { 
                     provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => UserPersonalImageComponent),
+                    useExisting: forwardRef(() => ImageUploadComponent),
                     multi: true
                   } 
                 ]
 })
-export class UserPersonalImageComponent implements ControlValueAccessor, OnInit {
+export class ImageUploadComponent implements ControlValueAccessor, OnInit {
 
-  @Input('userId') userId;
+  @Input('userId') userId = 0;
+  @Input('defaultImageName') defaultImage = "user.png";
 
   @Input() _value = 0;
+
+  @Output() onUploaded = new EventEmitter<number>();
+  @Output() onDeleted = new EventEmitter<number>();
 
   get imageId() {
       return this._value;
@@ -28,6 +32,7 @@ export class UserPersonalImageComponent implements ControlValueAccessor, OnInit 
       this._value = val;    
       this.propagateChange(val);
   }
+  imageName;
 
   options = {};
 
@@ -39,8 +44,8 @@ export class UserPersonalImageComponent implements ControlValueAccessor, OnInit 
 
 
   constructor(
-        private userService: UserService,
-        private location: Location  
+        private location: Location,
+        private http:Http  
 
   ){
     
@@ -48,6 +53,7 @@ export class UserPersonalImageComponent implements ControlValueAccessor, OnInit 
   }
 
   ngOnInit(){
+      this.imgObj['src'] = this.location.prepareExternalUrl('/assets/images/'+this.defaultImage);
       var thisObject = this;
       this.options = { 
             imageUploadParams: { profileId: this.userId },
@@ -57,7 +63,12 @@ export class UserPersonalImageComponent implements ControlValueAccessor, OnInit 
                 'froalaEditor.image.uploaded':function (e, editor, response){
                     var o = <ImageResponse>JSON.parse(response);
                     thisObject.imageId = o.imageId;
+                },
+                'froalaEditor.image.error':function (e, editor, error, response){
+                    console.log(error);
+                    console.log(response);
                 }
+
             }
         }
   }
@@ -65,14 +76,18 @@ export class UserPersonalImageComponent implements ControlValueAccessor, OnInit 
   writeValue(value: any) {
       
       if (value !== "") {
-        this.userService.filenameForImageId(<number> value).subscribe(
-            res => {
-                var rsp = res.json();
-                this.imgObj = {
-                        src: this.location.prepareExternalUrl("/image/" + rsp.filename)
-                };
-            }
-        );
+
+        this.http.get(this.location.prepareExternalUrl('/Image/id/'+value))
+            .subscribe(
+                res => {
+                    var respns = res.json();
+                    this.imageName = respns.filename;
+                    this.imgObj = {
+                        src: this.location.prepareExternalUrl("/image/" + this.imageName)
+                    };
+                }
+            );
+        
         this.imageId = value;
       }
   }

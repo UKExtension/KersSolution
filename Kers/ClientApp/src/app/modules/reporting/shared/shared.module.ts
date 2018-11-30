@@ -30,13 +30,13 @@ import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 
 
 import { UserSocialPickerComponent } from '../modules/user/personal/user-social-picker.component';
-import { UserPersonalImageComponent} from '../modules/user/personal/user-personal-image.component';
 import { UserPersonalFormComponent } from '../modules/user/personal/user-personal-form.component';
 import { UserPersonalConnectionComponent} from '../modules/user/personal/user-personal-connection.component';
 
 
 import { UserReportingFormComponent } from '../modules/user/reporting/user-reporting-form.component';
 import { FiscalYearSwitcherComponent } from './components/fiscal-year-switcher.component';
+import { ImageUploadComponent } from './form-controls/image-upload.component';
 
 
 
@@ -59,11 +59,11 @@ import { FiscalYearSwitcherComponent } from './components/fiscal-year-switcher.c
                   ReportingDisplayHelpComponent,
                   UserPersonalFormComponent,
                   UserSocialPickerComponent,
-                  UserPersonalImageComponent,
                   UserPersonalConnectionComponent,
                   UserReportingFormComponent,
                   SafeHtmlPipe,
-                  FiscalYearSwitcherComponent 
+                  FiscalYearSwitcherComponent,
+                  ImageUploadComponent 
                 ],
   exports:      [ 
       CommonModule, 
@@ -78,11 +78,11 @@ import { FiscalYearSwitcherComponent } from './components/fiscal-year-switcher.c
       ReportingDisplayHelpComponent,
       UserPersonalFormComponent,
       UserSocialPickerComponent,
-      UserPersonalImageComponent,
       UserPersonalConnectionComponent,
       UserReportingFormComponent,
       SelectModule,
-      FiscalYearSwitcherComponent 
+      FiscalYearSwitcherComponent,
+      ImageUploadComponent 
  ]
 })
 export class SharedModule { }
