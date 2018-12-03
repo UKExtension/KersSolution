@@ -10,8 +10,8 @@ import { Vehicle } from './vehicle.service';
           
           <article class="media event" *ngIf="rowDefault">
               <div class="media-body">
-              <a class="title">{{vehicle.make}}</a>
-              <p>{{vehicle.model}}</p>
+              <a class="title" [ngStyle]="{ 'color' : (vehicle.enabled)? 'rgb(35, 82, 124);' : '#ccc' }">{{vehicle.year}} {{vehicle.make}}</a>
+              <p [ngStyle]="{ 'color' : (vehicle.enabled)? 'rgb(115, 135, 156)' : '#ccc' }">{{vehicle.model}}</p>
               </div>
           </article>
           <div class="col-xs-12" *ngIf="rowEdit">

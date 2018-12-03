@@ -14,6 +14,7 @@ namespace Kers.Models.Entities.KERScore
         public int PlanningUnitId {get;set;}
         public PlanningUnit PlanningUnit {get;set;}
         public DateTime ExpenseDate {get;set;}
+        public int? VehicleType {get;set;}
         public List<ExpenseRevision> Revisions {get;set;}
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}

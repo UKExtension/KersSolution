@@ -3,6 +3,7 @@ import { Vehicle, VehicleService } from './vehicle.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IMyDpOptions } from 'mydatepicker';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
+import { User, UserService } from '../../user/user.service';
 
 @Component({
   selector: 'vehicle-form',
@@ -16,6 +17,7 @@ export class VehicleFormComponent implements OnInit {
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<Vehicle>();
   vehicleForm;
+  user:User;
   loading = false;
   errorMessage:string;
   private myDatePickerOptions: IMyDpOptions = {
@@ -31,11 +33,13 @@ export class VehicleFormComponent implements OnInit {
 
   constructor(
       private fb: FormBuilder,
+      private userService:UserService,
       private service:VehicleService,
   ) { 
 
     this.vehicleForm = fb.group(
             {
+              uploadImageId: '',
               make: ['', Validators.required],
               model: ['', Validators.required],
               year: [''],
@@ -74,9 +78,11 @@ export class VehicleFormComponent implements OnInit {
           }});
       }
     }
+    this.userService.current().subscribe(
+      res => this.user = res
+    )
   }
   onSubmit(){
-    console.log(this.vehicleForm.value);
     this.loading = true;
     var val = this.vehicleForm.value;
     if(this.vehicleForm.value.datePurchased!= null && this.vehicleForm.value.datePurchased.date != null){
@@ -96,7 +102,6 @@ export class VehicleFormComponent implements OnInit {
       val.planningUnitId = this.county.id;
       this.service.add(val).subscribe(
           res => {
-              console.log(res);
               this.loading = false;
               this.onFormSubmit.emit(<Vehicle>res);
           },

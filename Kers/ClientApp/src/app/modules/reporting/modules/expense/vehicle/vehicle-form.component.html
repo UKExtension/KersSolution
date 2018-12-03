@@ -6,10 +6,16 @@
 <loading *ngIf="loading"></loading>
 <div class="row" *ngIf="!loading">
     <div class="col-sm-offset-3 col-sm-9">
-        <h2 *ngIf="!expense">New County Vehicle</h2>
-        <h2 *ngIf="expense">Edit County Vehicle Record</h2><br>
+        <h2 *ngIf="!vehicle">New County Vehicle</h2>
+        <h2 *ngIf="vehicle">Edit County Vehicle Record</h2><br>
     </div>
     <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="vehicleForm">
+        <div class="form-group profile_details" *ngIf="user">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="uploadImageId">Vehicle Image:</label>
+            <div class="col-md-5 col-sm-5 col-xs-10 profile_view">
+                <image-picker [defaultImageName]="'vehicle.png'" [userId]="user.id" formControlName="uploadImageId"></image-picker>
+            </div>
+        </div>
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="make">Make:</label>
             <div class="col-md-9 col-sm-9 col-xs-12">

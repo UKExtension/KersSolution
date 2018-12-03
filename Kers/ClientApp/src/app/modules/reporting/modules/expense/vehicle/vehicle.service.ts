@@ -63,6 +63,7 @@ export interface Vehicle{
   color:string,
   enabled:boolean,
   comments:string,
+  uploadImageId: number,
   datePurchased?:Date,
   dateDispossed?:Date
 }

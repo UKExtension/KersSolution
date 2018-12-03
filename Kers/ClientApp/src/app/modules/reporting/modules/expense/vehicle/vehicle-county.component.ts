@@ -3,6 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { VehicleService, Vehicle } from './vehicle.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { PlanningUnit } from '../../user/user.service';
+import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
   selector: 'app-vehicle-county',
@@ -28,7 +29,8 @@ export class VehicleCountyComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private planningUnitService: PlanningunitService,
-    private service: VehicleService
+    private service: VehicleService,
+    private reportingService: ReportingService,
   ) { }
 
   ngOnInit() {
@@ -37,6 +39,7 @@ export class VehicleCountyComponent implements OnInit {
           .subscribe(
             res=>{
               this.county = res;
+              this.defaultTitle();
             },
             err => this.errorMessage = <any>err
           );
@@ -45,6 +48,9 @@ export class VehicleCountyComponent implements OnInit {
     this.county.vehicles.unshift(event);
     console.log(this.county);
     this.newVehicle = false;
+  }
+  defaultTitle(){
+    this.reportingService.setTitle(this.county.name + " Vehicles");
   }
 
 }

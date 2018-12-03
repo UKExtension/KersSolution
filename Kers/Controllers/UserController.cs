@@ -317,9 +317,9 @@ namespace Kers.Controllers
                     entity.RprtngProfile.GeneralLocationId = user.RprtngProfile.GeneralLocationId;
                 }
                 if(user.PersonalProfile != null){
-                    if(user.PersonalProfile.UploadImageId != null && user.PersonalProfile.UploadImageId != 0){
+                    //if(user.PersonalProfile.UploadImageId != null && user.PersonalProfile.UploadImageId != 0){
                         entity.PersonalProfile.UploadImageId = user.PersonalProfile.UploadImageId;
-                    }
+                    //}
                     entity.PersonalProfile.FirstName = user.PersonalProfile.FirstName;
                     entity.PersonalProfile.LastName = user.PersonalProfile.LastName;
                     entity.PersonalProfile.ProfessionalTitle = user.PersonalProfile.ProfessionalTitle;

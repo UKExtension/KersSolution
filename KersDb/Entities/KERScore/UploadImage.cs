@@ -15,6 +15,7 @@ namespace Kers.Models.Entities.KERScore
         [Column(TypeName = "text")]
         public string ExIf {get;set;}
         public string Name {get;set;}
+        public int TimesUsed {get;set;}
         public UploadFile UploadFile {get;set;}
     }
 }

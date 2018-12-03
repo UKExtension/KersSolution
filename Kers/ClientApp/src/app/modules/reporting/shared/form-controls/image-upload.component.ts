@@ -64,6 +64,12 @@ export class ImageUploadComponent implements ControlValueAccessor, OnInit {
                     var o = <ImageResponse>JSON.parse(response);
                     thisObject.imageId = o.imageId;
                 },
+                'froalaEditor.image.beforeRemove':function (e, editor, $img){
+                    
+                    editor.image.insert(thisObject.location.prepareExternalUrl('/assets/images/'+thisObject.defaultImage), false, null, editor.image.get());
+                    thisObject.imageId = null;
+                    return false;
+                },
                 'froalaEditor.image.error':function (e, editor, error, response){
                     console.log(error);
                     console.log(response);
@@ -76,8 +82,8 @@ export class ImageUploadComponent implements ControlValueAccessor, OnInit {
   writeValue(value: any) {
       
       if (value !== "") {
-
-        this.http.get(this.location.prepareExternalUrl('/Image/id/'+value))
+        if(value != 0 ){
+            this.http.get(this.location.prepareExternalUrl('/Image/id/'+value))
             .subscribe(
                 res => {
                     var respns = res.json();
@@ -87,6 +93,7 @@ export class ImageUploadComponent implements ControlValueAccessor, OnInit {
                     };
                 }
             );
+        }
         
         this.imageId = value;
       }

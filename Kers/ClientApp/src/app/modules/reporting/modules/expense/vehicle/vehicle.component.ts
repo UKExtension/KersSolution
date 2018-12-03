@@ -21,6 +21,6 @@ export class VehicleComponent implements OnInit {
   }
   defaultTitle(){
     this.reportingService.setTitle("Vehicles by County");
-}
+  }
 
 }

@@ -268,6 +268,10 @@ namespace Kers.Models.Contexts
 
             modelBuilder.Entity<UploadFile>().HasIndex(
                 file => new { file.Name }).IsUnique(true);
+
+            modelBuilder.Entity<UploadImage>()
+                .Property( b => b.TimesUsed)
+                .HasDefaultValue(1);
         }
     }
 }

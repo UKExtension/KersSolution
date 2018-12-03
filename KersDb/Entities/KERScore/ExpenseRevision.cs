@@ -17,6 +17,9 @@ namespace Kers.Models.Entities.KERScore
         public int ProgramCategoryId {get;set;}
         public ProgramCategory ProgramCategory {get;set;}
         public string BusinessPurpose {get;set;}
+        public int? VehicleType {get;set;}
+        public int? CountyVehicleId {get;set;}
+        public CountyVehicle CountyVehicle {get;set;}
         [Column(TypeName = "text")]
         public string Comment {get;set;}
         // Workplace = 1, Home = 2
