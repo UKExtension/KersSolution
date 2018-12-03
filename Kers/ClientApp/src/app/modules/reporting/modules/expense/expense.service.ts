@@ -198,7 +198,9 @@ export interface Expense{
     otherExpenseCost:number,
     otherExpenseExplanation:string,
     departTime?:Date,
-    returnTime?:Date
+    returnTime?:Date,
+    vehicleType?:number,
+    countyVehicleId?:number,
 }
 
 export interface ExpenseFundingSource{

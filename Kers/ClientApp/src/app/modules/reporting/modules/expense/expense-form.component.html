@@ -30,6 +30,28 @@
                 <my-date-picker [options]="myDatePickerOptions" formControlName="expenseDate"></my-date-picker>
             </div>
         </div>
+        <div class="form-group" *ngIf="enabledVehicles && enabledVehicles.length > 0">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="vehcileType">Vehicle Type:</label>
+            <div class="col-md-5 col-sm-7 col-xs-8">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default" (click)="isPersonal(true)" [class.active]="itIsPersonalVehicle">
+                        <input type="radio" name="vehcileType" formControlName="vehcileType" [value]="1"> Personal Vehicle
+                        </label>
+                        <label class="btn btn-default" [class.active]="!itIsPersonalVehicle" (click)="isPersonal(false)">
+                        <input type="radio" name="vehcileType" formControlName="vehcileType" [value]="2"> County Vehicle
+                        </label>
+                    </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="enabledVehicles && !itIsPersonalVehicle">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">County Vehicle:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <select name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
+                    <option value="">-- select --</option>
+                    <option *ngFor="let vehicle of enabledVehicles" [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}}</option>
+                </select>
+            </div>
+        </div>
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="startingLocationType">Starting Location:</label>
             <div class="col-md-6 col-sm-6 col-xs-12">

@@ -4,6 +4,9 @@ import { FormBuilder, Validators, FormControl, AbstractControl } from '@angular/
 import { Observable } from "rxjs/Observable";
 import {IMyDpOptions} from 'mydatepicker';
 import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
+import { User, UserService, PlanningUnit } from '../user/user.service';
+import { PlanningunitService } from '../planningunit/planningunit.service';
+import { Vehicle } from './vehicle/vehicle.service';
 
 
 @Component({
@@ -35,13 +38,20 @@ export class ExpenseFormComponent {
     customLunchRate = false;
     customDinnerRate = false;
     itIsOvernight = false;
+    itIsPersonalVehicle = true;
 
     errorMessage: string;
+
+    currentUser:User;
+    currentPlanningUnit:PlanningUnit;
+    enabledVehicles: Vehicle[];
 
     constructor( 
         private fb: FormBuilder,
         private expenseService:ExpenseService,
         private programsService: ProgramsService,
+        private userService: UserService,
+        private planningUnitService: PlanningunitService
     )   
     {
         let date = new Date();
@@ -54,6 +64,8 @@ export class ExpenseFormComponent {
                                     month: date.getMonth() + 1,
                                     day: date.getDate()}
                                 }, Validators.required],
+              vehcileType:[''],
+              countyVehicleId: [''],
               startingLocationType: [ 1, Validators.required],
               expenseLocation: ['', Validators.required],
               isOvernight: false,
@@ -133,6 +145,17 @@ export class ExpenseFormComponent {
                     day: this.expenseDate.getDate()}
                 }});
          }
+         this.userService.current().subscribe(
+             res => {
+                 this.currentUser = res;
+                 this.planningUnitService.id(this.currentUser.rprtngProfile.planningUnitId).subscribe(
+                     res => {
+                        this.currentPlanningUnit = res;
+                        this.enabledVehicles = this.currentPlanningUnit.vehicles.filter( v => v.enabled);
+                     }
+                 )
+             }
+         )
     }
 
 
@@ -219,6 +242,10 @@ export class ExpenseFormComponent {
     isOvernight(val:boolean){
         this.itIsOvernight = val;
         this.expenseForm.patchValue({'isOvernight':val});
+    }
+    isPersonal(val:boolean){
+        this.itIsPersonalVehicle = val;
+        this.expenseForm.patchValue({'vehicleType':val});
     }
 
 

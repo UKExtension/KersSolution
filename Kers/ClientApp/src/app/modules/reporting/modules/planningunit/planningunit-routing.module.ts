@@ -6,11 +6,7 @@ import { PlanningUnitAdminHomeComponent } from './admin/planning-unit-admin-home
 
 @NgModule({
   imports: [ RouterModule.forChild([
-     {
-         
-          path: '',
-          component: PlanningunitListComponent
-      },
+     
       {
         path: 'admin',
         component: PlanningUnitAdminHomeComponent
