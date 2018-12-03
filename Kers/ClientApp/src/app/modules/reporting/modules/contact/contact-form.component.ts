@@ -278,9 +278,9 @@ export class ContactFormComponent implements OnInit{
             d.setFullYear(monthId > 6 ? 2017 : 2018);
         } else {
             var month = monthId % 12;
-            var year = Math.round( monthId / 12 ) + 2016;
-            d.setFullYear(year);
+            var year = Math.ceil( monthId / 12 ) + 2016;
             d.setMonth( month - 1, 15 );
+            d.setFullYear(year);
         }
         return d;
     }
