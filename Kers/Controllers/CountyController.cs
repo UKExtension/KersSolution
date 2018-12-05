@@ -156,7 +156,7 @@ namespace Kers.Controllers
                 entity.DatePurchased = vehicle.DatePurchased;
                 entity.DateDispossed = vehicle.DateDispossed;
                 entity.LastModifiedDateTime = DateTimeOffset.Now;
-                entity.UploadImageId = vehicle.UploadImageId;
+                entity.UploadImageId = vehicle.UploadImageId == 0 ? null : vehicle.UploadImageId;
                 entity.Comments = vehicle.Comments;
                 context.SaveChanges();
                 this.Log(entity,"CountyVehicle", "CountyVehicle Updated.");

@@ -22,7 +22,7 @@ namespace Kers.Models.Entities.KERScore
         public bool Enabled {get;set;}
         [Column(TypeName = "text")]
         public string Comments {get;set;}
-        public int UploadImageId {get;set;}
+        public int? UploadImageId {get;set;}
         public UploadImage UploadImage {get;set;}
         [Column(TypeName="date")]
         public DateTime? DatePurchased {get;set;}
