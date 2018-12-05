@@ -64,7 +64,7 @@ export class ExpenseFormComponent {
                                     month: date.getMonth() + 1,
                                     day: date.getDate()}
                                 }, Validators.required],
-              vehcileType:[''],
+              vehicleType:[''],
               countyVehicleId: [''],
               startingLocationType: [ 1, Validators.required],
               expenseLocation: ['', Validators.required],
@@ -136,6 +136,9 @@ export class ExpenseFormComponent {
              }
              if( this.expense.programCategoryId == 0){
                 this.expenseForm.patchValue({programCategoryId:""});
+             }
+             if( this.expense.vehicleType == 2 ){
+                this.isPersonal(false);
              }
          }else if(this.expenseDate != null){
             this.expenseForm.patchValue({expenseDate: {
@@ -245,7 +248,7 @@ export class ExpenseFormComponent {
     }
     isPersonal(val:boolean){
         this.itIsPersonalVehicle = val;
-        this.expenseForm.patchValue({'vehicleType':val});
+        this.expenseForm.patchValue({'vehicleType':val?1:2});
     }
 
 

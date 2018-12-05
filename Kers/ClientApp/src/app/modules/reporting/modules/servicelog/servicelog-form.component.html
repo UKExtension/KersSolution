@@ -62,7 +62,7 @@
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12">&nbsp;</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <a (click)="cond = !cond"><i class="fa fa-minus-square" *ngIf="!cond"></i><i class="fa fa-plus-square" *ngIf="cond"></i> more options <span class="text-muted">(multistate, not present, night event ... )</span></a>
+                <a (click)="setCond(!cond)"><i class="fa fa-minus-square" *ngIf="!cond"></i><i class="fa fa-plus-square" *ngIf="cond"></i> more options <span class="text-muted">(multistate, not present, night event ... )</span></a>
                 <div *ngIf="!cond">
                     <div formArrayName="activityOptionSelections">
                         <div *ngFor="let opt of activityForm.controls.activityOptionSelections.controls; let i=index" [formGroupName]="i" class="checkbox">
@@ -130,7 +130,7 @@
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12">&nbsp;</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <a (click)="condition = !condition"><i class="fa fa-minus-square" *ngIf="!condition"></i><i class="fa fa-plus-square" *ngIf="condition"></i> more options <span class="text-muted">(volunteers, minors ... )</span></a>
+                <a (click)="setCondition(!condition)"><i class="fa fa-minus-square" *ngIf="!condition"></i><i class="fa fa-plus-square" *ngIf="condition"></i> more options <span class="text-muted">(volunteers, minors ... )</span></a>
                 <div *ngIf="!condition">
                     <div formArrayName="activityOptionNumbers">
                         <div *ngFor="let optN of activityForm.controls.activityOptionNumbers.controls; let i=index" [formGroupName]="i" class="checkbox">

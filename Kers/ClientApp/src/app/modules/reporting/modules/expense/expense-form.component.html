@@ -35,10 +35,10 @@
             <div class="col-md-5 col-sm-7 col-xs-8">
                     <div class="btn-group" data-toggle="buttons">
                         <label class="btn btn-default" (click)="isPersonal(true)" [class.active]="itIsPersonalVehicle">
-                        <input type="radio" name="vehcileType" formControlName="vehcileType" [value]="1"> Personal Vehicle
+                        <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'1'"> Personal Vehicle
                         </label>
                         <label class="btn btn-default" [class.active]="!itIsPersonalVehicle" (click)="isPersonal(false)">
-                        <input type="radio" name="vehcileType" formControlName="vehcileType" [value]="2"> County Vehicle
+                        <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'2'"> County Vehicle
                         </label>
                     </div>
             </div>

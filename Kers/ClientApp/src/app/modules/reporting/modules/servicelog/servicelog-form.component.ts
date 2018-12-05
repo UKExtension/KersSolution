@@ -77,6 +77,9 @@ export class ServicelogFormComponent implements OnInit{
     options:object;
     errorMessage:string;
 
+    public cond = false;
+    public condition = false;
+
     private myDatePickerOptions: IMyDpOptions = {
         // other options...
             dateFormat: 'mm/dd/yyyy',
@@ -124,6 +127,8 @@ export class ServicelogFormComponent implements OnInit{
         }else{
             this.getFiscalYear( new Date() );
         }
+        this.cond = this.service.cond;
+        this.condition = this.service.condition;
         
         this.populateOptions();
 
@@ -540,6 +545,14 @@ export class ServicelogFormComponent implements OnInit{
 
     onCancel(){
         this.onFormCancel.emit();
+    }
+    setCond(state:boolean){
+        this.cond = state;
+        this.service.cond = state;
+    }
+    setCondition( state: boolean ){
+        this.condition = state;
+        this.service.condition = state;
     }
 
     

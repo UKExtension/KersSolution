@@ -18,6 +18,9 @@ export class ServicelogService {
     private activityOptionNumbers:ActivityOptionNumber[] = null;
     private activityOptions:ActivityOption[] = null;
 
+    public cond = false;
+    public condition = false;
+
     constructor( 
         private http:AuthHttp, 
         private location:Location
