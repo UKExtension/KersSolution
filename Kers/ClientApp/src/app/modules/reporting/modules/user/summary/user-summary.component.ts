@@ -142,6 +142,7 @@ export class UserSummaryComponent {
         this.service.InServiceEnrolment(this.user.id, event.name).subscribe(
             res => {
                 this.inServiceEnrolment = res;
+                this.hoursAttended = 0;
                 for( let el of this.inServiceEnrolment){
                     if(el[3] == 'Yes') this.hoursAttended += +el[2];
                 }
