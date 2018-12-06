@@ -256,18 +256,16 @@ export class ExpenseFormComponent {
 
 
 export const expenseValidator = (control: AbstractControl): {[key: string]: boolean} => {
-    
 
-
-    var isMilgValid = true;
+    var error = {};
+    var hasError = false;
 
     let mileageAmount = control.get('mileage');
     let mileageFundingSource = control.get('fundingSourceMileageId');
     if(  !( mileageAmount.value == "" ||  mileageAmount.value == 0) && mileageFundingSource.value == ""){
-        isMilgValid = false;
-        //return { noMileageSource: true };
+        error["noMileageSource"] = true;
+        hasError = true;
     }
-
 
     var isExpenseValid = true;
 
@@ -279,6 +277,8 @@ export const expenseValidator = (control: AbstractControl): {[key: string]: bool
     let mealRateLunch = control.get('mealRateLunchId');
     let mealRateDinner = control.get('mealRateDinnerId');
     let otherExpenseCost = control.get('otherExpenseCost');
+    let vehicleTypeControl = control.get('vehicleType');
+    let vehicleIdControl = control.get('countyVehicleId');
 
     if( 
        ( !(registration.value == "" || registration.value == 0)
@@ -291,16 +291,19 @@ export const expenseValidator = (control: AbstractControl): {[key: string]: bool
     
     ){
         isExpenseValid = false;
-        //return { noExpenseSource: true };
+    }
+    
+    if(vehicleTypeControl.value == 2 && vehicleIdControl.value == ""){
+        error["noVehicleSelected"] = true;
+        hasError = true;
     }
 
-
-    if(!isExpenseValid && !isMilgValid){
-        return { noExpenseSource: true, noMileageSource: true };
-    }else if( !isExpenseValid ){
-        return { noExpenseSource: true };
-    }else if( !isMilgValid ){
-        return { noMileageSource: true };
+    if(!isExpenseValid){
+        error["noExpenseSource"] = true;
+        hasError = true;
+    }
+    if(hasError){
+        return error;
     }
 
     return null;
