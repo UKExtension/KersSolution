@@ -152,9 +152,6 @@ export class ExpenseFormComponent {
              if(this.isNewCountyVehicle){
                 this.expenseForm.patchValue({vehicleType: 2});
                 this.isPersonal(false);
-                for(let i in this.expenseForm.controls) {
-                    this.expenseForm.controls[i].markAsTouched();
-                }
              }
          }
          this.userService.current().subscribe(
@@ -164,7 +161,9 @@ export class ExpenseFormComponent {
                      res => {
                         this.currentPlanningUnit = res;
                         this.enabledVehicles = this.currentPlanningUnit.vehicles.filter( v => v.enabled);
-                        
+                        if(this.enabledVehicles.length == 1){
+                            this.expenseForm.patchValue({countyVehicleId: this.enabledVehicles[0].id});
+                        }
                      }
                  )
              }
