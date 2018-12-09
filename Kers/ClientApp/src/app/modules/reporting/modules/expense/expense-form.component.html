@@ -83,7 +83,7 @@
             </div>
         </div>
         
-        <div class="form-group">
+        <div class="form-group" *ngIf="itIsPersonalVehicle">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fundingSourceMileageId">Mileage Funding Source: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <select [class.ng-invalid]="expenseForm.hasError('noMileageSource')" name="fundingSourceMileageId" id="fundingSourceMileageId" formControlName="fundingSourceMileageId" class="form-control col-md-7 col-xs-12" >

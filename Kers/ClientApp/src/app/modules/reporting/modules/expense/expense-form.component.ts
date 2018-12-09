@@ -269,12 +269,7 @@ export const expenseValidator = (control: AbstractControl): {[key: string]: bool
     var error = {};
     var hasError = false;
 
-    let mileageAmount = control.get('mileage');
-    let mileageFundingSource = control.get('fundingSourceMileageId');
-    if(  !( mileageAmount.value == "" ||  mileageAmount.value == 0) && mileageFundingSource.value == ""){
-        error["noMileageSource"] = true;
-        hasError = true;
-    }
+    
 
     var isExpenseValid = true;
 
@@ -288,6 +283,21 @@ export const expenseValidator = (control: AbstractControl): {[key: string]: bool
     let otherExpenseCost = control.get('otherExpenseCost');
     let vehicleTypeControl = control.get('vehicleType');
     let vehicleIdControl = control.get('countyVehicleId');
+
+    let mileageAmount = control.get('mileage');
+    let mileageFundingSource = control.get('fundingSourceMileageId');
+    
+    
+    if(             !( mileageAmount.value == "" ||  mileageAmount.value == 0) 
+                && 
+                    mileageFundingSource.value == ""
+                && 
+                vehicleTypeControl.value != 2
+                
+                ){
+        error["noMileageSource"] = true;
+        hasError = true;
+    }
 
     if( 
        ( !(registration.value == "" || registration.value == 0)
