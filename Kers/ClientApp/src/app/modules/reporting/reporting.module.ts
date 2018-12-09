@@ -37,6 +37,7 @@ import { WidgetSpecialistComponent } from './components/reporting-home/widgets/w
 import { WidgetStaffAssistantComponent } from './components/reporting-home/widgets/widget-staff-assistant.component';
 import { WidgetTrainingsComponent } from './components/reporting-home/widgets/widget-trainings.component';
 import { WidgetCalendarComponent } from './components/reporting-home/widgets/widget-calendar.component';
+import { PlanningunitService } from './modules/planningunit/planningunit.service';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import { WidgetCalendarComponent } from './components/reporting-home/widgets/wid
     exports:[ReportingProfileEditComponent],
     providers: [
         NavigationService,
-        ProfileService
+        ProfileService,
+        PlanningunitService
     ]
 })
 export class ReportingModule {

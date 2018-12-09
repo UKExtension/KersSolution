@@ -12,8 +12,7 @@ import { PlanningUnit } from '../user/user.service';
 export class PlanningunitService {
 
     private baseUrl = '/api/County/';
-
-
+    private planningUnits = new Map<number, PlanningUnit>();
 
     constructor( 
         private http:AuthHttp, 
@@ -33,10 +32,20 @@ export class PlanningunitService {
     }
 
     id(id:number):Observable<PlanningUnit>{
-        var url = this.baseUrl + id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <PlanningUnit>res.json())
-                .catch(this.handleError);
+        if(this.planningUnits.has(id)){
+            return Observable.of( this.planningUnits.get(id));
+        }else{
+            var url = this.baseUrl + id;
+            return this.http.get(this.location.prepareExternalUrl(url))
+                    .map(res => {
+                            var unit = <PlanningUnit>res.json();
+                            this.planningUnits.set(id, unit);
+                            return unit;
+                        }
+                    )
+                    .catch(this.handleError);
+        }
+            
     }
 
     /*****************************/

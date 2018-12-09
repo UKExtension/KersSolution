@@ -17,6 +17,7 @@ export class ExpenseFormComponent {
 
     @Input() expense:Expense = null;
     @Input() expenseDate:Date;
+    @Input() isNewCountyVehicle = false;
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<Expense>();
@@ -147,6 +148,14 @@ export class ExpenseFormComponent {
                     month: this.expenseDate.getMonth() + 1,
                     day: this.expenseDate.getDate()}
                 }});
+         }else{
+             if(this.isNewCountyVehicle){
+                this.expenseForm.patchValue({vehicleType: 2});
+                this.isPersonal(false);
+                for(let i in this.expenseForm.controls) {
+                    this.expenseForm.controls[i].markAsTouched();
+                }
+             }
          }
          this.userService.current().subscribe(
              res => {
@@ -155,6 +164,7 @@ export class ExpenseFormComponent {
                      res => {
                         this.currentPlanningUnit = res;
                         this.enabledVehicles = this.currentPlanningUnit.vehicles.filter( v => v.enabled);
+                        
                      }
                  )
              }

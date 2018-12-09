@@ -30,7 +30,7 @@
                 <my-date-picker [options]="myDatePickerOptions" formControlName="expenseDate"></my-date-picker>
             </div>
         </div>
-        <div class="form-group" *ngIf="enabledVehicles && enabledVehicles.length > 0">
+        <div class="form-group" [hidden]="!(enabledVehicles && enabledVehicles.length > 0)">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="vehcileType">Vehicle Type:</label>
             <div class="col-md-5 col-sm-7 col-xs-8">
                     <div class="btn-group" data-toggle="buttons">
@@ -46,7 +46,7 @@
         <div class="form-group" [hidden]="!(enabledVehicles && !itIsPersonalVehicle)">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">County Vehicle:</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-                <select [class.ng-invalid]="expenseForm.hasError('noVehicleSelected')" name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
+                <select [style.border]="expenseForm.hasError('noVehicleSelected')?'1px solid #CE5454':'none'" name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
                     <option value="">-- select --</option>
                     <option *ngFor="let vehicle of enabledVehicles" [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}}</option>
                 </select>

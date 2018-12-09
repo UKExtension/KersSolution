@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {ReportingService} from './reporting.service';
-import {UserService, User} from '../../modules/user/user.service';
+import {UserService, User, PlanningUnit} from '../../modules/user/user.service';
 
 import {RolesService, Role } from '../../modules/admin/roles/roles.service';
+import { PlanningunitService } from '../../modules/planningunit/planningunit.service';
+import { Vehicle } from '../../modules/expense/vehicle/vehicle.service';
 
 
 
@@ -14,7 +16,7 @@ import {RolesService, Role } from '../../modules/admin/roles/roles.service';
       <strong>Error: </strong> {{errorMessage}}
   </div>
   <div class="row" *ngIf="user">
-    <widget-activities-agent *ngIf="isAgent"></widget-activities-agent>
+    <widget-activities-agent [enabledVehicles]="enabledVehicles" *ngIf="isAgent"></widget-activities-agent>
     <widget-staff-assistant *ngIf="isStaffAssistant"></widget-staff-assistant>
     <widget-dd-assistant *ngIf="isDDAssistant"></widget-dd-assistant>
     <widget-dd *ngIf="isDD"></widget-dd>
@@ -41,6 +43,8 @@ export class ReportingWidgetsComponent implements OnInit {
   isAgent = false;
   isSepcialist = false;
   isStaffAssistant = false;
+  currentPlanningUnit:PlanningUnit;
+  enabledVehicles:Vehicle[];
 
   isAny = false;
 
@@ -52,7 +56,8 @@ export class ReportingWidgetsComponent implements OnInit {
   constructor( 
         private reportingService: ReportingService,
         private userService:UserService,
-        private rolesService:RolesService
+        private rolesService:RolesService,
+        private planningUnitService: PlanningunitService
         ) 
     {}
 
@@ -60,7 +65,8 @@ export class ReportingWidgetsComponent implements OnInit {
   ngOnInit(){
     this.userService.current().subscribe(
       res=> { 
-          this.user = <User>res,
+          
+          this.user = <User>res;
           this.rolesService.listRoles().subscribe(
               roles =>  {
                 this.roles = roles;
@@ -68,6 +74,12 @@ export class ReportingWidgetsComponent implements OnInit {
               },
               error =>  this.errorMessage = <any>error
           );
+          this.planningUnitService.id(this.user.rprtngProfile.planningUnitId).subscribe(
+            res => {
+               this.currentPlanningUnit = res;
+               this.enabledVehicles = this.currentPlanningUnit.vehicles.filter( v => v.enabled);
+            }
+        )
           
       },
       error => this.errorMessage = <any>error

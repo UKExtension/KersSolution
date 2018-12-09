@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from './expense.service';
 
-import { Router } from "@angular/router";
+import { ActivatedRoute, Params } from "@angular/router";
 
 @Component({
   template: `
@@ -10,7 +10,7 @@ import { Router } from "@angular/router";
             <div class="text-right">
                 <a class="btn btn-info btn-xs" *ngIf="!newExpense" (click)="newExpense = true">+ new mileage record</a>
             </div>
-            <expense-form *ngIf="newExpense" (onFormCancel)="newExpense=false" (onFormSubmit)="newExpenseSubmitted($event)"></expense-form>
+            <expense-form *ngIf="newExpense" [isNewCountyVehicle]="newCountyVehicle" (onFormCancel)="newExpense=false" (onFormSubmit)="newExpenseSubmitted($event)"></expense-form>
         </div>
     <br><expense-list [byMonth]="byMonth" (onDeleted)="deleted($event)" (onEdited)="edited($event)"></expense-list>
     <div *ngIf="numbExpenses != 0" class="text-center">
@@ -27,10 +27,12 @@ export class ExpenseHomeComponent {
     newExpense=false;
     byMonth:ExpenseMonth[] = [];
     errorMessage: string;
+    newCountyVehicle = false;
+
 
     constructor( 
         private reportingService: ReportingService,
-        private router: Router,
+        private route: ActivatedRoute,
         private service:ExpenseService
     )   
     {}
@@ -51,7 +53,20 @@ export class ExpenseHomeComponent {
             },
             err => this.errorMessage = <any>err
         );
-        
+        this.route.params
+        .subscribe( (params: Params) =>
+            {
+                var type = params['type'];
+                if(type != undefined){
+                    if(type == 'new'){
+                        this.newExpense = true;
+                    }else if(type = 'newcountyvehicle'){
+                        this.newExpense = true;
+                        this.newCountyVehicle = true;
+                    }
+                }
+            }
+        );
         
     }
     loadMore(){
