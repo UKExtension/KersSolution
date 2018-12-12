@@ -73,7 +73,7 @@ namespace Kers.Controllers
 
 
                     using (var resized = original
-                        .Resize(new SKImageInfo(newWidth, newHeight), SKBitmapResizeMethod.Lanczos3))
+                        .Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.Medium))
                     {
                         using (var image = SKImage.FromBitmap(resized))
                         {
@@ -120,7 +120,7 @@ namespace Kers.Controllers
                     }
 
                     using (var resized = original
-                        .Resize(new SKImageInfo(width, height), SKBitmapResizeMethod.Lanczos3))
+                        .Resize(new SKImageInfo(width, height), SKFilterQuality.Medium))
                     {
                         using (var image = SKImage.FromBitmap(resized))
                         {

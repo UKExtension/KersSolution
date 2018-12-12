@@ -117,7 +117,7 @@ namespace Kers.Services
                     resizeParams.w = (int)Math.Round(bitmap.Width * ((float)resizeParams.h / bitmap.Height));
 
                 var resizedImageInfo = new SKImageInfo(resizeParams.w, resizeParams.h, SKImageInfo.PlatformColorType, bitmap.AlphaType);
-                bitmap = bitmap.Resize(resizedImageInfo, SKBitmapResizeMethod.Lanczos3);
+                bitmap = bitmap.Resize(resizedImageInfo, SKFilterQuality.Medium);
             }
 
             var resizedImage = SKImage.FromBitmap(bitmap);
@@ -168,7 +168,7 @@ namespace Kers.Services
 
             // resize
             var resizedImageInfo = new SKImageInfo(resizeParams.w, resizeParams.h, SKImageInfo.PlatformColorType, bitmap.AlphaType);
-            var resizedBitmap = bitmap.Resize(resizedImageInfo, SKBitmapResizeMethod.Lanczos3);
+            var resizedBitmap = bitmap.Resize(resizedImageInfo, SKFilterQuality.Medium);
 
             // optionally pad
             if (resizeParams.mode == "pad")

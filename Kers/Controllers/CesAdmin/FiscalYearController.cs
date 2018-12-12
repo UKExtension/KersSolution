@@ -47,14 +47,14 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(year);
         }
         [HttpGet("forDate/{date}/{type?}")]
-        public async Task<IActionResult> ForDate(DateTime date, string type = "serviceLog"){
+        public async Task<IActionResult> ForDate(DateTime dt, string type = "serviceLog"){
             var year = await context.FiscalYear
                         .Where( f => 
                                 f.Type == type
                                 &&
-                                f.Start <= date
+                                f.Start <= dt
                                 &&  
-                                f.End >= date    
+                                f.End >= dt    
                             )
                         .FirstOrDefaultAsync();
             if( year == null ){
