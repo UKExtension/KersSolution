@@ -23,10 +23,11 @@ export class PlanningunitListComponent implements OnInit{
         private service:PlanningunitService
     )   
     {
-        this.counties = service.counties();
+        
     }
 
     ngOnInit(){
+        this.counties = this.service.counties(this.districtId);
        //console.log(this.link);
     }
 

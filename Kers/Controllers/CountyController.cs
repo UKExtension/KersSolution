@@ -56,7 +56,7 @@ namespace Kers.Controllers
         }
 
         [HttpGet("countylist/{DistrictId?}")]
-        public async Task<IActionResult> Countylist(int DistrictId = 0){
+        public async Task<IActionResult> Countylist(int? DistrictId = null){
 
             List<PlanningUnit> counties;
 
@@ -71,7 +71,19 @@ namespace Kers.Controllers
             
                 var countiesQuery = this.context.PlanningUnit.
                                 Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES");
-                if(DistrictId != 0) countiesQuery = countiesQuery.Where( c => c.DistrictId == DistrictId);
+                
+                if(DistrictId != null){
+                    if(DistrictId == 0){
+                        var CurrentPlanningUnit = this.CurrentPlanningUnit();
+                        if(CurrentPlanningUnit.DistrictId != null){
+                            countiesQuery = countiesQuery.Where( c => c.DistrictId == CurrentPlanningUnit.DistrictId);
+                        }else{
+                            countiesQuery = countiesQuery.Where( c => false);
+                        }
+                    }else{
+                        countiesQuery = countiesQuery.Where( c => c.DistrictId == DistrictId);
+                    }
+                } 
                 counties = await countiesQuery.OrderBy(c => c.Name).ToListAsync();
                 
 
