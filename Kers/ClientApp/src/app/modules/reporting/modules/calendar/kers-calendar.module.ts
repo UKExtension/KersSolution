@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CalendarModule } from 'angular-calendar';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { FormsModule } from '@angular/forms';
 
 import { CalendarRoutingModule } from './calendar-routing.module';
@@ -14,6 +14,7 @@ import { CalendarHeaderComponent } from './calendar-header.component';
 import { ExpenseModule } from '../expense/expense.module';
 import { CalendarEventDetailComponent } from './calendar-event-detail.component';
 import { CalendarHomeComponent } from './calendar-home.component';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 
 @NgModule({
@@ -24,7 +25,10 @@ import { CalendarHomeComponent } from './calendar-home.component';
     CalendarRoutingModule,
     ServicelogModule,
     ExpenseModule,
-    CalendarModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    }),
   ],
   declarations: [
     KersCalendarComponent,

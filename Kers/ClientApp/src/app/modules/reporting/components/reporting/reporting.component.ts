@@ -24,6 +24,7 @@ export class ReportingComponent implements OnInit {
     profile:Profile;
     errorMessage: string;
     title: string;
+    layoutClasses = {};
 
     constructor( 
                 private navService: NavigationService, 
@@ -45,6 +46,8 @@ export class ReportingComponent implements OnInit {
             ga('send', 'pageview');
         }
         }); 
+        this.layoutClasses['nav-md'] = true;
+        this.layoutClasses['nav-sm'] = false;
     }
 
     ngOnInit(){
@@ -64,10 +67,7 @@ export class ReportingComponent implements OnInit {
         */
     }
 
-    layoutClasses = {
-        'nav-md' : true,
-        'nav-sm' : false
-    }
+    
     
     onLeftToggle(){
         if(this.layoutClasses['nav-md']){

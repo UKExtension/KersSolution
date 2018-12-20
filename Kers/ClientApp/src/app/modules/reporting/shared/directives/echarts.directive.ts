@@ -72,7 +72,7 @@ export class echartsDirective implements OnChanges,OnInit,OnDestroy {
     this.sizeCheckInterval = setInterval(() => {
       this.reSize$.next(`${this.el.nativeElement.offsetWidth}:${this.el.nativeElement.offsetHeight}`)
     }, 100);
-    this.onResize = this.reSize$.distinctUntilChanged().subscribe((_) => this.chart.resize());
+    //this.onResize = this.reSize$.distinctUntilChanged().subscribe((_) => this.chart.resize());
 
     this.elHeight = this.el.nativeElement.offsetHeight;
     if (this.elHeight < 300) {

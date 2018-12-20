@@ -2,13 +2,9 @@ import {    Component,
             EventEmitter, 
             Input, 
             Output,
-            trigger,
-            state,
-            style,
-            transition,
-            animate 
         } from '@angular/core';
 import { NavGroup, NavItem} from './navigation.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: '[nav-menu-group]',
