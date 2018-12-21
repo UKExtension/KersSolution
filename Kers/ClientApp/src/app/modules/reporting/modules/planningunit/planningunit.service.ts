@@ -1,9 +1,7 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
+import {Response, Headers, RequestOptions } from '@angular/http';
+import {of, Observable} from 'rxjs';
 import {AuthHttp} from '../../../authentication/auth.http';
 import { PlanningUnit } from '../user/user.service';
 
@@ -33,7 +31,7 @@ export class PlanningunitService {
 
     id(id:number):Observable<PlanningUnit>{
         if(this.planningUnits.has(id)){
-            return Observable.of( this.planningUnits.get(id));
+            return of( this.planningUnits.get(id));
         }else{
             var url = this.baseUrl + id;
             return this.http.get(this.location.prepareExternalUrl(url))

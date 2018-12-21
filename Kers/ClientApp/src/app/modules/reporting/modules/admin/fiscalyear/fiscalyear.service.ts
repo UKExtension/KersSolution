@@ -1,9 +1,7 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
+import {Response, Headers, RequestOptions } from '@angular/http';
+import {of, Observable} from 'rxjs';
 import {AuthHttp} from '../../../../authentication/auth.http';
 
 
@@ -22,7 +20,7 @@ export class FiscalyearService {
 
     listFiscalYears(){
             var url = this.baseUrl + "All";
-            if(this.years != null) return Observable.of(this.years);
+            if(this.years != null) return of(this.years);
             return this.http.get(this.location.prepareExternalUrl(url))
                 .map(res => this.years = res.json())
                 .catch(this.handleError);
