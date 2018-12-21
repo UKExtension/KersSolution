@@ -1,9 +1,7 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
 import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
+import {of as ObservableOf, Observable} from 'rxjs';
 import {AuthHttp} from '../../../authentication/auth.http';
 import {Role} from '../admin/roles/roles.service';
 import { Vehicle } from '../expense/vehicle/vehicle.service';
@@ -35,7 +33,7 @@ export class UserService {
                     })
                     .catch(this.handleError);
         }else{
-            return Observable.of(this.usr);
+            return ObservableOf(this.usr);
         }
     }
 
