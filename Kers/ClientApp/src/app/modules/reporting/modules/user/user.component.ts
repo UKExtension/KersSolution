@@ -81,7 +81,7 @@ export class UserComponent {
             .subscribe((user: User) => 
                 {
                     this.user = user;
-                    this.latestStories = this.storyService.latestByUser(this.user.id, 5, '2018');
+                    this.latestStories = this.storyService.latestByUser(this.user.id, 5);
                     this.latestActivities = this.activityService.latestByUser(this.user.id, 25);
                     this.reportingService.setTitle(this.user.personalProfile.firstName + " " +this.user.personalProfile.lastName);
                     var n = new Date();
