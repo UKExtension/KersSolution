@@ -118,7 +118,7 @@ export class UserComponent {
                                     var storyData = [];
 
                                     for(var actvt of res){
-                                        var acg = [actvt.day, actvt.count];
+                                        var acg = [actvt["day"], actvt["count"]];
                                         storyData.push(acg);
                                     }
                                     var serie = {

@@ -1,16 +1,10 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 
-
-const httpOptions = {
-    headers: new HttpHeaders({
-        "Content-Type": "application/json; charset=utf-8"
-    })
-  };
 
 @Injectable({providedIn:'root'})
 export class HelpService {
@@ -43,14 +37,14 @@ export class HelpService {
 
 
     addHelp(help:Help): Observable<Help>{
-        return this.http.post<Help>(this.location.prepareExternalUrl(this.baseUrl), help, httpOptions)
+        return this.http.post<Help>(this.location.prepareExternalUrl(this.baseUrl), help)
             .pipe(
                 catchError(this.handleError('addHelp', help))
             );
     }
     updateHelp(id:number, help:Help): Observable<Help>{
         var url = this.baseUrl + id;
-        return this.http.put<Help>(this.location.prepareExternalUrl(url), JSON.stringify(help), httpOptions)
+        return this.http.put<Help>(this.location.prepareExternalUrl(url), help)
             .pipe(
                 catchError(this.handleError('updateHelp', help))
             );
@@ -58,7 +52,7 @@ export class HelpService {
 
     deleteHelp(id:number): Observable<{}>{
         var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), httpOptions)
+        return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('deleteHelp'))
             );
