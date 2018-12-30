@@ -1,7 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import {HelpFormComponent} from './help-form.component';
 import {HelpService, Help, HelpCategory} from './help.service';
 
 @Component({
@@ -40,7 +37,6 @@ export class HelpListComponent implements OnInit{
     categories: HelpCategory[];
 
     constructor(
-        private router: Router,
         private service: HelpService
     ){}
 

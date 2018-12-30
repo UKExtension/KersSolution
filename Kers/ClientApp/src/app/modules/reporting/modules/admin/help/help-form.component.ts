@@ -6,6 +6,7 @@ import {Router} from '@angular/router';
 import {ProfileService, Profile} from '../../../components/reporting-profile/profile.service';
 import { RolesService, Role } from '../roles/roles.service';
 import { UsersService, Position } from '../users/users.service';
+import { UserService, User } from '../../user/user.service';
 
 @Component({
     selector: 'help-form',
@@ -15,6 +16,7 @@ export class HelpFormComponent implements OnInit{
 
     helpForm = null;
     @Input() help:Help = null;
+    currentUser:User;
 
     categories:HelpCategory[];
     errorMessage: string;
@@ -29,28 +31,15 @@ export class HelpFormComponent implements OnInit{
 
     constructor( 
         private service: HelpService,
-        private profileService: ProfileService,
         private fb: FormBuilder,
         private router: Router,
         private location: Location,
+        private userService:UserService,
         private rolesService: RolesService,
         private usersService: UsersService 
     ){
 
-        this.options = { 
-            placeholderText: 'Help Content Here!',
-            toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL','insertImage', 'insertVideo', '|', 'insertTable', 'html'],
-            toolbarButtonsMD: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat', '|','insertImage', 'html'],
-            toolbarButtonsSM: ['undo', 'redo', 'bold', 'italic', 'underline',  'paragraphFormat', '|','insertImage'],
-            toolbarButtonsXS: ['bold', 'italic',  'paragraphFormat', '|','insertImage'],
-            videoInsertButtons: ['videoBack', '|', 'videoByURL', 'videoEmbed'],
-            imageUploadParams: { profileId: this.profileService.profile.id },
-            imageUploadURL: location.prepareExternalUrl('/FroalaApi/UploadImage'),
-            fileUploadURL: location.prepareExternalUrl('/FroalaApi/UploadFile'),
-            imageManagerLoadURL: location.prepareExternalUrl('/FroalaApi/LoadImages'),
-            imageManagerDeleteURL: location.prepareExternalUrl('/FroalaApi/DeleteImage'),
-            imageManagerDeleteMethod: "POST"
-        }
+        
 
         this.helpForm = fb.group(
             {
@@ -81,13 +70,33 @@ export class HelpFormComponent implements OnInit{
                 },
                 error => this.errorMessage = <any> error
         );
-       this.service.allCategories().
+        this.service.allCategories().
             subscribe(
                 res => {
                     this.categories = res;
                 },
                 error => this.errorMessage = <any>error
             );
+            this.userService.current().subscribe(
+                res => {
+                    this.currentUser = <User> res;
+                    this.options = { 
+                        placeholderText: 'Help Content Here!',
+                        toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL','insertImage', 'insertVideo', '|', 'insertTable', 'html'],
+                        toolbarButtonsMD: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat', '|','insertImage', 'html'],
+                        toolbarButtonsSM: ['undo', 'redo', 'bold', 'italic', 'underline',  'paragraphFormat', '|','insertImage'],
+                        toolbarButtonsXS: ['bold', 'italic',  'paragraphFormat', '|','insertImage'],
+                        videoInsertButtons: ['videoBack', '|', 'videoByURL', 'videoEmbed'],
+                        imageUploadParams: { profileId: this.currentUser.id },
+                        imageUploadURL: this.location.prepareExternalUrl('/FroalaApi/UploadImage'),
+                        fileUploadURL: this.location.prepareExternalUrl('/FroalaApi/UploadFile'),
+                        imageManagerLoadURL: this.location.prepareExternalUrl('/FroalaApi/LoadImages'),
+                        imageManagerDeleteURL: this.location.prepareExternalUrl('/FroalaApi/DeleteImage'),
+                        imageManagerDeleteMethod: "POST"
+                    }
+                },
+                error => this.errorMessage = <any> error
+        );
 
     }
 
