@@ -80,7 +80,7 @@ export class HelpCategoryFormComponent implements OnInit{
             this.service.addHelpCategory(this.helpForm.value, this.parentId).
             subscribe(
                 res => {
-                    this.onFormSubmit.emit(res);
+                    this.onFormSubmit.emit(<HelpCategory>res);
                 }
             );
         }

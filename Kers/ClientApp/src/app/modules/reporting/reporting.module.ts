@@ -38,6 +38,8 @@ import { WidgetStaffAssistantComponent } from './components/reporting-home/widge
 import { WidgetTrainingsComponent } from './components/reporting-home/widgets/widget-trainings.component';
 import { WidgetCalendarComponent } from './components/reporting-home/widgets/widget-calendar.component';
 import { PlanningunitService } from './modules/planningunit/planningunit.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import {JwtInterceptor} from './core/helpers/jwt.interceptor';
 
 
 @NgModule({
@@ -73,6 +75,7 @@ import { PlanningunitService } from './modules/planningunit/planningunit.service
     ],
     exports:[ReportingProfileEditComponent],
     providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         NavigationService,
         ProfileService,
         PlanningunitService

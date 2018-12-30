@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers, URLSearchParams} from '@angular/http';
+import {Http, Headers, URLSearchParams, RequestOptions} from '@angular/http';
 
 @Injectable ()
 export class AuthHttp{
@@ -9,6 +9,7 @@ export class AuthHttp{
         this.http = http;
     }
 
+    
     get(url, opts={}){
         this.configureAuth(opts, "get");
         return this.http.get(url, opts);
@@ -56,5 +57,15 @@ export class AuthHttp{
             opts.search = opts.search || new URLSearchParams();
             opts.search.set('timestamp', (new Date()).getTime());
         }
+    }
+
+    getRequestOptions(){
+        return new RequestOptions(
+            {
+                headers: new Headers({
+                    "Content-Type": "application/json; charset=utf-8"
+                })
+            }
+        )
     }
 }

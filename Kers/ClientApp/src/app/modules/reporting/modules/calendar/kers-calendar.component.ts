@@ -25,7 +25,7 @@ import {
   CalendarEventAction,
   CalendarEventTimesChangedEvent
 } from 'angular-calendar';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Activity } from '../activity/activity.service';
 import { CalendarService } from './calendar-service.service';
 

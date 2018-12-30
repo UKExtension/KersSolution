@@ -4,6 +4,7 @@ import {Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { JwtHelper } from './jwt.helper';
+import { User } from '../reporting/modules/user/user.service';
 
 
 @Injectable()

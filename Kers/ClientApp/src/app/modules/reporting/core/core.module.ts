@@ -24,7 +24,7 @@ import { FiscalyearService } from '../modules/admin/fiscalyear/fiscalyear.servic
                     ProgramsService,
                     IndicatorsService,
                     ReportingService,
-                    FiscalyearService 
+                    FiscalyearService,
                     ]
 })
 export class CoreModule {
