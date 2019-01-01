@@ -23,7 +23,8 @@ import { Subject } from 'rxjs/Subject';
 import {
   CalendarEvent,
   CalendarEventAction,
-  CalendarEventTimesChangedEvent
+  CalendarEventTimesChangedEvent,
+  collapseAnimation
 } from 'angular-calendar';
 import { Observable } from 'rxjs';
 import { Activity } from '../activity/activity.service';
@@ -32,7 +33,8 @@ import { CalendarService } from './calendar-service.service';
 @Component({
   selector: 'kers-calendar',
   templateUrl: './kers-calendar.component.html',
-  styleUrls: ['./kers-calendar.component.css']
+  styleUrls: ['./kers-calendar.component.css'],
+  animations: [collapseAnimation]
 })
 export class KersCalendarComponent implements OnInit {
   

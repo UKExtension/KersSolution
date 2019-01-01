@@ -5,11 +5,20 @@
   (viewChange)="fetchEvents()">
 </calendar-header>
 
-<ng-template  #kersOpenDayTemplate  let-events="events"  let-eventClicked="eventClicked">
-  <calendar-day-events [viewDate]="viewDate" [events]="events" *ngIf="activeDayIsOpen" (changed)="fetchEvents()"></calendar-day-events>
-</ng-template>
 
 
+<ng-template
+#kersOpenDayTemplate
+      let-events="events"
+      let-eventClicked="eventClicked"
+      let-isOpen="isOpen">
+      <div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
+
+          <calendar-day-events [viewDate]="viewDate" [events]="events" (changed)="fetchEvents()"></calendar-day-events>
+
+
+      </div>
+    </ng-template>
 
 
 <ng-template #loading>
