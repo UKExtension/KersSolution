@@ -100,9 +100,6 @@ export class IndicatorsHomeComponent {
     ngOnInit(){
         this.fiscalYearService.current().subscribe(
             res => {
-
-
-
                 var prgrms = [];
                 this.initiatives = null;
                 this.selectedProgram = null;
@@ -135,20 +132,26 @@ export class IndicatorsHomeComponent {
     }
     onChange(programId) {
         this.dataSubmitted=false;
-        this.selectedProgram = this.programs.filter(p=>p.id == programId)[0];
-        this.indicatorsService.listIndicators(this.selectedProgram).subscribe(
-            res=>{
-                this.selectedIndicators = <Indicator[]>res;
-                this.updateForm();
-                this.indicatorsService.indicatorValues(this.selectedProgram).subscribe(
-                    r=>{
-                        this.indicatorsForm.patchValue({indicatorsGroup:r})
-                    },
-                    err=>this.errorMessage = <any> err
-                )
-            },
-            err=>this.errorMessage = <any> err
-        )
+        if(programId != ""){
+            this.selectedProgram = this.programs.filter(p=>p.id == programId)[0];
+            this.indicatorsService.listIndicators(this.selectedProgram).subscribe(
+                res=>{
+                    this.selectedIndicators = <Indicator[]>res;
+                    this.updateForm();
+                    this.indicatorsService.indicatorValues(this.selectedProgram).subscribe(
+                        r=>{
+                            this.indicatorsForm.patchValue({indicatorsGroup:r})
+                        },
+                        err=>this.errorMessage = <any> err
+                    )
+                },
+                err=>this.errorMessage = <any> err
+            )
+        }else{
+            this.selectedProgram = null;
+            this.selectedIndicators = [];
+        }
+        
     }
 
     updateForm(){
