@@ -1,6 +1,6 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import {MajorProgram } from '../admin/programs/programs.service';

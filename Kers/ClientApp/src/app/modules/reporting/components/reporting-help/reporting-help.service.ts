@@ -1,49 +1,40 @@
 import { Injectable} from '@angular/core';
 import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
 import {Location} from '@angular/common';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
 
 
 @Injectable()
 export class ReportingHelpService {
 
     private baseUrl = '/api/HelpContent/';
+    private handleError: HandleError;
 
 
     constructor( 
-        private http:AuthHttp, 
-        private location:Location
-    ){ }
-
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('ReportingHelpService');
+        }
     
 
     get(id:number) : Observable<Help>{
         var url = this.baseUrl + id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-            .map(response => <Help> response.json())
-            .catch(this.handleError);
+        return this.http.get<Help>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('get', <Help>{}))
+            );
     }
 
     
 
     
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
+    
     
 }
 
