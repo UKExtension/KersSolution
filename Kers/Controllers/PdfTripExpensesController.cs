@@ -459,7 +459,7 @@ namespace Kers.Controllers
 		}
 
 		private void DivideExpenses(){
-			this._nonCountyExpenses = _expenseLines.Where( e => nonCountySourceNames.Contains( e.expense.FundingSourceMileage.Name ) ).ToList();
+			this._nonCountyExpenses = _expenseLines.Where( e => nonCountySourceNames.Contains( e.expense.FundingSourceMileage != null ? e.expense.FundingSourceMileage.Name : "" ) ).ToList();
 			this._countyExpenses = _expenseLines.Except( this._nonCountyExpenses ).ToList();
 
 		}

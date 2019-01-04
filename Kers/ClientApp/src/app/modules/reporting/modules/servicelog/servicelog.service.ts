@@ -1,18 +1,17 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import {MajorProgram } from '../admin/programs/programs.service';
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 
 
 @Injectable()
 export class ServicelogService {
 
     private baseUrl = '/api/Servicelog/';
-
+    private handleError: HandleError;
 
     private racesVar:Race[] = null;
     private activityOptionNumbers:ActivityOptionNumber[] = null;
@@ -22,27 +21,33 @@ export class ServicelogService {
     public condition = false;
 
     constructor( 
-        private http:AuthHttp, 
-        private location:Location
-        ){}
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('ServicelogService');
+        }
 
 
 
     latestByUser(userId:number, amount:number = 3):Observable<Servicelog[]>{
         var url = this.baseUrl + 'latestbyuser/'+ userId + '/' + amount;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Servicelog[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<Servicelog[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('latestByUser', []))
+            );
     }
 
     options():Observable<ActivityOption[]>{
         if(this.activityOptions == null){
             var url = this.baseUrl + 'options';
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <ActivityOption[]>res.json())
-                .catch(this.handleError);
+            return this.http.get<ActivityOption[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(opts => this.activityOptions = opts),
+                    catchError(this.handleError('options', []))
+                );
         }else{
-            return Observable.of(this.activityOptions);
+            return of(this.activityOptions);
         }
         
     }
@@ -50,43 +55,43 @@ export class ServicelogService {
     optionnumbers():Observable<ActivityOptionNumber[]>{
         if(this.activityOptionNumbers == null){
             var url = this.baseUrl + 'optionnumbers';
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => {
-                    this.activityOptionNumbers = <ActivityOptionNumber[]>res.json();
-                    return this.activityOptionNumbers;
-                })
-                .catch(this.handleError);
+            return this.http.get<ActivityOptionNumber[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                tap(opts => this.activityOptionNumbers = opts),
+                catchError(this.handleError('optionnumbers', []))
+            );
         }else{
-            return Observable.of(this.activityOptionNumbers);
+            return of(this.activityOptionNumbers);
         }
     }
 
     races():Observable<Race[]>{
         if(this.racesVar == null){
             var url = this.baseUrl + 'races';
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => {
-                    this.racesVar = <Race[]>res.json();
-                    return this.racesVar;
-                })
-                .catch(this.handleError);
+            return this.http.get<Race[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(races => this.racesVar = races),
+                    catchError(this.handleError('races', []))
+                );
         }else{
-            return Observable.of(this.racesVar);
+            return of(this.racesVar);
         }
     }
 
     ethnicities():Observable<Ethnicity[]>{
         var url = this.baseUrl + 'ethnicities';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Ethnicity[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<Ethnicity[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('ethnicities', []))
+            );
     }
 
     byId(id:number):Observable<Servicelog>{
         var url = this.baseUrl + 'byid/'+ id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Servicelog>res.json())
-                .catch(this.handleError);
+        return this.http.get<Servicelog>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('byId', <Servicelog>{}))
+            );
     }
 
     /*****************************/
@@ -95,37 +100,42 @@ export class ServicelogService {
 
     getSnapDirect(id:number):Observable<SnapDirect>{
         var url = this.baseUrl + 'getsnapdirect/'+id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapDirect>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapDirect>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('getSnapDirect', <SnapDirect>{}))
+            );
     }
 
     sessiontypes():Observable<SnapDirectSessionType[]>{
         var url = this.baseUrl + 'sessiontypes';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapDirectSessionType[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapDirectSessionType[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('sessiontypes', []))
+            );
     }
 
     snapdirectages():Observable<SnapDirectAges[]>{
         var url = this.baseUrl + 'snapdirectages';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapDirectAges[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapDirectAges[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snapdirectages', []))
+            );
     }
 
     snapdirectaudience():Observable<SnapDirectAudience[]>{
         var url = this.baseUrl + 'snapdirectaudience';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapDirectAudience[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapDirectAudience[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snapdirectaudience', []))
+            );
     }
 
     snapdirectdeliverysite():Observable<SnapDirectDeliverySite[]>{
         var url = this.baseUrl + 'snapdirectdeliverysite';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapDirectDeliverySite[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapDirectDeliverySite[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snapdirectdeliverysite', []))
+            );
     }
 
     /*****************************/
@@ -134,23 +144,26 @@ export class ServicelogService {
 
     getSnapInDirect(id:number):Observable<SnapIndirect>{
         var url = this.baseUrl + 'getsnapindirect/'+id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapIndirect>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapIndirect>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('getSnapInDirect', <SnapIndirect>{}))
+            );
     }
 
     snapindirectmethod():Observable<SnapIndirectMethod[]>{
         var url = this.baseUrl + 'snapindirectmethod';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapIndirectMethod[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapIndirectMethod[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snapindirectmethod', []))
+            );
     }
 
     snapindirectreached():Observable<SnapIndirectReached[]>{
         var url = this.baseUrl + 'snapindirectreached';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapIndirectReached[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapIndirectReached[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snapindirectreached', []))
+            );
     }
 
 
@@ -161,23 +174,26 @@ export class ServicelogService {
 
     getSnapPolicy(id:number):Observable<SnapPolicy>{
         var url = this.baseUrl + 'getsnappolicy/'+id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapPolicy>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapPolicy>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('getSnapInDirect', <SnapPolicy>{}))
+            );
     }
 
     snappolicyaimed():Observable<SnapPolicyAimed[]>{
         var url = this.baseUrl + 'snappolicyaimed';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapPolicyAimed[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapPolicyAimed[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snappolicyaimed', []))
+            );
     }
 
     snappolicypartner():Observable<SnapPolicyPartner[]>{
         var url = this.baseUrl + 'snappolicypartner';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapPolicyPartner[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapPolicyPartner[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snappolicypartner', []))
+            );
     }
 
 
@@ -185,70 +201,52 @@ export class ServicelogService {
     /*****************************/
     // CRUD operations
     /*****************************/
-    add( activity:Servicelog ){
-        return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(activity), this.getRequestOptions())
-                    .map( res => {
-                    
-                        var ret = <Servicelog>res.json();
-                        return ret;
-                    } )
-                    .catch(this.handleError);
+    add( activity:Servicelog ):Observable<Servicelog>{
+        return this.http.post<Servicelog>(this.location.prepareExternalUrl(this.baseUrl), activity)
+            .pipe(
+                catchError(this.handleError('add', activity))
+            );
     }
-    update(id:number, activity:Servicelog){
+    update(id:number, activity:Servicelog):Observable<Servicelog>{
         var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(activity), this.getRequestOptions())
-                    .map( res => {
-                        return <Servicelog> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<Servicelog>(this.location.prepareExternalUrl(url), activity)
+            .pipe(
+                catchError(this.handleError('update', activity))
+            );
     }
 
-    delete(id:number){
+    delete(id:number):Observable<{}>{
         var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
     }
 
-    deleteByActivityId(id:number){
+    deleteByActivityId(id:number):Observable<{}>{
         var url = this.baseUrl + 'byactivityid/' + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteByActivityId'))
+            );
     }
 
 
-    latest(skip:number = 0, take:number = 5){
+    latest(skip:number = 0, take:number = 5):Observable<Servicelog[]>{
         var url = this.baseUrl + 'latest/' + skip + '/' + take;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Servicelog[]>res.json() )
-                .catch(this.handleError);
+        return this.http.get<Servicelog[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('latest', []))
+            );
     }
-    num(){
+    num():Observable<number>{
         var url = this.baseUrl + 'numb';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <number>res.json() )
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('num', 0))
+            );
     }
 
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
 }
 
 /************************************/

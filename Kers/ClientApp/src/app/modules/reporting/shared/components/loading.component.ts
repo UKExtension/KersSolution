@@ -33,6 +33,7 @@ import {  Component, Input } from '@angular/core';
     .spinner > div {
         background-color: #aaa;
         height: 100%;
+        margin-left:1px;
         width: 3px;
         display: inline-block;
         
