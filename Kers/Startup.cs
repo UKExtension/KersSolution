@@ -60,7 +60,12 @@ namespace Kers
                     };
                 });
 
-            services.AddMvc().AddJsonOptions(jsonOptions=>
+            services.AddMvc(
+                options =>
+                    {
+                        options.OutputFormatters.Add(new CsvOutputFormatter());
+                    }
+            ).AddJsonOptions(jsonOptions=>
                 {
                     jsonOptions.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
                     jsonOptions.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
