@@ -1,88 +1,34 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../../authentication/auth.http';
+import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 
 @Injectable()
 export class EmailService {
 
     private baseUrl = '/api/Email/';
-
-    private pUnits = null;
-    private pstns = null;
-    private lctns = null;
-    private years = null;
-
-    constructor( private http:AuthHttp, private location:Location){}
+    private handleError: HandleError;
 
 
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('EmailService');
+        }
 
 
-    send(email:Email){
-        return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(email), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+    send(email:Email):Observable<Email>{
+        return this.http.post<Email>(this.location.prepareExternalUrl(this.baseUrl), email)
+            .pipe(
+                catchError(this.handleError('send', email))
+            );
     }
 
-    /**********************************/
-    // HELP CONTENT
-    /**********************************/
-/*
-
-    all(){
-        var url = this.baseUrl + "All";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Help[]>res.json())
-                .catch(this.handleError);
-    }
-
-
-    addHelp(help:Help){
-        return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(help), this.getRequestOptions())
-                    .map( res => {
-                        return <Help> res.json();
-                    })
-                    .catch(this.handleError);
-    }
-    updateHelp(id:number, help:Help){
-        var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(help), this.getRequestOptions())
-                    .map( res => {
-                        return <Help> res.json();
-                    })
-                    .catch(this.handleError);
-    }
-
-    deleteHelp(id:number){
-        var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
-    }
-*/
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
-    
 }
 
 export interface Email{
