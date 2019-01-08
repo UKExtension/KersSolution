@@ -45,7 +45,7 @@ export class EmailHomeComponent {
         this.service.send(<Email>this.form.value).subscribe(
             res => {
                 this.loading = false;
-                this.message = res.text();
+                this.message = res.body;
             },
             err => {
                 console.log(err);

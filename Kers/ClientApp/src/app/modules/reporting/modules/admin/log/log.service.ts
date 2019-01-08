@@ -1,10 +1,9 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, tap, map } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 import {KersUser} from '../users/users.service';
 
 
@@ -12,72 +11,80 @@ import {KersUser} from '../users/users.service';
 export class LogService {
 
     private baseUrl = '/api/log/';
-    private loaded;
+    private handleError: HandleError;
+    private loaded:Log[] = [];
 
-    constructor( private http:AuthHttp, private location:Location){}
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('LogService');
+        }
 
     latest(skip:number = 0, take:number = 10):Observable<Log[]>{
             var url = this.baseUrl + skip + "/" + take;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.loaded = <Log[]>res.json())
-                .catch(this.handleError);
+            return this.http.get<Log[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    catchError(this.handleError('latest', []))
+                );
     }
 
 
 
     getCustom(searchParams?:{}) : Observable<Log[]>{
         var url = this.baseUrl + "GetCustom/";
-        return this.http.getBy(this.location.prepareExternalUrl(url), searchParams)
-            .map(response => response.json())
-            .catch(this.handleError);
+        return this.http.get<Log[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustom', []))
+            );
     }
 
-    getCustomCount(searchParams?:{}){
+    getCustomCount(searchParams?:{}):Observable<number>{
         var url = this.baseUrl + "GetCustomCount/";
-        return this.http.getBy(this.location.prepareExternalUrl(url), searchParams)
-            .map(response => response.json())
-            .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustomCount', 0))
+            );
     }
 
     types() : Observable<string[]>{
             var url = this.baseUrl + "types";
-            return this.http.get(this.location.prepareExternalUrl(url))
-            .map(response => response.json())
-            .catch(this.handleError);
+            return this.http.get<string[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    catchError(this.handleError('types', []))
+                );
 
     }
 
-    loadMore(take:number = 10){
+    loadMore(take:number = 10):Observable<Log[]>{
         var url = this.baseUrl + this.loaded.length + "/" + take;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => {
-                    var more = <Log>res.json();
-                    this.loaded.concat(more);
-                    return this.loaded;
-                    })
-                .catch(this.handleError);
+            return this.http.get<Log[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    map(res => {
+                            var more = res;
+                            this.loaded.concat(more);
+                            return this.loaded;
+                        }),
+                    catchError(this.handleError('loadMore', []))
+                );
+                
     }
 
-    num(){
+    num():Observable<number>{
         var url = this.baseUrl + 'numb';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <number>res.json() )
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('num', 0))
+            );
     }
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
+    
+    private addParams(params:{}){
+        let searchParams = {};
+        for(let p in params){
+            searchParams[p] = params[p];
+        }
+        return  {params: searchParams};
     }
     
 }
