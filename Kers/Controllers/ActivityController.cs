@@ -144,10 +144,11 @@ namespace Kers.Controllers
         public IActionResult PerDay(int userid, DateTime start, DateTime end ){
             
             end = end.AddDays(1);
-            var numPerDay = context.Activity.
-                                Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end).
+            var filtered = context.Activity.
+                                Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end);
+            var numPerDay = filtered.
                                 GroupBy(e => new {
-                                    Date = e.ActivityDate.Day
+                                    Date = e.ActivityDate.DayOfYear
                                 }).
                                 Select(c => new {
                                     Day = c.FirstOrDefault().ActivityDate.ToString("yyyy-MM-dd"),
