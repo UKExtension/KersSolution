@@ -1,152 +1,122 @@
 import { Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
 import {Location} from '@angular/common';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../../authentication/auth.http';
-import {Profile} from '../../../components/reporting-profile/profile.service';
-import {Role} from '../roles/roles.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 import { NavigationService, NavSection, NavGroup, NavItem } from '../../../components/reporting-navigation/navigation.service';
 
 @Injectable()
 export class AdminNavigationService {
 
     private baseUrl = '/api/nav/';
+    private handleError: HandleError;
 
     private navSections:NavSection[];
 
     constructor( 
-        private http:AuthHttp, 
+        private http: HttpClient, 
         private location:Location,
-        private navigationService: NavigationService
-        )
-    {
-
-    }
-
-    nav(){
-        //if(this.navSections == null){
-            var url = this.baseUrl + 'all/';
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => {
-                    var navSections = <NavSection[]>res.json();
-                    this.navSections = navSections;
-                    return navSections;
-                })
-                .catch(this.handleError);
-    /*    
-    }else{
-            return Observable.of(this.navSections);
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('AdminNavigationService');
         }
-        */
+
+    nav():Observable<NavSection[]>{
+        var url = this.baseUrl + 'all/';
+        return this.http.get<NavSection[]>(this.location.prepareExternalUrl(url))
+        .pipe(
+            tap(res => {
+                var navSections = res;
+                this.navSections = navSections;
+            }),
+            catchError(this.handleError('nav', []))
+        );
     }
 
     // Navigation SECTION crud
-    addSection(section:NavSection){
+    addSection(section:NavSection):Observable<NavSection>{
         var url = this.baseUrl + 'section/';
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(section), this.getRequestOptions())
-                    .map( res => {
-                        this.navSections.push(<NavSection> res.json());
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.post<NavSection>(this.location.prepareExternalUrl(url), section)
+            .pipe(
+                tap(res => {
+                    this.navSections.push(res);
+                }),
+                catchError(this.handleError('addSection', section))
+            );
+                   
                     
     }
-    updateSection(id:number, section:NavSection){
-        console.log(section);
+    updateSection(id:number, section:NavSection):Observable<NavSection>{
         var url = this.baseUrl + 'section/' + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(section), this.getRequestOptions())
-                    .map( res => {
-                        this.navSections = null;
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<NavSection>(this.location.prepareExternalUrl(url), section)
+            .pipe(
+                tap(res => {
+                    this.navSections = null;
+                }),
+                catchError(this.handleError('updateSection', section))
+            );            
+
     }
 
-    deleteSection(section:NavSection){
+    deleteSection(section:NavSection):Observable<{}>{
         var url = this.baseUrl + 'section/' + section.id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteSection'))
+            );
     }
 
     // Navigation GROUP crud
 
-    addGroup(group:NavGroup, section:NavSection){
+    addGroup(group:NavGroup, section:NavSection):Observable<NavGroup>{
         var url = this.baseUrl + 'group/'+section.id;
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(group), this.getRequestOptions())
-                    .map( res => {
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.post<NavGroup>(this.location.prepareExternalUrl(url), group)
+            .pipe(
+                catchError(this.handleError('addGroup', group))
+            );
                     
     }
-    updateGroup(id:number, group:NavGroup){
+    updateGroup(id:number, group:NavGroup):Observable<NavGroup>{
         var url = this.baseUrl + 'group/' + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(group), this.getRequestOptions())
-                    .map( res => {
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<NavGroup>(this.location.prepareExternalUrl(url), group)
+            .pipe(
+                catchError(this.handleError('updateGroup', group))
+            );
     }
 
-    deleteGroup(group:NavGroup){
+    deleteGroup(group:NavGroup):Observable<{}>{
         var url = this.baseUrl + 'group/' + group.id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteGroup'))
+            );
     }
 
 
     // Navigation ITEM crud
 
-    addItem(item:NavItem, group:NavGroup){
+    addItem(item:NavItem, group:NavGroup):Observable<NavItem>{
         var url = this.baseUrl + 'item/'+group.id;
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(item), this.getRequestOptions())
-                    .map( res => {
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.post<NavItem>(this.location.prepareExternalUrl(url), item)
+            .pipe(
+                catchError(this.handleError('addItem', item))
+            );
                     
     }
-    updateItem(id:number, item:NavItem){
+    updateItem(id:number, item:NavItem):Observable<NavItem>{
         var url = this.baseUrl + 'item/' + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(item), this.getRequestOptions())
-                    .map( res => {
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<NavItem>(this.location.prepareExternalUrl(url), item)
+            .pipe(
+                catchError(this.handleError('updateItem', item))
+            );
     }
 
-    deleteItem(item:NavItem){
+    deleteItem(item:NavItem):Observable<{}>{
         var url = this.baseUrl + 'item/' + item.id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
-    }
-
-
-
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteGroup'))
+            );
     }
 }
