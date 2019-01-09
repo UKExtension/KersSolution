@@ -7,6 +7,7 @@ import {Subject, Subscription} from "rxjs";
 import * as echarts from 'echarts';
 import ECharts = echarts.ECharts;
 import EChartOption = echarts.EChartOption;
+import { distinctUntilChanged } from 'rxjs/operators';
 
 
 @Directive({
@@ -72,7 +73,11 @@ export class echartsDirective implements OnChanges,OnInit,OnDestroy {
     this.sizeCheckInterval = setInterval(() => {
       this.reSize$.next(`${this.el.nativeElement.offsetWidth}:${this.el.nativeElement.offsetHeight}`)
     }, 100);
-    //this.onResize = this.reSize$.distinctUntilChanged().subscribe((_) => this.chart.resize());
+    this.onResize = this.reSize$
+              .pipe(
+                distinctUntilChanged()
+              )
+              .subscribe((_) => this.chart.resize());
 
     this.elHeight = this.el.nativeElement.offsetHeight;
     if (this.elHeight < 300) {

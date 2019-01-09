@@ -88,12 +88,12 @@ export class UserComponent {
                     n.setMonth(n.getMonth() - 3);
                     this.activityService.perDay(this.user.id, n, new Date()).subscribe(
                         res => {
-                            
+                            console.log(res);
                             for(var actvt of res){
                                 var acg = [actvt["day"], actvt["count"]];
                                 this.data.push(acg);
                             }
-
+                            console.log(this.data);
                             this.storyService.perDay(this.user.id, n, new Date()).subscribe(
                                 res => {
 
