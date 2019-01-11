@@ -1,10 +1,9 @@
 import { Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
 import {Location} from '@angular/common';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 import {Profile} from '../../../components/reporting-profile/profile.service';
 import {Role} from '../roles/roles.service';
 
@@ -12,68 +11,64 @@ import {Role} from '../roles/roles.service';
 export class UsersService {
 
     private baseUrl = '/api/users/';
+    private handleError: HandleError;
 
     constructor( 
-        private http:AuthHttp, 
-        private location:Location
-        )
-    {
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('UsersService');
+        }
 
-    }
-
-    byProfile(profile:Profile){
+    byProfile(profile:Profile):Observable<KersUser>{
         var url = this.baseUrl + 'byprofile/' + profile.id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => {
-                var user = <KersUser>res.json();
-                user.reportingProfile = profile;
-                return user;
-            })
-            .catch(this.handleError);
+        return this.http.get<KersUser>(this.location.prepareExternalUrl(url))
+            .pipe(
+                map( res => 
+                    {
+                        var user = res;
+                        user.reportingProfile = profile;
+                        return user;
+                    }
+                ),
+                catchError(this.handleError('byProfile', <KersUser>{}))
+            );
     }
 
-    byProfileId(id:string){
+    byProfileId(id:string):Observable<KersUser>{
         var url = this.baseUrl + 'byprofile/' + id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => {
-                var user = <KersUser>res.json();
-                return user;
-            })
-            .catch(this.handleError);
+        return this.http.get<KersUser>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('byProfileId', <KersUser>{}))
+            );
     }
 
-    byId(id:string){
+    byId(id:string):Observable<KersUser>{
         var url = this.baseUrl + id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => {
-                var user = <KersUser>res.json();
-                return user;
-            })
-            .catch(this.handleError);
+        return this.http.get<KersUser>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('byProfileId', <KersUser>{}))
+            );
     }
 
-    roleIds(user:KersUser){
+    roleIds(user:KersUser):Observable<number[]>{
         var url = this.baseUrl + 'roleids/' + user.id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => {
-                var roleids = <number[]>res.json();
-    
-                return roleids;
-            })
-            .catch(this.handleError);
+        return this.http.get<number[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('roleIds', []))
+            );
     }
 
-    positions(){
+    positions():Observable<Position[]>{
         var url = this.baseUrl + 'positions';
-        return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => {
-                var positions = <Position[]>res.json();
-                return positions;
-            })
-            .catch(this.handleError);
+        return this.http.get<Position[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('positions', []))
+            );
     }
 
-    updateRoles(userId:number, roleIds:number[]){
+    updateRoles(userId:number, roleIds:number[]):Observable<Role[]>{
         var url = this.baseUrl + 'updateroles/' + userId;
         var rls = [];
         for(var i=0; i < roleIds.length; i++){
@@ -81,36 +76,18 @@ export class UsersService {
             r["zEmpRoleType"] = {"id": roleIds[i]};
             rls.push(r);
         }
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(rls), this.getRequestOptions())
-            .map(res => {
-                return true;
-            })
-            .catch(this.handleError);
+        return this.http.put<Role[]>(this.location.prepareExternalUrl(url), rls)
+            .pipe(
+                catchError(this.handleError('roleIds', []))
+            );
     }
 
-    updatePersonalProfile(id:number, profile:PersonalProfile){
+    updatePersonalProfile(id:number, profile:PersonalProfile):Observable<PersonalProfile>{
         var url = this.baseUrl +'personal/'+ id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(profile), this.getRequestOptions())
-            .map(response => {
-                var profile = <PersonalProfile>response.json();
-                return profile;
-            })
-            .catch(this.handleError)
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
+        return this.http.put<PersonalProfile>(this.location.prepareExternalUrl(url), profile)
+            .pipe(
+                catchError(this.handleError('roleIds', profile))
+            );
     }
 
 }
