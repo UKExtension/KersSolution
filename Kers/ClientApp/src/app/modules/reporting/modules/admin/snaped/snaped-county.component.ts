@@ -191,7 +191,7 @@ export class SnapedCountyComponent {
     onCountyBudgetSubmit(){
       this.service.updateCountyBudget(this.county.id, this.budgetForm.value).subscribe(
         res => {
-          this.countyBudget = res.annualBudget;
+          this.countyBudget = res["annualBudget"];
           this.editBudget = false;
           this.calculateTotalReinbursments();
         }

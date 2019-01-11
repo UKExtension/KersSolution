@@ -1,10 +1,11 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams, ResponseContentType } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
+import { User } from '../../user/user.service';
+
 
 
 
@@ -14,161 +15,139 @@ import {AuthHttp} from '../../../../authentication/auth.http';
 export class SnapedAdminService {
 
     private baseUrl = '/api/SnapedAdmin/';
+    private handleError: HandleError;
 
 
-    constructor( private http:AuthHttp, private location:Location){}
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('SnapedAdminService');
+        }
 
-
-    commited(fiscalYear:string = "0"){
+    commited(fiscalYear:string = "0"):Observable<number>{
         var url = this.baseUrl + "committed/"+fiscalYear;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json())
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('commited', 0))
+            );
     }
-    reported(fiscalYear:string = "0"){
+    reported(fiscalYear:string = "0"):Observable<number>{
         var url = this.baseUrl + "reported/"+fiscalYear;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json())
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('reported', 0))
+            );
     }
-    assistants(countyId:number = 0){
+    assistants(countyId:number = 0):Observable<User[]>{
         var url = this.baseUrl + "assistants/"+countyId;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json())
-                .catch(this.handleError);
+        return this.http.get<User[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('assistants', []))
+            );
     }
 
-    assistantBudget(fiscalYear:string = "0"){
+    assistantBudget(fiscalYear:string = "0"):Observable<number>{
         var url = this.baseUrl + "assistantbudget" + '/' + fiscalYear;
-        return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => <number>res.json())
-            .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('assistantBudget', 0))
+            );
     }
 
 
-
-
-
-
-    addAssistantReimbursment( id: number, reimbursment:{} ){
+    addAssistantReimbursment( id: number, reimbursment:{} ):Observable<{}>{
         var url = this.baseUrl + 'assistantreimbursements/' + id;
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(reimbursment), this.getRequestOptions())
-                    .map( res => <{}>res.json() )
-                    .catch(this.handleError);
+        return this.http.post<{}>(this.location.prepareExternalUrl(url), reimbursment)
+            .pipe(
+                catchError(this.handleError('addAssistantReimbursment'))
+            );
     }
 
-    editAssistantReimbursment( id: number, reimbursment:{} ){
+    editAssistantReimbursment( id: number, reimbursment:{} ):Observable<{}>{
         var url = this.baseUrl + 'assistantreimbursements/' + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(reimbursment), this.getRequestOptions())
-            .map( res => {
-                return <{}> res.json();
-            })
-            .catch(this.handleError);
+        return this.http.put<{}>(this.location.prepareExternalUrl(url), reimbursment)
+            .pipe(
+                catchError(this.handleError('editAssistantReimbursment'))
+            );
     }
-    deleteAssistantReimbursment(id:number){
+    deleteAssistantReimbursment(id:number):Observable<{}>{
         var url = this.baseUrl + 'assistantreimbursements/' + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteAssistantReimbursment'))
+            );
     }
 
-    assistantReimbursments(id: number, fiscalYear: string = "0"){
+    assistantReimbursments(id: number, fiscalYear: string = "0"):Observable<SnapBudgetReimbursementsNepAssistant[]>{
         var url = this.baseUrl + "assistantreimbursements/" + id + '/' + fiscalYear;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SnapBudgetReimbursementsNepAssistant[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapBudgetReimbursementsNepAssistant[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('assistantReimbursments', []))
+            );
     }
 
-    csv(located:string){
-        return this.http.get(this.location.prepareExternalUrl('/api/SnapedData/' + located + '/data.csv'), { responseType: ResponseContentType.Blob })
-        .map((res:Response) => {
-            var pd = res.blob();
-            return pd;
-        })
-        .catch(this.handleError);
+    csv(located:string): Observable<Blob>{
+        return this.http.get(this.location.prepareExternalUrl('/api/SnapedData/' + located + '/data.csv'), {responseType: 'blob'})
+            .pipe(
+                catchError(this.handleError('assistantReimbursments', <Blob>{}))
+            );
     }
 
-    csvPost(located:string, data:{}){
-        return this.http.post(this.location.prepareExternalUrl(located), JSON.stringify(data), { responseType: ResponseContentType.Blob })
-        .map((res:Response) => {
-            var pd = res.blob();
-            return pd;
-        })
-        .catch(this.handleError);
+    csvPost(located:string, data:{}): Observable<Blob>{
+        return this.http.post(this.location.prepareExternalUrl(located), JSON.stringify(data), {responseType: 'blob'})
+            .pipe(
+                catchError(this.handleError('assistantReimbursments', <Blob>{}))
+            );
     }
 
 
-
-
-
-
-
-
-
-
-    countyBudget(countyId:number = 0, fy:string="0"){
+    countyBudget(countyId:number = 0, fy:string="0"):Observable<number>{
         var url = this.baseUrl + "countybudget/"+countyId + '/' + fy;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <number>res.json())
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('countyBudget', 0))
+            );
     }
 
-    addCountyReimbursment( countyId: number, reimbursment:{} ){
+    addCountyReimbursment( countyId: number, reimbursment:{} ):Observable<{}>{
         var url = this.baseUrl + 'countyreimbursment/' + countyId;
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(reimbursment), this.getRequestOptions())
-                    .map( res => <{}>res.json() )
-                    .catch(this.handleError);
+        return this.http.post<{}>(this.location.prepareExternalUrl(url), reimbursment)
+            .pipe(
+                catchError(this.handleError('addCountyReimbursment'))
+            );
     }
 
-    editCountyReimbursment( id: number, reimbursment:{} ){
+    editCountyReimbursment( id: number, reimbursment:{} ):Observable<{}>{
         var url = this.baseUrl + 'countyreimbursment/' + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(reimbursment), this.getRequestOptions())
-            .map( res => {
-                return <{}> res.json();
-            })
-            .catch(this.handleError);
+        return this.http.put<{}>(this.location.prepareExternalUrl(url), reimbursment)
+            .pipe(
+                catchError(this.handleError('editCountyReimbursment'))
+            );
     }
-    deleteCountyReimbursment(id:number){
+    deleteCountyReimbursment(id:number):Observable<{}>{
         var url = this.baseUrl + 'countyreimbursment/' + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete<{}>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteCountyReimbursment'))
+            );
     }
 
-    countyReimbursments(countyId: number, fiscalYear: string = "0"){
+    countyReimbursments(countyId: number, fiscalYear: string = "0"):Observable<SnapBudgetReimbursementsCounty[]>{
         var url = this.baseUrl + "countyreimbursments/"+countyId + '/' + fiscalYear;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json())
-                .catch(this.handleError);
+        return this.http.get<SnapBudgetReimbursementsCounty[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('countyReimbursments', []))
+            );
     }
 
-    updateCountyBudget(countyId:number, budget:{}){
+    updateCountyBudget(countyId:number, budget:SnapBudgetReimbursementsCounty):Observable<SnapBudgetReimbursementsCounty>{
         var url = this.baseUrl + 'countybudget/' + countyId;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(budget), this.getRequestOptions())
-                    .map( res => {
-                        return <SnapBudgetReimbursementsCounty> res.json();
-                    })
-                    .catch(this.handleError);
-    }
-
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
+        return this.http.put<SnapBudgetReimbursementsCounty>(this.location.prepareExternalUrl(url), budget)
+            .pipe(
+                catchError(this.handleError('countyReimbursments', budget))
+            );
     }
     
 }

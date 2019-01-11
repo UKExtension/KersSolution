@@ -120,7 +120,6 @@ export class ServicelogSnapedReportComponent {
                   this.reimbursments = <SnapBudgetReimbursementsNepAssistant[]>res;
                   this.service.assistantBudget(this.fiscalYear.name).subscribe(
                     res => {
-                        console.log(res);
                       this.budget = <number>res;
                       this.calculateTotalReinbursments();
                     },

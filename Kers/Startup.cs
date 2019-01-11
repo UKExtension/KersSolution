@@ -75,7 +75,10 @@ namespace Kers
                 services.AddDbContext<KERSmainContext>(options => 
                     options.UseSqlite(Configuration["ConnectionStrings:connKersMainLocal"]));
                 services.AddDbContext<KERScoreContext>(options => 
-                    options.UseSqlite(Configuration["ConnectionStrings:connKersCoreLocal"], b => b.MigrationsAssembly("Kers")));
+                    options.UseSqlite(Configuration["ConnectionStrings:connKersCoreLocal"], b => {
+                        b.MigrationsAssembly("Kers");
+                        b.SuppressForeignKeyEnforcement();
+                    }));
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 
                    options.UseSqlite(Configuration["ConnectionStrings:connKersSnapLocal"]));
 

@@ -21,7 +21,7 @@ export class StoryDirectoryComponent {
         stories: Observable<Story[]>;
         errorMessage: string;
         planningUnits = null;
-        initiatives:StrategicInitiative;
+        initiatives:Observable<StrategicInitiative[]>;
         positions = null;
         numResults = 0;
         numProfiles = 0;

@@ -1,71 +1,59 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 
 
 @Injectable()
 export class RolesService {
 
     private rolesUrl = '/api/EmpRoles/';
+    private handleError: HandleError;
 
-    private pUnits = null;
-    private pstns = null;
-    private lctns = null;
-    private rls = null;
 
-    constructor( private http:AuthHttp, private location:Location){}
+    private rls:Role[] = null;
 
-    listRoles(){
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('RolesService');
+        }
+
+    listRoles():Observable<Role[]>{
             var url = this.rolesUrl + "All";
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.rls = res.json())
-                .catch(this.handleError);
+            return this.http.get<Role[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap( res => this.rls = res),
+                    catchError(this.handleError('listRoles', []))
+                );
     }
 
-    addRole(role){
-        return this.http.post(this.location.prepareExternalUrl(this.rolesUrl), JSON.stringify(role), this.getRequestOptions())
-                    .map( res => {
-                        this.rls.push(<Role> res.json());
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+    addRole(role:Role):Observable<Role>{
+        return this.http.post<Role>(this.location.prepareExternalUrl(this.rolesUrl), role)
+            .pipe(
+                tap( res => this.rls.push(res)),
+                catchError(this.handleError('addRole', role))
+            );
     }
     
-    updateRole(id: number, role:Role){
+    updateRole(id: number, role:Role):Observable<Role>{
         var url = this.rolesUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(role), this.getRequestOptions())
-                    .map( res => {
-                        return <Role> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<Role>(this.location.prepareExternalUrl(url), role)
+            .pipe(
+                catchError(this.handleError('updateRole', role))
+            );
     }
 
-    deleteRole(id:number){
+    deleteRole(id:number):Observable<{}>{
         var url = this.rolesUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
-    }
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('updateRole'))
+            );
     }
     
 }

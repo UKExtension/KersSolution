@@ -1,10 +1,9 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 import {FiscalYear} from '../fiscalyear/fiscalyear.service';
 
 
@@ -12,101 +11,81 @@ import {FiscalYear} from '../fiscalyear/fiscalyear.service';
 export class ProgramsService {
 
     private baseUrl = '/api/initiative/';
+    private handleError: HandleError;
 
-    private pUnits = null;
-    private pstns = null;
-    private lctns = null;
-    private years = null;
-    private programCategories: ProgramCategory[] = null;
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('ProgramsService');
+        }
 
-    constructor( private http:AuthHttp, private location:Location){}
 
-    listInitiatives(fy:string = "0"){
-            var url = this.baseUrl + "All/" + fy;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res =>  res.json())
-                .catch(this.handleError);
+
+    listInitiatives(fy:string = "0"):Observable<StrategicInitiative[]>{
+        var url = this.baseUrl + "All/" + fy;
+        return this.http.get<StrategicInitiative[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('listInitiatives', []))
+            );
     }
 
-    categories(){
+    categories():Observable<ProgramCategory[]>{
         var url = this.baseUrl + "category";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.programCategories = <ProgramCategory[]>res.json())
-                .catch(this.handleError);
-        
+        return this.http.get<ProgramCategory[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('listInitiatives', []))
+            );
     }
 
-    addInitiative(initiative:StrategicInitiative, fiscalYear:FiscalYear){
-        return this.http.post(this.location.prepareExternalUrl(this.baseUrl + fiscalYear.id), JSON.stringify(initiative), this.getRequestOptions())
-                    .map( res => {
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+    addInitiative(initiative:StrategicInitiative, fiscalYear:FiscalYear):Observable<StrategicInitiative>{
+        var url = this.baseUrl + fiscalYear.id;
+        return this.http.post<StrategicInitiative>(this.location.prepareExternalUrl(url), initiative)
+            .pipe(
+                catchError(this.handleError('addInitiative', initiative))
+            );
     }
     
-    updateInitiative(id: number, initiative:StrategicInitiative){
+    updateInitiative(id: number, initiative:StrategicInitiative):Observable<StrategicInitiative>{
         var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(initiative), this.getRequestOptions())
-                    .map( res => {
-                        return <StrategicInitiative> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<StrategicInitiative>(this.location.prepareExternalUrl(url), initiative)
+            .pipe(
+                catchError(this.handleError('updateInitiative', initiative))
+            );
     }
 
-    deleteInitiative(id:number){
+    deleteInitiative(id:number):Observable<{}>{
         var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteInitiative'))
+            );
     }
 
 
-
-    addProgram(initiative:StrategicInitiative, program:MajorProgram){
+    addProgram(initiative:StrategicInitiative, program:MajorProgram):Observable<MajorProgram>{
         var url = this.baseUrl + 'program/' + initiative.id;
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(program), this.getRequestOptions())
-                    .map( res => {
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.post<MajorProgram>(this.location.prepareExternalUrl(url), program)
+            .pipe(
+                catchError(this.handleError('addProgram', program))
+            );
     }
     
-    updateProgram(id: number, program:MajorProgram){
+    updateProgram(id: number, program:MajorProgram):Observable<MajorProgram>{
         var url = this.baseUrl + 'program/' + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(program), this.getRequestOptions())
-                    .map( res => {
-                        return <MajorProgram> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<MajorProgram>(this.location.prepareExternalUrl(url), program)
+            .pipe(
+                catchError(this.handleError('updateProgram', program))
+            );
     }
 
-    deleteProgram(id:number){
+    deleteProgram(id:number):Observable<{}>{
         var url = this.baseUrl + 'program/' + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
-    }
-
-
-
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteProgram'))
+            );
     }
     
 }
