@@ -52,7 +52,7 @@ export class UserSummaryComponent {
 
     latestStories:Observable<Story[]>;
     latestActivities:Observable<Activity[]>;
-    expenseSummaries: Observable<ExpenseSummary>[];
+    expenseSummaries: Observable<ExpenseSummary[]>;
     inServiceEnrolment;
     expenseFiscalYear:FiscalYear = null;
     hoursAttended = 0;

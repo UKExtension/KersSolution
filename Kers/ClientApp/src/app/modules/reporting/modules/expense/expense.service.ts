@@ -1,174 +1,162 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import { Http, Response, Headers, RequestOptions, URLSearchParams, ResponseContentType } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../authentication/auth.http';
-import {MajorProgram, ProgramCategory } from '../admin/programs/programs.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 
 
 @Injectable()
 export class ExpenseService {
 
     private baseUrl = '/api/expense/';
+    private handleError: HandleError;
 
 
     constructor( 
-        private http:AuthHttp, 
-        private location:Location
-        ){}
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('ExpenseService');
+        }
 
 
     byRevId(id:number):Observable<Expense>{
         var url = this.baseUrl + 'byrevid/' + id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Expense>res.json() )
-                .catch(this.handleError);
+        return this.http.get<Expense>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('byRevId', <Expense>{}))
+            );
     }
 
-    add( expense:Expense ){
-        return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(expense), this.getRequestOptions())
-                    .map( res => <Expense>res.json() )
-                    .catch(this.handleError);
+    add( expense:Expense ):Observable<Expense>{
+        return this.http.post<Expense>(this.location.prepareExternalUrl(this.baseUrl), expense)
+            .pipe(
+                catchError(this.handleError('add', <Expense>{}))
+            );
     }
 
-    update(id:number, expense:Expense){
+    update(id:number, expense:Expense):Observable<Expense>{
         var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(expense), this.getRequestOptions())
-                    .map( res => {
-                        return <Expense> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<Expense>(this.location.prepareExternalUrl(url), expense)
+            .pipe(
+                catchError(this.handleError('update', <Expense>{}))
+            );
     }
 
-    delete(id:number){
+    delete(id:number):Observable<{}>{
         var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
     }
 
-    latest(skip:number = 0, take:number = 6){
+    latest(skip:number = 0, take:number = 6):Observable<Expense[]>{
         var url = this.baseUrl + 'latest/' + skip + '/' + take;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Expense[]>res.json() )
-                .catch(this.handleError);
+        return this.http.get<Expense[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('latest', []))
+            );
     }
-    num(){
+    num():Observable<number>{
         var url = this.baseUrl + 'numb';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <number>res.json() )
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('num', 0))
+            );
     }
 
     fundingSources():Observable<ExpenseFundingSource[]>{
         var url = this.baseUrl + 'FundingSource';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <ExpenseFundingSource[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<ExpenseFundingSource[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('fundingSources', []))
+            );
     }
-    mealRates(userid:number = 0):Observable<ExpenseMealRate>{
+    mealRates(userid:number = 0):Observable<ExpenseMealRate[]>{
         var url = this.baseUrl + 'MealRate' + '/' + userid;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <ExpenseMealRate>res.json())
-                .catch(this.handleError);
+        return this.http.get<ExpenseMealRate[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('mealRates', []))
+            );
     }
 
-    mileageRate(month:number, year:number, userid:number = 0){
+    mileageRate(month:number, year:number, userid:number = 0):Observable<number>{
         var url = this.baseUrl + 'mileagerate' + '/' + month + '/' + year + '/' + userid;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <number>res.json())
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('mileageRate', 0))
+            );
     }
 
-    snapHours(month:number, userid:number = 0){
+    snapHours(month:number, userid:number = 0):Observable<number>{
         var url = '/api/SnapClassic/hours/' + month + '/' + userid;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json())
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snapHours', 0))
+            );
     }
 
-    pdf(year:number, month:number, id:number = 0){
-        return this.http.get(this.location.prepareExternalUrl('/api/pdf/expenses/' + year + '/' + month + '/' + id ), { responseType: ResponseContentType.Blob })
-                .map((res:Response) => {
-                    var pd = res.blob();
-                    return pd;
-                })
-                .catch(this.handleError);
+    pdf(year:number, month:number, id:number = 0):Observable<Blob>{
+        return this.http.get(this.location.prepareExternalUrl('/api/pdf/expenses/' + year + '/' + month + '/' + id ), {responseType: 'blob'})
+            .pipe(
+                catchError(this.handleError('pdf', <Blob>{}))
+            );
     }
 
-    pdfTrip(year:number, month:number, id:number = 0, isOvernight:boolean = false){
-        return this.http.get(this.location.prepareExternalUrl('/api/PdfTripExpenses/tripexpenses/' + year + '/' + month + '/' + id + '/' + isOvernight ), { responseType: ResponseContentType.Blob })
-                .map((res:Response) => {
-                    var pd = res.blob();
-                    return pd;
-                })
-                .catch(this.handleError);
+    pdfTrip(year:number, month:number, id:number = 0, isOvernight:boolean = false):Observable<Blob>{
+        return this.http.get(this.location.prepareExternalUrl('/api/PdfTripExpenses/tripexpenses/' + year + '/' + month + '/' + id + '/' + isOvernight ), {responseType: 'blob'})
+            .pipe(
+                catchError(this.handleError('pdfTrip', <Blob>{}))
+            );
     }
 
-    yearsWithExpenses(id:number = 0){
+    yearsWithExpenses(id:number = 0):Observable<string[]>{
         var url = this.baseUrl + 'years/' + id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json())
-                .catch(this.handleError);
+        return this.http.get<string[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('yearsWithExpenses', []))
+            );
     }
-    monthsWithExpenses(year, userid:number = 0){
+    monthsWithExpenses(year, userid:number = 0):Observable<string[]>{
         var url = this.baseUrl + 'months/' + year + '/' + userid;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json())
-                .catch(this.handleError);
+        return this.http.get<string[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('monthsWithExpenses', []))
+            );
     }
 
     expensesPerMonth(month:number, year:number = 2017, userid:number = 0, orderBy:string = 'desc') : Observable<Expense[]>{
         var url = this.baseUrl + 'permonth/' + year + '/' + month + '/' + userid + '/' + orderBy;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Expense[]>res.json() )
-                .catch(this.handleError);
+        return this.http.get<Expense[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('expensesPerMonth', []))
+            );
     }
 
 
     // Expense Summaries Per Fiscal Year
     // Empty String for the Fiscal Year Name defaults to Current Fiscal Year
-    fiscalYearSummaries(userId:number = 0, fiscalYearName:string = ""){
+    fiscalYearSummaries(userId:number = 0, fiscalYearName:string = ""):Observable<ExpenseSummary[]>{
         var url = this.baseUrl + 'fysummaries/' + userId + '/' + fiscalYearName;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => {
-                    var ret = <ExpenseSummary[]>res.json();
-                    return ret;
-                } )
-                .catch(this.handleError);
+        return this.http.get<ExpenseSummary[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('fiscalYearSummaries', []))
+            );
     }
 
 
-    SummariesPerPeriod(start:Date, end:Date, userId:number = 0){
+    SummariesPerPeriod(start:Date, end:Date, userId:number = 0):Observable<ExpenseSummary[]>{
         var url = this.baseUrl + 'summariesPerPeriod/' + start.toISOString() + '/' + end.toISOString() + '/' + userId;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => {
-                    var ret = <ExpenseSummary[]>res.json();
-                    return ret;
-                } )
-                .catch(this.handleError);
+        return this.http.get<ExpenseSummary[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('SummariesPerPeriod', []))
+            );
     }
 
 
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
-    
 }
 
 export interface Expense{

@@ -24,7 +24,7 @@ export class ExpenseFormComponent {
 
     fundingSources:Observable<ExpenseFundingSource[]>;
     programCategories: Observable<ProgramCategory[]>;
-    mealRates:Observable<ExpenseMealRate>;
+    mealRates:Observable<ExpenseMealRate[]>;
     loading = false;
     expenseForm = null;
     private myDatePickerOptions: IMyDpOptions = {
