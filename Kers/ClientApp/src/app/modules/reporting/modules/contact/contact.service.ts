@@ -1,118 +1,113 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import {MajorProgram } from '../admin/programs/programs.service';
 import {ActivityOptionNumber, Race, Ethnicity} from '../activity/activity.service';
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 
 
 @Injectable()
 export class ContactService {
 
     private baseUrl = '/api/contact/';
+    private handleError: HandleError;
 
 
     constructor( 
-        private http:AuthHttp, 
-        private location:Location
-        ){}
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('ContactService');
+        }
 
 
     perPeriod(start:Date, end:Date, userId:number = 0):Observable<Contact[]>{
         var url = this.baseUrl + 'perPeriod/' + start.toISOString() + '/' + end.toISOString()+ '/' + userId  ;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Contact[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<Contact[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('perPeriod', []))
+            );
     }
 
-    summaryPerMonth(userId:number = 0){
+    summaryPerMonth(userId:number = 0):Observable<{}[]>{
         var url = this.baseUrl + 'summaryPerMonth/' + userId;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json() )
-                .catch(this.handleError);
+        return this.http.get<{}[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('summaryPerMonth', []))
+            );
     }
 
-    summaryPerProgram(userId:number = 0){
+    summaryPerProgram(userId:number = 0):Observable<{}[]>{
         var url = this.baseUrl + 'summaryPerProgram/' + userId;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => res.json() )
-                .catch(this.handleError);
+        return this.http.get<{}[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('summaryPerProgram', []))
+            );
     }
 
     
     optionnumbers():Observable<ActivityOptionNumber[]>{
         var url = this.baseUrl + 'optionnumbers';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <ActivityOptionNumber[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<ActivityOptionNumber[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('optionnumbers', []))
+            );
     }
     races():Observable<Race[]>{
         var url = this.baseUrl + 'races';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Race[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<Race[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('races', []))
+            );
     }
     ethnicities():Observable<Ethnicity[]>{
         var url = this.baseUrl + 'ethnicities';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Ethnicity[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<Ethnicity[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('ethnicities', []))
+            );
     }
 
-    add( contact:Contact ){
-        return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(contact), this.getRequestOptions())
-                    .map( res => <Contact>res.json() )
-                    .catch(this.handleError);
+    add( contact:Contact ):Observable<Contact>{
+        return this.http.post<Contact>(this.location.prepareExternalUrl(this.baseUrl), contact)
+            .pipe(
+                catchError(this.handleError('add', <Contact>{}))
+            );
     }
 
 
-    latest(skip:number = 0, take:number = 5){
+    latest(skip:number = 0, take:number = 5):Observable<Contact[]>{
         var url = this.baseUrl + 'latest/' + skip + '/' + take;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Contact[]>res.json() )
-                .catch(this.handleError);
+        return this.http.get<Contact[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('latest', []))
+            );
     }
-    num(){
+    num():Observable<number>{
         var url = this.baseUrl + 'numb';
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <number>res.json() )
-                .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('latest', 0))
+            );
     }
 
-    update(id:number, contact:Contact){
+    update(id:number, contact:Contact):Observable<Contact>{
         var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(contact), this.getRequestOptions())
-                    .map( res => {
-                        return <Contact> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<Contact>(this.location.prepareExternalUrl(url), contact)
+            .pipe(
+                catchError(this.handleError('update', <Contact>{}))
+            );
     }
 
-    delete(id:number){
+    delete(id:number):Observable<{}>{
         var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
-    }
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
     }
     
 }

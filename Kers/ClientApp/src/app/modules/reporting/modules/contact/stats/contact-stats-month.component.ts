@@ -42,23 +42,23 @@ export class ContactStatsMonthComponent {
     }
 
     totalHours( actvts:Activity[]){
-        var total = actvts.map( a => a.hours).reduce( (one, two) => one + two);
+        var total = actvts.map( a => a["hours"]).reduce( (one, two) => one + two);
         return total;
     }
     totalMultistate( actvts){
-        var total = actvts.map( a => a.multistate).reduce( (one, two) => one + two);
+        var total = actvts.map( a => a["multistate"]).reduce( (one, two) => one + two);
         return total;
     }
     totalContacts( actvts){
-        var total = actvts.map( a => a.males + a.females).reduce( (one, two) => one + two);
+        var total = actvts.map( a => a["males"] + a["females"]).reduce( (one, two) => one + two);
         return total;
     }
     raceValue(race:Race, actvts){
 
-        var filtered = actvts.map( a => a.raceEthnicityValues );
+        var filtered = actvts.map( a => a["raceEthnicityValues"] );
         filtered = [].concat.apply([], filtered);
-        filtered = filtered.filter( a => a.raceId== race.id);
-        var total = filtered.map( r => r.amount).reduce( (one, two) => one + two);
+        filtered = filtered.filter( a => a["raceId"]== race.id);
+        var total = filtered.map( r => r["amount"]).reduce( (one, two) => one + two);
         return total;
     }
 
