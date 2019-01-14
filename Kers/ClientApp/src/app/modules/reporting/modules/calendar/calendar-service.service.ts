@@ -1,74 +1,74 @@
 import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
-import { AuthHttp } from '../../../authentication/auth.http';
-import { Http, Response, Headers, RequestOptions, URLSearchParams, ResponseContentType } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import { HttpClient } from '@angular/common/http';
+import { Observable, combineLatest } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Activity } from '../activity/activity.service';
 import {CalendarEvent} from 'angular-calendar';
 import { Expense } from '../expense/expense.service';
 
-
-import { concat } from 'rxjs/observable/concat';
-import { merge } from 'rxjs/observable/merge';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import 'rxjs/add/operator/mergeMap';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 
 @Injectable()
 export class CalendarService {
   private expenseBaseUrl = '/api/expense/';
   private activityBaseUrl = '/api/activity/';
+  private handleError: HandleError;
 
-  constructor(
-      private http:AuthHttp, 
-        private location:Location
-  ) { }
+  constructor( 
+    private http: HttpClient, 
+    private location:Location,
+    httpErrorHandler: HttpErrorHandler
+    ) {
+        this.handleError = httpErrorHandler.createHandleError('CalendarService');
+    }
 
   activitiesPerPeriod(start:Date, end:Date, userId:number = 0):Observable<CalendarEvent<{ id: number, type: string }>[]>{
     var url = this.activityBaseUrl + 'perPeriodLite/' + start.toISOString() + '/' + end.toISOString()+ '/' + userId  ;
-    return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res =>{
-              var activities = <Activity[]>res.json();
-              var events:CalendarEvent[] = [];
-              for( let activity of activities){
-                var event:CalendarEvent = <CalendarEvent>{};
-                var dt = new Date(activity.activityDate);
-                event.start = dt;
-                event.allDay = true;
-                event.title = activity.title;
-                event.color = calendarColors.activity;
-                event.meta = {id:activity.id, type: 'activity'}
-                events.push(event);
-              }
-              
-              return events;
+    return this.http.get<Activity[]>(this.location.prepareExternalUrl(url))
+      .pipe(
+        map(res =>{
+          var activities = res;
+          var events:CalendarEvent[] = [];
+          for( let activity of activities){
+            var event:CalendarEvent = <CalendarEvent>{};
+            var dt = new Date(activity.activityDate);
+            event.start = dt;
+            event.allDay = true;
+            event.title = activity.title;
+            event.color = calendarColors.activity;
+            event.meta = {id:activity.id, type: 'activity'}
+            events.push(event);
+          }
+          return events;
+        }),
+        catchError(this.handleError('activitiesPerPeriod', []))
+      );
 
-            } )
-            .catch(this.handleError);
   }
 
 
   expensesPerPeriod(start:Date, end:Date, userId:number = 0):Observable<CalendarEvent<{ id: number, type: string }>[]>{
     var url = this.expenseBaseUrl + 'perPeriodLite/' + start.toISOString() + '/' + end.toISOString()+ '/' + userId  ;
-    return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res =>{
-              var activities = <Expense[]>res.json();
-              var events:CalendarEvent[] = [];
-              for( let expense of activities){
-                var event:CalendarEvent = <CalendarEvent>{};
-                var dt = new Date(expense.expenseDate);
-                event.start = dt;
-                event.allDay = true;
-                event.title = expense.expenseLocation;
-                event.color = calendarColors.expense;
-                event.meta = {id:expense.id, type: 'expense'}
-                events.push(event);
-              }
-              
-              return events;
-
-            } )
-            .catch(this.handleError);
+    return this.http.get<Expense[]>(this.location.prepareExternalUrl(url))
+    .pipe(
+      map(res =>{
+            var expenses = res;
+            var events:CalendarEvent[] = [];
+            for( let expense of expenses){
+              var event:CalendarEvent = <CalendarEvent>{};
+              var dt = new Date(expense.expenseDate);
+              event.start = dt;
+              event.allDay = true;
+              event.title = expense.expenseLocation;
+              event.color = calendarColors.expense;
+              event.meta = {id:expense.id, type: 'expense'}
+              events.push(event);
+            }
+            return events;
+      }),
+      catchError(this.handleError('expensesPerPeriod', []))
+    );
   }
 
   eventsPerPeriod(start:Date, end:Date, userId:number = 0):Observable<CalendarEvent<{ id: number, type: string }>[]>{
@@ -79,22 +79,6 @@ export class CalendarService {
                     .map(([bT, sT]) => [...bT, ...sT]);
 
     return merged;
-  }
-
-
-  getRequestOptions(){
-    return new RequestOptions(
-      {
-          headers: new Headers({
-              "Content-Type": "application/json; charset=utf-8"
-          })
-      }
-    )
-  }
-
-  handleError(err:Response){
-      console.error(err);
-      return Observable.throw(err.json().error || 'Server error');
   }
 
 }
