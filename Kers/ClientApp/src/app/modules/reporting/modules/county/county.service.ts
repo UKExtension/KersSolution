@@ -1,12 +1,10 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { PlanningUnit } from "../user/user.service";
-import { District } from "../district/district.service";
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 
 
 
@@ -15,15 +13,23 @@ import { District } from "../district/district.service";
 export class CountyService {
 
     private baseUrl = '/api/county/';
+    private handleError: HandleError;
 
 
-    constructor( private http:AuthHttp, private location:Location){}
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('ContactService');
+        }
 
-    get(county:number = 0){
+    get(county:number = 0):Observable<PlanningUnit>{
         var url = this.baseUrl + county;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res =>  <PlanningUnit>res.json() )
-                .catch(this.handleError);
+        return this.http.get<PlanningUnit>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('perPeriod', <PlanningUnit>{}))
+            );
     }
 
     geoCenter(coordinates:[[number, number]]){
@@ -41,20 +47,5 @@ export class CountyService {
         return [sumFirst/amount, sumSecond/amount];
     }
  
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
     
 }

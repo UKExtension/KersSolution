@@ -1,77 +1,70 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../authentication/auth.http';
-import { User } from "../user/user.service";
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { User, PlanningUnit } from "../user/user.service";
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 
 
 @Injectable()
 export class DistrictService {
 
     private baseUrl = '/api/district/';
+    private handleError: HandleError;
 
 
-    constructor( private http:AuthHttp, private location:Location){}
-
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('DistrictService');
+        }
 
     /**********************************/
     // DISTRICT CONTENT
     /**********************************/
 
-    get(district:number){
+    get(district:number):Observable<District>{
         var url = this.baseUrl + district;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res =>  <District>res.json() )
-                .catch(this.handleError);
+        return this.http.get<District>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('perPeriod', <District>{}))
+            );
     }
 
-    counties(district:number){
+    counties(district:number):Observable<PlanningUnit[]>{
         var url = this.baseUrl + "counties/" + district;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <County[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('counties', []))
+            );
     }
 
-    mycounties(){
+    mycounties():Observable<County[]>{
         var url = this.baseUrl + "mycounties";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <County[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<County[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('mycounties', []))
+            );
     }
     //Counties without Affirmative Action Plan
-    countiesNoAa(district:number){
+    countiesNoAa(district:number):Observable<County[]>{
         var url = this.baseUrl + "countiesnoaa/" + district;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <County[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<County[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('countiesNoAa', []))
+            );
     }
     
     // Counties without Plans of Work
-    countiesNoPl(district:number){
+    countiesNoPl(district:number):Observable<County[]>{
         var url = this.baseUrl + "countiesnopl/" + district;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <County[]>res.json())
-                .catch(this.handleError);
-    }
-
-
-
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
+        return this.http.get<County[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('countiesNoAa', []))
+            );
     }
     
 }

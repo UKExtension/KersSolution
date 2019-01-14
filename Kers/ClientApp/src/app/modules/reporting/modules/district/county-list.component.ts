@@ -4,6 +4,7 @@ import { DistrictService, County, District } from './district.service';
 import {Observable} from 'rxjs/Observable';
 import { ActivatedRoute, Params } from "@angular/router";
 import { StateService } from '../state/state.service';
+import { PlanningUnit } from '../user/user.service';
 
 @Component({
     selector: 'county-list',
@@ -74,7 +75,7 @@ import { StateService } from '../state/state.service';
 export class CountyListComponent { 
 
     @Input() district:District | null = null;
-    counties:Observable<County[]>;
+    counties:Observable<PlanningUnit[]>;
     countiesNoAa:County[];
     countiesNoPl:County[];
 
