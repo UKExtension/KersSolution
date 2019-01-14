@@ -9,6 +9,7 @@ import {    AffirmativeService,
     } from './affirmative.service';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: 'affirmative-home.component.html'
@@ -16,7 +17,7 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 export class AffirmativeHomeComponent { 
 
     
-    plan:AffirmativePlan;
+    plan:Observable<AffirmativePlan>;
 
     fy:FiscalYear;
 
@@ -34,15 +35,12 @@ export class AffirmativeHomeComponent {
 
     ngOnInit(){
         
-        
-
-        
         const fiscalyearid = this.route.snapshot.paramMap.get('fy');
         if( fiscalyearid == null){
             this.fiscalYearService.current("serviceLog").subscribe(
                 res =>{
                     this.fy = <FiscalYear> res;
-                    this.plan = this.service.get(0, this.fy.name).map(res=><AffirmativePlan>res);
+                    this.plan = this.service.get(0, this.fy.name);
                     this.defaultTitle();
                 },
                 err => this.errorMessage = <any> err 
@@ -51,7 +49,7 @@ export class AffirmativeHomeComponent {
 
         
     }
-
+/* 
     populateData(){
         this.service.get().subscribe(
             res => {
@@ -61,7 +59,7 @@ export class AffirmativeHomeComponent {
         );
 
         
-    }
+    } */
 
     onFormSubmit(){
         this.reportingService.setAlert("Affirmative Action Plan Submitted");

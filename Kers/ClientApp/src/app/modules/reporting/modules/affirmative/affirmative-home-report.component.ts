@@ -9,6 +9,7 @@ import {    AffirmativeService,
     } from './affirmative.service';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
+import { Observable } from 'rxjs';
 
 @Component({
   template: `<div>This is a total county plan and report. A single Plan is required per year per county.</div>
@@ -18,7 +19,7 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 export class AffirmativeHomeReportComponent { 
 
     
-    plan:AffirmativePlan;
+    plan:Observable<AffirmativePlan>;
 
     fy:FiscalYear;
 
@@ -53,7 +54,7 @@ export class AffirmativeHomeReportComponent {
 
         
     }
-
+/* 
     populateData(){
         this.service.get().subscribe(
             res => {
@@ -63,7 +64,7 @@ export class AffirmativeHomeReportComponent {
         );
 
         
-    }
+    } */
 
     onFormSubmit(){
         this.reportingService.setAlert("Affirmative Action Report Submitted");

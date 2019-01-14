@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AffirmativeService } from '../../affirmative/affirmative.service';
-import { Observable } from 'rxjs/Observable';
-import { PlanningUnit } from '../../user/user.service';
+import { Observable } from 'rxjs';
+import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 
 @Component({
   selector: 'assignment-affirmative-plan',
