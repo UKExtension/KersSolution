@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {PlansofworkService, Map, PlanOfWork} from './plansofwork.service';
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'plansofwork',
@@ -10,7 +11,7 @@ export class PlansofworkComponent implements OnInit{
 
     @Input() fy:FiscalYear;
 
-    plans:PlanOfWork[];
+    plans:Observable<PlanOfWork[]>;
     newPlan = false;
 
     errorMessage: string;
@@ -23,13 +24,7 @@ export class PlansofworkComponent implements OnInit{
                 }
    
     ngOnInit(){
-        this.plansofworkService.listPlans(this.fy.name).subscribe(
-            plans => {
-                this.plans = plans;
-                
-        },
-            error =>  this.errorMessage = <any>error
-        );
+        this.plans = this.plansofworkService.listPlans(this.fy.name);
     }
 
     newPlanofworkOpen(){
@@ -42,13 +37,11 @@ export class PlansofworkComponent implements OnInit{
 
     newPlanofworkSubmitted(){
         this.newPlan = false;
+        this.plans = this.plansofworkService.listPlans(this.fy.name);
     }
 
     onPlanofworkUpdate(){
-        this.plansofworkService.listPlans(this.fy.name).subscribe(
-            plans => this.plans = plans,
-            error =>  this.errorMessage = <any>error
-        );
+        this.plans = this.plansofworkService.listPlans(this.fy.name);
     }
     
 

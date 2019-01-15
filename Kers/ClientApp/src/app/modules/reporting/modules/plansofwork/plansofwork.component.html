@@ -14,7 +14,7 @@
         </tr>
         </thead>
         <tbody>
-              <tr *ngFor="let planofwork of plans" [planofworkDetail]="planofwork" (onPlanofworkUpdated)="onPlanofworkUpdate()" (onPlanofworkDeleted)="onPlanofworkUpdate()" ></tr>
+              <tr *ngFor="let planofwork of plans | async" [planofworkDetail]="planofwork" (onPlanofworkUpdated)="onPlanofworkUpdate()" (onPlanofworkDeleted)="onPlanofworkUpdate()" ></tr>
         </tbody>               
     </table>            
 </div>

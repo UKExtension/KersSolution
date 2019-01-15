@@ -15,8 +15,8 @@ export class PlansofworkService {
     private handleError: HandleError;
 
 
-    maps:Map[];
-    plans:PlanOfWork[];
+    maps:Map[] = [];
+    plans:PlanOfWork[] = [];
 
     constructor( 
         private http:HttpClient, 
