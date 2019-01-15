@@ -1,150 +1,139 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import {MajorProgram } from '../admin/programs/programs.service';
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 
 
 @Injectable()
 export class PlansofworkService {
 
     private baseUrl = '/api/PlansOfWork/';
+    private handleError: HandleError;
 
 
     maps:Map[];
     plans:PlanOfWork[];
 
     constructor( 
-        private http:AuthHttp, 
-        private location:Location
-        ){}
+        private http:HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('PlansofworkService');
+        }
 
 
 
-    listPlans(fy:string = "0"){
+    listPlans(fy:string = "0"):Observable<PlanOfWork[]>{
             var url = this.baseUrl + "All/"+fy;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.plans = <PlanOfWork[]>res.json())
-                .catch(this.handleError);
+            return this.http.get<PlanOfWork[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    catchError(this.handleError('listPlans', []))
+                );
     }
-    listPlansDetails(fy:string = "0", planningUnitId:number = 0){
+    listPlansDetails(fy:string = "0", planningUnitId:number = 0):Observable<PlanOfWork[]>{
             var url = this.baseUrl + "AllDetails/" + planningUnitId  + "/" + fy;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.plans = <PlanOfWork[]>res.json())
-                .catch(this.handleError);
+            return this.http.get<PlanOfWork[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(res => this.plans = res),
+                    catchError(this.handleError('listPlans', []))
+                );
     }
-    plansForCounty(id:number, fy:string = "0"){
+    plansForCounty(id:number, fy:string = "0"):Observable<PlanOfWork[]>{
         var url = this.baseUrl + "AllDetails/" + id + "/" + fy;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.plans = <PlanOfWork[]>res.json())
-                .catch(this.handleError);
+            return this.http.get<PlanOfWork[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(res => this.plans = res),
+                    catchError(this.handleError('plansForCounty', []))
+                );
     }
 
     countiesWithoutPlans(districtId:number = 0, fy:string = "0"):Observable<PlanningUnit[]>{
         var url = this.baseUrl + "noplanscounties/" + districtId + "/" + fy;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <PlanningUnit[]>res.json())
-                .catch(this.handleError);
+            return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    catchError(this.handleError('countiesWithoutPlans', []))
+                );
     }
 
-    planForRevision(id:number){
+    planForRevision(id:number):Observable<Plan>{
         var url = this.baseUrl + "planforrevision/"+id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Plan>res.json())
-                .catch(this.handleError);
+        return this.http.get<Plan>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('listPlans', <Plan>{}))
+            );
     }
 
-    addPlan(plan:PlanOfWork, fy:string = "0"){
+    addPlan(plan:PlanOfWork, fy:string = "0"):Observable<PlanOfWork>{
         var url = this.baseUrl + fy;
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(plan), this.getRequestOptions())
-                    .map( res => {
-                        this.plans.push(<PlanOfWork> res.json());
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.post<PlanOfWork>(this.location.prepareExternalUrl(url), plan)
+            .pipe(
+                tap( res => this.plans.push( res) ),
+                catchError(this.handleError('addPlan', <PlanOfWork>{}))
+            );            
     }
 
     
-    updatePlan(id: number, plan:PlanOfWork){
+    updatePlan(id: number, plan:PlanOfWork):Observable<PlanOfWork>{
         var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(plan), this.getRequestOptions())
-                    .map( res => {
-                        return <PlanOfWork> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<PlanOfWork>(this.location.prepareExternalUrl(url), plan)
+            .pipe(
+                catchError(this.handleError('updatePlan', <PlanOfWork>{}))
+            );
     }
 
-    deletePlan(id:number){
+    deletePlan(id:number):Observable<{}>{
         var url = this.baseUrl + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deletePlan'))
+            );
     }
 
-    listMaps(fy:string = "0"){
+    listMaps(fy:string = "0"):Observable<Map[]>{
             var url = this.baseUrl + "mapsall/" + fy;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.maps = res.json())
-                .catch(this.handleError);
+            return this.http.get<Map[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap( res => this.maps = res ),
+                    catchError(this.handleError('listMaps', []))
+                );
     }
 
-    addMap(map:Map){
+    addMap(map:Map):Observable<Map>{
         var url = this.baseUrl + 'map';
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(map), this.getRequestOptions())
-                    .map( res => {
-                        this.maps.push(<Map> res.json());
-                        return res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.post<Map>(this.location.prepareExternalUrl(url), map)
+        .pipe(
+            tap( res => this.maps.push( res )),
+            catchError(this.handleError('addMap', <Map>{}))
+        );
     }
 
-    isMapDeleteAllowed(id:number){
+    isMapDeleteAllowed(id:number):Observable<boolean>{
         var url = this.baseUrl + "maphasplan/" + id;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => {
-                    return <boolean>res.json();
-                })
-                .catch(this.handleError);
+            return this.http.get<boolean>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    catchError(this.handleError('isMapDeleteAllowed', false))
+                );
     }
     
-    updateMap(id: number, map:Map){
+    updateMap(id: number, map:Map):Observable<Map>{
         var url = this.baseUrl + 'map/' + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(map), this.getRequestOptions())
-                    .map( res => {
-                        return <Map> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<Map>(this.location.prepareExternalUrl(url), map)
+            .pipe(
+                catchError(this.handleError('updateMap', <Map>{}))
+            );
     }
 
-    deleteMap(id:number){
+    deleteMap(id:number):Observable<{}>{
         var url = this.baseUrl + 'map/' + id;
-        return this.http.delete(this.location.prepareExternalUrl(url), this.getRequestOptions())
-                    .map( res => {
-                        return res;
-                    })
-                    .catch(this.handleError);
-    }
-
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('deleteMap'))
+            );
     }
     
 }

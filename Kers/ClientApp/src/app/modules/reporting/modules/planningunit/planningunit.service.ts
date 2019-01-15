@@ -1,9 +1,10 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Response, Headers, RequestOptions } from '@angular/http';
-import {of, Observable} from 'rxjs';
-import {AuthHttp} from '../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { PlanningUnit } from '../user/user.service';
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 
 
 @Injectable()
@@ -11,22 +12,24 @@ export class PlanningunitService {
 
     private baseUrl = '/api/County/';
     private planningUnits = new Map<number, PlanningUnit>();
+    private handleError: HandleError;
 
     constructor( 
-        private http:AuthHttp, 
-        private location:Location
-        ){}
+        private http:HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('PlanningunitService');
+        }
 
 
 
     counties(districtId:number | null = null):Observable<PlanningUnit[]>{
         var url = this.baseUrl + 'countylist' + (districtId == null ? '' : '/' + districtId);
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res =>{ 
-                    let counties = <PlanningUnit[]>res.json();
-                    return counties;
-                } )
-                .catch(this.handleError);
+        return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('counties', []))
+            );
     }
 
     id(id:number):Observable<PlanningUnit>{
@@ -34,45 +37,31 @@ export class PlanningunitService {
             return of( this.planningUnits.get(id));
         }else{
             var url = this.baseUrl + id;
-            return this.http.get(this.location.prepareExternalUrl(url))
-                    .map(res => {
-                            var unit = <PlanningUnit>res.json();
+            return this.http.get<PlanningUnit>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(
+                        res =>
+                        {
+                            var unit = res;
                             this.planningUnits.set(id, unit);
-                            return unit;
                         }
-                    )
-                    .catch(this.handleError);
+                    ),
+                    catchError(this.handleError('id', <PlanningUnit>{}))
+                );
         }
-            
     }
 
     /*****************************/
     // CRUD operations
     /*****************************/
 
-    update(id:number, unit:PlanningUnit){
+    update(id:number, unit:PlanningUnit):Observable<PlanningUnit>{
         var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(unit), this.getRequestOptions())
-                    .map( res => {
-                        return <PlanningUnit> res.json();
-                    })
-                    .catch(this.handleError);
+        return this.http.put<PlanningUnit>(this.location.prepareExternalUrl(url), unit)
+            .pipe(
+                catchError(this.handleError('update', <PlanningUnit>{}))
+            );
     }
 
-    
 
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
 }
