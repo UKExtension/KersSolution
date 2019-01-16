@@ -96,7 +96,7 @@ namespace Kers.Controllers
 
         [HttpPost()]
         [Authorize]
-        public IActionResult AddLog( [FromBody] Log log){
+        public async Task<IActionResult> AddLog( [FromBody] Log log){
             if(log != null){
                 var user = this.CurrentUser();
                 log.User = user;
@@ -107,7 +107,7 @@ namespace Kers.Controllers
                 log.Type = "Frontend Error";
                 log.Level = "Error";
                 this._context.Log.Add(log);
-                _context.SaveChanges();;  
+                await _context.SaveChangesAsync();;  
             }
             return new OkObjectResult(log);
         }
