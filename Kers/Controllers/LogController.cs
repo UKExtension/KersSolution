@@ -2,13 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Kers.Models.Abstract;
 using Kers.Models.Contexts;
+using Kers.Models.Entities.KERScore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Http.Features;
 using Newtonsoft.Json;
 
 namespace Kers.Controllers
@@ -19,12 +23,18 @@ namespace Kers.Controllers
 
         private IDistributedCache _cache;
         KERScoreContext _context;
+        KERSmainContext mainContext;
+        IKersUserRepository userRepo;
         public LogController(
             KERScoreContext _context,
+            KERSmainContext mainContext,
+            IKersUserRepository userRepo,
             //IMemoryCache memoryCache,
             IDistributedCache _cache
         ){
             this._context = _context;
+            this.mainContext = mainContext;
+            this.userRepo = userRepo;
             this._cache = _cache;
         }
         
@@ -80,6 +90,26 @@ namespace Kers.Controllers
             }
              */
             return new OkObjectResult(LogTypes);
+        }
+
+
+
+        [HttpPost()]
+        [Authorize]
+        public IActionResult AddLog( [FromBody] Log log){
+            if(log != null){
+                var user = this.CurrentUser();
+                log.User = user;
+                log.Time = DateTime.Now;
+                log.Agent = Request.Headers["User-Agent"].ToString();
+                log.Ip = HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString();
+                log.ObjectType = "HttpErrorMessage";
+                log.Type = "Frontend Error";
+                log.Level = "Error";
+                this._context.Log.Add(log);
+                _context.SaveChanges();;  
+            }
+            return new OkObjectResult(log);
         }
 
 
@@ -147,6 +177,38 @@ namespace Kers.Controllers
             
             return new OkObjectResult(numLogs.Count());
         }
+
+
+        private KersUser userByLinkBlueId(string linkBlueId){
+            var profile = mainContext.zEmpRptProfiles.
+                            Where(p=> p.linkBlueID == linkBlueId).
+                            FirstOrDefault();
+            KersUser user = null;
+            if(profile != null){
+                user = this._context.KersUser.
+                            Where( u => u.classicReportingProfileId == profile.Id).
+                            Include(u => u.RprtngProfile).
+                            Include(u => u.ExtensionPosition).
+                            FirstOrDefault();
+                if(user == null){
+                    user = userRepo.createUserFromProfile(profile);
+                }
+            }
+            return user;
+        }
+
+
+
+        private KersUser CurrentUser(){
+            var u = this.CurrentUserId();
+            return this.userByLinkBlueId(u);
+        }
+
+        private string CurrentUserId(){
+            return User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        }
+
+
 
     }
 }

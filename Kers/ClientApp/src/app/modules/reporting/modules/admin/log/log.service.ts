@@ -67,8 +67,7 @@ export class LogService {
                             return this.loaded;
                         }),
                     catchError(this.handleError('loadMore', []))
-                );
-                
+                );  
     }
 
     num():Observable<number>{
@@ -78,6 +77,14 @@ export class LogService {
                 catchError(this.handleError('num', 0))
             );
     }
+
+    add(log:Log){
+        return this.http.post<Log>(this.location.prepareExternalUrl(this.baseUrl), log)
+            .pipe(
+                catchError(this.handleError('add', log))
+            );
+    }
+
     
     private addParams(params:{}){
         let searchParams = {};
@@ -101,5 +108,6 @@ export class Log{
         public ip: string,
         public agent: string,
         public user: KersUser,
+        public userId?: number
     ){}
 }
