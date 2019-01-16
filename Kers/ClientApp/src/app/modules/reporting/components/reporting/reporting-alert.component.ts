@@ -23,7 +23,7 @@ export class ReportingAlertComponent implements OnInit {
 
   constructor( 
         private reportingService: ReportingService,
-        private messageService: MessageService
+        public messageService: MessageService
         ) 
     {
         
