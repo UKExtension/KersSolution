@@ -113,7 +113,7 @@ namespace Kers.Controllers
                 "phardest",
                 "jcoles",
                 "kcgo222",
-                "idene3"
+                //"idene3"
             };
 
             List<Object> Output = new List<Object>();
@@ -128,6 +128,7 @@ namespace Kers.Controllers
                         var last = await context.ActivityRevision
                                         .Where(a => a.ActivityId == act.Id)
                                         .Include( a => a.ActivityOptionNumbers).ThenInclude( n => n.ActivityOptionNumber)
+                                        .Include( a => a.MajorProgram)
                                         .OrderBy(a => a.Created).LastAsync();
                         var indirect = last.ActivityOptionNumbers.Where(n => n.ActivityOptionNumber.Name == "Number of Indirect Contacts").FirstOrDefault();
                         var ind = 0;
@@ -142,6 +143,8 @@ namespace Kers.Controllers
                             date = act.ActivityDate.ToShortDateString(),
                             title = act.Title,
                             description = Kers.HtmlHelpers.StripHtmlHelper.StripHtml(last.Description),
+                            MajorProgramId = act.MajorProgramId,
+                            MajorProgram = act.MajorProgram.Name,
                             direct = act.Audience,
                             indirect = ind
                         };
