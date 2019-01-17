@@ -57,6 +57,129 @@ namespace Kers.Controllers
         }
 
 
+        [HttpGet]
+        [Route("ms4/data.csv")]
+        [Produces("text/csv")]
+        public async Task<IActionResult> Ms4Data(){
+
+            string[] agents = new string[]
+            {
+                "tyankey",
+                "alst259",
+                "casc243",
+                "sjwhite",
+                "rmcbr2",
+                "dkoester",
+                "lbbowlin",
+                "lharned",
+                "jlittle",
+                "aeam222",
+                "lrgeor2",
+                "mtch226",
+                "djscully",
+                "smstol2",
+                "krjack4",
+                "mlfu225",
+                "dhda222",
+                "cast247",
+                "chardy",
+                "ameyer",
+                "jadock3",
+                "ncarter",
+                "ajle227",
+                "sran223",
+                "lsexton",
+                "aaldende",
+                "dshepher",
+                "mdad223",
+                "caha245",
+                "pri223",
+                "eply223",
+                "clda235",
+                "pwlong",
+                "bppr223",
+                "slmu223",
+                "mast263",
+                "tmmiss2",
+                "kawi223",
+                "arferg0",
+                "bgsear2",
+                "amills",
+                "robsmith",
+                "bgwilson",
+                "sflynt",
+                "clferr4",
+                "kjba237",
+                "phardest",
+                "jcoles",
+                "kcgo222",
+                "idene3"
+            };
+
+            List<Object> Output = new List<Object>();
+            foreach( var agntId in agents){
+                var usr = await context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == agntId)
+                                .Include( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit )
+                                .FirstOrDefaultAsync();
+                if( usr != null){
+
+                    var activities = context.Activity.Where( a => a.KersUser == usr && a.ActivityDate.Year == 2018);
+                    foreach( var act in activities){
+                        var last = await context.ActivityRevision
+                                        .Where(a => a.ActivityId == act.Id)
+                                        .Include( a => a.ActivityOptionNumbers).ThenInclude( n => n.ActivityOptionNumber)
+                                        .OrderBy(a => a.Created).LastAsync();
+                        var indirect = last.ActivityOptionNumbers.Where(n => n.ActivityOptionNumber.Name == "Number of Indirect Contacts").FirstOrDefault();
+                        var ind = 0;
+                        if(indirect != null){
+                            ind = indirect.Value;
+                        }
+                        var lst = new {
+                            userid = usr.Id,
+                            name = usr.RprtngProfile.Name,
+                            countyId = usr.RprtngProfile.PlanningUnitId,
+                            county = usr.RprtngProfile.PlanningUnit.Name,
+                            date = act.ActivityDate.ToShortDateString(),
+                            title = act.Title,
+                            description = Kers.HtmlHelpers.StripHtmlHelper.StripHtml(last.Description),
+                            direct = act.Audience,
+                            indirect = ind
+                        };
+                        Output.Add( lst );
+                    }
+                }
+            }
+
+
+
+/* 
+            var users = await context.KersUser
+                        
+                        .Where( u => agents.Contains(u.RprtngProfile.LinkBlueId))
+                        
+                        .Select(
+                            a => new {
+                                name = a.RprtngProfile.Name,
+                                county = a.RprtngProfile.PlanningUnit.Name
+                            }
+                        )
+
+                        .ToListAsync();
+
+ */
+
+
+
+
+
+
+
+
+
+
+            return Ok(Output);
+        }
+
         [HttpGet("numb")]
         [Authorize]
         public IActionResult GetNumb(){
