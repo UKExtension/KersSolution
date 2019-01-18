@@ -149,7 +149,7 @@ export class ServicelogFormComponent implements OnInit{
             i => {
                 this.initiatives = i;
                 if(this.activity != null){
-                    this.patch();
+                    //this.patch();
                     this.checkIfAdminValue(this.activity.majorProgramId);
                 }else{
                     if(this.isNewAdmin){
@@ -222,10 +222,14 @@ export class ServicelogFormComponent implements OnInit{
                     res => {
                         this.ethnicities = <Ethnicity[]>res;
                         this.generateForm();
+                        if(this.activity != null){
+                            this.patch();
+                        }
                     },
                     err => this.errorMessage = <any>res
                 );
             },
+
             err => this.errorMessage = <any>err
         );
     }

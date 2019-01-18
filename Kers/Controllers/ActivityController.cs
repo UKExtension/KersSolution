@@ -56,7 +56,7 @@ namespace Kers.Controllers
            this._distributedCache = _distributedCache;
         }
 
-
+/* 
         [HttpGet]
         [Route("ms4/data.csv")]
         [Produces("text/csv")]
@@ -150,36 +150,9 @@ namespace Kers.Controllers
                 }
             }
 
-
-
-/* 
-            var users = await context.KersUser
-                        
-                        .Where( u => agents.Contains(u.RprtngProfile.LinkBlueId))
-                        
-                        .Select(
-                            a => new {
-                                name = a.RprtngProfile.Name,
-                                county = a.RprtngProfile.PlanningUnit.Name
-                            }
-                        )
-
-                        .ToListAsync();
-
- */
-
-
-
-
-
-
-
-
-
-
             return Ok(Output);
         }
-
+ */
         [HttpGet("numb")]
         [Authorize]
         public IActionResult GetNumb(){
