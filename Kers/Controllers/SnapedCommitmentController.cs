@@ -113,6 +113,7 @@ namespace Kers.Controllers
                 context.SnapEd_ReinforcementItemChoice.RemoveRange(currnetItemsChoice);
                 var currentSuggestion = context.SnapEd_ReinforcementItemSuggestion.Where( c => c.KersUser == user && c.FiscalYear == fiscalYear);
                 context.SnapEd_ReinforcementItemSuggestion.RemoveRange(currentSuggestion);
+                this.Log(user, "CommitmentBundle", "Snap-Ed commitment deleted.", "Commitment");
                 context.SaveChanges();
                 return new OkResult();
             }else{
