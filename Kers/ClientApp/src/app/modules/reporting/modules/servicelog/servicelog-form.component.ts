@@ -422,7 +422,11 @@ export class ServicelogFormComponent implements OnInit{
     }
 
     patch(){
-
+        if(this.isAdmin){
+            this.activityForm.patchValue({snapAdmin: true});
+        }else{
+            this.activityForm.patchValue({snapAdmin: false});
+        }
         let date = new Date(this.activity.activityDate);
         this.activity.activityDate = date;
         this.activityForm.get('female').markAsDirty();
@@ -453,6 +457,7 @@ export class ServicelogFormComponent implements OnInit{
         if(this.activity.isPolicy){
             this.snapPolicy = true;
         }
+        
         
         this.logLoading = false;
     }
@@ -585,10 +590,10 @@ export class ServicelogFormComponent implements OnInit{
         if(program != undefined){
             if(this.adminProgramsCodes.indexOf(program.pacCode) > -1 ){   
                 this.isAdmin = true;
-                this.activityForm.patchValue({snapAdmin: true});
+                //this.activityForm.patchValue({snapAdmin: true});
             }else{
                 this.isAdmin = false;
-                this.activityForm.patchValue({snapAdmin: false});
+                //this.activityForm.patchValue({snapAdmin: false});
             }
         }
     }
