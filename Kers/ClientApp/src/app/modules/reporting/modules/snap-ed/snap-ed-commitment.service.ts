@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import { AuthHttp } from '../../../authentication/auth.http';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import { User } from '../user/user.service';
 
@@ -10,52 +11,47 @@ import { User } from '../user/user.service';
 export class SnapEdCommitmentService {
   baseUrl = '/api/snapedcommitment/';
   commitmentFiscalYearName = "2019";
+  private handleError: HandleError;
 
-  constructor(
-      private http:AuthHttp, 
-      private location:Location
-  ) { }
+
+  constructor( 
+      private http: HttpClient, 
+      private location:Location,
+      httpErrorHandler: HttpErrorHandler
+      ) {
+          this.handleError = httpErrorHandler.createHandleError('SnapEdCommitmentService');
+      }
 
   commitmentFiscalYear():Observable<FiscalYear>{
     var url = this.baseUrl + 'FiscalYearByName/'+ this.commitmentFiscalYearName;
-    return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => <FiscalYear>res.json())
-            .catch(this.handleError);
+    return this.http.get<FiscalYear>(this.location.prepareExternalUrl(url))
+        .pipe(
+          catchError(this.handleError('commitmentFiscalYear', <FiscalYear>{}))
+        );
   }
 
-  addOrEditCommitment(commitment:CommitmentBundle){
-    return this.http.post(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(commitment), this.getRequestOptions())
-                    .map( res => {
-                    
-                        var ret = <CommitmentBundle>res.json();
-                        return ret;
-                    } )
-                    .catch(this.handleError);
+  addOrEditCommitment(commitment:CommitmentBundle):Observable<CommitmentBundle>{
+    return this.http.post<CommitmentBundle>(this.location.prepareExternalUrl(this.baseUrl), commitment)
+      .pipe(
+        catchError(this.handleError('addOrEditCommitment', commitment))
+      );
   }
 
   getSnapCommitments(userid:number = 0, fisclyearid:number = 0):Observable<CommitmentBundle>{
     var url = this.baseUrl + 'commitments/'+ fisclyearid + '/' + userid;
-    return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => <CommitmentBundle>res.json())
-            .catch(this.handleError);
+    return this.http.get<CommitmentBundle>(this.location.prepareExternalUrl(url))
+      .pipe(
+        catchError(this.handleError('addOrEditCommitment', <CommitmentBundle>{}))
+      );
   }
 
-
-  getRequestOptions(){
-    return new RequestOptions(
-        {
-            headers: new Headers({
-                "Content-Type": "application/json; charset=utf-8"
-            })
-        }
-    )
+  deleteSnapCommitments(userid:number = 0, fisclyear:string = "0"):Observable<{}>{
+    var url = this.baseUrl + 'commitmentsDelete/'+ fisclyear + '/' + userid;
+    return this.http.delete(this.location.prepareExternalUrl(url))
+      .pipe(
+        catchError(this.handleError('addOrEditCommitment'))
+      );
   }
-
-  handleError(err:Response){
-    console.error(err);
-    return Observable.throw(err.json().error || 'Server error');
-  }
-
 }
 
 export interface SnapEdCommitment{

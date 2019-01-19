@@ -4,9 +4,7 @@
         <commitment-view [commitment]="commitment" ></commitment-view>
         <a class="btn btn-dark btn-lg btn-block" (click)="isItJustView=false" *ngIf="canItBeEdited">Edit Commitment Data</a>
     </div>
-    
-    <commitment-form *ngIf="!isItJustView" [commitment]="commitment" (onFormSubmit)="commitmentEdited($event)" (onFormCancel)="isItJustView=true"></commitment-form>
-    
+    <commitment-form *ngIf="!isItJustView" [commitment]="commitment" (onFormSubmit)="commitmentEdited($event)" (onFormCancel)="isItJustView=true"></commitment-form>    
 </div>
 
 

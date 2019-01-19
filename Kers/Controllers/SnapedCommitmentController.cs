@@ -89,7 +89,38 @@ namespace Kers.Controllers
         }
 
 
+        
 
+        [HttpDelete("commitmentsDelete/{fy}/{userId}")]
+        public IActionResult DeleteActivity( int UserId, string fy = "0" ){
+
+            KersUser user;
+            if(UserId == 0){
+                user = this.CurrentUser();
+            }else{
+                user = context.KersUser.Find(UserId);
+            }
+            FiscalYear fiscalYear;
+            if(fy == "0"){
+                fiscalYear = fiscalYearRepo.nextFiscalYear(FiscalYearType.SnapEd);
+            }else{
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.SnapEd);
+            }
+            if( user != null && fiscalYear != null ){
+                var currentCommitment = context.SnapEd_Commitment.Where( c => c.KersUser == user && c.FiscalYear == fiscalYear);
+                context.SnapEd_Commitment.RemoveRange(currentCommitment);
+                var currnetItemsChoice = context.SnapEd_ReinforcementItemChoice.Where( c => c.KersUser == user && c.FiscalYear == fiscalYear);
+                context.SnapEd_ReinforcementItemChoice.RemoveRange(currnetItemsChoice);
+                var currentSuggestion = context.SnapEd_ReinforcementItemSuggestion.Where( c => c.KersUser == user && c.FiscalYear == fiscalYear);
+                context.SnapEd_ReinforcementItemSuggestion.RemoveRange(currentSuggestion);
+                context.SaveChanges();
+                return new OkResult();
+            }else{
+                this.Log( UserId + fy ,"CommitmentBundle", "Not Found Commitment user or/and fy in a delete attempt.", "Commitment", "Error");
+                return new StatusCodeResult(500);
+            }
+
+        }
 
 
         

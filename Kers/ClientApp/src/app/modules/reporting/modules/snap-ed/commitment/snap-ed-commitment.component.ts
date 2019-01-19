@@ -13,8 +13,11 @@ import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
           <a class="btn btn-dark btn-lg btn-block" (click)="isItJustView=false" *ngIf="canItBeEdited">Edit Commitment Data</a>
       </div>
       
-      <commitment-form *ngIf="!isItJustView" [commitment]="commitment" [commitmentFiscalYear]="fiscalyear" [commitmentUserId]="userid" (onFormSubmit)="commitmentEdited($event)" (onFormCancel)="isItJustView=true"></commitment-form>
-      
+      <commitment-form *ngIf="!isItJustView && !confirmDelete" [commitment]="commitment" [commitmentFiscalYear]="fiscalyear" [commitmentUserId]="userid" (onFormSubmit)="commitmentEdited($event)" (onFormCancel)="isItJustView=true"></commitment-form>
+      <div *ngIf="!isItJustView && commitment.commitments.length!=0 && !confirmDelete" class="text-right" (click)="confirmDelete=true"><button type="button" class="btn btn-danger btn-sm">delete</button></div>
+      <div *ngIf="confirmDelete"><br><br>
+      Do you really want to delete commitment for FY{{fiscalyear.name}}?<br><button (click)="confirmDeleteCommitment()" class="btn btn-info btn-xs">Yes</button> <button (click)="confirmDelete=false" class="btn btn-info btn-xs">No</button>
+      </div>
   </div>
   `,
   styles: []
@@ -29,6 +32,7 @@ export class SnapEdCommitmentComponent implements OnInit {
   isItJustView = true;
   commitment:CommitmentBundle;
   loading = true;
+  confirmDelete = false;
 
   constructor(
     private service: SnapEdCommitmentService
@@ -48,16 +52,20 @@ export class SnapEdCommitmentComponent implements OnInit {
       res => {
             this.commitment = <CommitmentBundle> res;
             this.loading = false;
-            /* 
-            
-            if(this.commitment.commitments.length == 0){
-              this.isItJustView = false;
-            }
-
-             */
-            //console.log( this.commitment );
         }
     );
+  }
+
+  confirmDeleteCommitment(){
+    this.loading = true;
+    this.service.deleteSnapCommitments(this.userid, this.fiscalyear.name)
+      .subscribe(
+        _ => {
+          this.confirmDelete = false;
+          this.loading = false;
+        }
+      )
+    
   }
 
   commitmentEdited(event){
