@@ -35,10 +35,6 @@ import { UserService, User, PersonalProfile } from '../../user/user.service';
 
                     <activity-reports-details [month]="month" [year]="year" [user]="user"></activity-reports-details>
             </div>
-                
-
-            
-
             <div class="col-xs-4 text-right" *ngIf="rowDefault">
                 <a class="btn btn-info btn-xs" (click)="summary()" ><i class="fa fa-cog"></i> Summary</a>
                 <a class="btn btn-info btn-xs" (click)="details()" *ngIf="rowDefault"><i class="fa fa-cogs"></i> Details</a>
@@ -87,6 +83,7 @@ export class ActivityReportsMonthComponent {
         this.date = new Date();
         this.date.setDate(15);
         this.date.setMonth(this.month.month - 1);
+        this.date.setFullYear(this.year.year);
         if(this.user == null){
             this.userService.current().subscribe(
                 res => this.user = <User> res,
