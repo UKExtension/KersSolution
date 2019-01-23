@@ -38,6 +38,8 @@ namespace Kers.Controllers.Reports
     public class EmployeesController : Controller
     {
         KERScoreContext context;
+        KERSreportingContext reportingContext;
+
         IFiscalYearRepository fiscalYearRepository;
         private IDistributedCache _cache;
         IActivityRepository activityRepo;
@@ -49,6 +51,7 @@ namespace Kers.Controllers.Reports
         string[] types = new string[]{ "District Reports", "Planning Unit Report", "KSU" };
         public EmployeesController( 
                     KERScoreContext context,
+                    KERSreportingContext reportingContext,
                     IFiscalYearRepository fiscalYearRepository,
                     IDistributedCache _cache,
                     IActivityRepository activityRepo,
@@ -56,6 +59,7 @@ namespace Kers.Controllers.Reports
                     IConfiguration Configuration
             ){
            this.context = context;
+           this.reportingContext = reportingContext;
            this.fiscalYearRepository = fiscalYearRepository;
            this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
            this._cache = _cache;
@@ -70,52 +74,12 @@ namespace Kers.Controllers.Reports
         public IActionResult Index()
         {
 
-            // Mark if story has image in the main entity
-/* 
-            var stories = this.context.Story;
 
-            foreach( var story in stories ){
-                var lastRev = context.StoryRevision
-                                    .Where( s => s.StoryId == story.Id)
-                                    .Include( s => s.StoryImages)
-                                    .OrderBy( s => s.Created)
-                                    .Last();
-                story.HasImages = lastRev.StoryImages.Count > 0;
-            }
-
- */
+            ViewData["trainings"] = this.reportingContext.zInServiceTrainingCatalog.Take(10).ToList();
 
 
-            // Include County into program indicator values
-/* 
-            var pind = context.ProgramIndicatorValue.Where( a => true );
-            foreach( var ind in pind ){
-                if(ind.PlanningUnitId == 0){
-                    var user = context.KersUser.Where( u => u.Id == ind.KersUserId).Include( u => u.RprtngProfile ).FirstOrDefault();
-                    ind.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
-                    ind.CreatedDateTime = DateTimeOffset.Now;
-                    ind.LastModifiedDateTime = DateTimeOffset.Now;
-                }
-            }
 
- */
 
-            /* 
-            var revsWith2019MP = context.ActivityRevision.Where( a => a.ActivityDate < new DateTime( 2018, 7, 1) );
-            revsWith2019MP = revsWith2019MP.Where( r => r.MajorProgram.StrategicInitiative.FiscalYear.Name == "2019");
-            revsWith2019MP = revsWith2019MP
-                                    .Include( r => r.MajorProgram);
-            
-            foreach( var rev in revsWith2019MP ){
-                var mp2018 = context.MajorProgram.Where( m => m.StrategicInitiative.FiscalYear.Name == "2018" && m.Name == rev.MajorProgram.Name).FirstOrDefault();
-                if( mp2018 != null){
-                    rev.MajorProgram = mp2018;
-                    var actvt = context.Activity.Where( a => a.Id == rev.ActivityId ).FirstOrDefault();
-                    actvt.MajorProgram = mp2018;
-                }
-                
-
-            } */
            // context.SaveChanges();
             return View();
         }
