@@ -45,7 +45,7 @@ export class AffirmativeHomeReportComponent {
             this.fiscalYearService.previous("serviceLog").subscribe(
                 res =>{
                     this.fy = <FiscalYear> res;
-                    this.plan = this.service.get(0, this.fy.name).map(res=><AffirmativePlan>res);
+                    this.plan = this.service.get(0, this.fy.name);
                     this.defaultTitle();
                 },
                 err => this.errorMessage = <any> err 

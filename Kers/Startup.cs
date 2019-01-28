@@ -139,6 +139,7 @@ namespace Kers
             services.AddScoped<IzEmpRptProfileRepository, zEmpRptProfileRepository>();
             services.AddScoped<IzEmpRoleTypeRepository, zEmpRoleTypeRepository>();
             services.AddScoped<IKersUserRepository, KersUserRepository>();
+            services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddScoped<INavSectionRepository, NavSectionRepository>();
             services.AddScoped<IInitiativeRepository, InitiativeRepository>();
             services.AddScoped<ILogRepository, LogRepository>();

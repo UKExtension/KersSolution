@@ -1,9 +1,9 @@
 import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {of as ObservableOf, Observable} from 'rxjs';
-import {AuthHttp} from '../../../authentication/auth.http';
-import {Role} from '../admin/roles/roles.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { Vehicle } from '../expense/vehicle/vehicle.service';
 
 
@@ -13,27 +13,33 @@ export class UserService {
     private baseUrl = '/api/User/';
 
     private usr:User;
+    private handleError: HandleError;
 
-    private pUnits = null;
-    private pstns = null;
-    private lctns = null;
-    private years = null;
-
-    constructor( private http:AuthHttp, private location:Location){}
-
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('UserService');
+        }
 
 
     current():Observable<User>{
         if(this.usr == null){
             var url = this.baseUrl + "current";
-            return this.http.get(this.location.prepareExternalUrl(url))
-                    .map(res =>{ 
-                        this.usr = <User>res.json();
-                        return this.usr;
-                    })
-                    .catch(this.handleError);
+            return this.http.get<User>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(
+                        res =>
+                        {
+                            this.usr = <User>res
+                        }
+                    ),
+                    catchError(this.handleError('current', <User>{}))
+                );
+                    
         }else{
-            return ObservableOf(this.usr);
+            return of(this.usr);
         }
     }
 
@@ -41,46 +47,44 @@ export class UserService {
 
     getCustom(searchParams?:{}) : Observable<User[]>{
         var url = this.baseUrl + "GetCustom/";
-        return this.http.getBy(this.location.prepareExternalUrl(url), searchParams)
-            .map(response =>  <User[]>response.json() )
-            .catch(this.handleError);
+        return this.http.get<User[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustom', []))
+            );
     }
 
-    getCustomCount(searchParams?:{}){
+    getCustomCount(searchParams?:{}):Observable<number>{
         var url = this.baseUrl + "GetCustomCount/";
-        return this.http.getBy(this.location.prepareExternalUrl(url), searchParams)
-            .map(response => response.json())
-            .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustomCount', 0))
+            );
     }
 
     byId(id:number):Observable<User>{
-
         var url = this.baseUrl + "id/" + id;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res =>{ 
-                    return  <User>res.json();
-                })
-                .catch(this.handleError);
+        return this.http.get<User>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('byId', <User>{}))
+            );
         
     }
 
     InServiceEnrolment(id:number, fy:string){
         var url = this.baseUrl + "InServiceEnrolment/" + id + "/" + fy;
         return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res =>{ 
-                    return  res.json();
-                })
-                .catch(this.handleError);
+            .pipe(
+                catchError(this.handleError('InServiceEnrolment', <User>{}))
+            );
     }
 
 
     startDate(linkBlueId:string):Observable<Date>{
         var url = this.baseUrl + "startdate/" + linkBlueId;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res =>{ 
-                    return  <Date>res.json();
-                })
-                .catch(this.handleError);
+        return this.http.get<Date>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('startDate', <Date>{}))
+            );
     }
 
     unset(){
@@ -89,108 +93,114 @@ export class UserService {
 
     user(rprtProfileId:number):Observable<User>{
         var url = this.baseUrl + rprtProfileId;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <User>res.json())
-                .catch(this.handleError);
+        return this.http.get<User>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('user', <User>{}))
+            );
     }
 
     add( user:User ):Observable<User>{
         var url = this.baseUrl;
-        return this.http.post(this.location.prepareExternalUrl(url), JSON.stringify(user), this.getRequestOptions())
-                .map(res => <User>res.json())
-                .catch(this.handleError);
+        return this.http.post<User>(this.location.prepareExternalUrl(url), user)
+            .pipe(
+                catchError(this.handleError('add', <User>{}))
+            );
     }
 
     update(id:number, user:User ):Observable<User>{
         var url = this.baseUrl + id;
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(user), this.getRequestOptions())
-                .map(res =>{ 
-                    this.usr = null;
-                    return <User>res.json();
-                })
-                .catch(this.handleError);
+        return this.http.put<User>(this.location.prepareExternalUrl(url), user)
+            .pipe(
+                tap( _ => this.usr = null),
+                catchError(this.handleError('update', <User>{}))
+            );  
+        
+        
     }
 
     tagsAutocomplete(text: string){
         const url = this.baseUrl + 'tags?q=' + text;
-        return this.http
-            .get(url)
-            .map(data => data.json());
+        return this.http.get(url)
+            .pipe(
+                catchError(this.handleError('tagsAutocomplete'))
+            );
     }
 
     filenameForImageId(id:number){
         return this.http.get(this.location.prepareExternalUrl('image/id/'+id))
-                    .map(res => res)
-                    .catch(this.handleError);
+            .pipe(
+                catchError(this.handleError('filenameForImageId'))
+            );
     }
 
     extensionPositions():Observable<ExtensionPosition[]>{
         var url = this.baseUrl + "positions";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <ExtensionPosition[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<ExtensionPosition[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('extensionPositions', []))
+            );
     }
 
 
     specialties():Observable<Specialty[]>{
         var url = this.baseUrl + "specialties";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Specialty[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<Specialty[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('specialties', []))
+            );
     }
 
     locations():Observable<GeneralLocation[]>{
         var url = this.baseUrl + "locations";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <GeneralLocation[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<GeneralLocation[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('getCustom', []))
+            );
     }
     units():Observable<PlanningUnit[]>{
         var url = this.baseUrl + "units";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <PlanningUnit[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('units', []))
+            );
     }
     instititutions():Observable<Institution[]>{
         var url = this.baseUrl + "institutions";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <Institution[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<Institution[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('instititutions', []))
+            );
     }
 
     socialConnections():Observable<SocialConnectionType[]>{
         var url = this.baseUrl + "connections";
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => <SocialConnectionType[]>res.json())
-                .catch(this.handleError);
+        return this.http.get<SocialConnectionType[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('socialConnections', []))
+            );
     }
 
     linkBlueExists(linkBlueId:string):Observable<{}|null>{
         var url = this.baseUrl + "isItExists/" + linkBlueId;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => < {} | null >res.json())
-                .catch(this.handleError);
+        return this.http.get<{}|null>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('linkBlueExists'))
+            );
     }
 
     personIdExists(personId:string):Observable<{}|null>{
         var url = this.baseUrl + "isPersonIdExists/" + personId;
-        return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => < {} | null >res.json())
-                .catch(this.handleError);
+        return this.http.get<{}|null>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('personIdExists'))
+            );
     }
-
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
-    }
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
+    private addParams(params:{}){
+        let searchParams = {};
+        for(let p in params){
+            searchParams[p] = params[p];
+        }
+        return  {params: searchParams};
     }
     
 }

@@ -1,10 +1,12 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
-import {Http, Headers, Response, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { JwtHelper } from './jwt.helper';
 import { User } from '../reporting/modules/user/user.service';
+import { HttpErrorHandler, HandleError } from '../reporting/core/services/http-error-handler.service';
+import { catchError, tap } from 'rxjs/operators';
+
 
 
 @Injectable()
@@ -13,9 +15,15 @@ export class AuthenticationService {
   authKey = "auth";
   // store the URL so we can redirect after logging in
   redirectUrl: string = '/reporting';
+  private handleError: HandleError;
 
-
-  constructor(private http:Http, private location:Location){}
+  constructor( 
+      private http: HttpClient, 
+      private location:Location,
+      httpErrorHandler: HttpErrorHandler
+      ) {
+          this.handleError = httpErrorHandler.createHandleError('HelpService');
+      }
 
 
   login(username: string, password: string):any{
@@ -27,29 +35,24 @@ export class AuthenticationService {
       grant_type: "password",
       scope: "offline_access profile email"
     }
-    return this.http.post(
-        this.location.prepareExternalUrl(url),
-        JSON.stringify(data),
-        new RequestOptions({ headers: new Headers(
-                {
-                  "Content-Type": "application/json"
+    return this.http.post( this.location.prepareExternalUrl(url), data )
+      .pipe(
+          tap( auth => {
+                  if(auth["newUser"] == null && auth["error"] == null){
+                    this.setAuth(auth);
+                  }
                 }
-              )
-            }
-          )
-    ).map( response => {
-          var auth = response.json();
-          if(auth.newUser == null && auth.error == null){
-            this.setAuth(auth);
-          }
-          return auth;
-      }
-    ); 
+              ),
+          catchError(this.handleError('byId'))
+      );
+    
+    
+    
 }
 
 private extractData(res: Response) {
     let body = res.json();
-    return body.data || { };
+    return body["data"] || { };
 }
 
 logout():boolean{

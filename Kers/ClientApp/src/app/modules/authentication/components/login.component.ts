@@ -70,12 +70,12 @@ export class LoginComponent implements OnInit {
       .subscribe( 
         (data) => {
             this.loading = false;
-            if(data.error != null){
+            if(data["error"] != null){
               this.loginError = true;
-              this.message = data.error;
+              this.message = data["error"];
             }else{
               this.loginError = false;
-              if(data.newUser != null){
+              if(data["newUser"] != null){
                 this.onNewUser.emit(data);
               }else{
                 var auth = this.authService.getAuth();
@@ -88,7 +88,7 @@ export class LoginComponent implements OnInit {
             }
             
           },
-            (err) => {
+            _ => {
               this.loading = false;
               this.loginError = true;
             }

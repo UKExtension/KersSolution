@@ -126,8 +126,7 @@ export class UserPersonalFormComponent implements OnInit {
     public requestAutocompleteItems = (text: string):Observable<Response> => {
         const url = '/api/User/tags?q=' + text;
         return this.http
-            .get(this.location.prepareExternalUrl(url))
-            .map(data => data.json());
+            .get(this.location.prepareExternalUrl(url));
     };
 
 

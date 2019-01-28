@@ -76,7 +76,9 @@ export class CalendarService {
     var activity = this.activitiesPerPeriod(start, end, userId);
 
     var merged = combineLatest(expenses, activity)
-                    .map(([bT, sT]) => [...bT, ...sT]);
+                    .pipe(
+                      map(([bT, sT]) => [...bT, ...sT])
+                    );
 
     return merged;
   }

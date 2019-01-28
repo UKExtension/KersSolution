@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { UserService, User, ReportingProfile, PersonalProfile } from '../../reporting/modules/user/user.service';
-import { Observable } from "rxjs/Observable";
+import { Observable, of } from "rxjs";
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 
@@ -45,7 +45,7 @@ export class LoginHomeComponent {
         var reportng = new ReportingProfile(0, data.newUser.userid,data.newUser.personID, data.newUser.name, data.newUser.userid + "@uky.edu","", true,1, null, undefined, null, 1,null);
         var prsnl = new PersonalProfile(0,data.newUser.fname,data.newUser.lname, "", "", "", [], [],"", null);
         var user = new User( 0, 0, [], reportng, prsnl, undefined, null, null, null,null, null);
-        this.userObservable = Observable.of(user);
+        this.userObservable = of(user);
     }
     reportingFormCancel(){
         this.newUser= false;

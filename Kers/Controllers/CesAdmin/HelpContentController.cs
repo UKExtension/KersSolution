@@ -42,7 +42,7 @@ namespace Kers.Controllers.Admin
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+
         public IActionResult Get(int id){
             var help = repo.GetSingle(id);
             return new OkObjectResult(help);

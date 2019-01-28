@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using Kers.Models.Data;
 using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.ViewModels;
+using Kers.Models.Entities.UKCAReporting;
 
 namespace Kers.Models.Abstract
 {
@@ -17,6 +18,9 @@ namespace Kers.Models.Abstract
     //public interface IzActivityRepository : IEntityBaseRepository<zActivity> { }
     //public interface IzzGeneralLocationRepository : IEntityBaseRepository<zzGeneralLocation> { }
     public interface  IzEmpRoleTypeRepository : IEntityBaseRepository<zEmpRoleType> { }
+    public interface  ITrainingRepository {
+        List<zInServiceTrainingCatalog>  csv2list(string fileUrl = "database/trainingsData.csv");
+     }
     public interface  IInitiativeRepository : IEntityBaseRepository<StrategicInitiative> {
         Task<List<ProgramIndicatorSumViewModel>> IndicatorSumPerMajorProgram(int MajorProgramId );
     }
