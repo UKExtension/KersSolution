@@ -1,10 +1,11 @@
 import { Injectable} from '@angular/core';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import {Location} from '@angular/common';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
-import {AuthHttp} from '../../../authentication/auth.http';
+import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
+import { PlanningUnit } from '../../modules/plansofwork/plansofwork.service';
+import { ExtensionPosition } from '../../modules/user/user.service';
 
 
 @Injectable()
@@ -14,96 +15,111 @@ export class ProfileService {
 
     public profile:Profile = null;
 
-    private pUnits = null;
-    private pstns = null;
+    private pUnits:PlanningUnit[] = null;
+    private pstns:ExtensionPosition[] = null;
     private lctns = null;
     private rls = null;
+    private handleError: HandleError;
 
-    constructor( private http:AuthHttp, private location:Location){
-
-    }
+    constructor( 
+        private http: HttpClient, 
+        private location:Location,
+        httpErrorHandler: HttpErrorHandler
+        ) {
+            this.handleError = httpErrorHandler.createHandleError('ProfileService');
+        }
 
     getLatest(num?:number){
         var url = this.baseUrl + "GetLatest/";
         if( num != null ) url += num;
         return this.http.get(this.location.prepareExternalUrl(url))
-            .map(response => response.json())
-            .catch(this.handleError);
+            .pipe(
+                catchError(this.handleError('getLatest'))
+            );
     }
 
     getRandom(num?:number){
         var url = this.baseUrl + "GetRandom/";
         if (num != null) url += num;
         return this.http.get(this.location.prepareExternalUrl(url))
-            .map(response => response.json())
-            .catch(this.handleError);
+            .pipe(
+                catchError(this.handleError('getLatest'))
+            );
     }
 
     getCustom(searchParams?:{}) : Observable<Profile[]>{
         var url = this.baseUrl + "GetCustom/";
-        return this.http.getBy(this.location.prepareExternalUrl(url), searchParams)
-            .map(response => response.json())
-            .catch(this.handleError);
+        return this.http.get<Profile[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustom', []))
+            );
     }
 
-    getCustomCount(searchParams?:{}){
+    getCustomCount(searchParams?:{}):Observable<number>{
         var url = this.baseUrl + "GetCustomCount/";
-        return this.http.getBy(this.location.prepareExternalUrl(url), searchParams)
-            .map(response => response.json())
-            .catch(this.handleError);
+        return this.http.get<number>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustomCount', 0))
+            );
     }
 
     get(id:number){
         if(id==null) throw new Error("id is required");
         var url = this.baseUrl + id;
         return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => <Profile>res.json())
-            .catch(this.handleError);
+            .pipe(
+                catchError(this.handleError('get'))
+            );
     }
 
-    currentUser(){
+    currentUser():Observable<Profile>{
         var url = this.baseUrl + "CurrentUser/";
         if(this.profile == null){
-            return this.http.get(this.location.prepareExternalUrl(url))
-            .map(res => this.profile = <Profile>res.json())
-            .catch(this.handleError);
+            return this.http.get<Profile>(this.location.prepareExternalUrl(url))
+            .pipe(
+                tap(res => this.profile = res),
+                catchError(this.handleError('currentUser', <Profile>{}))
+            );
         }else{
-            return Observable.of(this.profile);
+            return of(this.profile);
         }
         
     }
 
-    update(id, profile, admin?:boolean){
+    update(id:Number, profile:Profile, admin?:boolean):Observable<Profile>{
         var url = this.baseUrl + id;
         if(admin == true){
             url += '/true';
         }
-        return this.http.put(this.location.prepareExternalUrl(url), JSON.stringify(profile), this.getRequestOptions())
-            .map(response => {
-                return <Profile>response.json();
-            })
-            .catch(this.handleError)
+        return this.http.put<Profile>(this.location.prepareExternalUrl(url), profile)
+            .pipe(
+                catchError(this.handleError('update', <Profile>{}))
+            );
     }
 
-    planningUnits(){
+    planningUnits():Observable<PlanningUnit[]>{
         if(this.pUnits == null){
             var url = this.baseUrl + "PlanningUnit";
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.pUnits = res.json())
-                .catch(this.handleError);
+            return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(res => this.pUnits = res),
+                    catchError(this.handleError('planningUnits', []))
+                );
         }else{
-            return Observable.of(this.pUnits);
+            return of(this.pUnits);
         }
     }
 
-    positions(){
+    positions():Observable<ExtensionPosition[]>{
         if(this.pstns == null){
             var url = this.baseUrl + "Position";
-            return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.pstns = res.json())
-                .catch(this.handleError);
+            return this.http.get<ExtensionPosition[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(res => this.pstns = res),
+                    catchError(this.handleError('positions', []))
+                );
         }else{
-            return Observable.of(this.pstns);
+            return of(this.pstns);
         }
     }
 
@@ -111,28 +127,23 @@ export class ProfileService {
         if(this.lctns == null){
             var url = this.baseUrl + "Location";
             return this.http.get(this.location.prepareExternalUrl(url))
-                .map(res => this.lctns = res.json())
-                .catch(this.handleError);
+                .pipe(
+                    tap(res => this.lctns = res),
+                    catchError(this.handleError('locations', []))
+                );
         }else{
-            return Observable.of(this.lctns);
+            return of(this.lctns);
         }
     }
 
-    
-    getRequestOptions(){
-        return new RequestOptions(
-            {
-                headers: new Headers({
-                    "Content-Type": "application/json; charset=utf-8"
-                })
-            }
-        )
+    private addParams(params:{}){
+        let searchParams = {};
+        for(let p in params){
+            searchParams[p] = params[p];
+        }
+        return  {params: searchParams};
     }
 
-    handleError(err:Response){
-        console.error(err);
-        return Observable.throw(err.json().error || 'Server error');
-    }
     
 }
 

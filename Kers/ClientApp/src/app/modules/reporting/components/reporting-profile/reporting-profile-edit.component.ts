@@ -114,7 +114,7 @@ export class ReportingProfileEditComponent implements OnInit{
             }else{
                     this.profileService.update(this.profile.id, this.editForm.value).subscribe(
                     response => {
-                        this.profile = <Profile> response.json();
+                        this.profile = <Profile> response;
                     }
                 );
                 this.reportingService.setAlert("Profile Updated");

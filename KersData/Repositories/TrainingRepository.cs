@@ -30,11 +30,6 @@ namespace Kers.Models.Repositories
             using (var reader = new StreamReader(fileUrl))
             using (var csv = new CsvReader(reader))
             {    
-
-
-                
-                
-
                 var newRecords = new List<Training>();
                 csv.Read();
                 csv.ReadHeader();
@@ -90,5 +85,35 @@ namespace Kers.Models.Repositories
             }
             return records;
         }
+
+
+        public List<Training> InServicesToTrainings(List<zInServiceTrainingCatalog> services){
+            var trainings = new List<Training>();
+
+            foreach( var service in services ){
+                trainings.Add(ServiceToTraining(service));
+            }
+            return trainings;
+        }
+
+        public Training ServiceToTraining( zInServiceTrainingCatalog service){
+            var training = new Training();
+            
+            training.submittedBy = training.Organizer = this.userByPersonId(service.submittedByPersonID);
+            training.approvedBy = this.userByPersonId( service.approvedByPersonID);
+            
+            return training;
+
+        }
+
+        public KersUser userByPersonId( string id ){
+            var user = this.context.KersUser.Where( u => u.RprtngProfile.PersonId == id).FirstOrDefault();
+            return user;
+        }
+
+
+
+
+
     }
 }
