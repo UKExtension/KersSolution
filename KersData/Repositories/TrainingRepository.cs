@@ -99,8 +99,20 @@ namespace Kers.Models.Repositories
         public Training ServiceToTraining( zInServiceTrainingCatalog service){
             var training = new Training();
             
+            training.classicInServiceTrainingId = service.rID;
             training.submittedBy = training.Organizer = this.userByPersonId(service.submittedByPersonID);
             training.approvedBy = this.userByPersonId( service.approvedByPersonID);
+            training.approvedDate = service.approvedDate;
+            training.tID = service.tID;
+            training.tStatus = service.tStatus;
+            training.sessionCancelledDate = service.sessionCancelledDate;
+            training.TrainDateBegin = service.TrainDateBegin;
+            training.Start = offsetFromString(service.TrainDateBegin);
+            if(service.TrainDateEnd != null || service.TrainDateEnd != "NULL"){
+                training.TrainDateEnd = service.TrainDateEnd;
+                training.End = offsetFromString( service.TrainDateEnd );
+            }
+            //training.RegisterCutoffDays = service.RegisterCutoffDays;
             
             return training;
 
@@ -109,6 +121,17 @@ namespace Kers.Models.Repositories
         public KersUser userByPersonId( string id ){
             var user = this.context.KersUser.Where( u => u.RprtngProfile.PersonId == id).FirstOrDefault();
             return user;
+        }
+
+        private DateTimeOffset offsetFromString(string dt){
+
+            var year = dt.Substring(0, 4);
+            var month = dt.Substring(4, 2);
+            var day = dt.Substring(6, 2);
+
+            var offset = new DateTimeOffset (Int32.Parse(year), Int32.Parse(month), Int32.Parse(day), 8, 0, 0, new TimeSpan(-4, 0, 0));
+
+            return offset;
         }
 
 

@@ -16,6 +16,7 @@ export class ContactDetailComponent {
     @Input() contact:Contact;
 
     @Output() onDeleted = new EventEmitter<Contact>();
+    @Output() onUpdated = new EventEmitter<Contact>();
     
     errorMessage: string;
 
@@ -60,6 +61,7 @@ export class ContactDetailComponent {
 
     contactSubmitted(contact:Contact){
         this.contact = contact;
+        this.onUpdated.emit(this.contact);
         this.default();
     }
 

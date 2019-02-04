@@ -81,12 +81,32 @@ export class ContactHomeComponent implements OnInit {
         );
     }
 
-    deleted(activity:Contact){
-        let index: number = this.latest.indexOf(activity);
+    deleted(contact:Contact){
+
+        
+        let index: number = this.latest.indexOf(contact);
         if (index !== -1) {
             this.latest.splice(index, 1);
             this.numbContacts--;
         }
+
+        this.byMonth = [];
+        this.populateByMonth();
+    }
+
+    updated(contact:Contact){
+        this.latest = this.latest.map(function(item) { return item.contactId == contact.contactId ? contact : item; });
+        this.latest.sort(
+            function(a, b) {
+                    var dateA = new Date(a.contactDate);
+                    var dateB = new Date(b.contactDate);
+                    if( dateA  > dateB ){
+                        return -1;
+                    }else{
+                        return 1;
+                    }
+                }
+            );
         this.byMonth = [];
         this.populateByMonth();
     }

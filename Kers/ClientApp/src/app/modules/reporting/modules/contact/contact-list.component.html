@@ -3,5 +3,5 @@
     </button>
     <strong>Error: </strong> {{errorMessage}}
 </div>
-<contact-month *ngFor="let m of byMonth" [month]="m" (onDeleted)="deleted($event)"></contact-month>
+<contact-month *ngFor="let m of byMonth" [month]="m" (onDeleted)="deleted($event)" (onUpdated)="updated($event)"></contact-month>
 

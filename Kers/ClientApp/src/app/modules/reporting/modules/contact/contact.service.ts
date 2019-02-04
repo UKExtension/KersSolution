@@ -115,6 +115,7 @@ export class ContactService {
 export interface Contact{
     id:number;
     contactDate:Date;
+    contactId:number;
     days:number;
     multistate:number;
     majorProgramId:number;

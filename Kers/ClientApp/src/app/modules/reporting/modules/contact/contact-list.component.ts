@@ -10,6 +10,7 @@ export class ContactListComponent implements OnInit{
     
     @Input() byMonth:ContactMonth[] = [];
     @Output() onDeleted = new EventEmitter<Contact>();
+    @Output() onUpdated = new EventEmitter<Contact>();
     
     errorMessage: string;
 
@@ -26,6 +27,9 @@ export class ContactListComponent implements OnInit{
 
     deleted(contact:Contact){
         this.onDeleted.emit(contact);
+    }
+    updated(contact:Contact){
+        this.onUpdated.emit(contact);
     }
     
 

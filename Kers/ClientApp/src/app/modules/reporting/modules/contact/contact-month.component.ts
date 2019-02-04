@@ -10,6 +10,7 @@ export class ContactMonthComponent {
     
     @Input() month:ContactMonth;
     @Output() onDeleted = new EventEmitter<Contact>();
+    @Output() onUpdated = new EventEmitter<Contact>();
     
     errorMessage: string;
 
@@ -22,6 +23,10 @@ export class ContactMonthComponent {
        
        
        
+    }
+
+    updated(contact:Contact){
+        this.onUpdated.emit(contact);
     }
 
     deleted(contact:Contact){
