@@ -12,8 +12,9 @@ namespace Kers.Models.Entities.KERScore
         [StringLength(3)]
         public string puid { get; set; }
 
-        [StringLength(50)]
+        public int PlanningUnitId { get; set; }
         public PlanningUnit PlanningUnit { get; set; }
+
 
         [StringLength(8)]
         public KersUser Attendie { get; set; }

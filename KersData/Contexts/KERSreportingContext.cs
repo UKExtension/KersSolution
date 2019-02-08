@@ -28,6 +28,7 @@ namespace Kers.Models.Contexts
 */
         
         public virtual DbSet<zInServiceTrainingCatalog> zInServiceTrainingCatalog { get; set; }
+        public virtual DbSet<zInServiceTrainingEnrollment> zInServiceTrainingEnrollment {get;set;}
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

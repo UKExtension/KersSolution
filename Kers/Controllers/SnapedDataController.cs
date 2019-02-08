@@ -521,6 +521,22 @@ namespace Kers.Controllers
         }
 
 
+        [HttpGet]
+        [Route("partnersofacounty/{unitid}/{fy}/data.csv")]
+        [Authorize]
+        public IActionResult PartnesOfCounty(int unitid, string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+
+            return Ok(this.snapDirectRepo.PartnersOfACounty(unitid, fiscalYear));
+        }
+
+
 
     
     }

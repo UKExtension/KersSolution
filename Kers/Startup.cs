@@ -82,6 +82,10 @@ namespace Kers
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 
                    options.UseSqlite(Configuration["ConnectionStrings:connKersSnapLocal"]));
 
+                services.AddDbContext<KERSreportingContext>(options => 
+                    options.UseSqlite(Configuration["ConnectionStrings:connKersReportingLocal"]));
+                   
+
                 services.AddDistributedMemoryCache();
             }else if(CurrentEnvironment.IsStaging()){
                 // Staging

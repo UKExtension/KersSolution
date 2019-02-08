@@ -11,6 +11,7 @@ using Kers.Models.Contexts;
 using System.IO;
 using CsvHelper;
 using Kers.Models.Entities.UKCAReporting;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kers.Models.Repositories
 {
@@ -18,9 +19,14 @@ namespace Kers.Models.Repositories
     {
 
         KERScoreContext context;
-        public TrainingRepository(KERScoreContext context)
+        KERSreportingContext reportingContext;
+        public TrainingRepository(
+            KERScoreContext context,
+            KERSreportingContext reportingContext 
+            )
             
         { 
+            this.reportingContext = reportingContext;
             this.context = context;
         }
 
@@ -107,12 +113,35 @@ namespace Kers.Models.Repositories
             training.tStatus = service.tStatus;
             training.sessionCancelledDate = service.sessionCancelledDate;
             training.TrainDateBegin = service.TrainDateBegin;
-            training.Start = offsetFromString(service.TrainDateBegin);
+            if(service.TrainDateBegin != null || service.TrainDateBegin != "NULL"){
+                training.Start = offsetFromString(service.TrainDateBegin);
+            }
             if(service.TrainDateEnd != null || service.TrainDateEnd != "NULL"){
                 training.TrainDateEnd = service.TrainDateEnd;
                 training.End = offsetFromString( service.TrainDateEnd );
             }
-            //training.RegisterCutoffDays = service.RegisterCutoffDays;
+            if(service.RegisterCutoffDays != null){
+               training.RegisterCutoffDays = context.TainingRegisterWindow.Where( a => a.registerDaysVal == service.RegisterCutoffDays.ToString() ).FirstOrDefault(); 
+            }
+            if( service.CancelCutoffDays != null){
+                training.CancelCutoffDays = context.TrainingCancelEnrollmentWindow.Where( a => a.cancelDaysVal == service.CancelCutoffDays).FirstOrDefault();
+            }
+            if( service.iHours != null ){
+                training.iHour = context.TainingInstructionalHour.Where( a => a.iHourValue == service.iHours).FirstOrDefault();
+            }
+            if( service.seatLimit != null){
+                training.seatLimit = service.seatLimit;
+            }
+            training.tTime = service.tTime;
+            training.day1 = service.day1;
+            training.day2 = service.day2;
+            training.day3 = service.day3;
+            training.day4 = service.day4;
+            training.tContact = service.tContact;
+            training.tAudience = service.tAudience;
+
+            training.Enrollment = this.GetEnrollments( service.tID);
+
             
             return training;
 
@@ -124,14 +153,52 @@ namespace Kers.Models.Repositories
         }
 
         private DateTimeOffset offsetFromString(string dt){
-
-            var year = dt.Substring(0, 4);
-            var month = dt.Substring(4, 2);
-            var day = dt.Substring(6, 2);
+            var year = "1900";
+            var month = "1";
+            var day = "1";
+            if(dt != null && dt.Length > 7){
+                year = dt.Substring(0, 4);
+                month = dt.Substring(4, 2);
+                day = dt.Substring(6, 2);
+            }
+            
 
             var offset = new DateTimeOffset (Int32.Parse(year), Int32.Parse(month), Int32.Parse(day), 8, 0, 0, new TimeSpan(-4, 0, 0));
 
             return offset;
+        }
+
+        private List<TrainingEnrollment> GetEnrollments( string tId){
+            var enrlmnt = new List<TrainingEnrollment>();
+
+            var old = this.reportingContext.zInServiceTrainingEnrollment.Where( a => a.tID == tId );
+            foreach( var enr in old ){
+                enrlmnt.Add( old2newEnrolment( enr ) );
+            }
+
+            return enrlmnt;
+        }
+
+        private TrainingEnrollment old2newEnrolment( zInServiceTrainingEnrollment old ){
+            var enrolment = new TrainingEnrollment();
+
+            enrolment.rDT = old.rDT;
+            enrolment.puid = old.puid;
+            enrolment.Attendie = context.KersUser
+                                    .Where( r => r.RprtngProfile.PersonId == old.personID)
+                                    .Include( u => u.RprtngProfile)
+                                    .FirstOrDefault();
+            if(enrolment.Attendie != null ){
+                enrolment.PlanningUnitId = enrolment.Attendie.RprtngProfile.PlanningUnitId;
+            }
+            enrolment.TrainingId = old.tID;
+            enrolment.eStatus = old.eStatus;
+            enrolment.enrolledDate = old.enrolledDate;
+            enrolment.cancelledDate = old.cancelledDate;
+            enrolment.attended = old.attended;
+            enrolment.evaluationMessageSent = old.evaluationMessageSent;
+
+            return enrolment;
         }
 
 

@@ -37,6 +37,11 @@
     </div><br><br>
     <snape-ed-commitment-stats [planningUnit]="county" [fiscalYear]="fiscalYear" (onCalculated)="storeCommitment($event)"></snape-ed-commitment-stats>
     <br><br>
+    <h2>Data Downloads</h2>
+    <fiscal-year-switcher [type]="'snapEd'" [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitchedData($event)"></fiscal-year-switcher>
+    <br>
+    <snaped-download-button [fiscalYear]="fiscalYearData" [location]="'partnersofacounty/'+county.id" [filename]="'partnersofacounty'+county.id" [label]="'Partners of a County'"></snaped-download-button>
+    <br><br>
     <div *ngIf="countyBudget">
         <h2>County Budget</h2>
         <div *ngIf="!editBudget">

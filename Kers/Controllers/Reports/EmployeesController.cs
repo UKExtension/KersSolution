@@ -41,6 +41,7 @@ namespace Kers.Controllers.Reports
     public class EmployeesController : Controller
     {
         KERScoreContext context;
+        KERSreportingContext reportingContext;
         ITrainingRepository trainingRepo;
         IFiscalYearRepository fiscalYearRepository;
         private IDistributedCache _cache;
@@ -53,6 +54,7 @@ namespace Kers.Controllers.Reports
         string[] types = new string[]{ "District Reports", "Planning Unit Report", "KSU" };
         public EmployeesController( 
                     KERScoreContext context,
+                    KERSreportingContext reportingContext ,
                     ITrainingRepository trainingRepo,
                     IFiscalYearRepository fiscalYearRepository,
                     IDistributedCache _cache,
@@ -61,6 +63,7 @@ namespace Kers.Controllers.Reports
                     IConfiguration Configuration
             ){
            this.context = context;
+           this.reportingContext = reportingContext;
            this.trainingRepo = trainingRepo;
            this.fiscalYearRepository = fiscalYearRepository;
            this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
@@ -75,9 +78,11 @@ namespace Kers.Controllers.Reports
         [Route("")]
         public IActionResult Index()
         {
-            List<zInServiceTrainingCatalog> inServices = this.trainingRepo.csv2list().Take(10).ToList();
+            //List<zInServiceTrainingCatalog> inServices = this.trainingRepo.csv2list().Take(10).ToList();
+
+            var inServices = reportingContext.zInServiceTrainingCatalog.Where(s => true).OrderByDescending(r => r.rID);
             ViewData["trainings"] = inServices;
-            var trainings = this.trainingRepo.InServicesToTrainings(inServices);
+            var trainings = this.trainingRepo.InServicesToTrainings(inServices.Skip(79).Take(30).ToList());
             return View();
         }
 

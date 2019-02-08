@@ -5,7 +5,6 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
 import { ActivatedRoute, Params } from '@angular/router';
 import { PlanningUnit, User } from '../../user/user.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
-import { Observable } from 'rxjs/Observable';
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
 
 @Component({
@@ -21,6 +20,7 @@ import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/
 export class SnapedCountyComponent { 
 
     fiscalYear:FiscalYear;
+    fiscalYearData:FiscalYear;
     committed: number;
     reported:number;
 
@@ -67,41 +67,39 @@ export class SnapedCountyComponent {
     ngOnInit(){
 
       this.route.params
-            .switchMap( (params: Params) => this.planningUnitService.id(params['id']) ).
-            subscribe(
-              res=>{
-                var countyRes = res;
-                this.fiscalyearService.current('snapEd').subscribe(
-                  res => {
-                    this.county = countyRes;
-                    this.fiscalYear = res;
-                    this.countyName = this.county.name.substring(0, this.county.name.length - 4);
-                    this.reportingService.setTitle(this.countyName + " Snap-Ed Admin Dashboard");
+        .switchMap( (params: Params) => this.planningUnitService.id(params['id']) ).
+          subscribe(
+            res=>{
+              var countyRes = res;
+              
+              this.county = countyRes;
+              this.countyName = this.county.name.substring(0, this.county.name.length - 4);
+              this.reportingService.setTitle(this.countyName + " Snap-Ed Admin Dashboard");
 
-                    this.service.countyBudget(this.county.id).subscribe(
-                      res=>{
-                        this.countyBudget = <number>res;
-                        this.budgetForm.patchValue({annualBudget: this.countyBudget});
-                      },
-                      err => this.errorMessage = <any>err
-                    );
-                    this.service.countyReimbursments(this.county.id).subscribe(
-                      res => {
-                        this.reimbursments = res;
-                        this.calculateTotalReinbursments();
-                      },
-                      err => this.errorMessage = <any>err
-                    )
+              this.service.countyBudget(this.county.id).subscribe(
+                res=>{
+                  this.countyBudget = <number>res;
+                  this.budgetForm.patchValue({annualBudget: this.countyBudget});
+                },
+                err => this.errorMessage = <any>err
+              );
+              this.service.countyReimbursments(this.county.id).subscribe(
+                res => {
+                  this.reimbursments = res;
+                  this.calculateTotalReinbursments();
+                },
+                err => this.errorMessage = <any>err
+              )
 
-                  },
-                  err => this.errorMessage = <any>err
-                )
-                
-                
-                
-              },
-              err => this.errorMessage = <any> err
-            );
+            },
+            err => this.errorMessage = <any> err
+          );
+    }
+    fiscalYearSwitchedData(event:FiscalYear){
+      if(this.fiscalYear == null ){
+        this.fiscalYear = event;
+      }
+      this.fiscalYearData = event;
 
     }
 

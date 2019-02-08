@@ -868,6 +868,78 @@ namespace Kers.Models.Repositories
             return result;
         }
 
+
+
+
+
+        public string PartnersOfACounty(int countyId, FiscalYear fiscalYear, bool refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.PartnersOfACounty + "_" + countyId.ToString() + "_" + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                var keys = new List<string>();
+                keys.Add("DateOfEVENT");
+                keys.Add("DateSubmitted");
+                keys.Add("SubmittedBy");
+
+                var partnters = this.context.SnapPolicyPartner.Where( p => p.Active).ToList();
+
+                foreach( var partner in partnters){
+                    keys.Add(string.Concat( "\"", partner.Name, "\""));
+                }
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+                var revis = SnapData(fiscalYear);
+                var activitiesWithPolicy = revis.Where( r => r.Revision.SnapPolicy != null && r.User.RprtngProfile.PlanningUnitId == countyId).OrderBy( a => a.Revision.ActivityDate.Year).ThenBy( a => a.Revision.ActivityDate.Month);
+                
+                foreach( var activity in activitiesWithPolicy ){
+                    var fullDetails = context.ActivityRevision.Where( r => r.Id == activity.Revision.Id)
+                                            .Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyPartnerValue)
+                                            .FirstOrDefault();
+                    var row = fullDetails.ActivityDate.ToString("MM/dd/yyyy") + ",";
+                    row += fullDetails.Created.ToString("MM/dd/yyyy") + ",";
+                    row += string.Concat( "\"",activity.User.RprtngProfile.Name, "\"") + ",";
+                    foreach( var partner in partnters){
+                        
+                        var partnrVal = fullDetails.SnapPolicy.SnapPolicyPartnerValue.Where( v => v.SnapPolicyPartnerId == partner.Id).FirstOrDefault();
+                        if(partnrVal == null){
+                            row += "0" + ",";
+                        }else{
+                            row += partnrVal.Value.ToString() + ",";
+                        }
+
+
+
+                    }
+                    result += row + "\n";
+                }
+
+                
+
+
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
+                    });
+
+            }
+            return result;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         public string PersonalHourDetails(FiscalYear fiscalYear, bool refreshCache = false){
             string result;
             var cacheKey = CacheKeys.PersonalHourDetails + fiscalYear.Name;
