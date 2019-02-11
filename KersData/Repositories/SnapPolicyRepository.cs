@@ -323,7 +323,7 @@ namespace Kers.Models.Repositories
                             prgrms += specialties.Where( s => s.Id == program.SpecialtyId).FirstOrDefault() ?.Code + " "??"";
                         }
                         row += prgrms + ",";
-                        row += meeting.ActivityDate.ToString("mm/dd/yyy") + ",";
+                        row += meeting.ActivityDate.ToString("MM/dd/yyy") + ",";
                         row += meeting.Hours.ToString() + ",";
                         var aimed = context.SnapPolicy.Where( p => p.Id == LastRevision.SnapPolicyId).Include( s => s.SnapPolicyAimedSelections).FirstOrDefault();
                         foreach( var tp in types){
