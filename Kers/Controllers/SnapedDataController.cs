@@ -263,7 +263,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = snapPolicyRepo.PartnerCategory(fiscalYear, true);
+            var result = snapPolicyRepo.PartnerCategory(fiscalYear);
             return Ok(result);
         }
 
@@ -533,7 +533,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
 
-            return Ok(this.snapDirectRepo.PartnersOfACounty(unitid, fiscalYear));
+            return Ok(this.snapPolicyRepo.PartnersOfACounty(unitid, fiscalYear));
         }
 
 

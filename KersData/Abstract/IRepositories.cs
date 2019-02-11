@@ -119,13 +119,14 @@ namespace Kers.Models.Abstract
         string EstimatedSizeofAudiencesReached(FiscalYear fiscalYear, Boolean refreshCache = false);
         string IndirectByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
         string SessionTypebyMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
-        string PartnersOfACounty(int countyId, FiscalYear fiscalYear, bool refreshCache = false);
+        
     }
 
     public interface ISnapPolicyRepository{
         string AimedTowardsImprovement(FiscalYear fiscalYear, bool refreshCache = false);
         string PartnerCategory(FiscalYear fiscalYear, bool refreshCache = false);
         string AgentCommunityEventDetail(FiscalYear fiscalYear, bool refreshCache = false);
+        string PartnersOfACounty(int countyId, FiscalYear fiscalYear, bool refreshCache = false);
     }
 
     public interface ISnapFinancesRepository{
