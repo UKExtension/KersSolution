@@ -82,7 +82,7 @@ namespace Kers.Controllers.Reports
 
             var inServices = reportingContext.zInServiceTrainingCatalog.Where(s => true).OrderByDescending(r => r.rID);
             ViewData["trainings"] = inServices;
-            var trainings = this.trainingRepo.InServicesToTrainings(inServices.Skip(79).Take(30).ToList());
+            var trainings = this.trainingRepo.InServicesToTrainings(inServices.Skip(19).Take(30).ToList());
             return View();
         }
 

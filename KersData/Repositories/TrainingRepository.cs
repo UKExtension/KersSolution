@@ -111,7 +111,12 @@ namespace Kers.Models.Repositories
             training.approvedDate = service.approvedDate;
             training.tID = service.tID;
             training.tStatus = service.tStatus;
+            training.IsCancelled = ( training.tStatus == "C" ? true : false);
+            training.IsAllDay = false;
             training.sessionCancelledDate = service.sessionCancelledDate;
+            training.Body = service.tDescription;
+            training.BodyPreview = service.tDescription;
+            training.Subject = service.tTitle;
             training.TrainDateBegin = service.TrainDateBegin;
             if(service.TrainDateBegin != null || service.TrainDateBegin != "NULL"){
                 training.Start = offsetFromString(service.TrainDateBegin);
@@ -141,6 +146,14 @@ namespace Kers.Models.Repositories
             training.tAudience = service.tAudience;
 
             training.Enrollment = this.GetEnrollments( service.tID);
+            training.Attendees = new List<KersUser>();
+            foreach( var enrlm in training.Enrollment){
+                if(enrlm.Attendie != null){
+                    training.Attendees.Add( enrlm.Attendie);
+                }
+            }
+            training.qualtricsSurveyID = service.qualtricsSurveyID;
+            training.evaluationLink = service.evaluationLink;
 
             
             return training;
