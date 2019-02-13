@@ -487,12 +487,16 @@ export class ServicelogFormComponent implements OnInit{
         }
         if(val.isSnap){
             if(this.isAdmin){
+                val.snapAdmin = true;
                 val.snapDirect = null;
                 val.snapIndirect = null;
                 val.snapPolicy = null;
+            }else{
+                val.snapAdmin = false;
             }
         }else{
             this.isAdmin = false;
+            val.snapAdmin = false;
         }
         if(this.activity == null){
             this.service.add(val).subscribe(
