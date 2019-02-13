@@ -31,9 +31,15 @@ export class SnapedDownloadButtonComponent implements OnInit {
     this.loading = true;
     this.service.csv(this.location + "/" + this.fiscalYear.name ).subscribe(
         data => {
-            var blob = new Blob([data], {type: 'text/csv'});
-            this.loading = false;
-            saveAs(blob, this.filename + "_" + this.fiscalYear.name + ".csv");
+            if(data["size"] == undefined){
+              var blob = new Blob(["An Error Occured"], {type: 'text/csv'});
+              this.loading = false;
+              saveAs(blob, this.filename + "_" + this.fiscalYear.name + ".csv");
+            }else{
+              var blob = new Blob([data], {type: 'text/csv'});
+              this.loading = false;
+              saveAs(blob, this.filename + "_" + this.fiscalYear.name + ".csv");
+            }
         },
         err => console.error(err)
     )
