@@ -109,7 +109,6 @@ namespace Kers.Models.Entities.KERScore
         /// The event type. The possible values are: singleInstance, occurrence, exception, seriesMaster. Read-only.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "type", Required = Newtonsoft.Json.Required.Default)]
-        [Column(TypeName = "nvarchar(24)")]
         public ExtensionEventType? Type { get; set; }
     
         /// <summary>
@@ -160,6 +159,12 @@ namespace Kers.Models.Entities.KERScore
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "lastModifiedDateTime", Required = Newtonsoft.Json.Required.Default)]
         public DateTimeOffset? LastModifiedDateTime { get; set; }
+
+        public string DiscriminatorValue {
+            get {
+                return this.GetType().Name;
+            }
+        }
 
     
     }

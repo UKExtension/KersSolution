@@ -8,6 +8,7 @@ using Kers.Models.Abstract;
 using Kers.Models.Entities.KERSmain;
 using Kers.Models.Entities.KERScore;
 using Kers.Models.Contexts;
+
 using System.IO;
 using CsvHelper;
 using Kers.Models.Entities.UKCAReporting;
@@ -19,15 +20,18 @@ namespace Kers.Models.Repositories
     {
 
         KERScoreContext context;
+        KERSmainContext mainContext;
         KERSreportingContext reportingContext;
         public TrainingRepository(
             KERScoreContext context,
-            KERSreportingContext reportingContext 
+            KERSreportingContext reportingContext,
+            KERSmainContext mainContext 
             )
             
         { 
             this.reportingContext = reportingContext;
             this.context = context;
+            this.mainContext = mainContext;
         }
 
         public List<zInServiceTrainingCatalog>  csv2list(string fileUrl = "database/trainingsData.csv"){
