@@ -61,7 +61,7 @@ namespace Kers.Models.Entities.KERScore
         PostalAddress = 9,
 
         /// <summary>
-        /// postal Address
+        /// extension Office
         /// </summary>
         ExtensionOffice = 10,
 	

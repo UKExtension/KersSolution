@@ -124,6 +124,8 @@ namespace Kers.Models.Entities.KERScore
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "organizer", Required = Newtonsoft.Json.Required.Default)]
         public KersUser Organizer { get; set; }
+
+        public int OrganizerId { get; set; }
     
         /// <summary>
         /// Gets or sets web link.
