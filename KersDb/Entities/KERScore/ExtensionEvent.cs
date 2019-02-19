@@ -161,14 +161,14 @@ namespace Kers.Models.Entities.KERScore
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "lastModifiedDateTime", Required = Newtonsoft.Json.Required.Default)]
         public DateTimeOffset? LastModifiedDateTime { get; set; }
-
+/* 
         public string DiscriminatorValue {
             get {
                 return this.GetType().Name;
             }
         }
 
-    
+     */
     }
 }
 

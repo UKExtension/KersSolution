@@ -27,9 +27,9 @@ namespace Kers.Controllers
     [Route("api/[controller]")]
     public class TrainingsController : BaseController
     {
-        KERScoreContext context;
-        KERSmainContext mainContext;
-        IKersUserRepository userRepo;
+        KERScoreContext _context;
+        KERSmainContext _mainContext;
+        IKersUserRepository _userRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         public TrainingsController( 
@@ -39,9 +39,9 @@ namespace Kers.Controllers
                     ILogRepository logRepo,
                     IFiscalYearRepository fiscalYearRepo
             ):base(mainContext, context, userRepo){
-           this.context = context;
-           this.mainContext = mainContext;
-           this.userRepo = userRepo;
+           this._context = context;
+           this._mainContext = mainContext;
+           this._userRepo = userRepo;
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
         }
@@ -49,10 +49,23 @@ namespace Kers.Controllers
 
 
         [HttpGet]
-        [Route("range/{skip?}/{take?}")]
-        public IActionResult GetRange(int skip = 0, int take = 10)
+        [Route("range/{skip?}/{take?}/{order?}")]
+        public IActionResult GetRange(int skip = 0, int take = 10, string order = "start")
         {
-            return new OkObjectResult(context.Training.OrderBy(t => t.Start).Skip(skip).Take(take));
+            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.End != null);
+            
+            if(order == "end"){
+                query = query.OrderByDescending(t => t.End);
+            }else if( order == "created"){
+                query = query.OrderByDescending(t => t.CreatedDateTime);
+            }else{
+                query = query.OrderByDescending(t => t.Start);
+            }
+             
+            query = query.Skip(skip).Take(take);
+
+            var list = query.ToList();
+            return new OkObjectResult(list);
         }
 
 

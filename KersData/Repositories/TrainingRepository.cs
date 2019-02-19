@@ -124,10 +124,14 @@ namespace Kers.Models.Repositories
             training.TrainDateBegin = service.TrainDateBegin;
             if(service.TrainDateBegin != null || service.TrainDateBegin != "NULL"){
                 training.Start = offsetFromString(service.TrainDateBegin);
+            }else{
+                training.Start = DateTimeOffset.Now;
             }
             if(service.TrainDateEnd != null || service.TrainDateEnd != "NULL"){
                 training.TrainDateEnd = service.TrainDateEnd;
                 training.End = offsetFromString( service.TrainDateEnd );
+            }else{
+                training.End = DateTimeOffset.Now;
             }
             if(service.RegisterCutoffDays != null){
                training.RegisterCutoffDays = context.TainingRegisterWindow.Where( a => a.registerDaysVal == service.RegisterCutoffDays.ToString() ).FirstOrDefault(); 
@@ -141,6 +145,7 @@ namespace Kers.Models.Repositories
             if( service.seatLimit != null){
                 training.seatLimit = service.seatLimit;
             }
+            training.Type = ExtensionEventType.SingleInstance;
             training.tTime = service.tTime;
             training.day1 = service.day1;
             training.day2 = service.day2;

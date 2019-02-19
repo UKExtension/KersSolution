@@ -33,9 +33,9 @@ export class ExtensionEventLocation{
   address:PhysicalAddress;
   coordinates: ExtensionEventGeoCoordinates;
   locationUri: string;
-  locationType?: ExtensionEventLocationType
+  locationType?: ExtensionEventLocationType;
   uniqueId: string;
-  uniqueIdType?: ExtensionEventLocationUniqueIdType,
+  uniqueIdType?: ExtensionEventLocationUniqueIdType;
 }
 
 export class PhysicalAddress{

@@ -86,6 +86,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/user/user.module#UserModule'
           },
           {
+            path: 'training', 
+            loadChildren: './modules/training/training.module#TrainingModule'
+          },
+          {
             path: 'activity/:id',
             component: ReportingDetailComponent,
           },
