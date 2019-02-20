@@ -97,23 +97,37 @@ namespace Kers.Controllers.Reports
         public IActionResult Expenses(int districtid=4, int month = 8, int year = 2018)
         {
 
-            var ret = new List<ExpenseSummary>();   
+            var ret = new List<List<ExpenseSummary>>();   
+            var allSummaries = new List<ExpenseSummary>();
 
-            var counties = context.PlanningUnit.Where( u => u.DistrictId == districtid);
-            var employees = new List<KersUser>();
+            var counties = context.PlanningUnit.Where( u => u.DistrictId == districtid).ToArray();
+            ViewData["counties"] = counties;
+            var allEmployees = new List<KersUser>();
             foreach( var county in counties){
+                var ByCounty = new List<ExpenseSummary>();
                 var emp = this.context.KersUser.Where( u => u.RprtngProfile.PlanningUnit == county).Include( u => u.RprtngProfile);
-                employees.AddRange( emp );
-            }
-            foreach( var emp in employees ){
-                var sumr = this.expensesRepo.Summaries(emp, year, month);
-                ret.AddRange(sumr);
+                allEmployees.AddRange( emp );
+                foreach( var e in emp ){
+                    var sumr = this.expensesRepo.Summaries(e, year, month);
+                    ByCounty.AddRange( sumr );
+                }
+                allSummaries.AddRange( ByCounty );
+                ret.Add( BySource( ByCounty ) );
             }
 
+            ViewData["total"] = BySource(allSummaries);
+            
+
+            
+
+            return View(ret);
+        }
+
+        private List<ExpenseSummary> BySource( List<ExpenseSummary> mixed ){
             var sources = this.context.ExpenseFundingSource;
             var bySource = new List<ExpenseSummary>();
             foreach( var src in sources ){
-                var sumrs = ret.Where( s => s.fundingSource == src);
+                var sumrs = mixed.Where( s => s.fundingSource == src);
                 var smr = new ExpenseSummary{
                     fundingSource = src,
                     miles = sumrs.Sum( s => s.miles),
@@ -128,7 +142,7 @@ namespace Kers.Controllers.Reports
 
             }
 
-            return View(bySource);
+            return bySource;
         }
 
 

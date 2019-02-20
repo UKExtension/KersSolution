@@ -2,12 +2,49 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
 
     ViewData["Title"] = "Expenses";
+    var countyOrder = 0;
 
-    
+    var counties = ViewData["counties"] as Kers.Models.Entities.KERScore.PlanningUnit[];
+    var total = ViewData["total"] as List<Kers.Models.Repositories.ExpenseSummary>;
 
 }
 
-@model List<Kers.Models.Repositories.ExpenseSummary>;
+@model List<List<Kers.Models.Repositories.ExpenseSummary>>;
+
+
+@foreach( var countyData in Model ){
+    <h2>@counties[countyOrder++].Name</h2>
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>Funding Source</th>
+                            <th>Miles</th>
+                            <th>Mileage Cost</th>
+                            <th>Meals</th>
+                            <th>Lodging</th>
+                            <th>Regisration</th>
+                            <th>Other</th>
+                            <th>Total</th>
+                        </tr>
+                        @foreach( var exp in countyData)
+                        {
+                        <tr>
+                            <td>@exp.fundingSource.Name</td>
+                            <td>@exp.miles</td>
+                            <td>@exp.mileageCost</td>
+                            <td>@exp.meals</td>
+                            <td>@exp.lodging</td>
+                            <td>@exp.registration</td>
+                            <td>@exp.other</td>
+                            <td>@exp.total</td>
+                        </tr>
+                        }
+                    </tbody>
+                  </table>
+}
+
+
+<h2>Total</h2>
 <table class="table table-striped">
                     <tbody>
                         <tr>
@@ -20,7 +57,7 @@
                             <th>Other</th>
                             <th>Total</th>
                         </tr>
-                        @foreach( var exp in Model)
+                        @foreach( var exp in total)
                         {
                         <tr>
                             <td>@exp.fundingSource.Name</td>
