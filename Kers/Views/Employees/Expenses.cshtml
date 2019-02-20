@@ -10,10 +10,27 @@
 @model List<Kers.Models.Repositories.ExpenseSummary>;
 <table class="table table-striped">
                     <tbody>
+                        <tr>
+                            <th>Funding Source</th>
+                            <th>Miles</th>
+                            <th>Mileage Cost</th>
+                            <th>Meals</th>
+                            <th>Lodging</th>
+                            <th>Regisration</th>
+                            <th>Other</th>
+                            <th>Total</th>
+                        </tr>
                         @foreach( var exp in Model)
                         {
                         <tr>
+                            <td>@exp.fundingSource.Name</td>
                             <td>@exp.miles</td>
+                            <td>@exp.mileageCost</td>
+                            <td>@exp.meals</td>
+                            <td>@exp.lodging</td>
+                            <td>@exp.registration</td>
+                            <td>@exp.other</td>
+                            <td>@exp.total</td>
                         </tr>
                         }
                     </tbody>

@@ -110,9 +110,25 @@ namespace Kers.Controllers.Reports
                 ret.AddRange(sumr);
             }
 
+            var sources = this.context.ExpenseFundingSource;
+            var bySource = new List<ExpenseSummary>();
+            foreach( var src in sources ){
+                var sumrs = ret.Where( s => s.fundingSource == src);
+                var smr = new ExpenseSummary{
+                    fundingSource = src,
+                    miles = sumrs.Sum( s => s.miles),
+                    mileageCost = sumrs.Sum( s => s.mileageCost),
+                    meals = sumrs.Sum( s => s.meals),
+                    lodging = sumrs.Sum( s => s.lodging),
+                    registration = sumrs.Sum( s => s.registration),
+                    other = sumrs.Sum( s => s.other),
+                    total = sumrs.Sum( s => s.total)
+                };
+                bySource.Add( smr );
 
+            }
 
-            return View(ret);
+            return View(bySource);
         }
 
 
