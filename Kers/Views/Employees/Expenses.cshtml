@@ -13,9 +13,10 @@
 
 
 @foreach( var countyData in Model ){
+    <br><br>
     <h2>@counties[countyOrder++].Name</h2>
                 <table class="table table-striped">
-                    <tbody>
+                    <thead>
                         <tr>
                             <th>Funding Source</th>
                             <th>Miles</th>
@@ -26,6 +27,9 @@
                             <th>Other</th>
                             <th>Total</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        
                         @foreach( var exp in countyData)
                         {
                         <tr>
@@ -40,13 +44,25 @@
                         </tr>
                         }
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Sum</td>
+                            <td>@countyData.Sum( d => d.miles)</td>
+                            <td>@countyData.Sum( d => d.mileageCost)</td>
+                            <td>@countyData.Sum( d => d.meals)</td>
+                            <td>@countyData.Sum( d => d.lodging)</td>
+                            <td>@countyData.Sum( d => d.registration)</td>
+                            <td>@countyData.Sum( d => d.other)</td>
+                            <td>@countyData.Sum( d => d.total)</td>
+                        </tr>
+                    </tfoot>
                   </table>
 }
 
 
 <h2>Total</h2>
 <table class="table table-striped">
-                    <tbody>
+    <thead>
                         <tr>
                             <th>Funding Source</th>
                             <th>Miles</th>
@@ -57,6 +73,9 @@
                             <th>Other</th>
                             <th>Total</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        
                         @foreach( var exp in total)
                         {
                         <tr>
@@ -71,4 +90,16 @@
                         </tr>
                         }
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Sum</td>
+                            <td>@total.Sum( d => d.miles)</td>
+                            <td>@total.Sum( d => d.mileageCost)</td>
+                            <td>@total.Sum( d => d.meals)</td>
+                            <td>@total.Sum( d => d.lodging)</td>
+                            <td>@total.Sum( d => d.registration)</td>
+                            <td>@total.Sum( d => d.other)</td>
+                            <td>@total.Sum( d => d.total)</td>
+                        </tr>
+                    </tfoot>
                   </table>
