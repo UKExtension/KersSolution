@@ -2,11 +2,12 @@ namespace Kers.Models.Entities.KERScore
 {
     using System.ComponentModel;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// The enum EventType.
     /// </summary>
-    [JsonConverter(typeof(EnumConverter))]
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ExtensionEventType
     {
     

@@ -1,0 +1,20 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+
+    ViewData["Title"] = "Expenses";
+
+    
+
+}
+
+@model List<Kers.Models.Repositories.ExpenseSummary>;
+<table class="table table-striped">
+                    <tbody>
+                        @foreach( var exp in Model)
+                        {
+                        <tr>
+                            <td>@exp.miles</td>
+                        </tr>
+                        }
+                    </tbody>
+                  </table>

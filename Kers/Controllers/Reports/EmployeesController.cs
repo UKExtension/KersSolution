@@ -47,6 +47,7 @@ namespace Kers.Controllers.Reports
         private IDistributedCache _cache;
         IActivityRepository activityRepo;
         IContactRepository contactRepo;
+        IExpenseRepository expensesRepo;
         private FiscalYear currentFiscalYear;
 
         private IConfiguration _configuration;
@@ -60,6 +61,7 @@ namespace Kers.Controllers.Reports
                     IDistributedCache _cache,
                     IActivityRepository activityRepo,
                     IContactRepository contactRepo,
+                    IExpenseRepository expenseRepo,
                     IConfiguration Configuration
             ){
            this.context = context;
@@ -70,6 +72,7 @@ namespace Kers.Controllers.Reports
            this._cache = _cache;
            this.activityRepo = activityRepo;
            this.contactRepo = contactRepo;
+           this.expensesRepo = expenseRepo;
            _configuration = Configuration;
         }
 
@@ -86,6 +89,30 @@ namespace Kers.Controllers.Reports
             //this.context.Training.AddRange(trainings);
             //this.context.SaveChanges();
             return View();
+        }
+
+
+        [HttpGet]
+        [Route("expenses/{districtid?}/{month?}/{year?}")]
+        public IActionResult Expenses(int districtid=4, int month = 8, int year = 2018)
+        {
+
+            var ret = new List<ExpenseSummary>();   
+
+            var counties = context.PlanningUnit.Where( u => u.DistrictId == districtid);
+            var employees = new List<KersUser>();
+            foreach( var county in counties){
+                var emp = this.context.KersUser.Where( u => u.RprtngProfile.PlanningUnit == county).Include( u => u.RprtngProfile);
+                employees.AddRange( emp );
+            }
+            foreach( var emp in employees ){
+                var sumr = this.expensesRepo.Summaries(emp, year, month);
+                ret.AddRange(sumr);
+            }
+
+
+
+            return View(ret);
         }
 
 
@@ -133,27 +160,5 @@ namespace Kers.Controllers.Reports
         
        
     }
-
-
-    class KersReportingContext:DbContext{
-        public KersReportingContext(DbContextOptions<KersReportingContext> options)
-        : base(options)
-        { }
-
-        public virtual DbSet<vInServiceQualtricsSurveysToCreate> vInServiceQualtricsSurveysToCreate { get; set; }
-    }
-
-    public partial class vInServiceQualtricsSurveysToCreate
-    {
-        [Key]
-        public int rID {get;set;}
-        public string tID {get; set;}
-        public string trainDateBegin {get;set;}
-        public string  tTitle {get;set;}
-        public string qualtricsTitle {get;set;}
-    }
-
-
-
 
 }
