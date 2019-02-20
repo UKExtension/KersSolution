@@ -100,7 +100,10 @@ namespace Kers.Controllers.Reports
             var ret = new List<List<ExpenseSummary>>();   
             var allSummaries = new List<ExpenseSummary>();
 
-            var counties = context.PlanningUnit.Where( u => u.DistrictId == districtid).ToArray();
+            var counties = context.PlanningUnit
+                                        .Where( u => u.DistrictId == districtid && u.Name.Substring( u.Name.Count() - 3, 3) == "CES")
+                                        .OrderBy( u => u.Name )
+                                        .ToArray();
             ViewData["counties"] = counties;
             var allEmployees = new List<KersUser>();
             foreach( var county in counties){
