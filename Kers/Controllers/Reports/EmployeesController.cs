@@ -83,9 +83,9 @@ namespace Kers.Controllers.Reports
         {
             //List<zInServiceTrainingCatalog> inServices = this.trainingRepo.csv2list().Take(10).ToList();
 
-            var inServices = reportingContext.zInServiceTrainingCatalog.Where(s => true).OrderByDescending(r => r.rID);
-            ViewData["trainings"] = inServices;
-            var trainings = this.trainingRepo.InServicesToTrainings(inServices.Skip(300).Take(10).ToList());
+            //var inServices = reportingContext.zInServiceTrainingCatalog.Where(s => true).OrderByDescending(r => r.rID);
+            //ViewData["trainings"] = inServices;
+            //var trainings = this.trainingRepo.InServicesToTrainings(inServices.Skip(300).Take(10).ToList());
             //this.context.Training.AddRange(trainings);
             //this.context.SaveChanges();
             return View();
@@ -98,6 +98,8 @@ namespace Kers.Controllers.Reports
         {
 
             var ret = new List<List<ExpenseSummary>>();   
+
+            /* 
             var allSummaries = new List<ExpenseSummary>();
 
             var counties = context.PlanningUnit
@@ -120,7 +122,7 @@ namespace Kers.Controllers.Reports
 
             ViewData["total"] = BySource(allSummaries);
             
-
+ */
             
 
             return View(ret);

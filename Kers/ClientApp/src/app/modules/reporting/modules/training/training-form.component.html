@@ -1,0 +1,35 @@
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
+  <div class="col-sm-offset-3 col-sm-9">
+      <h2>Propose Training</h2><br><br>
+  </div>
+  <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="trainingForm">
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
+        <div class="col-md-4 col-sm-6 col-xs-7">
+            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Title:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="title" formControlName="title" id="title" class="form-control col-xs-12" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!trainingForm.controls.description.valid">
+            <textarea [froalaEditor]="options" name="description" formControlName="description" id="description" class="form-control col-xs-12"></textarea>
+        </div>
+    </div>
+            
+    <div class="ln_solid"></div>
+    <div class="form-group">
+        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+            <button type="submit" [disabled]="trainingForm.invalid"  class="btn btn-success">Submit</button>
+        </div>
+    </div>
+      
+  </form>
+</div>
