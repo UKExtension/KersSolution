@@ -868,24 +868,6 @@ namespace Kers.Models.Repositories
             return result;
         }
 
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
         public string PersonalHourDetails(FiscalYear fiscalYear, bool refreshCache = false){
             string result;
             var cacheKey = CacheKeys.PersonalHourDetails + fiscalYear.Name;
@@ -966,7 +948,7 @@ namespace Kers.Models.Repositories
                         row += string.Concat( "\"", userData.User.ExtensionPosition.Code, "\"") + ",";
                     }
                     var spclt = "";
-                    foreach( var sp in userData.User.Specialties){
+                    foreach( var sp in userData.User.Specialties.OrderBy( s => s.Specialty.Code)){
                         spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
                     }
                     row += string.Concat( "\"", spclt, "\"") + ",";
