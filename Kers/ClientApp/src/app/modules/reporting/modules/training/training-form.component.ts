@@ -20,6 +20,7 @@ export class TrainingFormComponent implements OnInit {
                     month: this.date.getMonth() + 1,
                     day: this.date.getDate()}
                 }, Validators.required],
+            end: [{}],
             title: ["", Validators.required],
             description: [""],
       });;
