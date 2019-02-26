@@ -11,7 +11,9 @@
     </h2><br><br>
   </div>
   <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="commitmentForm">
-      
+      <div class="col-lg-offset-3 col-lg-9 col-xs-12">
+        <p class="lead" style="font-size: 3em;"><span class="green">Hours</span></p>
+      </div>
       <div class="form-group">
           <label class="col-lg-3 col-xs-12">Commitment Hours:</label> 
           <div class="col-lg-9 col-xs-12">
@@ -60,29 +62,42 @@
       
           </div>
       </div>
-      <div class="col-md-12"><strong>TOTAL SNAP-Ed Commitment Hours for FY{{commitmentFiscalYear.name}}:</strong> {{totalHours()}}<br><br><br></div>
+      
+    
+      <div class="col-lg-3 col-xs-12"><strong>Total SNAP-Ed<br>Commitment Hours for FY{{commitmentFiscalYear.name}}:</strong></div> 
+      <div class="col-lg-9 col-xs-12"><span style="font-size: 2em; font-weight: bold;"> {{totalHours()}}</span></div>
+
+
+      <div class="col-md-12" style="line-height: 15px;"><strong></strong><br><br></div>
+      <div class="col-lg-offset-3 col-lg-9 col-xs-12">
+        <p class="lead green" style="font-size: 3em;">Contacts</p>
+      </div>
+      
       <div class="form-group">
           <label class="col-lg-3 col-xs-12">Commitment Contacts:</label> 
           <div class="col-lg-9 col-xs-12">
               <div class="table-responsive snap-audience">
-                  <table class="table table-striped table-bordered" formArrayName="contactsCommitment">
+                  <table class="table table-striped table-bordered" formArrayName="contactsCommitment" style="border-top: none;">
                       <thead>
                           <tr>
-                              <th>&nbsp;</th>
-                              <th *ngFor="let hType of contactsActivityTypes">{{hType.name}}</th>
+                              <th style="border-top: 1px solid steelblue; border-left-color: steelblue;">&nbsp;</th>
+                              <th style="border-top: 1px solid" [style.border-top-color]="i==0 ? 'steelblue' : '#ddd' " [style.border-right-color]="i==0 ? 'steelblue' : '#ddd' " *ngFor="let hType of contactsActivityTypes; let i = index">{{hType.name}}</th>
                           </tr>
                       </thead>
                       <tbody>
                           <tr *ngFor="let pt of projectTypes">
-                              <td>{{pt.name}}: </td>
-                              <td *ngFor="let hType of contactsActivityTypes" [formGroupName]="cIndex()">
+                              <td style="border-left-color: steelblue;">{{pt.name}}: </td>
+                              <td [style.border-right-color]="k==0 ? 'steelblue' : '#ddd' " *ngFor="let hType of contactsActivityTypes; let k = index" [formGroupName]="cIndex()">
                                   <input type="number" formControlName="amount">
                               </td>
                           </tr>
   
                           <tr>
-                              <td><b>TOTALS: </b></td>
-                              <td *ngFor="let hType of contactsActivityTypes">{{totalByActivityTypeContacts(hType)}}</td>
+                              <td style="border-left-color: steelblue;"><b>TOTALS: </b></td>
+                              <td [style.border-right-color]="j==0 ? 'steelblue' : '#ddd' " *ngFor="let hType of contactsActivityTypes; let j = index">{{totalByActivityTypeContacts(hType)}}</td>
+                          </tr>
+                          <tr>
+                              <td style="border-left-color: steelblue; border-right-color: steelblue; border-bottom-color: steelblue; color:steelblue;" colspan="2">Used to determine reinforcement quantities</td>
                           </tr>
                       </tbody>
                   </table>
