@@ -21,6 +21,19 @@
         </div>
     </div>
 </div>
+
+<div class="row" *ngIf="newOff">
+        <div class="col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <a class="btn btn-dark btn-lg btn-block" [routerLink]="['/reporting/snaped/commitment/2020']">Commitment</a>    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 <servicelog-form *ngIf="newDirect" [isNewDirect]="true" (onFormCancel)="closeNew()" (onFormSubmit)="newActivitySubmitted($event)"></servicelog-form>
 <servicelog-form *ngIf="newIndirect" [isNewIndirect]="true" (onFormCancel)="closeNew()" (onFormSubmit)="newActivitySubmitted($event)"></servicelog-form>
 <servicelog-form *ngIf="newPolicy" [isNewPolicy]="true" (onFormCancel)="closeNew()" (onFormSubmit)="newActivitySubmitted($event)"></servicelog-form>
