@@ -35,7 +35,7 @@
     <div class="col-xs-12">
         <snape-ed-stats [planningUnit]="county" (onCalculated)="storeHours($event)"></snape-ed-stats>
     </div><br><br>
-    <snape-ed-commitment-stats [planningUnit]="county" [fiscalYear]="fiscalYear" (onCalculated)="storeCommitment($event)"></snape-ed-commitment-stats>
+    <snape-ed-commitment-stats *ngIf="fiscalYear" [planningUnit]="county" [fiscalYear]="fiscalYear" (onCalculated)="storeCommitment($event)"></snape-ed-commitment-stats>
     <br><br>
     <h2>Data Downloads</h2>
     <fiscal-year-switcher [type]="'snapEd'" [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitchedData($event)"></fiscal-year-switcher>

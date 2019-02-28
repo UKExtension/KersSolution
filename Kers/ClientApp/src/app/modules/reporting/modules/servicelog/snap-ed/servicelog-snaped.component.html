@@ -26,7 +26,16 @@
         <div class="col-xs-12">
             <div class="x_panel">
                 <div class="x_content">
-                    <a class="btn btn-dark btn-lg btn-block" [routerLink]="['/reporting/snaped/commitment/2020']">Commitment</a>    
+                    <div class="row">
+                        <div class="col-xs-12">
+                                <a *ngIf="!showCommitment" class="btn btn-dark btn-lg btn-block" (click)="showCommitment = true">Commitment Worksheet for Oct 1, 2019 - Sep 30, 2020</a>
+                                <a *ngIf="showCommitment" class="btn btn-primary btn-xs pull-right" (click)="showCommitment = false"><i class="fa fa-close"></i> Close</a>
+                        </div>
+                        <div class="col-xs-12">
+                            <snap-ed-commitment-manager *ngIf="showCommitment" [showDelete]="false" [displayFiscalYearSwitcher]="false"></snap-ed-commitment-manager>
+                        </div>
+                           
+                    </div> 
                 </div>
             </div>
         </div>

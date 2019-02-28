@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SnapEdCommitmentService, CommitmentBundle } from '../snap-ed-commitment.service';
-import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
+import { FiscalYear, FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   selector: 'snap-ed-commitment-manager',
@@ -14,7 +14,7 @@ import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
       </div>
       
       <commitment-form *ngIf="!isItJustView && !confirmDelete" [commitment]="commitment" [commitmentFiscalYear]="fiscalyear" [commitmentUserId]="userid" (onFormSubmit)="commitmentEdited($event)" (onFormCancel)="isItJustView=true"></commitment-form>
-      <div *ngIf="!isItJustView && commitment.commitments.length!=0 && !confirmDelete && !loading" class="text-right" (click)="confirmDelete=true"><button type="button" class="btn btn-danger btn-sm">delete</button></div>
+      <div *ngIf="!isItJustView && commitment.commitments.length!=0 && !confirmDelete && !loading && showDelete" class="text-right" (click)="confirmDelete=true"><button type="button" class="btn btn-danger btn-sm">delete</button></div>
       <div *ngIf="confirmDelete"><br><br>
       Do you really want to delete commitment for FY{{fiscalyear.name}}?<br><button (click)="confirmDeleteCommitment()" class="btn btn-info btn-xs">Yes</button> <button (click)="confirmDelete=false" class="btn btn-info btn-xs">No</button>
       </div>
@@ -28,6 +28,7 @@ export class SnapEdCommitmentComponent implements OnInit {
   @Input() displayFiscalYearSwitcher = true;
   @Input() fiscalyear:FiscalYear;
   @Input() canItBeEdited = true;
+  @Input() showDelete = true;
 
   isItJustView = true;
   commitment:CommitmentBundle;
@@ -35,12 +36,19 @@ export class SnapEdCommitmentComponent implements OnInit {
   confirmDelete = false;
 
   constructor(
-    private service: SnapEdCommitmentService
+    private service: SnapEdCommitmentService,
+    private fiscalYearService : FiscalyearService
   ) { }
 
   ngOnInit() {
     if(!this.displayFiscalYearSwitcher){
-      this.getCommitment();
+      this.fiscalYearService.next("snapEd").subscribe(
+        res => {
+          this.fiscalyear = res;
+          this.getCommitment();
+        }
+      )
+      
     }
   }
 
@@ -51,6 +59,7 @@ export class SnapEdCommitmentComponent implements OnInit {
     this.service.getSnapCommitments(this.userid, this.fiscalyear.id).subscribe(
       res => {
             this.commitment = <CommitmentBundle> res;
+            if( this.commitment.commitments.length == 0 && !this.displayFiscalYearSwitcher ) this.isItJustView = false;
             this.loading = false;
         }
     );

@@ -24,7 +24,7 @@ export class ServicelogSnapedComponent implements OnInit {
     newPolicy = false;
     newAdmin = false;
 
-
+    showCommitment = false;
 
     hours = 0;
     copies = 0;

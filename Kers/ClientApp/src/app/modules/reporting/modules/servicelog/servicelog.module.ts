@@ -26,6 +26,7 @@ import { FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 import { SnapedAdminService } from '../admin/snaped/snaped-admin.service';
 import { ServicelogSnapedStatsRowComponent } from './snap-ed/servicelog-snaped-stats-row.component';
 import { ActivityModule } from '../activity/activity.module';
+import { SnapEdModule } from '../snap-ed/snap-ed.module';
 
 
 
@@ -34,7 +35,8 @@ import { ActivityModule } from '../activity/activity.module';
                   MyDatePickerModule,
                   MyDateRangePickerModule,
                   ServicelogRoutingModule,
-                  ActivityModule
+                  ActivityModule,
+                  SnapEdModule
                 ],
   declarations: [ 
                     ServicelogHomeComponent,
