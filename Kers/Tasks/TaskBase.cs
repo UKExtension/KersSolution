@@ -30,7 +30,7 @@ namespace Kers.Tasks
                             string className,
                             object obj,
                             string level = "Information", 
-                            string description = "Ececuted Scheduled Task"
+                            string description = "Excuted Scheduled Task"
                         ){
                              
             var log = new Log();
