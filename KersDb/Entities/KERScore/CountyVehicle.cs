@@ -13,11 +13,14 @@ namespace Kers.Models.Entities.KERScore
         public PlanningUnit PlanningUnit {get;set;}
         public int? AddedById {get;set;}
         public KersUser AddedBy {get;set;}
+        public string Name {get;set;}
         public string Make {get;set;}
         public string Model {get;set;}
         public string Year {get;set;}
         public string LicenseTag {get;set;}
+        public int PurchasePrice {get;set;}
         public float Odometer {get;set;}
+        public float EndingOdometer {get;set;}
         public string Color {get;set;}
         public bool Enabled {get;set;}
         [Column(TypeName = "text")]

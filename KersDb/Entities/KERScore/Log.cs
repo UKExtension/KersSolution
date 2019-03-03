@@ -21,6 +21,8 @@ namespace Kers.Models.Entities.KERScore
         
         [Column(TypeName = "text")]
         public string Object {get; set;}
+        [Column(TypeName = "text")]
+        public string ProgressLog {get; set;}
         public string Ip {get; set;}
         public string Agent {get; set;}
         public KersUser User {get;set;}

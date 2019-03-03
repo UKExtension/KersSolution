@@ -40,12 +40,15 @@ export class VehicleFormComponent implements OnInit {
     this.vehicleForm = fb.group(
             {
               uploadImageId: '',
+              name: [''],
               make: ['', Validators.required],
               model: ['', Validators.required],
               year: [''],
               licenseTag: ['', Validators.required],
+              purchasePrice: [''],
               color: [''],
               odometer: [''],
+              endingOdometer: [''],
               enabled: true,
               comments: [''],
               datePurchased: [{}],

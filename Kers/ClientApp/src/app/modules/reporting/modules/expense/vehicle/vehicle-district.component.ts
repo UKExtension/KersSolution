@@ -5,7 +5,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 @Component({
   selector: 'vehicle-district',
   template: `
-    <p *ngIf="districtId">
+    <p *ngIf="districtId != null">
     <planningunit-list [districtId]="districtId" [link]="'/reporting/expense/vehicle/county/'"></planningunit-list>
     </p>
   `,
@@ -15,7 +15,7 @@ export class VehicleDistrictComponent implements OnInit {
 
 
   errorMessage:string;
-  districtId:number | null = null;
+  districtId:number = 0;
   constructor(
     private reportingService: ReportingService,
     private route: ActivatedRoute,
@@ -24,7 +24,10 @@ export class VehicleDistrictComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(
       (params: Params) => {
-        this.districtId = params['id'];
+        if(params['id'] != undefined){
+          this.districtId = params['id'];
+        }
+        
       },
       err => this.errorMessage = <any>err
     );
