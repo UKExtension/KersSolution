@@ -47,6 +47,10 @@ import { VehicleListDetailComponent } from './vehicle/vehicle-list-detail.compon
                                     component: VehicleComponent,
                                 },  
                                 {
+                                    path: 'vehicle/district',
+                                    component: VehicleDistrictComponent,
+                                },  
+                                {
                                     path: 'vehicle/county/:id',
                                     component: VehicleCountyComponent,
                                 },  
