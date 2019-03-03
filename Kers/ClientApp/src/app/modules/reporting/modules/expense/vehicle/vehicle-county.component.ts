@@ -46,7 +46,6 @@ export class VehicleCountyComponent implements OnInit {
   }
   newVehicleSubmitted(event:Vehicle){
     this.county.vehicles.unshift(event);
-    console.log(this.county);
     this.newVehicle = false;
   }
   defaultTitle(){
