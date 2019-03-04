@@ -159,10 +159,13 @@ namespace Kers.Controllers
 
             if(entity != null){
                 entity.Make = vehicle.Make;
+                entity.Name = vehicle.Name;
                 entity.Model = vehicle.Model;
                 entity.LicenseTag = vehicle.LicenseTag;
                 entity.Color = vehicle.Color;
                 entity.Odometer = vehicle.Odometer;
+                entity.EndingOdometer = vehicle.EndingOdometer;
+                entity.PurchasePrice = vehicle.PurchasePrice;
                 entity.Year = vehicle.Year;
                 entity.Enabled = vehicle.Enabled;
                 entity.DatePurchased = vehicle.DatePurchased;

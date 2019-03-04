@@ -48,7 +48,7 @@
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <select [style.border]="expenseForm.hasError('noVehicleSelected')?'1px solid #CE5454':'1px solid #ccc'" name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
                     <option *ngIf="enabledVehicles.length > 1" value="">-- select --</option>
-                    <option *ngFor="let vehicle of enabledVehicles" [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}}</option>
+                    <option *ngFor="let vehicle of enabledVehicles" [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}} {{ vehicle.name != undefined && vehicle.name != '' ? '(' + vehicle.name + ')' : ''}}</option>
                 </select>
             </div>
         </div>
