@@ -327,10 +327,11 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet("FundingSource")]
-        public IActionResult FundingSource(){
-            var fs = this.context.ExpenseFundingSource.OrderBy(f => f.Order).ToList();
-            return new OkObjectResult(fs);
+        [HttpGet("FundingSource/{all?}")]
+        public IActionResult FundingSource(bool all = false){
+            IQueryable<ExpenseFundingSource> fs = this.context.ExpenseFundingSource;
+            if( !all ) fs = fs.Where( f => f.MileageAvailable );
+            return new OkObjectResult(fs.OrderBy(f => f.Order));
         }
 
         [HttpGet("MealRate/{userId?}")]
