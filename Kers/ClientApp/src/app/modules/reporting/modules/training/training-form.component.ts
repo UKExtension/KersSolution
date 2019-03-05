@@ -21,8 +21,11 @@ export class TrainingFormComponent implements OnInit {
                     day: this.date.getDate()}
                 }, Validators.required],
             end: [{}],
-            title: ["", Validators.required],
-            description: [""],
+            subject: ["", Validators.required],
+            body: [""],
+            tAudience: [""],
+            tContact: [""],
+            tLocation: [""],
       });;
     options = { 
         placeholderText: 'Your Description Here!',
