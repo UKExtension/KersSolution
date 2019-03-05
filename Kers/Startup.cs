@@ -130,7 +130,8 @@ namespace Kers
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS2017"]));
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS_SNAPED2017"]));
-                //
+                services.AddDbContext<KERSreportingContext>(options => 
+                    options.UseSqlServer(Configuration["ConnectionStrings:connKersReporting"]));
                 
                 services.AddDistributedSqlServerCache(options =>
                     {
