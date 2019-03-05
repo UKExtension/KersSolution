@@ -19,18 +19,19 @@ namespace Kers.Tasks
         //KERScoreContext context;
         
         public async Task  LogError(KERScoreContext context, string className = null, object obj = null,
-                            string description = "Scheduled Task Error"){
+                            string description = "Scheduled Task Error", string progress = ""){
             await this.Log(context, className, obj, "Error", description);
         }
         public async Task LogComplete(KERScoreContext context, string className = null, object obj = null,
-                            string description = "Ececuted Scheduled Task"){
+                            string description = "Ececuted Scheduled Task", string progress = ""){
             await this.Log(context, className, obj, "Information", description);
         }
         public async Task Log(    KERScoreContext context,
                             string className,
                             object obj,
                             string level = "Information", 
-                            string description = "Excuted Scheduled Task"
+                            string description = "Excuted Scheduled Task",
+                            string progress = ""
                         ){
                              
             var log = new Log();
