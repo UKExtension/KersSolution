@@ -44,6 +44,7 @@ namespace Kers.Tasks
                                                 });
             log.Description = description;
             log.Type = className;
+            log.ProgressLog = progress;
             context.Log.Add(log);
             await context.SaveChangesAsync();
 
