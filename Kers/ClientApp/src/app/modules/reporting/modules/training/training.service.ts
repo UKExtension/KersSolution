@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import {Training} from './training'
+import {Training, TainingRegisterWindow, TainingInstructionalHour, TrainingCancelEnrollmentWindow} from './training'
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,29 @@ export class TrainingService {
             );
       }
 
+      registerWindows() : Observable<TainingRegisterWindow[]>{
+        var url = this.baseUrl + "RegisterWindows/";
+        return this.http.get<TainingRegisterWindow[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('registerWindows', []))
+            );
+      }
+
+      instructionalHours() : Observable<TainingInstructionalHour[]>{
+        var url = this.baseUrl + "InstructionalHours/";
+        return this.http.get<TainingInstructionalHour[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('instructionalHour', []))
+            );
+      }
+      cancelEnrollmentWindows() : Observable<TrainingCancelEnrollmentWindow[]>{
+        var url = this.baseUrl + "CancelEnrollmentWindows/";
+        return this.http.get<TrainingCancelEnrollmentWindow[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('cancelEnrollmentWindows', []))
+            );
+      }
+
 /* 
       current():Observable<User>{
         if(this.usr == null){
@@ -53,13 +76,7 @@ export class TrainingService {
 
 
 
-    getCustom(searchParams?:{}) : Observable<User[]>{
-        var url = this.baseUrl + "GetCustom/";
-        return this.http.get<User[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
-            .pipe(
-                catchError(this.handleError('getCustom', []))
-            );
-    }
+    
 
     getCustomCount(searchParams?:{}):Observable<number>{
         var url = this.baseUrl + "GetCustomCount/";

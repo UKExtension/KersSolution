@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Training } from './training';
+import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow } from './training';
 import { TrainingService } from './training.service';
 import { IMyDpOptions, IMyDateModel } from "mydatepicker";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'training-form',
@@ -10,6 +11,9 @@ import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 })
 export class TrainingFormComponent implements OnInit {
     @Input() training:Training;
+    iHours: Observable<TainingInstructionalHour[]>;
+    cancelWindow: Observable<TrainingCancelEnrollmentWindow[]>;
+    registerWindow: Observable<TainingRegisterWindow[]>;
 
     date = new Date();
     trainingForm = this.fb.group(
@@ -58,7 +62,11 @@ export class TrainingFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service:TrainingService
-  ) { }
+  ) {
+    this.iHours = service.instructionalHours();
+    this.cancelWindow = service.cancelEnrollmentWindows();
+    this.registerWindow = service.registerWindows();
+   }
 
   ngOnInit() {
     //this.trainingForm.patchValue(this.training);
@@ -68,7 +76,7 @@ export class TrainingFormComponent implements OnInit {
 
   onDateChanged(event: IMyDateModel) {
     
-    }
+  }
 
   onSubmit(){
       /* 

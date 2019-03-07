@@ -122,6 +122,22 @@ namespace Kers.Controllers
             }
         }
 
+        [HttpGet("RegisterWindows")]
+        public async Task<IActionResult> RegisterWindows(){
+            var winds = await context.TainingRegisterWindow.ToListAsync();
+            return new OkObjectResult(winds);
+        }
+        [HttpGet("InstructionalHours")]
+        public async Task<IActionResult> InstructionalHours(){
+            var hours = await context.TainingInstructionalHour.ToListAsync();
+            return new OkObjectResult(hours);
+        }
+        [HttpGet("CancelEnrollmentWindows")]
+        public async Task<IActionResult> CancelEnrollmentWindows(){
+            var winds = await context.TrainingCancelEnrollmentWindow.ToListAsync();
+            return new OkObjectResult(winds);
+        }
+
 
 
 

@@ -24,7 +24,7 @@ namespace Kers.Tasks
         }
         public async Task LogComplete(KERScoreContext context, string className = null, object obj = null,
                             string description = "Ececuted Scheduled Task", string progress = ""){
-            await this.Log(context, className, obj, "Information", description);
+            await this.Log(context, className, obj, "Information", description, progress);
         }
         public async Task Log(    KERScoreContext context,
                             string className,

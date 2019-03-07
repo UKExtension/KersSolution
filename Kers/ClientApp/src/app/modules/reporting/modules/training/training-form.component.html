@@ -34,6 +34,89 @@
             <textarea [froalaEditor]="options" name="tAudience" formControlName="tAudience" id="tAudience" class="form-control col-xs-12"></textarea>
         </div>
     </div>
+    <div class="form-group">
+        <label for="tContact" class="control-label col-md-3 col-sm-3 col-xs-12">Contact:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="tContact" formControlName="tContact" id="tContact" class="form-control col-xs-12" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="tLocation" class="control-label col-md-3 col-sm-3 col-xs-12">Location:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="tLocation" formControlName="tLocation" id="tLocation" class="form-control col-xs-12" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+                <br><br>ENTER START TIME AND END TIME FOR UP TO FOUR DAYS - Indicate AM or PM and EST or CST time zone <em>(i.e., 9:00AM – 10:00AM CST)</em>:
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="day1" class="control-label col-md-3 col-sm-3 col-xs-12">Day 1 - Start Time and End Time:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="day1" formControlName="day1" id="day1" class="form-control col-xs-12" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="day2" class="control-label col-md-3 col-sm-3 col-xs-12">Day 2 - Start Time and End Time:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="day2" formControlName="day2" id="day1" class="form-control col-xs-12" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="day3" class="control-label col-md-3 col-sm-3 col-xs-12">Day 3 - Start Time and End Time:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="day3" formControlName="day3" id="day3" class="form-control col-xs-12" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="day4" class="control-label col-md-3 col-sm-3 col-xs-12">Day 4 - Start Time and End Time:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="day4" formControlName="day4" id="day4" class="form-control col-xs-12" />
+        </div>
+    </div><br><br><br>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">Instructional Hours:</label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <select name="startingLocationType" formControlName="iHourId" class="form-control col-md-7 col-xs-12">
+                <option value="">-- select --</option>
+                <option *ngFor="let hour of iHours | async" [value]="hour.id">{{hour.iHoursTxt}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="cancelCutoffDaysId">Last Day to Cancel:<br><small style="font-weight: normal;">(the last day an individual may cancel their enrollment on-line)</small>
+        </label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <select name="cancelCutoffDaysId" formControlName="cancelCutoffDaysId" class="form-control col-md-7 col-xs-12">
+                <option value="">-- select --</option>
+                <option *ngFor="let canc of cancelWindow | async" [value]="canc.id">{{canc.cancelDaysTxt}}</option>
+            </select>
+            </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="registerCutoffDaysId">Last Day to Register:<br><small style="font-weight: normal;">(the last day an individual may register for the session)</small></label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <select name="registerCutoffDaysId" formControlName="registerCutoffDaysId" class="form-control col-md-7 col-xs-12">
+                <option value="">-- select --</option>
+                <option *ngFor="let regstr of registerWindow | async" [value]="regstr.id">{{regstr.registerDaysTxt}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+                <br><br>If this training will be limited to a specific number of participants, please provide the maximum number (of participants allowed) in the text box below. Otherwise, leave the text box blank.
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12">Seat Limit:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="number" name="seatLimit" formControlName="seatLimit" id="seatLimit" class="form-control col-xs-12" />
+        </div>
+    </div>
             
     <div class="ln_solid"></div>
     <div class="form-group">
