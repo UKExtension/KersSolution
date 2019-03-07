@@ -26,6 +26,14 @@ export class TrainingFormComponent implements OnInit {
             tAudience: [""],
             tContact: [""],
             tLocation: [""],
+            day1: ["", Validators.required],
+            day2: [""],
+            day3: [""],
+            day4: [""],
+            iHourId: "",
+            cancelCutoffDaysId: "",
+            registerCutoffDaysId: "",
+            seatLimit: ""
       });;
     options = { 
         placeholderText: 'Your Description Here!',
