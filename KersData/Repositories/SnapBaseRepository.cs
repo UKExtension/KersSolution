@@ -262,6 +262,8 @@ namespace Kers.Models.Repositories
             var today = DateTime.Now;
             if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
                 cacheDaysSpan = 3;
+            }else if(fiscalYear.Start > today){
+                cacheDaysSpan = 2;
             }
             return cacheDaysSpan;
         }
