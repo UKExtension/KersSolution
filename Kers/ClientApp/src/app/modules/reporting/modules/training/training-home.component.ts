@@ -10,14 +10,13 @@ import { Observable } from 'rxjs';
 })
 export class TrainingHomeComponent implements OnInit {
 
-  trainings:Observable<Training[]>;
 
   constructor(
-    private service:TrainingService
+    
   ) { }
 
   ngOnInit() {
-    this.trainings = this.service.range();
+    
   }
 
 }

@@ -183,10 +183,6 @@ namespace Kers.Controllers
         }
 
 
-
-
-
-
         private KersUser userByLinkBlueId(string linkBlueId){
             var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.linkBlueID == linkBlueId).

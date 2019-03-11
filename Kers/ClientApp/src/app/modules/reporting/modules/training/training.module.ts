@@ -6,17 +6,21 @@ import { TrainingRoutingModule } from './training-routing.module';
 import { TrainingHomeComponent } from './training-home.component';
 import { TrainingFormComponent } from './training-form.component';
 import { MyDatePickerModule } from 'mydatepicker';
+import { TrainingCatalogComponent } from './training-catalog.component';
+import { BsDatepickerModule } from 'ngx-bootstrap';
 
 @NgModule({
   declarations: [
     TrainingHomeComponent,
-    TrainingFormComponent
+    TrainingFormComponent,
+    TrainingCatalogComponent
   ],
   imports: [
     SharedModule,
     MyDatePickerModule,
     CommonModule,
-    TrainingRoutingModule
+    TrainingRoutingModule,
+    BsDatepickerModule.forRoot(),
   ]
 })
 export class TrainingModule { }
