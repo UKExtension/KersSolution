@@ -60,9 +60,9 @@ namespace Kers.Controllers
 
             List<PlanningUnit> counties;
 
-           
+           var CurrentPlanningUnit = this.CurrentPlanningUnit();
             
-            var cacheKey = CacheKeys.CountiesList + DistrictId.ToString();
+            var cacheKey = CacheKeys.CountiesList + DistrictId.ToString() + CurrentPlanningUnit.Name;
             var cached = _cache.GetString(cacheKey);
 
             if (!string.IsNullOrEmpty(cached)){
@@ -74,7 +74,7 @@ namespace Kers.Controllers
                 
                 if(DistrictId != null){
                     if(DistrictId == 0){
-                        var CurrentPlanningUnit = this.CurrentPlanningUnit();
+                        
                         if(CurrentPlanningUnit.DistrictId != null){
                             countiesQuery = countiesQuery.Where( c => c.DistrictId == CurrentPlanningUnit.DistrictId);
                         }else{
