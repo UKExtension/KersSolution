@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {Location} from '@angular/common';
-import { Log, LogService } from './log.service';
+import { Log } from './log.service';
 
 
 
@@ -13,12 +13,12 @@ export class LogDetailComponent implements OnInit {
     @Input('log-detail')log:Log;
     rowDefault =true;
     rowDetail = false;
+    rowProgress = false;
     profilePicSrc:string;
     logTime:Date;
     JSON;
 
     constructor( 
-        private service:LogService,
         private location:Location
     )   
     {
@@ -37,10 +37,15 @@ export class LogDetailComponent implements OnInit {
     default(){
         this.rowDefault =true;
         this.rowDetail = false;
+        this.rowProgress = false;
     }
     details(){
         this.rowDefault =false;
         this.rowDetail = true;
+    }
+    progress(){
+        this.rowDefault =false;
+        this.rowProgress = true;
     }
 
 

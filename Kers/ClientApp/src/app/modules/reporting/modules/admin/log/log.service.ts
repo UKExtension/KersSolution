@@ -105,6 +105,7 @@ export class Log{
         public description: string,
         public objectType: string,
         public object: string,
+        public progressLog: string,
         public ip: string,
         public agent: string,
         public user: KersUser,

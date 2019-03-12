@@ -24,10 +24,14 @@
             <strong>Object Type: </strong> <br>{{log.objectType}}<br><br>
             <div><pre>{{JSON.parse(log.object) | json}}</pre></div>
         </div>
+        <div class="col-xs-11" *ngIf="rowProgress">
+            <div><pre>{{log.progressLog}}</pre></div>
+        </div>
         
     </div>
     <div class="col-xs-2 text-right">
         <a class="btn btn-info btn-xs" (click)="details()" *ngIf="rowDefault">details</a>
+        <a class="btn btn-info btn-xs" (click)="progress()" *ngIf="rowDefault && log.progressLog && log.progressLog != ''">progress</a>
         <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
     </div>  
 </div>
