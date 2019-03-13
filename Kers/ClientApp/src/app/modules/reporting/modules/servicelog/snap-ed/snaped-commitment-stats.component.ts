@@ -30,7 +30,7 @@ export class SnapedCommitmentStatsComponent {
     ngOnInit(){
       
       
-        this.service.comitmentProjectTypes().subscribe(
+        this.service.comitmentProjectTypes(this.fiscalYear.id).subscribe(
           res => {
             this.projectTypes = res;
             if(this.user != null){
@@ -53,7 +53,7 @@ export class SnapedCommitmentStatsComponent {
         )
      
     }
-    hours(projectId){
+    hours(projectId:number){
       var totalHours = 0;
       var filtered = this.commitments.filter( c => c.snapEd_ProjectTypeId == projectId );
       for(let cmtmnt of filtered){
