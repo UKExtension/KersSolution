@@ -1,12 +1,4 @@
-<div class="row">
-  <div class="col-xs-12 col-12 col-md-4 form-group">
-    <input type="text"
-           placeholder="Daterangepicker"
-           class="form-control"
-           bsDaterangepicker
-           [bsConfig]="bsConfig">
-  </div>
-</div>
+<my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
 <ul>
   <li *ngFor="let training of trainings | async">{{training.subject}}</li>
 </ul>

@@ -30,6 +30,13 @@ export class TrainingService {
                 catchError(this.handleError('range', []))
             );
       }
+      perPeriod(start:Date, end:Date, order:string = "start"):Observable<Training[]>{
+        var url = this.baseUrl + 'perPeriod/' + start.toISOString() + '/' + end.toISOString()+ '/' + order  ;
+        return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('perPeriod', []))
+            );
+    }
 
       registerWindows() : Observable<TainingRegisterWindow[]>{
         var url = this.baseUrl + "RegisterWindows/";

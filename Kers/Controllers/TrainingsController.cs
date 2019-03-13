@@ -25,7 +25,7 @@ namespace Kers.Controllers
 {
 
     [Route("api/[controller]")]
-    public class TrainingsController : BaseController
+    public class TrainingsController : ExtensionEventController
     {
         KERScoreContext _context;
         KERSmainContext _mainContext;
@@ -48,25 +48,7 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet]
-        [Route("range/{skip?}/{take?}/{order?}")]
-        public IActionResult GetRange(int skip = 0, int take = 10, string order = "start")
-        {
-            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.End != null);
-            
-            if(order == "end"){
-                query = query.OrderByDescending(t => t.End);
-            }else if( order == "created"){
-                query = query.OrderByDescending(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderByDescending(t => t.Start);
-            }
-             
-            query = query.Skip(skip).Take(take);
-
-            var list = query.ToList();
-            return new OkObjectResult(list);
-        }
+        
 
 
         
@@ -136,26 +118,6 @@ namespace Kers.Controllers
         public async Task<IActionResult> CancelEnrollmentWindows(){
             var winds = await context.TrainingCancelEnrollmentWindow.ToListAsync();
             return new OkObjectResult(winds);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-        
-        public IActionResult Error()
-        {
-            return View();
         }
 
 

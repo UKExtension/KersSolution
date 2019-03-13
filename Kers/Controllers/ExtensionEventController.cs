@@ -35,7 +35,44 @@ namespace Kers.Controllers
                 _context = context;
         }
 
+        [HttpGet]
+        [Route("range/{skip?}/{take?}/{order?}/{type?}")]
+        public IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
+        {
+            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.End != null && t.DiscriminatorValue == type);
+            
+            if(order == "end"){
+                query = query.OrderByDescending(t => t.End);
+            }else if( order == "created"){
+                query = query.OrderByDescending(t => t.CreatedDateTime);
+            }else{
+                query = query.OrderByDescending(t => t.Start);
+            }
+             
+            query = query.Skip(skip).Take(take);
 
+            var list = query.ToList();
+            return new OkObjectResult(list);
+        }
+
+
+        [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]
+        [Authorize]
+        public IActionResult PerPeriod(DateTime start, DateTime end, string order = "start", string type = "Training" ){
+            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.Start > start && t.Start < end && t.DiscriminatorValue == type);
+            
+            if(order == "end"){
+                query = query.OrderByDescending(t => t.End);
+            }else if( order == "created"){
+                query = query.OrderByDescending(t => t.CreatedDateTime);
+            }else{
+                query = query.OrderByDescending(t => t.Start);
+            }
+             
+
+            var list = query.ToList();
+            return new OkObjectResult(list);
+        }
 
 
         [HttpPost()]

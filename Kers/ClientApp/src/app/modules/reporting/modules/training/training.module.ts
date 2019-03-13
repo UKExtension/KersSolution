@@ -7,7 +7,9 @@ import { TrainingHomeComponent } from './training-home.component';
 import { TrainingFormComponent } from './training-form.component';
 import { MyDatePickerModule } from 'mydatepicker';
 import { TrainingCatalogComponent } from './training-catalog.component';
-import { BsDatepickerModule } from 'ngx-bootstrap';
+import { MyDateRangePickerModule } from 'mydaterangepicker';
+
+
 
 @NgModule({
   declarations: [
@@ -18,9 +20,9 @@ import { BsDatepickerModule } from 'ngx-bootstrap';
   imports: [
     SharedModule,
     MyDatePickerModule,
+    MyDateRangePickerModule,
     CommonModule,
-    TrainingRoutingModule,
-    BsDatepickerModule.forRoot(),
+    TrainingRoutingModule
   ]
 })
 export class TrainingModule { }
