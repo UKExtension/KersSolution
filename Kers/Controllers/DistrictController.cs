@@ -46,33 +46,6 @@ namespace Kers.Controllers
         }
 
  
-        private static IEnumerable<LocalizationRecord> DummyData()
-        {
-            var model = new List<LocalizationRecord>
-            {
-                new LocalizationRecord
-                {
-                    Id = 1,
-                    Key = "test",
-                    Text = "test, text",
-                    LocalizationCulture = "en-US",
-                    ResourceKey = "test"
- 
-                },
-                new LocalizationRecord
-                {
-                    Id = 2,
-                    Key = "test",
-                    Text = "test2 text de-CH",
-                    LocalizationCulture = "de-CH",
-                    ResourceKey = "test"
- 
-                }
-            };
- 
-            return model;
-        }
-
 
 
         [HttpGet("{id?}")]
