@@ -106,8 +106,8 @@ export class ExpenseService {
             );
     }
 
-    pdfTrip(year:number, month:number, id:number = 0, isOvernight:boolean = false):Observable<Blob>{
-        return this.http.get(this.location.prepareExternalUrl('/api/PdfTripExpenses/tripexpenses/' + year + '/' + month + '/' + id + '/' + isOvernight ), {responseType: 'blob'})
+    pdfTrip(year:number, month:number, id:number = 0, isOvernight:boolean = false, isPersonal:boolean = true):Observable<Blob>{
+        return this.http.get(this.location.prepareExternalUrl('/api/PdfTripExpenses/tripexpenses/' + year + '/' + month + '/' + id + '/' + isOvernight + '/' + isPersonal ), {responseType: 'blob'})
             .pipe(
                 catchError(this.handleError('pdfTrip', <Blob>{}))
             );

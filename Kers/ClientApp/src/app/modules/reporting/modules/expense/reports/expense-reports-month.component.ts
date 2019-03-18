@@ -5,7 +5,10 @@ import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseM
 import { Router } from "@angular/router";
 
 import { saveAs } from 'file-saver';
-import { User } from "../../user/user.service";
+import { User, PlanningUnit, UserService } from "../../user/user.service";
+import { Vehicle } from '../vehicle/vehicle.service';
+import { PlanningunitService } from '../../planningunit/planningunit.service';
+import { ɵangular_packages_platform_browser_dynamic_testing_testing_b } from '@angular/platform-browser-dynamic/testing';
 
 @Component({
     selector: 'expense-reports-month',
@@ -51,10 +54,10 @@ import { User } from "../../user/user.service";
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a (click)="printTrip()" *ngIf="!pdfTripLoading" >Mileage Log - Day Trips</a>
+                        <li><a (click)="printTrip()" *ngIf="!pdfTripLoading" >Mileage Log - Personal Vehicle</a>
                         <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
                         </li>
-                        <li><a (click)="printTrip(true)" *ngIf="!pdfTripLoadingOvernight">Mileage Log - Overnight Trips</a>
+                        <li *ngIf="enabledVehicles.length > 0"><a (click)="printTrip(false, false)" *ngIf="!pdfTripLoadingOvernight">Mileage Log - County Vehicle</a>
                         <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
                         </li>
                         <li class="divider"></li>
@@ -93,6 +96,9 @@ export class ExpenseReportsMonthComponent {
     @Input() user:User;
     date:Date;
 
+    currentPlanningUnit: PlanningUnit;
+    enabledVehicles:Vehicle[] = [];
+
     pdfTripLoadingOvernight = false;
     pdfTripLoading = false;
     pdfMenuOpen = false;
@@ -106,7 +112,9 @@ export class ExpenseReportsMonthComponent {
 
 
     constructor( 
-        private service:ExpenseService
+        private service:ExpenseService,
+        private userService:UserService,
+        private planningUnitService: PlanningunitService
     )   
     {}
 
@@ -114,6 +122,29 @@ export class ExpenseReportsMonthComponent {
         this.date = new Date();
         this.date.setDate(15);
         this.date.setMonth(this.month.month - 1);
+        if(this.user != null){
+            this.planningUnitService.id(this.user.rprtngProfile.planningUnitId).subscribe(
+                res => {
+                this.currentPlanningUnit = res;
+                this.enabledVehicles = this.currentPlanningUnit.vehicles.filter( v => v.enabled);
+                }
+            );
+        }else{
+            this.userService.current().subscribe(
+                res=> { 
+                    
+                    this.user = <User>res;
+                    this.planningUnitService.id(this.user.rprtngProfile.planningUnitId).subscribe(
+                      res => {
+                         this.currentPlanningUnit = res;
+                         this.enabledVehicles = this.currentPlanningUnit.vehicles.filter( v => v.enabled);
+                      }
+                  )
+                    
+                },
+                error => this.errorMessage = <any>error
+              );
+        }
     }
 
 
@@ -151,8 +182,8 @@ export class ExpenseReportsMonthComponent {
         )
     }
 
-    printTrip(isOvernight:boolean = false){
-        if( isOvernight )
+    printTrip(isOvernight:boolean = false, isPersonal = true){
+        if( isPersonal )
         {
             this.pdfTripLoadingOvernight = true;
         }else{
@@ -163,10 +194,10 @@ export class ExpenseReportsMonthComponent {
         if(this.user != null){
             userid = this.user.id;
         }
-        this.service.pdfTrip(this.year.year, this.month.month, userid, isOvernight).subscribe(
+        this.service.pdfTrip(this.year.year, this.month.month, userid, isOvernight, isPersonal).subscribe(
             data => {
                 var blob = new Blob([data], {type: 'application/pdf'});
-                saveAs(blob, "ExpensesMileageReport_" + this.year.year + "_" + this.month.month + ".pdf");
+                saveAs(blob, "MileageReport_" + this.year.year + "_" + this.month.month + ".pdf");
                 this.pdfTripLoading = false;
                 this.pdfTripLoadingOvernight = false;
                 this.pdfMenuOpen = false;

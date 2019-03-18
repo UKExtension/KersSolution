@@ -135,10 +135,13 @@ namespace Kers.Controllers
             pdfCanvas.DrawText("Summary", 43, 300, getPaint(20.0f));
         }
 
-		public void SummaryLandscapeInfo(SKCanvas pdfCanvas, int year, int month, KersUser user, string Ttl = "Monthly Expenses Report", bool isOvernight = false){
+		public void SummaryLandscapeInfo(SKCanvas pdfCanvas, int year, int month, KersUser user, string Ttl = "Monthly Expenses Report", bool isOvernight = false, bool isPersonal = true){
 			var date = new DateTime(year, month, 1);
 			var text = date.ToString("MMMM yyyy");
-			pdfCanvas.DrawText(text, 250, 80, getPaint(18.0f, 1, 0xFF000000));
+			pdfCanvas.DrawText(text, 250, 75, getPaint(18.0f, 1, 0xFF000000));
+
+			pdfCanvas.DrawText(isPersonal ? "Personal Vehicle" : "County Vehicle", 356, 86, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+
 			pdfCanvas.DrawText(Ttl, 250, 102, getPaint(20.0f, 3, 0xFF000000));
 			if( isOvernight ){
 				text = "Overnight Trips";
@@ -147,18 +150,18 @@ namespace Kers.Controllers
 			}
 			pdfCanvas.DrawText(text, 250, 112, getPaint(9.0f));
 			text = user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName;
-			pdfCanvas.DrawText(text, 400, 80, getPaint(17.0f, 1));
+			pdfCanvas.DrawText(text, 400, 75, getPaint(17.0f, 1));
 			text = user.ExtensionPosition.Title;
-			pdfCanvas.DrawText(text, 400, 95, getPaint(10.5f));
+			pdfCanvas.DrawText(text, 400, 90, getPaint(10.5f));
 			text = user.RprtngProfile.PlanningUnit.Name;
-			pdfCanvas.DrawText(text, 400, 107, getPaint(10.0f));
+			pdfCanvas.DrawText(text, 400, 102, getPaint(10.0f));
 			if(user.RprtngProfile.PlanningUnit.Address != null ){
 				text = user.RprtngProfile.PlanningUnit.FullName;
-				pdfCanvas.DrawText(text, 554, 80, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(text, 554, 75, getPaint(10.0f, 1));
 				text = user.RprtngProfile.PlanningUnit.Address;
-				pdfCanvas.DrawText(text, 554, 95, getPaint(10.0f));
+				pdfCanvas.DrawText(text, 554, 90, getPaint(10.0f));
 				text = user.RprtngProfile.PlanningUnit.City + ", KY " + user.RprtngProfile.PlanningUnit.Zip;
-				pdfCanvas.DrawText(text, 554, 107, getPaint(10.0f));
+				pdfCanvas.DrawText(text, 554, 102, getPaint(10.0f));
 			}
 			//pdfCanvas.DrawText("Summary", 43, 300, getPaint(20.0f));
 		}

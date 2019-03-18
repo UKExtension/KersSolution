@@ -36,6 +36,7 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
+                                Include( e => e.Revisions ).ThenInclude( r => r.CountyVehicle).
                                 OrderByDescending(e=>e.ExpenseDate);
             }else{
                 lastExpenses = coreContext.Expense.
@@ -45,6 +46,7 @@ namespace Kers.Models.Repositories
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
                                 Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
+                                Include( e => e.Revisions ).ThenInclude( r => r.CountyVehicle).
                                 OrderBy(e=>e.ExpenseDate);
             }
                                 
