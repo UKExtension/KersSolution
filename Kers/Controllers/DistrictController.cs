@@ -68,6 +68,47 @@ namespace Kers.Controllers
             return new OkObjectResult(counties);
         }
 
+
+        [HttpGet("employeeactivity/{districtid}/{month}/{year}/{order?}/{type?}/{skip?}/{take?}")]
+        public async Task<IActionResult> EployeeActivity(int districtid, int month, int year, string order = "asc", string type = "activity", int skip = 0, int take = 20){
+
+            var districtEmployees = await context.KersUser
+                                            .Where( u => u.RprtngProfile.PlanningUnit.DistrictId == districtid
+                                                            &&
+                                                            u.ExtensionPosition.Title == "Extension Agent")
+                                            .Include( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                            .Include( u => u.PersonalProfile).ThenInclude( r => r.UploadImage)
+                                            .ToListAsync();
+
+            var numActivities = new List<EmployeeNumActivities>();
+
+            foreach( var employee in districtEmployees ){
+                int num;
+                if( type == "activity "){
+                    num = await context.Activity.Where( a => a.KersUser == employee && a.ActivityDate.Month == month && a.ActivityDate.Year == year ).CountAsync();
+                }else{
+                    num = await context.Expense.Where( a => a.KersUser == employee && a.ExpenseDate.Month == month && a.ExpenseDate.Year == year ).CountAsync();
+                }
+                var empData = new EmployeeNumActivities{
+                    User = employee,
+                    NumActivities = num
+                };
+                numActivities.Add(empData);
+            }
+
+            numActivities = numActivities.Skip(skip).Take(take).ToList();
+
+            if(order == "asc"){
+                numActivities = numActivities.OrderBy( o => o.NumActivities).ToList();
+            }else{
+                numActivities = numActivities.OrderByDescending( o => o.NumActivities).ToList();
+            }
+
+            return new OkObjectResult(numActivities);
+        }
+
+
+
         [HttpGet("mycounties")]
         [Authorize]
         public IActionResult MyCounties(){
@@ -234,6 +275,11 @@ namespace Kers.Controllers
         public string Text { get; set; }
         public string LocalizationCulture { get; set; }
         public string ResourceKey { get; set; }
+    }
+
+    public class EmployeeNumActivities{
+        public KersUser User {get;set;}
+        public int NumActivities {get;set;}
     }
 
 

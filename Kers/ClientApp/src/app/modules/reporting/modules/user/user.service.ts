@@ -260,11 +260,12 @@ export class PersonalProfile{
 }
 
 export class Image{
-    public uploadFile: UploadFile
+    public uploadFile:UploadFile;
+    public name:string;
 }
 
 export class UploadFile{
-    public name
+    public name:string;
 }
 
 export class ExtensionPosition{

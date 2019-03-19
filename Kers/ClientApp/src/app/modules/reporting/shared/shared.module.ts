@@ -37,6 +37,7 @@ import { UserPersonalConnectionComponent} from '../modules/user/personal/user-pe
 import { UserReportingFormComponent } from '../modules/user/reporting/user-reporting-form.component';
 import { FiscalYearSwitcherComponent } from './components/fiscal-year-switcher.component';
 import { ImageUploadComponent } from './form-controls/image-upload.component';
+import { MonthSwitcherComponent } from './components/month-switcher.component';
 
 
 
@@ -63,6 +64,7 @@ import { ImageUploadComponent } from './form-controls/image-upload.component';
                   UserReportingFormComponent,
                   SafeHtmlPipe,
                   FiscalYearSwitcherComponent,
+                  MonthSwitcherComponent,
                   ImageUploadComponent 
                 ],
   exports:      [ 
@@ -82,6 +84,7 @@ import { ImageUploadComponent } from './form-controls/image-upload.component';
       UserReportingFormComponent,
       SelectModule,
       FiscalYearSwitcherComponent,
+      MonthSwitcherComponent,
       ImageUploadComponent 
  ]
 })

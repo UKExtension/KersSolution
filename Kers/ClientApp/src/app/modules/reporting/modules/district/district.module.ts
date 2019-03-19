@@ -17,6 +17,8 @@ import { AssignmentAffirmativeReportComponent } from './assignments/assignment-a
 import { AssignmentAffirmativePlanComponent } from './assignments/assignment-affirmative-plan.component';
 import { AssignmentProgramIndicatorsComponent } from './assignments/assignment-program-indicators.component';
 import { AffirmativeModule } from '../affirmative/affirmative.module';
+import { DistrictEmployeesComponent } from './district-employees.component';
+import { DistrictEmployeeBriefComponent } from './district-employee-brief.component';
 
 
 
@@ -33,7 +35,9 @@ import { AffirmativeModule } from '../affirmative/affirmative.module';
                     AssignmentPlansOfWorkComponent,
                     AssignmentAffirmativeReportComponent,
                     AssignmentAffirmativePlanComponent,
-                    AssignmentProgramIndicatorsComponent
+                    AssignmentProgramIndicatorsComponent,
+                    DistrictEmployeesComponent,
+                    DistrictEmployeeBriefComponent
                     ],
   providers:    [     
                     DistrictService,

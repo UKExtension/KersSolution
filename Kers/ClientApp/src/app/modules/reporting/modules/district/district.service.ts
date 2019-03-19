@@ -42,6 +42,14 @@ export class DistrictService {
             );
     }
 
+    employeeactivity(districtid:number, month:number, year:number, order:string = "asc", type:string = "activity", skip:number=0, take:number=21):Observable<EmployeeNumActivities[]>{
+        var url = this.baseUrl + "employeeactivity/" + districtid + '/' + month + '/' + year + '/' + order + '/' + type + '/' + skip + '/' + take;
+        return this.http.get<EmployeeNumActivities[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('employeeactivity', []))
+            );
+    }
+
     mycounties():Observable<County[]>{
         var url = this.baseUrl + "mycounties";
         return this.http.get<County[]>(this.location.prepareExternalUrl(url))
@@ -86,4 +94,9 @@ export interface District{
     description: string;
     admin: User;
     assistant: User;
+}
+
+export interface EmployeeNumActivities{
+    user:User;
+    numActivities: number;
 }

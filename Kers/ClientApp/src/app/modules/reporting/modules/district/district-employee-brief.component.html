@@ -1,0 +1,21 @@
+<div class="col-md-4 col-sm-6 col-xs-12 profile_details" >
+  <div class="well profile_view" style="height: 170px;">
+      <div class="col-sm-12 top">
+          <div class="left col-xs-7">
+              <h2 *ngIf="data.user.personalProfile">{{data.user.personalProfile.firstName}} {{data.user.personalProfile.lastName}}</h2>
+              <ul class="list-unstyled">
+                  <li *ngIf="data.user.rprtngProfile"><i class="fa fa-building"></i> {{data.user.rprtngProfile.planningUnit.name}}</li> 
+                  
+              </ul>
+              <h1 class="blue">{{data.numActivities}}</h1>
+          </div>
+          <div class="right col-xs-5 text-center">
+              <img src="{{profilePicSrc}}" alt="" class="img-circle img-responsive">
+          </div>
+      </div>
+      
+
+
+
+  </div>
+</div>

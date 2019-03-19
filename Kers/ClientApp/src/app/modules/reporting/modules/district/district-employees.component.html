@@ -1,0 +1,48 @@
+<month-switcher (onSwitched)="onMonthSwitched($event)"></month-switcher>
+<br><br>
+
+<div class="row">
+  <div class="col-sm-6">
+
+
+      <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-default" [class.active]="type=='activity'">
+          <input type="radio" name="type" id="option2" (click)="switchType('activity')"> Activities
+          </label>
+          <label class="btn btn-default" [class.active]="type=='expenses'">
+            <input type="radio" name="type" id="option3" (click)="switchType('expenses')"> Expenses
+          </label>
+      </div>
+
+
+
+
+  </div>
+  <div class="col-sm-6">
+
+      <div class="btn-group pull-right" data-toggle="buttons">
+          <label class="btn btn-default" [class.active]="order=='asc'">
+          <input type="radio" name="order" id="option2" (click)="switchOrder('asc')"> Ascending
+          </label>
+          <label class="btn btn-default active" [class.active]="order=='dsc'">
+          <input type="radio" name="order" id="option3" (click)="switchOrder('dsc')"> Descending
+          </label>
+          </div>
+
+
+
+  </div>
+</div>
+
+<br><br>
+<div class="row">
+    <district-employee-brief *ngFor="let activity of activities | async" [data]="activity"></district-employee-brief>
+  </div>    
+
+  <div class="text-center">
+      <div  class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+          load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+  </div>
+
+
+
