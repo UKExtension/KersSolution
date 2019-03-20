@@ -16,6 +16,7 @@ namespace Kers.Models.Entities.KERScore
         public string ExIf {get;set;}
         public string Name {get;set;}
         public int TimesUsed {get;set;}
+        public int? UploadFileId {get;set;}
         public UploadFile UploadFile {get;set;}
     }
 }

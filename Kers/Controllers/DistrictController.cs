@@ -83,8 +83,15 @@ namespace Kers.Controllers
             var numActivities = new List<EmployeeNumActivities>();
 
             foreach( var employee in districtEmployees ){
+                if( employee.PersonalProfile.UploadImage != null ){
+                    if(employee.PersonalProfile.UploadImage.Name == null && employee.PersonalProfile.UploadImage.UploadFileId != null ){
+                        var file = await context.UploadFile.Where(u => u.Id == employee.PersonalProfile.UploadImage.UploadFileId ).FirstOrDefaultAsync();
+                        employee.PersonalProfile.UploadImage.Name = file.Name;
+                        await context.SaveChangesAsync();
+                    }
+                }
                 int num;
-                if( type == "activity "){
+                if( type == "activity"){
                     num = await context.Activity.Where( a => a.KersUser == employee && a.ActivityDate.Month == month && a.ActivityDate.Year == year ).CountAsync();
                 }else{
                     num = await context.Expense.Where( a => a.KersUser == employee && a.ExpenseDate.Month == month && a.ExpenseDate.Year == year ).CountAsync();

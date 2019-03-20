@@ -2,9 +2,9 @@
   <div class="well profile_view" style="height: 170px;">
       <div class="col-sm-12 top">
           <div class="left col-xs-7">
-              <h2 *ngIf="data.user.personalProfile">{{data.user.personalProfile.firstName}} {{data.user.personalProfile.lastName}}</h2>
+              <h2 *ngIf="data.user.personalProfile" [routerLink]="['/reporting/user/summary', data.user.id ]"><a [routerLink]="['/reporting/user/summary', data.user.id ]">{{data.user.personalProfile.firstName}} {{data.user.personalProfile.lastName}}</a></h2>
               <ul class="list-unstyled">
-                  <li *ngIf="data.user.rprtngProfile"><i class="fa fa-building"></i> {{data.user.rprtngProfile.planningUnit.name}}</li> 
+                  <li *ngIf="data.user.rprtngProfile"><i class="fa fa-building"></i> &nbsp;<a [routerLink]="['/reporting/county', data.user.rprtngProfile.planningUnitId ]">{{data.user.rprtngProfile.planningUnit.name}}</a></li> 
                   
               </ul>
               <h1 class="blue">{{data.numActivities}}</h1>

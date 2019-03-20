@@ -19,7 +19,7 @@ import { PlanningUnit } from '../user/user.service';
     <div class="col-xs-12">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Number of Submitted Activities</h2>
+                <h2>Number of Submitted Activities per Employee</h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
