@@ -75,7 +75,9 @@ namespace Kers.Controllers
             var districtEmployees = await context.KersUser
                                             .Where( u => u.RprtngProfile.PlanningUnit.DistrictId == districtid
                                                             &&
-                                                            u.ExtensionPosition.Title == "Extension Agent")
+                                                            u.ExtensionPosition.Title == "Extension Agent"
+                                                            && 
+                                                            u.RprtngProfile.enabled)
                                             .Include( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
                                             .Include( u => u.PersonalProfile).ThenInclude( r => r.UploadImage)
                                             .ToListAsync();
