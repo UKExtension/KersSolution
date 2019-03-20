@@ -92,9 +92,9 @@ namespace Kers.Controllers
                 }
                 int num;
                 if( type == "activity"){
-                    num = await context.Activity.Where( a => a.KersUser == employee && a.ActivityDate.Month == month && a.ActivityDate.Year == year ).CountAsync();
+                    num = await context.Activity.Where( a => a.KersUser == employee && a.ActivityDate.Month == (month + 1) && a.ActivityDate.Year == year ).CountAsync();
                 }else{
-                    num = await context.Expense.Where( a => a.KersUser == employee && a.ExpenseDate.Month == month && a.ExpenseDate.Year == year ).CountAsync();
+                    num = await context.Expense.Where( a => a.KersUser == employee && a.ExpenseDate.Month == (month + 1) && a.ExpenseDate.Year == year ).CountAsync();
                 }
                 var empData = new EmployeeNumActivities{
                     User = employee,
