@@ -76,6 +76,8 @@ namespace Kers.Controllers
                                             .Where( u => u.RprtngProfile.PlanningUnit.DistrictId == districtid
                                                             &&
                                                             u.ExtensionPosition.Title == "Extension Agent"
+                                                            &&
+                                                            u.RprtngProfile.PlanningUnit.Name != "Wildcat County CES (demo only)"
                                                             && 
                                                             u.RprtngProfile.enabled)
                                             .Include( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
