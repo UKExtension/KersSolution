@@ -103,13 +103,14 @@ namespace Kers.Controllers
                 numActivities.Add(empData);
             }
 
-            numActivities = numActivities.Skip(skip).Take(take).ToList();
+            
 
             if(order == "asc"){
                 numActivities = numActivities.OrderBy( o => o.NumActivities).ToList();
             }else{
                 numActivities = numActivities.OrderByDescending( o => o.NumActivities).ToList();
             }
+            numActivities = numActivities.Skip(skip).Take(take).ToList();
 
             return new OkObjectResult(numActivities);
         }
