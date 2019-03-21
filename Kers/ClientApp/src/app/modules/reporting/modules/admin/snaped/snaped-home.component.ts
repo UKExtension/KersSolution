@@ -34,7 +34,6 @@ import { saveAs } from 'file-saver';
   <snaped-download-button [fiscalYear]="fiscalYear" [location]="'commitmenthoursdetail'" [filename]="'CommitmentHoursDetail'" [label]="'Hours Detail'"></snaped-download-button>|
   <snaped-download-button [fiscalYear]="fiscalYear" [location]="'agentswithoutcommitment'" [filename]="'AgentsWithoutCommitment'" [label]="'Agents With No Commitment Hours'"></snaped-download-button>  
   <br>
-  <div *ngIf="fiscalYear.start.getTime() < currentDate.getTime() ">
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'summarybyplanningunit'" [filename]="'CommitmentSummaryByPlanningUnit'" [label]="'Summary By Planning Unit'"></snaped-download-button>| 
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'summarybyplanningunitnotassistants'" [filename]="'CommitmentSummaryByPlanningUnitNotNEPAssistants'" [label]="'Summary By Planning Unit (Excludes NEP Assistants)'"></snaped-download-button> 
     <br>
@@ -42,6 +41,7 @@ import { saveAs } from 'file-saver';
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'reinforcementitemspercounty'" [filename]="'ReinforcementItemsPerCounty'" [label]="'Reinforcement Items Per County'"></snaped-download-button>|
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'suggestedincentiveitems'" [filename]="'SuggestedIncentiveItems'" [label]="'Suggested Incentive Items'"></snaped-download-button> 
     <br>
+  <div *ngIf="fiscalYear.start.getTime() < currentDate.getTime() ">
     <h5>Reimbursement Year-To-Date Totals: </h5>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'reimbursementnepassistants'" [filename]="'ReimbursementNepAssistants'" [label]="'NEP Assistants'"></snaped-download-button>|
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'reimbursementcounty'" [filename]="'ReimbursementCounty'" [label]="'County (Not NEP Assistants)'"></snaped-download-button> 
