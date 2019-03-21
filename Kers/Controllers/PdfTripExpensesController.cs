@@ -72,7 +72,7 @@ namespace Kers.Controllers
                 var expenses = this.expenseRepo.PerMonth(user, year, month, "asc");
  
 				if(personal){
-					expenses = expenses.Where( e => e.CountyVehicleId == null && e.isOvernight == overnight && e.Mileage != 0).ToList();
+					expenses = expenses.Where( e => e.VehicleType != 0 && e.Mileage != 0).ToList();
 				}else{
 					expenses = expenses.Where( e => e.CountyVehicleId != null).ToList();
 				}
