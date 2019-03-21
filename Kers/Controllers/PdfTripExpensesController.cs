@@ -100,7 +100,11 @@ namespace Kers.Controllers
 						table(pdfCanvas, exp.expenses, 25, runningY, true, exp.title, exp.total, personal);
 						runningY += exp.expenses.Sum( e => e.lines) * dataObjext.GetLineHeight() + dataObjext.GetSpaceBetweenTables();
 					}
-
+					if( !personal ){
+						pdfCanvas.RotateDegrees(30);
+						pdfCanvas.DrawText( "Not Reimbursable", 160, 130, getPaint(80.0f, 1, 0x20000000));
+						pdfCanvas.RotateDegrees(-30);
+					}
 
 					if(pg.signatures){
 						Signatures(pdfCanvas, 30, 490);
