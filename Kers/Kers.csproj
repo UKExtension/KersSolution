@@ -12,6 +12,10 @@
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
   </PropertyGroup>
 
+  <PropertyGroup> 
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
