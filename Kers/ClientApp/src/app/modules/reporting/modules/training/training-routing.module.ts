@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { TrainingHomeComponent } from './training-home.component';
 import { TrainingCatalogComponent } from './training-catalog.component';
+import { TrainingFormComponent } from './training-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -11,6 +12,10 @@ const routes: Routes = [{
         {
           path: 'catalog',
           component: TrainingCatalogComponent
+        },
+        {
+          path: 'propose',
+          component: TrainingFormComponent
         }
         
         

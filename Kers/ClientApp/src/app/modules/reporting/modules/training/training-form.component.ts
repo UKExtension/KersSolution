@@ -48,13 +48,20 @@ export class TrainingFormComponent implements OnInit {
         quickInsertButtons: ['ul', 'ol', 'hr'],    
       };
     loading = true;
-    private myDatePickerOptions: IMyDpOptions = {
-        // other options...
+    public myDatePickerOptions: IMyDpOptions = {
             dateFormat: 'mm/dd/yyyy',
             showTodayBtn: false,
             satHighlight: true,
-            firstDayOfWeek: 'su'
+            firstDayOfWeek: 'su',
+            showClearDateBtn: false
         };
+    public myDatePickerOptionsEnd: IMyDpOptions = {
+              dateFormat: 'mm/dd/yyyy',
+              showTodayBtn: false,
+              satHighlight: true,
+              firstDayOfWeek: 'su'
+          };
+      
 
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<Training>();
@@ -79,6 +86,7 @@ export class TrainingFormComponent implements OnInit {
   }
 
   onSubmit(){
+    console.log(this.trainingForm.value)
       /* 
     this.loading = true;
     this.service.update( this.county.id, this.countyForm.value).subscribe(
