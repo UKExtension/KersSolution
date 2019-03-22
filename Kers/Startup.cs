@@ -191,13 +191,13 @@ namespace Kers
             //services.AddSingleton<IScheduledTask, InServiceQualtricsTask>();
             //services.AddSingleton<IScheduledTask, GetActivitiesAndContactsTask>();
             services.AddSingleton<IScheduledTask, SnapPartnersOfACountyTask>();
-
+/* 
             services.AddScheduler((sender, args) =>
             {
                 args.SetObserved();
             });
 
-
+ */
 
 
             // In production, the Angular files will be served from this directory
