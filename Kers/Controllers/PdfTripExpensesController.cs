@@ -441,7 +441,7 @@ namespace Kers.Controllers
 				if( countyRemaining <= 0 && professionalDevelopmentRemaining > 0 ){
 
 					var tbl = new ExpenseMileageLogTableData();
-					var rmnng = _proffesionalDevelopmentExpenses.Skip(_nonCountyExpenses.Count() - professionalDevelopmentRemaining);
+					var rmnng = _proffesionalDevelopmentExpenses.Skip(_proffesionalDevelopmentExpenses.Count() - professionalDevelopmentRemaining);
 					if( countyRemaining == 0 && professionalDevelopmentRemaining == _proffesionalDevelopmentExpenses.Count()){
 						spaceRemaining -= spaceBetweenTables;
 						spaceRemaining -= lineHeight;
