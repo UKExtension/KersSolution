@@ -181,8 +181,8 @@ namespace Kers.Controllers.Admin
             List<MajorProgram> programs = new List<MajorProgram>();
             List<ProgramCategory> categories = new List<ProgramCategory>();
 
-            var fiscalYear = this.GetFYByName("2018", FiscalYearType.ServiceLog);
-            var nextFiscalYear = this.GetFYByName("2019", FiscalYearType.ServiceLog);
+            var fiscalYear = this.GetFYByName("2019", FiscalYearType.ServiceLog);
+            var nextFiscalYear = this.GetFYByName("2020", FiscalYearType.ServiceLog);
             var initiatives = context.StrategicInitiative.AsNoTracking().Where( i => i.FiscalYear == fiscalYear)
                                     .Include( i => i.ProgramCategory)
                                     .Include( i => i.MajorPrograms).ThenInclude(m => m.ProgramIndicators);
