@@ -555,8 +555,8 @@ namespace Kers.Models.Repositories
                 result = cacheString;
             }else{
                 var keys = new List<string>();
-                keys.Add("ItemCount");
                 keys.Add("ItemName");
+                keys.Add("ItemCount");
                 result = string.Join(",", keys.ToArray()) + "\n";
                 var items = context.SnapEd_ReinforcementItemChoice
                                 .Where( i => 

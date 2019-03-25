@@ -408,7 +408,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Commitment Hours Detail Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.CommitmentHoursDetail(fiscalYear);
+            var result = await snapCommitmentRepo.CommitmentHoursDetail(fiscalYear,true);
             return Ok(result);
         }
 
@@ -423,7 +423,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Agents Without Commitment CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = await snapCommitmentRepo.AgentsWithoutCommitment(fiscalYear);
+            var result = await snapCommitmentRepo.AgentsWithoutCommitment(fiscalYear, true);
             return Ok(result);
         }
 

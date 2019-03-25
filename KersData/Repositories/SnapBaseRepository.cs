@@ -263,7 +263,7 @@ namespace Kers.Models.Repositories
             if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
                 cacheDaysSpan = 3;
             }else if(fiscalYear.Start > today){
-                cacheDaysSpan = 2;
+                cacheDaysSpan = 1;
             }
             return cacheDaysSpan;
         }
