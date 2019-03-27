@@ -35,7 +35,7 @@ export class PlansofworkHomeComponent {
         
     }
     getNextFiscalYear(){
-        this.fiscalYearService.current("serviceLog").subscribe(
+        this.fiscalYearService.next("serviceLog").subscribe(
             res => {
                 
                 this.fiscalYear = res;

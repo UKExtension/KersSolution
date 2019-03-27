@@ -37,7 +37,7 @@ export class AffirmativeHomeComponent {
         
         const fiscalyearid = this.route.snapshot.paramMap.get('fy');
         if( fiscalyearid == null){
-            this.fiscalYearService.current("serviceLog").subscribe(
+            this.fiscalYearService.next("serviceLog").subscribe(
                 res =>{
                     this.fy = <FiscalYear> res;
                     this.plan = this.service.get(0, this.fy.name);

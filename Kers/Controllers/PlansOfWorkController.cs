@@ -432,6 +432,7 @@ namespace Kers.Controllers
                                 plan.PlanningUnitId = context.PlanOfWork.Find( revision.PlanOfWorkId ).PlanningUnitId;
                                 plan.Revisions = new List<PlanOfWorkRevision>();
                                 revision.Id = 0;
+                                revision.Created = DateTime.Now;
                                 if( revision.Mp1Id != null){
                                     var pacCode = context.MajorProgram.Find(revision.Mp1Id).PacCode;
                                     revision.Mp1 = await context.MajorProgram.Where( 
