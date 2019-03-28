@@ -38,7 +38,6 @@ export class DistrictEmployeesComponent implements OnInit {
 
 
   onMonthSwitched(event:Date){
-    console.log(event);
     this.month = event.getMonth();
     this.year = event.getFullYear();
     this.resetActivites();

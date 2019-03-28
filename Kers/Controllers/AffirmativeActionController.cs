@@ -163,13 +163,6 @@ namespace Kers.Controllers
         }
 
 
-
-
-
-
-
-
-
         [HttpPost]
         [Authorize]
         public IActionResult Add( [FromBody] AffirmativeActionPlanRevision plan){
