@@ -31,9 +31,12 @@ export class MonthSwitcherComponent implements OnInit {
   ) {
 
     var now = new Date();
+    //Ensure that the date exist in the previous months
+    now.setDate( 10 );
     var start = (this.showNext ? -1 : 0 );
     for(var i = start; i < this.numMonths; i++){
         var running = new Date();
+        running.setDate( 10 );
         running.setMonth(now.getMonth() - i );
         this.months.push( running );
     }
