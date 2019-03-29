@@ -502,7 +502,7 @@ namespace Kers.Controllers
                     }
                     context.Map.AddRange(newMaps);
                     context.PlanOfWork.AddRange(newPlans);
-                    context.SaveChanges();
+                    //context.SaveChanges();
                     return new OkObjectResult( newPlans );
                 }
             }
