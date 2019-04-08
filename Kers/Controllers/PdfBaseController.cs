@@ -152,7 +152,7 @@ namespace Kers.Controllers
 			text = user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName;
 			pdfCanvas.DrawText(text, 400, 75, getPaint(17.0f, 1));
 			text = user.ExtensionPosition.Title;
-			pdfCanvas.DrawText(text, 400, 90, getPaint(10.5f));
+			pdfCanvas.DrawText(text, 400, 90, getPaint(10.0f));
 			text = user.RprtngProfile.PlanningUnit.Name;
 			pdfCanvas.DrawText(text, 400, 102, getPaint(10.0f));
 			if(user.RprtngProfile.PlanningUnit.Address != null ){

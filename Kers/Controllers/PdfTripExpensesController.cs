@@ -32,7 +32,7 @@ namespace Kers.Controllers
 		const int width = 792;
 		const int height = 612;
 
-		int locationLinesCharacterLength_personal = 52;
+		int locationLinesCharacterLength_personal = 50;
 		int businessPurposeLinesCharacterLength_personal = 50;
 
 		int locationLinesCharacterLength_county = 44;
