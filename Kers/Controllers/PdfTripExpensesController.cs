@@ -32,6 +32,12 @@ namespace Kers.Controllers
 		const int width = 792;
 		const int height = 612;
 
+		int locationLinesCharacterLength_personal = 52;
+		int businessPurposeLinesCharacterLength_personal = 50;
+
+		int locationLinesCharacterLength_county = 44;
+		int businessPurposeLinesCharacterLength_county = 44;
+
 		IExpenseRepository expenseRepo;
 
 
@@ -80,9 +86,12 @@ namespace Kers.Controllers
 				var dataObjext = new TripExpenses(expenses);
 
 				if( !personal ){
-					dataObjext.SetBusinessPurposeLinesCharacterLength( 44 );
-					dataObjext.SetLocationLinesCharacterLength( 44 );
+					dataObjext.SetBusinessPurposeLinesCharacterLength( businessPurposeLinesCharacterLength_county );
+					dataObjext.SetLocationLinesCharacterLength( locationLinesCharacterLength_county );
 					dataObjext.setDivideExpenses( false );
+				}else{
+					dataObjext.SetBusinessPurposeLinesCharacterLength( businessPurposeLinesCharacterLength_personal );
+					dataObjext.SetLocationLinesCharacterLength( locationLinesCharacterLength_personal );
 				}
 
 				var pagesData = dataObjext.getData();
@@ -177,7 +186,7 @@ namespace Kers.Controllers
 					startingLocation = "Home";
 				}
 				pdfCanvas.DrawText(startingLocation, x + (personalVehicle ? 77 : 156 ), y + 11, getPaint(10.0f));
-                var locationLines = SplitLineToMultiline(expense.expense.ExpenseLocation, 44);
+                var locationLines = SplitLineToMultiline(expense.expense.ExpenseLocation, personalVehicle ? locationLinesCharacterLength_personal : locationLinesCharacterLength_county);
                 var locationLinesY = y;
                 var locationLinesHight = 0;
                 foreach( var line in locationLines){
@@ -186,7 +195,7 @@ namespace Kers.Controllers
                     locationLinesHight += rowHeight;
                 }
 
-                var businessPurposeLines = SplitLineToMultiline(expense.expense.BusinessPurpose, 44);
+                var businessPurposeLines = SplitLineToMultiline(expense.expense.BusinessPurpose, personalVehicle ? businessPurposeLinesCharacterLength_personal : businessPurposeLinesCharacterLength_county);
                 var purposeLinesY = y;
                 var purposeLineHight = 0;
                 foreach( var line in businessPurposeLines){
@@ -242,7 +251,7 @@ namespace Kers.Controllers
 					pdfCanvas.DrawText(expense.ProgramCategory.ShortName, x + 655, y + 11, getPaint(10.0f));
 				}
 				pdfCanvas.DrawText(expense.Mileage.ToString(), x + 737, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
-                var locationLines = SplitLineToMultiline(expense.ExpenseLocation, 58);
+                var locationLines = SplitLineToMultiline(expense.ExpenseLocation, 52);
                 var locationLinesY = y;
                 var locationLinesHight = 0;
                 foreach( var line in locationLines){
@@ -251,7 +260,7 @@ namespace Kers.Controllers
                     locationLinesHight += rowHeight;
                 }
 
-                var businessPurposeLines = SplitLineToMultiline(expense.BusinessPurpose, 58);
+                var businessPurposeLines = SplitLineToMultiline(expense.BusinessPurpose, 50);
                 var purposeLinesY = y;
                 var purposeLineHight = 0;
                 foreach( var line in businessPurposeLines){
