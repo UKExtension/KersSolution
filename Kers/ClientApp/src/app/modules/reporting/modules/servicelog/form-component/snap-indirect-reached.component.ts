@@ -96,9 +96,9 @@ export class SnapIndirectReachedComponent implements ControlValueAccessor, OnIni
         
     }
 
-    writeValue(value: any) {
+    writeValue(value: SnapIndirectReachedValue[]) {
         if (value !== []) {
-            this.selections = value;
+            this.selections = value.sort(this.compareReached);
             if(this.reachedForm != null){
                 this.reachedForm.patchValue({reached: this.selections});
             }
@@ -142,6 +142,10 @@ export class SnapIndirectReachedComponent implements ControlValueAccessor, OnIni
             return null;
         }
         return {"notInt":true};
+    }
+
+    compareReached(a:SnapIndirectReachedValue, b:SnapIndirectReachedValue){
+        return a.snapIndirectReachedId - b.snapIndirectReachedId;
     }
 
 }
