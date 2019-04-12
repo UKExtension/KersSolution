@@ -78,6 +78,8 @@ export class TrainingFormComponent implements OnInit {
           registerCutoffDaysId: "",
           seatLimit: ""
     }, { validator: trainingValidator });
+    let today = new Date();
+    this.myDatePickerOptions.disableUntil = {year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()};
     this.iHours = service.instructionalHours();
     this.cancelWindow = service.cancelEnrollmentWindows();
     this.registerWindow = service.registerWindows();
