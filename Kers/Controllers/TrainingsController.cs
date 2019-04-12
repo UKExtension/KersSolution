@@ -51,19 +51,6 @@ namespace Kers.Controllers
         
 
 
-        
-
-        [HttpPost()]
-        [Authorize]
-        public IActionResult AddTraining( [FromBody] Training ExEvent){
-            if(ExEvent != null){
-                
-                return new OkObjectResult(ExEvent);
-            }else{
-                this.Log( ExEvent,"ExtensionEvent", "Error in adding extension event attempt.", "ExtensionEvent", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
 
 
 
@@ -104,6 +91,52 @@ namespace Kers.Controllers
             }
         }
 
+
+        [HttpPost("addtraining")]
+        [Authorize]
+        public IActionResult AddTraining( [FromBody] Training training){
+            if(training != null){
+
+
+
+                var user = this.CurrentUser();
+
+/* 
+
+                var cnt = new Contact();
+                cnt.KersUser = user;
+                cnt.Created = DateTime.Now;
+                cnt.Updated = DateTime.Now;
+                cnt.MajorProgramId = contact.MajorProgramId;
+                cnt.Days = contact.Days;
+                cnt.Audience = contact.Male + contact.Female;
+                cnt.ContactDate = contact.ContactDate;
+                cnt.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
+                contact.Created = DateTime.Now;
+                cnt.Revisions = new List<ContactRevision>();
+                cnt.Revisions.Add(contact);
+                context.Add(cnt); 
+                this.Log(contact,"ContactRevision", "Statistical Contact Added.");
+                context.SaveChanges();
+                contact.MajorProgram = this.context.MajorProgram
+                                        .Where( m => m.Id == contact.MajorProgramId)
+                                        .Include( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear )
+                                        .FirstOrDefault();
+
+
+                 */
+                
+                return new OkObjectResult(training);
+            }else{
+                this.Log( training ,"ContactRevision", "Error in adding statistical contact attempt.", "Activity", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+
+
         [HttpGet("RegisterWindows")]
         public async Task<IActionResult> RegisterWindows(){
             var winds = await context.TainingRegisterWindow.ToListAsync();
@@ -119,6 +152,9 @@ namespace Kers.Controllers
             var winds = await context.TrainingCancelEnrollmentWindow.ToListAsync();
             return new OkObjectResult(winds);
         }
+
+
+        
 
 
 

@@ -86,16 +86,24 @@ export class TrainingFormComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log(this.trainingForm.value)
-      /* 
-    this.loading = true;
-    this.service.update( this.county.id, this.countyForm.value).subscribe(
-      res => {
-        this.loading = false;
-        this.onFormSubmit.emit(res);
-      }
-    );
-     */
+    var trning:Training = <Training> this.trainingForm.value;
+    trning.start = new Date(this.trainingForm.value.start.date.year, this.trainingForm.value.start.date.month - 1, this.trainingForm.value.start.date.day);
+    if( this.trainingForm.value.end != null && this.trainingForm.value.end.date != null ){
+      trning.end = new Date(this.trainingForm.value.end.date.year, this.trainingForm.value.end.date.month - 1, this.trainingForm.value.end.date.day);
+    }else{
+      trning.end = null;
+    }
+    if( this.training == null ){
+      this.loading = true;
+      this.service.add( trning ).subscribe(
+        res => {
+          this.loading = false;
+          this.onFormSubmit.emit(res);
+        }
+      );
+    }
+    
+     
   }
   onCancel(){
     this.onFormCancel.emit();

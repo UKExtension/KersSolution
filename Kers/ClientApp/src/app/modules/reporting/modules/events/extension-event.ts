@@ -7,7 +7,7 @@ export class ExtensionEvent {
     body:string;
     bodyPreview:string;
     start:Date;
-    end:Date;
+    end?:Date;
     location: ExtensionEventLocation;
     locations: ExtensionEventLocation[];
     isAllDay?: boolean;

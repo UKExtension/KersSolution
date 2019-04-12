@@ -77,7 +77,7 @@ namespace Kers.Controllers
 
         [HttpPost()]
         [Authorize]
-        public IActionResult AddExtensionEvent( [FromBody] ExtensionEvent ExEvent){
+        public IActionResult AddExtensionEvent( [FromBody] object ExEvent){
             if(ExEvent != null){
                 
                 return new OkObjectResult(ExEvent);

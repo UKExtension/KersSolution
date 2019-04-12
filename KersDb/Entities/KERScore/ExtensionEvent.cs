@@ -58,7 +58,7 @@ namespace Kers.Models.Entities.KERScore
         /// The date, time, and time zone that the event ends.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "end", Required = Newtonsoft.Json.Required.Default)]
-        public DateTimeOffset End { get; set; }
+        public DateTimeOffset? End { get; set; }
         //public ExtensionEventDateTimeTimeZone End { get; set; }
     
         /// <summary>

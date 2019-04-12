@@ -61,6 +61,13 @@ export class TrainingService {
             );
       }
 
+      add( training:Training ):Observable<Training>{
+        return this.http.post<Training>(this.location.prepareExternalUrl(this.baseUrl + 'addtraining/'), training)
+            .pipe(
+                catchError(this.handleError('add', <Training>{}))
+            );
+      }
+
 /* 
       current():Observable<User>{
         if(this.usr == null){
