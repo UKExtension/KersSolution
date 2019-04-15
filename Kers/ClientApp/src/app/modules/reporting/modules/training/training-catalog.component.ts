@@ -32,15 +32,15 @@ export class TrainingCatalogComponent implements OnInit {
 
   ngOnInit() {
     var end = new Date();
+    end.setMonth( end.getMonth() + 5);
     var start = new Date();
-    start.setMonth(end.getMonth()-1)
-    this.model.beginDate = {year: start.getFullYear(), month: start.getMonth(), day: start.getDate()};
+    this.model.beginDate = {year: start.getFullYear(), month: start.getMonth() + 1, day: start.getDate()};
     this.model.endDate = {year: end.getFullYear(), month: end.getMonth() + 1, day: end.getDate()};
+    this.trainings = this.service.perPeriod(start, end);
   }
 
   dateCnanged(event: IMyDateRangeModel){
-    //this.activities = this.service.perPeriod(event.beginJsDate, event.endJsDate);
-    console.log(event);
+    
     this.trainings = this.service.perPeriod(event.beginJsDate, event.endJsDate);
   }
 

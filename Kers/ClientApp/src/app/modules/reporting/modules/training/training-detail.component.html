@@ -1,35 +1,15 @@
-<div class="ln_solid"></div>
-<div class="row">
-    <div class="col-xs-10">
-        
-        <article class="media event" *ngIf="rowDefault">
-            <a class="pull-left date">
-                <p class="month">{{activity.activityDate | date:'MMM'}} </p>
-                <p class="day">{{activity.activityDate | date:'d'}}</p>   
-            </a>
-            <div class="media-body">
-            <a class="title">{{activity.title}}</a>
-            <p>Hours: {{activity.hours}}, Audience: {{activity.male + activity.female}}</p>
-            <p>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapDirect != null">Snap-Ed Direct</span>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapAdmin">Snap-Ed Admin/Staff Dev</span>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapPolicy != null">Snap-Ed Community/PSE</span>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapIndirect != null">Snap-Ed Indirect</span></p>
-            </div>
-        </article>
-        <div class="col-xs-12" *ngIf="rowEdit">
 
-            <servicelog-form [activity]="activity" (onFormCancel)="default()" (onFormSubmit)="activitySubmitted($event)"></servicelog-form>
-
-        </div>
-        <div class="col-xs-11" *ngIf="rowDelete">
-            Do you really want to delete activity <strong>{{activity.title}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
-        </div>
-        
-    </div>
-    <div class="col-xs-2 text-right" *ngIf="displayEdit">
+    <td *ngIf="rowDefault">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+    <td *ngIf="rowDefault">{{training.subject}}</td>
+    <td *ngIf="rowDefault">{{training.tLocation}}</td>
+    <td *ngIf="rowDefault">{{training.tTime}}</td>
+    <td *ngIf="rowDefault"><span>{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span></td>
+    <td *ngIf="rowDefault" class="text-right">
         <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
         <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
         <a class="btn btn-primary btn-xs" (click)="default()" *ngIf="!rowDefault"><i class="fa fa-close"></i> Close</a>
-    </div>  
-</div>
+    </td>
+
+
+        
+        

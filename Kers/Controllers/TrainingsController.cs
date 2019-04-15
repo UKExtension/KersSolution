@@ -92,6 +92,61 @@ namespace Kers.Controllers
         }
 
 
+
+        [HttpGet]
+        [Route("rangetrainings/{skip?}/{take?}/{order?}/{type?}")]
+        public override IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
+        {
+            IQueryable<Training> query = _context.Training.Where( t => t.End != null );
+            
+            if(order == "end"){
+                query = query.OrderByDescending(t => t.End);
+            }else if( order == "created"){
+                query = query.OrderByDescending(t => t.CreatedDateTime);
+            }else{
+                query = query.OrderByDescending(t => t.Start);
+            }
+             
+            query = query.Skip(skip).Take(take);
+            query = query
+                        .Include( e => e.submittedBy)
+                        .ThenInclude( o => o.PersonalProfile);
+            var list = query.ToList();
+            return new OkObjectResult(list);
+        }
+
+        [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]
+        [Authorize]
+        public override IActionResult PerPeriod(DateTime start, DateTime end, string order = "start", string type = "Training" ){
+            IQueryable<Training> query = _context.Training.Where( t => t.Start > start && t.Start < end);
+            
+            if(order == "end"){
+                query = query.OrderByDescending(t => t.End);
+            }else if( order == "created"){
+                query = query.OrderByDescending(t => t.CreatedDateTime);
+            }else{
+                query = query.OrderByDescending(t => t.Start);
+            }
+            query = query
+                        .Include( e => e.submittedBy)
+                        .ThenInclude( o => o.PersonalProfile);
+
+            List<Training> list = query.ToList();
+
+            var selected = list.Select( a => new {
+                          Id =  a.Id,
+                          submittedBy = a.submittedBy,
+                          Subject = a.Subject,
+                          Start = a.Start,
+                          End = a.End,
+                          tLocation = a.tLocation,
+                          tTime = a.tTime         
+            });
+            return new OkObjectResult(selected);
+        }
+
+
+
         [HttpPost("addtraining")]
         [Authorize]
         public IActionResult AddTraining( [FromBody] Training training){
@@ -100,6 +155,10 @@ namespace Kers.Controllers
                 training.submittedBy = user;
                 training.CreatedDateTime = DateTime.Now;
                 training.LastModifiedDateTime = training.CreatedDateTime;
+                training.Organizer = training.submittedBy;
+                training.tStatus = "P";
+                training.TrainDateBegin = training.Start.ToString("yyyyMMdd");
+                training.TrainDateEnd = training.End?.ToString("yyyyMMdd");
                 context.Add(training); 
                 context.SaveChanges();
                 this.Log(training,"Training", "Training Proposed.");

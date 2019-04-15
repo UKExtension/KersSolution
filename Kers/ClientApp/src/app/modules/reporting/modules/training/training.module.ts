@@ -8,6 +8,7 @@ import { TrainingFormComponent } from './training-form.component';
 import { MyDatePickerModule } from 'mydatepicker';
 import { TrainingCatalogComponent } from './training-catalog.component';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
+import { TrainingDetailComponent } from './training-detail.component';
 
 
 
@@ -15,7 +16,8 @@ import { MyDateRangePickerModule } from 'mydaterangepicker';
   declarations: [
     TrainingHomeComponent,
     TrainingFormComponent,
-    TrainingCatalogComponent
+    TrainingCatalogComponent,
+    TrainingDetailComponent
   ],
   imports: [
     SharedModule,

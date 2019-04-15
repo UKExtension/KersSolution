@@ -24,7 +24,7 @@ export class TrainingService {
       }
 
       range(skip:number = 0, take:number = 10, order = "start"):Observable<Training[]>{
-        var url = this.baseUrl + "range/"+skip+"/"+take+"/"+order;
+        var url = this.baseUrl + "rangetrainings/"+skip+"/"+take+"/"+order;
         return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('range', []))
@@ -62,9 +62,17 @@ export class TrainingService {
       }
 
       add( training:Training ):Observable<Training>{
+          console.log(training);
         return this.http.post<Training>(this.location.prepareExternalUrl(this.baseUrl + 'addtraining/'), training)
             .pipe(
                 catchError(this.handleError('add', <Training>{}))
+            );
+      }
+      delete(id:number):Observable<{}>{
+        var url = this.baseUrl + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
             );
       }
 

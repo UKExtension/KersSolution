@@ -4,6 +4,7 @@ import { User, PlanningUnit } from '../user/user.service';
 export class Training extends ExtensionEvent{
     classicInServiceTrainingId:number;
     submittedBy: User;
+    submittedById:number;
     approvedBy:User;
     approvedDate?:Date;
     tID:string;

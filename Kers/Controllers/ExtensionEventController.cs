@@ -37,7 +37,7 @@ namespace Kers.Controllers
 
         [HttpGet]
         [Route("range/{skip?}/{take?}/{order?}/{type?}")]
-        public IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
+        public virtual IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
         {
             IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.End != null && t.DiscriminatorValue == type);
             
@@ -50,7 +50,9 @@ namespace Kers.Controllers
             }
              
             query = query.Skip(skip).Take(take);
-
+            query = query
+                        .Include( e => e.Organizer)
+                        .ThenInclude( o => o.PersonalProfile);
             var list = query.ToList();
             return new OkObjectResult(list);
         }
@@ -58,7 +60,7 @@ namespace Kers.Controllers
 
         [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]
         [Authorize]
-        public IActionResult PerPeriod(DateTime start, DateTime end, string order = "start", string type = "Training" ){
+        public virtual IActionResult PerPeriod(DateTime start, DateTime end, string order = "start", string type = "Training" ){
             IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.Start > start && t.Start < end && t.DiscriminatorValue == type);
             
             if(order == "end"){
