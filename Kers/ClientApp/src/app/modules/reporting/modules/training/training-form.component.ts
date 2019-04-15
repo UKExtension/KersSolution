@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow } from './training';
 import { TrainingService } from './training.service';
 import { IMyDpOptions, IMyDateModel } from "mydatepicker";
@@ -7,7 +7,12 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'training-form',
-  templateUrl: './training-form.component.html'
+  templateUrl: './training-form.component.html',
+  styles:[`
+  my-date-picker.ng-invalid.ng-touched >>> .mydp {
+    border: 1px solid #CE5454;
+  }
+  `]
 })
 export class TrainingFormComponent implements OnInit {
     @Input() training:Training;
@@ -16,29 +21,8 @@ export class TrainingFormComponent implements OnInit {
     registerWindow: Observable<TainingRegisterWindow[]>;
 
     date = new Date();
-    trainingForm = this.fb.group(
-        {
-            start: [{
-                date: {
-                    year: this.date.getFullYear(),
-                    month: this.date.getMonth() + 1,
-                    day: this.date.getDate()}
-                }, Validators.required],
-            end: [{}],
-            subject: ["", Validators.required],
-            body: [""],
-            tAudience: [""],
-            tContact: [""],
-            tLocation: [""],
-            day1: ["", Validators.required],
-            day2: [""],
-            day3: [""],
-            day4: [""],
-            iHourId: "",
-            cancelCutoffDaysId: "",
-            registerCutoffDaysId: "",
-            seatLimit: ""
-      });;
+    trainingForm:any;
+
     options = { 
         placeholderText: 'Your Description Here!',
         toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL'],
@@ -70,6 +54,32 @@ export class TrainingFormComponent implements OnInit {
     private fb: FormBuilder,
     private service:TrainingService
   ) {
+    this.date.setMonth(this.date.getMonth() + 2);
+    this.trainingForm = this.fb.group(
+      {
+          start: [{
+              date: {
+                  year: this.date.getFullYear(),
+                  month: this.date.getMonth() + 1,
+                  day: this.date.getDate()}
+              }, Validators.required],
+          end: [{}],
+          subject: ["", Validators.required],
+          body: [""],
+          tAudience: [""],
+          tContact: [""],
+          tLocation: [""],
+          day1: ["", Validators.required],
+          day2: [""],
+          day3: [""],
+          day4: [""],
+          iHourId: "",
+          cancelCutoffDaysId: "",
+          registerCutoffDaysId: "",
+          seatLimit: ""
+    }, { validator: trainingValidator });
+    let today = new Date();
+    this.myDatePickerOptions.disableUntil = {year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()};
     this.iHours = service.instructionalHours();
     this.cancelWindow = service.cancelEnrollmentWindows();
     this.registerWindow = service.registerWindows();
@@ -108,5 +118,83 @@ export class TrainingFormComponent implements OnInit {
   onCancel(){
     this.onFormCancel.emit();
   }
+  
 
 }
+
+
+
+export const trainingValidator = (control: AbstractControl): {[key: string]: boolean} => {
+
+  let start = control.get('start');
+  let end = control.get('end');
+
+  if( end.value != null && end.value.date != null){
+    let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
+    let endDate = new Date(end.value.date.year, end.value.date.month - 1, end.value.date.day);
+    if( startDate.getTime() > endDate.getTime()){
+      return {"endDate":true};
+    }
+  }
+
+  /* 
+ 
+
+  
+
+  var isExpenseValid = true;
+
+  let expenseFundingSource = control.get('fundingSourceNonMileageId');
+  
+  let registration = control.get('registration');
+  let lodging = control.get('lodging');
+  let mealRateBreakfast = control.get('mealRateBreakfastId');
+  let mealRateLunch = control.get('mealRateLunchId');
+  let mealRateDinner = control.get('mealRateDinnerId');
+  let otherExpenseCost = control.get('otherExpenseCost');
+  let vehicleTypeControl = control.get('vehicleType');
+  let vehicleIdControl = control.get('countyVehicleId');
+
+  let mileageAmount = control.get('mileage');
+  let mileageFundingSource = control.get('fundingSourceMileageId');
+  
+  
+  if(             !( mileageAmount.value == "" ||  mileageAmount.value == 0) 
+              && 
+                  mileageFundingSource.value == ""
+              && 
+              vehicleTypeControl.value != 2
+              
+              ){
+      error["noMileageSource"] = true;
+      hasError = true;
+  }
+
+  if( 
+     ( !(registration.value == "" || registration.value == 0)
+      || !(lodging.value == "" || lodging.value == 0)
+      || !(otherExpenseCost.value == "" || otherExpenseCost.value == 0)
+      || mealRateBreakfast.value != ""
+      || mealRateLunch.value != ""
+      || mealRateDinner.value != "" )
+      && expenseFundingSource.value == ""   
+  
+  ){
+      isExpenseValid = false;
+  }
+  
+  if(vehicleTypeControl.value == 2 && vehicleIdControl.value == ""){
+      error["noVehicleSelected"] = true;
+      hasError = true;
+  }
+
+  if(!isExpenseValid){
+      error["noExpenseSource"] = true;
+      hasError = true;
+  }
+  if(hasError){
+      return error;
+  }
+ */
+  return null;
+};
