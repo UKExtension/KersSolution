@@ -20,6 +20,9 @@ namespace Kers.Models.Entities.KERScore
         public string Zip {get; set;}
         public string City {get; set; }
         public string Phone {get; set; }
+        // Retrieved as described here:
+        // http://stackoverflow.com/questions/11580423/what-is-the-best-way-to-store-timezone-information-in-my-db
+        public string TimeZoneId { get; set; }
         public string WebSite {get; set;}
         public string Email {get; set;}
         public bool ReportsExtension {get; set;}
