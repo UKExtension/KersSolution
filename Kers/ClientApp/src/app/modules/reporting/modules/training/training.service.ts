@@ -76,39 +76,13 @@ export class TrainingService {
             );
       }
 
-/* 
-      current():Observable<User>{
-        if(this.usr == null){
-            var url = this.baseUrl + "current";
-            return this.http.get<User>(this.location.prepareExternalUrl(url))
+      update(id:number, training:Training):Observable<Training>{
+        var url = this.baseUrl + 'updatetraining/' + id;
+        return this.http.put<Training>(this.location.prepareExternalUrl(url), training)
                 .pipe(
-                    tap(
-                        res =>
-                        {
-                            this.usr = <User>res
-                        }
-                    ),
-                    catchError(this.handleError('current', <User>{}))
+                    catchError(this.handleError('update', training))
                 );
-                    
-        }else{
-            return of(this.usr);
-        }
-    }
-
-
-
-    
-
-    getCustomCount(searchParams?:{}):Observable<number>{
-        var url = this.baseUrl + "GetCustomCount/";
-        return this.http.get<number>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
-            .pipe(
-                catchError(this.handleError('getCustomCount', 0))
-            );
-    }
-
- */
+      }  
 
 }
 

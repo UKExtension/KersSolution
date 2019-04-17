@@ -133,16 +133,7 @@ namespace Kers.Controllers
 
             List<Training> list = query.ToList();
 
-            var selected = list.Select( a => new {
-                          Id =  a.Id,
-                          submittedBy = a.submittedBy,
-                          Subject = a.Subject,
-                          Start = a.Start,
-                          End = a.End,
-                          tLocation = a.tLocation,
-                          tTime = a.tTime         
-            });
-            return new OkObjectResult(selected);
+            return new OkObjectResult(list);
         }
 
 
@@ -152,8 +143,10 @@ namespace Kers.Controllers
         public IActionResult AddTraining( [FromBody] Training training){
             if(training != null){
                 var user = this.CurrentUser();
+
                 training.submittedBy = user;
                 training.CreatedDateTime = DateTime.Now;
+                training.BodyPreview = training.Body;
                 training.LastModifiedDateTime = training.CreatedDateTime;
                 training.Organizer = training.submittedBy;
                 training.tStatus = "P";
@@ -162,9 +155,39 @@ namespace Kers.Controllers
                 context.Add(training); 
                 context.SaveChanges();
                 this.Log(training,"Training", "Training Proposed.");
+
                 return new OkObjectResult(training);
             }else{
                 this.Log( training ,"Training", "Error in adding training attempt.", "Training", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+        [HttpPut("updatetraining/{id}")]
+        [Authorize]
+        public IActionResult UpdateTraoining( int id, [FromBody] Training training){
+           
+
+            var trn = context.Training.Find(id);
+            if(training != null && trn != null ){
+                trn.Start = training.Start;
+                trn.End = training.End;
+                trn.Subject = training.Subject;
+                trn.Body = training.Body;
+                trn.Location = training.Location;
+                trn.tContact = training.tContact;
+                trn.day1 = training.day1;
+                trn.day2 = training.day2;
+                trn.day3 = training.day3;
+                trn.day4 = training.day4;
+                trn.tAudience = training.tAudience;
+                trn.TrainDateBegin = training.Start.ToString("yyyyMMdd");
+                trn.TrainDateEnd = training.End?.ToString("yyyyMMdd");
+                trn.LastModifiedDateTime = DateTime.Now;
+                context.SaveChanges();
+                this.Log(training,"Training", "Training Updated.");
+                return new OkObjectResult(training);
+            }else{
+                this.Log( training ,"Training", "Not Found Training in an update attempt.", "Training", "Error");
                 return new StatusCodeResult(500);
             }
         }

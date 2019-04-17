@@ -4,6 +4,7 @@ import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, Tai
 import { TrainingService } from './training.service';
 import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 import { Observable } from 'rxjs';
+import { triggerAsyncId } from 'async_hooks';
 
 @Component({
   selector: 'training-form',
@@ -86,7 +87,31 @@ export class TrainingFormComponent implements OnInit {
    }
 
   ngOnInit() {
-    //this.trainingForm.patchValue(this.training);
+    if(this.training){
+      this.trainingForm.patchValue(this.training);
+      var start = new Date( this.training.start);
+      this.trainingForm.patchValue({
+        start: {
+          date:{
+            year: start.getFullYear(),
+            month: start.getMonth() + 1,
+            day: start.getDate()
+          }
+        }
+      })
+      if( this.training.end ){
+        var end = new Date(this.training.end);
+        this.trainingForm.patchValue({
+          end:{
+            date:{
+              year: end.getFullYear(),
+              month: end.getMonth() + 1,
+              day: end.getDate()
+            }
+          }
+        })
+      }
+    } 
     this.loading = false;
   }
 
@@ -111,6 +136,14 @@ export class TrainingFormComponent implements OnInit {
           this.onFormSubmit.emit(res);
         }
       );
+    }else{
+      this.loading = true;
+      this.service.update( this.training.id, trning).subscribe(
+        res => {
+          this.loading = false;
+          this.onFormSubmit.emit( res);
+        }
+      )
     }
     
      
