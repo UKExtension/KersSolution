@@ -32,6 +32,14 @@ export class PlanningunitService {
             );
     }
 
+    timezones():Observable<Object[]>{
+        var url = this.baseUrl + 'timezones';
+        return this.http.get<Object[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('timezones', []))
+            );
+    }
+
     id(id:number):Observable<PlanningUnit>{
         if(this.planningUnits.has(id)){
             return of( this.planningUnits.get(id));

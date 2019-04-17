@@ -96,6 +96,13 @@ namespace Kers.Controllers
             return new OkObjectResult(counties);
         }
 
+
+        [HttpGet("timezones")]
+        public IActionResult Timezones(){
+            var zones = TimeZoneInfo.GetSystemTimeZones();
+            return new OkObjectResult(zones);
+        }
+
         [HttpPut("{id}")]
         public IActionResult UpdateCounty( int id, [FromBody] PlanningUnit unit){
            
@@ -115,6 +122,7 @@ namespace Kers.Controllers
                 entity.Phone = unit.Phone;
                 entity.WebSite = unit.WebSite;
                 entity.Email = unit.Email;
+                entity.TimeZoneId = unit.TimeZoneId;
                 entity.Population = unit.Population;
                 entity.FIPSCode = unit.FIPSCode;
 

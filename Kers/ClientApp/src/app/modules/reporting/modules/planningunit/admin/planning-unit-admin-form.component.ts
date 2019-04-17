@@ -3,6 +3,7 @@ import { PlanningUnit } from '../../user/user.service';
 import { CountyService } from '../../county/county.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { PlanningunitService } from '../planningunit.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'planning-unit-admin-form',
@@ -12,6 +13,7 @@ import { PlanningunitService } from '../planningunit.service';
 export class PlanningUnitAdminFormComponent implements OnInit {
   @Input() county:PlanningUnit;
   countyForm;
+  timezones:Observable<Object[]>;
   options:object;
   loading = true;
   errorMessage:string;
@@ -36,6 +38,7 @@ export class PlanningUnitAdminFormComponent implements OnInit {
           phone: [""],
           webSite: [""],
           email: [""],
+          timeZoneId: [""],
           code: [""],
           geoFeature: [""],
           fipsCode: [0],
@@ -54,6 +57,7 @@ export class PlanningUnitAdminFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.timezones = this.service.timezones();
     this.countyForm.patchValue(this.county);
     this.loading = false;
   }

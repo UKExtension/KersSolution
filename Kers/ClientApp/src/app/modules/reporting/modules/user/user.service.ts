@@ -342,6 +342,7 @@ export class PlanningUnit{
         public city:string,
         public webSite:string,
         public email:string,
+        public timeZoneId:string,
         public reportsExtension:boolean,
         public vehicles:Vehicle[],
         public fipsCode?:number,
