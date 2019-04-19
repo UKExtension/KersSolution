@@ -1,4 +1,4 @@
-
+<ng-container *ngIf="admin">
     <td *ngIf="rowDefault">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
     <td *ngIf="rowDefault">{{training.subject}}</td>
     <td *ngIf="rowDefault">{{training.tLocation}}</td>
@@ -15,6 +15,14 @@
         </div>
         <training-form [training]="training"></training-form>
     </td>
+</ng-container>
+<ng-container *ngIf="!admin">
+    <td>Select</td>
+    <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+    <td>{{training.subject}}</td>
+    <td>{{training.tLocation}}</td>
+    <td>{{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span></td>
+</ng-container>
 
 
         

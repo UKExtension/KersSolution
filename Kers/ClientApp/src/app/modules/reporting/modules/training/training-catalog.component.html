@@ -1,21 +1,36 @@
 <h3>Training Catalog</h3>
+<div class="row">
+  <div class="col-md-6">
 
-<my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
+  </div>
+  <div class="col-md-6 text-right">
+      <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
+  </div>
+
+</div>
+
 <div class="table-responsive">
   
   <table class="table table-bordered table-striped" *ngIf="trainings$ | async as trainings">
       <thead>
-          <tr>
+          <tr *ngIf="admin">
             <th>Date(s)</th>
             <th>Title</th>
             <th>Location</th>
             <th>Time</th>
-            <th>Presenter</th>
+            <th>Proposed By</th>
             <th></th>
+          </tr>
+          <tr *ngIf="!admin">
+            <th></th>
+            <th>Date(s)</th>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Time</th>              
           </tr>
       </thead>
       <tbody *ngIf="!loading">
-        <tr [training-detail]="training" *ngFor="let training of trainings"></tr>
+        <tr [training-detail]="training" [admin]="admin" *ngFor="let training of trainings"></tr>
       </tbody>
   </table>
   <loading *ngIf="loading"></loading>
