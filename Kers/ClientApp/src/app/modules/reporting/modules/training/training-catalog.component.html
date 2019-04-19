@@ -3,7 +3,7 @@
 <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
 <div class="table-responsive">
   
-  <table class="table table-bordered table-striped">
+  <table class="table table-bordered table-striped" *ngIf="trainings$ | async as trainings">
       <thead>
           <tr>
             <th>Date(s)</th>
@@ -14,8 +14,9 @@
             <th></th>
           </tr>
       </thead>
-      <tbody>
-        <tr [training-detail]="training" *ngFor="let training of trainings | async"></tr>
+      <tbody *ngIf="!loading">
+        <tr [training-detail]="training" *ngFor="let training of trainings"></tr>
       </tbody>
   </table>
+  <loading *ngIf="loading"></loading>
 </div>

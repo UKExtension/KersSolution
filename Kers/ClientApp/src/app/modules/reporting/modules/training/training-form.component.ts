@@ -77,7 +77,8 @@ export class TrainingFormComponent implements OnInit {
           iHourId: "",
           cancelCutoffDaysId: "",
           registerCutoffDaysId: "",
-          seatLimit: ""
+          seatLimit: "",
+          tStatus: "P"
     }, { validator: trainingValidator });
     let today = new Date();
     this.myDatePickerOptions.disableUntil = {year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()};
@@ -138,6 +139,7 @@ export class TrainingFormComponent implements OnInit {
       );
     }else{
       this.loading = true;
+      console.log(trning);
       this.service.update( this.training.id, trning).subscribe(
         res => {
           this.loading = false;

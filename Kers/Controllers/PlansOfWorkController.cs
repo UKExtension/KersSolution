@@ -421,7 +421,7 @@ namespace Kers.Controllers
                                         
                                         var maps = context.Map.AsNoTracking().Where(
                                                         m =>
-                                                            m.FiscalYear.Id == 2
+                                                            m.FiscalYear.Id == fiscalYearFrom.Id
                                                             &&
                                                             m.PlanningUnitId == county.Id
                                                 );
@@ -540,7 +540,7 @@ namespace Kers.Controllers
                     
                 
             }
-            context.SaveChanges();
+            //context.SaveChanges();
             if( newMaps.Count() > 0 && newPlans.Count() > 0)  return new OkObjectResult( newPlans );
             return NotFound(new {Error = "no need to import plans"});
         }

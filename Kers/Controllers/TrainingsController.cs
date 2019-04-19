@@ -48,28 +48,7 @@ namespace Kers.Controllers
 
 
 
-        
-
-
-
-
-
-        [HttpPut("{id}")]
-        [Authorize]
-        public IActionResult UpdateTraining( int id, [FromBody] Training ExEvent){
-           
-
-
-            if(ExEvent != null ){
-                
-                this.Log(ExEvent,"ExtensionEvent", "ExtensionEvent Updated.");
-                
-                return new OkObjectResult(ExEvent);
-            }else{
-                this.Log( ExEvent ,"ExtensionEvent", "Not Found ExtensionEvent in an update attempt.", "ExtensionEvent", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
+    
 
         [HttpDelete("{id}")]
         [Authorize]
@@ -183,6 +162,7 @@ namespace Kers.Controllers
                 trn.TrainDateBegin = training.Start.ToString("yyyyMMdd");
                 trn.TrainDateEnd = training.End?.ToString("yyyyMMdd");
                 trn.LastModifiedDateTime = DateTime.Now;
+                trn.tStatus = training.tStatus;
                 context.SaveChanges();
                 this.Log(training,"Training", "Training Updated.");
                 return new OkObjectResult(training);

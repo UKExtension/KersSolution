@@ -6,7 +6,7 @@ import {ReportingService} from './reporting.service';
     <div [innerHtml]="stats.name"></div>
     <div class="x_panel">
       <div class="x_title">
-        <h2>{{title.name}}<small *ngIf="subtitle && subtitle.name != ''">{{subtitle.name}}</small></h2>
+        <h2>{{title.name}}<small [hidden]="!subtitle || subtitle.name == ''">{{subtitle.name}}</small></h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">

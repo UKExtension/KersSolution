@@ -5,6 +5,7 @@ import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { IMyDrpOptions } from "mydaterangepicker";
+import { tap, startWith, debounceTime, flatMap, delay } from 'rxjs/operators';
 
 
 @Component({
@@ -30,6 +31,8 @@ export class LogHomeComponent implements OnInit {
         amount: 10
     }
     private searchTermStream = new Subject<string>();
+    loading: boolean = true; // Turn spinner on and off
+
 
     private searchForm: FormGroup;
     private myDateRangePickerOptions: IMyDrpOptions = {
@@ -46,11 +49,14 @@ export class LogHomeComponent implements OnInit {
         private formBuilder: FormBuilder 
     )   
     {
-        this.latest = this.searchTermStream
-                        .debounceTime(300)
-                        .switchMap((term:string) => {
-                            return this.performSearch(term);
-                        });
+        this.latest = this.searchTermStream.asObservable()
+                    .pipe(
+                        startWith('onInit'),
+                        debounceTime(300),
+                        flatMap(_ => this.service.getCustom(this.criteria)),
+                        //delay(1000),
+                        tap(_ => this.loading = false)
+                    );
     }
 
     ngOnInit(){
@@ -68,19 +74,22 @@ export class LogHomeComponent implements OnInit {
     }
 
     update(){
+        this.loading = true;
         this.searchTermStream.next("");
     }
 
     
 
     onSearch(event){
+        this.loading = true;
          this.searchTermStream.next(event.target.value);
     }
 
     performSearch(term:string){
+        this.loading = true;
         this.criteria.search = term;
         this.updateNumResults();
-        return this.service.getCustom(this.criteria);
+        this.searchTermStream.next('onRefresh'); // Emit value to force reload; actual value does not matter
     }
 
     updateNumResults(){
@@ -97,14 +106,14 @@ export class LogHomeComponent implements OnInit {
     }
 
     onType(event){
- 
-            this.criteria.amount = 10;
-            this.criteria.type = event.target.value;
-            this.searchTermStream.next(this.criteria.search);
-        
+        this.loading = true;
+        this.criteria.amount = 10;
+        this.criteria.type = event.target.value;
+        this.searchTermStream.next(this.criteria.search);
     }
     dateCnanged(event){
         // {beginDate: {year: 2018, month: 10, day: 9}, endDate: {year: 2018, month: 10, day: 19}}
+        this.loading = true;
         var b = event.beginDate;
         this.criteria.rangeStart = b.month + '/'+ b.day +'/'+ b.year +' 00:00:00';
         var e = event.endDate;

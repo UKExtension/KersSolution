@@ -1,9 +1,10 @@
 <p>
-  <a [routerLink]="['/reporting/training/catalog']">Training Catalog</a>
+  <a class="btn btn-default">My Upcoming Trainings</a> <a class="btn btn-default">My Historical Training Transcript</a> <a class="btn btn-default" [routerLink]="['/reporting/training/catalog']" routerLinkActive="active">Training Catalog</a>
 </p>
 <p>
-  <a [routerLink]="['/reporting/training/propose']">Submit New Training Proposal</a>
+  <a class="btn btn-default" [routerLink]="['/reporting/training/propose']" routerLinkActive="active">Submit New Training Proposal</a> <a class="btn btn-default">Post Attendance</a> 
 </p>
+<br><br>
 <router-outlet></router-outlet>
 
 

@@ -33,15 +33,17 @@
 
 
 
-<ul *ngIf="latest | async as lates; else loading" class="messages">
+<ul *ngIf="latest | async as lates" class="messages">
 
 
                 <ng-container *ngIf="lates.length; else noItems">
-                    <li *ngFor="let log of lates" [log-detail]="log"></li>
+                    <ng-container *ngIf="!loading">
+                        <li *ngFor="let log of lates" [log-detail]="log"></li>
+                    </ng-container>
                 </ng-container>
                 <ng-template #noItems>No Items!</ng-template>    
 </ul>
-<ng-template #loading>loading animation...</ng-template>
+<loading *ngIf="loading"></loading>
 <br><br>
     <div *ngIf="numbLogs != 0" class="text-center">
         <div>Showing {{ numResults }} of {{numbLogs}} System Logs</div>
