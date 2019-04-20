@@ -16,6 +16,7 @@ export class TrainingDetailComponent {
 
     
     @Input('training-detail') training:Training;
+    @Input() admin:boolean = false;
 
     @Output() onDeleted = new EventEmitter<Training>();
     @Output() onEdited = new EventEmitter<Training>();

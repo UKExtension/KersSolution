@@ -15,6 +15,8 @@ export class TrainingCatalogComponent implements OnInit {
   loading: boolean = true; // Turn spinner on and off
   trainings$:Observable<Training[]>;
 
+
+  @Input() admin:boolean = false;
   @Input() startDate:Date;
   @Input() endDate:Date;
 
