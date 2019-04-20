@@ -24,7 +24,7 @@ namespace Kers.Tasks
         ){
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "20 1 * * *";
+        public string Schedule => "20 21 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
