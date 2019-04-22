@@ -208,6 +208,7 @@ namespace Kers.Models.Contexts
         //  General
         /***************************************/
         public virtual DbSet<Log> Log {get; set;}
+        public virtual DbSet<Message> Message {get; set;}
         public virtual DbSet<FiscalYear> FiscalYear {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

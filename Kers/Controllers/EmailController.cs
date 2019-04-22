@@ -55,7 +55,7 @@ namespace Kers.Controllers
                 message.Body = new TextPart ("plain") {
                     Text = Email.Body
                 };
-
+                // https://github.com/jstedfast/MailKit
                 using (var client = new SmtpClient ()) {
                     // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
                     client.ServerCertificateValidationCallback = (s,c,h,e) => true;
@@ -91,6 +91,8 @@ namespace Kers.Controllers
                         client.AuthenticationMechanisms.Remove ("XOAUTH2");
                         //client.Authenticate (Email.Username, Email.Password);
                     }
+                    //https://github.com/jstedfast/MailKit/issues/126
+                    client.MessageSent += OnMessageSent;
                     client.Send (message);
                     client.Disconnect (true);
                 }
@@ -101,6 +103,12 @@ namespace Kers.Controllers
                 return new OkObjectResult(ex.Message);
             }   
             
+        }
+
+        //https://github.com/jstedfast/MailKit/issues/126
+        void OnMessageSent (object sender, MessageSentEventArgs e)
+        {
+            //Console.WriteLine ("The message was sent!");
         }
 
         
