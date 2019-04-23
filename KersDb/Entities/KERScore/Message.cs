@@ -12,7 +12,8 @@ namespace Kers.Models.Entities.KERScore
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Subject {get; set;}
-        public string Body {get;set;}
+        public string BodyHtml {get;set;}
+        public string BodyText {get;set;}
         public KersUser From {get; set;}
         public KersUser To {get; set;}
         public string FromEmail {get; set;} // In case From is not a KersUser. For Example, messages that should be sent on behalf of the system.

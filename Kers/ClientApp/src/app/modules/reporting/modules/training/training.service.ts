@@ -36,7 +36,14 @@ export class TrainingService {
             .pipe(
                 catchError(this.handleError('perPeriod', []))
             );
-    }
+      }
+      getTraining(id:number):Observable<Training>{
+        var url = this.baseUrl + "get/" + id;
+        return this.http.get<Training>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('registerWindows', <Training>{}))
+            );
+      }
 
       registerWindows() : Observable<TainingRegisterWindow[]>{
         var url = this.baseUrl + "RegisterWindows/";

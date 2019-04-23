@@ -1,3 +1,57 @@
-<p>
-  training-info works!
-</p>
+<div class="row training" *ngIf="training$ | async as training">
+  <div class="col-xs-12">
+    <h2>{{training.subject}}</h2>
+  </div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Date(s):</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12">
+    {{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span>
+  </div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Location:</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12">
+    {{training.tLocation}}
+  </div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Time(s):</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12">
+    Day 1: {{training.day1}}<span *ngIf="training.day2"><br>Day 2: {{training.day2}}</span><span *ngIf="training.day3"><br>Day 3: {{training.day3}}</span><span *ngIf="training.day4"><br>Day 4: {{training.day4}}</span>
+  </div>
+  <div></div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Description:</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12" [innerHTML]="training.body"></div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Audience:</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12" [innerHTML]="training.tAudience"></div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Contact:</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12">
+    {{training.tContact}}
+  </div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Instructional Hours:</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12">
+    <span *ngIf="training.iHour">{{training.iHour.iHoursTxt}} <small>(Credit given for attendance at entire session. Partial credit not available.)</small></span>
+  </div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Last Day to Register:</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12">
+    {{registerCutOfDate(training) | date:'mediumDate'}}
+  </div>
+  <div class="col-sm-3 col-xs-12">
+    <strong>Last Day to Cancel:</strong>
+  </div>
+  <div class="col-sm-9 col-xs-12">
+    {{cancelCutOfDate(training) | date:'mediumDate'}}
+  </div>
+  
+</div>

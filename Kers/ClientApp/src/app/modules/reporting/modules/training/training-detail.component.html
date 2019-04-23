@@ -17,7 +17,7 @@
     </td>
 </ng-container>
 <ng-container *ngIf="!admin">
-    <td>Select</td>
+    <td><a [routerLink]="['/reporting/training',training.id]" >Select</a></td>
     <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
     <td>{{training.subject}}</td>
     <td>{{training.tLocation}}</td>

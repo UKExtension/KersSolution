@@ -73,6 +73,46 @@ namespace Kers.Controllers
 
 
         [HttpGet]
+        [Route("get/{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var training = await context.Training
+                                    .Where( t => t.Id == id)
+                                    .Include( t => t.Enrollment)
+                                    .Include( t => t.iHour)
+                                    .Include( t => t.RegisterCutoffDays)
+                                    .Include( t => t.CancelCutoffDays)
+                                    .FirstOrDefaultAsync();
+            if( training != null){
+                return new OkObjectResult(training);
+            }else{
+                this.Log( id ,"Training", "Not Found Training with this id.", "Training", "Error");
+                return new StatusCodeResult(500);
+            }           
+        }
+
+        [HttpGet]
+        [Route("getByClassicId/{id}")]
+        public async Task<IActionResult> GetByClassicId(int id)
+        {
+            var training = await context.Training
+                                    .Where( t => t.tID == id.ToString())
+                                    .Include( t => t.Enrollment)
+                                    .Include( t => t.iHour)
+                                    .Include( t => t.RegisterCutoffDays)
+                                    .Include( t => t.CancelCutoffDays)
+                                    .FirstOrDefaultAsync();
+            if( training != null){
+                return new OkObjectResult(training);
+            }else{
+                this.Log( id ,"Training", "Not Found Training with this id.", "Training", "Error");
+                return new StatusCodeResult(500);
+            }           
+        }
+
+
+
+        [HttpGet]
         [Route("rangetrainings/{skip?}/{take?}/{order?}/{type?}")]
         public override IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
         {
