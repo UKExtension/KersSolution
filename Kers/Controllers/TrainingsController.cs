@@ -76,19 +76,27 @@ namespace Kers.Controllers
         [Route("get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var training = await context.Training
+            var training = context.Training
                                     .Where( t => t.Id == id)
                                     .Include( t => t.Enrollment)
+                                            .ThenInclude( e => e.Attendie)
+                                            .ThenInclude( a => a.RprtngProfile)
+                                                .ThenInclude( r => r.PlanningUnit)
+                                    .Include( t => t.Enrollment)
+                                            .ThenInclude( e => e.Attendie)
+                                            .ThenInclude( a => a.Specialties)
+                                                .ThenInclude( s => s.Specialty)
                                     .Include( t => t.iHour)
                                     .Include( t => t.RegisterCutoffDays)
                                     .Include( t => t.CancelCutoffDays)
                                     .FirstOrDefaultAsync();
-            if( training != null){
-                return new OkObjectResult(training);
+            //if( training != null){
+                return new OkObjectResult(await training);
+      /*      
             }else{
                 this.Log( id ,"Training", "Not Found Training with this id.", "Training", "Error");
                 return new StatusCodeResult(500);
-            }           
+            }   */         
         }
 
         [HttpGet]
@@ -181,6 +189,61 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
         }
+
+        [HttpPost("enroll/{trainingId}")]
+        [Authorize]
+        public async Task<IActionResult> EnrollInTraining( int trainingId ){
+            var training = await this.context.Training.Where( t => t.Id == trainingId)
+                                        .Include( t => t.Enrollment)
+                                        .FirstOrDefaultAsync();
+            if(training != null){
+                var user = this.CurrentUser();
+                if( !training.Enrollment.Where(e => e.Attendie == user).Any()){
+                    var enrollment = new TrainingEnrollment();
+                    enrollment.rDT = DateTime.Now;
+                    enrollment.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
+                    enrollment.Attendie = user;
+                    enrollment.TrainingId = trainingId.ToString();
+                    enrollment.eStatus = "E";
+                    enrollment.enrolledDate = enrollment.rDT;
+                    training.Enrollment.Add(enrollment);
+                    context.SaveChanges();
+                    this.Log(enrollment,"TrainingEnrollment", "Enrolled In Training.");
+                }
+                
+                return new OkObjectResult(training);
+            }else{
+                this.Log( trainingId ,"TrainingEnrollment", "Error in training enrolment attempt.", "TrainingEnrollment", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+        [HttpPost("unenroll/{trainingId}")]
+        [Authorize]
+        public async Task<IActionResult> UnenrollFromTraining( int trainingId ){
+            var training = await this.context.Training.Where( t => t.Id == trainingId)
+                                        .Include( t => t.Enrollment)
+                                        .FirstOrDefaultAsync();
+            if(training != null){
+                var user = this.CurrentUser();
+
+                var enrollment = training.Enrollment.Where(e => e.Attendie == user).FirstOrDefault();
+
+
+                if( enrollment != null){
+                    training.Enrollment.Remove(enrollment);
+                    context.TrainingEnrollment.Remove(enrollment);
+                    context.SaveChanges();
+                    this.Log(enrollment,"TrainingEnrollment", "Cancelled Enrollment in Training.");
+                }
+                
+                return new OkObjectResult(training);
+            }else{
+                this.Log( trainingId ,"TrainingEnrollment", "Error in training enrolment cancelling attempt.", "TrainingEnrollment", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
         [HttpPut("updatetraining/{id}")]
         [Authorize]
         public IActionResult UpdateTraoining( int id, [FromBody] Training training){

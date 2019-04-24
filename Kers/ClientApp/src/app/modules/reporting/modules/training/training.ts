@@ -58,6 +58,7 @@ export class TrainingEnrollment{
     PlanningUnitId:number;
     planningUnit:PlanningUnit;
     attendie:User;
+    attendieId:number;
     trainingId:string;
     eStatus:string;
     enrolledDate:Date;

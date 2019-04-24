@@ -69,11 +69,24 @@ export class TrainingService {
       }
 
       add( training:Training ):Observable<Training>{
-          console.log(training);
         return this.http.post<Training>(this.location.prepareExternalUrl(this.baseUrl + 'addtraining/'), training)
             .pipe(
                 catchError(this.handleError('add', <Training>{}))
             );
+      }
+      enroll( training:Training ):Observable<Training>{
+        var url = this.baseUrl + "enroll/" + training.id;
+        return this.http.post<Training>(this.location.prepareExternalUrl(url), training)
+          .pipe(
+              catchError(this.handleError('enroll', <Training>{}))
+          );
+      }
+      unenroll( training:Training ):Observable<Training>{
+        var url = this.baseUrl + "unenroll/" + training.id;
+        return this.http.post<Training>(this.location.prepareExternalUrl(url), training)
+          .pipe(
+              catchError(this.handleError('unenroll', <Training>{}))
+          );
       }
       delete(id:number):Observable<{}>{
         var url = this.baseUrl + id;
