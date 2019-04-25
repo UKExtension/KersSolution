@@ -1,6 +1,7 @@
 import { NgModule }             from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { EmailHomeComponent } from './email-home.component';
+import { EmailTemplateComponent } from './email-template.component';
 
 
 
@@ -9,15 +10,10 @@ import { EmailHomeComponent } from './email-home.component';
      {
           path: '',
           component: EmailHomeComponent,
-          /*
-          children: 
-            [
-                {
-                  path: '',
-                  component: FiscalyearListComponent
-                }
-              ]
-              */
+      },
+      {
+        path: 'templates',
+        component: EmailTemplateComponent
       }
              
   ])],

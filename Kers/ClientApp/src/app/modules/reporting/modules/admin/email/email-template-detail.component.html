@@ -1,0 +1,21 @@
+<td *ngIf="default">{{template.code}}</td>
+<td *ngIf="default">{{template.subject}}</td>
+<td *ngIf="default" class="text-right"><a (click)="editView()" class="btn btn-info btn-xs">edit</a> <a (click)="deleteView()" class="btn btn-info btn-xs">delete</a></td>
+<td *ngIf="edit" colspan="3">
+    <div class="text-right">
+        <a (click)="defaultView()" class="btn btn-info btn-xs">close</a>
+    </div>
+    
+    <div>
+            edit view
+    </div>
+</td>
+<td *ngIf="delete" colspan="3">
+    <div class="text-right">
+        <a (click)="defaultView()" class="btn btn-info btn-xs">close</a>
+    </div>
+    <div>
+        delete view
+    </div>
+    
+</td>

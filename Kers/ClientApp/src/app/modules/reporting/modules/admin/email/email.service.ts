@@ -4,6 +4,7 @@ import { HttpErrorHandler, HandleError } from '../../../core/services/http-error
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { MessageTemplate } from './message-template';
 
 
 @Injectable()
@@ -29,6 +30,39 @@ export class EmailService {
             );
     }
 
+
+
+    add( template:EmailTemplate ):Observable<EmailTemplate>{
+        return this.http.post<EmailTemplate>(this.location.prepareExternalUrl(this.baseUrl + 'addtemplate/'), template)
+            .pipe(
+                catchError(this.handleError('add', <EmailTemplate>{}))
+            );
+    }
+    
+    delete(id:number):Observable<{}>{
+        var url = this.baseUrl + 'updatetemplate/' + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
+    }
+
+    update(id:number, template:EmailTemplate):Observable<EmailTemplate>{
+        var url = this.baseUrl + 'deletetemplate/' + id;
+        return this.http.put<EmailTemplate>(this.location.prepareExternalUrl(url), template)
+                .pipe(
+                    catchError(this.handleError('update', template))
+                );
+    } 
+
+    gettemplates():Observable<MessageTemplate[]>{
+        var url = this.baseUrl + "gettemplates/";
+        return this.http.get<MessageTemplate[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('gettemplates', []))
+            );
+    }
+
 }
 
 export interface Email{
@@ -41,4 +75,11 @@ export interface Email{
     to: string;
     subject: string;
     body: string;
+}
+
+export interface EmailTemplate{
+    id:number;
+    code:string;
+    bodyHtml:string;
+    bodyText:string;
 }

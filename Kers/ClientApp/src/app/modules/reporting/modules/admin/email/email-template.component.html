@@ -1,0 +1,25 @@
+<div>
+  <div class="text-right">
+      <a class="btn btn-info btn-xs" *ngIf="!newTemplate" (click)="newTemplateOpen()">+ new email template</a>
+  </div>
+  <email-template-form *ngIf="newTemplate" (onFormCancel)="cancelled()" (onFormSubmit)="submitted()"></email-template-form>
+  <loading *ngIf="loading"></loading>
+</div>
+<div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Subject</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let template of templates | async" [email-template-detail]="template" (onTemplateUpdated)="onTemplateUpdate($event)" (onTemplateDeleted)="onTemplateDelete($event)"></tr>
+        </tbody>               
+    </table>            
+</div>
+
+
+
+

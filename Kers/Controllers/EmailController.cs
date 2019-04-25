@@ -28,15 +28,18 @@ using Microsoft.Extensions.Configuration;
 namespace Kers.Controllers
 {
     [Route("api/[controller]")]
-    public class EmailController : Controller
+    public class EmailController : BaseController
     {
 
         KERScoreContext _context;
         IConfiguration _configuration;
         public EmailController(
+            KERSmainContext mainContext,
+            IKersUserRepository userRepo,
             KERScoreContext _context,
             IConfiguration _configuration
-        ){
+        ):base(mainContext, _context, userRepo)
+        {
             this._context = _context;
             this._configuration = _configuration;
         }
@@ -110,6 +113,96 @@ namespace Kers.Controllers
         {
             //Console.WriteLine ("The message was sent!");
         }
+
+
+
+
+
+        /******************************** */
+        // Email Templates CRUD Operations
+        /******************************** */
+
+
+
+
+        [HttpPost("addtemplate")]
+        [Authorize]
+        public IActionResult AddTemplate( [FromBody] MessageTemplate template){
+            if(template != null){
+                var user = this.CurrentUser();
+                template.CreatedBy = user;
+                template.UpdatedBy = user;
+                template.Updated = template.Created = DateTimeOffset.Now;
+                context.Add(template); 
+                context.SaveChanges();
+                this.Log(template,"MessageTemplate", "Message Template Added.");
+                return new OkObjectResult(template);
+            }else{
+                this.Log( template ,"MessageTemplate", "Error in adding Message Template attempt.", "MessageTemplate", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+        [HttpPut("updatetemplate/{id}")]
+        [Authorize]
+        public IActionResult UpdateTemplate( int id, [FromBody] MessageTemplate template){
+           
+            var entity = context.MessageTemplate.Find(id);
+
+            if(template != null && entity != null){
+                var user = this.CurrentUser();
+                entity.Code = template.Code;
+                entity.Subject = template.Subject;
+                entity.BodyHtml = template.BodyHtml;
+                entity.BodyText = template.BodyText;
+                entity.UpdatedBy = user;
+                entity.Updated = DateTimeOffset.Now;
+                context.SaveChanges();
+                this.Log(entity,"MessageTemplate", "Message Template Updated.");
+
+                return new OkObjectResult(entity);
+            }else{
+                this.Log( entity ,"MessageTemplate", "Not Found MessageTemplate in an update attempt.", "MessageTemplate", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+        [HttpDelete("deletetemplate/{id}")]
+        [Authorize]
+        public IActionResult DeleteTemplate( int id ){
+            var entity = context.MessageTemplate.Find(id);
+            
+            
+            if(entity != null){
+                
+                context.MessageTemplate.Remove(entity);
+                context.SaveChanges();
+                
+                this.Log(entity,"MessageTemplate", "MessageTemplate Removed.");
+
+                return new OkResult();
+            }else{
+                this.Log( id ,"MessageTemplate", "Not Found MessageTemplate in a delete attempt.", "MessageTemplate", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+        [HttpGet("gettemplates")]
+        [Authorize]
+        public async Task<IActionResult> GetTemplates(){
+            return new OkObjectResult(await _context.MessageTemplate.ToListAsync());
+        }
+
+
+
+
+
+
+
+
 
         
         public IActionResult Error()
