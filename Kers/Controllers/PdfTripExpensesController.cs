@@ -35,8 +35,8 @@ namespace Kers.Controllers
 		int locationLinesCharacterLength_personal = 50;
 		int businessPurposeLinesCharacterLength_personal = 50;
 
-		int locationLinesCharacterLength_county = 44;
-		int businessPurposeLinesCharacterLength_county = 44;
+		int locationLinesCharacterLength_county = 42;
+		int businessPurposeLinesCharacterLength_county = 42;
 
 		IExpenseRepository expenseRepo;
 
@@ -84,7 +84,7 @@ namespace Kers.Controllers
 				}
 
 				var dataObjext = new TripExpenses(expenses);
-
+				dataObjext.SetIsItPersonalVehicle(personal);
 				if( !personal ){
 					dataObjext.SetBusinessPurposeLinesCharacterLength( businessPurposeLinesCharacterLength_county );
 					dataObjext.SetLocationLinesCharacterLength( locationLinesCharacterLength_county );
@@ -106,7 +106,7 @@ namespace Kers.Controllers
 						runningY += dataObjext.GetHeaderHeight();
 					}
 					foreach( var exp in pg.data){
-						table(pdfCanvas, exp.expenses, 25, runningY, true, exp.title, exp.total, personal);
+						table(pdfCanvas, exp.expenses, 25, runningY, true, exp.title, exp.total, personal, exp.totalText);
 						runningY += exp.expenses.Sum( e => e.lines) * dataObjext.GetLineHeight() + dataObjext.GetSpaceBetweenTables();
 					}
 					if( !personal ){
@@ -128,7 +128,7 @@ namespace Kers.Controllers
 			}			
 		}
 
-		private int table(SKCanvas pdfCanvas, List<ExpenseNumLines> expenses, int x, int y, Boolean header = true, string title = "", float total = 0, bool personalVehicle = true){
+		private int table(SKCanvas pdfCanvas, List<ExpenseNumLines> expenses, int x, int y, Boolean header = true, string title = "", float total = 0, bool personalVehicle = true, string totalText = "Total:"){
             var rowHeight = 15;
             var beginningY = y;
             int[] verticalLinesX = { 0, 74, 154, 411, 652, 700, 746 };
@@ -212,7 +212,7 @@ namespace Kers.Controllers
                 
             }
 			if(total != 0){
-				pdfCanvas.DrawText("Total: ", x + 4, y + 13, getPaint(10.0f, 1));
+				pdfCanvas.DrawText( totalText + " ", x + 4, y + 13, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(Math.Round(total, 2).ToString(), x + 742, y + 13, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
 			}
             return i;
@@ -329,6 +329,7 @@ namespace Kers.Controllers
 		List<ExpenseNumLines> _proffesionalDevelopmentExpenses;
 		List<ExpenseNumLines> _nonCountyExpenses;
 		bool divideExpanses = true;
+		bool isItPersonalVehicle = true;
 		List<ExpenseMileageLogPageData> pages = new List<ExpenseMileageLogPageData>();
 		string[] nonCountySourceNames = new string[]{"State", "Federal"};
 		string[] professionalDevelopmentNames = new string[]{"Professional Improvement (Reimbursed to Employee)"};
@@ -422,11 +423,16 @@ namespace Kers.Controllers
 					pg.header = true;
 					spaceRemaining -= headerHeight;
 				}
-				
+				//County Funded Travel
 				if(countyRemaining > 0){
 					var tbl = new ExpenseMileageLogTableData();
 					if(countyRemaining < _countyExpenses.Count()){
 						tbl.title = "";
+					}else{
+						if(!this.isItPersonalVehicle){
+							tbl.title = "County Vehicle Mileage (Not Reimbursed):";
+							tbl.totalText = "Total County Vehicle Mileage (Not Reimbursed):";
+						}
 					}
 					var rmnng = _countyExpenses.Skip(_countyExpenses.Count() - countyRemaining);
 					foreach( var exp in rmnng){
@@ -447,6 +453,7 @@ namespace Kers.Controllers
 					}
 
 				}
+				//Professional Development Travel
 				if( countyRemaining <= 0 && professionalDevelopmentRemaining > 0 ){
 
 					var tbl = new ExpenseMileageLogTableData();
@@ -454,7 +461,8 @@ namespace Kers.Controllers
 					if( countyRemaining == 0 && professionalDevelopmentRemaining == _proffesionalDevelopmentExpenses.Count()){
 						spaceRemaining -= spaceBetweenTables;
 						spaceRemaining -= lineHeight;
-						tbl.title = "Professional Development Travel:";
+						tbl.title = "Professional Improvement Travel:";
+						tbl.totalText = "Total Professional Improvement Travel (separate travel report required):";
 					}else{
 						tbl.title = "";
 					}
@@ -475,6 +483,7 @@ namespace Kers.Controllers
 						pg.data.Add(tbl);
 					}
 				}
+				//UK Funded Travel
 				if( countyRemaining <= 0 && professionalDevelopmentRemaining <= 0 && nonCountyRemaining > 0){
 					var tbl = new ExpenseMileageLogTableData();
 					var rmnng = _nonCountyExpenses.Skip(_nonCountyExpenses.Count() - nonCountyRemaining - professionalDevelopmentRemaining);
@@ -482,6 +491,7 @@ namespace Kers.Controllers
 						spaceRemaining -= spaceBetweenTables;
 						spaceRemaining -= lineHeight;
 						tbl.title = "UK Funded Travel:";
+						tbl.totalText = "Total UK Funded Travel (separate travel report required):";
 					}else{
 						tbl.title = "";
 					}
@@ -531,6 +541,9 @@ namespace Kers.Controllers
 		public void setDivideExpenses( bool divide ){
 			this.divideExpanses = divide;
 		}
+		public void SetIsItPersonalVehicle( bool personal ){
+			this.isItPersonalVehicle = personal;
+		}
 
 		private void DivideExpenses(){
 			if( this.divideExpanses ){
@@ -565,6 +578,7 @@ namespace Kers.Controllers
 	public class ExpenseMileageLogTableData{
 		public bool header = true;
 		public string title = "County Funded Travel:";
+		public string totalText = "Total County Funded Travel (separate travel report required):";
 		public float total = 0;
 		public List<ExpenseNumLines> expenses = new List<ExpenseNumLines>();
 	}

@@ -17,6 +17,7 @@ import {    UserService,
 import { FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Observable } from "rxjs/Observable";
 import {Location} from '@angular/common';
+import { PlanningunitService } from '../../planningunit/planningunit.service';
 
 @Component({
     selector: 'user-personal-form',
@@ -38,7 +39,7 @@ export class UserPersonalFormComponent implements OnInit {
     public socialConnectionTypes:SocialConnectionType[];
     loading = false;
     editorOptionsLoaded = false;
-
+    timezones: Observable<Object[]>;
     errorMessage: string;
 
     public imgObj: Object = {
@@ -47,6 +48,7 @@ export class UserPersonalFormComponent implements OnInit {
 
     constructor( 
         private userService: UserService,
+        private unitService: PlanningunitService,
         private fb: FormBuilder,
         private location: Location,
         private http: Http  
@@ -61,6 +63,8 @@ export class UserPersonalFormComponent implements OnInit {
                     professionalTitle: '',
                     officePhone: '',
                     mobilePhone: '',
+                    officeAddress: '',
+                    timeZoneId: '',
                     interests: [''],
                     socialConnections: fb.array([
                             this.initConnection()
@@ -120,7 +124,7 @@ export class UserPersonalFormComponent implements OnInit {
             },
            error => this.errorMessage = <any> error
        );
-       
+       this.timezones = this.unitService.timezones();
     }
 
     public requestAutocompleteItems = (text: string):Observable<Response> => {

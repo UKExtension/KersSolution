@@ -47,8 +47,24 @@
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mobilePhone">Mobile Phone:</label>
                     <div class="col-md-9 col-sm-9 col-xs-12">
                         <input type="text" id="mobilePhone" formControlName="mobilePhone" class="form-control col-md-7 col-xs-12" />            
-                    </div><br><br><br><br>
+                    </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="officeAddress">Office Address:</label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <textarea name="officeAddress" id="officeAddress" formControlName="officeAddress" class="form-control col-md-7 col-xs-12"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="timeZoneId">Timezone:</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <select name="timeZoneId" formControlName="timeZoneId" class="form-control col-md-7 col-xs-12">
+                            <option value="">-- select --</option>
+                            <option *ngFor="let timezone of timezones | async" [value]="timezone['Id']">{{timezone['Id']}}</option>
+                        </select>
+                    </div>
+                </div>
+                <br><br><br>
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastName">Interests:</label>
                     <div class="col-md-9 col-sm-9 col-xs-12">

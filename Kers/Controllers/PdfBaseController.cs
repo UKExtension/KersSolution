@@ -155,7 +155,17 @@ namespace Kers.Controllers
 			pdfCanvas.DrawText(text, 400, 90, getPaint(9.5f));
 			text = user.RprtngProfile.PlanningUnit.Name;
 			pdfCanvas.DrawText(text, 400, 102, getPaint(10.0f));
-			if(user.RprtngProfile.PlanningUnit.Address != null ){
+			if(user.PersonalProfile.OfficeAddress != null && user.PersonalProfile.OfficeAddress != "" ){
+				text = user.RprtngProfile.PlanningUnit.FullName;
+				pdfCanvas.DrawText(text, 554, 75, getPaint(10.0f, 1));
+				var addressLines = user.PersonalProfile.OfficeAddress.Split("\n");
+				int initialY = 90;
+				foreach( var line in addressLines){
+					pdfCanvas.DrawText(line, 554, initialY, getPaint(10.0f));
+					initialY += 12;
+				}
+				
+			}else if(user.RprtngProfile.PlanningUnit.Address != null ){
 				text = user.RprtngProfile.PlanningUnit.FullName;
 				pdfCanvas.DrawText(text, 554, 75, getPaint(10.0f, 1));
 				text = user.RprtngProfile.PlanningUnit.Address;

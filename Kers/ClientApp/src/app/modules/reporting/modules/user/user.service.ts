@@ -252,6 +252,8 @@ export class PersonalProfile{
         public professionalTitle: string,
         public officePhone: string,
         public mobilePhone: string,
+        public officeAddress:string,
+        public timeZoneId: string,
         public interests:InterestProfile[],
         public socialConnections: SocialConnection[],
         public bio:string,

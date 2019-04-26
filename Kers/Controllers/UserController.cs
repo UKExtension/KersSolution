@@ -325,6 +325,8 @@ namespace Kers.Controllers
                     entity.PersonalProfile.ProfessionalTitle = user.PersonalProfile.ProfessionalTitle;
                     entity.PersonalProfile.OfficePhone = user.PersonalProfile.OfficePhone;
                     entity.PersonalProfile.MobilePhone = user.PersonalProfile.MobilePhone;
+                    entity.PersonalProfile.OfficeAddress = user.PersonalProfile.OfficeAddress;
+                    entity.PersonalProfile.TimeZoneId = user.PersonalProfile.TimeZoneId;
                     entity.PersonalProfile.Bio = user.PersonalProfile.Bio;
                     var intersts = new List<InterestProfile>();
                     foreach(var intrst in user.PersonalProfile.Interests){
