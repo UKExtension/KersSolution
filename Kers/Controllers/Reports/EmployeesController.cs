@@ -88,6 +88,29 @@ namespace Kers.Controllers.Reports
             //var trainings = this.trainingRepo.InServicesToTrainings(inServices.Skip(300).Take(10).ToList());
             //this.context.Training.AddRange(trainings);
             //this.context.SaveChanges();
+
+
+/* 
+            //Update Users timezones based on the timezone of their county
+
+
+            var cnts = context.PlanningUnit.Where( u => u.TimeZoneId != null);
+            foreach( var cnt in cnts){
+                var usrs = context.KersUser
+                    .Where( u => u.RprtngProfile.enabled == true && u.RprtngProfile.PlanningUnit == cnt)
+                    .Include( u => u.PersonalProfile);
+                foreach( var usr in usrs){
+                    usr.PersonalProfile.TimeZoneId = cnt.TimeZoneId;
+                }
+            }
+
+            context.SaveChanges();
+
+
+ */
+
+
+
             return View();
         }
 
