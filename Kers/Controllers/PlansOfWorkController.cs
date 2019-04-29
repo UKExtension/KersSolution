@@ -403,25 +403,25 @@ namespace Kers.Controllers
             }
 
 
-            var counties = context.PlanningUnit.Where( u => u.DistrictId != null);
+            //var counties = context.PlanningUnit.Where( u => u.DistrictId != null);
 
             var newPlans = new List<PlanOfWork>();
             var newMaps = new List<Map>();
 
-            foreach( var county in counties){
+            //foreach( var county in counties){
 
-            
+            var county = this.context.PlanningUnit.Where( u => u.Id == 173).FirstOrDefault();
             
 
                                 //Do not import if already something is imported
-                                if( !this.context.PlanOfWork.Where( p => p.FiscalYear == fiscalYearTo && p.PlanningUnitId == county.Id).Any()){
-                                    if( !this.context.Map.Where( m => m.FiscalYear == fiscalYearTo && m.PlanningUnitId == county.Id).Any()){
+                                //if( !this.context.PlanOfWork.Where( p => p.FiscalYear == fiscalYearTo && p.PlanningUnitId == county.Id).Any()){
+                                    //if( !this.context.Map.Where( m => m.FiscalYear == fiscalYearTo && m.PlanningUnitId == county.Id).Any()){
 
                                         
                                         
                                         var maps = context.Map.AsNoTracking().Where(
                                                         m =>
-                                                            m.FiscalYear.Id == fiscalYearFrom.Id
+                                                            m.FiscalYear.Id == 2
                                                             &&
                                                             m.PlanningUnitId == county.Id
                                                 );
@@ -531,15 +531,15 @@ namespace Kers.Controllers
 
 
 
-                        }
-                    }
+                        //}
+                    //}
 
                     context.Map.AddRange(newMaps);
                     context.PlanOfWork.AddRange(newPlans);
                     
                     
                 
-            }
+            //}
             //context.SaveChanges();
             if( newMaps.Count() > 0 && newPlans.Count() > 0)  return new OkObjectResult( newPlans );
             return NotFound(new {Error = "no need to import plans"});
