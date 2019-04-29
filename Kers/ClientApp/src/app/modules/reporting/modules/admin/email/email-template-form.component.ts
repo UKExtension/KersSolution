@@ -30,7 +30,9 @@ export class EmailTemplateFormComponent implements OnInit {
   }
 
   ngOnInit() {
-  
+    if(this.template !=  null){
+      this.templateForm.patchValue(this.template);
+    }
   }
 
   onCancel(){

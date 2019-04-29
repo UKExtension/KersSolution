@@ -82,7 +82,9 @@ export class LogHomeComponent implements OnInit {
 
     onSearch(event){
         this.loading = true;
-         this.searchTermStream.next(event.target.value);
+        //console.log(event);
+        this.criteria.search = event.target.value;
+        this.searchTermStream.next(event.target.value);
     }
 
     performSearch(term:string){

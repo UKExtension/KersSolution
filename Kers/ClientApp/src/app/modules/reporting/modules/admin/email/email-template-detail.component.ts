@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MessageTemplate } from './message-template';
+import { EmailTemplate } from './email.service';
 
 @Component({
   selector: '[email-template-detail]',
@@ -37,8 +38,10 @@ export class EmailTemplateDetailComponent implements OnInit {
     this.delete = true;
   }
   cancelled(){
-    
+    this.defaultView();
   }
-
+  submitted(evant:EmailTemplate){
+    console.log( event );
+  }
 
 }

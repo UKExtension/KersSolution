@@ -7,7 +7,7 @@
     </div>
     
     <div>
-        <email-template-form [template]="template" (onFormCancel)="cancelled()" (onFormSubmit)="submitted()"></email-template-form>
+        <email-template-form [template]="template" (onFormCancel)="cancelled()" (onFormSubmit)="submitted($evant)"></email-template-form>
     </div>
 </td>
 <td *ngIf="delete" colspan="3">
