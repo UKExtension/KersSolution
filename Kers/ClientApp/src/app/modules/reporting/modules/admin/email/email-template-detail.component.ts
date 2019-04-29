@@ -36,6 +36,9 @@ export class EmailTemplateDetailComponent implements OnInit {
     this.edit = false;
     this.delete = true;
   }
+  cancelled(){
+    
+  }
 
 
 }
