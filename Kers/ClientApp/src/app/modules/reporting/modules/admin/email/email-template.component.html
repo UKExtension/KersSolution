@@ -15,7 +15,7 @@
         </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let template of templates | async" [email-template-detail]="template" (onTemplateUpdated)="onTemplateUpdate($event)" (onTemplateDeleted)="onTemplateDelete($event)"></tr>
+            <tr *ngFor="let template of templates | async" [email-template-detail]="template" (onEdited)="onTemplateUpdate($event)" (onDeleted)="onTemplateUpdate($event)"></tr>
         </tbody>               
     </table>            
 </div>

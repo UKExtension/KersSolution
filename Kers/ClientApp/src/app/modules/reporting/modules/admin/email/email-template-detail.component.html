@@ -15,7 +15,7 @@
         <a (click)="defaultView()" class="btn btn-info btn-xs">close</a>
     </div>
     <div>
-        delete view
+        Do you really want to delete email template <strong>{{template.code}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="defaultView()" class="btn btn-info btn-xs">No</button>
     </div>
     
 </td>

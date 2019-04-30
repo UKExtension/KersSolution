@@ -40,7 +40,7 @@ export class EmailService {
     }
     
     delete(id:number):Observable<{}>{
-        var url = this.baseUrl + 'updatetemplate/' + id;
+        var url = this.baseUrl + 'deletetemplate/' + id;
         return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('delete'))
@@ -48,7 +48,7 @@ export class EmailService {
     }
 
     update(id:number, template:EmailTemplate):Observable<EmailTemplate>{
-        var url = this.baseUrl + 'deletetemplate/' + id;
+        var url = this.baseUrl + 'updatetemplate/' + id;
         return this.http.put<EmailTemplate>(this.location.prepareExternalUrl(url), template)
                 .pipe(
                     catchError(this.handleError('update', template))

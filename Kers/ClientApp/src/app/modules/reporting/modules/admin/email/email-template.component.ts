@@ -31,5 +31,8 @@ export class EmailTemplateComponent implements OnInit {
     this.newTemplate = false;
     this.templates = this.service.gettemplates();
   }
+  onTemplateUpdate(event){
+    this.templates = this.service.gettemplates();
+  }
 
 }

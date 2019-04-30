@@ -50,7 +50,12 @@ export class EmailTemplateFormComponent implements OnInit {
         }
       )
     }else{
-
+      this.service.update(this.template.id, this.templateForm.value).subscribe(
+        res=>{
+          this.loading = false;
+          this.onFormSubmit.emit(<MessageTemplate>res);
+        }
+      )
     }
   }
 

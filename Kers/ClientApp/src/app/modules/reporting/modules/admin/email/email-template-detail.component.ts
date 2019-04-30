@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MessageTemplate } from './message-template';
-import { EmailTemplate } from './email.service';
+import { EmailService } from './email.service';
 
 @Component({
   selector: '[email-template-detail]',
@@ -10,11 +10,15 @@ import { EmailTemplate } from './email.service';
 export class EmailTemplateDetailComponent implements OnInit {
   
   @Input('email-template-detail') template:MessageTemplate;
+  @Output() onEdited = new EventEmitter<MessageTemplate>();
+  @Output() onDeleted = new EventEmitter<MessageTemplate>();
   
   default = true;
   edit = false;
   delete = false;
-  constructor() { }
+  constructor(
+    private service: EmailService
+  ) { }
 
   ngOnInit() {
   }
@@ -40,8 +44,17 @@ export class EmailTemplateDetailComponent implements OnInit {
   cancelled(){
     this.defaultView();
   }
-  submitted(evant:EmailTemplate){
-    console.log( event );
+  submitted(event:MessageTemplate){
+    this.onEdited.emit(event);
+  }
+  confirmDelete(event:MessageTemplate){
+    this.service.delete(this.template.id).subscribe(
+      _ => {
+        this.onDeleted.emit(this.template);
+        this.defaultView();
+      } 
+    );
+    
   }
 
 }
