@@ -11,6 +11,8 @@ using Kers.Models.Data;
 using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.ViewModels;
 using Kers.Models.Entities.UKCAReporting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Kers.Models.Abstract
 {
@@ -98,6 +100,9 @@ namespace Kers.Models.Abstract
     
     }
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}
+    public interface IMessageRepository: IEntityBaseRepository<Message>{
+        void ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment);
+    }
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
         FiscalYear currentFiscalYear(string type);
         FiscalYear nextFiscalYear(string type);

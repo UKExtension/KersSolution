@@ -85,7 +85,7 @@ namespace Kers.Controllers
                         client.Connect (_configuration["Email:MailServerAddress"], Convert.ToInt32(_configuration["Email:MailServerPort"]), false);
                         client.AuthenticationMechanisms.Remove ("XOAUTH2");
                         client.Authenticate (_configuration["Email:UserId"], _configuration["Email:UserPassword"]);        
-                    }else if(Email.Pressets == 4){
+                    }else if(Email.Pressets == 4){  
                         client.Connect (Email.Server, Email.Port, false);
                         client.AuthenticationMechanisms.Remove ("XOAUTH2");
                         client.Authenticate (Email.Username, Email.Password);
