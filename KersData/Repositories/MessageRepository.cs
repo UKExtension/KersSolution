@@ -49,19 +49,38 @@ namespace Kers.Models.Repositories
                         // Note: only needed if the SMTP server requires authentication
                         client.Authenticate (_configuration["Email:UserId"], _configuration["Email:UserPassword"]);
                     }else if( environment.IsProduction() ){
-
+                        client.Connect (_configuration["Email:MailServerAddress"], Convert.ToInt32(_configuration["Email:MailServerPort"]), false);
+                        client.AuthenticationMechanisms.Remove ("XOAUTH2");
                     }
                 }
 
 
 
 
-                /* 
-                var message = new MimeMessage ();
-                message.From.Add (new MailboxAddress ("Kers System", Email.From));
-                message.To.Add (new MailboxAddress ("Kers Recipient", Email.To));
-                message.Subject = Email.Subject;
-
+                
+                var m = new MimeMessage ();
+                if( message.From != null ){
+                    m.From.Add (
+                        new MailboxAddress (
+                            message.From.PersonalProfile.FirstName + 
+                            " " +
+                             message.From.PersonalProfile.LastName
+                            ,
+                             message.FromEmail));
+                }else{
+                    m.From.Add (
+                        new MailboxAddress ( "Program and Staff Development", "agpsd@uky.edu")
+                    );
+                }
+                
+                m.To.Add (new MailboxAddress (
+                    message.To.PersonalProfile.FirstName +
+                    " " +
+                    message.To.PersonalProfile.LastName
+                    ,
+                     message.ToEmail));
+                m.Subject = message.Subject;
+/* 
                 message.Body = new TextPart ("plain") {
                     Text = Email.Body
                 };
@@ -101,6 +120,14 @@ namespace Kers.Models.Repositories
                  */
                 //return new OkObjectResult("Email sent successfully!");
             } catch (Exception ex) {
+                var log = new Log();
+                log.Type = "Error";
+                log.Time = DateTime.Now;
+                log.ObjectType = "Exception";
+                log.Type = "Send Message";
+                log.Object = ex.Message;
+                this.context.Add( log );
+                this.context.SaveChanges();
                 //return new OkObjectResult(ex.Message);
             }
         }
