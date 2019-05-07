@@ -366,7 +366,7 @@ namespace Kers.Models.Repositories
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
         /********************************************************/
 
-        public async Task<TableViewModel> DataByEmployee(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false )
+        public async Task<TableViewModel> DataByEmployee(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false, int cacheDaysSpan = 0 )
         {
 
             var cacheKey = CacheKeys.ByEmployeeContactsData + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
@@ -487,10 +487,13 @@ namespace Kers.Models.Repositories
                 }
 
 
-                var cacheDaysSpan = 350;
-                var today = DateTime.Now;
-                if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
-                    cacheDaysSpan = 3;
+                // Save cache for longer period in case of not active fiscal years
+                if(cacheDaysSpan == 0){
+                    cacheDaysSpan = 350;
+                    var today = DateTime.Now;
+                    if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
+                        cacheDaysSpan = 3;
+                    }
                 }
 
 
@@ -506,7 +509,7 @@ namespace Kers.Models.Repositories
 
 
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
-        public async Task<TableViewModel> DataByMajorProgram(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false )
+        public async Task<TableViewModel> DataByMajorProgram(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false, int cacheDaysSpan = 0 )
         {
 
             var cacheKey = CacheKeys.ByMajorProgramContactData + filter.ToString() + id.ToString() + "_" + fiscalYear.Name;
@@ -631,13 +634,13 @@ namespace Kers.Models.Repositories
 
 
                 // Save cache for longer period in case of not active fiscal years
-
-                var cacheDaysSpan = 350;
-                var today = DateTime.Now;
-                if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
-                    cacheDaysSpan = 3;
+                if(cacheDaysSpan == 0){
+                    cacheDaysSpan = 350;
+                    var today = DateTime.Now;
+                    if(fiscalYear.Start < today && Math.Max( fiscalYear.End.Ticks, fiscalYear.ExtendedTo.Ticks) > today.Ticks){
+                        cacheDaysSpan = 3;
+                    }
                 }
-
                 var serialized = JsonConvert.SerializeObject(table);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {

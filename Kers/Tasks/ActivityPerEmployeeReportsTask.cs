@@ -72,38 +72,43 @@ namespace Kers.Tasks
                         tables.Add(tbl);
                     }
                     // KSU
-                    progressLog += DateTime.Now.ToString() + ": KSU Data for current fiscal year started.\n";
-                    var tblKSU = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
-                    progressLog += DateTime.Now.ToString() + ": KSU Data for current fiscal year finished.\n";
-                    if( RndInt == 3 ){
-                        progressLog += DateTime.Now.ToString() + ": KSU Data for previous fiscal year started.\n";
-                        tblKSU = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
-                        progressLog += DateTime.Now.ToString() + ": KSU Data for previous fiscal year finished.\n";
+                    if( startTime.DayOfWeek == DayOfWeek.Friday){
+                        progressLog += DateTime.Now.ToString() + ": KSU Data for current fiscal year started.\n";
+                        var tblKSU = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),2, 0, true, 20);
+                        progressLog += DateTime.Now.ToString() + ": KSU Data for current fiscal year finished.\n";
+                        if( RndInt == 3 ){
+                            progressLog += DateTime.Now.ToString() + ": KSU Data for previous fiscal year started.\n";
+                            tblKSU = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),2, 0, true);
+                            progressLog += DateTime.Now.ToString() + ": KSU Data for previous fiscal year finished.\n";
+                        }
+                        tables.Add(tblKSU);
                     }
-                    tables.Add(tblKSU);
 
                     // UK
-                    progressLog += DateTime.Now.ToString() + ": UK Data for current fiscal year started.\n";
-                    var tblUK = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),3, 0, true);
-                    progressLog += DateTime.Now.ToString() + ": UK Data for current fiscal year finished.\n";
-                    if( RndInt == 4 ){
-                        progressLog += DateTime.Now.ToString() + ": UK Data for previous fiscal year started.\n";
-                        tblUK = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),3, 0, true);
-                        progressLog += DateTime.Now.ToString() + ": UK Data for previous fiscal year finished.\n";
+                    if( startTime.DayOfWeek == DayOfWeek.Saturday){
+                        progressLog += DateTime.Now.ToString() + ": UK Data for current fiscal year started.\n";
+                        var tblUK = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),3, 0, true, 20);
+                        progressLog += DateTime.Now.ToString() + ": UK Data for current fiscal year finished.\n";
+                        if( RndInt == 4 ){
+                            progressLog += DateTime.Now.ToString() + ": UK Data for previous fiscal year started.\n";
+                            tblUK = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),3, 0, true);
+                            progressLog += DateTime.Now.ToString() + ": UK Data for previous fiscal year finished.\n";
+                        }
+                        tables.Add(tblUK);
                     }
-                    tables.Add(tblUK);
 
                     // ALL
-                    progressLog += DateTime.Now.ToString() + ": ALL Data for current fiscal year started.\n";
-                    var tblAll = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),4, 0, true);
-                    progressLog += DateTime.Now.ToString() + ": ALL Data for current fiscal year finished.\n";
-                    if( RndInt == 5 ){
-                        progressLog += DateTime.Now.ToString() + ": All Data for previous fiscal year started.\n";
-                        tblAll = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),4, 0, true);
-                        progressLog += DateTime.Now.ToString() + ": All Data for previous fiscal year finished.\n";
+                    if( startTime.DayOfWeek == DayOfWeek.Sunday){
+                        progressLog += DateTime.Now.ToString() + ": ALL Data for current fiscal year started.\n";
+                        var tblAll = await repo.DataByEmployee(fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog),4, 0, true, 20);
+                        progressLog += DateTime.Now.ToString() + ": ALL Data for current fiscal year finished.\n";
+                        if( RndInt == 5 ){
+                            progressLog += DateTime.Now.ToString() + ": All Data for previous fiscal year started.\n";
+                            tblAll = await repo.DataByEmployee(fiscalYearRepo.previoiusFiscalYear(FiscalYearType.ServiceLog),4, 0, true);
+                            progressLog += DateTime.Now.ToString() + ": All Data for previous fiscal year finished.\n";
+                        }
+                        tables.Add(tblAll);
                     }
-                    tables.Add(tblAll);
-
 
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
