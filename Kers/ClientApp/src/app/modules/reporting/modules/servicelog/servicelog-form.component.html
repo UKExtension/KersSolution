@@ -86,10 +86,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let rc of races">
+                            <tr *ngFor="let rc of races;">
                                 <td>{{rc.name}}: </td>
                                 <td *ngFor="let et of ethnicities; let i=index" [formGroupName]="rIndex()">
-                                    <input type="number" formControlName="amount">
+                                    <input type="number" formControlName="amount" [value]="raceEthnicityValue( rc.id, et.id)">
                                 </td>
                                 <td>{{totalRaceById(rc.id)}}</td>
                             </tr>

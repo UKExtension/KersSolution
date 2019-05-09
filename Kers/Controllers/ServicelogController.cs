@@ -173,7 +173,7 @@ namespace Kers.Controllers
                         activity.SnapPolicy = null;
                     }
                 }
-
+                activity.RaceEthnicityValues = activity.RaceEthnicityValues.Where( a => a.Amount != 0).ToList();
 
                 act.Title = activity.Title;
                 act.Hours = activity.Hours;
@@ -217,7 +217,7 @@ namespace Kers.Controllers
                         activity.SnapPolicy = null;
                     }
                 }
-
+                activity.RaceEthnicityValues = activity.RaceEthnicityValues.Where( a => a.Amount != 0).ToList();
 
                 acEntity.Title = activity.Title;
                 acEntity.Hours = activity.Hours;

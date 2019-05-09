@@ -241,7 +241,16 @@ export class ServicelogFormComponent implements OnInit{
         var val = ''+this.raceEthnicityIndex++
         return val;
     }
-
+    raceEthnicityValue( raceId:number, ethnctId:number){
+        var value = 0;
+        if( this.activity != null){
+            let val = this.activity.raceEthnicityValues.filter( v => v.raceId == raceId && v.ethnicityId == ethnctId);
+            if( val.length != 0 ){
+                value = val[0].amount;
+            }   
+        }
+        return value;
+    }
     totalRace(){
         var sum = 0;
         for( let contr of this.activityForm.controls.raceEthnicityValues.controls){
