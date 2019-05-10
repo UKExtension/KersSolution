@@ -15,7 +15,9 @@ namespace Kers.Models.Entities.KERScore
         public string BodyHtml {get;set;}
         public string BodyText {get;set;}
         public KersUser From {get; set;}
+        public int FromId {get; set;}
         public KersUser To {get; set;}
+        public int ToId {get; set;}
         public string FromEmail {get; set;} // In case From is not a KersUser. For Example, messages that should be sent on behalf of the system.
         public string ToEmail {get;set;} // In case To is not a KersUser
         public int Type {get;set;} // To handle cases when messages are not delivered by email

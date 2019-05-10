@@ -207,7 +207,17 @@ namespace Kers.Controllers
                     enrollment.eStatus = "E";
                     enrollment.enrolledDate = enrollment.rDT;
                     training.Enrollment.Add(enrollment);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
+                    var message = new Message();
+                    message.FromId = training.OrganizerId;
+                    message.ToId = user.Id;
+                    message.Subject = "Test Enrollment Text";
+                    message.BodyHtml = "<h1>Test Enrollment Text</h1>Html";
+                    message.BodyText = "Test Text";
+                    message.Created = DateTimeOffset.Now;
+                    message.IsItSent = false;
+                    context.Add(message);
+                    await context.SaveChangesAsync();
                     this.Log(enrollment,"TrainingEnrollment", "Enrolled In Training.");
                 }
                 

@@ -15,6 +15,7 @@ using MailKit.Net.Smtp;
 using MailKit;
 using MimeKit;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kers.Models.Repositories
 {
@@ -29,10 +30,17 @@ namespace Kers.Models.Repositories
         }
 
 
-        public async void ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment){
-            var messages = this.context.Message.Where( m => m.IsItSent == false && m.ScheduledFor <= DateTime.Now );
+        public List<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment){
+            var messages = this.context.Message
+                .Where( m => m.IsItSent == false && m.ScheduledFor <= DateTime.Now )
+                .Include( m => m.From ).ThenInclude( u => u.PersonalProfile)
+                .Include( m => m.To).ThenInclude( u => u.PersonalProfile)
+                .Include( m => m.From).ThenInclude( u => u.RprtngProfile)
+                .Include( m => m.To).ThenInclude( u => u.RprtngProfile)
+                .ToList();
             foreach( var message in messages ) this.sendMessage( message, configuration, environment );
-            await this.context.SaveChangesAsync();
+            this.context.SaveChanges();
+            return messages;
         }
 
         private void sendMessage(Message message, IConfiguration _configuration, IHostingEnvironment environment){
@@ -52,34 +60,52 @@ namespace Kers.Models.Repositories
                         client.Connect (_configuration["Email:MailServerAddress"], Convert.ToInt32(_configuration["Email:MailServerPort"]), false);
                         client.AuthenticationMechanisms.Remove ("XOAUTH2");
                     }
+                    var m = new MimeMessage ();
+                    if( message.From != null ){
+                        m.From.Add (
+                            new MailboxAddress (
+                                message.From.PersonalProfile.FirstName + 
+                                " " +
+                                message.From.PersonalProfile.LastName
+                                ,
+                                message.From.RprtngProfile.Email));
+                    }else{
+                        m.From.Add (
+                            new MailboxAddress ( "Program and Staff Development", "agpsd@uky.edu")
+                        );
+                    }
+                    
+                    m.To.Add (new MailboxAddress (
+                        message.To.PersonalProfile.FirstName +
+                        " " +
+                        message.To.PersonalProfile.LastName
+                        ,
+                        message.To.RprtngProfile.Email));
+                    m.Subject = message.Subject;
+                    var alternative = new MultipartAlternative ();
+                    alternative.Add (new TextPart ("plain") {
+                        Text = message.BodyText
+                    });
+                    alternative.Add (new TextPart ("html") {
+                        Text = message.BodyHtml
+                    });
+                    m.Body = alternative;
+                    //https://github.com/jstedfast/MailKit/issues/126
+                    client.MessageSent += OnMessageSent;
+                    client.Send (m);
+                    client.Disconnect (true);
+                    message.IsItSent = true;
+                    //context.SaveChanges();
+
+
+
                 }
 
 
 
 
                 
-                var m = new MimeMessage ();
-                if( message.From != null ){
-                    m.From.Add (
-                        new MailboxAddress (
-                            message.From.PersonalProfile.FirstName + 
-                            " " +
-                             message.From.PersonalProfile.LastName
-                            ,
-                             message.FromEmail));
-                }else{
-                    m.From.Add (
-                        new MailboxAddress ( "Program and Staff Development", "agpsd@uky.edu")
-                    );
-                }
                 
-                m.To.Add (new MailboxAddress (
-                    message.To.PersonalProfile.FirstName +
-                    " " +
-                    message.To.PersonalProfile.LastName
-                    ,
-                     message.ToEmail));
-                m.Subject = message.Subject;
 /* 
                 message.Body = new TextPart ("plain") {
                     Text = Email.Body

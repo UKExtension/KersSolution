@@ -101,7 +101,7 @@ namespace Kers.Models.Abstract
     }
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}
     public interface IMessageRepository: IEntityBaseRepository<Message>{
-        void ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment);
+        List<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment);
     }
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
         FiscalYear currentFiscalYear(string type);

@@ -192,6 +192,7 @@ namespace Kers
             services.AddSingleton<IScheduledTask, InServiceQualtricsTask>();
             services.AddSingleton<IScheduledTask, GetActivitiesAndContactsTask>();
             services.AddSingleton<IScheduledTask, SnapPartnersOfACountyTask>();
+            services.AddSingleton<IScheduledTask, MessageProcessingTask>();
 
             services.AddScheduler((sender, args) =>
             {
