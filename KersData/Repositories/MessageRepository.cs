@@ -157,6 +157,49 @@ namespace Kers.Models.Repositories
                 //return new OkObjectResult(ex.Message);
             }
         }
+
+
+
+        public async Task<bool> ScheduleTrainingMessage(string type, Training training, KersUser To, DateTimeOffset? ScheduledFor = null){
+            var template = await context.MessageTemplate.Where( t => t.Code == type).FirstOrDefaultAsync();
+            if( template != null){
+                var message = new Message();
+                message.FromId = training.OrganizerId;
+                message.ToId = To.Id;
+                message.Subject = String.Format( template.Subject, training.Subject);
+                var trainingArray = this.TrainingToMessageArray(training);
+                message.BodyText = String.Format( template.BodyText, trainingArray);
+                message.BodyHtml = String.Format( template.BodyHtml, trainingArray);
+                message.Created = DateTimeOffset.Now;
+                if( ScheduledFor != null) message.ScheduledFor = ScheduledFor??DateTimeOffset.Now;
+                message.IsItSent = false;
+                context.Add(message);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        private string[] TrainingToMessageArray(Training training){
+            var returnArray = new string[]{
+                training.Subject,
+                training.Subject,
+                training.Start.ToString("MM/dd/yyyy") + (training.End != null? " - " + training.End?.ToString("MM/dd/yyyy") : ""),
+                training.tLocation,
+                training.tTime,
+                training.day1,
+                training.day2,
+                training.day3,
+                training.day4,
+                training.tContact
+            };
+            return returnArray;
+        }
+
+
+
+
+
         //https://github.com/jstedfast/MailKit/issues/126
         void OnMessageSent (object sender, MessageSentEventArgs e)
         {

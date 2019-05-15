@@ -30,17 +30,20 @@ namespace Kers.Controllers
         KERScoreContext _context;
         KERSmainContext _mainContext;
         IKersUserRepository _userRepo;
+        IMessageRepository messageRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         public TrainingsController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
+                    IMessageRepository messageRepo,
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
                     IFiscalYearRepository fiscalYearRepo
             ):base(mainContext, context, userRepo){
            this._context = context;
            this._mainContext = mainContext;
+           this.messageRepo = messageRepo;
            this._userRepo = userRepo;
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
@@ -208,16 +211,7 @@ namespace Kers.Controllers
                     enrollment.enrolledDate = enrollment.rDT;
                     training.Enrollment.Add(enrollment);
                     await context.SaveChangesAsync();
-                    var message = new Message();
-                    message.FromId = training.OrganizerId;
-                    message.ToId = user.Id;
-                    message.Subject = "Test Enrollment Text";
-                    message.BodyHtml = "<h1>Test Enrollment Text</h1>Html";
-                    message.BodyText = "Test Text";
-                    message.Created = DateTimeOffset.Now;
-                    message.IsItSent = false;
-                    context.Add(message);
-                    await context.SaveChangesAsync();
+                    await messageRepo.ScheduleTrainingMessage("ENROLLMENT", training, user);
                     this.Log(enrollment,"TrainingEnrollment", "Enrolled In Training.");
                 }
                 
@@ -243,6 +237,7 @@ namespace Kers.Controllers
                     training.Enrollment.Remove(enrollment);
                     context.TrainingEnrollment.Remove(enrollment);
                     context.SaveChanges();
+                    await messageRepo.ScheduleTrainingMessage("CANCELENROLLMENT", training, user);
                     this.Log(enrollment,"TrainingEnrollment", "Cancelled Enrollment in Training.");
                 }
                 
