@@ -2,7 +2,7 @@ import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { catchError, tap, map, switchMap, filter } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 
 
@@ -110,8 +110,27 @@ export class FiscalyearService {
                 catchError(this.handleError('previous', <FiscalYear>{}))
             );
     }
+    last( type:string = "serviceLog"):Observable<FiscalYear>{
+        return this.listFiscalYears().pipe( 
+            map(
+                res => {
+                    var filtered = res.filter( r => r.type == type);
+                    filtered = filtered.sort((obj1, obj2) => {
+                        if (obj1.start > obj2.start) {
+                            return -1;
+                        }
+                        if (obj1.start < obj2.start) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    return filtered[0];
+                }
+            )
+        );
+    }
 
-    addFiscalYear(fiscalyear):Observable<FiscalYear>{
+    addFiscalYear(fiscalyear:FiscalYear):Observable<FiscalYear>{
         return this.http.post<FiscalYear>(this.location.prepareExternalUrl(this.baseUrl), JSON.stringify(fiscalyear))
             .pipe(
                 catchError(this.handleError('addFiscalYear', <FiscalYear>{}))

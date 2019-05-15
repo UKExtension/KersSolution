@@ -11,6 +11,7 @@ export class AssignmentPlansOfWorkComponent implements OnInit {
 
 
   @Input() districtId = 0;
+  @Input() fiscalYearId = "0";
   counties:Observable<PlanningUnit[]>;
   constructor(
     private service:PlansofworkService
@@ -19,7 +20,7 @@ export class AssignmentPlansOfWorkComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.counties = this.service.countiesWithoutPlans(this.districtId);
+    this.counties = this.service.countiesWithoutPlans(this.districtId, this.fiscalYearId);
   }
 
 }

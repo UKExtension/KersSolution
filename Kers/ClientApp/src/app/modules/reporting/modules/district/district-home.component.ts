@@ -8,6 +8,7 @@ import { StateService } from "../state/state.service";
 import * as echarts from 'echarts';
 import { CountyService } from '../county/county.service';
 import { PlanningUnit } from '../user/user.service';
+import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
@@ -29,7 +30,7 @@ import { PlanningUnit } from '../user/user.service';
     </div>
 
 
-    <div class="col-xs-12">
+    <div class="col-xs-12" *ngIf="lastFiscalYear && currentFiscalYear">
         <div class="x_panel">
         <div class="x_title">
             <h2>Assignments</h2>
@@ -43,7 +44,7 @@ import { PlanningUnit } from '../user/user.service';
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Plans of Work</a>
-                    <p>List of counties with no 2018-19 Plans of Work</p>
+                    <p>List of counties with no FY{{lastFiscalYear.name}} Plans of Work</p>
                     </div>
                 </article>
             </div>
@@ -53,7 +54,7 @@ import { PlanningUnit } from '../user/user.service';
             <div class="col-xs-12 text-right" *ngIf="assignmentPlansOfWorkOpen">
                 <a class="btn btn-info btn-xs" (click)="assignmentPlansOfWorkOpen=false">close</a>                
             </div>
-            <assignment-plans-of-work [districtId]="district.id" *ngIf="assignmentPlansOfWorkOpen"></assignment-plans-of-work>  
+            <assignment-plans-of-work [districtId]="district.id" [fiscalYearId]="lastFiscalYear.name" *ngIf="assignmentPlansOfWorkOpen"></assignment-plans-of-work>  
         </div>
         <div class="row">
             <div class="ln_solid"></div>
@@ -61,7 +62,7 @@ import { PlanningUnit } from '../user/user.service';
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Affirmative Action Report</a>
-                    <p>List of counties with no 2017-18 Affirmative Action Report</p>
+                    <p>List of counties with no FY{{currentFiscalYear.name}} Affirmative Action Report</p>
                     </div>
                 </article>
             </div>
@@ -79,7 +80,7 @@ import { PlanningUnit } from '../user/user.service';
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Affirmative Action Plan</a>
-                    <p>List of counties with no 2018-19 Affirmative Action Plan</p>
+                    <p>List of counties with no FY{{lastFiscalYear.name}} Affirmative Action Plan</p>
                     </div>
                 </article>
             </div>
@@ -97,7 +98,7 @@ import { PlanningUnit } from '../user/user.service';
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Program Indicators</a>
-                    <p>List of counties that submitted no Program Indicators for 2017-18 Fiscal Year.</p>
+                    <p>List of counties that submitted no Program Indicators for FY{{currentFiscalYear.name}}.</p>
                     </div>
                 </article>
             </div>
@@ -156,11 +157,15 @@ export class DistrictHomeComponent {
     assignmentAffirmativePlanOpen = false;
     assignmentProgramIndicatorsOpen = false;
 
+    lastFiscalYear:FiscalYear;
+    currentFiscalYear:FiscalYear;
+
 
     constructor( 
         private reportingService: ReportingService,
         private service:DistrictService,
         private stateService:StateService,
+        private fiscalYearService:FiscalyearService,
         private countyService:CountyService,
         private route: ActivatedRoute,
         private router:Router
@@ -197,7 +202,12 @@ export class DistrictHomeComponent {
 
     ngOnInit(){
         
-        
+        this.fiscalYearService.last().subscribe(
+            res => this.lastFiscalYear = res
+        )
+        this.fiscalYearService.current().subscribe(
+            res => this.currentFiscalYear = res
+        );
         this.route.params
             .switchMap(  (params: Params) => {
                 if(params['id'] != undefined){
