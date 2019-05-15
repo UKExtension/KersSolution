@@ -12,6 +12,7 @@ export class AssignmentProgramIndicatorsComponent implements OnInit {
 
 
   @Input() districtId = 0;
+  @Input() fiscalYearId = "0";
   counties:Observable<PlanningUnit[]>;
 
   constructor(
@@ -19,7 +20,7 @@ export class AssignmentProgramIndicatorsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.counties = this.service.countiesWithoutIndicators(this.districtId, "2018");
+    this.counties = this.service.countiesWithoutIndicators(this.districtId, this.fiscalYearId);
   }
 
 }

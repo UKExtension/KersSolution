@@ -11,6 +11,7 @@ import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 export class AssignmentAffirmativeReportComponent implements OnInit {
 
   @Input() districtId = 0;
+  @Input() fiscalYearId = "0";
   counties:Observable<PlanningUnit[]>;
 
   constructor(
@@ -18,7 +19,7 @@ export class AssignmentAffirmativeReportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.counties = this.service.countiesWithoutReport(this.districtId, "2018");
+    this.counties = this.service.countiesWithoutReport(this.districtId, this.fiscalYearId);
   }
 
 }

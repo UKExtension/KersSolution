@@ -72,7 +72,7 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
             <div class="col-xs-12 text-right" *ngIf="assignmentAffirmativeReportOpen">
                 <a class="btn btn-info btn-xs" (click)="assignmentAffirmativeReportOpen=false">close</a>                
             </div>
-            <assignment-affirmative-report [districtId]="district.id"  *ngIf="assignmentAffirmativeReportOpen"></assignment-affirmative-report>
+            <assignment-affirmative-report [districtId]="district.id" [fiscalYearId]="currentFiscalYear.name"  *ngIf="assignmentAffirmativeReportOpen"></assignment-affirmative-report>
         </div>
         <div class="row">
             <div class="ln_solid"></div>
@@ -90,7 +90,7 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
             <div class="col-xs-12 text-right" *ngIf="assignmentAffirmativePlanOpen">
                 <a class="btn btn-info btn-xs" (click)="assignmentAffirmativePlanOpen=false">close</a>                
             </div>
-            <assignment-affirmative-plan [districtId]="district.id"  *ngIf="assignmentAffirmativePlanOpen"></assignment-affirmative-plan>  
+            <assignment-affirmative-plan [districtId]="district.id" [fiscalYearId]="lastFiscalYear.name" *ngIf="assignmentAffirmativePlanOpen"></assignment-affirmative-plan>  
         </div>
         <div class="row">
             <div class="ln_solid"></div>
@@ -108,7 +108,7 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
             <div class="col-xs-12 text-right" *ngIf="assignmentProgramIndicatorsOpen">
                 <a class="btn btn-info btn-xs" (click)="assignmentProgramIndicatorsOpen=false">close</a>                
             </div>
-            <assignment-program-indicators [districtId]="district.id" *ngIf="assignmentProgramIndicatorsOpen"></assignment-program-indicators>  
+            <assignment-program-indicators [districtId]="district.id" [fiscalYearId]="currentFiscalYear.name" *ngIf="assignmentProgramIndicatorsOpen"></assignment-program-indicators>  
         </div>
 
 

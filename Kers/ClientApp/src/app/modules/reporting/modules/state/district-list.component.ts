@@ -3,6 +3,7 @@ import {StateService} from './state.service';
 
 import {Observable} from 'rxjs/Observable';
 import { District } from "../district/district.service";
+import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   template: `
@@ -39,7 +40,7 @@ import { District } from "../district/district.service";
 
 
 
-    <div class="col-xs-12">
+    <div class="col-xs-12" *ngIf="lastFiscalYear && currentFiscalYear">
         <div class="x_panel">
         <div class="x_title">
             <h2>Assignments</h2>
@@ -53,7 +54,7 @@ import { District } from "../district/district.service";
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Plans of Work</a>
-                    <p>List of counties with no 2018-19 Plans of Work</p>
+                    <p>List of counties with no FY{{lastFiscalYear.name}} Plans of Work</p>
                     </div>
                 </article>
             </div>
@@ -63,7 +64,7 @@ import { District } from "../district/district.service";
             <div class="col-xs-12 text-right" *ngIf="assignmentPlansOfWorkOpen">
                 <a class="btn btn-info btn-xs" (click)="assignmentPlansOfWorkOpen=false">close</a>                
             </div>
-            <assignment-plans-of-work *ngIf="assignmentPlansOfWorkOpen"></assignment-plans-of-work>  
+            <assignment-plans-of-work [fiscalYearId]="lastFiscalYear.name" *ngIf="assignmentPlansOfWorkOpen"></assignment-plans-of-work>  
         </div>
         <div class="row">
             <div class="ln_solid"></div>
@@ -71,7 +72,7 @@ import { District } from "../district/district.service";
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Affirmative Action Report</a>
-                    <p>List of counties with no 2017-18 Affirmative Action Report</p>
+                    <p>List of counties with no FY{{currentFiscalYear.name}} Affirmative Action Report</p>
                     </div>
                 </article>
             </div>
@@ -81,7 +82,7 @@ import { District } from "../district/district.service";
             <div class="col-xs-12 text-right" *ngIf="assignmentAffirmativeReportOpen">
                 <a class="btn btn-info btn-xs" (click)="assignmentAffirmativeReportOpen=false">close</a>                
             </div>
-            <assignment-affirmative-report *ngIf="assignmentAffirmativeReportOpen"></assignment-affirmative-report>
+            <assignment-affirmative-report  [fiscalYearId]="currentFiscalYear.name" *ngIf="assignmentAffirmativeReportOpen"></assignment-affirmative-report>
         </div>
         <div class="row">
             <div class="ln_solid"></div>
@@ -89,7 +90,7 @@ import { District } from "../district/district.service";
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Affirmative Action Plan</a>
-                    <p>List of counties with no 2018-19 Affirmative Action Plan</p>
+                    <p>List of counties with no FY{{lastFiscalYear.name}} Affirmative Action Plan</p>
                     </div>
                 </article>
             </div>
@@ -99,7 +100,7 @@ import { District } from "../district/district.service";
             <div class="col-xs-12 text-right" *ngIf="assignmentAffirmativePlanOpen">
                 <a class="btn btn-info btn-xs" (click)="assignmentAffirmativePlanOpen=false">close</a>                
             </div>
-            <assignment-affirmative-plan *ngIf="assignmentAffirmativePlanOpen"></assignment-affirmative-plan>  
+            <assignment-affirmative-plan [fiscalYearId]="lastFiscalYear.name" *ngIf="assignmentAffirmativePlanOpen"></assignment-affirmative-plan>  
         </div>
         <div class="row">
             <div class="ln_solid"></div>
@@ -107,7 +108,7 @@ import { District } from "../district/district.service";
                 <article class="media event ng-star-inserted">
                     <div class="media-body">
                     <a class="title">Program Indicators</a>
-                    <p>List of counties that submitted no Program Indicators for 2017-18 Fiscal Year</p>
+                    <p>List of counties that submitted no Program Indicators for FY{{currentFiscalYear.name}}.</p>
                     </div>
                 </article>
             </div>
@@ -117,7 +118,7 @@ import { District } from "../district/district.service";
             <div class="col-xs-12 text-right" *ngIf="assignmentProgramIndicatorsOpen">
                 <a class="btn btn-info btn-xs" (click)="assignmentProgramIndicatorsOpen=false">close</a>                
             </div>
-            <assignment-program-indicators *ngIf="assignmentProgramIndicatorsOpen"></assignment-program-indicators>  
+            <assignment-program-indicators [fiscalYearId]="currentFiscalYear.name" *ngIf="assignmentProgramIndicatorsOpen"></assignment-program-indicators>  
         </div>
 
 
@@ -145,12 +146,22 @@ export class DistrictListComponent {
     assignmentAffirmativePlanOpen = false;
     assignmentProgramIndicatorsOpen = false;
 
+    lastFiscalYear:FiscalYear;
+    currentFiscalYear:FiscalYear;
+
     constructor( 
+        private fiscalYearService:FiscalyearService,
         private service:StateService
     )   
     {}
 
     ngOnInit(){
+        this.fiscalYearService.last().subscribe(
+            res => this.lastFiscalYear = res
+        )
+        this.fiscalYearService.current().subscribe(
+            res => this.currentFiscalYear = res
+        );
         this.districts = this.service.districts();
     }
 
