@@ -153,7 +153,6 @@ export class TrainingFormComponent implements OnInit {
   onCancel(){
     this.onFormCancel.emit();
   }
-  
 
 }
 
@@ -171,65 +170,5 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
       return {"endDate":true};
     }
   }
-
-  /* 
- 
-
-  
-
-  var isExpenseValid = true;
-
-  let expenseFundingSource = control.get('fundingSourceNonMileageId');
-  
-  let registration = control.get('registration');
-  let lodging = control.get('lodging');
-  let mealRateBreakfast = control.get('mealRateBreakfastId');
-  let mealRateLunch = control.get('mealRateLunchId');
-  let mealRateDinner = control.get('mealRateDinnerId');
-  let otherExpenseCost = control.get('otherExpenseCost');
-  let vehicleTypeControl = control.get('vehicleType');
-  let vehicleIdControl = control.get('countyVehicleId');
-
-  let mileageAmount = control.get('mileage');
-  let mileageFundingSource = control.get('fundingSourceMileageId');
-  
-  
-  if(             !( mileageAmount.value == "" ||  mileageAmount.value == 0) 
-              && 
-                  mileageFundingSource.value == ""
-              && 
-              vehicleTypeControl.value != 2
-              
-              ){
-      error["noMileageSource"] = true;
-      hasError = true;
-  }
-
-  if( 
-     ( !(registration.value == "" || registration.value == 0)
-      || !(lodging.value == "" || lodging.value == 0)
-      || !(otherExpenseCost.value == "" || otherExpenseCost.value == 0)
-      || mealRateBreakfast.value != ""
-      || mealRateLunch.value != ""
-      || mealRateDinner.value != "" )
-      && expenseFundingSource.value == ""   
-  
-  ){
-      isExpenseValid = false;
-  }
-  
-  if(vehicleTypeControl.value == 2 && vehicleIdControl.value == ""){
-      error["noVehicleSelected"] = true;
-      hasError = true;
-  }
-
-  if(!isExpenseValid){
-      error["noExpenseSource"] = true;
-      hasError = true;
-  }
-  if(hasError){
-      return error;
-  }
- */
   return null;
 };

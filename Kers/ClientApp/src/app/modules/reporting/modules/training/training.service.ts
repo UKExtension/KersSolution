@@ -45,6 +45,13 @@ export class TrainingService {
             );
       }
 
+      getServices(amount:number = 20, notConverted:boolean = true, order:string = "DESC"): Observable<Object[]>{
+        var url = this.baseUrl + "getservices/" + amount + "/" + notConverted + "/" + order;
+        return this.http.get<Object[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('getServices', []))
+            );
+      }
       registerWindows() : Observable<TainingRegisterWindow[]>{
         var url = this.baseUrl + "RegisterWindows/";
         return this.http.get<TainingRegisterWindow[]>(this.location.prepareExternalUrl(url))

@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using System.Net.Http;
+using Kers.Models.Entities.UKCAReporting;
 
 namespace Kers.Controllers
 {
@@ -29,12 +30,14 @@ namespace Kers.Controllers
     {
         KERScoreContext _context;
         KERSmainContext _mainContext;
+        KERSreportingContext _reportingContext;
         IKersUserRepository _userRepo;
         IMessageRepository messageRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         public TrainingsController( 
                     KERSmainContext mainContext,
+                    KERSreportingContext _reportingContext,
                     KERScoreContext context,
                     IMessageRepository messageRepo,
                     IKersUserRepository userRepo,
@@ -43,6 +46,7 @@ namespace Kers.Controllers
             ):base(mainContext, context, userRepo){
            this._context = context;
            this._mainContext = mainContext;
+           this._reportingContext = _reportingContext;
            this.messageRepo = messageRepo;
            this._userRepo = userRepo;
            this.logRepo = logRepo;
@@ -207,7 +211,11 @@ namespace Kers.Controllers
                     enrollment.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
                     enrollment.Attendie = user;
                     enrollment.TrainingId = trainingId.ToString();
-                    enrollment.eStatus = "E";
+                    if(training.seatLimit != null && training.seatLimit >= training.Enrollment.Count){
+                        enrollment.eStatus = "W";
+                    }else{
+                        enrollment.eStatus = "E";
+                    }
                     enrollment.enrolledDate = enrollment.rDT;
                     training.Enrollment.Add(enrollment);
                     await context.SaveChangesAsync();
@@ -236,7 +244,8 @@ namespace Kers.Controllers
                 if( enrollment != null){
                     training.Enrollment.Remove(enrollment);
                     context.TrainingEnrollment.Remove(enrollment);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
+                    CheckTheWaitingList(training);
                     await messageRepo.ScheduleTrainingMessage("CANCELENROLLMENT", training, user);
                     this.Log(enrollment,"TrainingEnrollment", "Cancelled Enrollment in Training.");
                 }
@@ -245,6 +254,16 @@ namespace Kers.Controllers
             }else{
                 this.Log( trainingId ,"TrainingEnrollment", "Error in training enrolment cancelling attempt.", "TrainingEnrollment", "Error");
                 return new StatusCodeResult(500);
+            }
+        }
+        private async void CheckTheWaitingList(Training training){
+            if(training.Enrollment.Where( a => a.eStatus == "W").Any()){
+                if( training.Enrollment.Count < training.seatLimit){
+                    var first = training.Enrollment.Where( a => a.eStatus == "W").OrderBy( a => a.enrolledDate).FirstOrDefault();
+                    first.eStatus = "E";
+                    await context.SaveChangesAsync();
+                    await messageRepo.ScheduleTrainingMessage("TOENROLLED", training, first.Attendie);
+                }
             }
         }
 
@@ -281,7 +300,25 @@ namespace Kers.Controllers
         }
 
 
-
+        [HttpGet("getservices/{limit}/{notConverted?}/{order?}")]
+        public async Task<IActionResult> GetInServiceTrainings(int limit, Boolean notConverted = true, string order = "ASC"){
+            IOrderedQueryable<zInServiceTrainingCatalog> services;
+            if( notConverted ){
+                IQueryable<int> converted = context.Training.Where( t => t.tID != null).Select( t => Convert.ToInt32(t.tID));
+                if( order == "ASC"){
+                    services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.rID )).OrderBy(a => a.rID);
+                }else{
+                    services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.rID )).OrderByDescending(a => a.rID);
+                }
+            }else{
+                if( order == "ASC"){
+                    services = _reportingContext.zInServiceTrainingCatalog.OrderBy(a => a.rID);
+                }else{
+                    services = _reportingContext.zInServiceTrainingCatalog.OrderByDescending(a => a.rID);
+                }
+            }
+            return new OkObjectResult(await services.Take(limit).ToListAsync());
+        }
 
 
         [HttpGet("RegisterWindows")]

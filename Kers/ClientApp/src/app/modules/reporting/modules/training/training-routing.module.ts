@@ -4,6 +4,7 @@ import { TrainingHomeComponent } from './training-home.component';
 import { TrainingCatalogComponent } from './training-catalog.component';
 import { TrainingFormComponent } from './training-form.component';
 import { TrainingInfoComponent } from './training-info.component';
+import { TrainingConvertComponent } from './training-convert.component';
 
 const routes: Routes = [{
   path: '',
@@ -17,6 +18,10 @@ const routes: Routes = [{
         {
           path: 'propose',
           component: TrainingFormComponent
+        },
+        {
+          path: 'convert',
+          component: TrainingConvertComponent
         },
         {
           path: ':id',

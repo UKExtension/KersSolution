@@ -10,6 +10,7 @@ import { TrainingCatalogComponent } from './training-catalog.component';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { TrainingDetailComponent } from './training-detail.component';
 import { TrainingInfoComponent } from './training-info.component';
+import { TrainingConvertComponent } from './training-convert.component';
 
 
 
@@ -19,7 +20,8 @@ import { TrainingInfoComponent } from './training-info.component';
     TrainingFormComponent,
     TrainingCatalogComponent,
     TrainingDetailComponent,
-    TrainingInfoComponent
+    TrainingInfoComponent,
+    TrainingConvertComponent
   ],
   imports: [
     SharedModule,

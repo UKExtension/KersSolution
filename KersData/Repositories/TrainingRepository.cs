@@ -148,9 +148,9 @@ namespace Kers.Models.Repositories
             training.Type = ExtensionEventType.SingleInstance;
             training.tTime = service.tTime;
             training.day1 = service.day1;
-            training.day2 = service.day2;
-            training.day3 = service.day3;
-            training.day4 = service.day4;
+            if( service.day2 != null && service.day2 != "NULL") training.day2 = service.day2;
+            if( service.day3 != null && service.day3 != "NULL") training.day3 = service.day3;
+            if( service.day4 != null && service.day4 != "NULL") training.day4 = service.day4;
             training.tContact = service.tContact;
             training.tAudience = service.tAudience;
 

@@ -57,11 +57,31 @@
   <div class="col-xs-12">
     <loading *ngIf="loading"></loading>
     <div *ngIf="!loading && !isEnrolled(training)">
-      <h6 class="red">Clicking the Enroll button below will immediately enroll you in this training event.</h6>
-      <a (click)="enroll(training);" class="btn btn-info">Enroll for this training event</a>
+      <ng-container *ngIf="isFull(training)">
+        <ng-container *ngIf="isItInsideTheCancellationWindow(training)">
+          <h6 class="red">*** TRAINING IS FULL ***<br /></h6>
+        </ng-container>
+        <ng-container *ngIf="!isItInsideTheCancellationWindow(training)">
+            <h6 class="red">*** TRAINING IS FULL ***<br />If you would like to be added to the waiting list for this training, please click the submit button below. In the event of a cancellation, those on the waiting list will be automatically enrolled, then sent a notification via email.</h6>
+            <a (click)="enroll(training);" class="btn btn-info">Add me to the waiting list</a>
+        </ng-container>
+      </ng-container> 
+      <ng-container *ngIf="!isFull(training)">
+        <ng-container *ngIf="isItPast(training)">
+            <h6 class="red">If you attended this training session but did not previously enroll, click the Enroll button below and you will be enrolled. You must contact the instructor and request they return to the roster to confirm your attendance. Clicking the Enroll button below will immediately enroll you in this training event.</h6>
+            <a (click)="enroll(training);" class="btn btn-info">Enroll for this PAST training event</a> 
+        </ng-container>
+        <ng-container *ngIf="!isItPast(training)">
+          <h6 class="red">Clicking the Enroll button below will immediately enroll you in this training event.</h6>
+          <a (click)="enroll(training);" class="btn btn-info">Enroll for this training event</a> 
+        </ng-container>
+             
+      </ng-container>
     </div>
     <div *ngIf="!loading && isEnrolled(training)">
-        <a (click)="unenroll(training);" class="btn btn-info">Cancel enrollment for this training event</a>
+      <ng-container *ngIf="!isItInsideTheCancellationWindow(training)">
+          <a (click)="unenroll(training);" class="btn btn-info">Cancel enrollment for this training event</a>
+      </ng-container>
     </div>
   </div>
   <div>&nbsp;</div>
