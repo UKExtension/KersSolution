@@ -52,6 +52,13 @@ export class TrainingService {
                 catchError(this.handleError('getServices', []))
             );
       }
+      migrate( id:number ):Observable<Training>{
+        var url = this.baseUrl + "migrate/" + id;
+        return this.http.get<Training>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('migrate', <Training>{}))
+            );
+      }
       registerWindows() : Observable<TainingRegisterWindow[]>{
         var url = this.baseUrl + "RegisterWindows/";
         return this.http.get<TainingRegisterWindow[]>(this.location.prepareExternalUrl(url))

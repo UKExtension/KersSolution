@@ -122,16 +122,21 @@ namespace Kers.Models.Repositories
             training.BodyPreview = service.tDescription;
             training.Subject = service.tTitle;
             training.TrainDateBegin = service.TrainDateBegin;
-            if(service.TrainDateBegin != null || service.TrainDateBegin != "NULL"){
+            if(service.TrainDateBegin != null && service.TrainDateBegin != "NULL" && service.TrainDateBegin != "null"){
                 training.Start = offsetFromString(service.TrainDateBegin);
             }else{
                 training.Start = DateTimeOffset.Now;
             }
-            if(service.TrainDateEnd != null || service.TrainDateEnd != "NULL"){
-                training.TrainDateEnd = service.TrainDateEnd;
-                training.End = offsetFromString( service.TrainDateEnd );
+            if(service.TrainDateEnd != null && service.TrainDateEnd != "NULL" && service.TrainDateEnd != "null"){
+                var end = offsetFromString( service.TrainDateEnd );
+                if( end > DateTimeOffset.Now.AddYears(-100)){
+                    training.TrainDateEnd = service.TrainDateEnd;
+                    training.End = end;
+                }else{
+                    training.End = null;
+                }      
             }else{
-                training.End = DateTimeOffset.Now;
+                training.End = null;
             }
             if(service.RegisterCutoffDays != null){
                training.RegisterCutoffDays = context.TainingRegisterWindow.Where( a => a.registerDaysVal == service.RegisterCutoffDays.ToString() ).FirstOrDefault(); 

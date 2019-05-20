@@ -54,8 +54,6 @@ export class TrainingCatalogComponent implements OnInit {
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
         flatMap(_ => this.service.perPeriod(this.startDate, this.endDate)), // Get some items
-        //delay(1000), // Delay to let our spinner shine
-        //map(data => data.results), // Map data
         tap(_ => this.loading = false) // Turn off the spinner
       );
     

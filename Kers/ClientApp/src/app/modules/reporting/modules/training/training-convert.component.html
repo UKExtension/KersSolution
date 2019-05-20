@@ -1,3 +1,7 @@
-<p>
-  training-convert works!
-</p>
+<div  *ngIf="services$ | async as services">
+    <div [hidden]="services.length != items.length && !this.convertAllClicked && convertedItemIndex <= items.length">
+        <a class="btn btn-default" (click)="convertAll()">Convert All</a><br><br>
+    </div>
+    <div [hidden]="convertedItemIndex <= items.length">Reload</div>
+    <training-convert-item *ngFor="let s of services" (onLoaded)="addItem($event)" (onConverted)="addTraining($event)" [service]="s"></training-convert-item>
+</div>

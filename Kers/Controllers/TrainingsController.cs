@@ -33,6 +33,7 @@ namespace Kers.Controllers
         KERSreportingContext _reportingContext;
         IKersUserRepository _userRepo;
         IMessageRepository messageRepo;
+        ITrainingRepository trainingRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         public TrainingsController( 
@@ -42,6 +43,7 @@ namespace Kers.Controllers
                     IMessageRepository messageRepo,
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
+                    ITrainingRepository trainingRepo,
                     IFiscalYearRepository fiscalYearRepo
             ):base(mainContext, context, userRepo){
            this._context = context;
@@ -50,6 +52,7 @@ namespace Kers.Controllers
            this.messageRepo = messageRepo;
            this._userRepo = userRepo;
            this.logRepo = logRepo;
+           this.trainingRepo = trainingRepo;
            this.fiscalYearRepo = fiscalYearRepo;
         }
 
@@ -304,7 +307,7 @@ namespace Kers.Controllers
         public async Task<IActionResult> GetInServiceTrainings(int limit, Boolean notConverted = true, string order = "ASC"){
             IOrderedQueryable<zInServiceTrainingCatalog> services;
             if( notConverted ){
-                IQueryable<int> converted = context.Training.Where( t => t.tID != null).Select( t => Convert.ToInt32(t.tID));
+                List<int> converted = await context.Training.Where( t => t.tID != null).Select( t => Convert.ToInt32(t.tID)).ToListAsync();
                 if( order == "ASC"){
                     services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.rID )).OrderBy(a => a.rID);
                 }else{
@@ -317,7 +320,23 @@ namespace Kers.Controllers
                     services = _reportingContext.zInServiceTrainingCatalog.OrderByDescending(a => a.rID);
                 }
             }
-            return new OkObjectResult(await services.Take(limit).ToListAsync());
+            var sc = await services.Take(limit).ToListAsync();
+            return new OkObjectResult(sc);
+        }
+        [HttpGet("migrate/{id}")]
+        public async Task<IActionResult> MigrateInServiceTrainings(int id){
+            if( !(await context.Training.Where( t => t.tID == id.ToString()).AnyAsync()) ){
+                var service = await this._reportingContext.zInServiceTrainingCatalog.Where( s => s.rID == id).FirstOrDefaultAsync();
+                if( service != null){
+                    if( !this.context.Training.Where( t => t.tID == service.rID.ToString()).Any() ){
+                        var training = trainingRepo.ServiceToTraining(service);
+                        this.context.Add(training);
+                        await this.context.SaveChangesAsync();
+                        return new OkObjectResult(training);
+                    }
+                } 
+            }
+            return new StatusCodeResult(500);
         }
 
 
