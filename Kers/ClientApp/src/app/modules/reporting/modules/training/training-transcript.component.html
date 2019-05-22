@@ -1,0 +1,32 @@
+<h3>Trainings Transcript</h3>
+<div class="row">
+  <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
+    <select>
+      <option>2019</option>
+    </select>  
+  </div>
+  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
+  </div>
+
+</div>
+
+
+
+<div class="table-responsive">
+<table  class="table table-bordered table-striped" >
+  <thead>
+      <tr>
+          <th>Training Date(s)</th>
+          <th>Hours</th>
+          <th>Title</th>
+          <th>Attendance</th>
+      </tr>
+  </thead>
+  <tr *ngFor="let training of trainings | async">
+    <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+    <td>{{training.iHour.iHourValue}}</td>
+    <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+    <td>{{attendance(training)}}</td>
+  </tr>
+</table>
+</div>

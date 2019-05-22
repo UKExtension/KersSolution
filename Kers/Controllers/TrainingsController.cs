@@ -356,6 +356,44 @@ namespace Kers.Controllers
             return new OkObjectResult(winds);
         }
 
+        [HttpGet("GetCustom")]
+        public IActionResult GetCustom( [FromQuery] string search, 
+                                        [FromQuery] DateTime start,
+                                        [FromQuery] DateTime end
+                                        ){
+            
+            var trainings = from i in _context.Training select i;
+            if(search != null && search != ""){
+                trainings = trainings.Where( i => i.Subject.Contains(search));
+            }
+            if(start != null){
+                trainings = trainings.Where( i => i.Start > start);
+            }
+            if( end != null){
+                trainings = trainings.Where( i => i.Start < end);
+            }
+            return new OkObjectResult(trainings);
+        }
+
+        [HttpGet("byuser/{id?}/{year?}")]
+        public async Task<IActionResult> TrainingsByUser( int id = 0, int year = 0 ){
+            KersUser user;
+            if( id == 0 ){
+                user = CurrentUser();
+                id = user.Id;
+            }
+            if( year == 0){
+                year = DateTime.Now.Year;
+            }
+            var trainings = from training in context.Training
+                from enfolment in training.Enrollment
+                where enfolment.AttendieId == id
+                where training.Start.Year == year
+                select training;
+            trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour);
+            var tnngs = await trainings.ToListAsync();
+            return new OkObjectResult(tnngs);
+        }
 
         
 

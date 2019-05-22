@@ -15,6 +15,9 @@ export class TrainingCatalogComponent implements OnInit {
   loading: boolean = true; // Turn spinner on and off
   trainings$:Observable<Training[]>;
 
+  criteria = {
+    
+  }
 
   @Input() admin:boolean = false;
   @Input() startDate:Date;
@@ -47,13 +50,17 @@ export class TrainingCatalogComponent implements OnInit {
     }
     this.model.beginDate = {year: this.startDate.getFullYear(), month: this.startDate.getMonth() + 1, day: this.startDate.getDate()};
     this.model.endDate = {year: this.endDate.getFullYear(), month: this.endDate.getMonth() + 1, day: this.endDate.getDate()};
-    
+    this.criteria = {
+      start: this.startDate.toISOString(),
+      end: this.endDate.toISOString(),
+      search: ""
+    }
     this.refresh = new Subject();
 
     this.trainings$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        flatMap(_ => this.service.perPeriod(this.startDate, this.endDate)), // Get some items
+        flatMap(_ => this.service.getCustom(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
     
@@ -67,6 +74,11 @@ export class TrainingCatalogComponent implements OnInit {
     this.endDate = event.endJsDate;
     this.onRefresh();
     //this.trainings$ = this.service.perPeriod(event.beginJsDate, event.endJsDate);
+  }
+
+  onSearch(event){
+    this.criteria["search"] = event.target.value;
+    this.onRefresh();
   }
 
   onRefresh() {

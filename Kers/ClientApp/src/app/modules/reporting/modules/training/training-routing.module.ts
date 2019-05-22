@@ -5,6 +5,7 @@ import { TrainingCatalogComponent } from './training-catalog.component';
 import { TrainingFormComponent } from './training-form.component';
 import { TrainingInfoComponent } from './training-info.component';
 import { TrainingConvertComponent } from './training-convert.component';
+import { TrainingTranscriptComponent } from './training-transcript.component';
 
 const routes: Routes = [{
   path: '',
@@ -22,6 +23,10 @@ const routes: Routes = [{
         {
           path: 'convert',
           component: TrainingConvertComponent
+        },
+        {
+          path: 'transcript',
+          component: TrainingTranscriptComponent
         },
         {
           path: ':id',

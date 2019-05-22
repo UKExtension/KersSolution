@@ -1,9 +1,9 @@
 <h3>Training Catalog</h3>
 <div class="row">
-  <div class="col-md-6">
-
+  <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
+    <input type="text" placeholder="search by title" (keyup)="onSearch($event)" class="form-control" />
   </div>
-  <div class="col-md-6 text-right">
+  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
       <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
   </div>
 

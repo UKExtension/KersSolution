@@ -37,11 +37,25 @@ export class TrainingService {
                 catchError(this.handleError('perPeriod', []))
             );
       }
+      getCustom(searchParams?:{}):Observable<Training[]>{
+        var url = this.baseUrl + "GetCustom/";
+        return this.http.get<Training[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustom', []))
+            );
+      }
       getTraining(id:number):Observable<Training>{
         var url = this.baseUrl + "get/" + id;
         return this.http.get<Training>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('registerWindows', <Training>{}))
+            );
+      }
+      enrolledByUser(userId:number = 0, year:number = 0):Observable<Training[]>{
+        var url = this.baseUrl + "byuser/" + userId + '/' + year;
+        return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('enrolledByUser', []))
             );
       }
 
@@ -117,6 +131,13 @@ export class TrainingService {
                     catchError(this.handleError('update', training))
                 );
       }  
+      private addParams(params:{}){
+        let searchParams = {};
+        for(let p in params){
+            searchParams[p] = params[p];
+        }
+        return  {params: searchParams};
+    }
 
 }
 

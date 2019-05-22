@@ -12,6 +12,7 @@ import { TrainingDetailComponent } from './training-detail.component';
 import { TrainingInfoComponent } from './training-info.component';
 import { TrainingConvertComponent } from './training-convert.component';
 import { TrainingConvertItemComponent } from './training-convert-item.component';
+import { TrainingTranscriptComponent } from './training-transcript.component';
 
 
 
@@ -23,7 +24,8 @@ import { TrainingConvertItemComponent } from './training-convert-item.component'
     TrainingDetailComponent,
     TrainingInfoComponent,
     TrainingConvertComponent,
-    TrainingConvertItemComponent
+    TrainingConvertItemComponent,
+    TrainingTranscriptComponent
   ],
   imports: [
     SharedModule,
