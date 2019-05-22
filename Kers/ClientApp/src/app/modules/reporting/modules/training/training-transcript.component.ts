@@ -14,31 +14,81 @@ export class TrainingTranscriptComponent implements OnInit {
   @Input() user:User;
   @Input() year:number = 0;
 
+  years:number[] = [];
+  thisYear:number;
+  totalHours = 0;
+  loading = false;
 
-  trainings:Observable<Training[]>;
+
+  trainings:Training[];
 
   constructor(
     private service:TrainingService,
     private userService:UserService
-  ) { }
-
-  ngOnInit() {
-    if( this.user == null){
-      this.trainings = this.service.enrolledByUser(0,this.year);
-      this.userService.current().subscribe(
-        res => this.user = res
-      );
-    }else{
-      this.trainings = this.service.enrolledByUser(this.user.id,this.year);
+  ) { 
+    var now = new Date();
+    this.thisYear = now.getFullYear();
+    for( var year = 2017; year <= this.thisYear; year++){
+      this.years.push(year);
     }
   }
+
+  ngOnInit() {
+    this.loading = true;
+    if( this.user == null){
+      this.userService.current().subscribe(
+        res =>{
+          this.user = res;
+          this.loadData();
+        } 
+      );
+    }else{
+      this.loadData();
+    }
+    
+  }
+  loadData(){
+    
+      this.service.enrolledByUser(this.user.id,this.thisYear).subscribe(
+        res =>{
+          this.trainings = res;
+          this.totalHours = this.getTotalHours(this.trainings);
+          this.loading = false;
+        } 
+      );
+    
+
+  }
   attendance(training:Training){
+
     var attended = "NO"
-    var enrollment = training.enrollment.filter( e => e.attendie);
-    if( enrollment.length != 0){
-      if( enrollment[0].attended == true ) attended = "YES";
+    if( this.isAttended( training )){
+        attended = "YES"; 
     }
     return attended;
   }
-
+  isAttended( training:Training ):boolean{
+    var enrollment = training.enrollment.filter( e => e.attendieId == this.user.id);
+    if( enrollment.length != 0){
+      if( enrollment[0].attended == true ){
+        return true;
+      }
+    }
+    return false;
+  }
+  getTotalHours(trainings:Training[]):number{
+    var totalHours = 0;
+    for( let training of trainings){
+      if( this.isAttended( training) ){
+        totalHours += training.iHour.iHourValue;
+      }
+    }
+    return totalHours;
+  }
+  onYearChange(year:number){
+    this.thisYear = year;
+    this.loading = true;
+    this.trainings = null;
+    this.loadData();
+  }
 }
