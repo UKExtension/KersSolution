@@ -58,6 +58,13 @@ export class TrainingService {
                 catchError(this.handleError('enrolledByUser', []))
             );
       }
+      upcommingByUser(userId:number = 0):Observable<Training[]>{
+        var url = this.baseUrl + "upcomming/" + userId ;
+        return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('enrolledByUser', []))
+            );
+      }
 
       getServices(amount:number = 20, notConverted:boolean = true, order:string = "DESC"): Observable<Object[]>{
         var url = this.baseUrl + "getservices/" + amount + "/" + notConverted + "/" + order;

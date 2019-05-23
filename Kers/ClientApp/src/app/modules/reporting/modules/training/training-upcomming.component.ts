@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { TrainingService } from './training.service';
+import { UserService, User } from '../user/user.service';
+import { Observable } from 'rxjs';
+import { Training } from './training';
 
 @Component({
   selector: 'training-upcomming',
@@ -6,10 +10,26 @@ import { Component, OnInit } from '@angular/core';
   styles: []
 })
 export class TrainingUpcommingComponent implements OnInit {
-
-  constructor() { }
+  @Input() user:User;
+  trainings:Observable<Training[]>;
+  constructor(
+    private service:TrainingService,
+    private userService:UserService
+  ) { }
 
   ngOnInit() {
+    if( this.user == null){
+      this.userService.current().subscribe(
+        res =>{
+          this.user = res;
+          this.loadData();
+        } 
+      );
+    }else{
+      this.loadData();
+    }
   }
-
+  loadData(){
+      this.trainings = this.service.upcommingByUser(this.user.id);
+  }
 }

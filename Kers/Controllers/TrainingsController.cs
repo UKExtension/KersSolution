@@ -395,6 +395,23 @@ namespace Kers.Controllers
             return new OkObjectResult(tnngs);
         }
 
+        [HttpGet("upcomming/{id?}")]
+        public async Task<IActionResult> UpcommingTrainings( int id = 0 ){
+            KersUser user;
+            if( id == 0 ){
+                user = CurrentUser();
+                id = user.Id;
+            }
+            var trainings = from training in context.Training
+                from enfolment in training.Enrollment
+                where enfolment.AttendieId == id
+                where training.Start > DateTime.Now
+                select training;
+            trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour);
+            var tnngs = await trainings.ToListAsync();
+            return new OkObjectResult(tnngs);
+        }
+
         
 
 

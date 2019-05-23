@@ -1,3 +1,21 @@
-<p>
-  training-upcomming works!
-</p>
+<h3>Upcoming Trainings</h3>
+<div class="table-responsive">
+  <table  class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Training Date(s)</th>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tr *ngFor="let training of trainings | async">
+        <td><a [routerLink]="['/reporting/training',training.id]" >Select</a></td>
+      <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+      <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+      <td>{{training.tLocation}}</td>
+      <td>{{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span></td>
+    </tr>
+  </table>
+</div>

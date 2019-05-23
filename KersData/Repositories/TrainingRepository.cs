@@ -158,6 +158,7 @@ namespace Kers.Models.Repositories
             if( service.day4 != null && service.day4 != "NULL") training.day4 = service.day4;
             training.tContact = service.tContact;
             training.tAudience = service.tAudience;
+            training.tLocation = service.tLocation;
 
             training.Enrollment = this.GetEnrollments( service.tID);
             training.Attendees = new List<KersUser>();
