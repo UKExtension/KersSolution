@@ -115,7 +115,7 @@ export class UserSummaryComponent {
     }
 
     day(dateString){
-        return new Date(dateString).getDay();
+        return new Date(dateString).getDate();
     }
 
 

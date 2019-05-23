@@ -72,6 +72,8 @@ export class TrainingCatalogComponent implements OnInit {
   dateCnanged(event: IMyDateRangeModel){
     this.startDate = event.beginJsDate;
     this.endDate = event.endJsDate;
+    this.criteria["start"] = event.beginJsDate.toISOString();
+    this.criteria["end"] = event.endJsDate.toISOString();
     this.onRefresh();
     //this.trainings$ = this.service.perPeriod(event.beginJsDate, event.endJsDate);
   }
