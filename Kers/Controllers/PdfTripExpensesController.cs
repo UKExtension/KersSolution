@@ -462,10 +462,10 @@ namespace Kers.Controllers
 						spaceRemaining -= spaceBetweenTables;
 						spaceRemaining -= lineHeight;
 						tbl.title = "Professional Improvement Travel:";
-						tbl.totalText = "Total Professional Improvement Travel (separate travel report required):";
 					}else{
 						tbl.title = "";
 					}
+					tbl.totalText = "Total Professional Improvement Travel (separate travel report required):";
 					foreach( var exp in rmnng){
 						if(exp.lines * lineHeight < spaceRemaining){
 							tbl.expenses.Add(exp);
@@ -491,10 +491,10 @@ namespace Kers.Controllers
 						spaceRemaining -= spaceBetweenTables;
 						spaceRemaining -= lineHeight;
 						tbl.title = "UK Funded Travel:";
-						tbl.totalText = "Total UK Funded Travel (separate travel report required):";
 					}else{
 						tbl.title = "";
 					}
+					tbl.totalText = "Total UK Funded Travel (separate travel report required):";
 					foreach( var exp in rmnng){
 						if(exp.lines * lineHeight < spaceRemaining){
 							tbl.expenses.Add(exp);
