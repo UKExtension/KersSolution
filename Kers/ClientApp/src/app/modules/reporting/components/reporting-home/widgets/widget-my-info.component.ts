@@ -27,20 +27,6 @@ import {User} from '../../../modules/user/user.service';
     <div>
     
 
-    <div class="x_panel">
-        <div class="x_title">
-            <h2>Upcomming InService Training</h2>
-            <div class="clearfix"></div>
-        </div>
-        <div class="x_content">
-        
-            <strong>Understanding and Mastering KERS</strong><br>Wednesday, May 29<br>
-            The presenters will discuss best practices to utilize when reporting activities, and using data out of KERS in preparation for various stakeholders.
-
-        </div>
-    </div>
-
-
 
 
     
