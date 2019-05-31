@@ -159,7 +159,8 @@ namespace Kers.Models.Repositories
             training.tContact = service.tContact;
             training.tAudience = service.tAudience;
             training.tLocation = service.tLocation;
-
+            training.CreatedDateTime = service.rDT;
+            training.LastModifiedDateTime = service.rDT;
             training.Enrollment = this.GetEnrollments( service.tID);
             training.Attendees = new List<KersUser>();
             foreach( var enrlm in training.Enrollment){

@@ -1,0 +1,17 @@
+<h3>Session Proposals Awaiting Action</h3>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Submitted</th>
+        <th>Submitted by</th>
+        <th>Training Date(s)</th>
+        <th>Title</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let training of trainings | async" [training-proposals-awaiting-detail]="training" (onEdit)="trainingEdited($event)"></tr>
+    </tbody>
+  </table>
+</div>

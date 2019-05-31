@@ -7,15 +7,27 @@
       <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
     </div>
     <h3>{{training.subject}}</h3>
+    <h5>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></h5>
+    <h5>{{training.iLocation}}</h5>
     <div *ngIf="training.enrollment.length == 0">
-      No one yet enrolled.
+      No one has enrolled for this training session.
     </div>
     <div *ngIf="training.enrollment.length > 0 && !loading">
-        <h4>Post Attendance</h4>
+        <h4>Training Session Roaster</h4>
         <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Planning Unit</th>
+              <th>Enrolled Date</th>
+              <th>Email</th>
+              <th>Attended</th>
+            </tr>
+          </thead>
           <tr *ngFor="let enrolled of training.enrollment">
             <td>{{enrolled.attendie.rprtngProfile.name}}</td>
             <td>{{enrolled.attendie.rprtngProfile.planningUnit.name}}</td>
+            <td>{{enrolled.enrolledDate | date:'mediumDate'}}</td>
             <td>{{enrolled.attendie.rprtngProfile.email}}</td>
             <td><input type="checkbox" (change)="checked($event, enrolled)" [checked]="enrolled.eStatus=='A'"></td>
           </tr>

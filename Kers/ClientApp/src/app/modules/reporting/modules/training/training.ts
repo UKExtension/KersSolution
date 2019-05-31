@@ -30,6 +30,7 @@ export class Training extends ExtensionEvent{
     enrollment:TrainingEnrollment[];
     qualtricsSurveyID:string;
     evaluationLink:string;
+    createdDateTime:Date;
 }
 
 export class TainingRegisterWindow{

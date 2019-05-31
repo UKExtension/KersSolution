@@ -24,6 +24,8 @@ export class TrainingFormComponent implements OnInit {
     date = new Date();
     trainingForm:any;
 
+    proposed = false;
+
     options = { 
         placeholderText: 'Your Description Here!',
         toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL'],
@@ -135,11 +137,12 @@ export class TrainingFormComponent implements OnInit {
         res => {
           this.loading = false;
           this.onFormSubmit.emit(res);
+          this.proposed = true;
+          this.trainingForm.reset();
         }
       );
     }else{
       this.loading = true;
-      console.log(trning);
       this.service.update( this.training.id, trning).subscribe(
         res => {
           this.loading = false;

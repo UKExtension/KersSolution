@@ -292,7 +292,17 @@ namespace Kers.Controllers
                 trn.TrainDateBegin = training.Start.ToString("yyyyMMdd");
                 trn.TrainDateEnd = training.End?.ToString("yyyyMMdd");
                 trn.LastModifiedDateTime = DateTime.Now;
+                if(trn.tStatus != "A" && training.tStatus == "A"){
+                    var user = CurrentUser();
+                    trn.approvedBy = user;
+                    trn.approvedDate = DateTime.Now;
+                }
                 trn.tStatus = training.tStatus;
+                trn.LastModifiedDateTime = DateTime.Now;
+                trn.iHourId = training.iHourId;
+                trn.CancelCutoffDaysId = training.CancelCutoffDaysId;
+                trn.RegisterCutoffDaysId = training.RegisterCutoffDaysId;
+                trn.seatLimit = training.seatLimit;
                 context.SaveChanges();
                 this.Log(training,"Training", "Training Updated.");
                 return new OkObjectResult(training);
@@ -365,6 +375,16 @@ namespace Kers.Controllers
                 } 
             }
             return new StatusCodeResult(500);
+        }
+
+        [HttpGet("proposalsawaiting")]
+        public async Task<IActionResult> ProposalsAwaiting(){
+            var proposals = await context
+                                .Training.Where( t => t.tStatus == "P")
+                                .Include( t => t.submittedBy)
+                                    .ThenInclude( s => s.PersonalProfile)
+                                .ToListAsync();
+            return new OkObjectResult(proposals);
         }
 
 

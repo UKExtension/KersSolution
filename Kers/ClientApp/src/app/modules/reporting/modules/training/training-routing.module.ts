@@ -8,6 +8,7 @@ import { TrainingConvertComponent } from './training-convert.component';
 import { TrainingTranscriptComponent } from './training-transcript.component';
 import { TrainingUpcommingComponent } from './training-upcomming.component';
 import { TrainingPostAttendanceComponent } from './training-post-attendance.component';
+import { TrainingProposalsAwaitingComponent } from './training-proposals-awaiting.component';
 
 const routes: Routes = [{
   path: '',
@@ -37,6 +38,10 @@ const routes: Routes = [{
         {
           path: 'postattendance',
           component: TrainingPostAttendanceComponent
+        },
+        {
+          path: 'proposals',
+          component: TrainingProposalsAwaitingComponent
         },
         {
           path: ':id',

@@ -16,6 +16,8 @@ import { TrainingTranscriptComponent } from './training-transcript.component';
 import { TrainingUpcommingComponent } from './training-upcomming.component';
 import { TrainingPostAttendanceComponent } from './training-post-attendance.component';
 import { TrainingPostAttendanceDetailComponent } from './training-post-attendance-detail.component';
+import { TrainingProposalsAwaitingComponent } from './training-proposals-awaiting.component';
+import { TrainingProposalsAwaitingDetailComponent } from './training-proposals-awaiting-detail.component';
 
 
 
@@ -31,7 +33,9 @@ import { TrainingPostAttendanceDetailComponent } from './training-post-attendanc
     TrainingTranscriptComponent,
     TrainingUpcommingComponent,
     TrainingPostAttendanceComponent,
-    TrainingPostAttendanceDetailComponent
+    TrainingPostAttendanceDetailComponent,
+    TrainingProposalsAwaitingComponent,
+    TrainingProposalsAwaitingDetailComponent
   ],
   imports: [
     SharedModule,

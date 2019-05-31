@@ -1,0 +1,17 @@
+<td *ngIf="default">{{training.createdDateTime | date:'mediumDate'}}</td>
+<td *ngIf="default">{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</td>
+<td *ngIf="default">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+<td *ngIf="default">{{training.subject}}</td>
+<td *ngIf="default"><a class="btn btn-info btn-xs" (click)="editView()">edit</a><a class="btn btn-info btn-xs" (click)="deleteView()">delete</a></td>
+<td *ngIf="!default" colspan="5">
+  <div>
+      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+  </div>
+  <div *ngIf="edit">
+   <training-form [training]="training" (onFormSubmit)="editSubmitted($event)" (onFormCancel)="defaultView()"></training-form>
+  </div>
+  <div *ngIf="delete">
+      Delete
+  </div>
+</td>
+  
