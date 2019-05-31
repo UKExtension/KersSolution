@@ -14,6 +14,8 @@ import { TrainingConvertComponent } from './training-convert.component';
 import { TrainingConvertItemComponent } from './training-convert-item.component';
 import { TrainingTranscriptComponent } from './training-transcript.component';
 import { TrainingUpcommingComponent } from './training-upcomming.component';
+import { TrainingPostAttendanceComponent } from './training-post-attendance.component';
+import { TrainingPostAttendanceDetailComponent } from './training-post-attendance-detail.component';
 
 
 
@@ -27,7 +29,9 @@ import { TrainingUpcommingComponent } from './training-upcomming.component';
     TrainingConvertComponent,
     TrainingConvertItemComponent,
     TrainingTranscriptComponent,
-    TrainingUpcommingComponent
+    TrainingUpcommingComponent,
+    TrainingPostAttendanceComponent,
+    TrainingPostAttendanceDetailComponent
   ],
   imports: [
     SharedModule,

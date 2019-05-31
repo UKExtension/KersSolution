@@ -58,6 +58,21 @@ export class TrainingService {
                 catchError(this.handleError('enrolledByUser', []))
             );
       }
+
+      proposedByUser(userId:number = 0, year:number = 0):Observable<Training[]>{
+        var url = this.baseUrl + "proposedbyuser/" + userId + '/' + year;
+        return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('proposedByUser', []))
+            );
+      }
+      updateAttendance(id:number, training:Training):Observable<Training>{
+        var url = this.baseUrl + 'postattendance/' + id;
+        return this.http.put<Training>(this.location.prepareExternalUrl(url), training)
+                .pipe(
+                    catchError(this.handleError('updateAttendance', training))
+                );
+      } 
       upcommingByUser(userId:number = 0):Observable<Training[]>{
         var url = this.baseUrl + "upcomming/" + userId ;
         return this.http.get<Training[]>(this.location.prepareExternalUrl(url))

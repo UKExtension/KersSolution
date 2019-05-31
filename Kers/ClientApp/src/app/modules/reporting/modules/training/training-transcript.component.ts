@@ -79,7 +79,7 @@ export class TrainingTranscriptComponent implements OnInit {
   getTotalHours(trainings:Training[]):number{
     var totalHours = 0;
     for( let training of trainings){
-      if( this.isAttended( training) ){
+      if( this.isAttended( training) && training.iHour ){
         totalHours += training.iHour.iHourValue;
       }
     }

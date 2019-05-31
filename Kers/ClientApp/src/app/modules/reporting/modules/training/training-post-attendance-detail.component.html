@@ -1,0 +1,29 @@
+<td *ngIf="default">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+<td *ngIf="default"><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
+<td *ngIf="default">{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+<td *ngIf="default"><a class="btn btn-info btn-xs pull-right" (click)="postView()">Post Attendance</a></td>
+<td *ngIf="post" colspan="4">
+    <div>
+      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+    </div>
+    <h3>{{training.subject}}</h3>
+    <div *ngIf="training.enrollment.length == 0">
+      No one yet enrolled.
+    </div>
+    <div *ngIf="training.enrollment.length > 0 && !loading">
+        <h4>Post Attendance</h4>
+        <table class="table">
+          <tr *ngFor="let enrolled of training.enrollment">
+            <td>{{enrolled.attendie.rprtngProfile.name}}</td>
+            <td>{{enrolled.attendie.rprtngProfile.planningUnit.name}}</td>
+            <td>{{enrolled.attendie.rprtngProfile.email}}</td>
+            <td><input type="checkbox" (change)="checked($event, enrolled)" [checked]="enrolled.eStatus=='A'"></td>
+          </tr>
+        </table>
+        <a class="btn btn-info" (click)="submit()">Submit</a>
+    </div>
+    
+    <loading *ngIf="loading"></loading>
+    
+
+</td>

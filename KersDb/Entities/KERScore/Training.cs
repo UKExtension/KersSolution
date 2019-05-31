@@ -11,6 +11,7 @@ namespace Kers.Models.Entities.KERScore
     {
         public int classicInServiceTrainingId { get; set; }
         public KersUser submittedBy {get;set;}
+        public int? submittedById {get;set;}
         public KersUser approvedBy {get;set;}
         public DateTime? approvedDate {get;set;}
 

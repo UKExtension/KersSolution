@@ -303,6 +303,34 @@ namespace Kers.Controllers
         }
 
 
+
+        [HttpPut("postattendance/{id}")]
+        [Authorize]
+        public IActionResult PostAttendance( int id, [FromBody] Training training){
+           
+
+            var trn = context.Training
+                                .Where( t => t.Id == id)
+                                .Include( t => t.Enrollment)
+                                .FirstOrDefault();
+            if(training != null && trn != null ){
+                foreach( var enr in trn.Enrollment ){
+                    var eSt = training.Enrollment.Where( e => e.Id == enr.Id).FirstOrDefault();
+                    if( eSt != null){
+                        enr.eStatus = eSt.eStatus;
+                        enr.attended = eSt.eStatus == "A" ? true : false;
+                    } 
+                }
+                context.SaveChanges();
+                this.Log(training,"Training", "Posted Attendance.");
+                return new OkObjectResult(training);
+            }else{
+                this.Log( training ,"Training", "Not Found Training in an posting attendance attempt.", "Training", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
         [HttpGet("getservices/{limit}/{notConverted?}/{order?}")]
         public async Task<IActionResult> GetInServiceTrainings(int limit, Boolean notConverted = true, string order = "ASC"){
             IOrderedQueryable<zInServiceTrainingCatalog> services;
@@ -391,6 +419,32 @@ namespace Kers.Controllers
                 where training.Start.Year == year
                 select training;
             trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour);
+            var tnngs = await trainings.ToListAsync();
+            return new OkObjectResult(tnngs);
+        }
+
+
+        [HttpGet("proposedbyuser/{id?}/{year?}")]
+        public async Task<IActionResult> ProposedTrainingsByUser( int id = 0, int year = 0 ){
+            KersUser user;
+            if( id == 0 ){
+                user = CurrentUser();
+                id = user.Id;
+            }
+            if( year == 0){
+                year = DateTime.Now.Year;
+            }
+            var trainings = from training in context.Training
+                
+                where training.submittedById == id
+                where training.Start.Year == year
+                select training;
+            trainings = trainings
+                            .Include( t => t.Enrollment)
+                                .ThenInclude( e => e.Attendie)
+                                    .ThenInclude( a => a.RprtngProfile)
+                                        .ThenInclude( u => u.PlanningUnit)
+                            .Include(t => t.iHour);
             var tnngs = await trainings.ToListAsync();
             return new OkObjectResult(tnngs);
         }
