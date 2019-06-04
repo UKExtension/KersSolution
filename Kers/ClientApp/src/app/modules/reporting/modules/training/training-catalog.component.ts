@@ -53,7 +53,8 @@ export class TrainingCatalogComponent implements OnInit {
     this.criteria = {
       start: this.startDate.toISOString(),
       end: this.endDate.toISOString(),
-      search: ""
+      search: "",
+      status: this.admin ? 'all' : 'published'
     }
     this.refresh = new Subject();
 
@@ -86,6 +87,9 @@ export class TrainingCatalogComponent implements OnInit {
   onRefresh() {
     this.loading = true; // Turn on the spinner.
     this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
+  }
+  deletedTraining(_){
+    this.onRefresh();
   }
 
 }

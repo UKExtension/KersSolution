@@ -146,7 +146,8 @@ export class TrainingService {
           );
       }
       delete(id:number):Observable<{}>{
-        var url = this.baseUrl + id;
+        var url = this.baseUrl + 'deletetraining/' + id;
+        console.log(id);
         return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('delete'))

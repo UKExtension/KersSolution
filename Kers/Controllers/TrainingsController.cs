@@ -60,7 +60,7 @@ namespace Kers.Controllers
 
     
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deletetraining/{id}")]
         [Authorize]
         public IActionResult DeleteTraining( int id ){
             var entity = context.Training.Find(id);
@@ -407,7 +407,8 @@ namespace Kers.Controllers
         [HttpGet("GetCustom")]
         public IActionResult GetCustom( [FromQuery] string search, 
                                         [FromQuery] DateTime start,
-                                        [FromQuery] DateTime end
+                                        [FromQuery] DateTime end,
+                                        [FromQuery] string status
                                         ){
             
             var trainings = from i in _context.Training select i;
@@ -420,7 +421,10 @@ namespace Kers.Controllers
             if( end != null){
                 trainings = trainings.Where( i => i.Start < end);
             }
-            return new OkObjectResult(trainings);
+            if( status == "published"){
+                trainings = trainings.Where( i => i.tStatus == "A");
+            }
+            return new OkObjectResult(trainings.OrderBy(t => t.Start));
         }
 
         [HttpGet("byuser/{id?}/{year?}")]

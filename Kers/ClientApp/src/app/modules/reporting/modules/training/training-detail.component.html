@@ -13,7 +13,15 @@
         <div class="text-right">
             <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
         </div>
-        <training-form [training]="training"></training-form>
+        <training-form [training]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></training-form>
+    </td>
+    <td *ngIf="rowDelete" colspan="6">
+        <div class="text-right">
+            <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+        </div>
+        <div>
+            Do you really want to delete training <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+        </div>
     </td>
 </ng-container>
 <ng-container *ngIf="!admin">

@@ -9,6 +9,10 @@ import { TrainingTranscriptComponent } from './training-transcript.component';
 import { TrainingUpcommingComponent } from './training-upcomming.component';
 import { TrainingPostAttendanceComponent } from './training-post-attendance.component';
 import { TrainingProposalsAwaitingComponent } from './training-proposals-awaiting.component';
+import { TrainingAdminCatalogComponent } from './training-admin-catalog.component';
+import { TrainingAdminReportsComponent } from './training-admin-reports.component';
+import { TrainingEnrollmentComponent } from './training-enrollment.component';
+import { TrainingManagersComponent } from './training-managers.component';
 
 const routes: Routes = [{
   path: '',
@@ -42,6 +46,22 @@ const routes: Routes = [{
         {
           path: 'proposals',
           component: TrainingProposalsAwaitingComponent
+        },
+        {
+          path: 'admincatalog',
+          component: TrainingAdminCatalogComponent
+        },
+        {
+          path: 'adminreports',
+          component: TrainingAdminReportsComponent
+        },
+        {
+          path: 'adminenrollment',
+          component: TrainingEnrollmentComponent
+        },
+        {
+          path: 'adminmanagers',
+          component: TrainingManagersComponent
         },
         {
           path: ':id',

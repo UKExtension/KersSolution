@@ -18,6 +18,10 @@ import { TrainingPostAttendanceComponent } from './training-post-attendance.comp
 import { TrainingPostAttendanceDetailComponent } from './training-post-attendance-detail.component';
 import { TrainingProposalsAwaitingComponent } from './training-proposals-awaiting.component';
 import { TrainingProposalsAwaitingDetailComponent } from './training-proposals-awaiting-detail.component';
+import { TrainingAdminCatalogComponent } from './training-admin-catalog.component';
+import { TrainingEnrollmentComponent } from './training-enrollment.component';
+import { TrainingManagersComponent } from './training-managers.component';
+import { TrainingAdminReportsComponent } from './training-admin-reports.component';
 
 
 
@@ -35,7 +39,11 @@ import { TrainingProposalsAwaitingDetailComponent } from './training-proposals-a
     TrainingPostAttendanceComponent,
     TrainingPostAttendanceDetailComponent,
     TrainingProposalsAwaitingComponent,
-    TrainingProposalsAwaitingDetailComponent
+    TrainingProposalsAwaitingDetailComponent,
+    TrainingAdminCatalogComponent,
+    TrainingEnrollmentComponent,
+    TrainingManagersComponent,
+    TrainingAdminReportsComponent
   ],
   imports: [
     SharedModule,
