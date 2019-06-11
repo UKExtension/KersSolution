@@ -161,6 +161,14 @@ namespace Kers.Controllers
                 act.Updated = DateTime.Now;
                 act.ActivityDate = activity.ActivityDate;
                 activity.Created = DateTime.Now;
+                var MajorProgramId = this.validateMajorProgramId( activity.MajorProgramId, activity.ActivityDate);
+                if( MajorProgramId == null ){
+                    this.Log( activity ,"ActivityRevision", "Error in adding Activity attempt. Major Program is from wrong Fiscal Year.", "Activity", "Error");
+                    return new StatusCodeResult(500);
+                }else{
+                    activity.MajorProgramId = MajorProgramId??0;
+                }
+
 
                 if(!activity.isSnap){
                     activity.SnapDirect = null;
@@ -191,6 +199,41 @@ namespace Kers.Controllers
             }
         }
 
+        private int? validateMajorProgramId( int MajorProgramId, DateTime ActivityDate ){
+            var dt = new DateTime(ActivityDate.Year, ActivityDate.Month, ActivityDate.Day, 12, 0, 0);
+            var year = context.FiscalYear
+                        .Where( f => 
+                                f.Type == FiscalYearType.ServiceLog
+                                &&
+                                f.Start <= dt
+                                &&  
+                                f.End >= dt    
+                            )
+                        .FirstOrDefault();
+            if( year == null ){
+                year = this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
+            if( year == null ) return null;
+
+            var Program = context.MajorProgram.Where( p => p.Id == MajorProgramId)
+                                    .Include( p => p.StrategicInitiative).ThenInclude( i => i.FiscalYear )
+                                    .FirstOrDefault();
+            if(Program == null ) return null;
+            if( Program.StrategicInitiative.FiscalYear == year ) return MajorProgramId;
+
+            // Major Program fiscal Year doesnt match actvity fiscal year. Try to find the same initiative in correct fiscal year.
+
+            var RightProgram = context.MajorProgram
+                                        .Where( p => p.StrategicInitiative.FiscalYear == year && p.PacCode == Program.PacCode)
+                                        .FirstOrDefault();
+            if( RightProgram == null ){
+                return null;
+            }else{
+                return RightProgram.Id;
+            }
+                                    
+        }
+
 
 
         [HttpPut("{id}")]
@@ -203,9 +246,13 @@ namespace Kers.Controllers
             if(activity != null && acEntity != null){
                 activity.Created = DateTime.Now;
                 acEntity.ActivityDate = activity.ActivityDate;
-
-
-
+                var MajorProgramId = this.validateMajorProgramId( activity.MajorProgramId, activity.ActivityDate);
+                if( MajorProgramId == null ){
+                    this.Log( activity ,"ActivityRevision", "Error in editing Activity attempt. Major Program is from wrong Fiscal Year.", "Activity", "Error");
+                    return new StatusCodeResult(500);
+                }else{
+                    activity.MajorProgramId = MajorProgramId??0;
+                }
                 if(!activity.isSnap){
                     activity.SnapDirect = null;
                     activity.SnapIndirect = null;

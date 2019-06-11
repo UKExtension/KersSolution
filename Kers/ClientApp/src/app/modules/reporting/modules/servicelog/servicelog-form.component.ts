@@ -72,7 +72,7 @@ export class ServicelogFormComponent implements OnInit{
     snapPolicy = false;
 
     isPastSnapFiscalYear = false;
-    previousFiscalYear = 2017;
+    previousFiscalYear = 2018;
 
     options:object;
     errorMessage:string;
@@ -136,6 +136,7 @@ export class ServicelogFormComponent implements OnInit{
     }
 
     getFiscalYear(date:Date){
+        var dt = new Date(date);
         this.fiscalYearService.forDate(  date ).subscribe(
             res => {
                 this.fiscalYear = <FiscalYear> res;
@@ -145,16 +146,17 @@ export class ServicelogFormComponent implements OnInit{
     }
 
     getInitiatives( fy:FiscalYear ){
+        
         this.programsService.listInitiatives( fy.name ).subscribe(
             i => {
                 this.initiatives = i;
+                
                 if(this.activity != null){
                     //this.patch();
                     this.checkIfAdminValue(this.activity.majorProgramId);
                 }else{
+                    // Checks if it is an admin major program on a new record
                     if(this.isNewAdmin){
-
-
                         //Find Major Program Id of the Admin Functions Pac Code
                         var program:MajorProgram;
                         for( var initiative of this.initiatives ){
@@ -179,7 +181,7 @@ export class ServicelogFormComponent implements OnInit{
 
 
 
-    //Disable Snap Ed Checkbox for the 2017 fiscal year on date change
+    //Disable Snap Ed Checkbox for the previous fiscal year on date change
     onDateChanged(event: IMyDateModel) {
         if(event.date.year <= this.previousFiscalYear && event.date.month < 10){
             this.isPastSnapFiscalYear = true;
@@ -191,6 +193,8 @@ export class ServicelogFormComponent implements OnInit{
         var date = event.jsdate;
         if(  this.fiscalYear.start > date || this.fiscalYear.end < date   ){
             this.getFiscalYear( date );
+            if(this.activityForm != undefined) this.activityForm.patchValue({majorProgramId: "" });
+            this.isAdmin = false;
         }
     }
 

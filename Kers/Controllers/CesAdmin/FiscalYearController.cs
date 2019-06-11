@@ -46,8 +46,9 @@ namespace Kers.Controllers.Admin
             var year = fiscalYearRepository.currentFiscalYear(type);
             return new OkObjectResult(year);
         }
-        [HttpGet("forDate/{date}/{type?}")]
+        [HttpGet("forDate/{dt}/{type?}")]
         public async Task<IActionResult> ForDate(DateTime dt, string type = "serviceLog"){
+            dt = new DateTime(dt.Year, dt.Month, dt.Day, 12, 0, 0);
             var year = await context.FiscalYear
                         .Where( f => 
                                 f.Type == type
