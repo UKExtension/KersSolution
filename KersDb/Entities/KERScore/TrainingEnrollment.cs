@@ -13,6 +13,7 @@ namespace Kers.Models.Entities.KERScore
         public KersUser Attendie { get; set; }
         public int AttendieId { get; set; }
         public string TrainingId { get; set; }
+        public Training Training {get; set;}
         public string eStatus { get; set; }
         public DateTime? enrolledDate { get; set; }
         public DateTime? cancelledDate { get; set; }

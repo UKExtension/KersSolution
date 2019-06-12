@@ -1,3 +1,64 @@
-<p>
-  training-enrollment works!
-</p>
+<h3>Enrolment</h3>
+<div class="row">
+  <div class="col-sm-6 col-xs-12" class="form-inline" style="margin-top: 3px;">
+    
+    <div class="form-group col-sm-6 col-xs-12" style="margin-bottom: 8px;">
+      <label for="exampleInputName2">Select Calendar Year: &nbsp;</label>
+      <select class="form-control" (change)="onYearChange($event.target.value)">
+        <option *ngFor="let year of years" [value]="year" [selected]="year == thisYear">{{year}}</option>
+      </select>
+    </div>
+    
+    
+      
+  </div>
+  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
+  </div>
+
+</div>
+<div class="row">
+  <div class="col-sm-6 col-xs-12" class="form-inline" style="margin-top: 3px;">
+    
+    <div class="form-group col-sm-6 col-xs-12" style="margin-bottom: 8px;">
+      <label for="exampleInputName2">Individuals with InService Enrollment: &nbsp;</label>
+      <select class="form-control" (change)="onUserChange($event.target.value)">
+        <option value="0">-- select --</option>
+        <option *ngFor="let user of users | async" [value]="user.id" [selected]="year == thisYear">{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</option>
+      </select>
+    </div>
+    
+    
+      
+  </div>
+  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
+  </div>
+
+</div>
+<div class="table-responsive">
+    <table  class="table table-bordered table-striped" *ngIf="trainings && !loading">
+      <thead>
+          <tr>
+              <th>Training Date(s)</th>
+              <th>Hours</th>
+              <th>Title</th>
+              <th>Attendance</th>
+          </tr>
+      </thead>
+      <tr *ngFor="let training of trainings">
+        <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+        <td><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
+        <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+        <td>{{attendance(training)}}</td>
+      </tr>
+      <tfoot *ngIf="totalHours != null">
+        <tr>
+          <td>
+            <strong>Hours Earned:</strong>
+          </td>
+          <td><strong>{{totalHours}}</strong></td>
+          <td colspan="2">&nbsp;</td>
+        </tr>
+      </tfoot>
+    </table>
+    <loading *ngIf="loading"></loading>
+  </div>

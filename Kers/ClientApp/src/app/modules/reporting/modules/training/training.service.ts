@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import {Training, TainingRegisterWindow, TainingInstructionalHour, TrainingCancelEnrollmentWindow} from './training'
+import { User } from '../user/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -85,6 +86,14 @@ export class TrainingService {
         return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('enrolledByUser', []))
+            );
+      }
+
+      usersWithTrainings(year:number = 0):Observable<User[]>{
+        var url = this.baseUrl + "userswithtrainings/" + year ;
+        return this.http.get<User[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('usersWithTrainings', []))
             );
       }
 
