@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Training } from './training';
 
 @Component({
   selector: 'training-admin-reports',
@@ -7,9 +8,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TrainingAdminReportsComponent implements OnInit {
 
-  constructor() { }
+  trainings:Training[];
+  years:number[] = [];
+  thisYear:number;
+  loading = false;
+
+  status='act';
+
+  constructor() { 
+    var now = new Date();
+    this.thisYear = now.getFullYear();
+    for( var year = 2017; year <= this.thisYear; year++){
+      this.years.push(year);
+    }
+  }
 
   ngOnInit() {
+  }
+
+  switchStatus(status:string){
+    this.status = status;
   }
 
 }
