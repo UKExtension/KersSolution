@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService, User } from '../user/user.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'training-managers',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TrainingManagersComponent implements OnInit {
 
-  constructor() { }
+  trainiers:Observable<User[]>;
+
+  constructor(
+    private userService:UserService
+  ) {
+    
+   }
 
   ngOnInit() {
+    this.trainiers = this.userService.usersWithRole('SRVCTRNR');
   }
 
 }

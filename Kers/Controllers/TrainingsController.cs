@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using System.Net.Http;
 using Kers.Models.Entities.UKCAReporting;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Kers.Controllers
 {
@@ -36,6 +37,7 @@ namespace Kers.Controllers
         ITrainingRepository trainingRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
+        IHostingEnvironment environment;
         public TrainingsController( 
                     KERSmainContext mainContext,
                     KERSreportingContext _reportingContext,
@@ -44,7 +46,8 @@ namespace Kers.Controllers
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
                     ITrainingRepository trainingRepo,
-                    IFiscalYearRepository fiscalYearRepo
+                    IFiscalYearRepository fiscalYearRepo,
+                    IHostingEnvironment env
             ):base(mainContext, context, userRepo){
            this._context = context;
            this._mainContext = mainContext;
@@ -54,6 +57,7 @@ namespace Kers.Controllers
            this.logRepo = logRepo;
            this.trainingRepo = trainingRepo;
            this.fiscalYearRepo = fiscalYearRepo;
+           this.environment = env;
         }
 
 
@@ -444,7 +448,12 @@ namespace Kers.Controllers
             
             var trainings = from i in _context.Training select i;
             if(search != null && search != ""){
-                trainings = trainings.Where( i => i.Subject.Contains(search));
+                if( environment.IsDevelopment()){
+                    trainings = trainings.Where( i => i.Subject.Contains(search));
+                }else{
+                    trainings = trainings.Where( i => EF.Functions.FreeText(i.Subject, search));
+                }
+                
             }
             if(start != null){
                 trainings = trainings.Where( i => i.Start > start);

@@ -78,6 +78,14 @@ export class UserService {
             );
     }
 
+    usersWithRole(role:string):Observable<User[]>{
+        var url = this.baseUrl + "userswithrole/" + role;
+        return this.http.get<User[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('usersWithRole', []))
+            );
+    }
+
 
     startDate(linkBlueId:string):Observable<Date>{
         var url = this.baseUrl + "startdate/" + linkBlueId;

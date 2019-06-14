@@ -1,3 +1,8 @@
-<p>
-  training-managers works!
-</p>
+<h2>Session Managers List</h2>
+<table class="table">
+  <tr *ngFor="let trainer of trainiers | async">
+    <td><span *ngIf="trainer.personalProfile">{{trainer.personalProfile.firstName}} {{trainer.personalProfile.lastName}}</span></td>
+    <td>{{trainer.rprtngProfile.planningUnit.name}}</td>
+    <td>{{trainer.rprtngProfile.email}}</td>
+  </tr>
+</table>

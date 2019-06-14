@@ -439,6 +439,20 @@ namespace Kers.Controllers
             return new OkObjectResult(res);
         }
 
+        [HttpGet("userswithrole/{role}")]
+        public async Task<IActionResult> UsersWithRole(string role){
+
+            var users = from user in _context.KersUser
+                from roles in user.Roles
+                where roles.zEmpRoleType.shortTitle == role && user.RprtngProfile.enabled
+                select user;
+
+            users = users.Include( u => u.PersonalProfile)
+                        .Include( u => u.RprtngProfile)
+                            .ThenInclude( r => r.PlanningUnit);
+            return new OkObjectResult(await users.ToListAsync());
+        }
+
 
 
         [HttpGet("InServiceEnrolment/{userId?}/{fy?}")]
