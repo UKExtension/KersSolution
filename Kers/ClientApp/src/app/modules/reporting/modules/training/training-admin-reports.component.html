@@ -27,3 +27,39 @@
   </div>
 
 </div>
+
+
+<div class="table-responsive">
+    <table  class="table table-bordered table-striped" *ngIf="trainings">
+      <thead>
+          <tr>
+              <th>Title</th>
+              <th>Submitter</th>
+              <th>Training Date(s)</th>
+              <th>Hours</th>
+              <th>Enrolled</th>
+              <th>Attended</th>
+          </tr>
+      </thead>
+      <tr *ngFor="let training of trainings">
+        <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+        <td><span *ngIf="training.submittedBy">{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span></td>
+        <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+        <td><span *ngIf="!training.iHour">0</span><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
+        <td>{{training.enrollment.length}}</td>
+        <td>{{attendance(training)}}</td>
+      </tr>
+      <tfoot *ngIf="totalHours != null">
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><strong>{{totalHours}}</strong></td>
+          <td>{{totalEnrolled}}</td>
+          <td>{{totalAttended}}</td>
+        </tr>
+      </tfoot>
+    </table>
+    <loading *ngIf="loading"></loading>
+  </div>
+  

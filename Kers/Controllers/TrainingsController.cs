@@ -387,6 +387,18 @@ namespace Kers.Controllers
             return new OkObjectResult(proposals);
         }
 
+        [HttpGet("trainingsbystatus/{year}/{status}")]
+        public async Task<IActionResult> TrainingsByStatus(int year, string status="A"){
+            var trainings = await context
+                                .Training.Where( t => t.tStatus == status && t.Start.Year == year )
+                                .Include( t => t.submittedBy)
+                                    .ThenInclude( s => s.PersonalProfile)
+                                .Include( t => t.iHour)
+                                .Include( t => t.Enrollment)
+                                .ToListAsync();
+            return new OkObjectResult(trainings);
+        }
+
         [HttpGet("userswithtrainings/{year}")]
         public async Task<IActionResult> UsersWithTrainings(int year){
             var users = await context

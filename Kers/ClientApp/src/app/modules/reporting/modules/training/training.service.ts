@@ -67,6 +67,14 @@ export class TrainingService {
             );
       }
 
+      trainingsbystatus(year:number, status:string):Observable<Training[]>{
+        var url = this.baseUrl + "trainingsbystatus/" + year + "/" + status;
+        return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('trainingsbystatus', []))
+            );
+      }
+
       proposedByUser(userId:number = 0, year:number = 0):Observable<Training[]>{
         var url = this.baseUrl + "proposedbyuser/" + userId + '/' + year;
         return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
