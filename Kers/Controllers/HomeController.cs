@@ -19,6 +19,7 @@ using Kers.Models.Entities.KERScore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kers.Controllers
 {
@@ -112,7 +113,19 @@ namespace Kers.Controllers
                 claims.Add( new Claim(JwtRegisteredClaimNames.Sub, loginViewModel.Username) );
                 claims.Add( new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
                 if( noProfileUser == null){
-                    var user = membershipService.RefreshKersUser(usr);
+                    //var user = membershipService.RefreshKersUser(usr);
+                    var user = coreContext.
+                                KersUser.
+                                Where(u => u.classicReportingProfileId == usr.Id).
+                                Include(u => u.Roles).
+                                Include(u => u.PersonalProfile).
+                                Include(u => u.RprtngProfile).
+                                Include(u => u.RprtngProfile).ThenInclude(r=>r.PlanningUnit).
+                                Include(u => u.RprtngProfile).ThenInclude(r=>r.GeneralLocation).
+                                Include(u => u.ExtensionPosition).
+                                Include(u=> u.Specialties).ThenInclude(s=>s.Specialty).
+                                FirstOrDefault();
+                    
                     //var rpt = membershipService.RefreshRptProfile(user);
                     user.LastLogin = DateTime.Now;
                     // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user) claims.
