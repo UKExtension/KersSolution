@@ -21,15 +21,15 @@ namespace Kers.Models.Repositories
             coreContext = context;
         }
 
-        public FiscalYear currentFiscalYear(string type){
-            var current = this.coreContext.
-                        FiscalYear.
-                        Where(y => y.Start < DateTime.Now && y.End > DateTime.Now && y.Type == type).
-                        FirstOrDefault();
-            if(current == null){
-                current = this.coreContext.FiscalYear.Where( y => y.Name=="2018" && y.Type== type).FirstOrDefault();
+        public FiscalYear currentFiscalYear(string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false){
+            
+            var today = DateTime.Now;
+            
+            var currentYear = this.byDate( today, type, includeExtendedTo, afterAvailableAt);
+            if(currentYear == null){
+                currentYear = this.coreContext.FiscalYear.Where( y => y.Name=="2020" && y.Type== type).FirstOrDefault();
             }
-            return current;
+            return currentYear;
         }
 
         public FiscalYear byName(string name, string type){
@@ -39,14 +39,35 @@ namespace Kers.Models.Repositories
                         .FirstOrDefault();
         }
 
-        public FiscalYear byDate(DateTime date, string type){
-            return this.coreContext
-                        .FiscalYear
-                        .Where( y => y.Start < date && y.End > date && y.Type == type)
-                        .FirstOrDefault();
+        public FiscalYear byDate(DateTime date, string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false){
+           
+            date = new DateTime( date.Year, date.Month, date.Day, 8, 0, 0);
+            
+            var year = this.coreContext.FiscalYear.Where(y => y.Type == type);
+            if(includeExtendedTo){
+                year = year.Where( y => new DateTime( y.ExtendedTo.Year, y.ExtendedTo.Month, y.ExtendedTo.Day, 8, 0, 0) >= date );
+            }else{
+                year = year.Where( y => new DateTime( y.End.Year, y.End.Month, y.End.Day, 8, 0, 0) >= date );
+            }
+            if(afterAvailableAt){
+                year = year.Where( y => new DateTime( y.AvailableAt.Year, y.AvailableAt.Month, y.AvailableAt.Day, 8, 0, 0) <= date );
+            }else{
+                year = year.Where( y => new DateTime( y.Start.Year, y.Start.Month, y.Start.Day, 8, 0, 0) <= date );
+            }
+            return year.FirstOrDefault();
         }
 
-        public FiscalYear nextFiscalYear(string type){
+        private Boolean compareYears( DateTime one, DateTime two, string comparision){
+            return false;
+        }
+
+        public FiscalYear nextFiscalYear(string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false){
+
+
+
+            var CurrentFiscalYear = this.currentFiscalYear(type);
+
+
 
             var nextYear = DateTime.Now.AddYears( 1 );
             var year = this.coreContext.
@@ -62,7 +83,7 @@ namespace Kers.Models.Repositories
         }
 
 
-        public FiscalYear previoiusFiscalYear( string type ){
+        public FiscalYear previoiusFiscalYear( string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false ){
             var previousYear = DateTime.Now.AddYears( -1 );
             var year = this.coreContext.
                         FiscalYear.

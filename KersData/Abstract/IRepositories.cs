@@ -106,11 +106,11 @@ namespace Kers.Models.Abstract
         Task<bool> ScheduleTrainingMessage(string type, Training training, KersUser To, DateTimeOffset? ScheduledFor = null);
     }
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
-        FiscalYear currentFiscalYear(string type);
-        FiscalYear nextFiscalYear(string type);
-        FiscalYear previoiusFiscalYear( string type );
+        FiscalYear currentFiscalYear(string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false);
+        FiscalYear nextFiscalYear(string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false);
+        FiscalYear previoiusFiscalYear( string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false );
         FiscalYear byName(string name, string type);
-        FiscalYear byDate(DateTime date, string type);
+        FiscalYear byDate(DateTime date, string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false);
     }
     public interface IAffirmativeActionPlanRevisionRepository: IEntityBaseRepository<AffirmativeActionPlanRevision>{}
     public interface ISnapDirectRepository{

@@ -530,9 +530,5 @@ namespace Kers.Controllers
             return new OkObjectResult(tnngs);
         }
 
-        
-
-
-
     }
 }

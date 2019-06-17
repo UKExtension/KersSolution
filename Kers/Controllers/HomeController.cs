@@ -146,7 +146,6 @@ namespace Kers.Controllers
 
                     this.Log(user);
                     
-                    
                 }
                 var claimsArray = claims.ToArray();
 
