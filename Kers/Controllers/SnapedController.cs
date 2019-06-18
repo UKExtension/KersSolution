@@ -309,9 +309,9 @@ namespace Kers.Controllers
 
         [HttpGet("committedhourscounty/{id}")]
         public IActionResult CommittedHoursCounty(int id){
-
+            var currentFiscalYear = this.fiscalYearRepo.currentFiscalYear("snapEd");
             var committed = context.SnapEd_Commitment.
-                                Where(e=>   e.FiscalYear == this.fiscalYearRepo.currentFiscalYear("snapEd") 
+                                Where(e=>   e.FiscalYear == currentFiscalYear
                                             && 
                                             e.KersUser.RprtngProfile.PlanningUnitId == id
                                             &&
@@ -333,10 +333,10 @@ namespace Kers.Controllers
 
         [HttpGet("committedcounty/{id}")]
         public IActionResult CommittedCounty(int id){
-
+            var currentFiscalYear = this.fiscalYearRepo.currentFiscalYear("snapEd");
             var committed = context.SnapEd_Commitment.
                                 Where( e=> 
-                                            e.FiscalYear == this.fiscalYearRepo.currentFiscalYear("snapEd") 
+                                            e.FiscalYear ==  currentFiscalYear
                                             &&
                                             e.KersUser.RprtngProfile.PlanningUnitId == id
                                             &&
