@@ -44,21 +44,48 @@ namespace Kers.Models.Repositories
             date = new DateTime( date.Year, date.Month, date.Day, 8, 0, 0);
             
             var year = this.coreContext.FiscalYear.Where(y => y.Type == type);
+
             if(includeExtendedTo){
-                year = year.Where( y => new DateTime( y.ExtendedTo.Year, y.ExtendedTo.Month, y.ExtendedTo.Day, 8, 0, 0) >= date );
+                year = year.Where( y => 
+
+                                (
+                                        y.ExtendedTo == null || y.ExtendedTo < y.End 
+                                    ? 
+                                        new DateTime( y.End.Year, y.End.Month, y.End.Day, 8, 0, 0) 
+                                    :
+                                        new DateTime( y.ExtendedTo.Year, y.ExtendedTo.Month, y.ExtendedTo.Day, 8, 0, 0)
+                                )
+                
+                                
+                                >= 
+                                
+                                date 
+
+                            );
             }else{
                 year = year.Where( y => new DateTime( y.End.Year, y.End.Month, y.End.Day, 8, 0, 0) >= date );
             }
             if(afterAvailableAt){
-                year = year.Where( y => new DateTime( y.AvailableAt.Year, y.AvailableAt.Month, y.AvailableAt.Day, 8, 0, 0) <= date );
+                year = year.Where( y => 
+
+                                (
+                                        y.AvailableAt == null || y.AvailableAt < y.Start 
+                                    ? 
+                                        new DateTime( y.Start.Year, y.Start.Month, y.Start.Day, 8, 0, 0) 
+                                    :
+                                        new DateTime( y.AvailableAt.Year, y.AvailableAt.Month, y.AvailableAt.Day, 8, 0, 0)
+                                )
+                
+                                
+                                <= 
+                                
+                                date 
+
+                            );
             }else{
                 year = year.Where( y => new DateTime( y.Start.Year, y.Start.Month, y.Start.Day, 8, 0, 0) <= date );
             }
             return year.FirstOrDefault();
-        }
-
-        private Boolean compareYears( DateTime one, DateTime two, string comparision){
-            return false;
         }
 
         public FiscalYear nextFiscalYear(string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false){
