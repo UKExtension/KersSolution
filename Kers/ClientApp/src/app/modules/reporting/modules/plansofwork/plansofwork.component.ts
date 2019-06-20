@@ -24,6 +24,7 @@ export class PlansofworkComponent implements OnInit{
                 }
    
     ngOnInit(){
+        console.log(this.fy);
         this.plans = this.plansofworkService.listPlans(this.fy.name);
     }
 

@@ -26,7 +26,7 @@ export class StoryDetailComponent {
     {}
 
     ngOnInit(){
-        this.fiscalYearService.current().subscribe(
+        this.fiscalYearService.current("serviceLog", true).subscribe(
             res =>{
                 this.currentFiscalYear = res;
       

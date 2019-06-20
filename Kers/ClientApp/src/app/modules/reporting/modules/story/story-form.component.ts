@@ -119,7 +119,7 @@ export class StoryFormComponent implements OnInit{
     getFiscalYear(){
         if( this.story == null ){
             if( this.fiscalYear == null ){
-                this.fiscalYearService.current("serviceLog").subscribe(
+                this.fiscalYearService.current("serviceLog", true).subscribe(
                     res => {
                         this.fiscalYear =<FiscalYear> res;
                         this.getInitiatives();

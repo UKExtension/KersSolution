@@ -85,26 +85,29 @@ namespace Kers.Models.Repositories
             }else{
                 year = year.Where( y => new DateTime( y.Start.Year, y.Start.Month, y.Start.Day, 8, 0, 0) <= date );
             }
-            return year.FirstOrDefault();
+
+            var theYear = year.OrderBy( y => y.Start).FirstOrDefault();
+
+            return theYear;
         }
 
         public FiscalYear nextFiscalYear(string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false){
 
 
 
-            var CurrentFiscalYear = this.currentFiscalYear(type);
+            var CurrentFiscalYear = this.currentFiscalYear(type, includeExtendedTo, afterAvailableAt);
 
 
-
+            var dateThatShouldBeInTheNextFiscalYear = CurrentFiscalYear.End.AddMonths(1);
+            
+            /* 
             var nextYear = DateTime.Now.AddYears( 1 );
             var year = this.coreContext.
                         FiscalYear.
                         Where(y => y.Start < nextYear && y.End > nextYear && y.Type == type).
                         FirstOrDefault();
-
-            if( year == null){
-                year = this.currentFiscalYear(type);
-            }
+ */
+            var year = this.byDate(dateThatShouldBeInTheNextFiscalYear, type);
             return year;
             
         }

@@ -98,7 +98,7 @@ export class IndicatorsHomeComponent {
     }
 
     ngOnInit(){
-        this.fiscalYearService.current().subscribe(
+        this.fiscalYearService.current("serviceLog", true).subscribe(
             res => {
                 var prgrms = [];
                 this.initiatives = null;

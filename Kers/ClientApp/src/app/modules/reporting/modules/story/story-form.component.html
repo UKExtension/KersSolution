@@ -8,7 +8,7 @@
 <div class="row" *ngIf="!loading">
     <div><reporting-display-help id="4"></reporting-display-help></div>
     <div class="col-sm-offset-3 col-sm-9">
-        <h2 *ngIf="!story">New Success Story</h2>
+        <h2 *ngIf="!story">New Success Story <span *ngIf="fiscalYear"> for FY{{fiscalYear.name}}</span></h2>
         <h2 *ngIf="story">Edit Success Story</h2>
     </div>
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="storyForm">

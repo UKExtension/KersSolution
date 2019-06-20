@@ -43,8 +43,8 @@ export class FiscalyearService {
                 catchError(this.handleError('byType', []))
             );
     }
-    forDate(date:Date, type:string = "serviceLog"):Observable<FiscalYear>{
-        var url = this.baseUrl + "forDate/" + date.toISOString() + "/" + type;
+    forDate(date:Date, type:string = "serviceLog", exntendedTo:boolean = false, availableAt:boolean = false):Observable<FiscalYear>{
+        var url = this.baseUrl + "forDate/" + date.toISOString() + "/" + type + "/" + exntendedTo + "/" + availableAt;
         return this.http.get<FiscalYear>(this.location.prepareExternalUrl(url))
             .pipe(
                 map(res => {
@@ -79,8 +79,8 @@ export class FiscalyearService {
             );
     }
 
-    current(type:string = "serviceLog"):Observable<FiscalYear>{
-        var url = this.baseUrl + "current/" + type;
+    current(type:string = "serviceLog", exntendedTo:boolean = false, availableAt:boolean = false):Observable<FiscalYear>{
+        var url = this.baseUrl + "current/" + type + "/" + exntendedTo + "/" + availableAt;
         if(type == "serviceLog" && this.currentServiceLogFiscalYear != null){
             return of(this.currentServiceLogFiscalYear);
         }
@@ -95,8 +95,8 @@ export class FiscalyearService {
             );
           
     }
-    next(type:string = "serviceLog"):Observable<FiscalYear>{
-        var url = this.baseUrl + "next/" + type;
+    next(type:string = "serviceLog", exntendedTo:boolean = false, availableAt:boolean = false):Observable<FiscalYear>{
+        var url = this.baseUrl + "next/" + type + "/" + exntendedTo + "/" + availableAt;
         return this.http.get<FiscalYear>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('next', <FiscalYear>{}))

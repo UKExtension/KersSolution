@@ -41,13 +41,15 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(year);
         }
 
-        [HttpGet("current/{type?}")]
-        public IActionResult Get(string type = "serviceLog"){
-            var year = fiscalYearRepository.currentFiscalYear(type);
+        [HttpGet("current/{type?}/{extendedto?}/{availableat?}")]
+        public IActionResult Get(string type = "serviceLog", Boolean extendedto = false, Boolean availableat = false){
+            var year = fiscalYearRepository.currentFiscalYear(type, extendedto, availableat);
             return new OkObjectResult(year);
         }
-        [HttpGet("forDate/{dt}/{type?}")]
-        public async Task<IActionResult> ForDate(DateTime dt, string type = "serviceLog"){
+        [HttpGet("forDate/{dt}/{type?}/{extendedto?}/{availableat?}")]
+        public IActionResult ForDate(DateTime dt, string type = "serviceLog", Boolean extendedto = false, Boolean availableat = false){
+            var year = fiscalYearRepository.byDate(dt, type,extendedto, availableat);
+            /* 
             dt = new DateTime(dt.Year, dt.Month, dt.Day, 12, 0, 0);
             var year = await context.FiscalYear
                         .Where( f => 
@@ -61,21 +63,21 @@ namespace Kers.Controllers.Admin
             if( year == null ){
                 year = fiscalYearRepository.currentFiscalYear(type);
             }
-
+ */
             if(year == null){
                 return new StatusCodeResult(500);
             }           
             return new OkObjectResult(year);
         }
 
-        [HttpGet("next/{type?}")]
-        public IActionResult Next(string type = "serviceLog"){
-            var year = fiscalYearRepository.nextFiscalYear(type);
+        [HttpGet("next/{type?}/{extendedto?}/{availableat?}")]
+        public IActionResult Next(string type = "serviceLog", Boolean extendedto = false, Boolean availableat = false){
+            var year = fiscalYearRepository.nextFiscalYear(type, extendedto, availableat);
             return new OkObjectResult(year);
         }
 
-        [HttpGet("previous/{type?}")]
-        public IActionResult Previous(string type = "serviceLog"){
+        [HttpGet("previous/{type?}/{extendedto?}/{availableat?}")]
+        public IActionResult Previous(string type = "serviceLog", Boolean extendedto = false, Boolean availableat = false){
             var year = fiscalYearRepository.previoiusFiscalYear(type);
             return new OkObjectResult(year);
         }
