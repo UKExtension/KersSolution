@@ -66,7 +66,7 @@ export class ContactFormComponent implements OnInit{
     getFiscalYear(){
         if( this.contact == null ){
             if( this.fiscalYear == null ){
-                this.fiscalYearService.current("serviceLog").subscribe(
+                this.fiscalYearService.current("serviceLog", true).subscribe(
                     res => {
                         this.fiscalYear =<FiscalYear> res;
                         this.getInitiatives();
