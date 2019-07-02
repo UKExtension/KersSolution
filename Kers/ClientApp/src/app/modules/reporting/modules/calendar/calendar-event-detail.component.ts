@@ -38,14 +38,19 @@ export class CalendarEventDetailComponent implements OnInit {
     if(this.event.meta.type == "expense"){
       this.allowActivityEdits = true;
     }else{
-      this.fiscalYearService.current().subscribe(
+      this.fiscalYearService.current('serviceLog', true).subscribe(
             res =>{
                 this.currentFiscalYear = res;
-      
+                var activityDate = new Date(this.event.start);
+                var start = new Date(this.currentFiscalYear.start);
+                var end = new Date(this.currentFiscalYear.end);
+                var extendedTo = new Date(this.currentFiscalYear.extendedTo);
+                if(extendedTo > start) end = extendedTo;
+
                 if( 
-                    new Date(this.currentFiscalYear.start) <= new Date(this.event.start) 
+                    start <  activityDate
                     && 
-                    new Date(this.currentFiscalYear.end) >= new Date(this.event.start)
+                    end > activityDate
                 ){
                     this.allowActivityEdits = true;
                 }

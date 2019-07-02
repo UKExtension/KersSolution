@@ -31,11 +31,16 @@ export class ServicelogDetailComponent {
        this.fiscalYearService.current('serviceLog', true).subscribe(
             res =>{
                 this.currentFiscalYear = res;
+                var activityDate = new Date(this.activity.activityDate);
+                var start = new Date(this.currentFiscalYear.start);
+                var end = new Date(this.currentFiscalYear.end);
+                var extendedTo = new Date(this.currentFiscalYear.extendedTo);
+                if(extendedTo > start) end = extendedTo;
 
                 if( 
-                    new Date(this.currentFiscalYear.start) < new Date(this.activity.activityDate) 
+                    start <  activityDate
                     && 
-                    new Date(this.currentFiscalYear.end) > new Date(this.activity.activityDate)
+                    end > activityDate
                 ){
                     this.displayEdit = true;
                 }

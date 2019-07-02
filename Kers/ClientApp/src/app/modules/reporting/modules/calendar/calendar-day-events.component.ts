@@ -40,14 +40,19 @@ export class CalendarDayEventsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.fiscalYearService.current().subscribe(
+    this.fiscalYearService.current('serviceLog', true).subscribe(
       res =>{
           this.currentFiscalYear = res;
+          var viewDate = new Date(this._viewDate);
+          var start = new Date(this.currentFiscalYear.start);
+          var end = new Date(this.currentFiscalYear.end);
+          var extendedTo = new Date(this.currentFiscalYear.extendedTo);
+          if(extendedTo > start) end = extendedTo;
 
           if( 
-              new Date(this.currentFiscalYear.start) <= new Date(this._viewDate) 
+              start <  viewDate
               && 
-              new Date(this.currentFiscalYear.end) >= new Date(this._viewDate)
+              end > viewDate
           ){
               this.displayServiceLogEdits = true;
           }
