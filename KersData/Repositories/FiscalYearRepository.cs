@@ -108,6 +108,7 @@ namespace Kers.Models.Repositories
                         FirstOrDefault();
  */
             var year = this.byDate(dateThatShouldBeInTheNextFiscalYear, type);
+            if( year == null ) year = CurrentFiscalYear;
             return year;
             
         }
