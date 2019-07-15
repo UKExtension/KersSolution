@@ -81,9 +81,11 @@ export class FiscalyearService {
 
     current(type:string = "serviceLog", exntendedTo:boolean = false, availableAt:boolean = false):Observable<FiscalYear>{
         var url = this.baseUrl + "current/" + type + "/" + exntendedTo + "/" + availableAt;
+        /* 
         if(type == "serviceLog" && this.currentServiceLogFiscalYear != null){
             return of(this.currentServiceLogFiscalYear);
         }
+         */
         return this.http.get<FiscalYear>(this.location.prepareExternalUrl(url))
             .pipe(
                 tap(yr =>
