@@ -568,13 +568,13 @@ namespace Kers.Models.Repositories
                 keys.Add("HoursReported");
                 keys.Add("DirectContacts");
 
-                var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+                var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.Active).OrderBy(a => a.order);
                 
                 foreach( var audnc in snapDirectAudience){
                     keys.Add(audnc.Name);
                 }
 
-                var snapDirectAges = this.context.SnapDirectAges.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+                var snapDirectAges = this.context.SnapDirectAges.Where(a => a.Active).OrderBy(a => a.order);
 
                 foreach( var ags in snapDirectAges){
                     keys.Add(ags.Name);
