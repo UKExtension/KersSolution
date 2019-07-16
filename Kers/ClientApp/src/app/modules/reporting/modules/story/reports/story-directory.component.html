@@ -42,12 +42,21 @@
             </div>
     </form>
 </div><br><br>
-<div class="row">
+<div class="row" *ngIf="stories | async as strs">
 
 
     <div class="clearfix"></div>
-    <loading [type]="'bars'" *ngIf="loading"></loading>
-    <success-story-display-list [stories]="stories" [link]="false"></success-story-display-list>
+    <loading *ngIf="loading"></loading>
+
+    <ng-container *ngIf="strs.length; else noItems">
+        <ng-container *ngIf="!loading">
+            <success-story-display-list [stories]="strs" [link]="false"></success-story-display-list>
+        </ng-container>
+    </ng-container>
+    <ng-template #noItems>No Items!</ng-template> 
+
+
+    
 </div>
 
 <div *ngIf="numProfiles != 0" class="text-center">

@@ -9,6 +9,7 @@ import { Story, StoryService } from '../story.service';
 import { UserService } from '../../user/user.service';
 import { MajorProgram, ProgramsService, StrategicInitiative } from '../../admin/programs/programs.service';
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
+import { startWith, debounceTime, flatMap, tap } from 'rxjs/operators';
 
 
 
@@ -37,7 +38,7 @@ export class StoryDirectoryComponent {
         }
         private searchTermStream = new Subject<string>();
 
-        loading = false;
+        loading: boolean = true; // Turn spinner on and off
 
         condition = false;
         constructor(     
@@ -46,24 +47,29 @@ export class StoryDirectoryComponent {
                     private userService: UserService,
                     private programsService: ProgramsService
                 ){
-                    this.stories = this.searchTermStream
+                    this.stories = this.searchTermStream.asObservable()
+                        .pipe(
+                            startWith('onInit'),
+                            debounceTime(300),
+                            flatMap(_ => this.performSearch("")),
+                            tap(_ => this.loading = false)
+                        );
+                    
+                    
+                    /* 
+                    this.searchTermStream
                         .debounceTime(300)
                         .switchMap((term:string) => {
                             this.loading = true;
                             return this.performSearch(term);
                         });
+                         */
                 }
    
     ngOnInit(){
-
-
         this.planningUnits = this.userService.units();
         this.initiatives = this.programsService.listInitiatives();
-
         this.reportingService.setTitle("Success Stories Search");
-        
-        
-        
     }
 
     ngAfterViewInit(){
@@ -73,7 +79,8 @@ export class StoryDirectoryComponent {
     
 
     onSearch(event){
-         this.searchTermStream.next(event.target.value);
+        this.loading = true;
+        this.searchTermStream.next(event.target.value);
     }
 
     performSearch(term:string){
@@ -83,16 +90,19 @@ export class StoryDirectoryComponent {
     }
 
     onPlaningUnitChange(event){
+        this.loading = true;
         this.criteria.amount = 30;
         this.criteria.unit = event.target.value;
         this.searchTermStream.next(this.criteria.search);
     }
     onProgramChange(event){
+        this.loading = true;
         this.criteria.amount = 30;
         this.criteria.program = event.target.value;
         this.searchTermStream.next(this.criteria.search);
     }
     onSnapChange(event){
+        this.loading = true;
         this.criteria.amount = 30;
         if(event.target.checked){
             this.criteria.snap = 1;
@@ -102,6 +112,7 @@ export class StoryDirectoryComponent {
         this.searchTermStream.next(this.criteria.search);
     }
     onWithImageChange(event){
+        this.loading = true;
         this.criteria.amount = 30;
         if(event.target.checked){
             this.criteria.withImage = 1;
@@ -124,11 +135,13 @@ export class StoryDirectoryComponent {
         
     }
     loadMore(){
+        this.loading = true;
         this.criteria.amount = this.criteria.amount + 15;
         this.searchTermStream.next(this.criteria.search);
     }
 
     yearSwitched(event:FiscalYear){
+        this.loading = true;
         this.criteria.fiscalYear = event.name;
         this.searchTermStream.next(this.criteria.search);
     }
