@@ -80,11 +80,12 @@ export class StoryDirectoryComponent {
 
     onSearch(event){
         this.loading = true;
+        this.criteria.search = event.target.value;
         this.searchTermStream.next(event.target.value);
     }
 
     performSearch(term:string){
-        this.criteria.search = term;
+        //this.criteria.search = term;
         this.updateNumResults();
         return this.service.getCustom(this.criteria);
     }
