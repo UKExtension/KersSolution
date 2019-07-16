@@ -109,9 +109,67 @@ namespace Kers.Controllers.Reports
 
  */
 
-
-
+            //var indctrs = this.moveIndicators("2020", "2019");
+            //var strs = this.moveStories("2020", "2019");
             return View();
+        }
+
+        private List<ProgramIndicator> moveIndicators( string fromFYName, string toFYName){
+            var indicators = new List<ProgramIndicator>();
+
+            
+            var vals = this.context.ProgramIndicatorValue
+                        .Where( v => v.ProgramIndicator.MajorProgram.StrategicInitiative.FiscalYear.Name == fromFYName)
+                        .Include( v => v.ProgramIndicator);
+
+            foreach( var val in vals){
+
+                var replacement = this.context.ProgramIndicator
+                                    .Where( i => i.MajorProgram.StrategicInitiative.FiscalYear.Name == toFYName
+                                                &&
+                                                i.Question == val.ProgramIndicator.Question)
+                                    .FirstOrDefault();
+                if( replacement != null ) val.ProgramIndicator = replacement;
+                indicators.Add( val.ProgramIndicator);
+            }
+
+            this.context.SaveChanges();
+
+            return indicators;
+        }
+
+        private List<Story> moveStories( string fromFYName, string toFYName){
+            var strs = new List<Story>();
+
+            var stories = this.context.Story
+                            .Where( s => 
+                                s.MajorProgram.StrategicInitiative.FiscalYear.Name == fromFYName 
+                                && 
+                                s.MajorProgram.StrategicInitiative.FiscalYear.Type == FiscalYearType.ServiceLog)
+                            .Include( r => r.Revisions)
+                            .Include( r => r.MajorProgram);
+
+            foreach( var str in stories){
+                var replacement = this.context.MajorProgram.Where(
+                    m => 
+                        m.StrategicInitiative.FiscalYear.Name == toFYName
+                        &&
+                        m.StrategicInitiative.FiscalYear.Type == FiscalYearType.ServiceLog
+                        &&
+                        m.PacCode == str.MajorProgram.PacCode
+                ).FirstOrDefault();
+                if(replacement != null){
+                    foreach( var rev in str.Revisions){
+                        rev.MajorProgram = replacement;
+                        rev.PlanOfWorkId = 0;
+                    }
+                    str.MajorProgram = replacement;
+                }
+                strs.Add( str );
+            }
+
+            this.context.SaveChanges();
+            return strs;
         }
 
 
