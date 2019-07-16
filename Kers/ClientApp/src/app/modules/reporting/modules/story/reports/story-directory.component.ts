@@ -8,6 +8,7 @@ import { Subject } from 'rxjs/Subject';
 import { Story, StoryService } from '../story.service';
 import { UserService } from '../../user/user.service';
 import { MajorProgram, ProgramsService, StrategicInitiative } from '../../admin/programs/programs.service';
+import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 
 
@@ -31,7 +32,8 @@ export class StoryDirectoryComponent {
             program: 0,
             snap: 0,
             withImage: 0,
-            amount: 10
+            amount: 10,
+            fiscalYear: "0"
         }
         private searchTermStream = new Subject<string>();
 
@@ -123,6 +125,11 @@ export class StoryDirectoryComponent {
     }
     loadMore(){
         this.criteria.amount = this.criteria.amount + 15;
+        this.searchTermStream.next(this.criteria.search);
+    }
+
+    yearSwitched(event:FiscalYear){
+        this.criteria.fiscalYear = event.name;
         this.searchTermStream.next(this.criteria.search);
     }
 

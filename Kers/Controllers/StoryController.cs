@@ -186,12 +186,20 @@ namespace Kers.Controllers
                                         [FromQuery] string amount = "0",
                                         [FromQuery] string program = "0",
                                         [FromQuery] string snap = "0",
-                                        [FromQuery] string withImage = "0"
+                                        [FromQuery] string withImage = "0",
+                                        [FromQuery] string fiscalYear = "0"
                                         ){
             var theAmount = Convert.ToInt32(amount);
             theAmount =  theAmount <= 0 ? DefaultNumberOfItems : theAmount ;
+            var Fy = 
+                    fiscalYear == "0"
+                    ?
+                    this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog)
+                    :
+                    this.fiscalYearRepo.byName(fiscalYear, FiscalYearType.ServiceLog);
+            if(Fy == null) this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
 
-            IEnumerable<StoryRevision> revs = storyRepo.LastStoryRevisions(this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog));
+            IEnumerable<StoryRevision> revs = storyRepo.LastStoryRevisions(Fy);
             if(search != null){
                 revs = revs.Where( i => i.Title.Contains(search) || i.Story.Contains(search));
             }

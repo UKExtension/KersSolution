@@ -1,3 +1,4 @@
+<fiscal-year-switcher [initially]="'previous'" (onSwitched)="yearSwitched($event)"></fiscal-year-switcher>
 <br><input type="text" placeholder="search phrase" (keyup)="onSearch($event)" class="form-control" /> <br><br>
 <a (click)="condition = !condition"><i class="fa fa-minus-square" *ngIf="condition"></i>
 <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options <span class="text-muted">(planning unit, major program )</span></a>
