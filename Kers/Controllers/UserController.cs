@@ -272,6 +272,7 @@ namespace Kers.Controllers
                 user.classicReportingProfileId = rprtProfile.Id;
                 user.PersonalProfile = new PersonalProfile();
                 this.populatePersonalProfileName(user.PersonalProfile, user.RprtngProfile.Name);
+                if( user.RprtngProfile.PlanningUnit != null) user.PersonalProfile.TimeZoneId = user.RprtngProfile.PlanningUnit.TimeZoneId;
                 this._context.SaveChanges();
                 this.Log(user, user, "KersUser", "New User Created", "User Profile Created");
                 return new OkObjectResult(user);
