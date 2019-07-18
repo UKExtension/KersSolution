@@ -126,7 +126,13 @@ export class ContactFormComponent implements OnInit{
     buildMonths(){
         this.months = [];
         var end = new Date(this.fiscalYear.end);
-        for( var m = new Date(this.fiscalYear.start); m < end; m.setMonth(m.getMonth() + 1, 15)){
+        console.log( end );
+        end.setDate( end.getDate() - 1);
+        console.log( end );
+        var start = new Date(this.fiscalYear.start);
+        start.setDate( start.getDate() + 1);
+
+        for( var m = start; m < end; m.setMonth(m.getMonth() + 1, 15)){
             var mnth:ContactMonth = {
                 date: new Date(m.getTime()),
                 id: this.getMonthId( m.getMonth() + 1, m.getFullYear())
