@@ -232,6 +232,15 @@ export class User{
 
 export interface RoleConnection{
     zEmpRoleTypeId:number
+    zEmpRoleType:zEmpRoleType
+}
+
+export interface zEmpRoleType{
+    id:number,
+    enabled:boolean,
+    shortTitle:string,
+    title:string,
+    description:string
 }
 
 export class ReportingProfile{

@@ -8,7 +8,7 @@ import { UserService, User } from '../user.service';
 
 @Component({
     selector: 'user-directory-profile',
-    template: `<div class="col-md-4 col-sm-4 col-xs-12 profile_details" *ngIf="user">
+    template: `<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 profile_details" *ngIf="user">
             <div class="well profile_view">
                 <div class="ribbon" *ngIf="!user.rprtngProfile.enabled"><span>Former Employee</span></div>
                 <div class="col-sm-12 top">
@@ -44,7 +44,7 @@ import { UserService, User } from '../user.service';
             </div>`,
     styles: [`
             .profile_view > div.top{
-                min-height: 180px;
+                min-height: 220px;
             }
 
 
