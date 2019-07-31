@@ -1,0 +1,418 @@
+
+<h3>Budget Plan</h3>
+<br><br>
+<div id="wizard" class="form_wizard wizard_horizontal">
+  <ul class="wizard_steps anchor">
+  <li>
+  <a (click)="step=1" [ngClass]="{'selected': step==1, 'disabled':step!=1}" isdone="1" rel="1">
+  <span class="step_no">1</span>
+  <span class="step_descr">
+  Step 1<br>
+  <small>Anticipated Income</small>
+  </span>
+  </a>
+  </li>
+  <li>
+  <a (click)="step=2" [ngClass]="{'selected': step==2, 'disabled':step!=2}" isdone="0" rel="2">
+  <span class="step_no">2</span>
+  <span class="step_descr">
+  Step 2<br>
+  <small>Salary Support Staff</small>
+  </span>
+  </a>
+  </li>
+  <li>
+  <a (click)="step=3" [ngClass]="{'selected': step==3, 'disabled':step!=3}" isdone="0" rel="3">
+  <span class="step_no">3</span>
+  <span class="step_descr">
+  Step 3<br>
+  <small>Salary Professional Staff</small>
+  </span>
+  </a>
+  </li>
+  <li>
+  <a (click)="step=4" [ngClass]="{'selected': step==4, 'disabled':step!=4}" isdone="0" rel="4">
+  <span class="step_no">4</span>
+  <span class="step_descr">
+  Step 4<br>
+  <small>Travel</small>
+  </span>
+  </a>
+  </li>
+  <li>
+    <a (click)="step=5" [ngClass]="{'selected': step==5, 'disabled':step!=5}" isdone="0" rel="5">
+    <span class="step_no">5</span>
+    <span class="step_descr">
+    Step 5<br>
+    <small>Profession Improvement</small>
+    </span>
+    </a>
+  </li>
+  <li>
+    <a (click)="step=6" [ngClass]="{'selected': step==6, 'disabled':step!=6}" isdone="0" rel="6">
+      <span class="step_no">6</span>
+      <span class="step_descr">
+      Step 6<br>
+      <small>Base Program Support</small>
+      </span>
+    </a>
+  </li>
+  <li>
+    <a (click)="step=7" [ngClass]="{'selected': step==7, 'disabled':step!=7}" isdone="0" rel="7">
+    <span class="step_no">7</span>
+    <span class="step_descr">
+    Step 7<br>
+    <small>Office Operation</small>
+    </span>
+    </a>
+  </li>
+  <li>
+    <a (click)="step=8" [ngClass]="{'selected': step==8, 'disabled':step!=8}" isdone="0" rel="8">
+    <span class="step_no">8</span>
+    <span class="step_descr">
+    Step 8<br>
+    <small>Reserve for Emergency</small>
+    </span>
+    </a>
+  </li>
+  </ul>
+  
+  
+  
+  
+  <div class="stepContainer" >
+    <div id="step-1" class="content" style="display: block;" *ngIf="step==1">
+      <form class="form-horizontal form-label-left">
+        <h4>Anticipated Income</h4>
+        <p>
+            Calculation of anticipated net income if county has an Extension Taxing District
+        </p><br>
+        <div class="form-group">
+          <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Real Property
+          </label>
+          <div class="col-md-10 col-sm-9 col-xs-12">
+              <div class="form-inline">
+                  <div class="form-group">
+                      <input type="text" class="form-control" placeholder="Property Assesment Subject to Rate"/>
+                  </div>
+                  <div class="form-group">
+                      &nbsp;x&nbsp;
+                  </div>
+                  <div class="form-group">
+                      <input type="text" class="form-control" placeholder="Tax Rate"/>
+                  </div>
+                  <div class="form-group">
+                      &nbsp;=&nbsp;
+                  </div>
+                  <div class="form-group">
+                      14
+                  </div>
+              </div>
+          </div>
+        </div>
+
+
+        <br>
+
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Personal Property
+            </label>
+            <div class="col-md-10 col-sm-9 col-xs-12">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Property Assesment Subject to Rate"/>
+                    </div>
+                    <div class="form-group">
+                        &nbsp;x&nbsp;
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Tax Rate"/>
+                    </div>
+                    <div class="form-group">
+                        &nbsp;=&nbsp;
+                    </div>
+                    <div class="form-group">
+                        14
+                    </div>
+                </div>
+            </div>
+          </div>
+  
+  
+          <br>
+
+          <div class="form-group">
+              <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Motor Veh/Watercraft
+              </label>
+              <div class="col-md-10 col-sm-9 col-xs-12">
+                  <div class="form-inline">
+                      <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Property Assesment Subject to Rate"/>
+                      </div>
+                      <div class="form-group">
+                          &nbsp;x&nbsp;
+                      </div>
+                      <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Tax Rate"/>
+                      </div>
+                      <div class="form-group">
+                          &nbsp;=&nbsp;
+                      </div>
+                      <div class="form-group">
+                          14
+                      </div>
+                  </div>
+              </div>
+            </div>
+    
+    
+            <br>
+
+            <div class="form-group">
+                <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Total Gross Income
+                </label>
+                <div class="col-md-10 col-sm-9 col-xs-12">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            $24
+                        </div>
+                        <div class="form-group">
+                            &nbsp;x&nbsp;
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Anticipated Delinguency"/>
+                        </div>
+                        <div class="form-group">
+                            &nbsp;=&nbsp;
+                        </div>
+                        <div class="form-group">
+                            34
+                        </div>
+                    </div>
+                </div>
+              </div>
+
+              <br>
+
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Subtotal Gross Income
+                  </label>
+                  <div class="col-md-10 col-sm-9 col-xs-12">
+                      <div class="form-inline">
+                          <div class="form-group">
+                              $24
+                          </div>
+                          <div class="form-group">
+                              &nbsp;x&nbsp;
+                          </div>
+                          <div class="form-group">
+                              <input type="text" class="form-control" placeholder="Collection"/>
+                          </div>
+                          <div class="form-group">
+                              &nbsp;=&nbsp;
+                          </div>
+                          <div class="form-group">
+                              34
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <br><br>
+              <div class="form-group">
+                <div class="col-md-2 col-sm-3 col-xs-6 text-right"><strong>Source of Income</strong></div>
+                <div class="col-md-10 col-sm-9 col-xs-6"><strong>Amount</strong></div>
+              </div>
+                <br>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Ext Dist Tax
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  $43
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">User Defined
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">User Defined
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Interest
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Reserve
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Capital Imp Fund
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Equipment Fund
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Anticipated Carryover
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6">Total
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  $123
+                  </div>
+              </div>
+      
+      
+
+
+
+
+
+        
+      </form>
+  </div>
+  <div id="step-2" class="content" *ngIf="step==2">
+  <h2 class="StepTitle">Step 2 Content</h2>
+  <p>
+  do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+  fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  <p>
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+  in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  </div><div id="step-3" class="content" *ngIf="step==3">
+  <h2 class="StepTitle">Step 3 Content</h2>
+  <p>
+  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  <p>
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+  in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  </div>
+  <div id="step-4" class="content" *ngIf="step==4">
+    <h2 class="StepTitle">Step 4 Content</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+    <p>
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+    <p>
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+    
+  </div>
+  <div id="step-5" class="content" *ngIf="step==5">
+    <h2 class="StepTitle">Step 5 Content</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+    <p>
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+    <p>
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+   
+  </div>
+  <div id="step-6" class="content" *ngIf="step==6">
+      <h2 class="StepTitle">Step 6 Content</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+    
+  </div>
+  <div id="step-7" class="content" *ngIf="step==7">
+      <h2 class="StepTitle">Step 7 Content</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+    
+  </div>
+  <div id="step-8" class="content" *ngIf="step==8">
+      <h2 class="StepTitle">Step 8 Content</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+  </div>
+</div>
+<div class="actionBar">
+  <div class="msgBox">
+    <div class="content"></div>
+    <a href="#" class="close">X</a></div>
+    <div class="loader">Loading</div>
+    <a class="buttonFinish buttonDisabled btn btn-default">Finish</a>
+    <a class="buttonNext btn btn-success" [class.buttonDisabled]="step>7" (click)="step=step+1">Next</a>
+    <a class="buttonPrevious btn btn-primary" [class.buttonDisabled]="step<2" (click)="step=step-1">Previous</a>
+  </div>
+</div>
