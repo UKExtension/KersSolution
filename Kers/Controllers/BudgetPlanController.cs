@@ -48,7 +48,7 @@ namespace Kers.Controllers
         {
             var list = await this.context.BudgetPlanOfficeOperation.ToListAsync();
             if(onlyactive) list = list.Where( o => o.Active).ToList();
-            return new OkObjectResult(list);
+            return new OkObjectResult(list.OrderBy( o => o.Order));
         }
 
         [HttpPost()]

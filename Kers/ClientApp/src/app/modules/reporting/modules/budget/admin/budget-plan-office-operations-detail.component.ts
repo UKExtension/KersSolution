@@ -58,6 +58,8 @@ export class BudgetPlanOfficeOperationsDetailComponent implements OnInit {
   }
 
   operationSubmitted(event:BudgetPlanOfficeOperation){
+    this.operation = event;
+    this.default();
     this.onEdited.emit(event);
   }
 
