@@ -111,6 +111,35 @@ namespace Kers.Controllers.Reports
 
             //var indctrs = this.moveIndicators("2020", "2019");
             //var strs = this.moveStories("2020", "2019");
+
+
+            /* 
+            var fiscalYear = this.fiscalYearRepository.byName("2019", FiscalYearType.ServiceLog);
+
+
+
+
+            var districts =  context.District;
+            foreach( var district in districts){
+                var tbl = await contactRepo.DataByEmployee(fiscalYear,0, district.Id, true);  
+                tbl = await contactRepo.DataByMajorProgram(fiscalYear, 0,district.Id,true);
+            }
+            // Planning Units
+            var units = context.PlanningUnit;
+            foreach( var unit in units){
+                var tbl = await contactRepo.DataByEmployee(fiscalYear,1, unit.Id, true); 
+                tbl = await contactRepo.DataByMajorProgram(fiscalYear, 1,unit.Id,true);   
+            }
+
+
+
+ */
+
+
+            //var table = await contactRepo.DataByMajorProgram(fiscalYear, 2,0,true);
+            //table = await contactRepo.DataByMajorProgram(fiscalYear, 3,0,true);
+            //var table = await contactRepo.DataByEmployee(fiscalYear, 2, 0, true);
+            //table = await contactRepo.DataByEmployee(fiscalYear, 3, 0, true);
             return View();
         }
 
