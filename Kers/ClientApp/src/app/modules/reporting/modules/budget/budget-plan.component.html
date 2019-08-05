@@ -1,4 +1,23 @@
+<div>
+    <p>
+      <a class="btn btn-default" [routerLink]="['/reporting/training/upcomming']" routerLinkActive="active">Schedule of Disbursments</a> 
+      <a class="btn btn-default" [routerLink]="['/reporting/training/transcript']" routerLinkActive="active">Memorandum of Agreement</a> 
+      <a class="btn btn-default" [routerLink]="['/reporting/budget/plan']" routerLinkActive="active">Budget Plan</a>
+    </p>
+    <p>
+      <a class="btn btn-default" [routerLink]="['/reporting/training/propose']" routerLinkActive="active">Budget Amend</a> 
+      <a class="btn btn-default"[routerLink]="['/reporting/training/postattendance']" routerLinkActive="active">Operational Expenditures</a> 
+    </p>
+    <p>
+        <a class="btn btn-default" [routerLink]="['/reporting/training/proposals']" routerLinkActive="active">Programs Support Funds Budget</a>
+        <a class="btn btn-default" [routerLink]="['/reporting/training/admincatalog']" routerLinkActive="active">5 Years Financial Plan for Service</a>
+        <a class="btn btn-default" [routerLink]="['/reporting/training/adminenrollment']" routerLinkActive="active">10 Years Financial Plan of Service</a>
+        <a class="btn btn-default" [routerLink]="['/reporting/training/adminmanagers']" routerLinkActive="active">SPGE Budget Summary Instructions</a>
+        <a class="btn btn-default" [routerLink]="['/reporting/training/adminreports']" routerLinkActive="active">Summary</a> 
+    </p>
+  </div>
 
+<br><br>
 <h3>Budget Plan</h3>
 <br><br>
 <div id="wizard" class="form_wizard wizard_horizontal">
@@ -7,8 +26,8 @@
   <a (click)="step=1" [ngClass]="{'selected': step==1, 'disabled':step!=1}" isdone="1" rel="1">
   <span class="step_no">1</span>
   <span class="step_descr">
-  Step 1<br>
-  <small>Anticipated Income</small>
+Income<br>
+  <small></small>
   </span>
   </a>
   </li>
@@ -16,8 +35,8 @@
   <a (click)="step=2" [ngClass]="{'selected': step==2, 'disabled':step!=2}" isdone="0" rel="2">
   <span class="step_no">2</span>
   <span class="step_descr">
-  Step 2<br>
-  <small>Salary Support Staff</small>
+    Personnel<br>
+  <small>Professional Staff<br>Support Staff & Base Program Support</small>
   </span>
   </a>
   </li>
@@ -25,8 +44,8 @@
   <a (click)="step=3" [ngClass]="{'selected': step==3, 'disabled':step!=3}" isdone="0" rel="3">
   <span class="step_no">3</span>
   <span class="step_descr">
-  Step 3<br>
-  <small>Salary Professional Staff</small>
+    Travel<br>
+  <small>Professional Improvement<br>Program Support</small>
   </span>
   </a>
   </li>
@@ -34,8 +53,8 @@
   <a (click)="step=4" [ngClass]="{'selected': step==4, 'disabled':step!=4}" isdone="0" rel="4">
   <span class="step_no">4</span>
   <span class="step_descr">
-  Step 4<br>
-  <small>Travel</small>
+    Office Operations<br>
+  <small></small>
   </span>
   </a>
   </li>
@@ -43,45 +62,19 @@
     <a (click)="step=5" [ngClass]="{'selected': step==5, 'disabled':step!=5}" isdone="0" rel="5">
     <span class="step_no">5</span>
     <span class="step_descr">
-    Step 5<br>
-    <small>Profession Improvement</small>
+        Reserves<br>
+    <small></small>
     </span>
     </a>
   </li>
-  <li>
-    <a (click)="step=6" [ngClass]="{'selected': step==6, 'disabled':step!=6}" isdone="0" rel="6">
-      <span class="step_no">6</span>
-      <span class="step_descr">
-      Step 6<br>
-      <small>Base Program Support</small>
-      </span>
-    </a>
-  </li>
-  <li>
-    <a (click)="step=7" [ngClass]="{'selected': step==7, 'disabled':step!=7}" isdone="0" rel="7">
-    <span class="step_no">7</span>
-    <span class="step_descr">
-    Step 7<br>
-    <small>Office Operation</small>
-    </span>
-    </a>
-  </li>
-  <li>
-    <a (click)="step=8" [ngClass]="{'selected': step==8, 'disabled':step!=8}" isdone="0" rel="8">
-    <span class="step_no">8</span>
-    <span class="step_descr">
-    Step 8<br>
-    <small>Reserve for Emergency</small>
-    </span>
-    </a>
-  </li>
+  
   </ul>
   
   
   
   
-  <div class="stepContainer" >
-    <div id="step-1" class="content" style="display: block;" *ngIf="step==1">
+  <div  >
+    <div id="step-1" class="content"  *ngIf="step==1">
       <form class="form-horizontal form-label-left">
         <h4>Anticipated Income</h4>
         <p>
@@ -361,50 +354,7 @@
     </p>
    
   </div>
-  <div id="step-6" class="content" *ngIf="step==6">
-      <h2 class="StepTitle">Step 6 Content</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-    
-  </div>
-  <div id="step-7" class="content" *ngIf="step==7">
-      <h2 class="StepTitle">Step 7 Content</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-    
-  </div>
-  <div id="step-8" class="content" *ngIf="step==8">
-      <h2 class="StepTitle">Step 8 Content</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-  </div>
+  
 </div>
 <div class="actionBar">
   <div class="msgBox">
@@ -412,7 +362,7 @@
     <a href="#" class="close">X</a></div>
     <div class="loader">Loading</div>
     <a class="buttonFinish buttonDisabled btn btn-default">Finish</a>
-    <a class="buttonNext btn btn-success" [class.buttonDisabled]="step>7" (click)="step=step+1">Next</a>
+    <a class="buttonNext btn btn-success" [class.buttonDisabled]="step>4" (click)="step=step+1">Next</a>
     <a class="buttonPrevious btn btn-primary" [class.buttonDisabled]="step<2" (click)="step=step-1">Previous</a>
   </div>
 </div>

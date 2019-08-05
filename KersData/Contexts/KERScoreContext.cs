@@ -109,7 +109,7 @@ namespace Kers.Models.Contexts
         //  Budget Plan
         /***************************************/
 
-        //public virtual DbSet<BudgetPlanOfficeOperation> BudgetPlanOfficeOperation {get;set;}
+        public virtual DbSet<BudgetPlanOfficeOperation> BudgetPlanOfficeOperation {get;set;}
         
         /***************************************/
         //  Service Log

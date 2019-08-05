@@ -2,7 +2,7 @@ import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, map } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { Vehicle } from '../expense/vehicle/vehicle.service';
 
@@ -41,6 +41,21 @@ export class UserService {
         }else{
             return of(this.usr);
         }
+    }
+
+    currentUserHasAnyOfTheRoles(roles:string[]):Observable<boolean>{
+        return this.current()
+            .pipe(
+                map(
+                    res => {
+                        return res.roles.some( 
+                                role => roles.includes( role.zEmpRoleType.shortTitle ) 
+                            );
+                    }
+            )
+        );
+        
+        
     }
 
 

@@ -5,6 +5,10 @@ import { SharedModule } from '../../shared/shared.module';
 import { BudgetRoutingModule } from './budget-routing.module';
 import { BudgetHomeComponent } from './budget-home.component';
 import { BudgetPlanComponent } from './budget-plan.component';
+import { BudgetPlanOfficeOperationsComponent } from './admin/budget-plan-office-operations.component';
+import { BudgetPlanAdminComponent } from './admin/budget-plan-admin.component';
+import { BudgetPlanOfficeOperationsForm } from './admin/budget-plan-office-operations-form.component';
+import { BudgetPlanOfficeOperationsDetailComponent } from './admin/budget-plan-office-operations-detail.component';
 
 
 
@@ -12,9 +16,16 @@ import { BudgetPlanComponent } from './budget-plan.component';
 @NgModule({
   declarations: [
     
-  BudgetHomeComponent,
+    BudgetHomeComponent,
+      
+    BudgetPlanComponent,
+      
+    BudgetPlanOfficeOperationsComponent,
+    BudgetPlanOfficeOperationsForm,
     
-  BudgetPlanComponent],
+  BudgetPlanAdminComponent,
+    
+  BudgetPlanOfficeOperationsDetailComponent],
   imports: [
     SharedModule,
     CommonModule,
