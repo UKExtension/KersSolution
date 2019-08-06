@@ -90,6 +90,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/training/training.module#TrainingModule'
           },
           {
+            path: 'budget', 
+            loadChildren: './modules/budget/budget.module#BudgetModule'
+          },
+          {
             path: 'activity/:id',
             component: ReportingDetailComponent,
           },

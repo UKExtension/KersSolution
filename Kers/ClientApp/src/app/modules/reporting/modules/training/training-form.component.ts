@@ -6,6 +6,7 @@ import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 import { Observable } from 'rxjs';
 import { triggerAsyncId } from 'async_hooks';
 
+
 @Component({
   selector: 'training-form',
   templateUrl: './training-form.component.html',
@@ -25,6 +26,7 @@ export class TrainingFormComponent implements OnInit {
     trainingForm:any;
 
     proposed = false;
+    
 
     options = { 
         placeholderText: 'Your Description Here!',
@@ -114,7 +116,7 @@ export class TrainingFormComponent implements OnInit {
           }
         })
       }
-    } 
+    }
     this.loading = false;
   }
 

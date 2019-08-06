@@ -27,6 +27,7 @@
             </div>
     </form>
 </div><br><br>
+<div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
 <div class="row">
 
 
@@ -34,7 +35,7 @@
 
     <user-directory-profile *ngFor="let user of users | async" [user]="user"></user-directory-profile>
 </div>
-
+</div>
 <div *ngIf="numProfiles != 0" class="text-center">
     <div>Showing {{ numProfiles }} of {{numResults}} Users</div>
     <div *ngIf="(users | async)?.length < numResults" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">

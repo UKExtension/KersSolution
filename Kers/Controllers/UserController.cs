@@ -77,7 +77,7 @@ namespace Kers.Controllers
                             Include(u=>u.PersonalProfile).ThenInclude(u=>u.Interests).ThenInclude(i=>i.Interest).
                             Include(u=>u.PersonalProfile).ThenInclude(u=>u.SocialConnections).
                             Include(u=>u.PersonalProfile).ThenInclude(u=>u.UploadImage).ThenInclude(i=>i.UploadFile).
-                            Include(u=>u.Roles).
+                            Include(u=>u.Roles).ThenInclude( l => l.zEmpRoleType).
                             FirstOrDefault();
             if(user == null){
                 var rprtProfile = _mContext.zEmpRptProfiles.Where(p=>p.linkBlueID == curentUserId).FirstOrDefault();
