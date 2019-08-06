@@ -762,7 +762,7 @@ namespace Kers.Controllers.Reports
         [Route("[action]")]
         public async Task<IActionResult> Person()
         {
-            FiscalYear fiscalYear = GetFYByName("2018");
+            FiscalYear fiscalYear = GetFYByName("2019");
             ViewData["fy"] = fiscalYear.Name;
             //Get All Data for the fy by employee
             var result = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End,4);
@@ -881,7 +881,7 @@ namespace Kers.Controllers.Reports
         [Route("[action]")]
         public async Task<IActionResult> Indicators()
         {
-            FiscalYear fiscalYear = GetFYByName("2018");
+            FiscalYear fiscalYear = GetFYByName("2019");
             //Get All Data for the fy by employee
             
 
@@ -901,7 +901,7 @@ namespace Kers.Controllers.Reports
                                                 Indicators = i.Select(s => s).ToList()
                                             }
                                         )
-                                        .ToListAsync();
+                                        .ToList();
 
 
 
@@ -943,7 +943,7 @@ namespace Kers.Controllers.Reports
 
             var Rows = new List<List<string>>();
 
-            foreach(var res in await IndicatorValuesPerPerson){
+            foreach(var res in IndicatorValuesPerPerson){
 
                 var user = await context.KersUser.Where( i => i.Id == res.KersUser.Id)
                             .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit )
