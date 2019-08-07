@@ -12,7 +12,7 @@ import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetRei
         <strong>Error: </strong> {{errorMessage}}
     </div>
     <div *ngIf="user">
-    <fiscal-year-switcher [type]="'snapEd'" [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+    <fiscal-year-switcher [type]="'snapEd'" [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
     <br>
         <div class="col-xs-12">
             <snape-ed-stats *ngIf="fiscalYear" [user]="user" [fiscalYear]="fiscalYear"></snape-ed-stats>
