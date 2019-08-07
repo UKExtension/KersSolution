@@ -84,6 +84,9 @@ namespace Kers
 
                 services.AddDbContext<KERSreportingContext>(options => 
                     options.UseSqlite(Configuration["ConnectionStrings:connKersReportingLocal"]));
+
+                services.AddDbContext<SoilDataContext>(options => 
+                    options.UseSqlite(Configuration["ConnectionStrings:soilDataLocal"]));
                    
 
                 services.AddDistributedMemoryCache();
