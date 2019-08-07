@@ -17,7 +17,7 @@ import { saveAs } from 'file-saver';
             <div class="ln_solid"></div>
                 <div class="row">
                     <div class="col-md-6"><h3>{{activity.activityDate| date:'EEEE,  MMMM d, y'}}</h3></div>
-                    <div class="col-md-6">Submitted: {{activity.created| date:'yMd'}}</div>
+                    <div class="col-md-6">Submitted: {{activity.created| date:'MMMM d, y'}}</div>
                 </div>
                 
                 <p><strong>Title: </strong>{{activity.title}}</p>
