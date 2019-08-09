@@ -9,6 +9,7 @@ namespace Kers.Models.Entities.SoilData
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public CountyCode CountyCode {get;set;}
+        public int CountyCodeId {get;set;}
         public string First {get;set;}
         public string Mi {get;set;}
         public string Last {get;set;}

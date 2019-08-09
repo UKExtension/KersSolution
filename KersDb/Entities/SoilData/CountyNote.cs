@@ -9,8 +9,9 @@ namespace Kers.Models.Entities.SoilData
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public CountyCode CountyCode {get;set;}
+        public int CountyCodeId {get;set;}
         public string Name {get;set;}
-        [Column(TypeName = "nvarchar(MAX)")]
+        [Column(TypeName = "nvarchar")]
         public string Note {get;set;}
     }
 }

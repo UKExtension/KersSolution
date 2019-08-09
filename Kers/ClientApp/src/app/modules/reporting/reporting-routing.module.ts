@@ -94,6 +94,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/budget/budget.module#BudgetModule'
           },
           {
+            path: 'soildata', 
+            loadChildren: './modules/soildata/soildata.module#SoildataModule'
+          },
+          {
             path: 'activity/:id',
             component: ReportingDetailComponent,
           },
