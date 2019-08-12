@@ -6,7 +6,7 @@ import { FormBuilder, Validators } from '@angular/forms';
   selector: 'budget-plan-office-operations-form',
   template: `
     <loading *ngIf="loading"></loading>
-    <div class="row" *ngIf="!loading && !proposed">
+    <div class="row" *ngIf="!loading">
         <div class="col-sm-offset-3 col-sm-9">
             <h2 *ngIf="!operation">New Office Operation</h2>
             <h2 *ngIf="operation">Update Office Operation</h2>
