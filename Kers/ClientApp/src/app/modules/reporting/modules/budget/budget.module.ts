@@ -9,6 +9,7 @@ import { BudgetPlanOfficeOperationsComponent } from './admin/budget-plan-office-
 import { BudgetPlanAdminComponent } from './admin/budget-plan-admin.component';
 import { BudgetPlanOfficeOperationsForm } from './admin/budget-plan-office-operations-form.component';
 import { BudgetPlanOfficeOperationsDetailComponent } from './admin/budget-plan-office-operations-detail.component';
+import { BudgetSupportStaffComponent } from './form-element/budget-support-staff.component';
 
 
 
@@ -23,9 +24,14 @@ import { BudgetPlanOfficeOperationsDetailComponent } from './admin/budget-plan-o
     BudgetPlanOfficeOperationsComponent,
     BudgetPlanOfficeOperationsForm,
     
-  BudgetPlanAdminComponent,
-    
-  BudgetPlanOfficeOperationsDetailComponent],
+    BudgetPlanAdminComponent,
+      
+    BudgetPlanOfficeOperationsDetailComponent,
+    BudgetSupportStaffComponent
+  
+  
+  
+  ],
   imports: [
     SharedModule,
     CommonModule,
