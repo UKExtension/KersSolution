@@ -110,6 +110,7 @@ namespace Kers.Controllers
                 var story = context.Story.
                             Where(s => s.Id == rev.StoryId).
                             Include(s => s.KersUser).ThenInclude(u => u.PersonalProfile).
+                            Include(s => s.KersUser).ThenInclude(u => u.RprtngProfile).ThenInclude(p => p.PlanningUnit).
                             FirstOrDefault();
                 if(story == null){
                     return null;

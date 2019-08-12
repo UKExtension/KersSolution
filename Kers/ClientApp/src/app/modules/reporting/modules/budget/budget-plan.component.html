@@ -73,42 +73,16 @@ Income<br>
   
   
   
-  <div  >
-    <div id="step-1" class="content"  *ngIf="step==1">
-      <form class="form-horizontal form-label-left">
-        <h4>Anticipated Income</h4>
-        <p>
-            Calculation of anticipated net income if county has an Extension Taxing District
-        </p><br>
-        <div class="form-group">
-          <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Real Property
-          </label>
-          <div class="col-md-10 col-sm-9 col-xs-12">
-              <div class="form-inline">
-                  <div class="form-group">
-                      <input type="text" class="form-control" placeholder="Property Assesment Subject to Rate"/>
-                  </div>
-                  <div class="form-group">
-                      &nbsp;x&nbsp;
-                  </div>
-                  <div class="form-group">
-                      <input type="text" class="form-control" placeholder="Tax Rate"/>
-                  </div>
-                  <div class="form-group">
-                      &nbsp;=&nbsp;
-                  </div>
-                  <div class="form-group">
-                      14
-                  </div>
-              </div>
-          </div>
-        </div>
-
-
-        <br>
-
-        <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Personal Property
+  <div style="margin: 25px; 50px;">
+    <form class="form-horizontal form-label-left">
+        <div id="step-1" class="content"  *ngIf="step==1">
+        
+            <h3>Anticipated Income</h3>
+            <h2>
+                Calculation of anticipated net income if county has an Extension Taxing District
+            </h2><br>
+            <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Real Property
             </label>
             <div class="col-md-10 col-sm-9 col-xs-12">
                 <div class="form-inline">
@@ -129,232 +103,262 @@ Income<br>
                     </div>
                 </div>
             </div>
-          </div>
-  
-  
-          <br>
+            </div>
 
-          <div class="form-group">
-              <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Motor Veh/Watercraft
-              </label>
-              <div class="col-md-10 col-sm-9 col-xs-12">
-                  <div class="form-inline">
-                      <div class="form-group">
-                          <input type="text" class="form-control" placeholder="Property Assesment Subject to Rate"/>
-                      </div>
-                      <div class="form-group">
-                          &nbsp;x&nbsp;
-                      </div>
-                      <div class="form-group">
-                          <input type="text" class="form-control" placeholder="Tax Rate"/>
-                      </div>
-                      <div class="form-group">
-                          &nbsp;=&nbsp;
-                      </div>
-                      <div class="form-group">
-                          14
-                      </div>
-                  </div>
-              </div>
+
+            <br>
+
+            <div class="form-group">
+                <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Personal Property
+                </label>
+                <div class="col-md-10 col-sm-9 col-xs-12">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Property Assesment Subject to Rate"/>
+                        </div>
+                        <div class="form-group">
+                            &nbsp;x&nbsp;
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Tax Rate"/>
+                        </div>
+                        <div class="form-group">
+                            &nbsp;=&nbsp;
+                        </div>
+                        <div class="form-group">
+                            14
+                        </div>
+                    </div>
+                </div>
             </div>
     
     
             <br>
 
             <div class="form-group">
-                <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Total Gross Income
+                <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Motor Veh/Watercraft
                 </label>
                 <div class="col-md-10 col-sm-9 col-xs-12">
                     <div class="form-inline">
                         <div class="form-group">
-                            $24
+                            <input type="text" class="form-control" placeholder="Property Assesment Subject to Rate"/>
                         </div>
                         <div class="form-group">
                             &nbsp;x&nbsp;
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Anticipated Delinguency"/>
+                            <input type="text" class="form-control" placeholder="Tax Rate"/>
                         </div>
                         <div class="form-group">
                             &nbsp;=&nbsp;
                         </div>
                         <div class="form-group">
-                            34
+                            14
                         </div>
                     </div>
                 </div>
-              </div>
-
-              <br>
-
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Subtotal Gross Income
-                  </label>
-                  <div class="col-md-10 col-sm-9 col-xs-12">
-                      <div class="form-inline">
-                          <div class="form-group">
-                              $24
-                          </div>
-                          <div class="form-group">
-                              &nbsp;x&nbsp;
-                          </div>
-                          <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Collection"/>
-                          </div>
-                          <div class="form-group">
-                              &nbsp;=&nbsp;
-                          </div>
-                          <div class="form-group">
-                              34
-                          </div>
-                      </div>
-                  </div>
                 </div>
-                <br><br>
-              <div class="form-group">
-                <div class="col-md-2 col-sm-3 col-xs-6 text-right"><strong>Source of Income</strong></div>
-                <div class="col-md-10 col-sm-9 col-xs-6"><strong>Amount</strong></div>
-              </div>
-                <br>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Ext Dist Tax
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  $43
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">User Defined
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">User Defined
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Interest
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Reserve
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Capital Imp Fund
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Equipment Fund
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Anticipated Carryover
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6">Total
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  $123
-                  </div>
-              </div>
-      
-      
-
-
-
-
-
         
-      </form>
-  </div>
-  <div id="step-2" class="content" *ngIf="step==2">
-  <h2 class="StepTitle">Step 2 Content</h2>
-  <p>
-  do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-  fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
-  <p>
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-  in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
-  </div><div id="step-3" class="content" *ngIf="step==3">
-  <h2 class="StepTitle">Step 3 Content</h2>
-  <p>
-  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
-  <p>
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-  in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
-  </div>
-  <div id="step-4" class="content" *ngIf="step==4">
-    <h2 class="StepTitle">Step 4 Content</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        
+                <br>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Total Gross Income
+                    </label>
+                    <div class="col-md-10 col-sm-9 col-xs-12">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                $24
+                            </div>
+                            <div class="form-group">
+                                &nbsp;x&nbsp;
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Anticipated Delinguency"/>
+                            </div>
+                            <div class="form-group">
+                                &nbsp;=&nbsp;
+                            </div>
+                            <div class="form-group">
+                                34
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Subtotal Gross Income
+                    </label>
+                    <div class="col-md-10 col-sm-9 col-xs-12">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                $24
+                            </div>
+                            <div class="form-group">
+                                &nbsp;x&nbsp;
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Collection"/>
+                            </div>
+                            <div class="form-group">
+                                &nbsp;=&nbsp;
+                            </div>
+                            <div class="form-group">
+                                34
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <br><br>
+                <div class="form-group">
+                    <div class="col-md-2 col-sm-3 col-xs-6 text-right"><strong>Source of Income</strong></div>
+                    <div class="col-md-10 col-sm-9 col-xs-6"><strong>Amount</strong></div>
+                </div>
+                    <br>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Ext Dist Tax
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    $43
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">User Defined
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">User Defined
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Interest
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Reserve
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Capital Imp Fund
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Equipment Fund
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Anticipated Carryover
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6">Total
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    $123
+                    </div>
+                </div>
+        
+        
+
+
+
+
+
+            
+        
+    </div>
+    <div id="step-2" class="content" *ngIf="step==2">
+    <h3 class="StepTitle">Personnel</h3>
+            <h2>Professional Staff
+            Support Staff & Base Program Support</h2>
+    <p>
+    do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </p>
     <p>
     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
     in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </p>
+    </div><div id="step-3" class="content" *ngIf="step==3">
+    <h3>Travel, 
+            Professional Improvement, 
+            Program Support</h3>
+    <p>
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
     <p>
     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
     in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </p>
+    </div>
+    <div id="step-4" class="content" *ngIf="step==4">
+            <h3>Office Operations</h3>
+            <p>
+                
+            </p><br>
+            <div class="form-group" *ngFor="let operation of operations | async">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">{{operation.name}}
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="text" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+        
+    </div>
+    <div id="step-5" class="content" *ngIf="step==5">
+        <h3 class="StepTitle">Reserves</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+        <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+        <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
     
-  </div>
-  <div id="step-5" class="content" *ngIf="step==5">
-    <h2 class="StepTitle">Step 5 Content</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </p>
-    <p>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </p>
-    <p>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-    in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </p>
-   
-  </div>
-  
+    </div>
+    </form>
 </div>
 <div class="actionBar">
   <div class="msgBox">
