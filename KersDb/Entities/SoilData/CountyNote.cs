@@ -11,7 +11,6 @@ namespace Kers.Models.Entities.SoilData
         public CountyCode CountyCode {get;set;}
         public int CountyCodeId {get;set;}
         public string Name {get;set;}
-        [Column(TypeName = "nvarchar")]
         public string Note {get;set;}
     }
 }
