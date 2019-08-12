@@ -109,6 +109,9 @@ namespace Kers
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS_SNAPED2017"]));
                 services.AddDbContext<KERSreportingContext>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersReporting"]));
+                services.AddDbContext<SoilDataContext>(options => 
+                    options.UseSqlServer(Configuration["ConnectionStrings:connSoilData"]));
+                
 
                 services.AddDistributedSqlServerCache(options =>
                     {
@@ -135,6 +138,8 @@ namespace Kers
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS_SNAPED2017"]));
                 services.AddDbContext<KERSreportingContext>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersReporting"]));
+                services.AddDbContext<SoilDataContext>(options => 
+                    options.UseSqlServer(Configuration["ConnectionStrings:connSoilData"]));
                 
                 services.AddDistributedSqlServerCache(options =>
                     {
