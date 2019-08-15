@@ -9,11 +9,6 @@ import { FormGroup } from "@angular/forms";
 <div class="row">
   <div class="col-xs-11">
     <div class="input-group" [formGroup]="connectionForm">
-
-
-        <social-picker [types]="connectionTypes" class="input-group-btn" formControlName="socialConnectionTypeId"></social-picker>
-
-
         <input type="text" class="form-control" formControlName="identifier" placeholder="Your Identifier">
      </div>
   </div>

@@ -108,8 +108,15 @@ namespace Kers.Models.Contexts
         /***************************************/
         //  Budget Plan
         /***************************************/
-
         public virtual DbSet<BudgetPlanOfficeOperation> BudgetPlanOfficeOperation {get;set;}
+        public virtual DbSet<BudgetPlan> BudgetPlan {get;set;}
+        public virtual DbSet<BudgetPlanRevision> BudgetPlanRevision {get;set;}
+        public virtual DbSet<BudgetPlanOfficeOperationValue> BudgetPlanOfficeOperationValue {get;set;}
+        public virtual DbSet<BudgetPlanProfessionalImprovementExpenses> BudgetPlanProfessionalImprovementExpense {get;set;}
+        public virtual DbSet<BudgetPlanStaffExpenditure> BudgetPlanStaffExpenditure {get;set;}
+        public virtual DbSet<BudgetPlanStaffType> BudgetPlanStaffType {get;set;}
+        public virtual DbSet<BudgetPlanTravelExpenses> BudgetPlanTravelExpense {get;set;}
+        public virtual DbSet<BudgetPlanUserDefinedIncome> BudgetPlanUserDefinedIncome {get;set;}
         
         /***************************************/
         //  Service Log
