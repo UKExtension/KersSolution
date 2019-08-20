@@ -10,6 +10,8 @@ import { BudgetPlanAdminComponent } from './admin/budget-plan-admin.component';
 import { BudgetPlanOfficeOperationsForm } from './admin/budget-plan-office-operations-form.component';
 import { BudgetPlanOfficeOperationsDetailComponent } from './admin/budget-plan-office-operations-detail.component';
 import { BudgetSupportStaffComponent } from './form-element/budget-support-staff.component';
+import { BudgetPlanFormComponent } from './budget-plan-form.component';
+import {BudgetUserDefinedIncomeComponent} from './form-element/budget-user-defined-income.component';
 
 
 
@@ -27,7 +29,9 @@ import { BudgetSupportStaffComponent } from './form-element/budget-support-staff
     BudgetPlanAdminComponent,
       
     BudgetPlanOfficeOperationsDetailComponent,
-    BudgetSupportStaffComponent
+    BudgetSupportStaffComponent,
+    BudgetPlanFormComponent,
+    BudgetUserDefinedIncomeComponent
   
   
   

@@ -5,6 +5,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { fstat } from 'fs';
+import { User, PlanningUnit } from '../user/user.service';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Injectable({
   providedIn: 'root'
@@ -52,3 +54,88 @@ export class BudgetPlanOfficeOperation{
   order:number;
   active:boolean;
 }
+
+export class BudgetPlan{
+  id:number;
+  fiscalYear:FiscalYear;
+  planningUnit:PlanningUnit;
+  active:boolean;
+  revisions:BudgetPlanRevision[];
+  lastRevision:BudgetPlanRevision;
+}
+
+export class BudgetPlanRevision{
+  id:number;
+  kersUser:User;
+  created:Date;
+  realPropertyAssesment:number;
+  realPropertyTaxRate:number;
+  personalPropertyAssesment:number;
+  personalPropertyTaxRate:number;
+  motorVehicleAssesment:number;
+  motorVehicleTaxRate:number;
+  anticipatedDelinquency:number;
+  collection:number;
+  otherExtDistTaxes1:number;
+  otherExtDistTaxes2:number;
+  coGenFund:number;
+  userDefinedIncome:BudgetPlanUserDefinedIncome[];
+  interest:number;
+  reserve:number;
+  capitalImpFund:number;
+  equipmentFund:number;
+  anticipatedCarryover:number;
+  budgetPlanStaffExpenditures:BudgetPlanStaffExpenditure[];
+  baseAgentContribution:number;
+  travelExpenses:BudgetPlanTravelExpenses[];
+  professionalImprovemetnExpenses:BudgetPlanProfessionalImprovementExpenses[];
+  numberOfProfessionalStaff:number;
+  amontyPerProfessionalStaff:number;
+  additionalOperationalCostPerPerson:number;
+  ukPostage:number;
+  ukPublications:number;
+  capitalImprovementFundForEmergency:number;
+  equipmentFundForEmergency:number;
+  officeOperationValues:BudgetPlanOfficeOperationValue[];
+}
+export class BudgetPlanUserDefinedIncome{
+  id:number;
+  name:string;
+  value:number;
+}
+export class BudgetPlanStaffExpenditure{
+  id:number;
+  person:User;
+  personNameIfNotAUser:string;
+  hourlyRate:number;
+  hoursPerWeek:number;
+  benefitRateInPercents:number;
+  expenditureType:number;
+}
+export class BudgetPlanTravelExpenses{
+  id:number;
+  person:User;
+  personNameIfNotAUser:string;
+  amount:number;
+  staffType:BudgetPlanStaffType;
+}
+export class BudgetPlanStaffType{
+  id:number;
+  name: string;
+  canItBeRepitted:boolean;
+  active:boolean;
+}
+export class BudgetPlanProfessionalImprovementExpenses{
+  id:number;
+  person:User;
+  personNameIfNotAUser:string;
+  amount:number;
+  staffType:BudgetPlanStaffType;
+}
+export class BudgetPlanOfficeOperationValue{
+  id:number;
+  budgetPlanOfficeOperation:BudgetPlanOfficeOperation;
+  value:number;
+}
+
+

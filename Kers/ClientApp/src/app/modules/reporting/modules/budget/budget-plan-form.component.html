@@ -1,0 +1,401 @@
+<div>
+  <p>
+    <a class="btn btn-default" [routerLink]="['/reporting/training/upcomming']" routerLinkActive="active">Schedule of Disbursments</a> 
+    <a class="btn btn-default" [routerLink]="['/reporting/training/transcript']" routerLinkActive="active">Memorandum of Agreement</a> 
+    <a class="btn btn-default" [routerLink]="['/reporting/budget/plan']" routerLinkActive="active">Budget Plan</a>
+  </p>
+  <p>
+    <a class="btn btn-default" [routerLink]="['/reporting/training/propose']" routerLinkActive="active">Budget Amend</a> 
+    <a class="btn btn-default"[routerLink]="['/reporting/training/postattendance']" routerLinkActive="active">Operational Expenditures</a> 
+  </p>
+  <p>
+      <a class="btn btn-default" [routerLink]="['/reporting/training/proposals']" routerLinkActive="active">Programs Support Funds Budget</a>
+      <a class="btn btn-default" [routerLink]="['/reporting/training/admincatalog']" routerLinkActive="active">5 Years Financial Plan for Service</a>
+      <a class="btn btn-default" [routerLink]="['/reporting/training/adminenrollment']" routerLinkActive="active">10 Years Financial Plan of Service</a>
+      <a class="btn btn-default" [routerLink]="['/reporting/training/adminmanagers']" routerLinkActive="active">SPGE Budget Summary Instructions</a>
+      <a class="btn btn-default" [routerLink]="['/reporting/training/adminreports']" routerLinkActive="active">Summary</a> 
+  </p>
+</div>
+
+<br><br>
+<h3>Budget Plan</h3>
+<br><br>
+<div id="wizard" class="form_wizard wizard_horizontal">
+<ul class="wizard_steps anchor">
+<li>
+<a (click)="step=1" [ngClass]="{'selected': step==1, 'disabled':step!=1}" isdone="1" rel="1">
+<span class="step_no">1</span>
+<span class="step_descr">
+Income<br>
+<small></small>
+</span>
+</a>
+</li>
+<li>
+<a (click)="step=2" [ngClass]="{'selected': step==2, 'disabled':step!=2}" isdone="0" rel="2">
+<span class="step_no">2</span>
+<span class="step_descr">
+  Personnel<br>
+<small>Professional Staff<br>Support Staff & Base Program Support</small>
+</span>
+</a>
+</li>
+<li>
+<a (click)="step=3" [ngClass]="{'selected': step==3, 'disabled':step!=3}" isdone="0" rel="3">
+<span class="step_no">3</span>
+<span class="step_descr">
+  Travel<br>
+<small>Professional Improvement<br>Program Support</small>
+</span>
+</a>
+</li>
+<li>
+<a (click)="step=4" [ngClass]="{'selected': step==4, 'disabled':step!=4}" isdone="0" rel="4">
+<span class="step_no">4</span>
+<span class="step_descr">
+  Office Operations<br>
+<small></small>
+</span>
+</a>
+</li>
+<li>
+  <a (click)="step=5" [ngClass]="{'selected': step==5, 'disabled':step!=5}" isdone="0" rel="5">
+  <span class="step_no">5</span>
+  <span class="step_descr">
+      Reserves<br>
+  <small></small>
+  </span>
+  </a>
+</li>
+
+</ul>
+
+
+
+
+<div style="margin: 25px 50px;">
+  <form class="form-horizontal form-label-left" [formGroup]="budgetForm" (ngSubmit)="onSubmit()">
+      <div id="step-1" class="content"  *ngIf="step==1">
+      
+          <h3>Anticipated Income</h3>
+          <h2>
+              Calculation of anticipated net income if county has an Extension Taxing District
+          </h2><br><br>
+          <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Real Property
+            </label>
+            <div class="col-md-10 col-sm-9 col-xs-12">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input type="number" class="form-control" formControlName="realPropertyAssesment"/><br>
+                        <small>(Assessment Subject to Rate)</small>
+                    </div>
+                    <div class="form-group math-sign">
+                        &nbsp;x&nbsp;<br>
+                        <small>&nbsp;</small>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" formControlName="realPropertyTaxRate"/><br>
+                        <small>(Tax Rate)</small>
+                    </div>
+                    <div class="form-group math-sign">
+                        &nbsp;=&nbsp;<br>
+                        <small>&nbsp;</small>
+                    </div>
+                    <div class="form-group math-result">
+                        {{+budgetForm.get("realPropertyAssesment").value/100 * +budgetForm.get("realPropertyTaxRate").value/100 | currency:'USD':'symbol':'.0-2'}}<br>
+                        <small>&nbsp;</small>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+
+          <br>
+
+          <div class="form-group">
+              <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Personal Property
+              </label>
+              <div class="col-md-10 col-sm-9 col-xs-12">
+                    <div class="form-inline">
+                            <div class="form-group">
+                                <input type="number" class="form-control" formControlName="personalPropertyAssesment"/><br>
+                                <small>(Assessment Subject to Rate)</small>
+                            </div>
+                            <div class="form-group math-sign">
+                                &nbsp;x&nbsp;<br>
+                                <small>&nbsp;</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" class="form-control" formControlName="personalPropertyTaxRate"/><br>
+                                <small>(Tax Rate)</small>
+                            </div>
+                            <div class="form-group math-sign">
+                                &nbsp;=&nbsp;<br>
+                                <small>&nbsp;</small>
+                            </div>
+                            <div class="form-group math-result">
+                                    {{+budgetForm.get("personalPropertyAssesment").value/100 * +budgetForm.get("personalPropertyTaxRate").value/100 | currency:'USD':'symbol':'.0-2'}}<br>
+                                <small>&nbsp;</small>
+                            </div>
+                        </div>
+              </div>
+          </div>
+  
+  
+          <br>
+
+          <div class="form-group">
+              <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Motor Veh/Watercraft
+              </label>
+              <div class="col-md-10 col-sm-9 col-xs-12">
+                    <div class="form-inline">
+                            <div class="form-group">
+                                <input type="number" class="form-control" formControlName="motorVehicleAssesment"/><br>
+                                <small>(Assessment Subject to Rate)</small>
+                            </div>
+                            <div class="form-group math-sign">
+                                &nbsp;x&nbsp;<br>
+                                <small>&nbsp;</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" class="form-control" formControlName="motorVehicleTaxRate"/><br>
+                                <small>(Tax Rate)</small>
+                            </div>
+                            <div class="form-group math-sign">
+                                &nbsp;=&nbsp;<br>
+                                <small>&nbsp;</small>
+                            </div>
+                            <div class="form-group math-result">
+                                    {{+budgetForm.get("motorVehicleAssesment").value/100 * +budgetForm.get("motorVehicleTaxRate").value/100 | currency:'USD':'symbol':'.0-2'}}<br>
+                                <small>&nbsp;</small>
+                            </div>
+                        </div>
+              </div>
+              </div>
+      
+      
+              <br>
+
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Total Gross Income
+                  </label>
+                  <div class="col-md-10 col-sm-9 col-xs-12">
+                      <div class="form-inline">
+                          <div class="form-group math-result">
+                              {{totalGrossIncome() | currency:'USD':'symbol':'.0-2'}}
+                              <br><small>&nbsp;</small>
+                          </div>
+                          <div class="form-group math-result">
+                              &nbsp;x&nbsp;<br><small>&nbsp;</small>
+                          </div>
+                          <div class="form-group">
+                              <input type="number" class="form-control" formControlName="anticipatedDelinquency"/>
+                              <br><small>Anticipated Delinquency</small>
+                          </div>
+                          <div class="form-group math-result">
+                              &nbsp;=&nbsp;<br><small>&nbsp;</small>
+                          </div>
+                          <div class="form-group math-result">
+                            {{withDelinquency() | currency:'USD':'symbol':'.0-2'}}
+                            <br><small>&nbsp;</small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <br>
+
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Subtotal Gross Income
+                  </label>
+                  <div class="col-md-10 col-sm-9 col-xs-12">
+                      <div class="form-inline">
+                          <div class="form-group math-result">
+                            {{withDelinquency() | currency:'USD':'symbol':'.0-2'}}
+                            <br><small>&nbsp;</small>
+                          </div>
+                          <div class="form-group math-result">
+                              &nbsp;x&nbsp;
+                              <br><small>&nbsp;</small>
+                          </div>
+                          <div class="form-group">
+                              <input type="text" class="form-control" formControlName="collection"/>
+                              <br><small>Collection</small>
+                          </div>
+                          <div class="form-group math-result">
+                              &nbsp;=&nbsp;
+                              <br><small>&nbsp;</small>
+                          </div>
+                          <div class="form-group math-result">
+                            {{subtotalGrossIncome() | currency:'USD':'symbol':'.0-2'}}
+                              <br><small>Net Income</small>
+                          </div>
+                      </div>
+                  </div>
+                  </div>
+                  <br><br>
+              <div class="form-group">
+                  <div class="col-md-2 col-sm-3 col-xs-6 text-right"><strong><em>Source of Income</em></strong></div>
+                  <div class="col-md-10 col-sm-9 col-xs-6"><strong><em>Amount</em></strong></div>
+              </div>
+                  <br>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Ext Dist Tax
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6  math-result">
+                    {{subtotalGrossIncome() | currency:'USD':'symbol':'.0-2'}}
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="number" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="number" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+
+
+
+
+              <div class="form-group" formArrayName="userDefinedIncome">
+                <label class="control-label col-md-2 col-sm-3 col-xs-6">User Defined
+                </label>
+                <div class="col-md-10 col-sm-9 col-xs-10">
+                    <a class="btn btn-info btn-xs" (click)="addUserDefinedIncome()" style="margin-top: 8px;"> + add </a>
+                    <div *ngFor="let userDefinedIncome of userDefinedIncomes.controls; let i=index" class="form-group">
+                    
+                    
+                        <!-- repeated user defined income template -->
+                        <budget-user-defined-income [index]="i" [formControlName]="i" (removeMe)="userDefinedIncomeRemoved($event)"></budget-user-defined-income>
+    
+                    </div>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Interest
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="number" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Reserve
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="number" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Capital Imp Fund
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="number" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Equipment Fund
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="number" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Anticipated Carryover
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="number" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6">Total
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6 math-result">
+                        {{subtotalGrossIncome() | currency:'USD':'symbol':'.0-2'}}
+                  </div>
+              </div>
+      
+      
+
+
+
+
+
+          
+      
+  </div>
+  <div id="step-2" class="content" *ngIf="step==2">
+  <h3 class="StepTitle">Personnel</h3>
+          <h2>Professional Staff
+          Support Staff & Base Program Support</h2>
+  <p>
+  do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+  fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  <p>
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+  in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  </div><div id="step-3" class="content" *ngIf="step==3">
+  <h3>Travel, 
+          Professional Improvement, 
+          Program Support</h3>
+  <p>
+  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  <p>
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+  in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+  </div>
+  <div id="step-4" class="content" *ngIf="step==4">
+          <h3>Office Operations</h3>
+          <p>
+              
+          </p><br>
+          <div class="form-group" *ngFor="let operation of operations | async">
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">{{operation.name}}
+                  </label>
+                  <div class="col-md-6 col-sm-7 col-xs-6">
+                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  </div>
+              </div>
+      
+  </div>
+  <div id="step-5" class="content" *ngIf="step==5">
+      <h3 class="StepTitle">Reserves</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+  
+  </div>
+  </form>
+</div>
+<div class="actionBar">
+<div class="msgBox">
+  <div class="content"></div>
+  <a href="#" class="close">X</a></div>
+  <div class="loader">Loading</div>
+  <a class="buttonFinish buttonDisabled btn btn-default">Finish</a>
+  <a class="buttonNext btn btn-success" [class.buttonDisabled]="step>4" (click)="step=step+1">Next</a>
+  <a class="buttonPrevious btn btn-primary" [class.buttonDisabled]="step<2" (click)="step=step-1">Previous</a>
+</div>
+</div>
