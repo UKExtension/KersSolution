@@ -89,29 +89,8 @@ namespace Kers.Controllers
 
 
 
-
 /* 
-        [HttpGet]
-        [Route("range/{skip?}/{take?}/{order?}/{type?}")]
-        public virtual IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
-        {
-            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.End != null && t.DiscriminatorValue == type);
-            
-            if(order == "end"){
-                query = query.OrderByDescending(t => t.End);
-            }else if( order == "created"){
-                query = query.OrderByDescending(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderByDescending(t => t.Start);
-            }
-             
-            query = query.Skip(skip).Take(take);
-            query = query
-                        .Include( e => e.Organizer)
-                        .ThenInclude( o => o.PersonalProfile);
-            var list = query.ToList();
-            return new OkObjectResult(list);
-        }
+        
 
 
         [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]

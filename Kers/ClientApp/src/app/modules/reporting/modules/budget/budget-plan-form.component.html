@@ -1,22 +1,3 @@
-<div>
-  <p>
-    <a class="btn btn-default" [routerLink]="['/reporting/training/upcomming']" routerLinkActive="active">Schedule of Disbursments</a> 
-    <a class="btn btn-default" [routerLink]="['/reporting/training/transcript']" routerLinkActive="active">Memorandum of Agreement</a> 
-    <a class="btn btn-default" [routerLink]="['/reporting/budget/plan']" routerLinkActive="active">Budget Plan</a>
-  </p>
-  <p>
-    <a class="btn btn-default" [routerLink]="['/reporting/training/propose']" routerLinkActive="active">Budget Amend</a> 
-    <a class="btn btn-default"[routerLink]="['/reporting/training/postattendance']" routerLinkActive="active">Operational Expenditures</a> 
-  </p>
-  <p>
-      <a class="btn btn-default" [routerLink]="['/reporting/training/proposals']" routerLinkActive="active">Programs Support Funds Budget</a>
-      <a class="btn btn-default" [routerLink]="['/reporting/training/admincatalog']" routerLinkActive="active">5 Years Financial Plan for Service</a>
-      <a class="btn btn-default" [routerLink]="['/reporting/training/adminenrollment']" routerLinkActive="active">10 Years Financial Plan of Service</a>
-      <a class="btn btn-default" [routerLink]="['/reporting/training/adminmanagers']" routerLinkActive="active">SPGE Budget Summary Instructions</a>
-      <a class="btn btn-default" [routerLink]="['/reporting/training/adminreports']" routerLinkActive="active">Summary</a> 
-  </p>
-</div>
-
 <br><br>
 <h3>Budget Plan</h3>
 <br><br>
@@ -69,13 +50,9 @@ Income<br>
 </li>
 
 </ul>
-
-
-
-
 <div style="margin: 25px 50px;">
   <form class="form-horizontal form-label-left" [formGroup]="budgetForm" (ngSubmit)="onSubmit()">
-      <div id="step-1" class="content"  *ngIf="step==1">
+      <div id="step-1" class="content"  [hidden]="step!=1">
       
           <h3>Anticipated Income</h3>
           <h2>
@@ -85,26 +62,23 @@ Income<br>
             <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Real Property
             </label>
             <div class="col-md-10 col-sm-9 col-xs-12">
-                <div class="form-inline">
-                    <div class="form-group">
-                        <input type="number" class="form-control" formControlName="realPropertyAssesment"/><br>
-                        <small>(Assessment Subject to Rate)</small>
+                <div class="row">
+                    <div class="col-sm-4">
+                            <input type="number" class="form-control" formControlName="realPropertyAssesment"/>
+                            <small>(Assessment Subject to Rate)</small>
                     </div>
-                    <div class="form-group math-sign">
-                        &nbsp;x&nbsp;<br>
-                        <small>&nbsp;</small>
+                    <div class="col-sm-1 math-sign text-center">
+                            x
                     </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" formControlName="realPropertyTaxRate"/><br>
-                        <small>(Tax Rate)</small>
+                    <div class="col-sm-2">
+                            <input type="number" class="form-control" formControlName="realPropertyTaxRate"/>
+                            <small>(Tax Rate)</small>
                     </div>
-                    <div class="form-group math-sign">
-                        &nbsp;=&nbsp;<br>
-                        <small>&nbsp;</small>
+                    <div class="col-sm-1 math-sign text-center">
+                            =
                     </div>
-                    <div class="form-group math-result">
-                        {{+budgetForm.get("realPropertyAssesment").value/100 * +budgetForm.get("realPropertyTaxRate").value/100 | currency:'USD':'symbol':'.0-2'}}<br>
-                        <small>&nbsp;</small>
+                    <div class="col-sm-4 math-sign text-right">
+                            {{+budgetForm.get("realPropertyAssesment").value/100 * +budgetForm.get("realPropertyTaxRate").value/100 | currency:'USD':'symbol':'.2-2'}}
                     </div>
                 </div>
             </div>
@@ -117,28 +91,25 @@ Income<br>
               <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Personal Property
               </label>
               <div class="col-md-10 col-sm-9 col-xs-12">
-                    <div class="form-inline">
-                            <div class="form-group">
-                                <input type="number" class="form-control" formControlName="personalPropertyAssesment"/><br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                                <input type="number" class="form-control" formControlName="personalPropertyAssesment"/>
                                 <small>(Assessment Subject to Rate)</small>
-                            </div>
-                            <div class="form-group math-sign">
-                                &nbsp;x&nbsp;<br>
-                                <small>&nbsp;</small>
-                            </div>
-                            <div class="form-group">
-                                <input type="number" class="form-control" formControlName="personalPropertyTaxRate"/><br>
-                                <small>(Tax Rate)</small>
-                            </div>
-                            <div class="form-group math-sign">
-                                &nbsp;=&nbsp;<br>
-                                <small>&nbsp;</small>
-                            </div>
-                            <div class="form-group math-result">
-                                    {{+budgetForm.get("personalPropertyAssesment").value/100 * +budgetForm.get("personalPropertyTaxRate").value/100 | currency:'USD':'symbol':'.0-2'}}<br>
-                                <small>&nbsp;</small>
-                            </div>
                         </div>
+                        <div class="col-sm-1 math-sign text-center">
+                                x
+                        </div>
+                        <div class="col-sm-2">
+                                <input type="number" class="form-control" formControlName="personalPropertyTaxRate"/>
+                                <small>(Tax Rate)</small>
+                        </div>
+                        <div class="col-sm-1 math-sign text-center">
+                                =
+                        </div>
+                        <div class="col-sm-4 math-sign text-right">
+                                {{+budgetForm.get("personalPropertyAssesment").value/100 * +budgetForm.get("personalPropertyTaxRate").value/100 | currency:'USD':'symbol':'.2-2'}}
+                        </div>
+                    </div>
               </div>
           </div>
   
@@ -149,28 +120,25 @@ Income<br>
               <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Motor Veh/Watercraft
               </label>
               <div class="col-md-10 col-sm-9 col-xs-12">
-                    <div class="form-inline">
-                            <div class="form-group">
-                                <input type="number" class="form-control" formControlName="motorVehicleAssesment"/><br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                                <input type="number" class="form-control" formControlName="motorVehicleAssesment"/>
                                 <small>(Assessment Subject to Rate)</small>
-                            </div>
-                            <div class="form-group math-sign">
-                                &nbsp;x&nbsp;<br>
-                                <small>&nbsp;</small>
-                            </div>
-                            <div class="form-group">
-                                <input type="number" class="form-control" formControlName="motorVehicleTaxRate"/><br>
-                                <small>(Tax Rate)</small>
-                            </div>
-                            <div class="form-group math-sign">
-                                &nbsp;=&nbsp;<br>
-                                <small>&nbsp;</small>
-                            </div>
-                            <div class="form-group math-result">
-                                    {{+budgetForm.get("motorVehicleAssesment").value/100 * +budgetForm.get("motorVehicleTaxRate").value/100 | currency:'USD':'symbol':'.0-2'}}<br>
-                                <small>&nbsp;</small>
-                            </div>
                         </div>
+                        <div class="col-sm-1 math-sign text-center">
+                                x
+                        </div>
+                        <div class="col-sm-2">
+                                <input type="number" class="form-control" formControlName="motorVehicleTaxRate"/>
+                                <small>(Tax Rate)</small>
+                        </div>
+                        <div class="col-sm-1 math-sign text-center">
+                                =
+                        </div>
+                        <div class="col-sm-4 math-sign text-right">
+                                {{+budgetForm.get("motorVehicleAssesment").value/100 * +budgetForm.get("motorVehicleTaxRate").value/100 | currency:'USD':'symbol':'.2-2'}}
+                        </div>
+                    </div>
               </div>
               </div>
       
@@ -181,26 +149,24 @@ Income<br>
                   <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Total Gross Income
                   </label>
                   <div class="col-md-10 col-sm-9 col-xs-12">
-                      <div class="form-inline">
-                          <div class="form-group math-result">
-                              {{totalGrossIncome() | currency:'USD':'symbol':'.0-2'}}
-                              <br><small>&nbsp;</small>
-                          </div>
-                          <div class="form-group math-result">
-                              &nbsp;x&nbsp;<br><small>&nbsp;</small>
-                          </div>
-                          <div class="form-group">
-                              <input type="number" class="form-control" formControlName="anticipatedDelinquency"/>
-                              <br><small>Anticipated Delinquency</small>
-                          </div>
-                          <div class="form-group math-result">
-                              &nbsp;=&nbsp;<br><small>&nbsp;</small>
-                          </div>
-                          <div class="form-group math-result">
-                            {{withDelinquency() | currency:'USD':'symbol':'.0-2'}}
-                            <br><small>&nbsp;</small>
-                          </div>
-                      </div>
+                        <div class="row">
+                            <div class="col-sm-4 math-sign">
+                                    {{totalGrossIncome() | currency:'USD':'symbol':'.2-2'}}
+                            </div>
+                            <div class="col-sm-1 math-sign text-center">
+                                    x
+                            </div>
+                            <div class="col-sm-2">
+                                    <input type="number" class="form-control" formControlName="anticipatedDelinquency"/>
+                                    <small>(Anticipated Delinquency)</small>
+                            </div>
+                            <div class="col-sm-1 math-sign text-center">
+                                    =
+                            </div>
+                            <div class="col-sm-4 math-sign text-right">
+                                    {{withDelinquency() | currency:'USD':'symbol':'.2-2'}}
+                            </div>
+                        </div>
                   </div>
               </div>
 
@@ -210,28 +176,26 @@ Income<br>
                   <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Subtotal Gross Income
                   </label>
                   <div class="col-md-10 col-sm-9 col-xs-12">
-                      <div class="form-inline">
-                          <div class="form-group math-result">
-                            {{withDelinquency() | currency:'USD':'symbol':'.0-2'}}
-                            <br><small>&nbsp;</small>
-                          </div>
-                          <div class="form-group math-result">
-                              &nbsp;x&nbsp;
-                              <br><small>&nbsp;</small>
-                          </div>
-                          <div class="form-group">
-                              <input type="text" class="form-control" formControlName="collection"/>
-                              <br><small>Collection</small>
-                          </div>
-                          <div class="form-group math-result">
-                              &nbsp;=&nbsp;
-                              <br><small>&nbsp;</small>
-                          </div>
-                          <div class="form-group math-result">
-                            {{subtotalGrossIncome() | currency:'USD':'symbol':'.0-2'}}
-                              <br><small>Net Income</small>
-                          </div>
-                      </div>
+
+                        <div class="row">
+                            <div class="col-sm-4 math-sign">
+                                    {{withDelinquency() | currency:'USD':'symbol':'.2-2'}}
+                            </div>
+                            <div class="col-sm-1 math-sign text-center">
+                                    x
+                            </div>
+                            <div class="col-sm-2">
+                                    <input type="number" class="form-control" formControlName="collection"/>
+                                    <small>(Collection)</small>
+                            </div>
+                            <div class="col-sm-1 math-sign text-center">
+                                    =
+                            </div>
+                            <div class="col-sm-4 math-sign text-right">
+                                    {{subtotalGrossIncome() | currency:'USD':'symbol':'.2-2'}}
+                                    <br>Net Income
+                            </div>
+                        </div>
                   </div>
                   </div>
                   <br><br>
@@ -241,21 +205,21 @@ Income<br>
               </div>
                   <br>
               <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Ext Dist Tax
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6">Ext Dist Tax
                   </label>
                   <div class="col-md-6 col-sm-7 col-xs-6  math-result">
                     {{subtotalGrossIncome() | currency:'USD':'symbol':'.0-2'}}
                   </div>
               </div>
               <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6">Other Ext Dist Taxes
                   </label>
                   <div class="col-md-6 col-sm-7 col-xs-6">
                   <input type="number" class="form-control col-md-3 col-xs-6">
                   </div>
               </div>
               <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Other Ext Dist Taxes
+                  <label class="control-label col-md-2 col-sm-3 col-xs-6">Other Ext Dist Taxes
                   </label>
                   <div class="col-md-6 col-sm-7 col-xs-6">
                   <input type="number" class="form-control col-md-3 col-xs-6">
@@ -271,16 +235,12 @@ Income<br>
                 <div class="col-md-10 col-sm-9 col-xs-10">
                     <a class="btn btn-info btn-xs" (click)="addUserDefinedIncome()" style="margin-top: 8px;"> + add </a>
                     <div *ngFor="let userDefinedIncome of userDefinedIncomes.controls; let i=index" class="form-group">
-                    
-                    
                         <!-- repeated user defined income template -->
-                        <budget-user-defined-income [index]="i" [formControlName]="i" (removeMe)="userDefinedIncomeRemoved($event)"></budget-user-defined-income>
+                        <budget-user-defined-income [index]="i" (removeMe)="userDefinedIncomeRemoved($event)" [formControlName]="i"></budget-user-defined-income>
     
                     </div>
                 </div>
               </div>
-
-
               <div class="form-group">
                   <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Interest
                   </label>
@@ -288,34 +248,7 @@ Income<br>
                   <input type="number" class="form-control col-md-3 col-xs-6">
                   </div>
               </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Reserve
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="number" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Capital Imp Fund
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="number" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Equipment Fund
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="number" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Anticipated Carryover
-                  </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="number" class="form-control col-md-3 col-xs-6">
-                  </div>
-              </div>
+
               <div class="form-group">
                   <label class="control-label col-md-2 col-sm-3 col-xs-6">Total
                   </label>
@@ -333,19 +266,55 @@ Income<br>
           
       
   </div>
-  <div id="step-2" class="content" *ngIf="step==2">
+  <div id="step-2" class="content" [hidden]="step!=2">
   <h3 class="StepTitle">Personnel</h3>
-          <h2>Professional Staff
-          Support Staff & Base Program Support</h2>
-  <p>
-  do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-  fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
-  <p>
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-  in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
-  </div><div id="step-3" class="content" *ngIf="step==3">
+        <h2>Professional Staff
+          Support Staff & Base Program Support</h2><br><br>
+       
+ 
+        <div class="form-group" formArrayName="budgetPlanStaffExpenditures">
+            <h3>Support Personnel at Benefit Rate of 50%</h3><br>
+            <div class="col-xs-12">
+                <div *ngFor="let userDefinedIncome of staffSupportExpenditures1; let i=index" class="form-group">
+                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure()" style="margin-top: 8px;"> + add </a>
+            </div>
+            <div class="clear"><br><br></div>
+            <h3>Support Part-Time/Temp Personnel at Benefit Rate of 9%</h3><br>
+            <div class="col-xs-12">
+                <div *ngFor="let userDefinedIncome of staffSupportExpenditures2; let i=index" class="form-group">
+                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(9,2)" style="margin-top: 8px;"> + add </a>
+            </div>
+            <div class="clear"><br><br></div>
+            <h3>Agent Positions 4th and Up at Benefit Rate of 38%</h3><br>
+            <div class="col-xs-12">
+                <div *ngFor="let userDefinedIncome of staffSupportExpenditures3; let i=index" class="form-group">
+                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(38,3)" style="margin-top: 8px;"> + add </a>
+            </div>
+            <div class="clear"><br><br></div>
+            <h3>Temporarily County Funded Agent Positions</h3><br>
+            <div class="col-xs-12">
+                <div *ngFor="let userDefinedIncome of staffSupportExpenditures4; let i=index" class="form-group">
+                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(0,4)" style="margin-top: 8px;"> + add </a>
+            </div>
+            <div class="clear"><br><br></div>
+            <h3>Other at Benefit Rate of 9%</h3><br>
+            <div class="col-xs-12">
+                <div *ngFor="let userDefinedIncome of staffSupportExpenditures5; let i=index" class="form-group">
+                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(9,5)" style="margin-top: 8px;"> + add </a>
+            </div>
+        </div>
+
+  </div><div id="step-3" class="content" [hidden]="step!=3">
   <h3>Travel, 
           Professional Improvement, 
           Program Support</h3>
@@ -359,43 +328,69 @@ Income<br>
   </p>
   </div>
   <div id="step-4" class="content" *ngIf="step==4">
-          <h3>Office Operations</h3>
-          <p>
-              
-          </p><br>
-          <div class="form-group" *ngFor="let operation of operations | async">
-                  <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">{{operation.name}}
+        <h3>Office Operations</h3>
+        <p></p>
+        <div *ngIf="operations" formArrayName="officeOperationValues">
+          <br>
+          <div class="form-group" *ngFor="let operation of operations; let i = index" >
+                  <label class="control-label col-md-3 col-sm-3 col-xs-6">{{operation.name}}
                   </label>
-                  <div class="col-md-6 col-sm-7 col-xs-6">
-                  <input type="text" class="form-control col-md-3 col-xs-6">
+                  <div class="col-md-8 col-sm-9 col-xs-6" [formGroupName]="i">
+                    <input type="number" class="form-control col-md-3 col-xs-6" formControlName="value">
                   </div>
               </div>
-      
+        </div>
   </div>
-  <div id="step-5" class="content" *ngIf="step==5">
+  <div id="step-5" class="content" [hidden]="step!=5">
       <h3 class="StepTitle">Reserves</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
+      <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Reserve
+            </label>
+            <div class="col-md-6 col-sm-7 col-xs-6">
+            <input type="number" class="form-control col-md-3 col-xs-6">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Capital Imp Fund
+            </label>
+            <div class="col-md-6 col-sm-7 col-xs-6">
+            <input type="number" class="form-control col-md-3 col-xs-6">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Equipment Fund
+            </label>
+            <div class="col-md-6 col-sm-7 col-xs-6">
+            <input type="number" class="form-control col-md-3 col-xs-6">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Anticipated Carryover
+            </label>
+            <div class="col-md-6 col-sm-7 col-xs-6">
+            <input type="number" class="form-control col-md-3 col-xs-6">
+            </div>
+        </div>
   
   </div>
+  <div class="actionBar">
+        <div class="msgBox">
+          <div class="content"></div>
+          <a href="#" class="close">X</a></div>
+          <div class="loader">Loading</div>
+         <!-- <a class="buttonFinish buttonDisabled btn btn-default">Finish</a>-->
+         <a class="buttonPrevious btn btn-info" [class.buttonDisabled]="step<2" (click)="step=step-1">Previous</a>
+          <a class="buttonNext btn btn-info" [class.buttonDisabled]="step>4" (click)="step=step+1">Next</a>
+          
+        </div>
+        
+  <div class="ln_solid"></div>
+            <div class="form-group">
+                <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3 col-md-offset-2">
+                    <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                    <button type="submit" [disabled]="budgetForm.invalid"  class="btn btn-success">Submit</button>
+                </div>
+            </div>
   </form>
-</div>
-<div class="actionBar">
-<div class="msgBox">
-  <div class="content"></div>
-  <a href="#" class="close">X</a></div>
-  <div class="loader">Loading</div>
-  <a class="buttonFinish buttonDisabled btn btn-default">Finish</a>
-  <a class="buttonNext btn btn-success" [class.buttonDisabled]="step>4" (click)="step=step+1">Next</a>
-  <a class="buttonPrevious btn btn-primary" [class.buttonDisabled]="step<2" (click)="step=step-1">Previous</a>
 </div>
 </div>

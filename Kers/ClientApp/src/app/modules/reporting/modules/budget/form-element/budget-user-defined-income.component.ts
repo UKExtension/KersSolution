@@ -1,20 +1,22 @@
 import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { BudgetPlanUserDefinedIncome } from '../budget.service';
+import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 
 
 
 @Component({
   selector: 'budget-user-defined-income',
   template: `
-<div class="form-group">
+<div class="form-group" [formGroup]="budgetUserDefinedIncomeGroup">
   <div class="form-inline">
       <div class="form-group">
-          <input type="text" class="form-control" /><br>
+          <input type="text" class="form-control" formControlName="name" /><br>
           <small>(Source of Income)</small>
       </div>
       &nbsp;
       <div class="form-group">
-          <input type="number" class="form-control col-md-3 col-xs-6"/><br>
+          <input type="number" class="form-control col-md-3 col-xs-6" formControlName="value"/><br>
           <small>(Amount)</small>
       </div>
       <div class="form-group">
@@ -22,8 +24,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
               <br>
           <small>&nbsp;</small>
       </div>
-
-
   </div>
 </div>
 
@@ -35,59 +35,35 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
                 } 
                 ]
 })
-export class BudgetUserDefinedIncomeComponent implements OnInit { 
-/* 
-    @Input('group') public connectionForm:FormGroup;
-    @Input('canDelete') canDelete:boolean;
-    
-    @Input('connectionTypes') connectionTypes:SocialConnectionType[];
-
-    
-
-    public selectedLabel = "Select Social Media ";
- */
+export class BudgetUserDefinedIncomeComponent extends BaseControlValueAccessor<BudgetPlanUserDefinedIncome> implements ControlValueAccessor, OnInit { 
+    budgetUserDefinedIncomeGroup: FormGroup;
     @Input('index') index:number;
-    @Input() _value = 0;
-
-
-
     @Output() removeMe = new EventEmitter<number>();
-
-
     
-    propagateChange:any = () => {};
-
-
-
     constructor( 
-        
+      private formBuilder: FormBuilder
     )   
-    {}
-
-
-/*     selectedConnection(type){
-        this.selectedLabel = type.name;
+    {
+      super();
+      this.budgetUserDefinedIncomeGroup = formBuilder.group({
+        name: [''], 
+        value: ['']
+      });
+  
+      this.budgetUserDefinedIncomeGroup.valueChanges.subscribe(val => {
+        this.value = <BudgetPlanUserDefinedIncome>val;
+        this.onChange(this.value);
+      });
     }
-*/
     onRemove(){
         this.removeMe.emit(this.index);
     } 
 
     ngOnInit(){
         
-        
     }
-    writeValue(value: any) {
-      if (value !== "") {
-        
-      }
-  }
-
-
-  registerOnChange(fn) {
-    this.propagateChange = fn;
-  }
-
-  registerOnTouched() {}
-
+    writeValue(income: BudgetPlanUserDefinedIncome) {
+      this.value = income;
+      this.budgetUserDefinedIncomeGroup.patchValue(income);
+    }
 }

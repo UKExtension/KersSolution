@@ -107,10 +107,12 @@ export class BudgetPlanStaffExpenditure{
   id:number;
   person:User;
   personNameIfNotAUser:string;
+  personId:number;
   hourlyRate:number;
   hoursPerWeek:number;
   benefitRateInPercents:number;
   expenditureType:number;
+  index:number;
 }
 export class BudgetPlanTravelExpenses{
   id:number;

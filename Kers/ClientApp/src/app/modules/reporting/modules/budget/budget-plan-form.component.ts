@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BudgetPlanOfficeOperation, BudgetService, BudgetPlanRevision } from './budget.service';
 import { FormBuilder, Validators, FormArray } from '@angular/forms';
+import { UserService, User } from '../user/user.service';
 
 @Component({
   selector: 'budget-plan-form',
@@ -33,24 +34,17 @@ export class BudgetPlanFormComponent implements OnInit {
         otherExtDistTaxes1: "",
         otherExtDistTaxes2: "",
         coGenFund: "",
-        userDefinedIncome: this.fb.array([
-          
-        ]),
+        userDefinedIncome: this.fb.array([]),
+        check: false,
         interest: "",
         reserve: "",
         capitalImpFund: "",
         equipmentFund: "",
         anticipatedCarryover: "",
-        budgetPlanStaffExpenditures: this.fb.array([
-          
-        ]),
+        budgetPlanStaffExpenditures: this.fb.array([]),
         baseAgentContribution: "",
-        travelExpenses: this.fb.array([
-          
-        ]),
-        professionalImprovemetnExpenses: this.fb.array([
-          
-        ]),
+        travelExpenses: this.fb.array([]),
+        professionalImprovemetnExpenses: this.fb.array([]),
         numberOfProfessionalStaff: "",
         amontyPerProfessionalStaff: "",
         additionalOperationalCostPerPerson: "",
@@ -68,21 +62,66 @@ export class BudgetPlanFormComponent implements OnInit {
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<BudgetPlanOfficeOperation>();
 
-  operations:Observable<BudgetPlanOfficeOperation[]>;
+  operations:BudgetPlanOfficeOperation[];
+  unitEmployees:User[];
   
   get userDefinedIncomes() {
     return this.budgetForm.get('userDefinedIncome') as FormArray;
   }
+  get officeOperationValues() {
+    return this.budgetForm.get('officeOperationValues') as FormArray;
+  }
+
+  get staffSupportExpenditures() {
+    return this.budgetForm.get('budgetPlanStaffExpenditures') as FormArray;
+  }
+  get staffSupportExpenditures1(){
+    var filtered = this.staffSupportExpenditures.controls.filter( e => e.value.expenditureType == 1);
+    return filtered;
+  }
+  get staffSupportExpenditures2(){
+    var filtered = this.staffSupportExpenditures.controls.filter( e => e.value.expenditureType == 2);
+    return filtered;
+  }
+  get staffSupportExpenditures3(){
+    var filtered = this.staffSupportExpenditures.controls.filter( e => e.value.expenditureType == 3);
+    return filtered;
+  }
+  get staffSupportExpenditures4(){
+    var filtered = this.staffSupportExpenditures.controls.filter( e => e.value.expenditureType == 4);
+    return filtered;
+  }
+  get staffSupportExpenditures5(){
+    var filtered = this.staffSupportExpenditures.controls.filter( e => e.value.expenditureType == 5);
+    return filtered;
+  }
+
+  supportStaffIndex = 0;
 
   constructor(
     private fb: FormBuilder,
-    private service:BudgetService
+    private service:BudgetService,
+    private userService: UserService
   ) {
     
   }
 
   ngOnInit() {
-    this.operations = this.service.getOfficeOperations();
+    this.service.getOfficeOperations().subscribe(
+      res => {
+        let control = <FormArray>this.budgetForm.controls.officeOperationValues;
+        for( let val of res ){
+          control.push(this.fb.group({
+            budgetPlanOfficeOperation: val,
+            value: 0
+          }));
+        }
+        this.operations = res;
+      }
+    );
+    this.userService.unitEmployees().subscribe(
+      res => this.unitEmployees = res
+    )
   }
 
   onCancel(){
@@ -93,8 +132,24 @@ export class BudgetPlanFormComponent implements OnInit {
     console.log(this.budgetForm.value);
   }
   addUserDefinedIncome() {
-    this.userDefinedIncomes.push(this.fb.control(''));
+    this.userDefinedIncomes.push(this.fb.control({
+      name: "",
+      value: ""
+    }));
   }
+  addSupportStaffExpenditure(rate:number = 50, type:number = 1) {
+    this.staffSupportExpenditures.push(this.fb.control({
+      personId: 0,
+      personNameIfNotAUser: "",
+      hourlyRate: "",
+      hoursPerWeek: "",
+      benefitRateInPercents: rate,
+      expenditureType: type,
+      index: this.supportStaffIndex
+    }));
+    this.supportStaffIndex++;
+  }
+  
 
   /**************************/
   // Calculations
@@ -134,6 +189,21 @@ export class BudgetPlanFormComponent implements OnInit {
 
   userDefinedIncomeRemoved(event:number){
     this.userDefinedIncomes.removeAt(event);
+  }
+
+  supportStaffExpenditureRemoved(event:number){
+    var elementIndex:number = undefined;
+    this.staffSupportExpenditures.controls.forEach( (item, index) => {
+      if(item.value.index == event){
+        elementIndex = index;
+      }else if(elementIndex != undefined){
+        item.value.index--;
+      }
+    });
+    if(elementIndex != undefined){
+      this.staffSupportExpenditures.removeAt(elementIndex);
+      this.supportStaffIndex--;
+    } 
   }
 
 

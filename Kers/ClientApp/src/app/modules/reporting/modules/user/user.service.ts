@@ -218,6 +218,14 @@ export class UserService {
                 catchError(this.handleError('personIdExists'))
             );
     }
+
+    unitEmployees( unitId:number = 0):Observable<User[]>{
+        var url = this.baseUrl + "unitemployees/" + unitId;
+        return this.http.get<User[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('unitEmployees', [] ))
+            );
+    }
     private addParams(params:{}){
         let searchParams = {};
         for(let p in params){

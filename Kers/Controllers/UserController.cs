@@ -454,6 +454,25 @@ namespace Kers.Controllers
             return new OkObjectResult(await users.ToListAsync());
         }
 
+        [HttpGet("unitemployees/{unitId}")]
+        [Authorize]
+        public async Task<IActionResult> UnitEmployees(int unitId = 0){
+
+            if( unitId == 0){
+                var user = await this._context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == this.CurrentUserId())
+                                    .Include( u => u.RprtngProfile).FirstOrDefaultAsync();
+                if( user == null) return new StatusCodeResult(500);
+                unitId = user.RprtngProfile.PlanningUnitId;
+            }
+
+            var users = this._context.KersUser.Where( u => u.RprtngProfile.PlanningUnitId == unitId)
+                                .Include(u => u.RprtngProfile)
+                                .Include( u => u.PersonalProfile)
+                                .Include( u => u.ExtensionPosition)
+                                .Include( u => u.Specialties).ThenInclude( s => s.Specialty);
+            return new OkObjectResult(await users.ToListAsync());
+        }
+
 
 
         [HttpGet("InServiceEnrolment/{userId?}/{fy?}")]

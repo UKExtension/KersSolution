@@ -12,9 +12,7 @@ import { BudgetPlanOfficeOperationsDetailComponent } from './admin/budget-plan-o
 import { BudgetSupportStaffComponent } from './form-element/budget-support-staff.component';
 import { BudgetPlanFormComponent } from './budget-plan-form.component';
 import {BudgetUserDefinedIncomeComponent} from './form-element/budget-user-defined-income.component';
-
-
-
+import {BudgetPersonelSupportStaffComponent} from './form-element/budget-personel-support-staff.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +29,8 @@ import {BudgetUserDefinedIncomeComponent} from './form-element/budget-user-defin
     BudgetPlanOfficeOperationsDetailComponent,
     BudgetSupportStaffComponent,
     BudgetPlanFormComponent,
-    BudgetUserDefinedIncomeComponent
-  
+    BudgetUserDefinedIncomeComponent,
+    BudgetPersonelSupportStaffComponent
   
   
   ],
