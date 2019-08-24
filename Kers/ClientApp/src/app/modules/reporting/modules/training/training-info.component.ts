@@ -41,6 +41,7 @@ export class TrainingInfoComponent implements OnInit {
 
   registerCutOfDate(training:Training):Date{
     var start = new Date(training.start);
+    start.setHours(3, 0, 0);
     if( training.registerCutoffDays == null) return start;
     start.setDate( start.getDate() - +training.registerCutoffDays.registerDaysVal );
     return start;
@@ -79,6 +80,15 @@ export class TrainingInfoComponent implements OnInit {
       if( cutof <= today ) return true;
     }
     return false;
+  }
+  isItInsideRegistrationWindow(training:Training):boolean{
+    if(training.registerCutoffDays){
+      var cutof = this.registerCutOfDate(training);
+      var today = new Date();
+      today.setHours(3, 0, 0);
+      if( cutof <= today ) return false;
+    }
+    return true;
   }
   isItPast(training:Training):boolean{
     var start = new Date(training.start);

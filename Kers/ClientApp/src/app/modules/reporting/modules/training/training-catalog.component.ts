@@ -14,6 +14,7 @@ export class TrainingCatalogComponent implements OnInit {
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
   trainings$:Observable<Training[]>;
+  type="dsc";
 
   criteria = {
     
@@ -54,7 +55,11 @@ export class TrainingCatalogComponent implements OnInit {
       start: this.startDate.toISOString(),
       end: this.endDate.toISOString(),
       search: "",
-      status: this.admin ? 'all' : 'published'
+      status: this.admin ? 'all' : 'published',
+      contacts: "",
+      day: null,
+      order: 'dsc',
+      withseats: false
     }
     this.refresh = new Subject();
 
@@ -83,12 +88,31 @@ export class TrainingCatalogComponent implements OnInit {
     this.criteria["search"] = event.target.value;
     this.onRefresh();
   }
+  onSearchContact(event){
+    this.criteria["contacts"] = event.target.value;
+    this.onRefresh();
+  }
 
   onRefresh() {
     this.loading = true; // Turn on the spinner.
     this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
   }
   deletedTraining(_){
+    this.onRefresh();
+  }
+  switchOrder(type:string){
+    this.type = type;
+    this.criteria["order"] = type;
+    this.onRefresh();
+  }
+
+  onSeatsChange(event){
+    this.criteria["withseats"] = event.target.checked;
+    this.onRefresh();
+  }
+
+  onDayChange(event){
+    this.criteria["day"] = event.target.value;
     this.onRefresh();
   }
 

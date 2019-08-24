@@ -443,7 +443,11 @@ namespace Kers.Controllers
         public IActionResult GetCustom( [FromQuery] string search, 
                                         [FromQuery] DateTime start,
                                         [FromQuery] DateTime end,
-                                        [FromQuery] string status
+                                        [FromQuery] string status,
+                                        [FromQuery] string contacts,
+                                        [FromQuery] int? day,
+                                        [FromQuery] string order,
+                                        [FromQuery] bool withseats
                                         ){
             
             var trainings = from i in _context.Training select i;
@@ -455,16 +459,34 @@ namespace Kers.Controllers
                 }
                 
             }
+            if(contacts != null && contacts != ""){
+                trainings = trainings.Where( i => i.tContact.Contains(contacts));
+            }
             if(start != null){
                 trainings = trainings.Where( i => i.Start > start);
             }
             if( end != null){
                 trainings = trainings.Where( i => i.Start < end);
             }
+            if(day != null){
+                trainings = trainings.Where( i => (int)i.Start.DayOfWeek == day);
+            }
             if( status == "published"){
                 trainings = trainings.Where( i => i.tStatus == "A");
             }
-            return new OkObjectResult(trainings.OrderBy(t => t.Start));
+            if(withseats){
+                trainings = trainings.Where( i => i.seatLimit == null || i.seatLimit > i.Enrollment.Where(e => e.eStatus == "E").Count());
+            }
+            IOrderedQueryable result;
+            if(order == "asc"){
+                result = trainings.OrderByDescending(t => t.Start);
+            }else if( order == "alph"){
+                result = trainings.OrderBy(t => t.Subject);
+            }else{
+                result = trainings.OrderBy(t => t.Start);
+            }
+
+            return new OkObjectResult(result);
         }
 
         [HttpGet("byuser/{id?}/{year?}")]

@@ -7,11 +7,11 @@
   </div>
   <div class="row">
       <div class="col-sm-3 col-xs-12">
-          <strong>Date(s):</strong>
-        </div>
-        <div class="col-sm-9 col-xs-12">
-          {{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span>
-        </div>
+        <strong>Date(s):</strong>
+      </div>
+      <div class="col-sm-9 col-xs-12">
+        {{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span>
+      </div>
   </div>
   <div class="row">
     <div class="col-sm-3 col-xs-12">
@@ -44,45 +44,37 @@
   </div>
   <div class="row">
       <div class="col-sm-3 col-xs-12">
-          <strong>Contact:</strong>
-        </div>
-        <div class="col-sm-9 col-xs-12">
-          {{training.tContact}}&nbsp;
-        </div>
+        <strong>Contact:</strong>
+      </div>
+      <div class="col-sm-9 col-xs-12">
+        {{training.tContact}}&nbsp;
+      </div>
   </div>
   <div class="row">
       <div class="col-sm-3 col-xs-12">
-          <strong>Instructional Hours:</strong>
-        </div>
-        <div class="col-sm-9 col-xs-12">
-          <span *ngIf="training.iHour">{{training.iHour.iHoursTxt}} <small>(Credit given for attendance at entire session. Partial credit not available.)</small></span><span *ngIf="!training.iHour">0</span>
-        </div>
+        <strong>Instructional Hours:</strong>
+      </div>
+      <div class="col-sm-9 col-xs-12">
+        <span *ngIf="training.iHour">{{training.iHour.iHoursTxt}} <small>(Credit given for attendance at entire session. Partial credit not available.)</small></span><span *ngIf="!training.iHour">0</span>
+      </div>
   </div>
   <div class="row">
       <div class="col-sm-3 col-xs-12">
-          <strong>Last Day to Register:</strong>
-        </div>
-        <div class="col-sm-9 col-xs-12">
-          {{registerCutOfDate(training) | date:'mediumDate'}}
-        </div>
+        <strong>Last Day to Register:</strong>
+      </div>
+      <div class="col-sm-9 col-xs-12">
+        {{registerCutOfDate(training) | date:'mediumDate'}}
+      </div>
   </div>
   <div class="row">
       <div class="col-sm-3 col-xs-12">
-          <strong>Last Day to Cancel:</strong>
-        </div>
-        <div class="col-sm-9 col-xs-12">
-          {{cancelCutOfDate(training) | date:'mediumDate'}}
-        </div>
+        <strong>Last Day to Cancel:</strong>
+      </div>
+      <div class="col-sm-9 col-xs-12">
+        {{cancelCutOfDate(training) | date:'mediumDate'}}
+      </div>
   </div>
   <div class="row">
-
-
-
-
-
-
-  
-  
   
   <div class="col-xs-12">
     <loading *ngIf="loading"></loading>
@@ -102,8 +94,13 @@
             <a (click)="enroll(training);" class="btn btn-info">Enroll for this PAST training event</a> 
         </ng-container>
         <ng-container *ngIf="!isItPast(training)">
-          <h6 class="red">Clicking the Enroll button below will immediately enroll you in this training event.</h6>
-          <a (click)="enroll(training);" class="btn btn-info">Enroll for this training event</a> 
+          <ng-container *ngIf="isItInsideRegistrationWindow(training)"> 
+            <h6 class="red">Clicking the Enroll button below will immediately enroll you in this training event.</h6>
+            <a (click)="enroll(training);" class="btn btn-info">Enroll for this training event</a> 
+          </ng-container>
+          <ng-container *ngIf="!isItInsideRegistrationWindow(training)">
+              <h6 class="red">*** PAST LAST DAY TO REGISTER ***<br /></h6>
+          </ng-container>
         </ng-container>
              
       </ng-container>
