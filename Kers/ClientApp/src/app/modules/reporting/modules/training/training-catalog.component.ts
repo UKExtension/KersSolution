@@ -24,6 +24,8 @@ export class TrainingCatalogComponent implements OnInit {
   @Input() startDate:Date;
   @Input() endDate:Date;
 
+  condition = false;
+
 
   myDateRangePickerOptions: IMyDrpOptions = {
       // other options...
