@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BudgetPlanOfficeOperation, BudgetService, BudgetPlanRevision } from './budget.service';
+import { BudgetPlanOfficeOperation, BudgetService, BudgetPlanRevision, BudgetPlanStaffExpenditure } from './budget.service';
 import { FormBuilder, Validators, FormArray } from '@angular/forms';
 import { UserService, User } from '../user/user.service';
 
@@ -41,9 +41,63 @@ export class BudgetPlanFormComponent implements OnInit {
         capitalImpFund: "",
         equipmentFund: "",
         anticipatedCarryover: "",
-        budgetPlanStaffExpenditures: this.fb.array([]),
+        budgetPlanStaffExpenditures: this.fb.array([
+          {
+            personId: "",
+            personNameIfNotAUser: "",
+            hourlyRate: "",
+            hoursPerWeek: "",
+            benefitRateInPercents: 50,
+            expenditureType: 1,
+            index: 0
+          },
+          {
+            personId: "",
+            personNameIfNotAUser: "",
+            hourlyRate: "",
+            hoursPerWeek: "",
+            benefitRateInPercents: 9,
+            expenditureType: 2,
+            index: 1
+          },
+          {
+            personId: "",
+            personNameIfNotAUser: "",
+            hourlyRate: "",
+            hoursPerWeek: "",
+            benefitRateInPercents: 38,
+            expenditureType: 3,
+            index: 2
+          },
+          {
+            personId: "",
+            personNameIfNotAUser: "",
+            hourlyRate: "",
+            hoursPerWeek: "",
+            benefitRateInPercents: 0,
+            expenditureType: 4,
+            index: 3
+          },
+          {
+            personId: "",
+            personNameIfNotAUser: "",
+            hourlyRate: "",
+            hoursPerWeek: "",
+            benefitRateInPercents: 9,
+            expenditureType: 5,
+            index: 4
+          },
+        ]),
         baseAgentContribution: "",
-        travelExpenses: this.fb.array([]),
+        travelExpenses: this.fb.array([
+          {
+            personId: [0],
+            personNameIfNotAUser: "",
+            staffTypeId: 0,
+            amount: "",
+            index: 0
+          }
+        ]),
         professionalImprovemetnExpenses: this.fb.array([]),
         numberOfProfessionalStaff: "",
         amontyPerProfessionalStaff: "",
@@ -95,8 +149,14 @@ export class BudgetPlanFormComponent implements OnInit {
     var filtered = this.staffSupportExpenditures.controls.filter( e => e.value.expenditureType == 5);
     return filtered;
   }
+  get travelExpenses(){
+    return this.budgetForm.get('travelExpenses') as FormArray;
+  }
+  get professionalImprovemetnExpenses(){
+    return this.budgetForm.get('professionalImprovemetnExpenses') as FormArray;
+  }
 
-  supportStaffIndex = 0;
+  supportStaffIndex = 5;
 
   constructor(
     private fb: FormBuilder,
@@ -149,6 +209,15 @@ export class BudgetPlanFormComponent implements OnInit {
     }));
     this.supportStaffIndex++;
   }
+  addTravelExpenditure(){
+    this.travelExpenses.push(this.fb.control({
+      personId: [0],
+      personNameIfNotAUser: "",
+      staffTypeId: 0,
+      amount: "",
+      index: 0
+    }));
+  }
   
 
   /**************************/
@@ -181,6 +250,39 @@ export class BudgetPlanFormComponent implements OnInit {
   subtotalGrossIncome(){
     var grossIncome = this.withDelinquency();
     return grossIncome - (+this.budgetForm.get("collection").value / 100 ) * grossIncome;
+  }
+  supportStaffRowPerson(row:BudgetPlanStaffExpenditure):string{
+    if(row.personId == null) return row.personNameIfNotAUser;
+    if(row.personId == 0) return "";
+    var person = this.unitEmployees.filter( u => u.id == row.personId);
+    if(person.length > 0){
+      return person[0].personalProfile.firstName + " " + person[0].personalProfile.lastName;
+    }
+    return "";
+  }
+  supportStaffRowSum(row:BudgetPlanStaffExpenditure):number{
+    return row.hourlyRate * row.hoursPerWeek + row.hourlyRate * row.hoursPerWeek * (row.benefitRateInPercents / 100);
+  }
+  supportStaffTotalSalaries():number{
+    var total = 0;
+    for(var row of this.budgetForm.value.budgetPlanStaffExpenditures){
+      total += row.hourlyRate * row.hoursPerWeek;
+    }
+    return total;
+  }
+  supportStaffTotalBenefits():number{
+    var total = 0;
+    for(var row of this.budgetForm.value.budgetPlanStaffExpenditures){
+      total += row.hourlyRate * row.hoursPerWeek * (row.benefitRateInPercents / 100);
+    }
+    return total;
+  }
+  supportStaffTotalAmount():number{
+    var total = 0;
+    for(var row of this.budgetForm.value.budgetPlanStaffExpenditures){
+      total += row.hourlyRate * row.hoursPerWeek + row.hourlyRate * row.hoursPerWeek * (row.benefitRateInPercents / 100);
+    }
+    return total;
   }
 
   /***************************/

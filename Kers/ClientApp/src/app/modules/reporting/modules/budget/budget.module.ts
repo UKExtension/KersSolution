@@ -13,6 +13,8 @@ import { BudgetSupportStaffComponent } from './form-element/budget-support-staff
 import { BudgetPlanFormComponent } from './budget-plan-form.component';
 import {BudgetUserDefinedIncomeComponent} from './form-element/budget-user-defined-income.component';
 import {BudgetPersonelSupportStaffComponent} from './form-element/budget-personel-support-staff.component';
+import { BudgetTravelExpensesComponent } from './form-element/budget-travel-expenses.component';
+import { BudgetPlanProfessionalImprovementExpensesComponent } from './form-element/budget-professional-improvement-expenses.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import {BudgetPersonelSupportStaffComponent} from './form-element/budget-persone
     BudgetSupportStaffComponent,
     BudgetPlanFormComponent,
     BudgetUserDefinedIncomeComponent,
-    BudgetPersonelSupportStaffComponent
+    BudgetPersonelSupportStaffComponent,
+    BudgetTravelExpensesComponent,
+    BudgetPlanProfessionalImprovementExpensesComponent
   
   
   ],

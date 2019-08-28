@@ -313,19 +313,83 @@ Income<br>
                 <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(9,5)" style="margin-top: 8px;"> + add </a>
             </div>
         </div>
-
-  </div><div id="step-3" class="content" [hidden]="step!=3">
-  <h3>Travel, 
+        <table class="table table-bordered" style="background-color:rgba(233, 226, 122, 0.3);">
+            <thead>
+                <tr>
+                    <th>Person</th>
+                    <th>Salary</th>
+                    <th>Benefits</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr *ngFor="let row of budgetForm.value.budgetPlanStaffExpenditures">
+                        <td>{{supportStaffRowPerson(row)}}</td>
+                        <td class="text-right">{{row.hourlyRate * row.hoursPerWeek | currency:'USD':'symbol':'.2-2'}}</td>
+                        <td class="text-right">{{row.hourlyRate * row.hoursPerWeek * (row.benefitRateInPercents / 100) | currency:'USD':'symbol':'.2-2'}}</td>
+                        <td class="text-right">{{supportStaffRowSum(row) | currency:'USD':'symbol':'.2-2'}}</td>
+                    </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><strong>Professional Staff Salaries</strong></td>
+                    <td class="text-right">{{supportStaffTotalSalaries() | currency:'USD':'symbol':'.2-2'}}</td>
+                    <td class="text-right">{{supportStaffTotalBenefits() | currency:'USD':'symbol':'.2-2'}}</td>
+                    <td class="text-right">{{supportStaffTotalAmount() | currency:'USD':'symbol':'.2-2'}}</td>
+                </tr>
+            </tfoot>
+        </table>
+  </div>
+  <div id="step-3" class="content" [hidden]="step!=3">
+        <h3>Travel, 
           Professional Improvement, 
           Program Support</h3>
-  <p>
-  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
-  <p>
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-  in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
+          <div class="form-group" formArrayName="travelExpenses"><br>
+            <h2>Travel</h2><br>
+            <div class="col-xs-12">
+                <div *ngFor="let userDefinedIncome of travelExpenses.controls; let i=index" class="form-group">
+                    <budget-travel-expenses [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="i"></budget-travel-expenses>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addTravelExpenditure()" style="margin-top: 8px;"> + add </a>
+            </div>
+            
+        </div>
+        <div class="form-group" formArrayName="professionalImprovemetnExpenses"><br>
+            <h2>PROFESSIONAL IMPROVEMENT: <small>(include only if all other expenses have been met; up to $3,500/Agent and up to $1,000/Agent for ESP members)</small></h2><br>
+            <div class="col-xs-12">
+                <div *ngFor="let userDefinedIncome of professionalImprovemetnExpenses.controls; let i=index" class="form-group">
+                    <budget-professional-improvement-expenses [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="i"></budget-professional-improvement-expenses>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addTravelExpenditure()" style="margin-top: 8px;"> + add </a>
+            </div>
+            
+        </div>
+        <table class="table table-bordered" style="background-color:rgba(233, 226, 122, 0.3);">
+            <thead>
+                <tr>
+                    <th>Person</th>
+                    <th>Salary</th>
+                    <th>Benefits</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr *ngFor="let row of budgetForm.value.budgetPlanStaffExpenditures">
+                        <td>{{supportStaffRowPerson(row)}}</td>
+                        <td class="text-right">{{row.hourlyRate * row.hoursPerWeek | currency:'USD':'symbol':'.2-2'}}</td>
+                        <td class="text-right">{{row.hourlyRate * row.hoursPerWeek * (row.benefitRateInPercents / 100) | currency:'USD':'symbol':'.2-2'}}</td>
+                        <td class="text-right">{{supportStaffRowSum(row) | currency:'USD':'symbol':'.2-2'}}</td>
+                    </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><strong>Professional Staff Salaries</strong></td>
+                    <td class="text-right">{{supportStaffTotalSalaries() | currency:'USD':'symbol':'.2-2'}}</td>
+                    <td class="text-right">{{supportStaffTotalBenefits() | currency:'USD':'symbol':'.2-2'}}</td>
+                    <td class="text-right">{{supportStaffTotalAmount() | currency:'USD':'symbol':'.2-2'}}</td>
+                </tr>
+            </tfoot>
+        </table>
   </div>
   <div id="step-4" class="content" *ngIf="step==4">
         <h3>Office Operations</h3>

@@ -117,9 +117,12 @@ export class BudgetPlanStaffExpenditure{
 export class BudgetPlanTravelExpenses{
   id:number;
   person:User;
+  personId:number;
   personNameIfNotAUser:string;
   amount:number;
+  staffTypeId:number;
   staffType:BudgetPlanStaffType;
+  index:number;
 }
 export class BudgetPlanStaffType{
   id:number;
