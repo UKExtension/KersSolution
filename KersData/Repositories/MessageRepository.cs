@@ -16,6 +16,7 @@ using MailKit;
 using MimeKit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Kers.Models.Repositories
 {
@@ -30,132 +31,99 @@ namespace Kers.Models.Repositories
         }
 
 
-        public List<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment){
+        public IQueryable<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment){
+            
             var messages = this.context.Message
-                .Where( m => m.IsItSent == false && m.ScheduledFor <= DateTime.Now )
-                .Include( m => m.From ).ThenInclude( u => u.PersonalProfile)
-                .Include( m => m.To).ThenInclude( u => u.PersonalProfile)
-                .Include( m => m.From).ThenInclude( u => u.RprtngProfile)
-                .Include( m => m.To).ThenInclude( u => u.RprtngProfile)
-                .ToList();
+                .Where( m => m.IsItSent == false && m.ScheduledFor <= DateTimeOffset.Now )
+                .Include( u => u.To).ThenInclude( t => t.PersonalProfile)
+                .Include( u => u.To).ThenInclude( t => t.RprtngProfile);
+/* 
+
+            foreach( var mess in messages){
+                if( mess.FromId != null){
+                    mess.From = context.KersUser.Where( u => u.Id == mess.FromId).Include(u => u.RprtngProfile).Include(r => r.PersonalProfile).FirstOrDefault();
+                } 
+                this.sendMessage( mess, configuration, environment );
+            }*/
+            //Console.WriteLine(messages.Count.ToString());
             foreach( var message in messages ) this.sendMessage( message, configuration, environment );
             this.context.SaveChanges();
             return messages;
         }
 
         private void sendMessage(Message message, IConfiguration _configuration, IHostingEnvironment environment){
-            try{
+            
 
 
                 using (var client = new SmtpClient ()) {
+                    try{
+                        if(environment.IsDevelopment() || environment.IsStaging() ){
+                            client.Connect (_configuration["Email:MailServerAddress"], Convert.ToInt32(_configuration["Email:MailServerPort"]), false);
+                            // Note: since we don't have an OAuth2 token, disable
+                            // the XOAUTH2 authentication mechanism.
+                            client.AuthenticationMechanisms.Remove ("XOAUTH2");
+                            // Note: only needed if the SMTP server requires authentication
+                            client.Authenticate (_configuration["Email:UserId"], _configuration["Email:UserPassword"]);
+                        }else if( environment.IsProduction() ){
+                            client.Connect (_configuration["Email:MailServerAddress"], Convert.ToInt32(_configuration["Email:MailServerPort"]), false);
+                            client.AuthenticationMechanisms.Remove ("XOAUTH2");
+                        }
+                        var m = new MimeMessage ();
+                        if( message.FromId != null && message.FromId != 0){
+                            var FromUser = this.context.KersUser.Where( r => r.Id == message.FromId)
+                                    .Include(u => u.PersonalProfile)
+                                    .Include(u => u.RprtngProfile)
+                                    .FirstOrDefault();
+                            m.From.Add (
+                                new MailboxAddress (
+                                    FromUser.PersonalProfile.FirstName + 
+                                    " " + 
+                                    FromUser.PersonalProfile.LastName
+                                    ,
+                                    FromUser.RprtngProfile.Email));
+                        }else{
+                            m.From.Add (
+                                new MailboxAddress ( "Program and Staff Development", "agpsd@uky.edu")
+                            );
+                        }
+                        
+                        m.To.Add (new MailboxAddress (
+                            message.To.PersonalProfile.FirstName +
+                            " " +
+                            message.To.PersonalProfile.LastName
+                            ,
+                            message.To.RprtngProfile.Email));
+                        m.Subject = message.Subject;
+                        var alternative = new MultipartAlternative ();
+                        alternative.Add (new TextPart ("plain") {
+                            Text = message.BodyText
+                        });
+                        alternative.Add (new TextPart ("html") {
+                            Text = message.BodyHtml
+                        });
+                        m.Body = alternative;
+                        //https://github.com/jstedfast/MailKit/issues/126
+                        client.MessageSent += OnMessageSent;
+                        client.Send (m);
+                        client.Disconnect (true);
+                        message.IsItSent = true;
+                        //context.SaveChanges();
 
-                    if(environment.IsDevelopment() || environment.IsStaging() ){
-                        client.Connect (_configuration["Email:MailServerAddress"], Convert.ToInt32(_configuration["Email:MailServerPort"]), false);
-                        // Note: since we don't have an OAuth2 token, disable
-                        // the XOAUTH2 authentication mechanism.
-                        client.AuthenticationMechanisms.Remove ("XOAUTH2");
-                        // Note: only needed if the SMTP server requires authentication
-                        client.Authenticate (_configuration["Email:UserId"], _configuration["Email:UserPassword"]);
-                    }else if( environment.IsProduction() ){
-                        client.Connect (_configuration["Email:MailServerAddress"], Convert.ToInt32(_configuration["Email:MailServerPort"]), false);
-                        client.AuthenticationMechanisms.Remove ("XOAUTH2");
+                    } catch (Exception ex) {
+                        var log = new Log();
+                        log.Type = "Error";
+                        log.Time = DateTime.Now;
+                        log.ObjectType = "Exception";
+                        log.Type = "Send Message Error";
+                        log.Object = JsonConvert.SerializeObject(ex.Message,  
+                                            new JsonSerializerSettings() {
+                                                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                                                });
+                        this.context.Add( log );
+                        this.context.SaveChanges();
+                        //return new OkObjectResult(ex.Message);
                     }
-                    var m = new MimeMessage ();
-                    if( message.From != null ){
-                        m.From.Add (
-                            new MailboxAddress (
-                                message.From.PersonalProfile.FirstName + 
-                                " " +
-                                message.From.PersonalProfile.LastName
-                                ,
-                                message.From.RprtngProfile.Email));
-                    }else{
-                        m.From.Add (
-                            new MailboxAddress ( "Program and Staff Development", "agpsd@uky.edu")
-                        );
-                    }
-                    
-                    m.To.Add (new MailboxAddress (
-                        message.To.PersonalProfile.FirstName +
-                        " " +
-                        message.To.PersonalProfile.LastName
-                        ,
-                        message.To.RprtngProfile.Email));
-                    m.Subject = message.Subject;
-                    var alternative = new MultipartAlternative ();
-                    alternative.Add (new TextPart ("plain") {
-                        Text = message.BodyText
-                    });
-                    alternative.Add (new TextPart ("html") {
-                        Text = message.BodyHtml
-                    });
-                    m.Body = alternative;
-                    //https://github.com/jstedfast/MailKit/issues/126
-                    client.MessageSent += OnMessageSent;
-                    client.Send (m);
-                    client.Disconnect (true);
-                    message.IsItSent = true;
-                    //context.SaveChanges();
-
-
-
                 }
-
-
-
-
-                
-                
-/* 
-                message.Body = new TextPart ("plain") {
-                    Text = Email.Body
-                };
-                // https://github.com/jstedfast/MailKit
-                using (var client = new SmtpClient ()) {
-                    // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
-                    client.ServerCertificateValidationCallback = (s,c,h,e) => true;
-
-
-
-                    if(Email.Pressets == 1){
-                        client.Connect ("outlook.office365.com", 587, false);
-                        // Note: since we don't have an OAuth2 token, disable
-                        // the XOAUTH2 authentication mechanism.
-                        client.AuthenticationMechanisms.Remove ("XOAUTH2");
-                        // Note: only needed if the SMTP server requires authentication
-                        client.Authenticate (_configuration["Email:UserId"], _configuration["Email:UserPassword"]);
-                    }else if( Email.Pressets == 3){
-                        client.Connect (_configuration["Email:MailServerAddress"], Convert.ToInt32(_configuration["Email:MailServerPort"]), false);
-                        client.AuthenticationMechanisms.Remove ("XOAUTH2");
-                        client.Authenticate (_configuration["Email:UserId"], _configuration["Email:UserPassword"]);        
-                    }else if(Email.Pressets == 4){  
-                        client.Connect (Email.Server, Email.Port, false);
-                        client.AuthenticationMechanisms.Remove ("XOAUTH2");
-                        client.Authenticate (Email.Username, Email.Password);
-                    }else if(Email.Pressets == 5){
-                        client.Connect (Email.Server, Email.Port, false);
-                        client.AuthenticationMechanisms.Remove ("XOAUTH2");
-                        //client.Authenticate (Email.Username, Email.Password);
-                    }
-                    //https://github.com/jstedfast/MailKit/issues/126
-                    client.MessageSent += OnMessageSent;
-                    client.Send (message);
-                    client.Disconnect (true);
-                }
-
-                 */
-                //return new OkObjectResult("Email sent successfully!");
-            } catch (Exception ex) {
-                var log = new Log();
-                log.Type = "Error";
-                log.Time = DateTime.Now;
-                log.ObjectType = "Exception";
-                log.Type = "Send Message";
-                log.Object = ex.Message;
-                this.context.Add( log );
-                this.context.SaveChanges();
-                //return new OkObjectResult(ex.Message);
-            }
         }
 
 
@@ -171,7 +139,7 @@ namespace Kers.Models.Repositories
                 message.BodyText = String.Format( template.BodyText, trainingArray);
                 message.BodyHtml = String.Format( template.BodyHtml, trainingArray);
                 message.Created = DateTimeOffset.Now;
-                if( ScheduledFor != null) message.ScheduledFor = ScheduledFor??DateTimeOffset.Now;
+                message.ScheduledFor = ScheduledFor??DateTimeOffset.Now;
                 message.IsItSent = false;
                 context.Add(message);
                 await context.SaveChangesAsync();
@@ -203,6 +171,19 @@ namespace Kers.Models.Repositories
         //https://github.com/jstedfast/MailKit/issues/126
         void OnMessageSent (object sender, MessageSentEventArgs e)
         {
+            var log = new Log();
+                log.Type = "Info";
+                log.Time = DateTime.Now;
+                log.Description = "Successfully Sent Email Message";
+                log.ObjectType = "String";
+                log.Type = "Sent Message";
+                log.Object = JsonConvert.SerializeObject(e.Response + "/n" + e.Message,  
+                                            new JsonSerializerSettings() {
+                                                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+
+                                                });
+                this.context.Add( log );
+                this.context.SaveChanges();
             //Console.WriteLine ("The message was sent!");
         }
 

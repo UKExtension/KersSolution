@@ -93,7 +93,7 @@ export class BudgetPlanProfessionalImprovementExpensesComponent extends BaseCont
     }
 
     onRemove(){
-      this.removeMe.emit(this.value.index);
+      this.removeMe.emit(this.index);
   } 
 
 

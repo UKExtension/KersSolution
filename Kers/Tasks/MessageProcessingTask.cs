@@ -55,11 +55,11 @@ namespace Kers.Tasks
 
 
 
-                    if( messages.Count != 0 ){
+                    if( messages.Count() != 0 ){
                         var endTime = DateTime.Now;
                         await LogComplete(context, 
                                         "ProcessMessageQueue", messages, 
-                                        messages.Count.ToString() + " Messages send for " + (endTime - startTime).TotalSeconds + " seconds"
+                                        messages.Count().ToString() + " Messages send for " + (endTime - startTime).TotalSeconds + " seconds"
                                     );
                     }
 
