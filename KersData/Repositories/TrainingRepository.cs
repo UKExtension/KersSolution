@@ -22,17 +22,45 @@ namespace Kers.Models.Repositories
         KERScoreContext context;
         KERSmainContext mainContext;
         KERSreportingContext reportingContext;
+        IMessageRepository messageRepo;
         public TrainingRepository(
             KERScoreContext context,
             KERSreportingContext reportingContext,
-            KERSmainContext mainContext 
+            KERSmainContext mainContext,
+            IMessageRepository messageRepo
             )
             
         { 
             this.reportingContext = reportingContext;
             this.context = context;
             this.mainContext = mainContext;
+            this.messageRepo = messageRepo;
         }
+
+
+
+        /***********************************************/
+        // Reminders
+        /***********************************************/
+
+        public IQueryable<Training> Set3DaysReminders(){
+            IQueryable<Training> trainings = this.context.Training.Where( t => t.Start.AddDays(-3).ToString("MMddyyyy") == DateTimeOffset.Now.ToString("MMddyyyy"))
+                                                    .Include(t => t.Enrollment).ThenInclude( e => e.Attendie);
+            this.ScheduleReminders("3DAYSREMINDER", trainings);
+            return trainings;
+        }
+
+        public void ScheduleReminders(string type, IQueryable<Training> trainings){
+            foreach( var training in trainings){
+                foreach( var enrolment in training.Enrollment.Where(e => e.eStatus == "E")){
+                    this.messageRepo.ScheduleTrainingMessage(type, training, enrolment.Attendie);
+                }
+            }
+        }
+
+        /***********************************************/
+        // Import Trainings from the reporting repo
+        /***********************************************/
 
         public List<zInServiceTrainingCatalog>  csv2list(string fileUrl = "database/trainingsData.csv"){
             //ViewData["trainings"] = this.reportingContext.zInServiceTrainingCatalog.Take(10).ToList();

@@ -103,8 +103,16 @@ namespace Kers.Models.Repositories
                         });
                         m.Body = alternative;
                         //https://github.com/jstedfast/MailKit/issues/126
-                        client.MessageSent += OnMessageSent;
-                        client.Send (m);
+
+                        if(environment.IsDevelopment() || environment.IsStaging() ){
+                            if(message.To.RprtngProfile.Email == "idene3@uky.edu"){
+                                client.MessageSent += OnMessageSent;
+                                client.Send (m);
+                            }
+                        }else{
+                            client.MessageSent += OnMessageSent;
+                            client.Send (m);
+                        }
                         client.Disconnect (true);
                         message.IsItSent = true;
                         //context.SaveChanges();
