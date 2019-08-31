@@ -140,6 +140,9 @@ namespace Kers.Models.Repositories
             training.classicInServiceTrainingId = service.rID;
             training.submittedBy = training.Organizer = this.userByPersonId(service.submittedByPersonID);
             training.approvedBy = this.userByPersonId( service.approvedByPersonID);
+            if(training.submittedBy == null){
+                training.submittedBy = this.context.KersUser.Find(4);
+            }
             training.approvedDate = service.approvedDate;
             training.tID = service.tID;
             training.tStatus = service.tStatus;
@@ -205,10 +208,12 @@ namespace Kers.Models.Repositories
         }
 
         public KersUser userByPersonId( string id ){
-            var user = this.context.KersUser.Where( u => u.RprtngProfile.PersonId == id).FirstOrDefault();
+            var user = this.context.KersUser.Where( u => u.RprtngProfile.PersonId == id)
+                                .Include( r => r.RprtngProfile)
+                                .FirstOrDefault();
             if(user == null){
                 zEmpRptProfile profile = this.mainContext.zEmpRptProfiles.Where( u => u.personID == id).FirstOrDefault();
-                user = syncUserFromProfile(profile);
+                if(profile != null) user = syncUserFromProfile(profile);
             }
             return user;
         }
@@ -234,7 +239,8 @@ namespace Kers.Models.Repositories
 
             var old = this.reportingContext.zInServiceTrainingEnrollment.Where( a => a.tID == tId );
             foreach( var enr in old ){
-                enrlmnt.Add( old2newEnrolment( enr ) );
+                var newEnr = old2newEnrolment( enr );
+                if(newEnr.Attendie != null) enrlmnt.Add(newEnr);
             }
 
             return enrlmnt;
@@ -246,7 +252,7 @@ namespace Kers.Models.Repositories
             enrolment.rDT = old.rDT;
             enrolment.puid = old.puid;
             enrolment.Attendie = userByPersonId( old.personID);
-            if(enrolment.Attendie != null ){
+            if(enrolment.Attendie != null && enrolment.Attendie.RprtngProfile != null ){
                 enrolment.PlanningUnitId = enrolment.Attendie.RprtngProfile.PlanningUnitId;
             }
             enrolment.TrainingId = old.tID;

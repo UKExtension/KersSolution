@@ -349,17 +349,17 @@ namespace Kers.Controllers
         public async Task<IActionResult> GetInServiceTrainings(int limit, Boolean notConverted = true, string order = "ASC"){
             IOrderedQueryable<zInServiceTrainingCatalog> services;
             if( notConverted ){
-                List<int> converted = await context.Training.Where( t => t.tID != null).Select( t => Convert.ToInt32(t.tID)).ToListAsync();
+                List<string> converted = await context.Training.Where( t => t.tID != null).Select( t => t.tID).ToListAsync();
                 if( order == "ASC"){
-                    services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.rID )).OrderBy(a => a.rID);
+                    services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.tID )).OrderBy(a => a.TrainDateBegin);
                 }else{
-                    services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.rID )).OrderByDescending(a => a.rID);
+                    services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.tID )).OrderByDescending(a => a.TrainDateBegin);
                 }
             }else{
                 if( order == "ASC"){
-                    services = _reportingContext.zInServiceTrainingCatalog.OrderBy(a => a.rID);
+                    services = _reportingContext.zInServiceTrainingCatalog.OrderBy(a => a.TrainDateBegin);
                 }else{
-                    services = _reportingContext.zInServiceTrainingCatalog.OrderByDescending(a => a.rID);
+                    services = _reportingContext.zInServiceTrainingCatalog.OrderByDescending(a => a.TrainDateBegin);
                 }
             }
             var sc = await services.Take(limit).ToListAsync();
@@ -367,16 +367,24 @@ namespace Kers.Controllers
         }
         [HttpGet("migrate/{id}")]
         public async Task<IActionResult> MigrateInServiceTrainings(int id){
-            if( !(await context.Training.Where( t => t.tID == id.ToString()).AnyAsync()) ){
-                var service = await this._reportingContext.zInServiceTrainingCatalog.Where( s => s.rID == id).FirstOrDefaultAsync();
-                if( service != null){
-                    if( !this.context.Training.Where( t => t.tID == service.rID.ToString()).Any() ){
-                        var training = trainingRepo.ServiceToTraining(service);
-                        this.context.Add(training);
-                        await this.context.SaveChangesAsync();
-                        return new OkObjectResult(training);
-                    }
-                } 
+            try{
+                if( !(await context.Training.Where( t => t.tID == id.ToString()).AnyAsync()) ){
+                    var service = await this._reportingContext.zInServiceTrainingCatalog.Where( s => s.rID == id).FirstOrDefaultAsync();
+                    if( service != null){
+                        if( !this.context.Training.Where( t => t.tID == service.rID.ToString()).Any() ){
+                            
+                                var training = trainingRepo.ServiceToTraining(service);
+                                this.context.Add(training);
+                                await this.context.SaveChangesAsync();
+                                return new OkObjectResult(training);
+                            
+                            
+                        }
+                    } 
+                }
+            }catch( Exception e ){
+                this.Log( e.Message ,"Training", "Migration Error.", "Training", "Error");
+                return new StatusCodeResult(500);
             }
             return new StatusCodeResult(500);
         }
