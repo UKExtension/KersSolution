@@ -148,7 +148,7 @@ namespace Kers.Models.Repositories
             training.submittedBy = training.Organizer = this.userByPersonId(service.submittedByPersonID);
             training.approvedBy = this.userByPersonId( service.approvedByPersonID);
             if(training.submittedBy == null){
-                training.submittedBy = this.context.KersUser.Find(4);
+                training.submittedById = training.OrganizerId = 4;
             }
             training.approvedDate = service.approvedDate;
             training.tID = service.tID;
@@ -220,7 +220,7 @@ namespace Kers.Models.Repositories
                                 .FirstOrDefault();
             if(user == null){
                 zEmpRptProfile profile = this.mainContext.zEmpRptProfiles.Where( u => u.personID == id).FirstOrDefault();
-                if(profile != null) user = syncUserFromProfile(profile);
+                if(profile != null && profile.linkBlueID != null) user = syncUserFromProfile(profile);
             }
             return user;
         }
