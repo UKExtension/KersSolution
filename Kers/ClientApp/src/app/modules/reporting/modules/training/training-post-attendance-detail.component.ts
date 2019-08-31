@@ -33,8 +33,10 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   }
   checked(event:any, enrolled:TrainingEnrollment){
     if(event.currentTarget.checked){
+      enrolled.attended = true;
       enrolled.eStatus = "A";
     }else{
+      enrolled.attended = false;
       enrolled.eStatus = "E";
     }
   }

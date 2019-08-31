@@ -22,7 +22,7 @@ export class TrainingPostAttendanceComponent implements OnInit {
   ) { 
     var now = new Date();
     this.thisYear = now.getFullYear();
-    for( var year = 2017; year <= this.thisYear; year++){
+    for( var year = 2011; year <= this.thisYear; year++){
       this.years.push(year);
     }
   }
