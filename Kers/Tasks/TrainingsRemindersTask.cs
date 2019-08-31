@@ -35,7 +35,7 @@ namespace Kers.Tasks
             this.serviceProvider = serviceProvider;
             this.environment = environment;
         }
-        public string Schedule => "09 * * * *";
+        public string Schedule => "09 16 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -54,24 +54,27 @@ namespace Kers.Tasks
                     
                     var _configuration = scope.ServiceProvider.GetService<IConfiguration>();
                     var messages = repo.Set3DaysReminders();
-                    /* 
                     
-                    var messages = repo.ProcessMessageQueue( _configuration, environment );
-
-
 
 
                     if( messages.Count() != 0 ){
                         var endTime = DateTime.Now;
                         await LogComplete(context, 
-                                        "ProcessMessageQueue", messages, 
+                                        "3DaysReminders", messages, 
                                         messages.Count().ToString() + " Messages send for " + (endTime - startTime).TotalSeconds + " seconds"
                                     );
                     }
 
-                    
+                    messages = repo.Set7DaysReminders();
 
- */
+                    if( messages.Count() != 0 ){
+                        var endTime = DateTime.Now;
+                        await LogComplete(context, 
+                                        "7DaysReminders", messages, 
+                                        messages.Count().ToString() + " Messages send for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    );
+                    }
+
 
 
 

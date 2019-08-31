@@ -50,6 +50,13 @@ namespace Kers.Models.Repositories
             return trainings;
         }
 
+        public IQueryable<Training> Set7DaysReminders(){
+            IQueryable<Training> trainings = this.context.Training.Where( t => t.Start.AddDays(-7).ToString("MMddyyyy") == DateTimeOffset.Now.ToString("MMddyyyy"))
+                                                    .Include(t => t.Enrollment).ThenInclude( e => e.Attendie);
+            this.ScheduleReminders("7DAYSREMINDER", trainings);
+            return trainings;
+        }
+
         public void ScheduleReminders(string type, IQueryable<Training> trainings){
             foreach( var training in trainings){
                 foreach( var enrolment in training.Enrollment.Where(e => e.eStatus == "E")){
