@@ -227,12 +227,22 @@ namespace Kers.Models.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ExtensionEvent>()
+                .HasOne( e => e.Organizer)
+                .WithMany( u => u.Events);
+            modelBuilder.Entity<Training>()
+                .HasOne( e => e.submittedBy)
+                .WithMany( u => u.SubmittedTrainins);
+            modelBuilder.Entity<Training>()
+                .HasOne( e => e.approvedBy)
+                .WithMany( u => u.ApprovedTrainings);
+                /* 
             modelBuilder.Entity<CountyEventPlanningUnit>()
                 .HasKey(t => new { t.CountyEventId, t.PlanningUnitId });
             
             modelBuilder.Entity<CountyEventProgramCategory>()
                 .HasKey(t => new { t.CountyEventId, t.ProgramCategoryId });
-            
+             */
             modelBuilder.Entity<Story>()
                 .Property(b => b.HasImages)
                 .HasDefaultValue(false);

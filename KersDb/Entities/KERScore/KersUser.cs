@@ -21,6 +21,9 @@ namespace Kers.Models.Entities.KERScore
         public DateTime Created { get; set; }
         public DateTime Updated {get; set;}
         public DateTime LastLogin {get;set;}
+        public List<ExtensionEvent> Events {get;set;}
+        public List<Training> SubmittedTrainins {get;set;}
+        public List<Training> ApprovedTrainings {get;set;}
 
     }
 }
