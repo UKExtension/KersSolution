@@ -12,7 +12,7 @@ import { Component, OnInit } from '@angular/core';
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            <a href="/kers_mobile/InServiceMyUpcomingTrainings.aspx" class="btn btn-dark btn-lg btn-block">In-Service Training</a>
+            <a routerLink="/reporting/training/catalog" class="btn btn-dark btn-lg btn-block">In-Service Trainings</a>
           </div>
         </div>
     </div>

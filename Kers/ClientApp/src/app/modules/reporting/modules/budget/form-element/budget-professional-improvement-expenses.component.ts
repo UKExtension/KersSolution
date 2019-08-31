@@ -30,9 +30,9 @@ import { User } from '../../user/user.service';
           <option disabled>──────────</option>
           <option [ngValue]="null">Other</option>
         </select><br>
-        <small *ngIf="budgetTravel.controls.personId.value != null">(Person)</small>
-        <input *ngIf="budgetTravel.controls.personId.value == null" type="text" style="margin-top: 3px;" class="form-control" formControlName="personNameIfNotAUser" /><br>
-          <small  *ngIf="budgetTravel.controls.personId.value == null">(Other Person Name)</small>
+        <small *ngIf="budgetImprovement.controls.personId.value != null">(Person)</small>
+        <input *ngIf="budgetImprovement.controls.personId.value == null" type="text" style="margin-top: 3px;" class="form-control" formControlName="personNameIfNotAUser" /><br>
+          <small  *ngIf="budgetImprovement.controls.personId.value == null">(Other Person Name)</small>
       </div>
       &nbsp;
       <div class="form-group">
