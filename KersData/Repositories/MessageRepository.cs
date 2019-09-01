@@ -38,7 +38,9 @@ namespace Kers.Models.Repositories
                 .Include( u => u.To).ThenInclude( t => t.PersonalProfile)
                 .Include( u => u.To).ThenInclude( t => t.RprtngProfile)
                 .ToList();
-            foreach( var message in messages ) this.sendMessage( message, configuration, environment );
+            foreach( var message in messages ){
+                this.sendMessage( message, configuration, environment );
+            } 
             this.context.SaveChanges();
             return messages;
         }
