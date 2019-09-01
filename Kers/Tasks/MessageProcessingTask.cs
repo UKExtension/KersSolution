@@ -48,13 +48,8 @@ namespace Kers.Tasks
                 var repo = new MessageRepository(context);
                 try{
                     var startTime = DateTime.Now;
-                    
                     var _configuration = scope.ServiceProvider.GetService<IConfiguration>();
                     var messages = repo.ProcessMessageQueue( _configuration, environment );
-
-
-
-
                     if( messages.Count() != 0 ){
                         var endTime = DateTime.Now;
                         await LogComplete(context, 
@@ -62,13 +57,6 @@ namespace Kers.Tasks
                                         messages.Count().ToString() + " Messages send for " + (endTime - startTime).TotalSeconds + " seconds"
                                     );
                     }
-
-                    
-
-
-
-
-
                 }catch( Exception e){
                     await LogError(context, 
                                     "ProcessMessageQueue", e, 

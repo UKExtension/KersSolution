@@ -31,21 +31,13 @@ namespace Kers.Models.Repositories
         }
 
 
-        public IQueryable<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment){
+        public List<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment){
             
             var messages = this.context.Message
                 .Where( m => m.IsItSent == false && m.ScheduledFor <= DateTimeOffset.Now )
                 .Include( u => u.To).ThenInclude( t => t.PersonalProfile)
-                .Include( u => u.To).ThenInclude( t => t.RprtngProfile);
-/* 
-
-            foreach( var mess in messages){
-                if( mess.FromId != null){
-                    mess.From = context.KersUser.Where( u => u.Id == mess.FromId).Include(u => u.RprtngProfile).Include(r => r.PersonalProfile).FirstOrDefault();
-                } 
-                this.sendMessage( mess, configuration, environment );
-            }*/
-            //Console.WriteLine(messages.Count.ToString());
+                .Include( u => u.To).ThenInclude( t => t.RprtngProfile)
+                .ToList();
             foreach( var message in messages ) this.sendMessage( message, configuration, environment );
             this.context.SaveChanges();
             return messages;
@@ -115,8 +107,6 @@ namespace Kers.Models.Repositories
                         }
                         client.Disconnect (true);
                         message.IsItSent = true;
-                        //context.SaveChanges();
-
                     } catch (Exception ex) {
                         var log = new Log();
                         log.Type = "Error";
@@ -191,8 +181,7 @@ namespace Kers.Models.Repositories
 
                                                 });
                 this.context.Add( log );
-                this.context.SaveChanges();
-            //Console.WriteLine ("The message was sent!");
+                //this.context.SaveChanges();
         }
 
 

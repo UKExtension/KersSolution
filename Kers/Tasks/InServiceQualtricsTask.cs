@@ -97,7 +97,7 @@ namespace Kers.Tasks
                             + "&Version=" + qualtricsVersion
                             + "&ImportFormat=" + qualtricsImportFormat
                             + "&Activate=" + qualtricsActivate
-                            + "&Name=" + HttpUtility.UrlEncode(training.Subject)
+                            + "&Name=" + HttpUtility.UrlEncode(training.Start.ToString("yyyyMMdd")+"["+training.submittedBy.RprtngProfile.Name+"]"+training.Subject)
                             + "&URL=" + HttpUtility.UrlEncode(sSurveyURL);
                             
                             try
