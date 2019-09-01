@@ -15,12 +15,14 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   default = true;
   post = false;
   loading = false;
+  enrolledFolks: TrainingEnrollment[];
 
   constructor(
     private service:TrainingService
   ) { }
 
   ngOnInit() {
+    this.enrolledFolks = this.training.enrollment.filter( e => e.eStatus == "E");
   }
 
   defaultView(){
@@ -34,10 +36,8 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   checked(event:any, enrolled:TrainingEnrollment){
     if(event.currentTarget.checked){
       enrolled.attended = true;
-      enrolled.eStatus = "A";
     }else{
       enrolled.attended = false;
-      enrolled.eStatus = "E";
     }
   }
   submit(){
