@@ -336,7 +336,8 @@ namespace Kers.Controllers
                     } 
                 }
                 context.SaveChanges();
-                this.Log(training,"Training", "Posted Attendance.");
+                this.Log(training,"Training", "Posted Attendance.", "Training"
+                );
                 return new OkObjectResult(training);
             }else{
                 this.Log( training ,"Training", "Not Found Training in an posting attendance attempt.", "Training", "Error");
