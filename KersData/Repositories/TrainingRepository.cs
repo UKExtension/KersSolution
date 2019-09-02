@@ -57,6 +57,27 @@ namespace Kers.Models.Repositories
             return trainings;
         }
 
+        public IQueryable<TrainingEnrollment> SetEvaluationReminders(){
+            IQueryable<TrainingEnrollment> trainings = this.context.TrainingEnrollment
+                        .Where( t => t.Training.qualtricsSurveyID != null && t.evaluationMessageSent == false)
+                        .Include( t => t.Training)
+                        .Include(t => t.Attendie).ThenInclude( e => e.RprtngProfile);
+            var template = this.context.MessageTemplate.Where( t => t.Code == "SURVEY").FirstOrDefault();
+            if( template != null && trainings.Count() > 0 ){
+                foreach( var enr in trainings){
+                    var message = new Message();
+                    message.Subject = template.Subject;
+                    message.BodyHtml = string.Format(template.BodyHtml, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.qualtricsSurveyID);
+                    message.BodyText = string.Format(template.BodyText, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.qualtricsSurveyID);
+                    message.FromId = enr.Training.submittedById;
+                    message.ToId = enr.AttendieId;
+                    this.context.Message.Add(message);
+                }
+                this.context.SaveChanges();
+            }
+            return trainings;
+        }
+
         public void ScheduleReminders(string type, IQueryable<Training> trainings){
             foreach( var training in trainings){
                 foreach( var enrolment in training.Enrollment.Where(e => e.eStatus == "E")){
