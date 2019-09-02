@@ -72,6 +72,7 @@ namespace Kers.Models.Repositories
                     message.FromId = enr.Training.submittedById;
                     message.ToId = enr.AttendieId;
                     this.context.Message.Add(message);
+                    enr.evaluationMessageSent = true;
                 }
                 this.context.SaveChanges();
             }
