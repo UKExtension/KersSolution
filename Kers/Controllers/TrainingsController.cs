@@ -222,11 +222,12 @@ namespace Kers.Controllers
                         enrollment.eStatus = "W";
                     }else{
                         enrollment.eStatus = "E";
+                        await messageRepo.ScheduleTrainingMessage("ENROLLMENT", training, user);
                     }
                     enrollment.enrolledDate = enrollment.rDT;
                     training.Enrollment.Add(enrollment);
                     await context.SaveChangesAsync();
-                    await messageRepo.ScheduleTrainingMessage("ENROLLMENT", training, user);
+                    
                     this.Log(enrollment,"TrainingEnrollment", "Enrolled In Training.");
                 }
                 
@@ -244,9 +245,7 @@ namespace Kers.Controllers
                                         .FirstOrDefaultAsync();
             if(training != null){
                 var user = this.CurrentUser();
-
                 var enrollment = training.Enrollment.Where(e => e.Attendie == user).FirstOrDefault();
-
 
                 if( enrollment != null){
                     training.Enrollment.Remove(enrollment);
@@ -478,7 +477,17 @@ namespace Kers.Controllers
                 trainings = trainings.Where( i => i.Start < end);
             }
             if(day != null){
-                trainings = trainings.Where( i => (int)i.Start.DayOfWeek == day);
+                trainings = trainings
+                            .Where( i => 
+                                        (i.End == null && (int)i.Start.DayOfWeek == day)
+                                        ||
+                                        (i.End.HasValue == true && 
+                                            (i.Start.DayOfWeek < i.End.Value.DayOfWeek ? 
+                                                (int)i.Start.DayOfWeek <= day && (int)i.End.Value.DayOfWeek >= day
+                                                : 
+                                                (int)i.Start.DayOfWeek >= day && (int)i.End.Value.DayOfWeek <= day )
+                                        )
+                                    );
             }
             if( status == "published"){
                 trainings = trainings.Where( i => i.tStatus == "A");
