@@ -109,6 +109,7 @@ namespace Kers.Models.Repositories
                         }
                         client.Disconnect (true);
                         message.IsItSent = true;
+                        message.SentAt = DateTimeOffset.Now;
                     } catch (Exception ex) {
                         var log = new Log();
                         log.Type = "Error";

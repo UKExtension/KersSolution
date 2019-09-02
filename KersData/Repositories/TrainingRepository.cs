@@ -43,25 +43,26 @@ namespace Kers.Models.Repositories
         // Reminders
         /***********************************************/
 
-        public IQueryable<Training> Set3DaysReminders(){
-            IQueryable<Training> trainings = this.context.Training.Where( t => t.Start.AddDays(-3).ToString("MMddyyyy") == DateTimeOffset.Now.ToString("MMddyyyy"))
-                                                    .Include(t => t.Enrollment).ThenInclude( e => e.Attendie);
+        public List<Training> Set3DaysReminders(){
+            List<Training> trainings = this.context.Training.Where( t => t.Start.AddDays(-3).ToString("MMddyyyy") == DateTimeOffset.Now.ToString("MMddyyyy"))
+                                                    .Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ToList();
             this.ScheduleReminders("3DAYSREMINDER", trainings);
             return trainings;
         }
 
-        public IQueryable<Training> Set7DaysReminders(){
-            IQueryable<Training> trainings = this.context.Training.Where( t => t.Start.AddDays(-7).ToString("MMddyyyy") == DateTimeOffset.Now.ToString("MMddyyyy"))
-                                                    .Include(t => t.Enrollment).ThenInclude( e => e.Attendie);
+        public List<Training> Set7DaysReminders(){
+            List<Training> trainings = this.context.Training.Where( t => t.Start.AddDays(-7).ToString("MMddyyyy") == DateTimeOffset.Now.ToString("MMddyyyy"))
+                                                    .Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ToList();
             this.ScheduleReminders("7DAYSREMINDER", trainings);
             return trainings;
         }
 
-        public IQueryable<TrainingEnrollment> SetEvaluationReminders(){
-            IQueryable<TrainingEnrollment> trainings = this.context.TrainingEnrollment
+        public List<TrainingEnrollment> SetEvaluationReminders(){
+            List<TrainingEnrollment> trainings = this.context.TrainingEnrollment
                         .Where( t => t.Training.qualtricsSurveyID != null && t.evaluationMessageSent == false && t.attended == true)
                         .Include( t => t.Training)
-                        .Include(t => t.Attendie).ThenInclude( e => e.RprtngProfile);
+                        .Include(t => t.Attendie).ThenInclude( e => e.RprtngProfile)
+                        .ToList();
             var template = this.context.MessageTemplate.Where( t => t.Code == "SURVEY").FirstOrDefault();
             if( template != null && trainings.Count() > 0 ){
                 foreach( var enr in trainings){
@@ -79,7 +80,7 @@ namespace Kers.Models.Repositories
             return trainings;
         }
 
-        public void ScheduleReminders(string type, IQueryable<Training> trainings){
+        public void ScheduleReminders(string type, List<Training> trainings){
             foreach( var training in trainings){
                 foreach( var enrolment in training.Enrollment.Where(e => e.eStatus == "E")){
                     this.messageRepo.ScheduleTrainingMessage(type, training, enrolment.Attendie);
