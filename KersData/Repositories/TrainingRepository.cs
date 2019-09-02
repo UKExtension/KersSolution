@@ -59,7 +59,7 @@ namespace Kers.Models.Repositories
 
         public IQueryable<TrainingEnrollment> SetEvaluationReminders(){
             IQueryable<TrainingEnrollment> trainings = this.context.TrainingEnrollment
-                        .Where( t => t.Training.qualtricsSurveyID != null && t.evaluationMessageSent == false)
+                        .Where( t => t.Training.qualtricsSurveyID != null && t.evaluationMessageSent == false && t.attended == true)
                         .Include( t => t.Training)
                         .Include(t => t.Attendie).ThenInclude( e => e.RprtngProfile);
             var template = this.context.MessageTemplate.Where( t => t.Code == "SURVEY").FirstOrDefault();
