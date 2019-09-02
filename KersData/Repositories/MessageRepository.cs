@@ -102,14 +102,17 @@ namespace Kers.Models.Repositories
                             if(message.To.RprtngProfile.Email == "idene3@uky.edu"){
                                 client.MessageSent += OnMessageSent;
                                 client.Send (m);
+                                message.IsItSent = true;
+                                message.SentAt = DateTimeOffset.Now;
                             }
                         }else{
                             client.MessageSent += OnMessageSent;
                             client.Send (m);
+                            message.IsItSent = true;
+                            message.SentAt = DateTimeOffset.Now;
                         }
                         client.Disconnect (true);
-                        message.IsItSent = true;
-                        message.SentAt = DateTimeOffset.Now;
+                        
                     } catch (Exception ex) {
                         var log = new Log();
                         log.Type = "Error";
