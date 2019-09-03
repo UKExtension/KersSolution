@@ -408,6 +408,17 @@ namespace Kers.Controllers
                                 .Include( t => t.iHour)
                                 .Include( t => t.Enrollment)
                                 .ToListAsync();
+            foreach( var tr in trainings){
+                tr.Organizer = null;
+                tr.approvedBy = null;
+                if(tr.submittedBy != null){
+                    tr.submittedBy.ApprovedTrainings = null;
+                    tr.submittedBy.SubmittedTrainins = null;
+                }
+                foreach( var enr in tr.Enrollment){
+                    enr.Training = null;
+                }
+            }
             return new OkObjectResult(trainings);
         }
 
