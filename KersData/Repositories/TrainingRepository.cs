@@ -80,6 +80,55 @@ namespace Kers.Models.Repositories
             return trainings;
         }
 
+        public List<Training> RoosterReminders(){
+            List<Training> trainings = this.context.Training
+                        .Where( t => 
+                                t.Start.AddDays( - (t.CancelCutoffDays == null ? 1 : t.CancelCutoffDays.cancelDaysVal) ).ToString("yyyyMMdd") 
+                                == 
+                                DateTimeOffset.Now.ToString("yyyyMMdd")
+                            &&
+                                t.tStatus == "A"
+                            )
+                        .Include( t => t.Enrollment)
+                                .ThenInclude( e => e.Attendie)
+                                .ThenInclude( a => a.RprtngProfile)
+                                .ThenInclude(r => r.PlanningUnit)
+                        .ToList();
+            var template = this.context.MessageTemplate.Where( t => t.Code == "ROSTER").FirstOrDefault();
+            if( template != null && trainings.Count() > 0 ){
+                foreach( var training in trainings){
+                    var rstr = "";
+                    foreach( var enr in training.Enrollment.OrderBy( f => f.Attendie.RprtngProfile.Name)){
+                        rstr += "<td>" + enr.Attendie.RprtngProfile.Name + 
+                                "</td><td></td><td>"+enr.Attendie.RprtngProfile.PlanningUnit.Name+"</td>";
+                    }
+
+                    var valArray = new string[]{
+                        training.Subject,
+                        training.Subject,
+                        training.Start.ToString("MM/dd/yyyy") + (training.End != null? " - " + training.End?.ToString("MM/dd/yyyy") : ""),
+                        training.tLocation,
+                        training.tTime,
+                        training.day1,
+                        training.day2,
+                        training.day3,
+                        training.day4,
+                        training.tContact,
+                        rstr
+                    };
+                    var message = new Message();
+                    message.Subject = template.Subject;
+                    message.BodyHtml = string.Format(template.BodyHtml, valArray);
+                    message.BodyText = string.Format(template.BodyText, valArray);
+                    message.FromEmail = "agpsd@lsv.uky.edu";
+                    message.ToId = training.submittedById;
+                    this.context.Message.Add(message);
+                }
+                this.context.SaveChanges();
+            }
+            return trainings;
+        }
+
         public void ScheduleReminders(string type, List<Training> trainings){
             foreach( var training in trainings){
                 foreach( var enrolment in training.Enrollment.Where(e => e.eStatus == "E")){

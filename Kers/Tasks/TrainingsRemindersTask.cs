@@ -85,8 +85,15 @@ namespace Kers.Tasks
                                     );
                     }
 
+                    var sendRoosterMessages = repo.RoosterReminders();
 
-
+                    if( sendRoosterMessages.Count() != 0 ){
+                        var endTime = DateTime.Now;
+                        await LogComplete(context, 
+                                        "RoosterReminders", sendRoosterMessages, 
+                                        messages.Count().ToString() + " Messages send for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    );
+                    }
 
                 }catch( Exception e){
                     await LogError(context, 
