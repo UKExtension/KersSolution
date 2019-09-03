@@ -20,7 +20,8 @@
 
 
 <div class="table-responsive">
-  <table  class="table table-bordered table-striped" *ngIf="trainings">
+  <loading *ngIf="loading"></loading>
+  <table  class="table table-bordered table-striped" *ngIf="!loading">
     <thead>
         <tr>
             <th>Training Date(s)</th>
@@ -29,6 +30,6 @@
             <th>&nbsp;</th>
         </tr>
     </thead>
-    <tr *ngFor="let training of trainings | async" [training-post-attendance-detail]="training"></tr>
+    <tr *ngFor="let training of trainings" [training-post-attendance-detail]="training"></tr>
   </table>
 </div>

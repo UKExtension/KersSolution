@@ -550,6 +550,11 @@ namespace Kers.Controllers
                                         .ThenInclude( u => u.PlanningUnit)
                             .Include(t => t.iHour);
             var tnngs = await trainings.ToListAsync();
+            foreach( var tn in tnngs ){
+                foreach( var enr in tn.Enrollment){
+                    enr.PlanningUnit.GeoFeature = "";
+                }
+            }
             return new OkObjectResult(tnngs);
         }
 

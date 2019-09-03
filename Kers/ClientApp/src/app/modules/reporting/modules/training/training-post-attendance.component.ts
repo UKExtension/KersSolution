@@ -11,11 +11,12 @@ import { User } from '../user/user.service';
 })
 export class TrainingPostAttendanceComponent implements OnInit {
 
-  trainings:Observable<Training[]>;
+  trainings:Training[];
   @Input() user:User;
 
   years:number[] = [];
   thisYear:number = 0;
+  loading = false;
 
   constructor(
     private service:TrainingService
@@ -32,12 +33,17 @@ export class TrainingPostAttendanceComponent implements OnInit {
   }
 
   loadData(){
-    this.trainings = this.service.proposedByUser(0, this.thisYear);
+    this.loading = true;
+    this.service.proposedByUser(0, this.thisYear).subscribe(
+        res => {
+          this.trainings = res;
+          this. loading = false;
+        }
+      );
   }
 
   onYearChange(year:number){
     this.thisYear = year;
-    this.trainings = null;
     this.loadData();
   }
 
