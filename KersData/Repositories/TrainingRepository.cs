@@ -57,6 +57,76 @@ namespace Kers.Models.Repositories
             return trainings;
         }
 
+        public List<Training> AwaitingActionReminders(){
+            List<Training> trainings = this.context.Training
+                                            .Where( t => t.tStatus == "P")
+                                            .ToList();
+            if(trainings.Count() > 0){
+
+                var template = this.context.MessageTemplate.Where( t => t.Code == "AWAITINGACTION").FirstOrDefault();
+                if(template != null){
+                    var message = new Message();
+                    message.Subject = string.Format(template.Subject, trainings.Count());
+                    message.BodyHtml = string.Format(template.BodyHtml,  trainings.Count());
+                    message.BodyText = string.Format(template.BodyText,  trainings.Count());
+                    message.FromEmail = "agpsd@lsv.uky.edu";
+                    message.ToEmail = "agpsd@lsv.uky.edu";
+                    this.context.Message.Add(message);
+                    this.context.SaveChanges();
+                }
+
+
+            }
+            
+            return trainings;
+        }
+
+        public List<Training> PostAttendanceReminders(){
+            List<Training> trainings = this.context.Training
+                                            .Where( t => 
+                                                        t.tStatus == "A" 
+                                                            && 
+                                                        t.Start.AddDays( 1 ).ToString("yyyyMMdd") == DateTimeOffset.Now.ToString("yyyyMMdd"))
+                                            .ToList();
+            if(trainings.Count() > 0){
+
+                var template = this.context.MessageTemplate.Where( t => t.Code == "POSTATTENDANCE").FirstOrDefault();
+                
+                if(template != null){
+                    foreach( var training in trainings){
+
+                        var valArray = new string[]{
+                            training.Subject,
+                            training.Subject,
+                            training.Start.ToString("MM/dd/yyyy") + (training.End != null? " - " + training.End?.ToString("MM/dd/yyyy") : ""),
+                            training.tLocation,
+                            training.tTime,
+                            training.day1,
+                            training.day2,
+                            training.day3,
+                            training.day4,
+                            training.tContact
+                        };
+                        var message = new Message();
+                        message.Subject = template.Subject;
+                        message.BodyHtml = string.Format(template.BodyHtml, valArray);
+                        message.BodyText = string.Format(template.BodyText, valArray);
+                        message.FromEmail = "agpsd@lsv.uky.edu";
+                        message.ToId = training.submittedById;
+                        this.context.Message.Add(message);
+
+
+                    }
+                    
+                    this.context.SaveChanges();
+                }
+
+
+            }
+            
+            return trainings;
+        }
+
         public List<TrainingEnrollment> SetEvaluationReminders(){
             List<TrainingEnrollment> trainings = this.context.TrainingEnrollment
                         .Where( t => t.Training.qualtricsSurveyID != null && t.evaluationMessageSent == false && t.attended == true)

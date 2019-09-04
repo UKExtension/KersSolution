@@ -31,7 +31,7 @@ namespace Kers.Tasks
         ){
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "52 14 * * *";
+        public string Schedule => "37 17 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -97,7 +97,7 @@ namespace Kers.Tasks
                             + "&Version=" + qualtricsVersion
                             + "&ImportFormat=" + qualtricsImportFormat
                             + "&Activate=" + qualtricsActivate
-                            + "&Name=" + HttpUtility.UrlEncode(training.Start.ToString("yyyyMMdd")+"["+training.submittedBy.RprtngProfile.Name+"]"+training.Subject)
+                            + "&Name=" + HttpUtility.UrlEncode(training.Start.ToString("yyyyMMdd")+" ["+training.submittedBy.RprtngProfile.Name+"] "+training.Subject)
                             + "&URL=" + HttpUtility.UrlEncode(sSurveyURL);
                             
                             try
@@ -111,15 +111,6 @@ namespace Kers.Tasks
                                         xmlDoc = XDocument.Parse(data);
                                         String surveyID = xmlDoc.Root.Element("Result").Value;
                                         training.qualtricsSurveyID = surveyID;
-/* 
-
-                                        var commandText = "UPDATE [UKCA_Reporting]..[zInServiceTrainingCatalog] SET qualtricsSurveyID = @p1 WHERE rID = @p2";;
-                                        var surveyParameter = new SqlParameter("@p1", surveyID);
-                                        var trainingParameter = new SqlParameter("@p2", training.tID);
-                                        contexReporting.Database.ExecuteSqlCommand(commandText, parameters: new[] {
-                                                                                                        surveyParameter, trainingParameter
-                                                                                    });
- */
 
                                     }
                                     catch (Exception e)
@@ -175,177 +166,3 @@ namespace Kers.Tasks
 
 }
 
-/*
-
-
-
-
-
-public partial class _Default : System.Web.UI.Page
-{
-    Int32 rID;
-    String sTrainingID = "";
-    String sTitle = "";
-    String sDates = "";
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        int id;
-        if (!int.TryParse(Request.QueryString["t"], out id))
-        {
-            Response.End();
-        }
-
-        rID = id;
-        getTrainingDetails();
-
-        if (sTrainingID != "") {
-            Response.Clear();
-            Response.ClearHeaders();
-            Response.AddHeader("Content-Type", "text/plain");
-            RenderSurveyText();
-            Response.Flush();
-            Response.End();
-        }
-        else
-        {
-            Response.End();
-        }
-    }
-
-    protected void getTrainingDetails()
-    {
-        SqlConnection conn = null;
-        try
-        {
-            string sql = "SELECT * FROM [UKCA_Reporting]..[vInServiceTrainingCatalog] WHERE rID = @p1";
-            conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connA"].ConnectionString);
-            SqlCommand cmd = new SqlCommand(sql, conn);
-            SqlParameter param1 = new SqlParameter();
-            param1.ParameterName = "@p1";
-            param1.Value = rID;
-            cmd.Parameters.Add(param1);
-            conn.Open();
-            using (SqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    sTrainingID = reader.GetString(reader.GetOrdinal("tID"));
-                    sTitle = reader.GetString(reader.GetOrdinal("tTitle"));
-                    sDates = reader.GetString(reader.GetOrdinal("trainDateBeginEndMMDDYYYY"));
-                }
-            }
-            conn.Close();
-        }
-        catch (Exception ex)
-        {
-            // Log your error
-        }
-        finally
-        {
-            if (conn != null) conn.Close();
-        }
-    }
-
-    protected void RenderSurveyText()
-    {
-        Response.Write("[[AdvancedFormat]]\n\n");
-
-        Response.Write("[[Question:Text]]\n");
-        Response.Write("Cooperative Extension In-Service Training Evaluation <br /><br />");
-        Response.Write(sTitle + " [" + sTrainingID + "] <br /><br />");
-        Response.Write(sDates);
-        Response.Write("\n\n");
-        
-        Response.Write("[[Question:Matrix]]\n");
-        Response.Write("The Content:\n");
-        Response.Write("[[Choices]]\n");
-        Response.Write("Was relevant to my needs.\n");
-        Response.Write("Was well organized.\n");
-        Response.Write("Was adequately related to the topic.\n");
-        Response.Write("Was easy to understand.\n");
-        Response.Write("[[AdvancedAnswers]]\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Strongly Disagree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Disagree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Neutral\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Agree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Strongly Agree\n");
-        Response.Write("\n");
-
-        Response.Write("[[Question:Matrix]]\n");
-        Response.Write("The Instructor(s):\n");
-        Response.Write("[[Choices]]\n");
-        Response.Write("Were well-prepared.\n");
-        Response.Write("Used teaching methods appropriate for the content/audience.\n");
-        Response.Write("Was knowledgeable of the subject matter.\n");
-        Response.Write("Engaged the participants in learning.\n");
-        Response.Write("Related program content to practical situations.\n");
-        Response.Write("Answered questions clearly and accurately.\n");
-        Response.Write("[[AdvancedAnswers]]\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Strongly Disagree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Disagree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Neutral\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Agree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Strongly Agree\n");
-        Response.Write("\n");
-
-        Response.Write("[[Question:Matrix]]\n");
-        Response.Write("Outcomes:\n");
-        Response.Write("[[Choices]]\n");
-        Response.Write("I gained knowledge/skills about the topics presented.\n");
-        Response.Write("I will use what I learned in my county program.\n");
-        Response.Write("This information will help my program move to the next level.\n");
-        Response.Write("Based on the in-service, I am now able to teach this topic to others.\n");
-        Response.Write("[[AdvancedAnswers]]\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Strongly Disagree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Disagree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Neutral\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Agree\n");
-        Response.Write("[[Answer]]\n");
-        Response.Write("Strongly Agree\n");
-        Response.Write("\n");
-
-        Response.Write("[[Question:TE]]\n");
-        Response.Write("Based on this in-service, what are two things that you are encouraged to do within the next month?\n");
-        Response.Write("\n");
-
-        Response.Write("[[Question:TE]]\n");
-        Response.Write("Based on this in-service, what are two things that you are encouraged to do within the next six (6) months?\n");
-        Response.Write("\n");
-
-        Response.Write("[[Question:TE]]\n");
-        Response.Write("If you have a program related to this topic, what do you think will help take it to the next level (i.e., achieve higher level impact)?\n");
-        Response.Write("\n");
-
-        Response.Write("[[Question:TE]]\n");
-        Response.Write("Please provide any additional comments about this training.\n");
-        Response.Write("\n");
-
-        Response.Write("[[Question:TE]]\n");
-        Response.Write("Please provide any comments about the instructor or any additional instructors/presenters.\n");
-        Response.Write("\n");
-    }
-
-}
-
-
-
-
-
-
-
- */

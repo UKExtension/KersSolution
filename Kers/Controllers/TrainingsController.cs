@@ -228,7 +228,7 @@ namespace Kers.Controllers
                     training.Enrollment.Add(enrollment);
                     await context.SaveChangesAsync();
                     
-                    this.Log(enrollment,"TrainingEnrollment", "Enrolled In Training.");
+                    this.Log(enrollment,"TrainingEnrollment", "Enrolled In Training.", "TrainingEnrollment");
                 }
                 
                 return new OkObjectResult(training);
@@ -253,7 +253,7 @@ namespace Kers.Controllers
                     await context.SaveChangesAsync();
                     CheckTheWaitingList(training);
                     await messageRepo.ScheduleTrainingMessage("CANCELENROLLMENT", training, user);
-                    this.Log(enrollment,"TrainingEnrollment", "Cancelled Enrollment in Training.");
+                    this.Log(enrollment,"TrainingEnrollment", "Cancelled Enrollment in Training.", "TrainingEnrollment");
                 }
                 
                 return new OkObjectResult(training);

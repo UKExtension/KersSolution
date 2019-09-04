@@ -95,6 +95,26 @@ namespace Kers.Tasks
                                     );
                     }
 
+                    var awaitingMessages = repo.AwaitingActionReminders();
+
+                    if( awaitingMessages.Count() != 0 ){
+                        var endTime = DateTime.Now;
+                        await LogComplete(context, 
+                                        "AwaitingActionReminders", awaitingMessages, 
+                                        messages.Count().ToString() + " Messages send for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    );
+                    }
+
+                    var attendanceMessages = repo.PostAttendanceReminders();
+
+                    if( attendanceMessages.Count() != 0 ){
+                        var endTime = DateTime.Now;
+                        await LogComplete(context, 
+                                        "PostAttendanceReminders", attendanceMessages, 
+                                        messages.Count().ToString() + " Messages send for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    );
+                    }
+
                 }catch( Exception e){
                     await LogError(context, 
                                     "TrainingRemindersError", e, 
