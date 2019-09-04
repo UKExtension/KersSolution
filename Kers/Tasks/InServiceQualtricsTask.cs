@@ -82,10 +82,10 @@ namespace Kers.Tasks
                         
                         foreach( var training in trnngs ){
 
-                            string sSurveyURL = "https://kers.ca.uky.edu/core/reports/Data/qltrx/" +
+                            string sSurveyURL = "https://kers.ca.uky.edu/core/reports/Data/qltrx?title=" +
                                                     HttpUtility.UrlEncode(training.Subject) +
-                                                    "/" + training.Id +
-                                                    "/" + HttpUtility.UrlEncode(training.Start.ToString("MM/dd/yyyy") +
+                                                    "&id=" + training.Id +
+                                                    "&dates=" + HttpUtility.UrlEncode(training.Start.ToString("MM/dd/yyyy") +
                                                     (training.End != null ? " - " +training.End?.ToString("MM/dd/yyyy") : "")); //title/id/dates
                             //"https://kers.ca.uky.edu/CES/rpt/zQualtricsInServiceEvaluationSurveyText.aspx?t=" + training.Id;
  

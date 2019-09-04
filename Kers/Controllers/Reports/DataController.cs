@@ -46,8 +46,8 @@ namespace Kers.Controllers.Reports
         }
         
         [HttpGet]
-        [Route("qltrx/{title}/{id}/{dates}")]
-        public IActionResult Qualtrics(string title, string id, string dates)
+        [Route("qltrx")]
+        public IActionResult Qualtrics(string title = "", string id = "", string dates = "")
         {
             var contents = "[[AdvancedFormat]]\n\n" + 
                             "Cooperative Extension In-Service Training Evaluation <br /><br />" + title +
