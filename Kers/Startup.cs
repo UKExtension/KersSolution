@@ -139,6 +139,38 @@ namespace Kers
                         options.SchemaName = "dbo";
                         options.TableName = "Cache";
                     });
+
+                // Add scheduled tasks & scheduler
+                services.AddSingleton<IScheduledTask, SnapSummaryByMonthTask>();
+                services.AddSingleton<IScheduledTask, SnapByAimedTowardImprovementTask>();
+                services.AddSingleton<IScheduledTask, SnapPersonalHourDetailsTask>();
+                services.AddSingleton<IScheduledTask, SnapSitesPerPersonPerMonthTask>();
+                services.AddSingleton<IScheduledTask, SnapSummaryByCountyTask>();
+                services.AddSingleton<IScheduledTask, SnapSummaryByEmployeeTask>();
+                services.AddSingleton<IScheduledTask, SnapByPartnerCategoryTask>();
+                services.AddSingleton<IScheduledTask, SnapCopiesDetailAgentsTask>();
+                services.AddSingleton<IScheduledTask, SnapCopiesDetailNotAgentsTask>();
+                services.AddSingleton<IScheduledTask, SnapCopiesSummarybyCountyAgentsTask>();
+                services.AddSingleton<IScheduledTask, SnapCopiesSummarybyCountyNotAgentsTask>();
+                services.AddSingleton<IScheduledTask, SnapReimbursementCountyTask>();
+                services.AddSingleton<IScheduledTask, SnapReimbursementNepAssistantsTask>();
+                services.AddSingleton<IScheduledTask, SpecificSiteNamesByMonthTask>();
+                services.AddSingleton<IScheduledTask, SnapAgentCommunityEventDetailTask>();
+                services.AddSingleton<IScheduledTask, SnapNumberofDeliverySitesbyTypeofSettingTask>();
+                services.AddSingleton<IScheduledTask, SnapMethodsUsedRecordCountTask>();
+                services.AddSingleton<IScheduledTask, SnapIndividualContactTotalsTask>();
+                services.AddSingleton<IScheduledTask, SnapEstimatedSizeofAudiencesReachedTask>();
+                services.AddSingleton<IScheduledTask, SnapSessionTypebyMonthTask>();
+                services.AddSingleton<IScheduledTask, SnapIndirectByEmployeeTask>();
+                services.AddSingleton<IScheduledTask, ActivityPerMajorProgramTask>();
+                services.AddSingleton<IScheduledTask, ActivityContactsByCountyByMajorProgramTask>();
+                services.AddSingleton<IScheduledTask, ActivityPerEmployeeReportsTask>();
+                services.AddSingleton<IScheduledTask, InServiceQualtricsTask>();
+                services.AddSingleton<IScheduledTask, GetActivitiesAndContactsTask>();
+                services.AddSingleton<IScheduledTask, SnapPartnersOfACountyTask>();
+                services.AddSingleton<IScheduledTask, MessageProcessingTask>();
+                services.AddSingleton<IScheduledTask,TrainingsRemindersTask>();
+
             }
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddScoped<IzEmpRptProfileRepository, zEmpRptProfileRepository>();
@@ -164,37 +196,7 @@ namespace Kers
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
-            // Add scheduled tasks & scheduler
-            services.AddSingleton<IScheduledTask, SnapSummaryByMonthTask>();
-            services.AddSingleton<IScheduledTask, SnapByAimedTowardImprovementTask>();
-            services.AddSingleton<IScheduledTask, SnapPersonalHourDetailsTask>();
-            services.AddSingleton<IScheduledTask, SnapSitesPerPersonPerMonthTask>();
-            services.AddSingleton<IScheduledTask, SnapSummaryByCountyTask>();
-            services.AddSingleton<IScheduledTask, SnapSummaryByEmployeeTask>();
-            services.AddSingleton<IScheduledTask, SnapByPartnerCategoryTask>();
-            services.AddSingleton<IScheduledTask, SnapCopiesDetailAgentsTask>();
-            services.AddSingleton<IScheduledTask, SnapCopiesDetailNotAgentsTask>();
-            services.AddSingleton<IScheduledTask, SnapCopiesSummarybyCountyAgentsTask>();
-            services.AddSingleton<IScheduledTask, SnapCopiesSummarybyCountyNotAgentsTask>();
-            services.AddSingleton<IScheduledTask, SnapReimbursementCountyTask>();
-            services.AddSingleton<IScheduledTask, SnapReimbursementNepAssistantsTask>();
-            services.AddSingleton<IScheduledTask, SpecificSiteNamesByMonthTask>();
-            services.AddSingleton<IScheduledTask, SnapAgentCommunityEventDetailTask>();
-            services.AddSingleton<IScheduledTask, SnapNumberofDeliverySitesbyTypeofSettingTask>();
-            services.AddSingleton<IScheduledTask, SnapMethodsUsedRecordCountTask>();
-            services.AddSingleton<IScheduledTask, SnapIndividualContactTotalsTask>();
-            services.AddSingleton<IScheduledTask, SnapEstimatedSizeofAudiencesReachedTask>();
-            services.AddSingleton<IScheduledTask, SnapSessionTypebyMonthTask>();
-            services.AddSingleton<IScheduledTask, SnapIndirectByEmployeeTask>();
-            services.AddSingleton<IScheduledTask, ActivityPerMajorProgramTask>();
-            services.AddSingleton<IScheduledTask, ActivityContactsByCountyByMajorProgramTask>();
-            services.AddSingleton<IScheduledTask, ActivityPerEmployeeReportsTask>();
-            services.AddSingleton<IScheduledTask, InServiceQualtricsTask>();
-            services.AddSingleton<IScheduledTask, GetActivitiesAndContactsTask>();
-            services.AddSingleton<IScheduledTask, SnapPartnersOfACountyTask>();
-            services.AddSingleton<IScheduledTask, MessageProcessingTask>();
-            services.AddSingleton<IScheduledTask,TrainingsRemindersTask>();
-
+            
             services.AddScheduler((sender, args) =>
             {
                 args.SetObserved();

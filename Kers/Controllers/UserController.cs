@@ -31,6 +31,7 @@ namespace Kers.Controllers
         private IMembershipService _service;
         private IDistributedCache _cache;
         IFiscalYearRepository fiscalYearRepo;
+        ITrainingRepository trainingRepository;
         private int DefaultNumberOfItems{
             get
             {
@@ -43,13 +44,15 @@ namespace Kers.Controllers
                                 KERScoreContext _context,
                                 IDistributedCache _cache,
                                 IMembershipService _service,
-                                IFiscalYearRepository fiscalYearRepo
+                                IFiscalYearRepository fiscalYearRepo,
+                                ITrainingRepository trainingRepository
                             ){
             this._mContext = _mContext;
             this._context = _context;
             this._service = _service;
             this._cache = _cache;
             this.fiscalYearRepo = fiscalYearRepo;
+            this.trainingRepository = trainingRepository;
         }
 
         [HttpGet()]
@@ -500,6 +503,11 @@ namespace Kers.Controllers
             var data = result.Content.ReadAsStringAsync().Result;
 
             return new OkObjectResult(data);
+        }
+
+        [HttpGet("TrainingsEnrolment/{userId}/{fy}")]
+        public IActionResult TrainingsEnrolment(int userId, int year = 2019){
+            return new OkObjectResult(trainingRepository.trainingsPerPersonPerYear(userId, year));
         }
 
 

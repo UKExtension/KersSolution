@@ -208,6 +208,18 @@ namespace Kers.Models.Repositories
         }
 
         /***********************************************/
+        // Reports
+        /***********************************************/
+
+        public List<TrainingEnrollment> trainingsPerPersonPerYear( int userId, int year){
+            var trainings = context.TrainingEnrollment
+                            .Where( e => e.Training.Start.Year == year && e.Training.tStatus == "A" && e.AttendieId == userId)
+                            .Include( e => e.Training).ThenInclude( t => t.iHour)
+                            .ToList();
+            return trainings;
+        }
+
+        /***********************************************/
         // Import Trainings from the reporting repo
         /***********************************************/
 

@@ -61,6 +61,7 @@ export class TrainingEnrollment{
     attendie:User;
     attendieId:number;
     trainingId:string;
+    training: Training;
     eStatus:string;
     enrolledDate:Date;
     cancelledDate:Date;

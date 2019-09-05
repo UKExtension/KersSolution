@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import {Location} from '@angular/common';
-import { ActivatedRoute, Router, Params } from "@angular/router";
+import { ActivatedRoute, Params } from "@angular/router";
 
 import { Observable } from "rxjs/Observable";
 import { User, UserService } from "../user.service";
-import { Activity, ActivityService } from "../../activity/activity.service";
+import { Activity } from "../../activity/activity.service";
 import { Story, StoryService } from "../../story/story.service";
 import { ReportingService } from "../../../components/reporting/reporting.service";
 import { ExpenseService, ExpenseSummary } from "../../expense/expense.service";
@@ -65,9 +65,7 @@ export class UserSummaryComponent {
         private reportingService: ReportingService,
         private location:Location,
         private route: ActivatedRoute,
-        private router: Router,
         private service: UserService,
-        private activityService: ActivityService,
         private expenseService: ExpenseService,
         private storyService: StoryService,
     )   
@@ -85,26 +83,13 @@ export class UserSummaryComponent {
                 {
                     this.user = user;
                     
-                    
-                    
-                    
-                    
-                    
                     this.reportingService.setSubtitle(this.user.personalProfile.firstName + " " +this.user.personalProfile.lastName);
                     this.reportingService.setTitle("Employee Summary");
                     if(this.user.personalProfile && this.user.personalProfile.uploadImage){
                         this.profilePicSrc = this.location.prepareExternalUrl('/image/crop/250/250/' + this.user.personalProfile.uploadImage.uploadFile.name);
                     }
-
-                    
-
-
             }
         )
-                    
-                   
-
-
     }
 
 
@@ -125,7 +110,7 @@ export class UserSummaryComponent {
         return new Date(dateString).toLocaleString("en-us", { month: "long" });
     }
 
-    externalUrl(url){
+    externalUrl(url:string){
         return this.location.prepareExternalUrl(url);
     }
 

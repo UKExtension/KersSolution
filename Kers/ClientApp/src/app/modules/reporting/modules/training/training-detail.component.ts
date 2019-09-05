@@ -29,7 +29,6 @@ export class TrainingDetailComponent {
     {}
 
     ngOnInit(){
-       
     }
     edit(){
         this.rowDefault = false;

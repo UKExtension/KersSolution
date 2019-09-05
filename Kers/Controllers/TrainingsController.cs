@@ -482,10 +482,12 @@ namespace Kers.Controllers
                 trainings = trainings.Where( i => i.tContact.Contains(contacts));
             }
             if(start != null){
-                trainings = trainings.Where( i => i.Start > start);
+                start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
+                trainings = trainings.Where( i => i.Start >= start);
             }
             if( end != null){
-                trainings = trainings.Where( i => i.Start < end);
+                end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
+                trainings = trainings.Where( i => i.Start <= end);
             }
             if(day != null){
                 trainings = trainings
@@ -506,6 +508,7 @@ namespace Kers.Controllers
             if(withseats){
                 trainings = trainings.Where( i => i.seatLimit == null || i.seatLimit > i.Enrollment.Where(e => e.eStatus == "E").Count());
             }
+            trainings = trainings.Include(t => t.submittedBy).ThenInclude(u => u.PersonalProfile);
             IOrderedQueryable result;
             if(order == "asc"){
                 result = trainings.OrderByDescending(t => t.Start);

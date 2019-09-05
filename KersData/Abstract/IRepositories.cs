@@ -24,6 +24,7 @@ namespace Kers.Models.Abstract
         List<zInServiceTrainingCatalog>  csv2list(string fileUrl = "database/trainingsData.csv");
         List<Training> InServicesToTrainings(List<zInServiceTrainingCatalog> services);
         Training ServiceToTraining( zInServiceTrainingCatalog service);
+        List<TrainingEnrollment> trainingsPerPersonPerYear( int userId, int year);
      }
     public interface  IInitiativeRepository : IEntityBaseRepository<StrategicInitiative> {
         Task<List<ProgramIndicatorSumViewModel>> IndicatorSumPerMajorProgram(int MajorProgramId );
