@@ -3,7 +3,7 @@
     <td *ngIf="rowDefault">{{training.subject}}</td>
     <td *ngIf="rowDefault">{{training.tLocation}}</td>
     <td *ngIf="rowDefault">{{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span></td>
-    <td *ngIf="rowDefault"><span *ngIf="training.submittedBy && training.submittedBy.personalProfile">{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span></td>
+    <td *ngIf="rowDefault"><span *ngIf="getUser(training.submittedById) | async as usr">{{usr.personalProfile.firstName}} {{usr.personalProfile.lastName}}</span></td>
     <td *ngIf="rowDefault" class="text-right">
         <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
         <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
