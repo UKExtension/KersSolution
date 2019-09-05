@@ -222,7 +222,7 @@ namespace Kers.Controllers
                         enrollment.eStatus = "W";
                     }else{
                         enrollment.eStatus = "E";
-                        await messageRepo.ScheduleTrainingMessage("ENROLLMENT", training, user);
+                        messageRepo.ScheduleTrainingMessage("ENROLLMENT", training, user);
                     }
                     enrollment.enrolledDate = enrollment.rDT;
                     training.Enrollment.Add(enrollment);
@@ -252,7 +252,7 @@ namespace Kers.Controllers
                     context.TrainingEnrollment.Remove(enrollment);
                     await context.SaveChangesAsync();
                     CheckTheWaitingList(training);
-                    await messageRepo.ScheduleTrainingMessage("CANCELENROLLMENT", training, user);
+                    messageRepo.ScheduleTrainingMessage("CANCELENROLLMENT", training, user);
                     this.Log(enrollment,"TrainingEnrollment", "Cancelled Enrollment in Training.", "TrainingEnrollment");
                 }
                 
@@ -268,7 +268,7 @@ namespace Kers.Controllers
                     var first = training.Enrollment.Where( a => a.eStatus == "W").OrderBy( a => a.enrolledDate).FirstOrDefault();
                     first.eStatus = "E";
                     await context.SaveChangesAsync();
-                    await messageRepo.ScheduleTrainingMessage("TOENROLLED", training, first.Attendie);
+                    messageRepo.ScheduleTrainingMessage("TOENROLLED", training, first.Attendie);
                 }
             }
         }

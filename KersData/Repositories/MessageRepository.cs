@@ -132,8 +132,8 @@ namespace Kers.Models.Repositories
 
 
 
-        public async Task<bool> ScheduleTrainingMessage(string type, Training training, KersUser To, DateTimeOffset? ScheduledFor = null){
-            var template = await context.MessageTemplate.Where( t => t.Code == type).FirstOrDefaultAsync();
+        public bool ScheduleTrainingMessage(string type, Training training, KersUser To, DateTimeOffset? ScheduledFor = null){
+            var template = context.MessageTemplate.Where( t => t.Code == type).FirstOrDefault();
             if( template != null){
                 var message = new Message();
                 message.FromId = training.OrganizerId;
@@ -146,7 +146,7 @@ namespace Kers.Models.Repositories
                 message.ScheduledFor = ScheduledFor??DateTimeOffset.Now;
                 message.IsItSent = false;
                 context.Add(message);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 return true;
             }
             return false;
