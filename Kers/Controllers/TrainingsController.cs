@@ -412,8 +412,8 @@ namespace Kers.Controllers
                 tr.Organizer = null;
                 tr.approvedBy = null;
                 if(tr.submittedBy != null){
-                    tr.submittedBy.ApprovedTrainings = null;
-                    tr.submittedBy.SubmittedTrainins = null;
+                   // tr.submittedBy.ApprovedTrainings = null;
+                    //tr.submittedBy.SubmittedTrainins = null;
                 }
                 foreach( var enr in tr.Enrollment){
                     enr.Training = null;
@@ -508,6 +508,7 @@ namespace Kers.Controllers
             if(withseats){
                 trainings = trainings.Where( i => i.seatLimit == null || i.seatLimit > i.Enrollment.Where(e => e.eStatus == "E").Count());
             }
+            trainings = trainings.Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile);
             IOrderedQueryable result;
             if(order == "asc"){
                 result = trainings.OrderByDescending(t => t.Start);

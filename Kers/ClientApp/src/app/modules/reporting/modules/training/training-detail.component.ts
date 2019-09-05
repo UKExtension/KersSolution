@@ -2,8 +2,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TrainingService } from "./training.service";
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import { Training } from './training';
-import { UserService, User } from '../user/user.service';
-import { Observable } from 'rxjs';
 
 @Component({
     selector: '[training-detail]',
@@ -26,8 +24,7 @@ export class TrainingDetailComponent {
     errorMessage: string;
 
     constructor( 
-        private service:TrainingService,
-        private userService: UserService
+        private service:TrainingService
     )   
     {}
 
@@ -64,9 +61,6 @@ export class TrainingDetailComponent {
             err => this.errorMessage = <any> err
         );
         
-    }
-    getUser(id:number):Observable<User>{
-        return this.userService.byId(id);
     }
     
 }

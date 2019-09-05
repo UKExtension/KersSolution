@@ -227,6 +227,7 @@ namespace Kers.Models.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /* 
             modelBuilder.Entity<ExtensionEvent>()
                 .HasOne( e => e.Organizer)
                 .WithMany( u => u.Events);
@@ -236,7 +237,7 @@ namespace Kers.Models.Contexts
             modelBuilder.Entity<Training>()
                 .HasOne( e => e.approvedBy)
                 .WithMany( u => u.ApprovedTrainings);
-                /* 
+                
             modelBuilder.Entity<CountyEventPlanningUnit>()
                 .HasKey(t => new { t.CountyEventId, t.PlanningUnitId });
             
