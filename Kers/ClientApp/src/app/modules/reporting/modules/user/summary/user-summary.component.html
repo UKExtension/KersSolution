@@ -116,9 +116,6 @@
                     Training Date
                 </th>
                 <th>
-                    ID
-                </th>
-                <th>
                     Hours
                 </th>
                 <th>
@@ -138,25 +135,22 @@
         <tbody>
             <tr *ngFor="let enr of inServiceEnrolment">
                 <td align="left" style="white-space:nowrap;">
-                   {{enr[0]}}
-                </td>
-                <td align="right" style="white-space:nowrap;">
-                    {{enr[1]}}
+                   {{enr.training.start}}
                 </td>
                 <td align="center">
-                    {{enr[2]}}
+                    {{enr.training.subject}}
                 </td>
                 <td align="center" style="white-space:nowrap;">
-                    {{enr[3]}}
+                    {{enr.training.subject}}
                 </td>
                 <td align="left">
-                    {{enr[4]}}
+                    {{enr.training.subject}}
                 </td>
                 <td align="left">
-                    {{enr[5]}}
+                    {{enr.training.subject}}
                 </td>
                 <td align="left">
-                    {{enr[6]}}
+                    {{enr.training.subject}}
                 </td>
             </tr>
             <tr>

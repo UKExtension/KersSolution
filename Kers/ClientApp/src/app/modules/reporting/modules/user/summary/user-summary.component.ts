@@ -9,6 +9,7 @@ import { Story, StoryService } from "../../story/story.service";
 import { ReportingService } from "../../../components/reporting/reporting.service";
 import { ExpenseService, ExpenseSummary } from "../../expense/expense.service";
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
+import { TrainingEnrollment } from '../../training/training';
 
 
 @Component({
@@ -53,7 +54,7 @@ export class UserSummaryComponent {
     latestStories:Observable<Story[]>;
     latestActivities:Observable<Activity[]>;
     expenseSummaries: Observable<ExpenseSummary[]>;
-    inServiceEnrolment;
+    inServiceEnrolment:TrainingEnrollment[];
     expenseFiscalYear:FiscalYear = null;
     hoursAttended = 0;
 
@@ -124,6 +125,19 @@ export class UserSummaryComponent {
     }
 
     inServiceFiscalYearSwitched(event:FiscalYear){
+
+        this.service.trainingsEnrolment(this.user.id, +event).subscribe(
+            res => {
+                this.inServiceEnrolment = res;
+                this.hoursAttended = 0;
+                for( let el of this.inServiceEnrolment){
+                    if(el.attended) this.hoursAttended += el.training.iHour.iHourValue;
+                }
+            }
+        )
+
+
+/* 
         this.service.InServiceEnrolment(this.user.id, event.name).subscribe(
             res => {
                 this.inServiceEnrolment = res;
@@ -134,6 +148,7 @@ export class UserSummaryComponent {
             },
             err => this.errorMessage = <any>err
         )
+         */
     }
 
     ngOnDestroy(){
