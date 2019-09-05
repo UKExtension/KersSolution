@@ -508,7 +508,6 @@ namespace Kers.Controllers
             if(withseats){
                 trainings = trainings.Where( i => i.seatLimit == null || i.seatLimit > i.Enrollment.Where(e => e.eStatus == "E").Count());
             }
-            trainings = trainings.Include(t => t.submittedBy).ThenInclude(u => u.PersonalProfile);
             IOrderedQueryable result;
             if(order == "asc"){
                 result = trainings.OrderByDescending(t => t.Start);

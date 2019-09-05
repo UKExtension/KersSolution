@@ -135,22 +135,22 @@
         <tbody>
             <tr *ngFor="let enr of inServiceEnrolment">
                 <td align="left" style="white-space:nowrap;">
-                   {{enr.training.start}}
+                   {{enr.training.start | date:shortDate}}
                 </td>
                 <td align="center">
-                    {{enr.training.subject}}
+                    {{enr.training.iHour.iHourValue}}
                 </td>
                 <td align="center" style="white-space:nowrap;">
-                    {{enr.training.subject}}
+                    {{enr.attended == true ? "Yes" : "No"}}
                 </td>
                 <td align="left">
                     {{enr.training.subject}}
                 </td>
                 <td align="left">
-                    {{enr.training.subject}}
+                    {{enr.training.tLocation}}
                 </td>
                 <td align="left">
-                    {{enr.training.subject}}
+                    {{enr.training.day1}}
                 </td>
             </tr>
             <tr>
