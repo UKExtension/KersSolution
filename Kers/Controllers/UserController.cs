@@ -505,7 +505,7 @@ namespace Kers.Controllers
             return new OkObjectResult(data);
         }
 
-        [HttpGet("TrainingsEnrolment/{userId}/{fy}")]
+        [HttpGet("TrainingsEnrolment/{userId}/{year}")]
         public IActionResult TrainingsEnrolment(int userId, int year = 2019){
             return new OkObjectResult(trainingRepository.trainingsPerPersonPerYear(userId, year));
         }

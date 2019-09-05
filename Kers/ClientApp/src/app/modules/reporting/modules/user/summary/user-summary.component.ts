@@ -125,9 +125,10 @@ export class UserSummaryComponent {
     }
 
     inServiceFiscalYearSwitched(event:FiscalYear){
-
-        this.service.trainingsEnrolment(this.user.id, +event).subscribe(
+        this.inServiceEnrolment = null;
+        this.service.trainingsEnrolment(this.user.id, +event.name).subscribe(
             res => {
+
                 this.inServiceEnrolment = res;
                 this.hoursAttended = 0;
                 for( let el of this.inServiceEnrolment){

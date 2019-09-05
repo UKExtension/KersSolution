@@ -49,7 +49,7 @@ namespace Kers.Controllers.Reports
         [Route("qltrx")]
         public IActionResult Qualtrics(string title = "", string id = "", string dates = "")
         {
-            var contents = "[[AdvancedFormat]]\n\n" + 
+            var contents = "[[AdvancedFormat]]\n\n[[Question:Text]]\n" + 
                             "Cooperative Extension In-Service Training Evaluation <br /><br />" + title +
                             "[" + id + "] <br /><br />" +
                             dates + "\n\n" +
