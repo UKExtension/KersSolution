@@ -169,8 +169,8 @@ namespace Kers.Models.Repositories
                 foreach( var training in trainings){
                     var rstr = "";
                     foreach( var enr in training.Enrollment.OrderBy( f => f.Attendie.RprtngProfile.Name)){
-                        rstr += "<td>" + enr.Attendie.RprtngProfile.Name + 
-                                "</td><td></td><td>"+enr.Attendie.RprtngProfile.PlanningUnit.Name+"</td>";
+                        rstr += "<tr><td>" + enr.Attendie.RprtngProfile.Name + 
+                                "</td><td></td><td>"+enr.Attendie.RprtngProfile.PlanningUnit.Name+"</td></tr>";
                     }
 
                     var valArray = new string[]{
@@ -187,7 +187,7 @@ namespace Kers.Models.Repositories
                         rstr
                     };
                     var message = new Message();
-                    message.Subject = template.Subject;
+                    message.Subject = string.Format(template.Subject, training.Subject);
                     message.BodyHtml = string.Format(template.BodyHtml, valArray);
                     message.BodyText = string.Format(template.BodyText, valArray);
                     message.FromEmail = "agpsd@lsv.uky.edu";
