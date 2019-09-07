@@ -75,18 +75,31 @@ namespace Kers.Models.Repositories
                                     FromUser.PersonalProfile.LastName
                                     ,
                                     FromUser.RprtngProfile.Email));
+                        }else if(message.FromEmail != null && message.FromEmail != ""){
+                            m.From.Add (
+                                new MailboxAddress ( message.FromEmail, message.FromEmail)
+                            );
                         }else{
                             m.From.Add (
                                 new MailboxAddress ( "Program and Staff Development", "agpsd@uky.edu")
                             );
                         }
-                        
-                        m.To.Add (new MailboxAddress (
-                            message.To.PersonalProfile.FirstName +
-                            " " +
-                            message.To.PersonalProfile.LastName
-                            ,
-                            message.To.RprtngProfile.Email));
+                        if( message.ToId != null && message.ToId != 0){
+                            m.To.Add (new MailboxAddress (
+                                message.To.PersonalProfile.FirstName +
+                                " " +
+                                message.To.PersonalProfile.LastName
+                                ,
+                                message.To.RprtngProfile.Email));
+                        }else if(message.ToEmail != null && message.ToEmail != ""){
+                            m.To.Add (
+                                new MailboxAddress ( message.ToEmail, message.ToEmail)
+                            );
+                        }else{
+                            m.To.Add (
+                                new MailboxAddress ( "Program and Staff Development", "agpsd@uky.edu")
+                            );
+                        }
                         m.Subject = message.Subject;
                         var alternative = new MultipartAlternative ();
                         alternative.Add (new TextPart ("plain") {
