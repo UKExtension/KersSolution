@@ -466,7 +466,8 @@ namespace Kers.Controllers
                                         [FromQuery] string contacts,
                                         [FromQuery] int? day,
                                         [FromQuery] string order,
-                                        [FromQuery] bool withseats
+                                        [FromQuery] bool withseats,
+                                        [FromQuery] bool attendance
                                         ){
             
             var trainings = from i in _context.Training select i;
@@ -509,8 +510,11 @@ namespace Kers.Controllers
                 trainings = trainings.Where( i => i.seatLimit == null || i.seatLimit > i.Enrollment.Where(e => e.eStatus == "E").Count());
             }
             trainings = trainings
-                            .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile)
-                            .Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
+                            .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile);
+            if(attendance){
+                trainings = trainings.Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
+            }
+                            
             IOrderedQueryable result;
             if(order == "asc"){
                 result = trainings.OrderByDescending(t => t.Start);

@@ -78,4 +78,5 @@ export class TrainingSearchCriteria{
     day?: number;
     order: string = 'dsc';
     withseats: boolean = false;
+    attendance: boolean = false;
   }

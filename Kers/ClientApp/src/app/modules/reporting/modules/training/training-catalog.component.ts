@@ -61,7 +61,8 @@ export class TrainingCatalogComponent implements OnInit {
               contacts: <string> params.get("contacts"),
               day: params.get("day") == "null" ? null : +params.get("day"),
               withseats: <boolean> <unknown>params.get("withseats"),
-              order: <string> params.get("order")
+              order: <string> params.get("order"),
+              attendance: this.attendance
             }
             this.startDate = new Date(this.criteria.start);
             this.endDate = new Date(this.criteria.end);
@@ -84,7 +85,8 @@ export class TrainingCatalogComponent implements OnInit {
               contacts: "",
               day: null,
               order: 'dsc',
-              withseats: false
+              withseats: false,
+              attendance: this.attendance
             }
 
           } 
