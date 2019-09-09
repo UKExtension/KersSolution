@@ -66,7 +66,6 @@ export class TrainingCatalogComponent implements OnInit {
             }
             this.startDate = new Date(this.criteria.start);
             this.endDate = new Date(this.criteria.end);
-
           }else{
             //Criterias are NOT passed
             if( this.startDate == null){
