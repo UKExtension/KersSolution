@@ -331,7 +331,7 @@ namespace Kers.Controllers
                     var eSt = training.Enrollment.Where( e => e.Id == enr.Id).FirstOrDefault();
                     if( eSt != null){
                         enr.eStatus = eSt.eStatus;
-                        enr.attended = eSt.eStatus == "A" ? true : false;
+                        enr.attended = eSt.attended;
                     } 
                 }
                 context.SaveChanges();
