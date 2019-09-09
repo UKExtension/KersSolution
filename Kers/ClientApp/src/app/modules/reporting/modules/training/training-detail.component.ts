@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TrainingService } from "./training.service";
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
-import { Training } from './training';
+import { Training, TrainingSearchCriteria } from './training';
 
 @Component({
     selector: '[training-detail]',
@@ -17,6 +17,7 @@ export class TrainingDetailComponent {
     
     @Input('training-detail') training:Training;
     @Input() admin:boolean = false;
+    @Input() criteria:TrainingSearchCriteria;
 
     @Output() onDeleted = new EventEmitter<Training>();
     @Output() onEdited = new EventEmitter<Training>();

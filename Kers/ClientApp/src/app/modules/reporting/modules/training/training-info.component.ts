@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Training, TrainingEnrollment } from './training';
+import { Training, TrainingEnrollment, TrainingSearchCriteria } from './training';
 import { TrainingService } from './training.service';
 import { switchMap } from 'rxjs/operators';
 import { UserService, User, UserSpecialty } from '../user/user.service';
@@ -16,6 +16,7 @@ export class TrainingInfoComponent implements OnInit {
   training$: Observable<Training>;
   user:User;
   loading = false;
+  criteria:TrainingSearchCriteria;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,8 +28,19 @@ export class TrainingInfoComponent implements OnInit {
 
   ngOnInit() {
     this.training$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) =>
-        this.service.getTraining(+params.get('id')))
+      switchMap((params: ParamMap) =>{
+          this.criteria = <TrainingSearchCriteria>{
+            start: <string> params.get("start"),
+            end: <string> params.get("end"),
+            search: <string> params.get("search"),
+            contacts: <string> params.get("contacts"),
+            day: params.get("day") == "null" ? null : +params.get("day"),
+            withseats: <boolean> <unknown>params.get("withseats"),
+            order: <string> params.get("order")
+          }
+          return this.service.getTraining(+params.get('id'));
+        }
+      )
     );
     this.userService.current().subscribe(
       res => {

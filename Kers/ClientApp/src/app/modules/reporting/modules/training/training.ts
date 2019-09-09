@@ -68,3 +68,14 @@ export class TrainingEnrollment{
     attended?:boolean;
     evaluationMessageSent?:boolean;
 }
+
+export class TrainingSearchCriteria{
+    start: string;
+    end: string;
+    search: string = "";
+    status: string;
+    contacts: string = "";
+    day?: number;
+    order: string = 'dsc';
+    withseats: boolean = false;
+  }
