@@ -184,7 +184,12 @@ namespace Kers.Controllers
         public IActionResult AddTraining( [FromBody] Training training){
             if(training != null){
                 var user = this.CurrentUser();
-
+                training.Start = new DateTime(training.Start.Year, training.Start.Month, training.Start.Day, 14, 5, 6);
+                if(training.End.HasValue){
+                    training.End = new DateTime(training.End.Value.Year, training.End.Value.Month, training.End.Value.Day, 14, 5, 6);
+                }else{
+                    training.End = null;
+                }
                 training.submittedBy = user;
                 training.CreatedDateTime = DateTime.Now;
                 training.BodyPreview = training.Body;
@@ -277,12 +282,16 @@ namespace Kers.Controllers
         [HttpPut("updatetraining/{id}")]
         [Authorize]
         public IActionResult UpdateTraoining( int id, [FromBody] Training training){
-           
-
-            var trn = context.Training.Find(id);
+            var trn = context.Training.Where( t => t.Id == id).Include(t => t.submittedBy).FirstOrDefault();
             if(training != null && trn != null ){
-                trn.Start = training.Start;
-                trn.End = training.End;
+                var isMovedToCatalog = false;
+                trn.Start = new DateTime(training.Start.Year, training.Start.Month, training.Start.Day, 14, 5, 6);
+                if(training.End.HasValue){
+                    trn.End = new DateTime(training.End.Value.Year, training.End.Value.Month, training.End.Value.Day, 14, 5, 6);
+                }else{
+                    trn.End = null;
+                }
+                
                 trn.Subject = training.Subject;
                 trn.Body = training.Body;
                 trn.Location = training.Location;
@@ -300,6 +309,10 @@ namespace Kers.Controllers
                     trn.approvedBy = user;
                     trn.approvedDate = DateTime.Now;
                 }
+                if(trn.tStatus == "P" && training.tStatus=="A"){
+                    //Send email to the Organizer that the training is approved
+                    isMovedToCatalog = true;
+                }
                 trn.tStatus = training.tStatus;
                 trn.LastModifiedDateTime = DateTime.Now;
                 trn.iHourId = training.iHourId;
@@ -307,6 +320,10 @@ namespace Kers.Controllers
                 trn.RegisterCutoffDaysId = training.RegisterCutoffDaysId;
                 trn.seatLimit = training.seatLimit;
                 context.SaveChanges();
+                if(isMovedToCatalog){
+                    messageRepo.ScheduleTrainingMessage("PROPOSALCOMFIRMED",trn,trn.submittedBy);
+                }
+                
                 this.Log(training,"Training", "Training Updated.");
                 return new OkObjectResult(training);
             }else{
