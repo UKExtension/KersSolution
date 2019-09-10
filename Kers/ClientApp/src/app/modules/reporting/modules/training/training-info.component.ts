@@ -82,6 +82,10 @@ export class TrainingInfoComponent implements OnInit {
     return false;
   }
 
+  getOnlyEnrolled(training:Training):TrainingEnrollment[]{
+    return training.enrollment.filter( e => e.eStatus == "E");
+  }
+
   isItInsideTheCancellationWindow(training:Training):boolean{
     if(training.cancelCutoffDays){
       var cutof = new Date(training.start);

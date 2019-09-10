@@ -223,7 +223,7 @@ namespace Kers.Controllers
                     enrollment.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
                     enrollment.Attendie = user;
                     enrollment.TrainingId = trainingId.ToString();
-                    if(training.seatLimit != null && training.seatLimit >= training.Enrollment.Count){
+                    if(training.seatLimit != null && training.seatLimit <= training.Enrollment.Count){
                         enrollment.eStatus = "W";
                     }else{
                         enrollment.eStatus = "E";
