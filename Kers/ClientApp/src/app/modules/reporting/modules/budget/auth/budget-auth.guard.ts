@@ -19,6 +19,7 @@ export class BudgetAuthGuard implements CanActivate, CanActivateChild {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+      console.log(state);
     return this.checkRole(["FOPRTNS", "CESADM"]);
   }
   canActivateChild(
@@ -28,10 +29,10 @@ export class BudgetAuthGuard implements CanActivate, CanActivateChild {
   }
 
   checkRole(roles:string[]):Observable<boolean>{
-    return this.userService.currentUserHasAnyOfTheRoles(["SRVCTRNR"]).pipe(
+    return this.userService.currentUserHasAnyOfTheRoles(roles).pipe(
       tap(
         res => {
-          if( ! res ){
+          if( !res ){
             this.router.navigate(['/reporting']);
           }
         }
