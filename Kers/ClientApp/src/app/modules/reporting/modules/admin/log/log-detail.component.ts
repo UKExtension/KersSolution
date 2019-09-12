@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {Location} from '@angular/common';
 import { Log } from './log.service';
-
+import * as ua_parser from "ua-parser-js"
 
 
 @Component({
@@ -17,6 +17,7 @@ export class LogDetailComponent implements OnInit {
     profilePicSrc:string;
     logTime:Date;
     JSON;
+    
 
     constructor( 
         private location:Location
@@ -24,6 +25,7 @@ export class LogDetailComponent implements OnInit {
     {
         this.profilePicSrc = location.prepareExternalUrl('/assets/images/user.png');
         this.JSON = JSON;
+        
     }
 
     ngOnInit(){
@@ -46,6 +48,12 @@ export class LogDetailComponent implements OnInit {
     progress(){
         this.rowDefault =false;
         this.rowProgress = true;
+    }
+
+    browser():string{
+        var parser = new ua_parser();
+        var result = parser.getResult(this.log.agent);
+        return result.browser.name + ' (' + result.browser.version + ')'+', '+ result.os.name + ' (' + result.os.version + ')'
     }
 
 

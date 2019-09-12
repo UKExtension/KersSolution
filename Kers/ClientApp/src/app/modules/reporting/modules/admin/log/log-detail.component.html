@@ -20,7 +20,7 @@
         </article>
         <div class="col-xs-11" *ngIf="rowDetail">
             <strong>IP: </strong> <br>{{log.ip}}<br><br>
-            <strong>User Agent: </strong> <br>{{log.agent}}<br><br>
+            <strong>User Agent: </strong> <br>{{browser()}}<br><br>
             <strong>Object Type: </strong> <br>{{log.objectType}}<br><br>
             <div><pre>{{JSON.parse(log.object) | json}}</pre></div>
         </div>
