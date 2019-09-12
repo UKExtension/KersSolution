@@ -52,7 +52,8 @@ export class LogDetailComponent implements OnInit {
 
     browser():string{
         var parser = new ua_parser();
-        var result = parser.getResult(this.log.agent);
+        parser.setUA(this.log.agent)
+        var result = parser.getResult();
         return result.browser.name + ' (' + result.browser.version + ')'+', '+ result.os.name + ' (' + result.os.version + ')'
     }
 
