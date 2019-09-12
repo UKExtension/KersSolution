@@ -234,9 +234,16 @@ namespace Kers.Controllers
                     await context.SaveChangesAsync();
                     
                     this.Log(enrollment,"TrainingEnrollment", "Enrolled In Training.", "TrainingEnrollment");
+                }else{
+                    var enr = training.Enrollment.Where(e => e.Attendie == user).FirstOrDefault();
+                    if(enr.eStatus == "W"){
+                        enr.eStatus = "E";
+                        messageRepo.ScheduleTrainingMessage("ENROLLMENT", training, user);
+                        await context.SaveChangesAsync();
+                    }
                 }
                 
-                return new OkObjectResult(training);
+                return new OkObjectResult(training.Enrollment.Where(e => e.Attendie == user).FirstOrDefault());
             }else{
                 this.Log( trainingId ,"TrainingEnrollment", "Error in training enrolment attempt.", "TrainingEnrollment", "Error");
                 return new StatusCodeResult(500);

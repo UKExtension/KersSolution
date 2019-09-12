@@ -68,10 +68,16 @@ export class TrainingInfoComponent implements OnInit {
 
   isEnrolled(training:Training):boolean{
     if( this.user != undefined ){
-      var isUserThere = training.enrollment.filter( e => e.attendieId == this.user.id);
+      var isUserThere = training.enrollment.filter( e => e.attendieId == this.user.id && e.eStatus=="E");
       if( isUserThere.length > 0 ) return true;
     }
-    
+    return false;
+  }
+  isWaiting(training:Training):boolean{
+    if( this.user != undefined ){
+      var isUserThere = training.enrollment.filter( e => e.attendieId == this.user.id && e.eStatus=="W");
+      if( isUserThere.length > 0 ) return true;
+    }
     return false;
   }
 
@@ -117,7 +123,8 @@ export class TrainingInfoComponent implements OnInit {
 
 
   attendieemails(training:Training):string{
-    var emails = training.enrollment.map( a => a.attendie.rprtngProfile.email).join(";");
+    var enrolled = training.enrollment.filter( e => e.eStatus == "E");
+    var emails = enrolled.map( a => a.attendie.rprtngProfile.email).join(";");
     return emails;
   }
 
@@ -131,7 +138,13 @@ export class TrainingInfoComponent implements OnInit {
     this.loading = true;
     this.service.enroll(training).subscribe(
       res => {
-        training.enrollment.push( <TrainingEnrollment>{enrolledDate: new Date(), attendieId:this.user.id, attendie: this.user})
+        if( !this.isWaiting(training)){
+          res.attendie = this.user;
+          training.enrollment.push( res )
+        }else{
+          var enrollment = training.enrollment.filter( e => e.attendieId == this.user.id && e.eStatus=="W");
+          enrollment[0].eStatus = "E";
+        }
         this.loading = false;
       }
     )
@@ -153,54 +166,3 @@ export class TrainingInfoComponent implements OnInit {
   }
 
 }
-/* 
-
-Handle adding to the waiting list
-
-if (HiddenField6.Value == "1")  // Training is full.
-            {
-                if (isOnWaitingList(HiddenField0.Value))
-                {
-                    Label1.Text = "*** TRAINING IS FULL - YOU ARE ON THE WAITING LIST *** <br /><br />In the event of a cancellation, those on the waiting list will be automatically enrolled, then sent a notification via email.";
-                    Label1.Visible = true;
-                    Button1.Text = "";
-                    Button1.Visible = false;
-                }
-                else
-                {
-                    if (HiddenField4.Value == "Y")  // Outside of cancellation window. Allow user the option to be added to the waiting list.
-                    {
-                        Label1.Text = "*** TRAINING IS FULL ***<br /><br />If you would like to be added to the waiting list for this training, please click the submit button below.&nbsp;&nbsp;In the event of a cancellation, those on the waiting list will be automatically enrolled, then sent a notification via email.";
-                        Label1.Visible = true;
-                        Button1.Text = "Add me to the waiting list";
-                        Button1.Visible = true;
-                    }
-                    else  // Inside the cancellation window. Do not allow user the option to be added to the waiting list.
-                    {
-                        Label1.Text = "*** TRAINING IS FULL ***<br /><br />";
-                        Label1.Visible = true;
-                        Button1.Text = "";
-                        Button1.Visible = false;
-                    }
-                }
-            }
-            else  // Training is not full or no enrollment limit.
-            {
-                if (HiddenField5.Value == "upcoming")
-                {
-                    Button1.Text = "Enroll for this training event";
-                    Button1.Visible = true;
-                    Label1.Text = "Clicking the Enroll button below will immediately enroll you in this training event.";
-                    Label1.Visible = true;
-                }
-
-                if (HiddenField5.Value == "past")
-                {
-                    Button1.Text = "Enroll for this PAST training event";
-                    Button1.Visible = true;
-                    Label1.Text = "If you attended this training session but did not previously enroll, click the Enroll button below and you will be enrolled.&nbsp;&nbsp;You must contact the instructor and request they return to the roster to confirm your attendance.&nbsp;&nbsp;Clicking the Enroll button below will immediately enroll you in this training event.";
-                    Label1.Visible = true;
-                }
-            }
-
-   */

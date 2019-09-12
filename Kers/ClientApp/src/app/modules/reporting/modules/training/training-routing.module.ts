@@ -13,6 +13,7 @@ import { TrainingAdminCatalogComponent } from './training-admin-catalog.componen
 import { TrainingAdminReportsComponent } from './training-admin-reports.component';
 import { TrainingEnrollmentComponent } from './training-enrollment.component';
 import { TrainingManagersComponent } from './training-managers.component';
+import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
 
 const routes: Routes = [{
   path: '',
@@ -25,6 +26,7 @@ const routes: Routes = [{
         },
         {
           path: 'propose',
+          canActivate: [RolesAuthGuard],
           component: TrainingFormComponent
         },
         {
@@ -41,6 +43,7 @@ const routes: Routes = [{
         },
         {
           path: 'postattendance',
+          canActivate: [RolesAuthGuard],
           component: TrainingPostAttendanceComponent
         },
         {

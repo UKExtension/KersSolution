@@ -1,13 +1,25 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../../modules/user/user.service';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BudgetAuthGuard implements CanActivate, CanActivateChild {
+export class RolesAuthGuard implements CanActivate, CanActivateChild {
+
+  permissions:RouteRolesPermission[] = [
+    <RouteRolesPermission>{
+      url:"/reporting/training/propose",
+      roles: ["SRVCTRNR"]
+    },
+    <RouteRolesPermission>{
+      url:"/reporting/training/postattendance",
+      roles: ["SRVCTRNR"]
+    },
+
+  ];
 
 
   constructor(
@@ -19,7 +31,11 @@ export class BudgetAuthGuard implements CanActivate, CanActivateChild {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.checkRole(["FOPRTNS", "CESADM"]);
+      var prms = this.permissions.filter( f => f.url == state.url);
+      if(prms.length > 0){
+        return this.checkRole(prms[0].roles);
+      }
+      return Observable.of(false);
   }
   canActivateChild(
     next: ActivatedRouteSnapshot,
@@ -31,7 +47,7 @@ export class BudgetAuthGuard implements CanActivate, CanActivateChild {
     return this.userService.currentUserHasAnyOfTheRoles(roles).pipe(
       tap(
         res => {
-          if( ! res ){
+          if( !res ){
             this.router.navigate(['/reporting']);
           }
         }
@@ -39,4 +55,10 @@ export class BudgetAuthGuard implements CanActivate, CanActivateChild {
     );
   }
   
+}
+
+
+class RouteRolesPermission{
+  url:string;
+  roles: string[];
 }
