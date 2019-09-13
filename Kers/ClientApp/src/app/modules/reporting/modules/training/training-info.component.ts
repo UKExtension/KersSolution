@@ -91,6 +91,9 @@ export class TrainingInfoComponent implements OnInit {
   getOnlyEnrolled(training:Training):TrainingEnrollment[]{
     return training.enrollment.filter( e => e.eStatus == "E");
   }
+  numberWaiting(training:Training):number{
+    return training.enrollment.filter( e => e.eStatus == "W").length;
+  }
 
   isItInsideTheCancellationWindow(training:Training):boolean{
     if(training.cancelCutoffDays){
@@ -124,7 +127,7 @@ export class TrainingInfoComponent implements OnInit {
 
   attendieemails(training:Training):string{
     var enrolled = training.enrollment.filter( e => e.eStatus == "E");
-    var emails = enrolled.map( a => a.attendie.rprtngProfile.email).join(";");
+    var emails = enrolled.map( a => a.attendie.rprtngProfile.email).join("; ");
     return emails;
   }
 
