@@ -18,6 +18,30 @@ export class RolesAuthGuard implements CanActivate, CanActivateChild {
       url:"/reporting/training/postattendance",
       roles: ["SRVCTRNR"]
     },
+    <RouteRolesPermission>{
+      url:"/reporting/admin/navigation",
+      roles: ["SYSADM"]
+    },
+    <RouteRolesPermission>{
+      url:"/reporting/admin/roles/list",
+      roles: ["SYSADM"]
+    },
+    <RouteRolesPermission>{
+      url:"/reporting/admin/log",
+      roles: ["SYSADM"]
+    },
+    <RouteRolesPermission>{
+      url:"/reporting/admin/fiscalyear",
+      roles: ["SYSADM", "CESADM"]
+    },
+    <RouteRolesPermission>{
+      url:"/reporting/admin/email/templates",
+      roles: ["SYSADM", "CESADM", "SRVCADM"]
+    },
+    <RouteRolesPermission>{
+      url:"/reporting/admin/users",
+      roles: ["SYSADM", "CESADM", "DEXT", "UPRFLS"]
+    },
 
   ];
 
