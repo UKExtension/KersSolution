@@ -106,9 +106,20 @@ export class BudgetPlanFormComponent implements OnInit {
         ukPublications: "",
         capitalImprovementFundForEmergency: "",
         equipmentFundForEmergency: "",
-        officeOperationValues: this.fb.array([
-          
-        ]),
+        officeOperationValues: [[
+          {
+            budgetPlanOfficeOperationId: 2,
+            value: 2
+          },
+          {
+            budgetPlanOfficeOperationId: 3,
+            value: 3
+          },
+          {
+            budgetPlanOfficeOperationId: 4,
+            value: 4
+          },
+        ]],
         
     });
 
@@ -116,14 +127,10 @@ export class BudgetPlanFormComponent implements OnInit {
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<BudgetPlanOfficeOperation>();
 
-  operations:BudgetPlanOfficeOperation[];
   unitEmployees:User[];
   
   get userDefinedIncomes() {
     return this.budgetForm.get('userDefinedIncome') as FormArray;
-  }
-  get officeOperationValues() {
-    return this.budgetForm.get('officeOperationValues') as FormArray;
   }
 
   get staffSupportExpenditures() {
@@ -167,18 +174,6 @@ export class BudgetPlanFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.service.getOfficeOperations().subscribe(
-      res => {
-        let control = <FormArray>this.budgetForm.controls.officeOperationValues;
-        for( let val of res ){
-          control.push(this.fb.group({
-            budgetPlanOfficeOperation: val,
-            value: 0
-          }));
-        }
-        this.operations = res;
-      }
-    );
     this.userService.unitEmployees().subscribe(
       res => this.unitEmployees = res
     )

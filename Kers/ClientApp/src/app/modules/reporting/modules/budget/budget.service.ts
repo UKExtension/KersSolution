@@ -140,6 +140,7 @@ export class BudgetPlanProfessionalImprovementExpenses{
 export class BudgetPlanOfficeOperationValue{
   id:number;
   budgetPlanOfficeOperation:BudgetPlanOfficeOperation;
+  budgetPlanOfficeOperationId: number;
   value:number;
 }
 
