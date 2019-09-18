@@ -176,7 +176,8 @@ namespace Kers.Models.Repositories
                 training.day2,
                 training.day3,
                 training.day4,
-                training.tContact
+                training.tContact,
+                training.Id.ToString()
             };
             return returnArray;
         }
