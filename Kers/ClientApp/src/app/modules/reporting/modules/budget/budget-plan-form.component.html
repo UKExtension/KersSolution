@@ -267,78 +267,8 @@ Income<br>
       
   </div>
   <div id="step-2" class="content" [hidden]="step!=2">
-  <h3 class="StepTitle">Personnel</h3>
-        <h2>Professional Staff
-          Support Staff & Base Program Support</h2><br><br>
-       
- 
-        <div class="form-group" formArrayName="budgetPlanStaffExpenditures">
-            <h3>Support Personnel at Benefit Rate of 50%</h3><br>
-            <div class="col-xs-12">
-                <div *ngFor="let userDefinedIncome of staffSupportExpenditures1; let i=index" class="form-group">
-                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
-                </div>
-                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure()" style="margin-top: 8px;"> + add </a>
-            </div>
-            <div class="clear"><br><br></div>
-            <h3>Support Part-Time/Temp Personnel at Benefit Rate of 9%</h3><br>
-            <div class="col-xs-12">
-                <div *ngFor="let userDefinedIncome of staffSupportExpenditures2; let i=index" class="form-group">
-                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
-                </div>
-                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(9,2)" style="margin-top: 8px;"> + add </a>
-            </div>
-            <div class="clear"><br><br></div>
-            <h3>Agent Positions 4th and Up at Benefit Rate of 38%</h3><br>
-            <div class="col-xs-12">
-                <div *ngFor="let userDefinedIncome of staffSupportExpenditures3; let i=index" class="form-group">
-                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
-                </div>
-                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(38,3)" style="margin-top: 8px;"> + add </a>
-            </div>
-            <div class="clear"><br><br></div>
-            <h3>Temporarily County Funded Agent Positions</h3><br>
-            <div class="col-xs-12">
-                <div *ngFor="let userDefinedIncome of staffSupportExpenditures4; let i=index" class="form-group">
-                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
-                </div>
-                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(0,4)" style="margin-top: 8px;"> + add </a>
-            </div>
-            <div class="clear"><br><br></div>
-            <h3>Other at Benefit Rate of 9%</h3><br>
-            <div class="col-xs-12">
-                <div *ngFor="let userDefinedIncome of staffSupportExpenditures5; let i=index" class="form-group">
-                    <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
-                </div>
-                <a class="btn btn-info btn-xs" (click)="addSupportStaffExpenditure(9,5)" style="margin-top: 8px;"> + add </a>
-            </div>
-        </div>
-        <table class="table table-bordered" style="background-color:rgba(233, 226, 122, 0.3);">
-            <thead>
-                <tr>
-                    <th>Person</th>
-                    <th>Salary</th>
-                    <th>Benefits</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                    <tr *ngFor="let row of budgetForm.value.budgetPlanStaffExpenditures">
-                        <td>{{supportStaffRowPerson(row)}}</td>
-                        <td class="text-right">{{row.hourlyRate * row.hoursPerWeek | currency:'USD':'symbol':'.2-2'}}</td>
-                        <td class="text-right">{{row.hourlyRate * row.hoursPerWeek * (row.benefitRateInPercents / 100) | currency:'USD':'symbol':'.2-2'}}</td>
-                        <td class="text-right">{{supportStaffRowSum(row) | currency:'USD':'symbol':'.2-2'}}</td>
-                    </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td><strong>Professional Staff Salaries</strong></td>
-                    <td class="text-right">{{supportStaffTotalSalaries() | currency:'USD':'symbol':'.2-2'}}</td>
-                    <td class="text-right">{{supportStaffTotalBenefits() | currency:'USD':'symbol':'.2-2'}}</td>
-                    <td class="text-right">{{supportStaffTotalAmount() | currency:'USD':'symbol':'.2-2'}}</td>
-                </tr>
-            </tfoot>
-        </table>
+    <h3 class="StepTitle">Personnel</h3>
+    <personel-form formControlName="budgetPlanStaffExpenditures"></personel-form>
   </div>
   <div id="step-3" class="content" [hidden]="step!=3">
         <h3>Travel, 
@@ -374,20 +304,10 @@ Income<br>
                 </tr>
             </thead>
             <tbody>
-                    <tr *ngFor="let row of budgetForm.value.budgetPlanStaffExpenditures">
-                        <td>{{supportStaffRowPerson(row)}}</td>
-                        <td class="text-right">{{row.hourlyRate * row.hoursPerWeek | currency:'USD':'symbol':'.2-2'}}</td>
-                        <td class="text-right">{{row.hourlyRate * row.hoursPerWeek * (row.benefitRateInPercents / 100) | currency:'USD':'symbol':'.2-2'}}</td>
-                        <td class="text-right">{{supportStaffRowSum(row) | currency:'USD':'symbol':'.2-2'}}</td>
-                    </tr>
+                    
             </tbody>
             <tfoot>
-                <tr>
-                    <td><strong>Professional Staff Salaries</strong></td>
-                    <td class="text-right">{{supportStaffTotalSalaries() | currency:'USD':'symbol':'.2-2'}}</td>
-                    <td class="text-right">{{supportStaffTotalBenefits() | currency:'USD':'symbol':'.2-2'}}</td>
-                    <td class="text-right">{{supportStaffTotalAmount() | currency:'USD':'symbol':'.2-2'}}</td>
-                </tr>
+                
             </tfoot>
         </table>
   </div>

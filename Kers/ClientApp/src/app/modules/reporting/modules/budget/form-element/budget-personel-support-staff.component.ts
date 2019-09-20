@@ -92,9 +92,7 @@ export class BudgetPersonelSupportStaffComponent extends BaseControlValueAccesso
     }
 
     onRemove(){
-      this.removeMe.emit(this.value.index);
-  } 
-
-
+      this.removeMe.emit(this.index);
+    } 
 
 }
