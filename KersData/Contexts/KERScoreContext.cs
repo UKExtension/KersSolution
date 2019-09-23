@@ -197,6 +197,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<ExtensionEventRecurrencePattern> ExtensionEventRecurrencePattern {get;set;}
         public virtual DbSet<ExtensionEventRecurrenceRange> ExtensionEventRecurrenceRange {get;set;}
         public virtual DbSet<PhysicalAddress> PhysicalAddress {get;set;}
+        public virtual DbSet<Meeting> Meeting {get;set;}
 
         /***************************************/
         //  Extension InService Training

@@ -5,6 +5,7 @@ namespace Kers.Models.Entities.UKCAReporting
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    [Table("zCesEvents")]
     public partial class zCesEvent
     {
         [Key]
