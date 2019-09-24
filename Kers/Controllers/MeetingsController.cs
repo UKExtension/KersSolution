@@ -62,7 +62,7 @@ namespace Kers.Controllers
         }
 
 
-        [HttpPost("addmeeting")]
+        [HttpPost()]
         [Authorize]
         public IActionResult AddMeeting( [FromBody] Meeting meeting){
             if(meeting != null){
@@ -84,7 +84,7 @@ namespace Kers.Controllers
 
 
         
-        [HttpPut("updatemeeting/{id}")]
+        [HttpPut("{id}")]
         [Authorize]
         public IActionResult UpdateMeeting( int id, [FromBody] Meeting meeting){
             var mtng = context.Meeting.Where( t => t.Id == id).FirstOrDefault();
@@ -105,6 +105,48 @@ namespace Kers.Controllers
                 this.Log( meeting ,"Meeting", "Not Found Meeting in an update attempt.", "Meeting", "Error");
                 return new StatusCodeResult(500);
             }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteMeeting( int id ){
+            var entity = context.Meeting.Find(id);
+            
+            if(entity != null){
+                
+                context.Meeting.Remove(entity);
+                context.SaveChanges();
+                
+                this.Log(entity,"Meeting", "Meeting Deleted.");
+
+                return new OkResult();
+            }else{
+                this.Log( id ,"Meeting", "Not Found Meeting in a delete attempt.", "Meeting", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+
+        [HttpGet("MeetingsPerPeriod/{start}/{end?}/{order?}")]
+        [Authorize]
+        public async Task<IActionResult> MeetingsPerPeriod(DateTime start, DateTime? end = null, string order = "start"){
+            IQueryable<Meeting> query = _context.Meeting.Where( t => t.Start > start);
+            if(end != null){
+                query = query.Where( t => t.Start < end);
+            }
+            if(order == "end"){
+                query = query.OrderBy(t => t.End);
+            }else if( order == "created"){
+                query = query.OrderBy(t => t.CreatedDateTime);
+            }else{
+                query = query.OrderBy(t => t.Start);
+            }
+            
+
+            List<Meeting> list = await query.ToListAsync();
+
+            return new OkObjectResult(list);
         }
 
 
@@ -209,48 +251,7 @@ namespace Kers.Controllers
 
 
 /*
-        [HttpGet]
-        [Route("rangetrainings/{skip?}/{take?}/{order?}/{type?}")]
-        public override IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
-        {
-            IQueryable<Training> query = _context.Training.Where( t => t.End != null );
-            
-            if(order == "end"){
-                query = query.OrderByDescending(t => t.End);
-            }else if( order == "created"){
-                query = query.OrderByDescending(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderByDescending(t => t.Start);
-            }
-             
-            query = query.Skip(skip).Take(take);
-            query = query
-                        .Include( e => e.submittedBy)
-                        .ThenInclude( o => o.PersonalProfile);
-            var list = query.ToList();
-            return new OkObjectResult(list);
-        }
-
-        [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]
-        [Authorize]
-        public override IActionResult PerPeriod(DateTime start, DateTime end, string order = "start", string type = "Training" ){
-            IQueryable<Training> query = _context.Training.Where( t => t.Start > start && t.Start < end);
-            
-            if(order == "end"){
-                query = query.OrderByDescending(t => t.End);
-            }else if( order == "created"){
-                query = query.OrderByDescending(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderByDescending(t => t.Start);
-            }
-            query = query
-                        .Include( e => e.submittedBy)
-                        .ThenInclude( o => o.PersonalProfile);
-
-            List<Training> list = query.ToList();
-
-            return new OkObjectResult(list);
-        }
+        
 
 
 

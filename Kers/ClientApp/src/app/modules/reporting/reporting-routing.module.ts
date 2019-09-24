@@ -90,6 +90,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/training/training.module#TrainingModule'
           },
           {
+            path: 'meeting', 
+            loadChildren: './modules/meeting/meeting.module#MeetingModule'
+          },
+          {
             path: 'budget', 
             loadChildren: './modules/budget/budget.module#BudgetModule'
           },
