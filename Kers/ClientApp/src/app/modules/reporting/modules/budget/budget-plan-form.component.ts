@@ -35,7 +35,6 @@ export class BudgetPlanFormComponent implements OnInit {
         otherExtDistTaxes2: "",
         coGenFund: "",
         userDefinedIncome: this.fb.array([]),
-        check: false,
         interest: "",
         reserve: "",
         capitalImpFund: "",
@@ -130,12 +129,7 @@ export class BudgetPlanFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<BudgetPlanOfficeOperation>();
 
   unitEmployees:User[];
-  
-  get userDefinedIncomes() {
-    return this.budgetForm.get('userDefinedIncome') as FormArray;
-  }
-
-  
+ 
   
   get travelExpenses(){
     return this.budgetForm.get('travelExpenses') as FormArray;
@@ -167,12 +161,7 @@ export class BudgetPlanFormComponent implements OnInit {
   onSubmit(){
     console.log(this.budgetForm.value);
   }
-  addUserDefinedIncome() {
-    this.userDefinedIncomes.push(this.fb.control({
-      name: "",
-      value: ""
-    }));
-  }
+  
   
   addTravelExpenditure(){
     this.travelExpenses.push(this.fb.control({
@@ -185,48 +174,9 @@ export class BudgetPlanFormComponent implements OnInit {
   }
   
 
-  /**************************/
-  // Calculations
-  /**************************/
-  assesmentAndTaxRate( assesmentName:string, taxRateName:string):number{
-    var vl = +this.budgetForm.get(assesmentName).value/100 * +this.budgetForm.get(taxRateName).value/100;
-    return vl;
-  }
-  realProperty():number{
-    var vl = this.assesmentAndTaxRate( "realPropertyAssesment", "realPropertyTaxRate");
-    return vl;
-  }
-  personalProperty():number{
-    var vl = this.assesmentAndTaxRate( "personalPropertyAssesment", "personalPropertyTaxRate");
-    return vl;
-  }
-  vehicleProperty():number{
-    var vl = this.assesmentAndTaxRate( "motorVehicleAssesment", "motorVehicleTaxRate");
-    return vl;
-  }
-  totalGrossIncome(){
-    return this.realProperty() + this.personalProperty() + this.vehicleProperty();
-  }
-  withDelinquency(){
-    var grossIncome = this.totalGrossIncome();
-    return grossIncome - (+this.budgetForm.get("anticipatedDelinquency").value / 100 ) * grossIncome;
-  }
 
-  subtotalGrossIncome(){
-    var grossIncome = this.withDelinquency();
-    return grossIncome - (+this.budgetForm.get("collection").value / 100 ) * grossIncome;
-  }
-  
 
-  /***************************/
-  // Events
-  /***************************/
 
-  userDefinedIncomeRemoved(event:number){
-    this.userDefinedIncomes.removeAt(event);
-  }
-
-  
 
 
 }

@@ -17,6 +17,8 @@ import { BudgetTravelExpensesComponent } from './form-element/budget-travel-expe
 import { BudgetPlanProfessionalImprovementExpensesComponent } from './form-element/budget-professional-improvement-expenses.component';
 import {OfficeOperationsComponent} from './form-element/office-operations.component';
 import {PersonelFormComponent} from './form-element/personel-form.component';
+import { RevenueFormComponentComponent } from './form-component/revenue-form-component.component';
+import { TravelFormComponentComponent } from './form-component/travel-form-component.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import {PersonelFormComponent} from './form-element/personel-form.component';
     BudgetTravelExpensesComponent,
     BudgetPlanProfessionalImprovementExpensesComponent,
     OfficeOperationsComponent,
-    PersonelFormComponent
+    PersonelFormComponent,
+    RevenueFormComponentComponent,
+    TravelFormComponentComponent
   
   
   ],

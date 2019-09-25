@@ -151,6 +151,70 @@ namespace Kers.Controllers
 
 
 
+        [HttpGet("GetCustom")]
+        public IActionResult GetCustom( [FromQuery] string search, 
+                                        [FromQuery] DateTime start,
+                                        [FromQuery] DateTime end,
+                                        [FromQuery] string status,
+                                        [FromQuery] string contacts,
+                                        [FromQuery] int? day,
+                                        [FromQuery] string order,
+                                        [FromQuery] bool withseats,
+                                        [FromQuery] bool attendance
+                                        ){
+            
+            var trainings = from i in _context.Meeting select i;
+            if(search != null && search != ""){
+                if( environment.IsDevelopment()){
+                    trainings = trainings.Where( i => i.Subject.Contains(search));
+                }else{
+                    trainings = trainings.Where( i => EF.Functions.FreeText(i.Subject, search));
+                }
+                
+            }
+            if(contacts != null && contacts != ""){
+                trainings = trainings.Where( i => i.mContact.Contains(contacts));
+            }
+            if(start != null){
+                start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
+                trainings = trainings.Where( i => i.Start >= start);
+            }
+            if( end != null){
+                end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
+                trainings = trainings.Where( i => i.Start <= end);
+            }
+            if(day != null){
+                trainings = trainings
+                            .Where( i => 
+                                        (i.End == null && (int)i.Start.DayOfWeek == day)
+                                        ||
+                                        (i.End.HasValue == true && 
+                                            (i.Start.DayOfWeek < i.End.Value.DayOfWeek ? 
+                                                (int)i.Start.DayOfWeek <= day && (int)i.End.Value.DayOfWeek >= day
+                                                : 
+                                                (int)i.Start.DayOfWeek >= day && (int)i.End.Value.DayOfWeek <= day )
+                                        )
+                                    );
+            }
+            
+            trainings = trainings
+                            .Include( t => t.Organizer).ThenInclude( u => u.PersonalProfile);
+            
+                            
+            IOrderedQueryable result;
+            if(order == "asc"){
+                result = trainings.OrderByDescending(t => t.Start);
+            }else if( order == "alph"){
+                result = trainings.OrderBy(t => t.Subject);
+            }else{
+                result = trainings.OrderBy(t => t.Start);
+            }
+
+            return new OkObjectResult(result);
+        }
+
+
+
 
 
         [HttpGet("migrate")]

@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'meeting-home',
+  selector: 'app-meeting-form',
   template: `
-    <router-outlet></router-outlet>
+    <p>
+      meeting-form works!
+    </p>
   `,
   styles: []
 })
-export class MeetingHomeComponent implements OnInit {
+export class MeetingFormComponent implements OnInit {
 
   constructor() { }
 

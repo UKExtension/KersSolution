@@ -4,6 +4,9 @@ import { SharedModule } from '../../shared/shared.module';
 import { MeetingHomeComponent } from './meeting-home.component';
 import { MeetingRoutingModule } from './meeting-routing.module';
 import { MeetingService } from './meeting.service';
+import { MeetingListComponent } from './meeting-list.component';
+import { MeetingListDetailComponent } from './meeting-list-detail.component';
+import { MeetingFormComponent } from './meeting-form.component';
 
 
 
@@ -13,7 +16,7 @@ import { MeetingService } from './meeting.service';
                     MeetingRoutingModule
                 ],
   declarations: [ 
-                    MeetingHomeComponent
+                    MeetingHomeComponent, MeetingListComponent, MeetingListDetailComponent, MeetingFormComponent
 
                 ],
   providers:    [  

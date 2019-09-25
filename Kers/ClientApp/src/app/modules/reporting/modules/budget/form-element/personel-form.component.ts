@@ -25,7 +25,25 @@ import { UserService, User } from '../../user/user.service';
         </div>
       <div class="clear"><br><br></div>
     </div>
-
+    <div class="form-group">
+      <label class="control-label col-md-4 col-sm-6 col-xs-12" for="first-name">Base Agent Contribution (see guidelines)
+      </label>
+      <div class="col-md-8 col-sm-6 col-xs-12">
+            <div class="row">
+                <div class="col-sm-10">
+                    <select class="form-control">
+                      <option value="0">0</option>
+                      <option value="3500">3,500</option>
+                      <option value="58200">58,200</option>
+                      <option value="68400">68,400</option>
+                      <option value="78600">78,600</option>
+                      <option value="89700">89,700</option>
+                      <option value="99300">99,300</option>
+                    </select>
+                </div>
+            </div>
+      </div>
+    </div>
   </div>
   <table class="table table-bordered" style="background-color:rgba(233, 226, 122, 0.3);">
       <thead>
@@ -48,13 +66,13 @@ import { UserService, User } from '../../user/user.service';
             <td class="text-right">{{supportStaffRowSum(row.value) | currency:'USD':'symbol':'.2-2'}}</td>
           </tr>
         </ng-container>
-              <tr *ngFor="let row of personel.value.budgetPlanStaffExpenditures">
-                  
+              <tr>
+                <td></td>  
               </tr>
       </tbody>
       <tfoot>
           <tr>
-              <td><strong>Total Professional Staff Salaries</strong></td>
+              <td><strong>Total All Salaries and Benefits</strong></td>
               <td class="text-right"><strong>{{supportStaffTotalSalaries() | currency:'USD':'symbol':'.2-2'}}</strong></td>
               <td class="text-right"><strong>{{supportStaffTotalBenefits() | currency:'USD':'symbol':'.2-2'}}</strong></td>
               <td class="text-right"><strong>{{supportStaffTotalAmount() | currency:'USD':'symbol':'.2-2'}}</strong></td>
@@ -114,7 +132,8 @@ export class PersonelFormComponent extends BaseControlValueAccessor<BudgetPlanSt
       super();
       this.personel = formBuilder.group(
         {
-          budgetPlanStaffExpenditures: formBuilder.array([])
+          budgetPlanStaffExpenditures: formBuilder.array([]),
+          baseAgentContribution: ["0"]
         }
       )
   

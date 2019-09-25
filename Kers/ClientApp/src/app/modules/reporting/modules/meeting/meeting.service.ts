@@ -5,13 +5,13 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { PlanningUnit } from '../user/user.service';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
+import { ExtensionEvent } from '../events/extension-event';
 
 
 @Injectable()
 export class MeetingService {
 
-    private baseUrl = '/api/County/';
-    private planningUnits = new Map<number, PlanningUnit>();
+    private baseUrl = '/api/Meetings/';
     private handleError: HandleError;
 
     constructor( 
@@ -19,45 +19,18 @@ export class MeetingService {
         private location:Location,
         httpErrorHandler: HttpErrorHandler
         ) {
-            this.handleError = httpErrorHandler.createHandleError('PlanningunitService');
+            this.handleError = httpErrorHandler.createHandleError('Meeting');
         }
 
 
 
-    counties(districtId:number | null = null):Observable<PlanningUnit[]>{
-        var url = this.baseUrl + 'countylist' + (districtId == null ? '' : '/' + districtId);
-        return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
-            .pipe(
-                catchError(this.handleError('counties', []))
-            );
-    }
-
-    timezones():Observable<Object[]>{
-        var url = this.baseUrl + 'timezones';
-        return this.http.get<Object[]>(this.location.prepareExternalUrl(url))
-            .pipe(
-                catchError(this.handleError('timezones', []))
-            );
-    }
-
-    id(id:number):Observable<PlanningUnit>{
-        if(this.planningUnits.has(id)){
-            return of( this.planningUnits.get(id));
-        }else{
-            var url = this.baseUrl + id;
-            return this.http.get<PlanningUnit>(this.location.prepareExternalUrl(url))
+        getCustom(searchParams?:{}):Observable<Meeting[]>{
+            var url = this.baseUrl + "GetCustom/";
+            return this.http.get<Meeting[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
                 .pipe(
-                    tap(
-                        res =>
-                        {
-                            var unit = res;
-                            this.planningUnits.set(id, unit);
-                        }
-                    ),
-                    catchError(this.handleError('id', <PlanningUnit>{}))
+                    catchError(this.handleError('getCustom', []))
                 );
-        }
-    }
+          }
 
     /*****************************/
     // CRUD operations
@@ -70,6 +43,27 @@ export class MeetingService {
                 catchError(this.handleError('update', <PlanningUnit>{}))
             );
     }
+    delete(id:number):Observable<{}>{
+        var url = this.baseUrl + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
+    }
+
+    private addParams(params:{}){
+        let searchParams = {};
+        for(let p in params){
+            searchParams[p] = params[p];
+        }
+        return  {params: searchParams};
+    }
 
 
+}
+
+
+export class Meeting extends ExtensionEvent{
+    mLocation:string;
+    mContact:string;
 }
