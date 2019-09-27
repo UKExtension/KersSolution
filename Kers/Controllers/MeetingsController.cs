@@ -39,6 +39,7 @@ namespace Kers.Controllers
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         IHostingEnvironment environment;
+        private string DefaultTime = "12:34:56.1000000";
         public MeetingsController( 
                     KERSmainContext mainContext,
                     KERSreportingContext _reportingContext,
@@ -62,17 +63,40 @@ namespace Kers.Controllers
         }
 
 
-        [HttpPost()]
+        [HttpPost("addmeeting")]
         [Authorize]
-        public IActionResult AddMeeting( [FromBody] Meeting meeting){
+        public IActionResult AddMeeting( [FromBody] MeetingWithTime meeting){
             if(meeting != null){
+
+                Meeting m = new Meeting();
                 var user = this.CurrentUser();
-                meeting.Organizer = user;
-                meeting.CreatedDateTime = DateTime.Now;
-                meeting.BodyPreview = meeting.Body;
-                meeting.LastModifiedDateTime = meeting.CreatedDateTime;
-                meeting.IsCancelled = false;
-                context.Add(meeting); 
+                m.Organizer = user;
+                m.CreatedDateTime = DateTime.Now;
+                m.BodyPreview = m.Body = meeting.Body;
+                m.LastModifiedDateTime = meeting.CreatedDateTime;
+                var timezone = meeting.etimezone ? " -04:00":" -05:00";
+                var starttime = this.DefaultTime;
+                if(meeting.IsAllDay == false){
+                    var endtime = this.DefaultTime;
+                    if(meeting.Endtime != ""){
+                        endtime = meeting.Endtime+":00.1000000";
+                    }
+                    if(meeting.End.HasValue){
+                        m.End = DateTimeOffset.Parse(meeting.End.Value.ToString("yyyy-MM-dd ") + endtime + timezone);
+                    }
+                    if(meeting.Starttime != ""){
+                        starttime = meeting.Starttime+":00.1000000";
+                    }
+                }else{
+                    m.End = null; 
+                }
+                m.Start = DateTimeOffset.Parse(meeting.Start.ToString("yyyy-MM-dd ") + starttime + timezone);
+                m.Subject = meeting.Subject;
+                m.IsAllDay = meeting.IsAllDay;
+                m.IsCancelled = meeting.IsCancelled;
+                m.tContact = meeting.tContact;
+                m.tLocation = meeting.tLocation;
+                context.Add(m); 
                 context.SaveChanges();
                 this.Log(meeting,"Meeting", "Meeting Added.");
                 return new OkObjectResult(meeting);
@@ -84,17 +108,33 @@ namespace Kers.Controllers
 
 
         
-        [HttpPut("{id}")]
+        [HttpPut("updatemeeting/{id}")]
         [Authorize]
-        public IActionResult UpdateMeeting( int id, [FromBody] Meeting meeting){
+        public IActionResult UpdateMeeting( int id, [FromBody] MeetingWithTime meeting){
             var mtng = context.Meeting.Where( t => t.Id == id).FirstOrDefault();
             if(meeting != null && mtng != null ){
-                mtng.Start = meeting.Start;
-                mtng.End = meeting.End;
+                
+                var timezone = meeting.etimezone ? " -04:00":" -05:00";
+                var starttime = this.DefaultTime;
+                if(meeting.IsAllDay == false){
+                    var endtime = this.DefaultTime;
+                    if(meeting.Endtime != ""){
+                        endtime = meeting.Endtime+":00.1000000";
+                    }
+                    if(meeting.End.HasValue){
+                        mtng.End = DateTimeOffset.Parse(meeting.End.Value.ToString("yyyy-MM-dd ") + endtime + timezone);
+                    }
+                    if(meeting.Starttime != ""){
+                        starttime = meeting.Starttime+":00.1000000";
+                    }
+                }else{
+                    mtng.End = null;
+                }
+                mtng.Start = DateTimeOffset.Parse(meeting.Start.ToString("yyyy-MM-dd ") + starttime + timezone);
                 mtng.IsAllDay = meeting.IsAllDay;
                 mtng.Body = mtng.BodyPreview = meeting.Body;
-                mtng.mContact = meeting.mContact;
-                mtng.mLocation = meeting.mLocation;
+                mtng.tContact = meeting.tContact;
+                mtng.tLocation = meeting.tLocation;
                 mtng.Subject = meeting.Subject;
                 mtng.LastModifiedDateTime = DateTime.Now;
                 mtng.IsCancelled = meeting.IsCancelled;
@@ -107,7 +147,7 @@ namespace Kers.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deletemeeting/{id}")]
         public IActionResult DeleteMeeting( int id ){
             var entity = context.Meeting.Find(id);
             
@@ -173,7 +213,7 @@ namespace Kers.Controllers
                 
             }
             if(contacts != null && contacts != ""){
-                trainings = trainings.Where( i => i.mContact.Contains(contacts));
+                trainings = trainings.Where( i => i.tContact.Contains(contacts));
             }
             if(start != null){
                 start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
@@ -195,13 +235,8 @@ namespace Kers.Controllers
                                                 (int)i.Start.DayOfWeek >= day && (int)i.End.Value.DayOfWeek <= day )
                                         )
                                     );
-            }
-            
-            trainings = trainings
-                            .Include( t => t.Organizer).ThenInclude( u => u.PersonalProfile);
-            
-                            
-            IOrderedQueryable result;
+            }                            
+            IOrderedQueryable<Meeting> result;
             if(order == "asc"){
                 result = trainings.OrderByDescending(t => t.Start);
             }else if( order == "alph"){
@@ -209,8 +244,12 @@ namespace Kers.Controllers
             }else{
                 result = trainings.OrderBy(t => t.Start);
             }
-
-            return new OkObjectResult(result);
+            var mtngs = new List<MeetingWithTime>();
+            foreach( var mtng in result){
+                var m = new MeetingWithTime(mtng);
+                mtngs.Add(m);
+            }
+            return new OkObjectResult(mtngs);
         }
 
 
@@ -243,8 +282,8 @@ namespace Kers.Controllers
                                 meeting.mClassicId = service.rID;
                                 meeting.Subject = service.eventTitle;
                                 meeting.Body = (service.eventDescription == "NULL"?"":service.eventDescription);
-                                meeting.mContact = service.eventContact;
-                                meeting.mLocation = service.eventLocation;
+                                meeting.tContact =  service.eventContact == "NULL" ? "" : service.eventContact;
+                                meeting.tLocation = service.eventLocation == "NULL" ? "" : service.eventLocation;
                                 var tm = "12:34:56.1000000 -04:00";
                                 var endTm = tm;
                                 if( service.eventTimeBegin != null & service.eventTimeBegin != "NULL"){
@@ -313,222 +352,43 @@ namespace Kers.Controllers
 
 
 
-
-/*
-        
+    }
 
 
+    public class MeetingWithTime: Meeting{
 
+        public MeetingWithTime(){}
 
-        [HttpPut("postattendance/{id}")]
-        [Authorize]
-        public IActionResult PostAttendance( int id, [FromBody] Training training){
-           
-
-            var trn = context.Training
-                                .Where( t => t.Id == id)
-                                .Include( t => t.Enrollment)
-                                .FirstOrDefault();
-            if(training != null && trn != null ){
-                foreach( var enr in trn.Enrollment ){
-                    var eSt = training.Enrollment.Where( e => e.Id == enr.Id).FirstOrDefault();
-                    if( eSt != null){
-                        enr.eStatus = eSt.eStatus;
-                        enr.attended = eSt.attended;
-                    } 
-                }
-                context.SaveChanges();
-                this.Log(training,"Training", "Posted Attendance.", "Training"
-                );
-                return new OkObjectResult(training);
-            }else{
-                this.Log( training ,"Training", "Not Found Training in an posting attendance attempt.", "Training", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
-
-
-        [HttpGet("getservices/{limit}/{notConverted?}/{order?}")]
-        public async Task<IActionResult> GetInServiceTrainings(int limit, Boolean notConverted = true, string order = "ASC"){
-            IOrderedQueryable<zInServiceTrainingCatalog> services;
-            if( notConverted ){
-                List<string> converted = await context.Training.Where( t => t.tID != null).Select( t => t.tID).ToListAsync();
-                if( order == "ASC"){
-                    services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.tID )).OrderBy(a => a.TrainDateBegin);
-                }else{
-                    services = _reportingContext.zInServiceTrainingCatalog.Where( s => !converted.Contains( s.tID )).OrderByDescending(a => a.TrainDateBegin);
-                }
-            }else{
-                if( order == "ASC"){
-                    services = _reportingContext.zInServiceTrainingCatalog.OrderBy(a => a.TrainDateBegin);
-                }else{
-                    services = _reportingContext.zInServiceTrainingCatalog.OrderByDescending(a => a.TrainDateBegin);
-                }
-            }
-            var sc = await services.Take(limit).ToListAsync();
-            return new OkObjectResult(sc);
-        }
-        
-
-        [HttpGet("proposalsawaiting")]
-        public async Task<IActionResult> ProposalsAwaiting(){
-            var proposals = await context
-                                .Training.Where( t => t.tStatus == "P")
-                                .Include( t => t.submittedBy)
-                                    .ThenInclude( s => s.PersonalProfile)
-                                .ToListAsync();
-            return new OkObjectResult(proposals);
-        }
-
-        [HttpGet("trainingsbystatus/{year}/{status}")]
-        public async Task<IActionResult> TrainingsByStatus(int year, string status="A"){
-            var trainings = await context
-                                .Training.Where( t => t.tStatus == status && t.Start.Year == year )
-                                .Include( t => t.submittedBy)
-                                    .ThenInclude( s => s.PersonalProfile)
-                                .Include( t => t.iHour)
-                                .Include( t => t.Enrollment)
-                                .ToListAsync();
-            foreach( var tr in trainings){
-                tr.Organizer = null;
-                tr.approvedBy = null;
-                if(tr.submittedBy != null){
-                   // tr.submittedBy.ApprovedTrainings = null;
-                    //tr.submittedBy.SubmittedTrainins = null;
-                }
-                foreach( var enr in tr.Enrollment){
-                    enr.Training = null;
-                }
-            }
-            return new OkObjectResult(trainings);
-        }
-
-        [HttpGet("userswithtrainings/{year}")]
-        public async Task<IActionResult> UsersWithTrainings(int year){
-            var users = await context
-                                .TrainingEnrollment
-                                .Where( t => t.Training.Start.Year == year && t.Training.tStatus=="A")
-                                .GroupBy( e => e.Attendie)
-                                .Select( s => s.Key)
-                                .ToListAsync();
-            var fullUsers = new List<KersUser>();
-            foreach( var user in users){
-                var fullUser = await context.KersUser
-                                    .Where( u => u.Id == user.Id)
-                                    .Include( u => u.PersonalProfile)
-                                    .FirstOrDefaultAsync();
-                if( fullUser != null ) fullUsers.Add(fullUser);
-            }
-            return new OkObjectResult(fullUsers.OrderBy( u => u.PersonalProfile.FirstName));
-        }
-
-
-        [HttpGet("RegisterWindows")]
-        public async Task<IActionResult> RegisterWindows(){
-            var winds = await context.TainingRegisterWindow.ToListAsync();
-            return new OkObjectResult(winds);
-        }
-        [HttpGet("InstructionalHours")]
-        public async Task<IActionResult> InstructionalHours(){
-            var hours = await context.TainingInstructionalHour.ToListAsync();
-            return new OkObjectResult(hours);
-        }
-        [HttpGet("CancelEnrollmentWindows")]
-        public async Task<IActionResult> CancelEnrollmentWindows(){
-            var winds = await context.TrainingCancelEnrollmentWindow.ToListAsync();
-            return new OkObjectResult(winds);
-        }
-
-        [HttpGet("GetCustom")]
-        public IActionResult GetCustom( [FromQuery] string search, 
-                                        [FromQuery] DateTime start,
-                                        [FromQuery] DateTime end,
-                                        [FromQuery] string status,
-                                        [FromQuery] string contacts,
-                                        [FromQuery] int? day,
-                                        [FromQuery] string order,
-                                        [FromQuery] bool withseats,
-                                        [FromQuery] bool attendance
-                                        ){
+        public MeetingWithTime(Meeting m){
+            this.Id = m.Id;
+            this.Body = m.Body;
+            this.BodyPreview = m.BodyPreview;
+            this.Start = m.Start;
+            this.End = m.End;
+            this.IsAllDay = m.IsAllDay;
+            this.CreatedDateTime = m.CreatedDateTime;
+            this.LastModifiedDateTime = m.LastModifiedDateTime;
+            this.Subject = m.Subject;
+            this.IsCancelled = m.IsCancelled;
+            this.tLocation = m.tLocation;
+            this.tContact = m.tContact;
             
-            var trainings = from i in _context.Training select i;
-            if(search != null && search != ""){
-                if( environment.IsDevelopment()){
-                    trainings = trainings.Where( i => i.Subject.Contains(search));
-                }else{
-                    trainings = trainings.Where( i => EF.Functions.FreeText(i.Subject, search));
+
+            if(this.IsAllDay == false){
+                TimeSpan tmzn = m.Start.Offset;
+                var hrs = tmzn.TotalHours;
+                this.etimezone = hrs == -4;
+                if(this.End.HasValue ){
+                    this.Endtime = this.End.Value.Hour.ToString("D2")+ ":" + this.End.Value.Minute.ToString("D2");
                 }
                 
             }
-            if(contacts != null && contacts != ""){
-                trainings = trainings.Where( i => i.tContact.Contains(contacts));
-            }
-            if(start != null){
-                start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
-                trainings = trainings.Where( i => i.Start >= start);
-            }
-            if( end != null){
-                end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
-                trainings = trainings.Where( i => i.Start <= end);
-            }
-            if(day != null){
-                trainings = trainings
-                            .Where( i => 
-                                        (i.End == null && (int)i.Start.DayOfWeek == day)
-                                        ||
-                                        (i.End.HasValue == true && 
-                                            (i.Start.DayOfWeek < i.End.Value.DayOfWeek ? 
-                                                (int)i.Start.DayOfWeek <= day && (int)i.End.Value.DayOfWeek >= day
-                                                : 
-                                                (int)i.Start.DayOfWeek >= day && (int)i.End.Value.DayOfWeek <= day )
-                                        )
-                                    );
-            }
-            if( status == "published"){
-                trainings = trainings.Where( i => i.tStatus == "A");
-            }
-            if(withseats){
-                trainings = trainings.Where( i => i.seatLimit == null || i.seatLimit > i.Enrollment.Where(e => e.eStatus == "E").Count());
-            }
-            trainings = trainings
-                            .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile);
-            if(attendance){
-                trainings = trainings.Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
-            }
-                            
-            IOrderedQueryable result;
-            if(order == "asc"){
-                result = trainings.OrderByDescending(t => t.Start);
-            }else if( order == "alph"){
-                result = trainings.OrderBy(t => t.Subject);
-            }else{
-                result = trainings.OrderBy(t => t.Start);
-            }
+            this.Starttime = this.Start.Hour.ToString("D2") + ":" + this.Start.Minute.ToString("D2");
 
-            return new OkObjectResult(result);
         }
-
-        [HttpGet("byuser/{id?}/{year?}")]
-        public async Task<IActionResult> TrainingsByUser( int id = 0, int year = 0 ){
-            KersUser user;
-            if( id == 0 ){
-                user = CurrentUser();
-                id = user.Id;
-            }
-            if( year == 0){
-                year = DateTime.Now.Year;
-            }
-            var trainings = from training in context.Training
-                from enfolment in training.Enrollment
-                where enfolment.AttendieId == id
-                where training.Start.Year == year
-                select training;
-            trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour);
-            var tnngs = await trainings.ToListAsync();
-            return new OkObjectResult(tnngs);
-        }
-
-
- */
+        public String Starttime;
+        public String Endtime;
+        public Boolean etimezone;
     }
+
 }

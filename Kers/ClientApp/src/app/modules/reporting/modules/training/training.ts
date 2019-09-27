@@ -19,8 +19,6 @@ export class Training extends ExtensionEvent{
     iHourId?:number;
     iHour:TainingInstructionalHour;
     seatLimit?:number;
-    tLocation:string;
-    tTime:string;
     day1:string;
     day2:string;
     day3:string;

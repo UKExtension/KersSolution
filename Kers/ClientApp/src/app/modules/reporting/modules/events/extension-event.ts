@@ -23,6 +23,8 @@ export class ExtensionEvent {
     extensionEventImages:ExtensionEventImage[];
     createdDateTime:Date;
     lastModifiedDateTime: Date;
+    tLocation:string;
+    tTime:string;
     discriminatorValue: string;
 }
 

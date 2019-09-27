@@ -24,9 +24,9 @@ export class MeetingService {
 
 
 
-        getCustom(searchParams?:{}):Observable<Meeting[]>{
+        getCustom(searchParams?:{}):Observable<MeetingWithTime[]>{
             var url = this.baseUrl + "GetCustom/";
-            return this.http.get<Meeting[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            return this.http.get<MeetingWithTime[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
                 .pipe(
                     catchError(this.handleError('getCustom', []))
                 );
@@ -36,15 +36,22 @@ export class MeetingService {
     // CRUD operations
     /*****************************/
 
-    update(id:number, unit:PlanningUnit):Observable<PlanningUnit>{
-        var url = this.baseUrl + id;
-        return this.http.put<PlanningUnit>(this.location.prepareExternalUrl(url), unit)
+    add( training:MeetingWithTime ):Observable<Meeting>{
+        return this.http.post<Meeting>(this.location.prepareExternalUrl(this.baseUrl + "addmeeting"), training)
             .pipe(
-                catchError(this.handleError('update', <PlanningUnit>{}))
+                catchError(this.handleError('add', <Meeting>{}))
+            );
+      }
+
+    update(id:number, unit:MeetingWithTime):Observable<Meeting>{
+        var url = this.baseUrl + "updatemeeting/" + id;
+        return this.http.put<Meeting>(this.location.prepareExternalUrl(url), unit)
+            .pipe(
+                catchError(this.handleError('update', <Meeting>{}))
             );
     }
     delete(id:number):Observable<{}>{
-        var url = this.baseUrl + id;
+        var url = this.baseUrl + "deletemeeting/" + id;
         return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('delete'))
@@ -64,6 +71,10 @@ export class MeetingService {
 
 
 export class Meeting extends ExtensionEvent{
-    mLocation:string;
-    mContact:string;
+}
+
+export class MeetingWithTime extends Meeting{
+    starttime:string;
+    endtime:string;
+    etimezone:boolean;
 }

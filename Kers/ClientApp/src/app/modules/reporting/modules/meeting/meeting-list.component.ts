@@ -4,12 +4,17 @@ import { IMyDrpOptions, IMyDateRangeModel } from "mydaterangepicker";
 import { startWith, flatMap, delay, map, tap } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { TrainingSearchCriteria } from '../training/training';
-import { MeetingService, Meeting } from './meeting.service';
+import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
 
 @Component({
   selector: 'meeting-list',
   template: `
-  <h3>CES Events</h3>
+  <div>
+      <div class="text-right">
+          <a class="btn btn-info btn-xs" *ngIf="!newMeeting" (click)="newMeeting = true">+ new event</a>
+      </div>
+      <meeting-form *ngIf="newMeeting" (onFormCancel)="newMeeting=false" (onFormSubmit)="newMeetingSubmitted($event)"></meeting-form>
+  </div><br><br>
   <div class="row">
     <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
       <input type="text" [(ngModel)]="criteria.search" placeholder="search by title" (keyup)="onSearch($event)" class="form-control" name="Search" />
@@ -76,18 +81,18 @@ import { MeetingService, Meeting } from './meeting.service';
   
   <div class="table-responsive">
     
-    <table class="table table-bordered table-striped" *ngIf="trainings$ | async as trainings">
+    <table class="table table-bordered table-striped" *ngIf="meetings$ | async as trainings">
         <thead>
             <tr>
               <th>Date(s)</th>
               <th>Title</th>
               <th>Location</th>
-              <th>Time</th>
+              <th>Contact</th>
               <th></th>
             </tr>
         </thead>
-        <tbody *ngIf="!loading>
-          <tr [meeting-detail]="training" [criteria]="criteria" (onDeleted)="deletedTraining($event)" *ngFor="let training of trainings"></tr>
+        <tbody *ngIf="!loading">
+          <tr [meeting-list-detail]="training" (onEdited)="editedMeeting($event)" (onDeleted)="deletedMeeting($event)" *ngFor="let training of trainings"></tr>
         </tbody>
     </table>
     <loading *ngIf="loading"></loading>
@@ -98,8 +103,9 @@ import { MeetingService, Meeting } from './meeting.service';
 export class MeetingListComponent implements OnInit {
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
-  meetings$:Observable<Meeting[]>;
+  meetings$:Observable<MeetingWithTime[]>;
   type="dsc";
+  newMeeting = false;
 
   @Input() criteria:TrainingSearchCriteria;
   @Input() startDate:Date;
@@ -200,59 +206,14 @@ export class MeetingListComponent implements OnInit {
     this.onRefresh();
   }
 
-
-
-
-
+  newMeetingSubmitted($event:MeetingWithTime){
+    this.newMeeting=false;
+    this.onRefresh();
+  }
+  editedMeeting($event){
+    this.onRefresh();
+  }
+  deletedMeeting($event){
+    this.onRefresh();
+  }
 }
-
-
-
-
-/* 
-
-  dateCnanged(event: IMyDateRangeModel){
-    this.startDate = event.beginJsDate;
-    this.endDate = event.endJsDate;
-    this.criteria["start"] = event.beginJsDate.toISOString();
-    this.criteria["end"] = event.endJsDate.toISOString();
-    this.onRefresh();
-    //this.trainings$ = this.service.perPeriod(event.beginJsDate, event.endJsDate);
-  }
-
-  onSearch(event){
-    this.criteria["search"] = event.target.value;
-    this.onRefresh();
-  }
-  onSearchContact(event){
-    this.criteria["contacts"] = event.target.value;
-    this.onRefresh();
-  }
-
-  onRefresh() {
-    this.loading = true; // Turn on the spinner.
-    this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
-  }
-  deletedTraining(_: any){
-    this.onRefresh();
-  }
-  switchOrder(type:string){
-    this.type = type;
-    this.criteria["order"] = type;
-    this.onRefresh();
-  }
-
-  onSeatsChange(event){
-    this.criteria["withseats"] = event.target.checked;
-    this.onRefresh();
-  }
-
-  onDayChange(event){
-    this.criteria["day"] = event.target.value;
-    this.onRefresh();
-  }
-
-}
- */
-
-

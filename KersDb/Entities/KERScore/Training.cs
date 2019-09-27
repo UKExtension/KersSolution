@@ -41,9 +41,6 @@ namespace Kers.Models.Entities.KERScore
         public int? seatLimit { get; set; }
 
         [StringLength(300)]
-        public string tLocation { get; set; }
-
-        [StringLength(300)]
         public string tTime { get; set; }
 
         [StringLength(300)]
@@ -57,9 +54,6 @@ namespace Kers.Models.Entities.KERScore
 
         [StringLength(300)]
         public string day4 { get; set; }
-
-        [StringLength(200)]
-        public string tContact { get; set; }
 
         public string tAudience { get; set; }
         public List<TrainingEnrollment> Enrollment {get; set; }

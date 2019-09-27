@@ -1,30 +1,31 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Meeting, MeetingService } from './meeting.service';
+import { Meeting, MeetingService, MeetingWithTime } from './meeting.service';
 
 @Component({
-  selector: 'app-meeting-list-detail',
+  selector: '[meeting-list-detail]',
   template: `
-<ng-container *ngIf="admin">
+<ng-container>
   <td *ngIf="rowDefault">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
   <td *ngIf="rowDefault">{{training.subject}}</td>
-  <td *ngIf="rowDefault">{{training.mLocation}}</td>
+  <td *ngIf="rowDefault">{{training.tLocation}}</td>
+  <td *ngIf="rowDefault">{{training.tContact}}</td>
   <td *ngIf="rowDefault" class="text-right">
       <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
       <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
       <a class="btn btn-primary btn-xs" (click)="default()" *ngIf="!rowDefault"><i class="fa fa-close"></i> Close</a>
   </td>
-  <td *ngIf="rowEdit" colspan="6">
+  <td *ngIf="rowEdit" colspan="5">
       <div class="text-right">
           <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
       </div>
       <meeting-form [meeting]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></meeting-form>
   </td>
-  <td *ngIf="rowDelete" colspan="6">
+  <td *ngIf="rowDelete" colspan="5">
       <div class="text-right">
           <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
       </div>
       <div>
-          Do you really want to delete training <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+          Do you really want to delete CES Event <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
       </div>
   </td>
 </ng-container>
@@ -40,7 +41,7 @@ export class MeetingListDetailComponent implements OnInit {
   rowDelete = false;
 
   
-  @Input('meeting-detail') training:Meeting;
+  @Input('meeting-list-detail') training:MeetingWithTime;
 
   @Output() onDeleted = new EventEmitter<Meeting>();
   @Output() onEdited = new EventEmitter<Meeting>();
@@ -68,7 +69,7 @@ export class MeetingListDetailComponent implements OnInit {
       this.rowDelete = false;
   }
 
-  trainingSubmitted(training:Meeting){
+  trainingSubmitted(training:MeetingWithTime){
       this.training = training;
       this.onEdited.emit(training);
       this.default();
@@ -80,7 +81,6 @@ export class MeetingListDetailComponent implements OnInit {
               this.onDeleted.emit(this.training);
           }
       );
-      
   }
 }
 /* 
