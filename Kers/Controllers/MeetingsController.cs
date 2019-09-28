@@ -257,15 +257,15 @@ namespace Kers.Controllers
 
 
         [HttpGet("migrate")]
-        public async Task<IActionResult> MigrateInServiceTrainings(){
+        public IActionResult MigrateInServiceTrainings(){
             var meetings = new List<Meeting>();
             var services = this._reportingContext.zCesEvent.OrderByDescending(m => m.rID);//.Skip(10).Take(10);
             foreach( var service in services){
-                var meeting = CES2Meeting( service );
-                meetings.Add( meeting );
+               // var meeting = CES2Meeting( service );
+               // meetings.Add( meeting );
             }
             this.context.AddRange(meetings);
-            await this.context.SaveChangesAsync();  
+            //await this.context.SaveChangesAsync();  
             return new OkObjectResult(meetings);
         }
 
@@ -298,6 +298,7 @@ namespace Kers.Controllers
                                 meeting.Start = DateTimeOffset.Parse(dateString);
                                 string endDateString = ToDateString(service.eventDateEnd) + " " + endTm;
                                 meeting.End = DateTimeOffset.Parse(endDateString);
+                                meeting.OrganizerId = 747;
                                 //this.context.Add(meeting);
                                 //await this.context.SaveChangesAsync();
                                 return meeting;
