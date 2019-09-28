@@ -29,14 +29,14 @@
                     <a class="title" href="#">@(e.DiscriminatorValue != "Meeting" ? "In-Service Training:" : "")  @e.Subject</a>
                     <p>
                         <strong>When:</strong> 
-                                @(e.Start.Minute % 10 == 0 ? e.Start.ToString("MM/dd/yyyy hh:mm tt").ToLower()  + 
+                                @( e.DiscriminatorValue == "Meeting" && e.Start.Minute % 10 == 0 ? e.Start.ToString("MM/dd/yyyy hh:mm tt").ToLower()  + 
                                                                 (   e.Start.ToString("%K") == "-04:00" ? " (ET)" : " (CT)") 
                                                             :  e.Start.ToString("MM/dd/yyyy")) 
                                 
                                 
                                 @(e.End != null && e.Start.DayOfYear != e.End?.DayOfYear ? 
                                 (
-                                    e.End?.Minute % 10 == 0 ? e.End?.ToString(" - MM/dd/yyyy hh:mm tt").ToLower() + 
+                                    e.DiscriminatorValue == "Meeting" &&  e.End?.Minute % 10 == 0 ? e.End?.ToString(" - MM/dd/yyyy hh:mm tt").ToLower() + 
                                                                 (   e.End?.ToString("%K") == "-04:00" ? " (ET)" : " (CT)") 
                                                             :  e.End?.ToString("MM/dd/yyyy") 
                                 
