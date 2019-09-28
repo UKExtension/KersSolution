@@ -14,19 +14,19 @@
         @foreach( var e in Model )
         {
             <article class="media event" style="border-bottom: 1px solid #ccc; padding-bottom: 8px;">
-                <a class="pull-left date">
+                <a class="pull-left date" @( e.IsCancelled == true ? "style=background-color:salmon;" : "")>
                     <p class="month">@e.Start.ToString("MMM")</p>
                     <p class="day">@e.Start.Day</p>
                 </a>
                 @if(e.End != null && e.Start.DayOfYear != e.End?.DayOfYear ){
-                    <a class="pull-left date">
+                    <a class="pull-left date" @( e.IsCancelled == true ? "style=background-color:salmon;" : "")>
                         <p class="month">@e.End?.ToString("MMM")</p>
                         <p class="day">@e.End?.Day</p>
                     </a>
                 }
                 
                 <div class="media-body">
-                    <a class="title" href="#">@(e.DiscriminatorValue != "Meeting" ? "In-Service Training:" : "")  @e.Subject</a>
+                    <a class="title">@(e.DiscriminatorValue != "Meeting" ? "In-Service Training:" : (e.IsCancelled == true ? "(Canceled) ": ""))  @e.Subject</a>
                     <p>
                         <strong>When:</strong> 
                                 @( e.DiscriminatorValue == "Meeting" && e.Start.Minute % 10 == 0 ? e.Start.ToString("MM/dd/yyyy hh:mm tt").ToLower()  + 
