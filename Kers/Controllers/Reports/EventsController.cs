@@ -36,19 +36,26 @@ namespace Kers.Controllers.Reports
             var start = new DateTimeOffset(DateTime.Now);
 
             var events = await this.context.ExtensionEvent
-                                .Where( e => e.Start > start
-                                                &&
-                                            (
-                                                e.DiscriminatorValue != "Training"
-                                                ||
-                                                this.context.Training.Find(e.Id).tStatus == "A"
-                                            )
-                                                
-                                                )
+                                .Where( e => e.Start > start )
                                 .OrderBy(e => e.Start)
                                 .ToListAsync();
 
-            return View(events);
+            var result = new List<ExtensionEvent>();
+            foreach( var e in events ){
+                if( e.DiscriminatorValue == "Training"){
+                    var training = context.Training.Find(e.Id);
+                    if(training != null){
+                        if(training.tStatus == "A"){
+                            result.Add(e);
+                        }
+                    }
+
+                }else{
+                    result.Add(e);
+                }
+            }
+
+            return View(result);
         }
 
 
