@@ -261,7 +261,7 @@ namespace Kers.Controllers
             var meetings = new List<Meeting>();
             var services = this._reportingContext.zCesEvent.OrderByDescending(m => m.rID);//.Skip(10).Take(10);
             foreach( var service in services){
-                var meeting = await CES2Meeting( service );
+                var meeting = CES2Meeting( service );
                 meetings.Add( meeting );
             }
             this.context.AddRange(meetings);
@@ -272,14 +272,13 @@ namespace Kers.Controllers
 
 
 
-        private async Task<Meeting> CES2Meeting(zCesEvent service){
+        private Meeting CES2Meeting(zCesEvent service){
             try{
                 /* if( !(await context.Meeting.Where( t => t.mClassicId == id).AnyAsync()) ){
                     var service = await this._reportingContext.zCesEvent.Where( s => s.rID == id).FirstOrDefaultAsync();
                     if( service != null){ */
-                        if( !(await this.context.Meeting.Where( t => t.mClassicId == service.rID).AnyAsync()) ){
+                        //if( !(await this.context.Meeting.Where( t => true).AnyAsync()) ){
                                 var meeting = new Meeting();
-                                meeting.mClassicId = service.rID;
                                 meeting.Subject = service.eventTitle;
                                 meeting.Body = (service.eventDescription == "NULL"?"":service.eventDescription);
                                 meeting.tContact =  service.eventContact == "NULL" ? "" : service.eventContact;
@@ -304,7 +303,7 @@ namespace Kers.Controllers
                                 return meeting;
                             
                             
-                        }/* 
+                        /* }
                     } 
                 } */
             }catch( Exception e ){
