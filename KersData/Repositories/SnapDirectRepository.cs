@@ -879,6 +879,7 @@ namespace Kers.Models.Repositories
                 keys.Add("District");
                 keys.Add("PlanningUnit");
                 keys.Add("PersonID");
+                keys.Add("Employed");
                 keys.Add("Name");
                 keys.Add("Title");
                 keys.Add("Program(s)");
@@ -941,6 +942,7 @@ namespace Kers.Models.Repositories
                     var row = userData.User.RprtngProfile.PlanningUnit.DistrictId + ",";
                     row += string.Concat( "\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
                     row += userData.User.RprtngProfile.PersonId + ",";
+                    row += userData.User.RprtngProfile.enabled.ToString() + ",";
                     row += string.Concat( "\"", userData.User.RprtngProfile.Name, "\"") + ",";
                     if(this.context.zEmpProfileRole.Where( r => r.User.Id == userData.User.Id && r.zEmpRoleType.shortTitle == "CNTMNGR" ).Any()){
                         row += string.Concat( "\"", userData.User.ExtensionPosition.Code, ", CNTMNGR\"") + ",";
