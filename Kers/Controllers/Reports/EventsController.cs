@@ -35,7 +35,18 @@ namespace Kers.Controllers.Reports
             ViewData["fy"] = fy;
             var start = new DateTimeOffset(DateTime.Now);
 
-            var events = await this.context.ExtensionEvent.Where( e => e.Start > start).OrderBy(e => e.Start).ToListAsync();
+            var events = await this.context.ExtensionEvent
+                                .Where( e => e.Start > start
+                                                &&
+                                            (
+                                                e.DiscriminatorValue != "Training"
+                                                ||
+                                                this.context.Training.Find(e.Id).tStatus == "A"
+                                            )
+                                                
+                                                )
+                                .OrderBy(e => e.Start)
+                                .ToListAsync();
 
             return View(events);
         }
