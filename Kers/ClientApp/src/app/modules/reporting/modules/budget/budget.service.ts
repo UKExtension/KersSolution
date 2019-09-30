@@ -23,6 +23,20 @@ export class BudgetService {
         this.handleError = httpErrorHandler.createHandleError('BudgetService');
     }
 
+  addBudget( plan:BudgetPlanRevision ):Observable<BudgetPlanRevision>{
+    return this.http.post<BudgetPlanRevision>(this.location.prepareExternalUrl(this.baseUrl+"budget"), JSON.stringify(plan))
+            .pipe(
+                catchError(this.handleError('add', <BudgetPlanRevision>{}))
+            );
+  }
+
+  updateBudget(id:number, plan:BudgetPlanRevision):Observable<BudgetPlanRevision>{
+    var url = this.baseUrl + "budget/" + id;
+    return this.http.put<BudgetPlanRevision>(this.location.prepareExternalUrl(url), JSON.stringify(plan))
+            .pipe(
+                catchError(this.handleError('update', plan))
+            );
+  }
 
   getOfficeOperations( onlyactive:boolean = false ):Observable<BudgetPlanOfficeOperation[]>{
     var url = this.baseUrl + "officeoperations/" + onlyactive;
@@ -66,6 +80,8 @@ export class BudgetPlan{
 
 export class BudgetPlanRevision{
   id:number;
+  budgetPlanId:Number;
+  budgetPlan:BudgetPlan;
   kersUser:User;
   created:Date;
   realPropertyAssesment:number;

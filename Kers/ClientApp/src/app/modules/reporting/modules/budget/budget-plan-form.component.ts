@@ -172,6 +172,16 @@ export class BudgetPlanFormComponent implements OnInit {
       index: 0
     }));
   }
+
+  increaseStep(){
+    this.setStep( this.step + 1);
+  }
+  decreaseStep(){
+    this.setStep( this.step - 1);
+  }
+  setStep(step:number){
+    this.step = step;
+  }
   
 
 

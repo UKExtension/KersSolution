@@ -4,31 +4,31 @@
 <div id="wizard" class="form_wizard wizard_horizontal">
     <ul class="wizard_steps anchor">
         <li>
-            <a (click)="step=1" [ngClass]="{'selected': step==1, 'disabled':step!=1}" isdone="1" rel="1">
+            <a (click)="setStep(1)" [ngClass]="{'selected': step==1, 'disabled':step!=1}" isdone="1" rel="1">
                 <span class="step_no">1</span>
                 <span class="step_descr">Revenues<br><small></small></span>
             </a>
         </li>
         <li>
-            <a (click)="step=2" [ngClass]="{'selected': step==2, 'disabled':step!=2}" isdone="0" rel="2">
+            <a (click)="setStep(2)" [ngClass]="{'selected': step==2, 'disabled':step!=2}" isdone="0" rel="2">
                 <span class="step_no">2</span>
                 <span class="step_descr">Personnel<br><small></small></span>
             </a>
         </li>
         <li>
-            <a (click)="step=3" [ngClass]="{'selected': step==3, 'disabled':step!=3}" isdone="0" rel="3">
+            <a (click)="setStep(3)" [ngClass]="{'selected': step==3, 'disabled':step!=3}" isdone="0" rel="3">
                 <span class="step_no">3</span>
                 <span class="step_descr">Travel<br><small>& Program Support</small></span>
             </a>
         </li>
         <li>
-            <a (click)="step=4" [ngClass]="{'selected': step==4, 'disabled':step!=4}" isdone="0" rel="4">
+            <a (click)="setStep(4)" [ngClass]="{'selected': step==4, 'disabled':step!=4}" isdone="0" rel="4">
                 <span class="step_no">4</span>
                 <span class="step_descr">Operations<br><small></small></span>
             </a>
         </li>
         <li>
-            <a (click)="step=5" [ngClass]="{'selected': step==5, 'disabled':step!=5}" isdone="0" rel="5">
+            <a (click)="setStep(5)" [ngClass]="{'selected': step==5, 'disabled':step!=5}" isdone="0" rel="5">
                 <span class="step_no">5</span>
                 <span class="step_descr">Reserves<br><small></small></span>
             </a>
@@ -115,8 +115,8 @@
                 <a href="#" class="close">X</a></div>
                 <div class="loader">Loading</div>
                 <!-- <a class="buttonFinish buttonDisabled btn btn-default">Finish</a>-->
-                <a class="buttonPrevious btn btn-info" [class.buttonDisabled]="step<2" (click)="step=step-1">Previous</a>
-                <a class="buttonNext btn btn-info" [class.buttonDisabled]="step>4" (click)="step=step+1">Next</a>
+                <a class="buttonPrevious btn btn-info" [class.buttonDisabled]="step<2" (click)="decreaseStep()">Previous</a>
+                <a class="buttonNext btn btn-info" [class.buttonDisabled]="step>4" (click)="increaseStep()">Next</a>
                 
                 </div>
                 

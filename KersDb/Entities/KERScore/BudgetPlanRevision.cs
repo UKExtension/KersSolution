@@ -10,6 +10,8 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public int BudgetPlanId {get;set;}
+        public BudgetPlan BudgetPlan {get;set;}
         public KersUser KersUser {get;set;}
         public int KersUserId {get;set;}
         public DateTime Created {get;set;}

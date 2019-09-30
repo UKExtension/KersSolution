@@ -1,38 +1,14 @@
-using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Kers.Models.Repositories;
 using Kers.Models.Entities.KERScore;
-using Kers.Models.Entities.KERSmain;
 using Kers.Models.Abstract;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using Kers.Models.Entities;
 using Kers.Models.Contexts;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Distributed;
-using Kers.Models.ViewModels;
-using Microsoft.Extensions.Caching.Memory;
-using Kers.Models.Data;
 using Microsoft.Extensions.Configuration;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
-using System.Web;
-using System.Net;
-using System.Data.SqlClient;
-using System.Xml.Linq;
-using System.IO;
-using CsvHelper;
-using Kers.Models.Entities.UKCAReporting;
 
 namespace Kers.Controllers.Reports
 {
@@ -81,36 +57,7 @@ namespace Kers.Controllers.Reports
         [Route("")]
         public IActionResult Index()
         {
-            //List<zInServiceTrainingCatalog> inServices = this.trainingRepo.csv2list().Take(10).ToList();
-
-            //var inServices = reportingContext.zInServiceTrainingCatalog.Where(s => true).OrderByDescending(r => r.rID);
-            //ViewData["trainings"] = inServices;
-            //var trainings = this.trainingRepo.InServicesToTrainings(inServices.Skip(300).Take(10).ToList());
-            //this.context.Training.AddRange(trainings);
-            //this.context.SaveChanges();
-
-
-/* 
-            //Update Users timezones based on the timezone of their county
-
-
-            var cnts = context.PlanningUnit.Where( u => u.TimeZoneId != null);
-            foreach( var cnt in cnts){
-                var usrs = context.KersUser
-                    .Where( u => u.RprtngProfile.enabled == true && u.RprtngProfile.PlanningUnit == cnt)
-                    .Include( u => u.PersonalProfile);
-                foreach( var usr in usrs){
-                    usr.PersonalProfile.TimeZoneId = cnt.TimeZoneId;
-                }
-            }
-
-            context.SaveChanges();
-
-
- */
-
-            //var indctrs = this.moveIndicators("2020", "2019");
-            //var strs = this.moveStories("2020", "2019");
+            
 
 
             /* 
