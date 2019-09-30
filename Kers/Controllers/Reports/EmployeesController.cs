@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Contexts;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
+using Kers.Models.ViewModels;
 
 namespace Kers.Controllers.Reports
 {
@@ -148,6 +149,94 @@ namespace Kers.Controllers.Reports
             return strs;
         }
 
+
+        [HttpGet]
+        [Route("facultydata/{year?}")]
+        public async Task<IActionResult> FacultyData(string year = "2019")
+        {
+            string[] faculty = new string[] {
+                "daaron", "enad222", "aaadam3", "aad244", "saad232", "ctande2", "damaral", "landerso", "darchbol", "lmbi222",
+                "marthur", "ebailey", "abailey", "baba225", "aec137", "mbarrett", "barton", "sbastin", "arbe243", "rbessin",
+                "wlboat1", "dbolin","cbr269", "dbr239", "pbrid2", "rmbrow00", "ubryant", "scbu225", "dbullock", "kburdine", "fccama2",
+                "jhca235", "cncart4", "lmca222", "rca253", "tmcham1", "ckchow", "rcoffey", "rcoleman", "collivr", "elmars2", "tconners", "mco248", "rfcook1", "jjcox2", "mscoyn00", "ncranksh",
+                "evcr224", "crofche", "mjcr236", "edangelo", "adreum2", "tdda229", "sdebo2", "cdillon", "sdobson", "adownie", "wdunwell", "rdurham", "jdv223", "rmdwye2", "pdyk", "hetliz", "dedward", "dely",
+                "rep222", "eer222", "aes225", "kdfl224", "wiford2", "wfountai", "cfox", "dfresh", "clgask2", "nwa232", "rgeneve",
+                "djgo227", "mgoodin", "ktgraves", "jdgreen", "jgrove", "agu227", "bhain2", "kgrick2", "dlhale00", "gshali2", "jhans2", "erha235",
+                "raharg0", "dharmon", "rharris", "rwharr00", "mdhaye3", "khaynes", "cjheath", "gheersch", "crhe249", "bhennig", "jhenning",
+                "dhild", "rlhi227", "mbrum2", "dwhoro2", "jaberr0", "rhoutz", "dkhowe2", "aghunt00", "jhunter", "rhusted", "dingram", "sisaacs",
+                "jjjack3", "vpwick0", "yljack2", "klja223", "jgjane2", "krjone3", "apkach2", "pk62", "dwka224", "tska223", "tka234", "lakenn4",
+                "hkim3", "camurp2", "jko234", "afhosi2", "jkurzyns","knyo224", "mlacki", "llawrenc", "bdle222", "bdlee2", "cdlee2", "mlee6", "trle233",
+                "jwle222", "jmlhot2", "mdlind1","atloyn2", "ylu232", "jnmacl2", "tbmark0", "cjmato2", "jmatthew", "lmaynard", "rlmccu2", "kmcd", "jmmc259", "kmcleod", "dhmcne2", "smcneill",
+                "rme247", "almeye2", "rdmiller", "kspill", "arabad2", "lmo225", "montross", "mnewman", "jtietyen", "gcmuns0",
+                "pdnagy2", "mkni223", "snokes", "hlno222", "jobry2", "tooc222", "rpalli", "rpearce", "sperr2", "apescato", "mpe277", "tpfeiffe", "epf222", "jph235", "tphillip", "jpl225", "hjpo223",
+                "dapotter", "mpotter","sjpr223", "mapurs2", "mrreed", "wre232", "gkrent2", "lri244", "lrieske", "krign2", "jringe",
+                "elritc2", "ccri226", "cmro267", "dbro223", "mgross2", "jro225", "reru228", "reru226", "shsagh2", "aasa238", "msa293", "mpsama2",
+                "csa233", "schardl", "rrsc223", "jksc222", "akschw2", "rascot0", "acse223", "twsh226", "lsh237", "clshaf2", "cbsh232", "jsh278",
+                "jmshoc2","rcfi223", "jasmal3","hdf002", "srsmitd", "wsnell", "snyder", "msp238", "sdst245", "tjhann00", "tss", "cjst223",
+                "jstrang", "stringer", "spsuma2", "jrsw222", "zsy224", "ktanaka", "nmte222", "cdteut0", "ptimoney", "ttobin", "mhtr222", "otsyu2", "mlturn0", "junri2", "klur222", "avail2", "vaillan", "dvs", "evanzant",
+                "ava233", "ppvi223", "rtvi223", "pvincell", "skvinc2", "jlwahr2", "bawebb", "oowend2", "rjwern2", "tawe223", "scwesl2", "jawh222", "dwilliam",
+                "mawillia", "kwi283", "woodch", "nwo222", "tawoods", "ylxiong", "jya246", "lyuan3", "pzh227", "zyu232", "xnzh222", "hzhu4", "jzimm"
+            };
+
+
+            var fiscalYear = this.GetFYByName(year);
+            ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
+            var data = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End, 4, 0);
+            var table = new TableViewModel();
+            table.Header = new List<string>{
+                                "Planning Unit", "Employee", "Days", "Multistate", "Total Contacts"
+                            };
+
+            var Races = this.context.Race.OrderBy(r => r.Order);
+            var Ethnicities = this.context.Ethnicity.OrderBy( e => e.Order);
+            var OptionNumbers = this.context.ActivityOptionNumber.OrderBy( n => n.Order);
+            foreach( var race in Races){
+                table.Header.Add(race.Name);
+            }
+            foreach( var ethn in Ethnicities){
+                table.Header.Add(ethn.Name);
+            }
+            table.Header.Add("Male");
+            table.Header.Add("Female");
+            foreach( var opnmb in OptionNumbers){
+                table.Header.Add(opnmb.Name);
+            }
+            var Rows = new List<List<string>>();
+
+
+            foreach( var d in await data){
+                var user = await this.context.KersUser.Where(u => u.Id == d.GroupId)
+                                .Include( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
+                                .FirstOrDefaultAsync();
+                if( user != null && faculty.Contains(user.RprtngProfile.LinkBlueId) ){
+                    var row = new List<string>();
+                    row.Add(user.RprtngProfile.PlanningUnit.Name);
+                    row.Add( user.RprtngProfile.Name);
+                    row.Add( (d.Hours / 8 ).ToString());
+                    row.Add( d.Multistate.ToString());
+                    row.Add( d.Audience.ToString());
+                    foreach( var race in Races){
+                        var raceAmount = d.RaceEthnicityValues.Where( v => v.RaceId == race.Id).Sum( r => r.Amount);
+                        row.Add(raceAmount.ToString());
+                    }
+                    foreach( var et in Ethnicities){
+                        var ethnAmount = d.RaceEthnicityValues.Where( v => v.EthnicityId == et.Id).Sum( r => r.Amount);
+                        row.Add(ethnAmount.ToString());
+                    }
+                    row.Add(d.Male.ToString());
+                    row.Add(d.Female.ToString());
+                    foreach( var opnmb in OptionNumbers){
+                        var optNmbAmount = d.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
+                        row.Add( optNmbAmount.ToString());
+                    }
+                    Rows.Add(row);
+                }
+            }
+            table.Rows = Rows;
+            table.Foother = new List<string>();
+            return View(table);
+        }
 
         [HttpGet]
         [Route("expenses/{districtid?}/{month?}/{year?}")]
