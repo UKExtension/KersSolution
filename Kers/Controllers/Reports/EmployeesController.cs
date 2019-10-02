@@ -196,7 +196,9 @@ namespace Kers.Controllers.Reports
 
 
             var Contacts = context.Contact
-                                .Where( a => faculty.Contains(a.KersUser.RprtngProfile.LinkBlueId))
+                                .Where( a =>    a.ContactDate < fiscalYear.End && a.ContactDate > fiscalYear.Start 
+                                                &&
+                                                faculty.Contains(a.KersUser.RprtngProfile.LinkBlueId))
                                 .GroupBy( a => a.KersUserId)
                                 .Select( c => new {
                                                 Ids = c.Select(s => s.Id).ToList(),
