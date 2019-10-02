@@ -241,7 +241,7 @@ namespace Kers.Controllers.Reports
 
             var table = new TableViewModel();
             table.Header = new List<string>{
-                                "Planning Unit", "Employee", "Days", "Multistate", "Total Contacts"
+                                "Planning Unit", "LinkBlueId", "Employee", "Days", "Multistate", "Total Contacts"
                             };
 
             var Races = this.context.Race.OrderBy(r => r.Order);
@@ -270,6 +270,7 @@ namespace Kers.Controllers.Reports
                     var row = new List<string>();
                     row.Add(user.RprtngProfile.PlanningUnit.Name);
                     row.Add( user.RprtngProfile.Name);
+                    row.Add( user.RprtngProfile.LinkBlueId);
                     row.Add( (d.Hours / 8 ).ToString());
                     row.Add( (d.Multistate / 8 ).ToString());
                     row.Add( d.Audience.ToString());
