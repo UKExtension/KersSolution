@@ -195,10 +195,44 @@ namespace Kers.Controllers.Reports
             var data = new List<PerGroupActivities>();
 
 
-            var selected = context.Activity.Where( a => faculty.Contains(a.KersUser.RprtngProfile.LinkBlueId));
+            var Contacts = context.Contact
+                                .Where( a => faculty.Contains(a.KersUser.RprtngProfile.LinkBlueId))
+                                .GroupBy( a => a.KersUserId)
+                                .Select( c => new {
+                                                Ids = c.Select(s => s.Id).ToList(),
+                                                UserID = c.Key
+                                            }
+                                );
 
 
-
+            foreach( var contactGroup in Contacts ){
+                var GroupRevisions = new List<ContactRevision>();
+                var OptionNumbersValues = new List<IOptionNumberValue>();
+                var RaceEthnicities = new List<IRaceEthnicityValue>();
+                foreach( var rev in contactGroup.Ids){
+                
+                    var lstrvsn = context.ContactRevision.
+                                Where(r => r.ContactId == rev).
+                                Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                                Include(a => a.ContactRaceEthnicityValues).
+                                OrderBy(a => a.Created).LastOrDefault();
+                    if(lstrvsn != null ){
+                        GroupRevisions.Add(lstrvsn);
+                    }
+                    OptionNumbersValues.AddRange(lstrvsn.ContactOptionNumbers);
+                    RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
+                }
+                var actvts = new PerGroupActivities();
+                actvts.RaceEthnicityValues = RaceEthnicities;
+                actvts.OptionNumberValues = OptionNumbersValues;
+                actvts.Hours = GroupRevisions.Sum( r => r.Days) * 8;
+                actvts.Audience = GroupRevisions.Sum( r => r.Male) + GroupRevisions.Sum( r => r.Female);
+                actvts.Male = GroupRevisions.Sum( r => r.Male);
+                actvts.Female = GroupRevisions.Sum( r => r.Female);
+                actvts.GroupId = contactGroup.UserID;
+                actvts.Multistate = GroupRevisions.Sum(r => r.Multistate) * 8;
+                data.Add(actvts);
+            }
 
 
 
