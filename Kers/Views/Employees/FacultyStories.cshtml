@@ -14,19 +14,21 @@
 
 @foreach( var story in Model){
 
-
+<P style="page-break-before: always"> 
 <h3>@story.Title</h3>
-        <p><strong>Author: </strong><a asp-controller="People" asp-action="Person" asp-route-id="@story.KersUser.Id" asp-route-fy="@fy" >@story.KersUser.PersonalProfile.FirstName @story.KersUser.PersonalProfile.LastName</a></p>
-        <p><strong>Planning Unit: </strong><a asp-controller="Reports" asp-action="County" asp-route-id="@story.PlanningUnit.Id" asp-route-fy="@fy">@story.PlanningUnit.Name</a></p>
-        <p><strong>Major Program: </strong><a asp-controller="MajorProgram" 
-                                    asp-action="Program" 
-                                    asp-route-id="@story.MajorProgram.Id"
+<p><strong>Fiscal Year: </strong><a 
+                                    >@fy</a></p>
+        <p><strong>Author: </strong><a>@story.KersUser.PersonalProfile.FirstName @story.KersUser.PersonalProfile.LastName</a></p>
+        <p><strong>Planning Unit: </strong><a>@story.PlanningUnit.Name</a></p>
+        <p><strong>Major Program: </strong><a 
                                     >@story.MajorProgram.Name</a></p>
+                                    
         
         <environment names="Development">
             <div class="fr-view">@Html.Raw(@story.Story)</div>
         </environment>
         <environment names="Staging,Production">
-            <div class="fr-view">@Html.Raw(@story.Story.Replace("fileuploads", "/core/fileuploads"))</div>
+            <div class="fr-view">@Html.Raw(@story.Story.Replace("fileuploads", "/fileuploads"))</div>
         </environment>
+</P>
 }
