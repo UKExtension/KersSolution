@@ -270,7 +270,7 @@ namespace Kers.Controllers.Reports
                     row.Add(user.RprtngProfile.PlanningUnit.Name);
                     row.Add( user.RprtngProfile.Name);
                     row.Add( (d.Hours / 8 ).ToString());
-                    row.Add( d.Multistate.ToString());
+                    row.Add( (d.Multistate / 8 ).ToString());
                     row.Add( d.Audience.ToString());
                     foreach( var race in Races){
                         var raceAmount = d.RaceEthnicityValues.Where( v => v.RaceId == race.Id).Sum( r => r.Amount);
