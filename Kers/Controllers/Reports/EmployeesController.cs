@@ -10,6 +10,7 @@ using Kers.Models.Contexts;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Kers.Models.ViewModels;
+using Kers.Models.Data;
 
 namespace Kers.Controllers.Reports
 {
@@ -184,7 +185,24 @@ namespace Kers.Controllers.Reports
             var fiscalYear = this.GetFYByName(year);
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
-            var data = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End, 4, 0);
+
+
+
+
+
+            //var data = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End, 4, 0);
+
+            var data = new List<PerGroupActivities>();
+
+
+            var selected = context.Activity.Where( a => faculty.Contains(a.KersUser.RprtngProfile.LinkBlueId));
+
+
+
+
+
+
+
             var table = new TableViewModel();
             table.Header = new List<string>{
                                 "Planning Unit", "Employee", "Days", "Multistate", "Total Contacts"
@@ -207,7 +225,7 @@ namespace Kers.Controllers.Reports
             var Rows = new List<List<string>>();
 
 
-            foreach( var d in await data){
+            foreach( var d in data){
                 var user = await this.context.KersUser.Where(u => u.Id == d.GroupId)
                                 .Include( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
                                 .FirstOrDefaultAsync();
