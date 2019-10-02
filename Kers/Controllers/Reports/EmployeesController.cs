@@ -258,6 +258,7 @@ namespace Kers.Controllers.Reports
             foreach( var opnmb in OptionNumbers){
                 table.Header.Add(opnmb.Name);
             }
+            table.Header.Add("Success Stories Count");
             var Rows = new List<List<string>>();
 
 
@@ -286,6 +287,7 @@ namespace Kers.Controllers.Reports
                         var optNmbAmount = d.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
                         row.Add( optNmbAmount.ToString());
                     }
+                    row.Add( context.Story.Where(s => s.KersUser == user && s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear).Count().ToString() );
                     Rows.Add(row);
                 }
             }
