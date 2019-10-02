@@ -269,8 +269,8 @@ namespace Kers.Controllers.Reports
                 if( user != null && faculty.Contains(user.RprtngProfile.LinkBlueId) ){
                     var row = new List<string>();
                     row.Add(user.RprtngProfile.PlanningUnit.Name);
-                    row.Add( user.RprtngProfile.Name);
                     row.Add( user.RprtngProfile.LinkBlueId);
+                    row.Add( user.RprtngProfile.Name);
                     row.Add( (d.Hours / 8 ).ToString());
                     row.Add( (d.Multistate / 8 ).ToString());
                     row.Add( d.Audience.ToString());
