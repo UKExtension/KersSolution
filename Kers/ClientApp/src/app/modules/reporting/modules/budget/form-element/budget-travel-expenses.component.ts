@@ -11,7 +11,9 @@ import { User } from '../../user/user.service';
   template: `
 <div class="form-group" [formGroup]="budgetTravel">
   <div class="form-inline">
+      
       <div class="form-group">
+        <label>Position</label><br>
         <select formControlName="staffTypeId" class="form-control">
           <option value="0">-- Select --</option>
           <option value="1">Base Agent/ANR</option>
@@ -19,25 +21,35 @@ import { User } from '../../user/user.service';
           <option value="3">Base Agent/4H</option>
           <option value="4">Agent (4th+)</option>
           <option value="5">Support Staff</option>
-        </select><br>
-        <small>(Position)</small>
+        </select><br><br>
       </div>
       &nbsp;
       <div class="form-group">
+        <label>Person</label><br>
         <select formControlName="personId" class="form-control">
           <option value="0">-- Select --</option>
           <option *ngFor="let employee of employees" [value]="employee.id">{{employee.personalProfile.firstName}} {{employee.personalProfile.lastName}}</option>
           <option disabled>──────────</option>
           <option [ngValue]="null">Other</option>
         </select><br>
-        <small *ngIf="budgetTravel.controls.personId.value != null">(Person)</small>
         <input *ngIf="budgetTravel.controls.personId.value == null" type="text" style="margin-top: 3px;" class="form-control" formControlName="personNameIfNotAUser" /><br>
           <small  *ngIf="budgetTravel.controls.personId.value == null">(Other Person Name)</small>
       </div>
       &nbsp;
       <div class="form-group">
-          <input type="number" class="form-control col-md-3 col-xs-6" formControlName="amount"/><br>
-          <small>(Amount)</small>
+        <label>Travel</label><br>
+        <input type="number" class="form-control col-md-3 col-xs-6" formControlName="amount"/><br>
+        <small>(Amount)</small>
+      </div>&nbsp;
+      <div class="form-group">
+        <label>Professional Improvement</label><br>
+        <input type="number" class="form-control col-md-3 col-xs-6" /><br>
+        <small>(Amount)</small>
+      </div>&nbsp;
+      <div class="form-group">
+        <label>Program Support</label><br>
+        <input type="number" class="form-control col-md-3 col-xs-6" /><br>
+        <small>(Amount)</small>
       </div>
       <div class="form-group">
               <div class="col-xs-1 ng-star-inserted"><span><a class="close-link" (click)="onRemove()" style="cursor:pointer;"><i class="fa fa-close"></i></a></span></div>

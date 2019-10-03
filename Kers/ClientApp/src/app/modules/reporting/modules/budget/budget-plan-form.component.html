@@ -60,17 +60,6 @@
                     </div>
                     
                 </div>
-                <div class="form-group" formArrayName="professionalImprovemetnExpenses"><br>
-                    <h2>PROFESSIONAL IMPROVEMENT: <small>(include only if all other expenses have been met; up to $3,500/Agent and up to $1,000/Agent for ESP members)</small></h2><br>
-                    <div class="col-xs-12">
-                        <div *ngFor="let userDefinedIncome of professionalImprovemetnExpenses.controls; let i=index" class="form-group">
-                            <budget-professional-improvement-expenses [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="i"></budget-professional-improvement-expenses>
-                        </div>
-                        <a class="btn btn-info btn-xs" (click)="addTravelExpenditure()" style="margin-top: 8px;"> + add </a>
-                    </div>
-                    
-                </div>
-                
         </div>
         <div id="step-4" class="content" *ngIf="step==4">
                 <h3>Office Operations</h3>
@@ -110,7 +99,7 @@
         
         </div>
         <div class="actionBar">
-                <div class="msgBox">
+            <div class="msgBox">
                 <div class="content"></div>
                 <a href="#" class="close">X</a></div>
                 <div class="loader">Loading</div>
@@ -118,15 +107,15 @@
                 <a class="buttonPrevious btn btn-info" [class.buttonDisabled]="step<2" (click)="decreaseStep()">Previous</a>
                 <a class="buttonNext btn btn-info" [class.buttonDisabled]="step>4" (click)="increaseStep()">Next</a>
                 
-                </div>
+            </div>
                 
         <div class="ln_solid"></div>
-                    <div class="form-group">
-                        <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3 col-md-offset-2">
-                            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-                            <button type="submit" [disabled]="budgetForm.invalid"  class="btn btn-success">Submit</button>
-                        </div>
-                    </div>
+            <div class="form-group">
+                <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3 col-md-offset-2">
+                    <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                    <button type="submit" [disabled]="budgetForm.invalid"  class="btn btn-success">Save</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>
