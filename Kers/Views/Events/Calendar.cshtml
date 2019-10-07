@@ -25,6 +25,7 @@
     <script src='~/assets/reporting/Calendar/daygrid/main.min.js'></script>
     <script src='~/assets/reporting/Calendar/list/main.min.js'></script>
     <script src='~/assets/reporting/Calendar/timegrid/main.min.js'></script>
+    
 
     <script>
 
@@ -38,16 +39,18 @@
                     right: "dayGridMonth, timeGridWeek, timeGridDay, listMonth"
                 },
             plugins: [ 'dayGrid', 'list', 'timeGrid' ],
+            eventClick: function(info) {
+                console.log(info.event);
+            },
+            eventRender: function(info) {
+                
+            },
+            
             eventSources: [
-
-    // your event source
                 {
                     url: '../../api/ExtensionEvent/getevents',
                     method: 'POST',
-                    extraParams: {
-                        custom_param1: 'something',
-                        custom_param2: 'somethingelse'
-                    },
+                    extraParams: {},
                     failure: function() {
                         alert('there was an error while fetching events!');
                     }

@@ -99,16 +99,71 @@ namespace Kers.Controllers
 
             var events = this.context.ExtensionEvent.Where( e => e.Start < EndtDate && e.Start > StartDate);
             foreach( var e in events ){
-                list.Add(new {
-                    title = e.Subject,
-                    start = e.Start,
-                    end = e.End,
-                    description = e.Body,
-                    tContact = e.tContact,
-                    tLocation = e.tLocation,
-                    allDay = e.IsAllDay,
-                    id = e.Id
-                });
+                if(e.DiscriminatorValue == "Training"){
+                    var trnng = context.Training.Find(e.Id);
+                    if(trnng.tStatus == "A"){
+                        if(trnng != null ){
+                            if( trnng.End == null || trnng.Start.ToString("ddMMyyyy") == trnng.End?.ToString("ddMMyyyy") ){
+                                var times = ProcessTime(trnng.day1);
+                                if( times != null ){
+                                    var startDate = new DateTimeOffset(new DateTime(trnng.Start.Year, trnng.Start.Month, trnng.Start.Day, times.start.hour, times.start.minute, 0), new TimeSpan(times.timeshift, 0, 0));
+                                    var endDate = new DateTimeOffset(new DateTime(trnng.Start.Year, trnng.Start.Month, trnng.Start.Day, times.end.hour, times.end.minute, 0), new TimeSpan(times.timeshift, 0, 0));
+                                    list.Add(new {
+                                        title = e.Subject,
+                                        start = startDate,
+                                        end = endDate,
+                                        description = e.Body,
+                                        tContact = e.tContact,
+                                        tLocation = e.tLocation,
+                                        allDay = false,
+                                        id = e.Id,
+                                        type = e.DiscriminatorValue
+                                    });
+
+                                }else{
+                                    list.Add(new {
+                                        title = e.Subject,
+                                        start = e.Start,
+                                        end = e.End,
+                                        description = e.Body,
+                                        tContact = e.tContact,
+                                        tLocation = e.tLocation,
+                                        allDay = true,
+                                        id = e.Id,
+                                        type = e.DiscriminatorValue
+                                    });
+                                }
+
+                            }else{
+                                list.Add(new {
+                                    title = e.Subject,
+                                    start = e.Start,
+                                    end = e.End,
+                                    description = e.Body,
+                                    tContact = e.tContact,
+                                    tLocation = e.tLocation,
+                                    allDay = true,
+                                    id = e.Id,
+                                    type = e.DiscriminatorValue
+                                });
+
+                            }
+                        }
+                    }
+                }else{
+                    list.Add(new {
+                        title = e.Subject,
+                        start = e.Start,
+                        end = e.End,
+                        description = e.Body,
+                        tContact = e.tContact,
+                        tLocation = e.tLocation,
+                        allDay = e.IsAllDay,
+                        id = e.Id,
+                        type = e.DiscriminatorValue
+                    });
+                }
+                
             }
 
             
@@ -156,6 +211,53 @@ namespace Kers.Controllers
 
 
 
+        private StartAndEndTimes ProcessTime( string time){
+            var parts = time.Split('-');
+            if(parts.Count() > 1){
+                var start = TryToParseTime( parts[0] );
+                var end = TryToParseTime( parts[1] );
+                if( start != null && end != null){
+                    return new StartAndEndTimes(){
+                        start = start,
+                        end = end,
+                        timeshift = this.Timeshift( time )
+                    };
+                }
+            }
+            return null;
+        }
+
+        private EventTime TryToParseTime(string timestring){
+            timestring = timestring.Trim();
+            var tmArr = timestring.Split(':');
+            if(tmArr.Count() > 1){
+                if (Int32.TryParse(tmArr[0], out int hourPart)){
+                    var minuteArr = tmArr[1].Split(' ');
+                    if( minuteArr.Count() > 1){
+                        if( minuteArr[1].ToLower() == "pm" || minuteArr[1].ToLower()=="p.m."){
+                            hourPart = hourPart < 12 ? (hourPart + 12) : 12;
+                        }
+                    }
+                    if (Int32.TryParse(minuteArr[0], out int minutePart)){
+                        return new EventTime(){ hour = hourPart, minute = minutePart};
+                    }
+                }
+            }
+            return null;
+        }
+
+        private int Timeshift(string timestring){
+            int shift = -4;
+            var tmArr = timestring.Split(' ');
+            var lastPart = tmArr.Count() - 1;
+            if(tmArr[lastPart] == "CT" || tmArr[lastPart] == "CST" || tmArr[lastPart] == "CDT" || tmArr[lastPart] == "Central"){
+                shift = -5;
+            }
+            return shift;
+        }
+
+
+
 
 
 
@@ -177,4 +279,14 @@ namespace Kers.Controllers
 
     }
     
+}
+
+public class StartAndEndTimes{
+    public EventTime start;
+    public EventTime end;
+    public int timeshift;
+}
+public class EventTime{
+    public int hour;
+    public int minute;
 }
