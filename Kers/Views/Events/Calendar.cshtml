@@ -1,0 +1,66 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = "Cooperative Extension Events";
+    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var fy = ViewData["fy"] as string;
+    
+}
+<br><br>
+
+<div id="calendar" class="fc fc-unthemed fc-ltr"></div>
+@section stylesheet
+{
+
+<link href='~/assets/reporting/Calendar/core/main.min.css' rel='stylesheet' />
+<link href='~/assets/reporting/Calendar/daygrid/main.min.css' rel='stylesheet' />
+<link href='~/assets/reporting/Calendar/list/main.min.css' rel='stylesheet' />
+<link href='~/assets/reporting/Calendar/timegrid/main.min.css' rel='stylesheet' />
+
+}
+
+@section scripts
+{
+
+    <script src='~/assets/reporting/Calendar/core/main.min.js'></script>
+    <script src='~/assets/reporting/Calendar/daygrid/main.min.js'></script>
+    <script src='~/assets/reporting/Calendar/list/main.min.js'></script>
+    <script src='~/assets/reporting/Calendar/timegrid/main.min.js'></script>
+
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            header: {
+                    left: "prev,next today",
+                    center: "title",
+                    right: "dayGridMonth, timeGridWeek, timeGridDay, listMonth"
+                },
+            plugins: [ 'dayGrid', 'list', 'timeGrid' ],
+            eventSources: [
+
+    // your event source
+                {
+                    url: '../../api/ExtensionEvent/getevents',
+                    method: 'POST',
+                    extraParams: {
+                        custom_param1: 'something',
+                        custom_param2: 'somethingelse'
+                    },
+                    failure: function() {
+                        alert('there was an error while fetching events!');
+                    }
+                }
+
+                // any other sources...
+
+            ],
+            
+        });
+
+        calendar.render();
+      });
+
+    </script>
+}

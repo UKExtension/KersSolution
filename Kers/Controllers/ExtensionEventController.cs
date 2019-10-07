@@ -90,6 +90,32 @@ namespace Kers.Controllers
         }
 
 
+        [HttpPost("getevents")]
+        public IActionResult GetEvents( string start, string end){
+            var list = new List<object>();
+
+            var StartDate = DateTimeOffset.Parse( start);
+            var EndtDate = DateTimeOffset.Parse( end);
+
+            var events = this.context.ExtensionEvent.Where( e => e.Start < EndtDate && e.Start > StartDate);
+            foreach( var e in events ){
+                list.Add(new {
+                    title = e.Subject,
+                    start = e.Start,
+                    end = e.End,
+                    description = e.Body,
+                    tContact = e.tContact,
+                    tLocation = e.tLocation,
+                    allDay = e.IsAllDay,
+                    id = e.Id
+                });
+            }
+
+            
+            return new OkObjectResult(list);
+        }
+
+
 
         [HttpPut("{id}")]
         [Authorize]

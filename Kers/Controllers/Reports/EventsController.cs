@@ -58,6 +58,38 @@ namespace Kers.Controllers.Reports
             return View(result);
         }
 
+        [HttpGet]
+        [Route("calendar/{fy?}")]
+        public ActionResult Calendar(string fy="0")
+        {
+            ViewData["fy"] = fy;
+
+/* 
+            var start = new DateTimeOffset(DateTime.Now);
+
+            var events = await this.context.ExtensionEvent
+                                .Where( e => e.Start > start )
+                                .OrderBy(e => e.Start)
+                                .ToListAsync();
+
+            var result = new List<ExtensionEvent>();
+            foreach( var e in events ){
+                if( e.DiscriminatorValue == "Training"){
+                    var training = context.Training.Find(e.Id);
+                    if(training != null){
+                        if(training.tStatus == "A"){
+                            result.Add(e);
+                        }
+                    }
+
+                }else{
+                    result.Add(e);
+                }
+            }
+ */
+            return View();
+        }
+
 
 
 
