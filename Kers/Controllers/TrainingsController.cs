@@ -536,7 +536,7 @@ namespace Kers.Controllers
             trainings = trainings
                             .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile);
             if(attendance){
-                trainings = trainings.Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
+                trainings = trainings.Where(t => t.tStatus == "A" && t.Enrollment.Count() > 0 ).Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
             }
                             
             IOrderedQueryable result;
