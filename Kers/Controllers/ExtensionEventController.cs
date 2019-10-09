@@ -109,42 +109,57 @@ namespace Kers.Controllers
                                     var startDate = new DateTimeOffset(new DateTime(trnng.Start.Year, trnng.Start.Month, trnng.Start.Day, times.start.hour, times.start.minute, 0), new TimeSpan(times.timeshift, 0, 0));
                                     var endDate = new DateTimeOffset(new DateTime(trnng.Start.Year, trnng.Start.Month, trnng.Start.Day, times.end.hour, times.end.minute, 0), new TimeSpan(times.timeshift, 0, 0));
                                     list.Add(new {
-                                        title = e.Subject,
+                                        title = "In-Service Training: " + e.Subject,
                                         start = startDate,
                                         end = endDate,
                                         description = e.Body,
                                         tContact = e.tContact,
                                         tLocation = e.tLocation,
+                                        day1=trnng.day1,
+                                        day2=trnng.day2,
+                                        day3=trnng.day3,
+                                        day4=trnng.day4,
                                         allDay = false,
                                         id = e.Id,
-                                        type = e.DiscriminatorValue
+                                        type = e.DiscriminatorValue,
+                                        backgroundColor = "#3a87ad"
                                     });
 
                                 }else{
                                     list.Add(new {
-                                        title = e.Subject,
+                                        title = "In-Service Training: " + e.Subject,
                                         start = e.Start,
                                         end = e.End,
                                         description = e.Body,
                                         tContact = e.tContact,
                                         tLocation = e.tLocation,
+                                        day1=trnng.day1,
+                                        day2=trnng.day2,
+                                        day3=trnng.day3,
+                                        day4=trnng.day4,
                                         allDay = true,
                                         id = e.Id,
-                                        type = e.DiscriminatorValue
+                                        type = e.DiscriminatorValue,
+                                        backgroundColor = "#3a87ad"
                                     });
                                 }
 
                             }else{
                                 list.Add(new {
-                                    title = e.Subject,
+                                    title = "In-Service Training: " + e.Subject,
                                     start = e.Start,
                                     end = e.End,
                                     description = e.Body,
                                     tContact = e.tContact,
                                     tLocation = e.tLocation,
+                                    day1=trnng.day1,
+                                    day2=trnng.day2,
+                                    day3=trnng.day3,
+                                    day4=trnng.day4,
                                     allDay = true,
                                     id = e.Id,
-                                    type = e.DiscriminatorValue
+                                    type = e.DiscriminatorValue,
+                                    backgroundColor = "#3a87ad"
                                 });
 
                             }
@@ -152,7 +167,7 @@ namespace Kers.Controllers
                     }
                 }else{
                     list.Add(new {
-                        title = e.Subject,
+                        title = (e.IsCancelled == true ? "(Canceled) " : "" ) + e.Subject,
                         start = e.Start,
                         end = e.End,
                         description = e.Body,
@@ -160,7 +175,8 @@ namespace Kers.Controllers
                         tLocation = e.tLocation,
                         allDay = e.IsAllDay,
                         id = e.Id,
-                        type = e.DiscriminatorValue
+                        type = e.DiscriminatorValue,
+                        backgroundColor = (e.IsCancelled == true ? "#E74C3C" : "#73879C")
                     });
                 }
                 

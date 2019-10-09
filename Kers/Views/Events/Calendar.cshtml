@@ -15,7 +15,20 @@
 <link href='~/assets/reporting/Calendar/daygrid/main.min.css' rel='stylesheet' />
 <link href='~/assets/reporting/Calendar/list/main.min.css' rel='stylesheet' />
 <link href='~/assets/reporting/Calendar/timegrid/main.min.css' rel='stylesheet' />
+<style>
 
+.fc-botton, .fc-button-primary {
+    background: #f5f5f5;
+    color:#73879C;
+    border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.25);
+}
+.fc-button-primary:not(:disabled).fc-button-active, .fc-button-primary:not(:disabled):active,
+.fc-state-active, .fc-state-down {
+    color: #333;
+    background:#ccc;
+    border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.25);
+}
+</style>
 }
 
 @section scripts
@@ -40,9 +53,20 @@
                 },
             plugins: [ 'dayGrid', 'list', 'timeGrid' ],
             eventClick: function(info) {
-                console.log(info.event);
+                if(info.view.type != "listMonth"){
+                    var el = $(info.el).children().filter(".details").toggle();
+                }
             },
             eventRender: function(info) {
+                var el = $(info.el);
+                el.css("cursor","pointer")
+                if(info.view.type == "listMonth"){
+                    el.children().filter(':last').append(details(info.event));
+                }else{
+                    var d = $(details(info.event));
+                    el.append(d);
+                    d.hide();
+                }
                 
             },
             
@@ -64,6 +88,30 @@
 
         calendar.render();
       });
+
+      function details(event){
+          var result = "<div class='details'><strong>When:</strong>";
+          result += event.start.toLocaleDateString("en-US");
+          if(!event.allDay) result += " - " + event.end.toLocaleDateString("en-US");
+          if(event.extendedProps.type == "Training"){
+              result += "<br><strong>Day 1:</strong> " + event.extendedProps.day1;
+              if(event.extendedProps.day2 != undefined && event.extendedProps.day2 != "" ){
+                  result += "<br><strong>Day 2:</strong> " + event.extendedProps.day2;
+              }
+              if(event.extendedProps.day3 != undefined && event.extendedProps.day3 != "" ){
+                  result += "<br><strong>Day 3:</strong> " + event.extendedProps.day3;
+              }
+              if(event.extendedProps.day4 != undefined && event.extendedProps.day4 != "" ){
+                  result += "<br><strong>Day 4:</strong> " + event.extendedProps.day4;
+              }
+          }
+          result += "<br><strong>Location:</strong> ";
+          result += event.extendedProps.tLocation;
+          result += "<br><strong>Contact:</strong> ";
+          result += event.extendedProps.tContact;
+          result += "</div>";
+          return result;
+      }
 
     </script>
 }
