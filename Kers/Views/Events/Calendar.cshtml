@@ -92,7 +92,7 @@
       function details(event){
           var result = "<div class='details'><strong>When:</strong>";
           result += event.start.toLocaleDateString("en-US");
-          if(!event.allDay) result += " - " + event.end.toLocaleDateString("en-US");
+          if(event.end != undefined) result += " - " + event.end.toLocaleDateString("en-US");
           if(event.extendedProps.type == "Training"){
               result += "<br><strong>Day 1:</strong> " + event.extendedProps.day1;
               if(event.extendedProps.day2 != undefined && event.extendedProps.day2 != "" ){
