@@ -51,6 +51,7 @@
                     center: "title",
                     right: "dayGridMonth, timeGridWeek, timeGridDay, listMonth"
                 },
+            defaultView: "listMonth",
             plugins: [ 'dayGrid', 'list', 'timeGrid' ],
             eventClick: function(info) {
                 if(info.view.type != "listMonth"){
@@ -90,7 +91,7 @@
       });
 
       function details(event){
-          var result = "<div class='details'><strong>When:</strong>";
+          var result = "<div class='details'><strong>When:</strong> ";
           result += event.start.toLocaleDateString("en-US");
           if(event.end != undefined) result += " - " + event.end.toLocaleDateString("en-US");
           if(event.extendedProps.type == "Training"){
