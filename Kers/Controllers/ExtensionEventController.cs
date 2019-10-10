@@ -253,8 +253,17 @@ namespace Kers.Controllers
                         if( minuteArr[1].ToLower() == "pm" || minuteArr[1].ToLower()=="p.m."){
                             hourPart = hourPart < 12 ? (hourPart + 12) : 12;
                         }
+                    }else if(minuteArr.Count() == 1){
+                        if(minuteArr[0].Length > 1){
+                            var lastTwoChars = minuteArr[0].Substring( minuteArr[0].Length - 2);
+                            if( lastTwoChars.ToLower() == "pm" || lastTwoChars.ToLower() == "p.m."){
+                                hourPart = hourPart < 12 ? (hourPart + 12) : 12;
+                            }
+
+                        }
+                        
                     }
-                    if (Int32.TryParse(minuteArr[0], out int minutePart)){
+                    if (minuteArr[0].Length > 1 && Int32.TryParse(minuteArr[0].Substring( 0, 2 ), out int minutePart)){
                         return new EventTime(){ hour = hourPart, minute = minutePart};
                     }
                 }
