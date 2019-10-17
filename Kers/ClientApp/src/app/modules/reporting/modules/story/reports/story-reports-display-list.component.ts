@@ -10,7 +10,7 @@ import {Location} from '@angular/common';
     
                 <!-- start more stories -->
                 <ul class="messages">
-                    <li *ngFor="let story of stories" [success-story-short]="story" [link]="link"></li>
+                    <li *ngFor="let story of stories | async" [success-story-short]="story" [link]="link"></li>
                 </ul>
                 <!-- end more stories -->     
     `
@@ -18,7 +18,7 @@ import {Location} from '@angular/common';
 export class StoryReportsDisplayListComponent { 
 
 
-    @Input() stories: Story[];
+    @Input() stories: Observable<Story[]>;
     @Input() showAuthor:boolean = false;
     @Input() link:boolean = true;
     

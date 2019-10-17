@@ -94,6 +94,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/meeting/meeting.module#MeetingModule'
           },
           {
+            path: 'countyevents', 
+            loadChildren: './modules/events/county/county-events.module#CountyEventsModule'
+          },
+          {
             path: 'budget', 
             loadChildren: './modules/budget/budget.module#BudgetModule'
           },

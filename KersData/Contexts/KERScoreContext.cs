@@ -193,6 +193,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<ExtensionEvent> ExtensionEvent {get;set;}
         public virtual DbSet<ExtensionEventGeoCoordinates> ExtensionEventGeoCoordinates {get;set;}
         public virtual DbSet<ExtensionEventLocation> ExtensionEventLocation {get;set;}
+        public virtual DbSet<ExtensionEventLocationConnection> ExtensionEventLocationConnection {get;set;}
         public virtual DbSet<ExtensionEventPatternedRecurrence> ExtensionEventPatternedRecurrence {get;set;}
         public virtual DbSet<ExtensionEventRecurrencePattern> ExtensionEventRecurrencePattern {get;set;}
         public virtual DbSet<ExtensionEventRecurrenceRange> ExtensionEventRecurrenceRange {get;set;}

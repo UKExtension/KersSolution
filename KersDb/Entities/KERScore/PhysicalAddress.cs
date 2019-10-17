@@ -16,6 +16,7 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public string Building { get; set; }
 
         /// <summary>
         /// Gets or sets street.
