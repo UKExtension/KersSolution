@@ -26,7 +26,6 @@ namespace Kers.Controllers
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         IHostingEnvironment environment;
-        private string DefaultTime = "12:34:56.1000000";
         public LocationController( 
                     KERSmainContext mainContext,
                     KERSreportingContext _reportingContext,
