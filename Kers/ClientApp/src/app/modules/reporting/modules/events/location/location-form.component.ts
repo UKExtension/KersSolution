@@ -14,44 +14,7 @@ import { LocationService } from './location.service';
       <br><br>
   </div>
   <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="meetingForm">
-    <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
-        <div class="col-md-4 col-sm-6 col-xs-7">
-            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
-        </div>
-        <label><input type="checkbox" formControlName="isAllDay" /> All Day Event</label>
-    </div>
-    <div class="form-group">
-      <div *ngIf="!meetingForm.value.isAllDay" class="col-md-offset-3 col-sm-offset-3 col-md-4 col-sm-6 col-xs-7">
-            <timepicker formControlName="starttime"></timepicker>
-      </div>
-    </div>
-    <div *ngIf="!meetingForm.value.isAllDay">
-      <div class="form-group">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
-          <div class="col-md-4 col-sm-6 col-xs-7">
-              <my-date-picker [class.ng-invalid]="meetingForm.hasError('endDate')" [options]="myDatePickerOptionsEnd" (dateChanged)="onDateChanged($event)" formControlName="end"></my-date-picker>
-          </div>
-      </div>
-    </div>
-    <div class="form-group" *ngIf="!meetingForm.value.isAllDay">
-      <div class="col-md-offset-3 col-sm-offset-3 col-md-4 col-sm-6 col-xs-7">
-            <timepicker formControlName="endtime"></timepicker>
-      </div>
-    </div>
-    <div class="form-group" *ngIf="!meetingForm.value.isAllDay">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="etimezone">Timezone:</label>
-        <div class="col-md-5 col-sm-7 col-xs-8">
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default" (click)="isEastern(true)" [class.active]="easternTimezone">
-                    <input type="radio" name="etimezone" formControlName="etimezone" [value]="true"> Eastern Timezone
-                    </label>
-                    <label class="btn btn-default" [class.active]="!easternTimezone" (click)="isEastern(false)">
-                    <input type="radio" name="etimezone" formControlName="etimezone" [value]="false"> Central Timezone
-                    </label>
-                </div>
-        </div>
-    </div>
+    
     <div class="form-group">
         <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Title:</label>           
         <div class="col-md-9 col-sm-9 col-xs-12">
@@ -125,16 +88,7 @@ export class LocationFormComponent implements OnInit {
     this.date.setMonth(this.date.getMonth() + 2);
     this.meetingForm = this.fb.group(
       {
-          start: [{
-              date: {
-                  year: this.date.getFullYear(),
-                  month: this.date.getMonth() + 1,
-                  day: this.date.getDate()}
-              }, Validators.required],
-          starttime: "",
-          end: [{}],
-          endtime: "",
-          etimezone:true,
+          
           subject: ["", Validators.required],
           body: [""],
           tContact: [""],
