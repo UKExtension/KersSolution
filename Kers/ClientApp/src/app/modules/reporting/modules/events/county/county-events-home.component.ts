@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
     <p>
       county-events-home works!
     </p>
+    <location-browser></location-browser>
   `,
   styles: []
 })

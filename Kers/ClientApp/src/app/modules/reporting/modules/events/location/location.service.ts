@@ -65,6 +65,35 @@ export class LocationService {
 
 }
 
+export interface ExtensionEventLocation{
+    id:number;
+    displayName:string;
+    locationEmailAddress:string;
+    address: PhysicalAddress;
+    locationUri:string;
+
+
+}
+
+export interface PhysicalAddress{
+
+}
+
+export enum ExtensionEventLocationType {
+    Default = 0,
+    ConferenceRoom = 1,
+	HomeAddress = 2,
+	BusinessAddress = 3,
+	GeoCoordinates = 4,
+	StreetAddress = 5,
+	Hotel = 6,
+	Restaurant = 7,
+	LocalBusiness = 8,
+	PostalAddress = 9,
+    ExtensionOffice = 10,
+    Online = 11
+}
+
 
 
 

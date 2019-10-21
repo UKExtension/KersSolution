@@ -18,7 +18,7 @@ import { LocationHomeComponent } from './location-home.component';
   providers:    [  
                     
                 ],
-  exports: [LocationHomeComponent],
+  exports: [ LocationHomeComponent ],
   entryComponents: [LocationHomeComponent]
 })
 export class LocationModule { }
