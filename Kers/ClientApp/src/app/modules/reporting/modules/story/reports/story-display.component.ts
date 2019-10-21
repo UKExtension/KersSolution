@@ -36,7 +36,6 @@ export class StoryDisplayComponent {
          this.service.author(this.story.id).subscribe(
              res => {
                 this.author = res;
-                console.log( this.author );
              }
          )
     }

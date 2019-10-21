@@ -50,7 +50,7 @@
 
     <ng-container *ngIf="strs.length; else noItems">
         <ng-container *ngIf="!loading">
-            <success-story-display-list [stories]="stories" [link]="false"></success-story-display-list>
+            <success-story-display-list-sync [stories]="strs" [link]="false"></success-story-display-list-sync>
         </ng-container>
     </ng-container>
     <ng-template #noItems>No Items!</ng-template> 

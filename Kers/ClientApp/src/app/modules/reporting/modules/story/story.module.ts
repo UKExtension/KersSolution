@@ -18,6 +18,7 @@ import { StoryReportsDisplayListComponent } from './reports/story-reports-displa
 import { StoryDirectoryComponent } from './reports/story-directory.component';
 import { StoryAuthorComponent } from './reports/story-author.component';
 import { StoryDisplayComponent } from './reports/story-display.component';
+import {StoryReportsDisplayListSyncComponent} from './reports/story-reports-display-list-sync.component';
 import { StoryShortComponent } from './reports/story-short.component';
 
 @NgModule({
@@ -35,6 +36,7 @@ import { StoryShortComponent } from './reports/story-short.component';
                   StoryReportsListComponent,
                   StoryReportsHomeComponent,
                   StoryReportsDisplayListComponent,
+                  StoryReportsDisplayListSyncComponent,
                   StoryDirectoryComponent,
                   StoryAuthorComponent,
                   StoryDisplayComponent,
