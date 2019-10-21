@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../../../shared/shared.module';
 import { LocationRoutingModule } from './location-routing.module';
 import { LocationHomeComponent } from './location-home.component';
+import { LocationFormComponent } from './location-form.component';
 
 
 
@@ -14,7 +15,9 @@ import { LocationHomeComponent } from './location-home.component';
                 ],
   declarations: [ 
                     
-                LocationHomeComponent],
+                LocationHomeComponent,
+                LocationFormComponent
+              ],
   providers:    [  
                     
                 ],
