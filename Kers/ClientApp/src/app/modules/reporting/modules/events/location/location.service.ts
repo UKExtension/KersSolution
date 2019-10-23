@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
+import { ExtensionEvent } from '../extension-event';
+import { User, PlanningUnit } from '../../user/user.service';
 
 
 @Injectable({
@@ -65,18 +67,37 @@ export class LocationService {
 
 }
 
+export interface ExtensionEventLocationConnection{
+    id:number;
+    extensionEvent:ExtensionEvent;
+    extensionEventId?:number;
+    kersUser:User;
+    kersUserId?:number;
+    planningUnit:PlanningUnit;
+    planningUnitId?:number;
+    active:boolean;
+    extensionEventLocation:ExtensionEventLocation;
+    extensionEventLocationId:number;
+}
+
 export interface ExtensionEventLocation{
     id:number;
     displayName:string;
     locationEmailAddress:string;
     address: PhysicalAddress;
     locationUri:string;
+    ExtensionEventLocationType?:ExtensionEventLocationType;
 
 
 }
 
 export interface PhysicalAddress{
-
+    id:number;
+    building:string;
+    street:string;
+    city:string;
+    state:string;
+    postalCode:string;
 }
 
 export enum ExtensionEventLocationType {
