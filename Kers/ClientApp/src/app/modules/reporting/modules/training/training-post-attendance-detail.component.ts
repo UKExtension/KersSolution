@@ -22,7 +22,7 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.enrolledFolks = this.training.enrollment.filter( e => e.eStatus == "E");
+    this.enrolledFolks = this.training.enrollment.filter( e => e.eStatus == "E").sort((a, b) => a.attendie.rprtngProfile.name.localeCompare(b.attendie.rprtngProfile.name));
   }
 
   defaultView(){
