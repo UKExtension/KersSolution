@@ -55,11 +55,13 @@ namespace Kers.Controllers
         [HttpDelete("deletetraining/{id}")]
         [Authorize]
         public IActionResult DeleteTraining( int id ){
-            var entity = context.Training.Find(id);
+            var entity = context.Training.Where(t => t.Id == id).Include( t => t.Enrollment).FirstOrDefault();
             
             
             if(entity != null){
                 
+                context.TrainingEnrollment.RemoveRange( entity.Enrollment );
+
                 context.Training.Remove(entity);
                 context.SaveChanges();
                 
