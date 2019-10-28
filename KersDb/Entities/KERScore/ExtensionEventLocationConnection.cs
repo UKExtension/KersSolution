@@ -12,9 +12,6 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        public ExtensionEvent ExtensionEvent {get;set;}
-        public int? ExtensionEventId {get;set;}
         public KersUser KersUser{get;set;}
         public int? KersUserId {get;set;}
         public PlanningUnit PlanningUnit {get;set;}

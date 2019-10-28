@@ -212,13 +212,12 @@ namespace Kers.Models.Contexts
         
 
         /***************************************/
-        //  Scheduled Tasks
+        //  County Events
         /***************************************/
-        /* public virtual DbSet<TaskOperation> TaskOperation {get;set;}
-        public virtual DbSet<TaskPerformed> TaskPerformed {get;set;}
-        public virtual DbSet<TaskRecurringSchedule> TaskRecurringSchedule {get;set;}
-        public virtual DbSet <TaskSchedule> TaskSchedule {get;set;}
- */
+        public virtual DbSet<CountyEvent> CountyEvent {get;set;}
+        public virtual DbSet<CountyEventPlanningUnit> CountyEventPlanningUnit {get;set;}
+        public virtual DbSet<CountyEventProgramCategory> CountyEventProgramCategory {get;set;}
+
         /***************************************/
         //  General
         /***************************************/

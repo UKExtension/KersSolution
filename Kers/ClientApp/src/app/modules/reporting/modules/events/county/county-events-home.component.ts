@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-county-events-home',
   template: `
+  <county-event-form></county-event-form>
     <p>
       county-events-home works!
     </p>
