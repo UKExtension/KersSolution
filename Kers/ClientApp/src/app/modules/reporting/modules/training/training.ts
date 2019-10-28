@@ -29,6 +29,7 @@ export class Training extends ExtensionEvent{
     qualtricsSurveyID:string;
     evaluationLink:string;
     createdDateTime:Date;
+    sessions: TrainingSession[];
 }
 
 export class TainingRegisterWindow{
@@ -77,4 +78,13 @@ export class TrainingSearchCriteria{
     order: string = 'dsc';
     withseats: boolean = false;
     attendance: boolean = false;
+  }
+
+  export class TrainingSession{
+      id:number;
+      date: Date;
+      starttime:string;
+      endtime:string;
+      note:string;
+      index:number;
   }

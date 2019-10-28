@@ -14,6 +14,7 @@ import { TrainingAdminReportsComponent } from './training-admin-reports.componen
 import { TrainingEnrollmentComponent } from './training-enrollment.component';
 import { TrainingManagersComponent } from './training-managers.component';
 import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
+import { TrainingFormSessionsComponent } from './training-form-sessions.component';
 
 const routes: Routes = [{
   path: '',
@@ -27,7 +28,7 @@ const routes: Routes = [{
         {
           path: 'propose',
           canActivate: [RolesAuthGuard],
-          component: TrainingFormComponent
+          component: TrainingFormSessionsComponent
         },
         {
           path: 'convert',
