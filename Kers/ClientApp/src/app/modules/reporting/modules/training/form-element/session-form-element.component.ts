@@ -11,29 +11,29 @@ import { IMyDpOptions, IMyDateModel } from "mydatepicker";
   template: `
 <div class="form-group" [formGroup]="sessionGroup">
     <div class="row">
-        <div class="col-sm-3">
-            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
+        <div class="col-sm-4">
+            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="date"></my-date-picker>
             <small>(Date)</small>
         </div>
         <div class="col-sm-3">
-            <timepicker></timepicker>
-            <small>(Date)</small>
+            <timepicker formControlName="starttime"></timepicker>
+            <small>(Start Time)</small>
         </div>
+        <div class="col-sm-3">
+            <timepicker formControlName="endtime"></timepicker>
+            <small>(End Time)</small>
+        </div>
+  </div>
+  <div class="row" style="padding: 8px 0;">
+    <div class="col-sm-10">
+        <input type="text" class="form-control" formControlName="note" />
+        <small>(Note)</small>
     </div>
-  <div class="form-inline">
-      <div class="form-group">
-          <input type="text" class="form-control" formControlName="note" /><br>
-          <small>(Source of Income)</small>
-      </div>
-      &nbsp;
-      <div class="form-group">
-      
-      </div>
-      <div class="form-group">
-              <div class="col-xs-1 ng-star-inserted"><span><a class="close-link" (click)="onRemove()" style="cursor:pointer;"><i class="fa fa-close"></i></a></span></div>
-              <br>
-          <small>&nbsp;</small>
-      </div>
+    <div class="col-sm-2">
+            <div class="col-xs-1 ng-star-inserted"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
+            <br>
+        <small>&nbsp;</small>
+    </div>
   </div>
 </div>
 
@@ -63,13 +63,16 @@ export class SessionFormElementComponent extends BaseControlValueAccessor<Traini
     {
       super();
       this.sessionGroup = formBuilder.group({
-        start: [{
+        date: [{
             date: {
                 year: this.date.getFullYear(),
                 month: this.date.getMonth() + 1,
                 day: this.date.getDate()}
             }, Validators.required],
-        note: ['']
+        note: [''],
+        starttime:"",
+        endtime: ""
+
       });
   
       this.sessionGroup.valueChanges.subscribe(val => {

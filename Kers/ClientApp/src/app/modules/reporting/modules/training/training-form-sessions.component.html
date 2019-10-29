@@ -10,36 +10,7 @@
       <br><br>
   </div>
   <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="trainingForm">
-
-
-
-        <div class="form-group" formArrayName="sessions">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12">Sessions
-                </label>
-                <div class="col-md-9 col-sm-9 col-xs-10">
-                    
-                    <div *ngFor="let session of sessions.controls; let i=index" class="form-group">
-                        <!-- repeated user defined income template -->
-                        <training-session [index]="i" (removeMe)="sessionRemoved($event)" [formControlName]="i"></training-session>
-            
-                    </div>
-                    <a class="btn btn-info btn-xs" (click)="addSession()" style="margin-top: 8px;"> + add </a>
-                </div>
-              </div>
-
-
-    <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
-        <div class="col-md-4 col-sm-6 col-xs-7">
-            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
-        </div>
-    </div>
-    <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
-            <div class="col-md-4 col-sm-6 col-xs-7">
-                <my-date-picker [class.ng-invalid]="trainingForm.hasError('endDate')" [options]="myDatePickerOptionsEnd" (dateChanged)="onDateChanged($event)" formControlName="end"></my-date-picker>
-            </div>
-        </div>
+    
     <div class="form-group">
         <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Title:</label>           
         <div class="col-md-9 col-sm-9 col-xs-12">
@@ -71,36 +42,33 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12"></label>
-        <div class="col-md-9 col-sm-9 col-xs-12">
-                <br><br>ENTER START TIME AND END TIME FOR UP TO FOUR DAYS - Indicate AM or PM and EST or CST time zone <em>(i.e., 9:00AM – 10:00AM CST)</em>:
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="etimezone">Timezone:</label>
+        <div class="col-md-5 col-sm-7 col-xs-8">
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default" (click)="isEastern(true)" [class.active]="easternTimezone">
+                    <input type="radio" name="etimezone" formControlName="etimezone" [value]="true"> Eastern Timezone
+                    </label>
+                    <label class="btn btn-default" [class.active]="!easternTimezone" (click)="isEastern(false)">
+                    <input type="radio" name="etimezone" formControlName="etimezone" [value]="false"> Central Timezone
+                    </label>
+                </div>
         </div>
     </div>
+    <br><br>
+    <div class="form-group" formArrayName="sessions">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Sessions
+        </label>
+        <div class="col-md-9 col-sm-9 col-xs-10">
+            
+            <div *ngFor="let session of sessions.controls; let i=index" class="form-group">
+                <!-- repeated user defined income template -->
+                <training-session [index]="i" (removeMe)="sessionRemoved($event)" [formControlName]="i"></training-session>
 
-    <div class="form-group">
-        <label for="day1" class="control-label col-md-3 col-sm-3 col-xs-12">Day 1 - Start Time and End Time:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="day1" formControlName="day1" id="day1" class="form-control col-xs-12" />
+            </div>
+            <a class="btn btn-info btn-xs" (click)="addSession()" style="margin-top: 8px;"> + add session</a>
         </div>
     </div>
-    <div class="form-group">
-        <label for="day2" class="control-label col-md-3 col-sm-3 col-xs-12">Day 2 - Start Time and End Time:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="day2" formControlName="day2" id="day1" class="form-control col-xs-12" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="day3" class="control-label col-md-3 col-sm-3 col-xs-12">Day 3 - Start Time and End Time:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="day3" formControlName="day3" id="day3" class="form-control col-xs-12" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="day4" class="control-label col-md-3 col-sm-3 col-xs-12">Day 4 - Start Time and End Time:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="day4" formControlName="day4" id="day4" class="form-control col-xs-12" />
-        </div>
-    </div><br><br><br>
+    <br><br>
     <div class="form-group">
         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">Instructional Hours:</label>
         <div class="col-md-6 col-sm-6 col-xs-12">

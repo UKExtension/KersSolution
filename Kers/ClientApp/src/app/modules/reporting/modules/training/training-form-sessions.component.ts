@@ -25,7 +25,7 @@ export class TrainingFormSessionsComponent implements OnInit {
     trainingForm:any;
 
     proposed = false;
-    
+    easternTimezone = true;
 
     get sessions() {
         return this.trainingForm.get('sessions') as FormArray;
@@ -64,7 +64,20 @@ export class TrainingFormSessionsComponent implements OnInit {
     this.date.setMonth(this.date.getMonth() + 2);
     this.trainingForm = this.fb.group(
       {
-          sessions: this.fb.array([]),
+          sessions: this.fb.array([
+            {
+              date: {
+                date: {
+                    year: this.date.getFullYear(),
+                    month: this.date.getMonth() + 1,
+                    day: this.date.getDate()}
+                },
+              starttime: "",
+              endtime: "",
+              note: ""
+            }
+          ]),
+          etimezone:true,
           start: [{
               date: {
                   year: this.date.getFullYear(),
@@ -133,7 +146,9 @@ export class TrainingFormSessionsComponent implements OnInit {
   sessionRemoved(event:number){
 
   }
-
+  isEastern(isIt:boolean){
+    this.easternTimezone = isIt;
+  }
 
   onDateChanged(event: IMyDateModel) {
     
