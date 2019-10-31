@@ -87,6 +87,11 @@ export class SessionFormElementComponent extends BaseControlValueAccessor<Traini
     ngOnInit(){
         
     }
+
+
+    onDateChanged($event){
+      
+    }
     writeValue(income: TrainingSession) {
       this.value = income;
       this.sessionGroup.patchValue(income);
