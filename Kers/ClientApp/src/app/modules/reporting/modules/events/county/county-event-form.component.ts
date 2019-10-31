@@ -12,8 +12,8 @@ import { PlanningUnit } from '../../plansofwork/plansofwork.service';
   template: `
 <div class="row">
   <div class="col-sm-offset-3 col-sm-9">
-      <h2 *ngIf="!location">New County Event</h2>
-      <h2 *ngIf="location">Update County Event</h2>
+      <h2 *ngIf="!countyEvent">New County Event</h2>
+      <h2 *ngIf="countyEvent">Update County Event</h2>
       <br><br>
   </div>
   <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="countyEventForm">
