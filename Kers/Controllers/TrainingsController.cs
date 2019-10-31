@@ -279,7 +279,10 @@ namespace Kers.Controllers
         [HttpPut("updatetraining/{id}")]
         [Authorize]
         public IActionResult UpdateTraoining( int id, [FromBody] Training training){
-            var trn = context.Training.Where( t => t.Id == id).Include(t => t.submittedBy).FirstOrDefault();
+            var trn = context.Training.Where( t => t.Id == id)
+                            .Include(t => t.submittedBy)
+                            .Include( t => t.Enrollment)
+                            .FirstOrDefault();
             if(training != null && trn != null ){
                 var isMovedToCatalog = false;
                 trn.Start = new DateTime(training.Start.Year, training.Start.Month, training.Start.Day, 14, 5, 6);
@@ -291,7 +294,7 @@ namespace Kers.Controllers
                 
                 trn.Subject = training.Subject;
                 trn.Body = training.Body;
-                trn.Location = training.Location;
+                trn.tLocation = training.tLocation;
                 trn.tContact = training.tContact;
                 trn.day1 = training.day1;
                 trn.day2 = training.day2;
@@ -321,8 +324,8 @@ namespace Kers.Controllers
                     messageRepo.ScheduleTrainingMessage("PROPOSALCOMFIRMED",trn,trn.submittedBy);
                 }
                 
-                this.Log(training,"Training", "Training Updated.");
-                return new OkObjectResult(training);
+                this.Log(trn,"Training", "Training Updated.");
+                return new OkObjectResult(trn);
             }else{
                 this.Log( training ,"Training", "Not Found Training in an update attempt.", "Training", "Error");
                 return new StatusCodeResult(500);
