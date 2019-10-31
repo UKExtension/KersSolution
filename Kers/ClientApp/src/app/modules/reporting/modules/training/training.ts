@@ -78,6 +78,7 @@ export class TrainingSearchCriteria{
     order: string = 'dsc';
     withseats: boolean = false;
     attendance: boolean = false;
+    admin: boolean = false;
   }
 
   export class TrainingSession{

@@ -62,7 +62,8 @@ export class TrainingCatalogComponent implements OnInit {
               day: params.get("day") == "null" ? null : +params.get("day"),
               withseats: <boolean> <unknown>params.get("withseats"),
               order: <string> params.get("order"),
-              attendance: this.attendance
+              attendance: this.attendance,
+              admin: this.admin
             }
             this.startDate = new Date(this.criteria.start);
             this.endDate = new Date(this.criteria.end);
@@ -85,7 +86,8 @@ export class TrainingCatalogComponent implements OnInit {
               day: null,
               order: 'dsc',
               withseats: false,
-              attendance: this.attendance
+              attendance: this.attendance,
+              admin: this.admin
             }
 
           } 
@@ -101,15 +103,6 @@ export class TrainingCatalogComponent implements OnInit {
             flatMap(_ => this.service.getCustom(this.criteria)), // Get some items
             tap(_ => this.loading = false) // Turn off the spinner
           );
-
-
-
-
-
-
-
-
-
         }
     );
 

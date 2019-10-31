@@ -7,8 +7,19 @@
       <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
     </div>
     <h3>{{training.subject}}</h3>
-    <h5>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></h5>
-    <h5>{{training.iLocation}}</h5>
+    <a (click)="moreInfo = !moreInfo" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="moreInfo"></i>
+      <i class="fa fa-plus-square" *ngIf="!moreInfo"></i> info
+    </a>
+    <div *ngIf="moreInfo">
+      
+      <h5><strong>Date(s):</strong> {{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></h5>
+      <h5><strong>Location:</strong> {{training.tLocation}}</h5>
+      <h5><strong>Contact:</strong> {{training.tContact}}</h5>
+      <h5><strong>Url:</strong>&nbsp;<a [routerLink]="['/reporting/training/', training.id]">https://kers.ca.uky.edu/core/reporting/training/{{training.id}}</a> &nbsp;<button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
+          <i class="fa fa-clipboard"></i>&nbsp;
+          <ng-container *ngIf="!coppied">Copy</ng-container> <ng-container *ngIf="coppied">Copied</ng-container>
+      </button></h5><br><br>
+    </div>
     <div *ngIf="training.enrollment.length == 0">
       No one has enrolled for this training session.
     </div>

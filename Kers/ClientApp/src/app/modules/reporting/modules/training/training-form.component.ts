@@ -26,7 +26,7 @@ export class TrainingFormComponent implements OnInit {
     trainingForm:any;
 
     proposed = false;
-    
+    coppied = false;
 
     options = { 
         placeholderText: 'Your Description Here!',
@@ -157,6 +157,9 @@ export class TrainingFormComponent implements OnInit {
   }
   onCancel(){
     this.onFormCancel.emit();
+  }
+  public notify(payload: string) {
+    this.coppied = true;
   }
 
 }

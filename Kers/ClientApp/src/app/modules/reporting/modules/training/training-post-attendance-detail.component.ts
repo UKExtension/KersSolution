@@ -16,6 +16,8 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   post = false;
   loading = false;
   enrolledFolks: TrainingEnrollment[];
+  moreInfo = false;
+  coppied = false;
 
   constructor(
     private service:TrainingService
@@ -39,6 +41,11 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
     }else{
       enrolled.attended = false;
     }
+  }
+  public notify(payload: string) {
+    // Might want to notify the user that something has been pushed to the clipboard
+    //console.info(`'${payload}' has been copied to clipboard`);
+    this.coppied = true;
   }
   submit(){
     this.loading = true;

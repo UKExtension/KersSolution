@@ -75,6 +75,18 @@
       </div>
   </div>
   <div class="row">
+      <div class="col-sm-3 col-xs-12">
+        <strong>Url:</strong>
+      </div>
+      <div class="col-sm-9 col-xs-12">
+          https://kers.ca.uky.edu/core/reporting/training/{{training.id}} &nbsp;
+          <button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
+              <i class="fa fa-clipboard"></i>&nbsp;
+              <ng-container *ngIf="!coppied">Copy</ng-container> <ng-container *ngIf="coppied">Copied</ng-container>
+          </button>
+      </div>
+  </div>
+  <div class="row">
   
   <div class="col-xs-12">
     <loading *ngIf="loading"></loading>

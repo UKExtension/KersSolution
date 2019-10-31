@@ -481,7 +481,8 @@ namespace Kers.Controllers
                                         [FromQuery] int? day,
                                         [FromQuery] string order,
                                         [FromQuery] bool withseats,
-                                        [FromQuery] bool attendance
+                                        [FromQuery] bool attendance,
+                                        [FromQuery] bool admin
                                         ){
             
             var trainings = from i in _context.Training select i;
@@ -527,6 +528,8 @@ namespace Kers.Controllers
                             .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile);
             if(attendance){
                 trainings = trainings.Where(t => t.tStatus == "A" && t.Enrollment.Count() > 0 ).Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
+            }else if( admin ){
+                trainings = trainings.Include(t => t.Enrollment);
             }
                             
             IOrderedQueryable result;

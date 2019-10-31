@@ -17,6 +17,7 @@ export class TrainingInfoComponent implements OnInit {
   user:User;
   loading = false;
   criteria:TrainingSearchCriteria;
+  coppied = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -87,7 +88,9 @@ export class TrainingInfoComponent implements OnInit {
     }
     return false;
   }
-
+  public notify(payload: string) {
+    this.coppied = true;
+  }
   getOnlyEnrolled(training:Training):TrainingEnrollment[]{
     return training.enrollment.filter( e => e.eStatus == "E");
   }
