@@ -12,7 +12,7 @@
     </a>
     <div *ngIf="moreInfo">
       
-      <h5><strong>Date(s):</strong> {{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></h5>
+      <h5><strong>Date(s):</strong> {{training.start | date:'mediumDate'}} <span *ngIf="training.end"> - {{training.end | date:'mediumDate'}}</span></h5>
       <h5><strong>Location:</strong> {{training.tLocation}}</h5>
       <h5><strong>Contact:</strong> {{training.tContact}}</h5>
       <h5><strong>Url:</strong>&nbsp;<a [routerLink]="['/reporting/training/', training.id]">https://kers.ca.uky.edu/core/reporting/training/{{training.id}}</a> &nbsp;<button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
