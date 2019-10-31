@@ -79,6 +79,7 @@ export interface CountyEventPlanningUnit{
     id:number;
     planningUnit:PlanningUnit;
     planningUnitId:number;
+    isHost:boolean;
 }
 export interface CountyEventProgramCategory{
     id:number;

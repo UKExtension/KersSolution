@@ -11,5 +11,6 @@ namespace Kers.Models.Entities.KERScore{
         public CountyEvent CountyEvent {get;set;}
         public int PlanningUnitId {get;set;}
         public PlanningUnit PlanningUnit {get;set;}
+        public bool IsHost {get;set;}
     } 
 }
