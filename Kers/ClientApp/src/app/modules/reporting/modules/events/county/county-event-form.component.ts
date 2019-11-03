@@ -83,14 +83,14 @@ import { PlanningUnit } from '../../plansofwork/plansofwork.service';
       <label for="multycounty" class="control-label col-md-3 col-sm-3 col-xs-12">Multy County Event:</label>           
       <div class="col-md-9 col-sm-9 col-xs-12">
           <label class="switch">
-            <input type="checkbox" id="isSnap" formControlName="multycounty">
+            <input type="checkbox" id="multycounty" formControlName="multycounty">
             <div class="slider round" (click)="onMultyChecked()"></div>
         </label>
       </div>
     </div>
 
 
-    <div class="form-group" *ngIf="planningUnitsOptions.length > 0">
+    <div class="form-group" *ngIf="planningUnitsOptions.length > 0 && multycounty">
         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Counties:</label>
         <div class="col-md-9 col-sm-9 col-xs-12">
             <ng-select
@@ -226,6 +226,7 @@ export class CountyEventFormComponent implements OnInit {
   planningUnits: PlanningUnit[];
   programCategoriesOptions = Array<any>();
   planningUnitsOptions = Array<any>();
+  multycounty = false;
 
   options = { 
     placeholderText: 'Your Description Here!',
@@ -336,14 +337,15 @@ export class CountyEventFormComponent implements OnInit {
     
   }
   onMultyChecked(){
-    
+    this.multycounty = !this.multycounty;
   }
   isEastern(isIt:boolean){
     this.easternTimezone = isIt;
   }
 
   onSubmit(){
-    this.onFormSubmit.emit(this.countyEventForm.value)
+    console.log(this.countyEventForm.value);
+    //this.onFormSubmit.emit(this.countyEventForm.value)
   }
   onCancel(){
     this.onFormCancel.emit();

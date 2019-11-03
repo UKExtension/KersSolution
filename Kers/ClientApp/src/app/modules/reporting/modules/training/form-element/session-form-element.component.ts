@@ -16,11 +16,11 @@ import { IMyDpOptions, IMyDateModel } from "mydatepicker";
             <small>(Date)</small>
         </div>
         <div class="col-sm-3">
-            <timepicker formControlName="starttime"></timepicker>
+            <timepicker formControlName="starttime" [start]="6" [end]="22"></timepicker>
             <small>(Start Time)</small>
         </div>
         <div class="col-sm-3">
-            <timepicker formControlName="endtime"></timepicker>
+            <timepicker formControlName="endtime" [start]="6" [end]="22"></timepicker>
             <small>(End Time)</small>
         </div>
   </div>

@@ -24,7 +24,7 @@ import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
     </div>
     <div class="form-group">
       <div *ngIf="!meetingForm.value.isAllDay" class="col-md-offset-3 col-sm-offset-3 col-md-4 col-sm-6 col-xs-7">
-            <timepicker formControlName="starttime"></timepicker>
+            <timepicker formControlName="starttime" [start]="6" [end]="23"></timepicker>
       </div>
     </div>
     <div *ngIf="!meetingForm.value.isAllDay">
@@ -37,7 +37,7 @@ import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
     </div>
     <div class="form-group" *ngIf="!meetingForm.value.isAllDay">
       <div class="col-md-offset-3 col-sm-offset-3 col-md-4 col-sm-6 col-xs-7">
-            <timepicker formControlName="endtime"></timepicker>
+            <timepicker formControlName="endtime" [start]="6" [end]="23"></timepicker>
       </div>
     </div>
     <div class="form-group" *ngIf="!meetingForm.value.isAllDay">
