@@ -1,10 +1,10 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, Input, forwardRef, OnInit, Injector } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
     selector: 'timepicker',
     template: `
-<select class="form-control col-md-4 col-xs-7" (change)="changeTime($event)" [value]="timeValue" *ngIf="options != null">
+<select class="form-control col-md-4 col-xs-7" (change)="changeTime($event)" [value]="timeValue" [ngClass]="control?.valid ? 'ng-valid' : 'ng-invalid'" *ngIf="options != null">
     <option value="">{{empty}}</option>
     <option *ngFor="let tm of options" [value]="tm.value">{{tm.label}}</option>
 </select>
@@ -13,7 +13,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
                     provide: NG_VALUE_ACCESSOR,
                     useExisting: forwardRef(() => TiimepickerComponent),
                     multi: true
-                  } 
+                  }
                 ]
 })
 
@@ -273,7 +273,10 @@ export class TiimepickerComponent implements OnInit{
 
     _value = 0;
 
+    control:NgControl;
+
     ngOnInit() {
+        this.control = this.injector.get(NgControl);
         if(this.start == null && this.end == null){
             this.options = this.allOptions;
         }else{
@@ -297,7 +300,9 @@ export class TiimepickerComponent implements OnInit{
     }
 
 
-    constructor(){
+    constructor(
+        public injector: Injector
+    ){
         this.propagateChange = () => {};
     }
 

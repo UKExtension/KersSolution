@@ -28,7 +28,7 @@ const routes: Routes = [{
         {
           path: 'propose',
           canActivate: [RolesAuthGuard],
-          component: TrainingFormComponent
+          component: TrainingFormSessionsComponent
         },
         {
           path: 'convert',

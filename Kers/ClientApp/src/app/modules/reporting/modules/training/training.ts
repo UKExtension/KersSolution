@@ -30,6 +30,9 @@ export class Training extends ExtensionEvent{
     evaluationLink:string;
     createdDateTime:Date;
     sessions: TrainingSession[];
+    trainingSession: TrainingSession[];
+    trainingSessionWithTimes:TrainingSession[];
+    etimezone:boolean;
 }
 
 export class TainingRegisterWindow{
@@ -83,9 +86,11 @@ export class TrainingSearchCriteria{
 
   export class TrainingSession{
       id:number;
-      date: Date;
+      date: Date | Object;
       starttime:string;
       endtime:string;
       note:string;
       index:number;
+      start:string;
+      end:string;
   }

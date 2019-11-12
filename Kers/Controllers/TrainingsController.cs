@@ -166,12 +166,11 @@ namespace Kers.Controllers
 
             return new OkObjectResult(list);
         }
-
-
-
-        [HttpPost("addtraining")]
+        /* 
+        
+        [HttpPost("addtrainingold")]
         [Authorize]
-        public IActionResult AddTraining( [FromBody] Training training){
+        public IActionResult AddTrainingOld( [FromBody] Training training){
             if(training != null){
                 var user = this.CurrentUser();
                 training.Start = new DateTime(training.Start.Year, training.Start.Month, training.Start.Day, 14, 5, 6);
@@ -193,6 +192,56 @@ namespace Kers.Controllers
                 this.Log(training,"Training", "Training Proposed.");
 
                 return new OkObjectResult(training);
+            }else{
+                this.Log( training ,"Training", "Error in adding training attempt.", "Training", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+        
+         */
+  
+
+
+        [HttpPost("addtraining")]
+        [Authorize]
+        public IActionResult AddTraining( [FromBody] TrainingWithTimezone training){
+            if(training != null){
+                var user = this.CurrentUser();
+                Training trn = new Training();
+                trn.TrainingSession = new List<TrainingSession>();
+                foreach( var s in training.TrainingSessionWithTimes){
+                    trn.TrainingSession.Add( s.GetSession(training.Etimezone));
+                }
+                var sortedSessions = trn.TrainingSession.OrderBy( s => s.Start);
+                trn.Start = sortedSessions.First().Start;
+                trn.End = sortedSessions.Last().End;
+                trn.Subject = training.Subject;
+                trn.Body = training.Body;
+                trn.tLocation = training.tLocation;
+                trn.tContact = training.tContact;
+                trn.day1 = training.day1;
+                trn.day2 = training.day2;
+                trn.day3 = training.day3;
+                trn.day4 = training.day4;
+                trn.tAudience = training.tAudience;
+                trn.TrainDateBegin = training.Start.ToString("yyyyMMdd");
+                trn.TrainDateEnd = training.End?.ToString("yyyyMMdd");
+                trn.LastModifiedDateTime = DateTime.Now;
+                trn.tStatus = "P";
+                trn.LastModifiedDateTime = DateTime.Now;
+                trn.iHourId = training.iHourId;
+                trn.CancelCutoffDaysId = training.CancelCutoffDaysId;
+                trn.RegisterCutoffDaysId = training.RegisterCutoffDaysId;
+                trn.seatLimit = training.seatLimit;
+                trn.submittedBy = user;
+                trn.CreatedDateTime = DateTime.Now;
+                trn.BodyPreview = training.Body;
+                trn.Organizer = trn.submittedBy;
+
+                context.Add(trn); 
+                context.SaveChanges();
+                this.Log(trn,"Training", "Training Proposed.");
+                return new OkObjectResult(trn);
             }else{
                 this.Log( training ,"Training", "Error in adding training attempt.", "Training", "Error");
                 return new StatusCodeResult(500);
@@ -333,6 +382,59 @@ namespace Kers.Controllers
         }
 
 
+        [HttpPut("updatesessionstraining/{id}")]
+        [Authorize]
+        public IActionResult UpdateTraining( int id, [FromBody] TrainingWithTimezone training){
+            var trn = context.Training.Where( t => t.Id == id)
+                            .Include(t => t.submittedBy)
+                            .Include( t => t.Enrollment)
+                            .Include( t => t.TrainingSession)
+                            .FirstOrDefault();
+            if(training != null && trn != null ){
+                var isMovedToCatalog = false;
+                trn.TrainingSession = new List<TrainingSession>();
+                foreach( var s in training.TrainingSessionWithTimes){
+                    trn.TrainingSession.Add( s.GetSession(training.Etimezone));
+                }
+                var sortedSessions = trn.TrainingSession.OrderBy( s => s.Start);
+                trn.Start = sortedSessions.First().Start;
+                trn.End = sortedSessions.Last().End;
+                trn.Subject = training.Subject;
+                trn.Body = training.Body;
+                trn.tLocation = training.tLocation;
+                trn.tContact = training.tContact;
+                trn.tAudience = training.tAudience;
+                trn.TrainDateBegin = training.Start.ToString("yyyyMMdd");
+                trn.TrainDateEnd = training.End?.ToString("yyyyMMdd");
+                trn.LastModifiedDateTime = DateTime.Now;
+                if(trn.tStatus != "A" && training.tStatus == "A"){
+                    var user = CurrentUser();
+                    trn.approvedBy = user;
+                    trn.approvedDate = DateTime.Now;
+                }
+                if(trn.tStatus == "P" && training.tStatus=="A"){
+                    //Send email to the Organizer that the training is approved
+                    isMovedToCatalog = true;
+                }
+                trn.tStatus = training.tStatus;
+                trn.iHourId = training.iHourId;
+                trn.CancelCutoffDaysId = training.CancelCutoffDaysId;
+                trn.RegisterCutoffDaysId = training.RegisterCutoffDaysId;
+                trn.seatLimit = training.seatLimit;
+                trn.BodyPreview = training.Body;
+                context.SaveChanges();
+                if(isMovedToCatalog){
+                    messageRepo.ScheduleTrainingMessage("PROPOSALCOMFIRMED",trn,trn.submittedBy);
+                }
+                this.Log(trn,"Training", "Training Updated.");
+                return new OkObjectResult(this.ToTimezone(trn));
+            }else{
+                this.Log( training ,"Training", "Not Found Training in an update attempt.", "Training", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
 
         [HttpPut("postattendance/{id}")]
         [Authorize]
@@ -412,6 +514,7 @@ namespace Kers.Controllers
                                 .Training.Where( t => t.tStatus == "P")
                                 .Include( t => t.submittedBy)
                                     .ThenInclude( s => s.PersonalProfile)
+                                .Include( t => t.TrainingSession)
                                 .ToListAsync();
             return new OkObjectResult(proposals);
         }
@@ -528,14 +631,15 @@ namespace Kers.Controllers
                 trainings = trainings.Where( i => i.seatLimit == null || i.seatLimit > i.Enrollment.Where(e => e.eStatus == "E").Count());
             }
             trainings = trainings
-                            .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile);
+                            .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile)
+                            .Include( t => t.TrainingSession);
             if(attendance){
                 trainings = trainings.Where(t => t.tStatus == "A" && t.Enrollment.Count() > 0 ).Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
             }else if( admin ){
                 trainings = trainings.Include(t => t.Enrollment);
             }
                             
-            IOrderedQueryable result;
+            IOrderedQueryable<Training> result;
             if(order == "asc"){
                 result = trainings.OrderByDescending(t => t.Start);
             }else if( order == "alph"){
@@ -544,7 +648,57 @@ namespace Kers.Controllers
                 result = trainings.OrderBy(t => t.Start);
             }
 
+            if(admin){
+                return new OkObjectResult(this.ToWithTimezone(result));
+            }
+
             return new OkObjectResult(result);
+        }
+
+        private List<TrainingWithTimezone> ToWithTimezone(IOrderedQueryable<Training> trainings){
+            var withTimezone = new List<TrainingWithTimezone>();
+            
+            foreach( var training in trainings){
+                /* 
+                var with = new TrainingWithTimezone( training );
+                with.TrainingSessionWithTimes = new List<TrainingSessionWithTimes>();
+                foreach( var sess in with.TrainingSession){
+                    var sWithTime = new TrainingSessionWithTimes();
+                    if(sess.Start.Offset.Hours == -5){
+                        with.Etimezone = false;
+                    }else{
+                        with.Etimezone = true;
+                    }
+                    sWithTime.Starttime = sess.Start.Hour.ToString("D2") + ":" + sess.Start.Minute.ToString("D2");
+                    sWithTime.Endtime = sess.End.Hour.ToString("D2") + ":" + sess.End.Minute.ToString("D2");
+                    sWithTime.Date = sess.Start.DateTime;
+                    sWithTime.Index = sess.Index;
+                    sWithTime.Note = sess.Note;
+                    with.TrainingSessionWithTimes.Add(sWithTime);
+                } */
+                withTimezone.Add(this.ToTimezone(training));
+            }
+            return withTimezone;
+        }
+
+        private TrainingWithTimezone ToTimezone(Training training){
+            var with = new TrainingWithTimezone( training );
+            with.TrainingSessionWithTimes = new List<TrainingSessionWithTimes>();
+            foreach( var sess in with.TrainingSession){
+                var sWithTime = new TrainingSessionWithTimes();
+                if(sess.Start.Offset.Hours == -5){
+                    with.Etimezone = false;
+                }else{
+                    with.Etimezone = true;
+                }
+                sWithTime.Starttime = sess.Start.Hour.ToString("D2") + ":" + sess.Start.Minute.ToString("D2");
+                sWithTime.Endtime = sess.End.Hour.ToString("D2") + ":" + sess.End.Minute.ToString("D2");
+                sWithTime.Date = sess.Start.DateTime;
+                sWithTime.Index = sess.Index;
+                sWithTime.Note = sess.Note;
+                with.TrainingSessionWithTimes.Add(sWithTime);
+            }
+            return with;
         }
 
         [HttpGet("byuser/{id?}/{year?}")]
@@ -615,5 +769,52 @@ namespace Kers.Controllers
             return new OkObjectResult(tnngs);
         }
 
+    }
+
+
+    public class TrainingWithTimezone : Training{
+        public bool Etimezone {get;set;}
+        public List<TrainingSessionWithTimes> TrainingSessionWithTimes {get;set;}
+
+
+        public TrainingWithTimezone(){
+            
+        }
+        public TrainingWithTimezone( Training training){
+            var props = typeof(Training).GetProperties().Where(p => !p.GetIndexParameters().Any());
+            foreach (var prop in props)
+            {
+                if (prop.CanWrite)
+                    prop.SetValue(this, prop.GetValue(training));
+            }
+
+        }
+    }
+    public class TrainingSessionWithTimes : TrainingSession{
+        public DateTime Date {get;set;}
+        public string Starttime {get;set;}
+        public string Endtime {get;set;}
+
+        public TrainingSession GetSession(Boolean IsItEastern = true){
+            TrainingSession Session = new TrainingSession();
+            Session.Index = this.Index;
+            Session.IsCancelled = this.IsCancelled;
+            Session.Note = this.Note;
+            Session.Start = OffsetFromDate(this.Date, this.Starttime, IsItEastern);
+            Session.End = OffsetFromDate(this.Date, this.Endtime, IsItEastern);
+            return Session;
+        }
+
+        private DateTimeOffset OffsetFromDate( DateTime date, string time, Boolean IsItEastern = true){
+            var hour = 8;
+            var minutes = 30;
+            var tm = time.Split(':');
+            if(tm.Length > 1){
+                hour = Int32.Parse(tm[0]);
+                minutes = Int32.Parse(tm[1]);
+            }
+            var offset = new DateTimeOffset (date.Year, Date.Month, Date.Day, hour, minutes, 0, new TimeSpan(IsItEastern ? -4 : -5, 0, 0));
+            return offset;
+        }
     }
 }

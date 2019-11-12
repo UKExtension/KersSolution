@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms';
-import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow } from './training';
+import { FormBuilder, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
+import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow, TrainingSession } from './training';
 import { TrainingService } from './training.service';
 import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 import { Observable } from 'rxjs';
+import { isNgTemplate } from '@angular/compiler';
 
 
 @Component({
@@ -27,8 +28,10 @@ export class TrainingFormSessionsComponent implements OnInit {
     proposed = false;
     easternTimezone = true;
 
+    sessionsIndex = 0;
+
     get sessions() {
-        return this.trainingForm.get('sessions') as FormArray;
+        return this.trainingForm.get('trainingSession') as FormArray;
     }
     options = { 
         placeholderText: 'Your Description Here!',
@@ -62,44 +65,7 @@ export class TrainingFormSessionsComponent implements OnInit {
     private service:TrainingService
   ) {
     this.date.setMonth(this.date.getMonth() + 2);
-    this.trainingForm = this.fb.group(
-      {
-          sessions: this.fb.array([
-            {
-              date: {
-                date: {
-                    year: this.date.getFullYear(),
-                    month: this.date.getMonth() + 1,
-                    day: this.date.getDate()}
-                },
-              starttime: "",
-              endtime: "",
-              note: ""
-            }
-          ]),
-          etimezone:true,
-          start: [{
-              date: {
-                  year: this.date.getFullYear(),
-                  month: this.date.getMonth() + 1,
-                  day: this.date.getDate()}
-              }, Validators.required],
-          end: [{}],
-          subject: ["", Validators.required],
-          body: [""],
-          tAudience: [""],
-          tContact: [""],
-          tLocation: [""],
-          day1: ["", Validators.required],
-          day2: [""],
-          day3: [""],
-          day4: [""],
-          iHourId: "",
-          cancelCutoffDaysId: "",
-          registerCutoffDaysId: "",
-          seatLimit: "",
-          tStatus: "P"
-    }, { validator: trainingValidator });
+    this.initialiseForm();
     let today = new Date();
     this.myDatePickerOptions.disableUntil = {year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()};
     this.iHours = service.instructionalHours();
@@ -107,44 +73,103 @@ export class TrainingFormSessionsComponent implements OnInit {
     this.registerWindow = service.registerWindows();
    }
 
+   initialiseForm(){
+    this.sessionsIndex = 0;
+    this.trainingForm = this.fb.group(
+      {
+          trainingSession: this.fb.array([]),
+          etimezone:true,
+          subject: ["", Validators.required],
+          body: [""],
+          tAudience: [""],
+          tContact: [""],
+          tLocation: [""],
+          iHourId: "",
+          cancelCutoffDaysId: "",
+          registerCutoffDaysId: "",
+          seatLimit: "",
+          tStatus: "P"
+    });
+   }
+
   ngOnInit() {
     if(this.training){
+      
+      this.training.trainingSession = this.training.trainingSessionWithTimes;
+      this.training.trainingSession.forEach( (item:TrainingSession) => {
+        item = this.populateSession(item);
+        this.addSession(item);
+      });
       this.trainingForm.patchValue(this.training);
-      var start = new Date( this.training.start);
-      this.trainingForm.patchValue({
-        start: {
-          date:{
-            year: start.getFullYear(),
-            month: start.getMonth() + 1,
-            day: start.getDate()
-          }
-        }
-      })
-      if( this.training.end ){
-        var end = new Date(this.training.end);
-        this.trainingForm.patchValue({
-          end:{
-            date:{
-              year: end.getFullYear(),
-              month: end.getMonth() + 1,
-              day: end.getDate()
-            }
-          }
-        })
-      }
+      this.easternTimezone = this.training.etimezone;
+    }else{
+      this.addSession();
     }
+      
     this.loading = false;
   }
 
-  addSession() {
-    this.sessions.push(this.fb.control({
-      note: "",
-      stattime: "",
-      endtime: ""
-    }));
+  populateSession(session:TrainingSession):TrainingSession{
+    
+    var start = new Date(<Date>session.date);
+    session.date = {
+      date: {
+        year: start.getFullYear(),
+        month: start.getMonth() + 1,
+        day: start.getDate()
+      }
+    };
+        
+    return session;
+  }
+
+  addSession(session:TrainingSession | null = null) {
+    var nextDate = new Date();
+    if(this.sessions.length > 0){
+      var last = this.sessions.value[this.sessions.length - 1];
+      nextDate = new Date(last.date.date.year, last.date.date.month - 1, last.date.date.day + 1);
+    }else{
+      nextDate.setMonth(nextDate.getMonth() + 2)
+    }
+    if(session == null){
+      var control = this.fb.control({
+        date: {
+          date: {
+              year: nextDate.getFullYear(),
+              month: nextDate.getMonth() + 1,
+              day: nextDate.getDate()}
+          },
+        note: "",
+        starttime: "",
+        endtime: "",
+        index: this.sessionsIndex++
+      });
+      this.sessions.push(control);
+    }else{
+      this.sessions.push(this.fb.control(session));
+    }
+    
   }
   sessionRemoved(event:number){
+    if(this.sessions != undefined && this.sessions.length > 1){
+      var elementIndex:number = undefined;
+      this.sessions.controls.forEach( (item, index) => {
+        if(item.value.index == event){
+          elementIndex = index;
+        }
+      });
+      if(elementIndex != undefined){
+        this.sessions.removeAt(elementIndex);
+        this.sessionsIndex--;
+        this.sessions.controls.forEach( (item, index) => {
+          if( item.value.index > elementIndex) item.value.index--;
+        });
+      } 
 
+
+
+
+    }
   }
   isEastern(isIt:boolean){
     this.easternTimezone = isIt;
@@ -155,33 +180,50 @@ export class TrainingFormSessionsComponent implements OnInit {
   }
 
   onSubmit(){
+
+    
+
+    
     var trning:Training = <Training> this.trainingForm.value;
+    var sessionIndex = 0;
+    var sessionsWithTime = new Array<TrainingSession>();
+    for( var sess of trning.trainingSession){
+      sess.date = new Date(this.trainingForm.value.trainingSession[sessionIndex].date.date.year, this.trainingForm.value.trainingSession[sessionIndex].date.date.month - 1, this.trainingForm.value.trainingSession[sessionIndex].date.date.day);
+      sessionIndex++;
+      sessionsWithTime.push(sess);
+    }
+    trning.trainingSessionWithTimes = sessionsWithTime;
+/* 
     trning.start = new Date(this.trainingForm.value.start.date.year, this.trainingForm.value.start.date.month - 1, this.trainingForm.value.start.date.day);
     if( this.trainingForm.value.end != null && this.trainingForm.value.end.date != null ){
       trning.end = new Date(this.trainingForm.value.end.date.year, this.trainingForm.value.end.date.month - 1, this.trainingForm.value.end.date.day);
     }else{
       trning.end = null;
-    }
+    } */
     if( this.training == null ){
       this.loading = true;
       this.service.add( trning ).subscribe(
         res => {
+          
           this.loading = false;
           this.onFormSubmit.emit(res);
+          
           this.proposed = true;
-          this.trainingForm.reset();
+          //console.log(this.trainingForm);
+          //this.trainingForm.reset();
+          this.initialiseForm();
         }
       );
     }else{
       this.loading = true;
-      this.service.update( this.training.id, trning).subscribe(
+      this.service.updateSessions( this.training.id, trning).subscribe(
         res => {
           this.loading = false;
           this.onFormSubmit.emit( res);
         }
       )
     }
-    
+     
      
   }
   onCancel(){

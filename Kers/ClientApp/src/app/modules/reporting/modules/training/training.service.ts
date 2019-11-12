@@ -176,6 +176,13 @@ export class TrainingService {
                 .pipe(
                     catchError(this.handleError('update', training))
                 );
+      } 
+      updateSessions(id:number, training:Training):Observable<Training>{
+        var url = this.baseUrl + 'updatesessionstraining/' + id;
+        return this.http.put<Training>(this.location.prepareExternalUrl(url), training)
+                .pipe(
+                    catchError(this.handleError('update', training))
+                );
       }  
       private addParams(params:{}){
         let searchParams = {};

@@ -57,6 +57,7 @@ namespace Kers.Models.Entities.KERScore
 
         public string tAudience { get; set; }
         public List<TrainingEnrollment> Enrollment {get; set; }
+        public List<TrainingSession> TrainingSession {get;set;}
 
         [StringLength(200)]
         public string qualtricsSurveyID { get; set; }

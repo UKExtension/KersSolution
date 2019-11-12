@@ -14,7 +14,12 @@
         <div class="text-right">
             <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
         </div>
-        <training-form [training]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></training-form>
+        <ng-container *ngIf="training.trainingSession.length == 0">
+            <training-form [training]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></training-form>
+        </ng-container>
+        <ng-container *ngIf="training.trainingSession.length > 0">
+            <training-form-sessions [training]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></training-form-sessions>
+        </ng-container>
     </td>
     <td *ngIf="rowDelete" colspan="6">
         <div class="text-right">

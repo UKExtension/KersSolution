@@ -1,5 +1,5 @@
 import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TrainingSession } from '../training';
 import { IMyDpOptions, IMyDateModel } from "mydatepicker";
@@ -42,7 +42,12 @@ import { IMyDpOptions, IMyDateModel } from "mydatepicker";
                   provide: NG_VALUE_ACCESSOR,
                   useExisting: forwardRef(() => SessionFormElementComponent),
                   multi: true
-                } 
+                } ,
+                {
+                  provide: NG_VALIDATORS,
+                  useExisting: forwardRef(() => SessionFormElementComponent),
+                  multi: true
+                }
                 ]
 })
 export class SessionFormElementComponent extends BaseControlValueAccessor<TrainingSession> implements ControlValueAccessor, OnInit { 
@@ -70,9 +75,9 @@ export class SessionFormElementComponent extends BaseControlValueAccessor<Traini
                 day: this.date.getDate()}
             }, Validators.required],
         note: [''],
-        starttime:"",
-        endtime: ""
-
+        starttime:[null, Validators.required],
+        endtime: [null, Validators.required],
+        index:0
       });
   
       this.sessionGroup.valueChanges.subscribe(val => {
@@ -81,19 +86,21 @@ export class SessionFormElementComponent extends BaseControlValueAccessor<Traini
       });
     }
     onRemove(){
-        this.removeMe.emit(this.index);
+        this.removeMe.emit(this.value.index);
     } 
 
     ngOnInit(){
-        
     }
 
 
     onDateChanged($event){
       
     }
-    writeValue(income: TrainingSession) {
-      this.value = income;
-      this.sessionGroup.patchValue(income);
+    writeValue(session: TrainingSession) {
+      this.value = session;
+      this.sessionGroup.patchValue(this.value);
+    }
+    validate(c: AbstractControl): ValidationErrors | null{
+      return this.sessionGroup.valid ? null : { invalidForm: {valid: false, message: "Session fields are invalid"}};
     }
 }
