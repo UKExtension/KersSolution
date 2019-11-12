@@ -93,9 +93,10 @@ namespace Kers.Controllers
                                     .Include( t => t.iHour)
                                     .Include( t => t.RegisterCutoffDays)
                                     .Include( t => t.CancelCutoffDays)
+                                    .Include( t => t.TrainingSession)
                                     .FirstOrDefaultAsync();
             //if( training != null){
-                return new OkObjectResult(await training);
+                return new OkObjectResult(this.ToTimezone( await training));
       /*      
             }else{
                 this.Log( id ,"Training", "Not Found Training with this id.", "Training", "Error");
@@ -509,14 +510,16 @@ namespace Kers.Controllers
         }
 
         [HttpGet("proposalsawaiting")]
-        public async Task<IActionResult> ProposalsAwaiting(){
-            var proposals = await context
+        public IActionResult ProposalsAwaiting(){
+            var proposals = context
                                 .Training.Where( t => t.tStatus == "P")
                                 .Include( t => t.submittedBy)
                                     .ThenInclude( s => s.PersonalProfile)
                                 .Include( t => t.TrainingSession)
-                                .ToListAsync();
-            return new OkObjectResult(proposals);
+                                .Include(t => t.TrainingSession)
+                                .OrderBy(t => t.Start);
+            
+            return new OkObjectResult( ToWithTimezone(proposals) );
         }
 
         [HttpGet("trainingsbystatus/{year}/{status}")]
@@ -527,7 +530,9 @@ namespace Kers.Controllers
                                     .ThenInclude( s => s.PersonalProfile)
                                 .Include( t => t.iHour)
                                 .Include( t => t.Enrollment)
+                                .Include( t => t.TrainingSession)
                                 .ToListAsync();
+            List<TrainingWithTimezone> withTimezone = new List<TrainingWithTimezone>();
             foreach( var tr in trainings){
                 tr.Organizer = null;
                 tr.approvedBy = null;
@@ -538,9 +543,11 @@ namespace Kers.Controllers
                 foreach( var enr in tr.Enrollment){
                     enr.Training = null;
                 }
+                withTimezone.Add( ToTimezone(tr));
             }
-            return new OkObjectResult(trainings);
+            return new OkObjectResult(withTimezone);
         }
+
 
         [HttpGet("userswithtrainings/{year}")]
         public async Task<IActionResult> UsersWithTrainings(int year){
@@ -655,7 +662,7 @@ namespace Kers.Controllers
             return new OkObjectResult(result);
         }
 
-        private List<TrainingWithTimezone> ToWithTimezone(IOrderedQueryable<Training> trainings){
+        private List<TrainingWithTimezone> ToWithTimezone(IOrderedQueryable<Training>  trainings){
             var withTimezone = new List<TrainingWithTimezone>();
             
             foreach( var training in trainings){

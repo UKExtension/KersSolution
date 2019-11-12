@@ -39,6 +39,7 @@ import { FiscalYearSwitcherComponent } from './components/fiscal-year-switcher.c
 import { ImageUploadComponent } from './form-controls/image-upload.component';
 import { MonthSwitcherComponent } from './components/month-switcher.component';
 import {CopyClipboardDirective} from './directives/copy-clipboard.directive';
+import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
 
 
 
@@ -67,7 +68,8 @@ import {CopyClipboardDirective} from './directives/copy-clipboard.directive';
                   FiscalYearSwitcherComponent,
                   MonthSwitcherComponent,
                   ImageUploadComponent ,
-                  CopyClipboardDirective
+                  CopyClipboardDirective,
+                  TimeFormat
                 ],
   exports:      [ 
       CommonModule, 
@@ -88,7 +90,8 @@ import {CopyClipboardDirective} from './directives/copy-clipboard.directive';
       FiscalYearSwitcherComponent,
       MonthSwitcherComponent,
       ImageUploadComponent,
-      CopyClipboardDirective
+      CopyClipboardDirective,
+      TimeFormat
  ]
 })
 export class SharedModule { }

@@ -10,7 +10,7 @@
         <strong>Date(s):</strong>
       </div>
       <div class="col-sm-9 col-xs-12">
-        {{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span>
+        {{training.start | date:'mediumDate'}} <span *ngIf="training.end && (training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 1)"><br>{{training.end | date:'mediumDate'}}</span>
       </div>
   </div>
   <div class="row">
@@ -22,12 +22,29 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-3 col-xs-12">
-      <strong>Time(s):</strong>
-    </div>
-    <div class="col-sm-9 col-xs-12">
-      Day 1: {{training.day1}}<span *ngIf="training.day2"><br>Day 2: {{training.day2}}</span><span *ngIf="training.day3"><br>Day 3: {{training.day3}}</span><span *ngIf="training.day4"><br>Day 4: {{training.day4}}</span>
-    </div>
+    <ng-container *ngIf="training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0">
+        <div class="col-sm-3 col-xs-12">
+            <strong>Session<span *ngIf="training.trainingSessionWithTimes.length > 1">s</span>:</strong>
+          </div>
+          <div class="col-sm-9 col-xs-12">
+            <table class="table table-striped">
+            <ng-container *ngFor="let session of training.trainingSessionWithTimes">
+              <tr>
+              <td>{{session.date | date: 'fullDate'}}</td>
+              <td>{{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}} {{ training.etimezone ? "ET" : "CT" }}</td>
+            </tr>
+            </ng-container>
+          </table>
+          </div>
+    </ng-container>
+    <ng-container *ngIf="training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0">
+      <div class="col-sm-3 col-xs-12">
+        <strong>Time(s):</strong>
+      </div>
+      <div class="col-sm-9 col-xs-12">
+        Day 1: {{training.day1}}<span *ngIf="training.day2"><br>Day 2: {{training.day2}}</span><span *ngIf="training.day3"><br>Day 3: {{training.day3}}</span><span *ngIf="training.day4"><br>Day 4: {{training.day4}}</span>
+      </div>
+    </ng-container>
   </div>
   <div></div>
   <div class="row">
