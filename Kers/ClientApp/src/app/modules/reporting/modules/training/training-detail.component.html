@@ -2,7 +2,16 @@
     <td *ngIf="rowDefault">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
     <td *ngIf="rowDefault">{{training.subject}}</td>
     <td *ngIf="rowDefault">{{training.tLocation}}</td>
-    <td *ngIf="rowDefault">{{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span></td>
+    <td *ngIf="rowDefault" style="white-space: nowrap;">
+        <ng-container *ngIf="training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0">
+            <ng-container *ngFor="let session of training.trainingSessionWithTimes">
+                {{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}}<br>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0">
+                {{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span>
+        </ng-container>
+    </td>
     <td *ngIf="rowDefault"><span *ngIf="training.submittedBy && training.submittedBy.personalProfile">{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span></td>
     <td *ngIf="rowDefault">{{training.enrollment.length}}</td>
     <td *ngIf="rowDefault" class="text-right">
@@ -35,7 +44,16 @@
     <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
     <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
     <td>{{training.tLocation}}</td>
-    <td>{{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span></td>
+    <td style="white-space: nowrap;">
+            <ng-container *ngIf="training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0">
+                <ng-container *ngFor="let session of training.trainingSessionWithTimes">
+                    {{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}}<br>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0">
+                    {{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span>
+            </ng-container>
+        </td>
 </ng-container>
 
 

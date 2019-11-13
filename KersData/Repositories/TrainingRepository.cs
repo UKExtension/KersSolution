@@ -87,6 +87,7 @@ namespace Kers.Models.Repositories
                                                         t.tStatus == "A" 
                                                             && 
                                                         t.Start.AddDays( 1 ).ToString("yyyyMMdd") == DateTimeOffset.Now.ToString("yyyyMMdd"))
+                                            .Include( t => t.TrainingSession)
                                             .ToList();
             if(trainings.Count() > 0){
 
@@ -95,18 +96,7 @@ namespace Kers.Models.Repositories
                 if(template != null){
                     foreach( var training in trainings){
 
-                        var valArray = new string[]{
-                            training.Subject,
-                            training.Subject,
-                            training.Start.ToString("MM/dd/yyyy") + (training.End != null? " - " + training.End?.ToString("MM/dd/yyyy") : ""),
-                            training.tLocation,
-                            training.tTime,
-                            training.day1,
-                            training.day2,
-                            training.day3,
-                            training.day4,
-                            training.tContact
-                        };
+                        var valArray = this.valsToArray(training);
                         var message = new Message();
                         message.Subject = template.Subject;
                         message.BodyHtml = string.Format(template.BodyHtml, valArray);
@@ -163,29 +153,12 @@ namespace Kers.Models.Repositories
                                 .ThenInclude( e => e.Attendie)
                                 .ThenInclude( a => a.RprtngProfile)
                                 .ThenInclude(r => r.PlanningUnit)
+                        .Include( t => t.TrainingSession)
                         .ToList();
             var template = this.context.MessageTemplate.Where( t => t.Code == "ROSTER").FirstOrDefault();
             if( template != null && trainings.Count() > 0 ){
                 foreach( var training in trainings){
-                    var rstr = "";
-                    foreach( var enr in training.Enrollment.OrderBy( f => f.Attendie.RprtngProfile.Name)){
-                        rstr += "<tr><td>" + enr.Attendie.RprtngProfile.Name + 
-                                "</td><td></td><td>"+enr.Attendie.RprtngProfile.PlanningUnit.Name+"</td></tr>";
-                    }
-
-                    var valArray = new string[]{
-                        training.Subject,
-                        training.Subject,
-                        training.Start.ToString("MM/dd/yyyy") + (training.End != null? " - " + training.End?.ToString("MM/dd/yyyy") : ""),
-                        training.tLocation,
-                        training.tTime,
-                        training.day1,
-                        training.day2,
-                        training.day3,
-                        training.day4,
-                        training.tContact,
-                        rstr
-                    };
+                    var valArray = valsToArray( training );
                     var message = new Message();
                     message.Subject = string.Format(template.Subject, training.Subject);
                     message.BodyHtml = string.Format(template.BodyHtml, valArray);
@@ -198,6 +171,58 @@ namespace Kers.Models.Repositories
             }
             return trainings;
         }
+
+
+        /***********************************************/
+        // Returns array of strings for replacements in
+        // the templates.
+        //
+        // Index Content
+        // 0 - Subject
+        // 1 - Subject
+        // 2 - Start and End dates
+        // 3 - Location
+        // 4 - Time(s)
+        // 5 - Day 1
+        // 6 - Day 2
+        // 7 - Day 3
+        // 8 - Day 4
+        // 9 - Contact
+        // 10 - Roster as table rows
+        /***********************************************/
+        private string[] valsToArray(Training training){
+            var rstr = "";
+            if(training.Enrollment != null){
+                foreach( var enr in training.Enrollment.OrderBy( f => f.Attendie.RprtngProfile.Name)){
+                    rstr += "<tr><td>" + enr.Attendie.RprtngProfile.Name + 
+                            "</td><td></td><td>"+enr.Attendie.RprtngProfile.PlanningUnit.Name+"</td></tr>";
+                }
+            }
+            var time = "";
+            if( training.TrainingSession != null && training.TrainingSession.Count() > 0){
+                foreach( var session in training.TrainingSession){
+                    time += session.Start.ToString("t") + " - " + session.End.ToString("t") + "<br>";
+                }
+            }else{
+                time = training.tTime;
+            }
+            var valArray = new string[]{
+                training.Subject,
+                training.Subject,
+                training.Start.ToString("MM/dd/yyyy") + (training.End != null? " - " + training.End?.ToString("MM/dd/yyyy") : ""),
+                training.tLocation,
+                training.tTime,
+                training.day1,
+                training.day2,
+                training.day3,
+                training.day4,
+                training.tContact,
+                rstr
+            };
+
+            return valArray;
+        }
+
 
         public void ScheduleReminders(string type, List<Training> trainings){
             foreach( var training in trainings){
@@ -388,10 +413,7 @@ namespace Kers.Models.Repositories
                 month = dt.Substring(4, 2);
                 day = dt.Substring(6, 2);
             }
-            
-
             var offset = new DateTimeOffset (Int32.Parse(year), Int32.Parse(month), Int32.Parse(day), 8, 0, 0, new TimeSpan(-4, 0, 0));
-
             return offset;
         }
 

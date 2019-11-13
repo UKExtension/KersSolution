@@ -655,7 +655,7 @@ namespace Kers.Controllers
                 result = trainings.OrderBy(t => t.Start);
             }
 
-            if(admin){
+            if(!attendance){
                 return new OkObjectResult(this.ToWithTimezone(result));
             }
 

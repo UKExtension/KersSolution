@@ -165,7 +165,33 @@ namespace Kers.Models.Repositories
             return false;
         }
 
+
+        /***********************************************/
+        // Returns array of strings for replacements in
+        // the templates.
+        //
+        // Index Content
+        // 0 - Subject
+        // 1 - Subject
+        // 2 - Start and End dates
+        // 3 - Location
+        // 4 - Time(s)
+        // 5 - Day 1
+        // 6 - Day 2
+        // 7 - Day 3
+        // 8 - Day 4
+        // 9 - Contact
+        // 10 - Roster as table rows
+        /***********************************************/
         private string[] TrainingToMessageArray(Training training){
+            var time = "";
+            if( training.TrainingSession != null && training.TrainingSession.Count() > 0){
+                foreach( var session in training.TrainingSession){
+                    time += session.Start.ToString("t") + " - " + session.End.ToString("t") + "<br>";
+                }
+            }else{
+                time = training.tTime;
+            }
             var returnArray = new string[]{
                 training.Subject,
                 training.Subject,
