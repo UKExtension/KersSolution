@@ -225,6 +225,8 @@ namespace Kers.Models.Contexts
         public virtual DbSet<Message> Message {get; set;}
         public virtual DbSet<MessageTemplate> MessageTemplate {get; set;}
         public virtual DbSet<FiscalYear> FiscalYear {get;set;}
+        public virtual DbSet<ExtensionArea> ExtensionArea {get;set;}
+        public virtual DbSet<ExtensionRegion> ExtensionRegion {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
