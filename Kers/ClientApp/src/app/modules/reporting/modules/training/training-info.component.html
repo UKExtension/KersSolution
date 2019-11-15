@@ -31,7 +31,13 @@
             <ng-container *ngFor="let session of training.trainingSessionWithTimes">
               <tr>
               <td>{{session.date | date: 'fullDate'}}</td>
-              <td>{{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}} {{ training.etimezone ? "ET" : "CT" }}</td>
+              <td>
+                {{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}} {{ training.etimezone ? "ET" : "CT" }}
+                <span *ngIf="session.note != undefined && session.note != ''"> 
+                    <br>{{session.note}}
+                </span>
+
+              </td>
             </tr>
             </ng-container>
           </table>

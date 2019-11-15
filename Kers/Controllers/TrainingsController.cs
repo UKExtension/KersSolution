@@ -254,6 +254,7 @@ namespace Kers.Controllers
         public async Task<IActionResult> EnrollInTraining( int trainingId ){
             var training = await this.context.Training.Where( t => t.Id == trainingId)
                                         .Include( t => t.Enrollment)
+                                        .Include( t => t.TrainingSession)
                                         .FirstOrDefaultAsync();
             if(training != null){
                 var user = this.CurrentUser();
@@ -294,6 +295,7 @@ namespace Kers.Controllers
         public async Task<IActionResult> UnenrollFromTraining( int trainingId ){
             var training = await this.context.Training.Where( t => t.Id == trainingId)
                                         .Include( t => t.Enrollment)
+                                        .Include( t => t.TrainingSession)
                                         .FirstOrDefaultAsync();
             if(training != null){
                 var user = this.CurrentUser();

@@ -182,15 +182,53 @@ namespace Kers.Models.Repositories
         // 8 - Day 4
         // 9 - Contact
         // 10 - Roster as table rows
+        // 11 - Times as table rows
+        // 12 - Times as text lines
+        // 13 - Training Id
         /***********************************************/
         private string[] TrainingToMessageArray(Training training){
+            var rstr = "";
+            if(training.Enrollment != null){
+                foreach( var enr in training.Enrollment.OrderBy( f => f.Attendie.RprtngProfile.Name)){
+                    rstr += "<tr><td>" + enr.Attendie.RprtngProfile.Name + 
+                            "</td><td></td><td>"+enr.Attendie.RprtngProfile.PlanningUnit.Name+"</td></tr>";
+                }
+            }
             var time = "";
+            var TableRows = "";
+            var TextLines = "";
+            var rowIndex = 1;
             if( training.TrainingSession != null && training.TrainingSession.Count() > 0){
                 foreach( var session in training.TrainingSession){
                     time += session.Start.ToString("t") + " - " + session.End.ToString("t") + "<br>";
+                    TableRows += "<tr><td class='TblR'>Session " + rowIndex.ToString() + 
+                                    ": </td><td>" + OffsetToTimeString(session.Start) + " - " + 
+                                    OffsetToTimeString(session.End);
+                    if(session.Note != null && session.Note != ""){
+                        TableRows += "<br>" + session.Note;
+                    }
+                    TableRows += "</td></tr>";
+                    TextLines += "Session " + rowIndex.ToString() + 
+                                    ": " + OffsetToTimeString(session.Start) + " - " + 
+                                    OffsetToTimeString(session.End);
+                    if(session.Note != null && session.Note != ""){
+                        TextLines += "\n" + session.Note;
+                    }
+                    TextLines += "\n";
+                    rowIndex++;
                 }
             }else{
                 time = training.tTime;
+                TableRows = "<tr><td class='TblR'>DAY 1 TIME: </td><td>" + training.day1 +
+                             "</td></tr><tr><td class='TblR'>DAY 2 TIME: </td><td>" + training.day2 +
+                             "</td></tr><tr><td class='TblR'>DAY 3 TIME: </td><td>" + training.day3 +
+                             "</td></tr><tr><td class='TblR'>DAY 4 TIME: </td><td>" + training.day4 +
+                             "</td></tr>";
+                TextLines = "DAY 1 TIME: " + training.day1 +
+                            "\nDAY 2 TIME: " + training.day2 +
+                            "\nDAY 3 TIME: " + training.day3 +
+                            "\nDAY 4 TIME: " + training.day4 +
+                            "\n";
             }
             var returnArray = new string[]{
                 training.Subject,
@@ -203,9 +241,22 @@ namespace Kers.Models.Repositories
                 training.day3,
                 training.day4,
                 training.tContact,
+                rstr,
+                TableRows,
+                TextLines,
                 training.Id.ToString()
             };
             return returnArray;
+        }
+
+        private string OffsetToTimeString(DateTimeOffset offset){
+            string result = offset.ToString("hh:mm tt");
+            if(offset.ToString("%K") == "-05:00"){
+                result += " CT";
+            }else{
+                result += " ET";
+            }
+            return result;
         }
 
 
