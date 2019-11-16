@@ -641,7 +641,8 @@ namespace Kers.Controllers
             }
             trainings = trainings
                             .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile)
-                            .Include( t => t.TrainingSession);
+                            .Include( t => t.TrainingSession)
+                            .Include( t => t.iHour);
             if(attendance){
                 trainings = trainings.Where(t => t.tStatus == "A" && t.Enrollment.Count() > 0 ).Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
             }else if( admin ){
