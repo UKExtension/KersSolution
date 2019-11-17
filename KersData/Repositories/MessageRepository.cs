@@ -188,7 +188,7 @@ namespace Kers.Models.Repositories
         /***********************************************/
         private string[] TrainingToMessageArray(Training training){
             var rstr = "";
-            if(training.Enrollment != null){
+            if(training.Enrollment != null && training.Enrollment.Count() > 0){
                 if( training.Enrollment.First().Attendie != null && training.Enrollment.First().Attendie.RprtngProfile != null){
                     foreach( var enr in training.Enrollment.OrderBy( f => f.Attendie.RprtngProfile.Name)){
                         rstr += "<tr><td>" + enr.Attendie.RprtngProfile.Name + 
