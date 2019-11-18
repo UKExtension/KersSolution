@@ -209,7 +209,7 @@ namespace Kers.Models.Repositories
                 foreach( var session in training.TrainingSession){
                     time += session.Start.ToString("t") + " - " + session.End.ToString("t") + "<br>";
                     TableRows += "<tr><td class='TblR'>Session " + rowIndex.ToString() + 
-                                    ": </td><td>" + OffsetToTimeString(session.Start) + " - " + 
+                                    ": </td><td>" + session.Start.ToString("MM/dd/yy") + OffsetToTimeString(session.Start) + " - " + 
                                     OffsetToTimeString(session.End);
                     if(session.Note != null && session.Note != ""){
                         TableRows += "<br>" + session.Note;

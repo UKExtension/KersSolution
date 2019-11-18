@@ -220,6 +220,63 @@ namespace Kers.Models.Repositories
             return result;
         }
 
+        public string AudienceAgeCategory(FiscalYear fiscalYear, Boolean refreshCache = false){
+            string result;
+
+
+            var cacheKey = CacheKeys.AudienceAgeCategory + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+                        
+                keys.Add("");
+                
+                var ages = context.SnapDirectAges.Where(m => m.Active).OrderBy( m => m.order);
+                foreach( var age in ages){
+                    keys.Add(string.Concat( "\"", age.Name, "\""));
+                }
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+
+
+                var revs = SnapData( fiscalYear).Select( a => a.Revision);
+
+                var vals = revs.Where(r => r.SnapDirect != null).Select( r => r.SnapDirect.SnapDirectAgesAudienceValues);
+
+                var data = vals.SelectMany( i => i);
+
+
+                var categories = context.SnapDirectAudience.Where(m => m.Active).OrderBy( m => m.order);
+                foreach( var category in categories){
+                    var row = string.Concat( "\"", category.Name, "\"");
+                    foreach( var a in ages){
+                        row += data.Where( d => d.SnapDirectAgesId == a.Id && d.SnapDirectAudienceId == category.Id).Sum( r => r.Value).ToString() + ",";
+                    }
+
+                    result += row + "\n";
+                }
+
+
+
+
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
+                    }); 
+            }
+
+
+
+
+
+
+
+            return result;
+        }
+
         public string SessionTypebyMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
             var cacheKey = CacheKeys.SnapSessionTypebyMonth + fiscalYear.Name;
