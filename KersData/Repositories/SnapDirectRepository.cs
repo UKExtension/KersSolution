@@ -251,7 +251,7 @@ namespace Kers.Models.Repositories
 
                 var categories = context.SnapDirectAudience.Where(m => m.Active).OrderBy( m => m.order);
                 foreach( var category in categories){
-                    var row = string.Concat( "\"", category.Name, "\"");
+                    var row = string.Concat( "\"", category.Name, "\",");
                     foreach( var a in ages){
                         row += data.Where( d => d.SnapDirectAgesId == a.Id && d.SnapDirectAudienceId == category.Id).Sum( r => r.Value).ToString() + ",";
                     }
