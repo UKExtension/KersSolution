@@ -17,6 +17,9 @@ namespace Kers.Models.Contexts
         public virtual DbSet<CountyCode> CountyCodes { get; set; }
         public virtual DbSet<CountyNote> CountyNotes { get; set; }
         public virtual DbSet<FarmerAddress> FarmerAddress { get; set; }
+        public virtual DbSet<FarmerForReport> FarmerForReport { get; set; }
+        public virtual DbSet<TestResults> TestResults { get; set; }
+        public virtual DbSet<SoilReport> SoilReport { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder){
             modelBuilder.Entity<CountyCode>().HasData(
