@@ -87,7 +87,7 @@ namespace Kers.Models.Repositories
         }
 
         protected List<int> LastActivityRevisionIds( FiscalYear fiscalYear ){
-            var cacheKey = CacheKeys.ActivityLastRevisionIdsPerFiscalYear + fiscalYear.Name;
+            var cacheKey = CacheKeys.ActivityLastRevisionIdsPerFiscalYear + fiscalYear.Name + fiscalYear.Type;
             var cacheString = _cache.GetString(cacheKey);
             List<int> ids;
             if (!string.IsNullOrEmpty(cacheString)){
