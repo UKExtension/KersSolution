@@ -19,7 +19,7 @@ class SoilDataContextDbContextFactory : IDesignTimeDbContextFactory<SoilDataCont
         if(environment == "development" || environment == "Development"){
             builder.UseSqlite(configuration["ConnectionStrings:soilDataLocal"], b => b.MigrationsAssembly("Kers"));
         }else{
-            //builder.UseSqlServer(configuration["ConnectionStrings:connKersCore"], b => b.MigrationsAssembly("Kers"));
+            builder.UseSqlServer(configuration["ConnectionStrings:connSoilData"], b => b.MigrationsAssembly("Kers"));
         }
         return new SoilDataContext(builder.Options);
     }
