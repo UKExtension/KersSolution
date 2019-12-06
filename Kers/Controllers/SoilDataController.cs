@@ -93,8 +93,59 @@ namespace Kers.Controllers
             }
         }
 
+
+        [HttpPost("addNote")]
+        [Authorize]
+        public IActionResult AddNote( [FromBody] CountyNote note){
+            if(note != null){
+                var user = this.CurrentUser();
+                var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
+                note.CountyCode = countyCode;
+                _soilDataContext.Add(note); 
+                _soilDataContext.SaveChanges();
+                this.Log(note,"CountyNote", "County Note added.");
+                return new OkObjectResult(note); 
+            }else{
+                this.Log( note ,"CountyNote", "Error in adding County Note attempt.", "CountyNote", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+        [HttpPut("updateNote/{id}")]
+        [Authorize]
+        public IActionResult UpdateNote( int id, [FromBody] CountyNote note){
+            var nte = _soilDataContext.CountyNotes.Find(id);
+            if(note != null && nte != null ){
+                nte.Name = note.Name;
+                nte.Note = note.Note;
+                _soilDataContext.SaveChanges();
+                this.Log(note,"CountyNote", "County Note Updated.");
+                return new OkObjectResult(nte);
+            }else{
+                this.Log( note ,"CountyNote", "Not Found County Note in an update attempt.", "CountyNote", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+        [HttpDelete("deleteNote/{id}")]
+        public IActionResult DeleteNote( int id){
+            var nte = _soilDataContext.CountyNotes.Find(id);
+
+            if(nte != null){
+                
+                this._soilDataContext.Remove(nte);
+                _soilDataContext.SaveChanges();
+                
+                return new OkResult();
+            }else{
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
         [HttpGet("addresses/{countyid?}")]
-        public async Task<IActionResult> RegisterWindows(int countyid = 0){
+        public async Task<IActionResult> FarmerAddressesByCounty(int countyid = 0){
             if( countyid == 0 ){
                 countyid = this.CurrentUser().RprtngProfile.PlanningUnitId;
             }
@@ -102,6 +153,16 @@ namespace Kers.Controllers
                                     Where(a => a.CountyCode.PlanningUnitId == countyid).
                                     ToListAsync();
             return new OkObjectResult(addresses);
+        }
+        [HttpGet("notesByCounty/{countyid?}")]
+        public async Task<IActionResult> NotesByCounty(int countyid = 0){
+            if( countyid == 0 ){
+                countyid = this.CurrentUser().RprtngProfile.PlanningUnitId;
+            }
+            var notes = await _soilDataContext.CountyNotes.
+                                    Where(a => a.CountyCode.PlanningUnitId == countyid).
+                                    ToListAsync();
+            return new OkObjectResult(notes);
         }
 
     }

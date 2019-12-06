@@ -43,7 +43,38 @@ export class SoildataService {
                 .pipe(
                     catchError(this.handleError('update', address))
                 );
-      }   
+      }
+      
+      addNote( note:CountyNote ):Observable<CountyNote>{
+        return this.http.post<CountyNote>(this.location.prepareExternalUrl(this.baseUrl + 'addNote/'), note)
+            .pipe(
+                catchError(this.handleError('addNote', <CountyNote>{}))
+            );
+      }
+
+      updateNote(id:number, note:CountyNote):Observable<CountyNote>{
+        var url = this.baseUrl + 'updateNote/' + id;
+        return this.http.put<CountyNote>(this.location.prepareExternalUrl(url), note)
+                .pipe(
+                    catchError(this.handleError('update', note))
+                );
+      }
+
+      deleteNote(id:number):Observable<{}>{
+        var url = this.baseUrl + "deleteNote/" + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete note'))
+            );
+      }
+      
+      notesByCounty(id:number = 0):Observable<CountyNote[]>{
+        var url = this.baseUrl + "notesByCounty/"+id;
+        return this.http.get<CountyNote[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('notes by county', []))
+            );
+      }
 
 }
 
@@ -55,7 +86,7 @@ export interface CountyCode{
     planningUnitId:number;
 }
 
-export interface FarmerAddress{
+export class FarmerAddress{
     id:number;
     countyCode:CountyCode;
     first:string;

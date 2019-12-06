@@ -20,7 +20,9 @@ namespace Kers.Models.Contexts
         public virtual DbSet<FarmerForReport> FarmerForReport { get; set; }
         public virtual DbSet<TestResults> TestResults { get; set; }
         public virtual DbSet<SoilReport> SoilReport { get; set; }
-        
+        public virtual DbSet<SoilReportBundle> SoilReportBundle { get; set; }
+        public virtual DbSet<FormTypeSignees> FormTypeSignees {get;set;}
+        public virtual DbSet<TypeForm> TypeForm {get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder){
             modelBuilder.Entity<CountyCode>().HasData(
                 new CountyCode{Id=1, Name = "ADAIR", Code = "001", CountyID = 1},
@@ -273,6 +275,26 @@ namespace Kers.Models.Contexts
                                 "August 15 when the goal is for stockpiling hayfields or pastures] (see additional comment below).\n\n"+
                                 "If you have any questions regarding these soil test result, feel free to contact me at the Clark County Extension Service.\n\n"
                     }
+            );
+            modelBuilder.Entity<TypeForm>().HasData(
+                new TypeForm{
+                    Id = 1,
+                    Name = "Agriculture",
+                    Code = "A",
+                    Note = ""
+                },
+                new TypeForm{
+                    Id = 2,
+                    Name = "Home lawn and garden",
+                    Code = "H",
+                    Note = ""
+                },
+                new TypeForm{
+                    Id = 3,
+                    Name = "Commercial horticulture",
+                    Code = "C",
+                    Note = ""
+                }
             );
         
         

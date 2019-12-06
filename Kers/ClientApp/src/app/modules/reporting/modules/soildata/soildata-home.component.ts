@@ -6,12 +6,10 @@ import { ReportingService } from '../../components/reporting/reporting.service';
   template: `
     <div>
       <p>
-        <a class="btn btn-default" [routerLink]="['/reporting/soildata']" routerLinkActive="active">Submit Sample</a> 
-        <a class="btn btn-default"[routerLink]="['/reporting/soildata']" routerLinkActive="active">Reports</a> 
-      </p>
-      <p>
+        <a class="btn btn-default"[routerLink]="['/reporting/soildata/reports']" routerLinkActive="active">Reports</a> 
         <a class="btn btn-default" [routerLink]="['/reporting/soildata/addresses']" routerLinkActive="active">Farmer Addresses</a> 
-        <a class="btn btn-default"[routerLink]="['/reporting/soildata/notes']" routerLinkActive="active">Report Notes</a> 
+        <a class="btn btn-default"[routerLink]="['/reporting/soildata/notes']" routerLinkActive="active">Notes</a> 
+        <a class="btn btn-default"[routerLink]="['/reporting/soildata/signees']" routerLinkActive="active">Signees</a>
       </p>
     </div>
     <router-outlet></router-outlet>
