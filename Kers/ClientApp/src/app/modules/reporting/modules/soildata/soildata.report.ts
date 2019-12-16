@@ -1,5 +1,33 @@
-import {FarmerAddress} from './soildata.service';
+import {FarmerAddress, CountyCode} from './soildata.service';
 
+
+export class SoilReportBundle{
+    id:number;
+    uniqueCode:string;
+    sampleLabelCreated:Date;
+    labTestsReady:Date;
+    dataProcessed:Date;
+    agentReviewed:Date;
+    planningUnit:CountyCode;
+    farmerForReport:FarmerForReport;
+    typeForm:TypeForm;
+    reports:SoilReport[];
+    statusHistory:SoilReportStatusChange[];
+    lastStatus:SoilReportStatusChange;
+}
+
+export class SoilReportStatusChange{
+    id:number;
+    soilReportStatus:SoilReportStatus;
+    created:Date;
+}
+
+export class SoilReportStatus{
+    id:number;
+    name:string;
+    description:string;
+    cssClass:string;
+}
 
 export class SoilReport{
     id:number;
@@ -59,4 +87,30 @@ export class TestResults{
 
 export class FarmerForReport extends FarmerAddress{
     labNum:string;
+}
+
+
+export class FormTypeSignees{
+    id:number;
+    planningUnit:CountyCode;
+    typeForm:TypeForm;
+    typeFormId:number;
+    signee:string;
+    title:string;
+}
+
+export class TypeForm{
+    id:number;
+    code:string;
+    name:string;
+    note:string;
+}
+
+export class SoilReportSearchCriteria{
+    start: string;
+    end: string;
+    search: string = "";
+    status: string;
+    order: string = 'dsc';
+    admin: boolean = false;
 }

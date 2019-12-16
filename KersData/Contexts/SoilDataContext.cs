@@ -296,8 +296,19 @@ namespace Kers.Models.Contexts
                     Note = ""
                 }
             );
-        
-        
+ /* 
+            modelBuilder.Entity<SoilReportBundle>()
+                .HasMany<SoilReport>( r => r.Reports)
+                .WithOne( t => t.SoilReportBundle)
+                .IsRequired(false);
+
+            modelBuilder.Entity<SoilReport>()
+                .HasOne<FarmerForReport>()
+                .WithOne( t => t.SoilReport)
+                .HasForeignKey<FarmerForReport>( r => r.FarmerID)
+                .HasPrincipalKey<SoilReport>( m => m.FarmerID);
+ */
+
         }
     }
 }

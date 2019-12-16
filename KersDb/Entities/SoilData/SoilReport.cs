@@ -20,7 +20,7 @@ namespace Kers.Models.Entities.SoilData
         [Column("LAB_NUM")]
         public string LabNum {get;set;}
         [Column("CO_ID")]
-        public int CoId {get;set;}
+        public int? CoId {get;set;}
         [Column("CO_SAMNUM")]
         public string CoSamnum {get;set;}
         public string FarmerID {get;set;}
@@ -71,5 +71,7 @@ namespace Kers.Models.Entities.SoilData
         public string ExtInfo2 {get;set;}
         public string ExtInfo3 {get;set;}
         public string ExtInfo4 {get;set;}
+        public SoilReportBundle SoilReportBundle {get;set;}
+        public int? SoilReportBundleId {get;set;}
     }
 }

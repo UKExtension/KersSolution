@@ -10,7 +10,9 @@ namespace Kers.Models.Entities.SoilData
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public CountyCode PlanningUnit {get;set;}
+        public int PlanningUnitId {get;set;}
         public TypeForm TypeForm {get;set;}
+        public int TypeFormId {get;set;}
         public string Signee {get;set;}
         public string Title {get;set;}
     }

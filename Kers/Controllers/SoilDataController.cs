@@ -1,16 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Kers.Models.Entities.KERScore;
 using Kers.Models.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Kers.Models.Contexts;
-using Kers.Models.Entities.UKCAReporting;
-using Microsoft.AspNetCore.Hosting;
 using Kers.Models.Entities.SoilData;
+using System;
 
 namespace Kers.Controllers
 {
@@ -52,6 +49,75 @@ namespace Kers.Controllers
 
 
         }
+
+
+
+        [HttpGet("GetCustom/{allCounties?}/{countyId?}")]
+        [Authorize]
+        public IActionResult GetCustom( [FromQuery] string search, 
+                                        [FromQuery] DateTime start,
+                                        [FromQuery] DateTime end,
+                                        [FromQuery] string status,
+                                        Boolean allCounties = false,
+                                        int countyId = 0
+                                        ){
+            UpdateBundles();
+            var bundles = from i in _soilDataContext.SoilReportBundle select i;
+            // Allow reports by all counties
+            if( !allCounties ){
+                if(countyId == 0){
+                    var user = this.CurrentUser();
+                    countyId = user.RprtngProfile.PlanningUnitId;
+                }
+                bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
+            }
+            if(search != null && search != ""){
+                bundles = bundles.Where( i => i.FarmerForReport != null 
+                                    && 
+                                (
+                                    i.FarmerForReport.First.Contains(search)
+                                    ||
+                                    i.FarmerForReport.Last.Contains(search)
+                                )            
+                        );
+            } 
+            if(start != null){
+                bundles = bundles.Where( i => i.DataProcessed > start);
+            }
+            if( end != null){
+                bundles = bundles.Where( i => i.DataProcessed < end);
+            }
+            bundles = bundles
+                        .Include( b => b.Reports)
+                        .Include( b => b.FarmerForReport)
+                        .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus);
+            return new OkObjectResult(bundles.OrderBy(t => t.DataProcessed));
+        }
+
+        private async void UpdateBundles(){
+            SoilReport OrphanedReport = await _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefaultAsync();
+            if( OrphanedReport != null ){
+                do{
+                    var SameSample = await _soilDataContext.SoilReport
+                                        .Where( r => r.CoId == OrphanedReport.CoId && r.CoSamnum == OrphanedReport.CoSamnum)
+                                        .ToListAsync();
+                    var Bundle = new SoilReportBundle();
+                    Bundle.Reports = SameSample;
+                    Bundle.StatusHistory = new List<SoilReportStatusChange>();
+                    Bundle.PlanningUnit = await _soilDataContext.CountyCodes.Where( c => c.CountyID == OrphanedReport.CoId).FirstOrDefaultAsync();
+                    Bundle.FarmerForReport = await _soilDataContext.FarmerForReport.Where(f => f.FarmerID == OrphanedReport.FarmerID).FirstOrDefaultAsync();
+                    Bundle.SampleLabelCreated = OrphanedReport.DateIn;
+                    Bundle.LabTestsReady = OrphanedReport.DateOut;
+                    Bundle.DataProcessed = OrphanedReport.DateSent;
+                    Bundle.TypeForm = await _soilDataContext.TypeForm.Where( f => f.Code == OrphanedReport.TypeForm).FirstOrDefaultAsync();
+                    Bundle.UniqueCode = Guid.NewGuid().ToString();
+                    _soilDataContext.Add(Bundle);
+                    await _soilDataContext.SaveChangesAsync();
+                    OrphanedReport = await _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefaultAsync();
+                }while( OrphanedReport != null);
+            }
+        }
+
 
         [HttpPost("addaddress")]
         [Authorize]
@@ -142,6 +208,27 @@ namespace Kers.Controllers
             }
         }
 
+        [HttpPost("updateSignees/{countyId}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateSignees( [FromBody] SigneesObject signees, int countyId = 0){
+            if( countyId == 0 ){
+                countyId = this.CurrentUser().RprtngProfile.PlanningUnitId;
+            }
+            var CurrentCountyCode = await this._soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == countyId).FirstOrDefaultAsync();
+            if( CurrentCountyCode == null){
+                this.Log( signees ,"FormTypeSignees", "Not Found County in an FormTypeSignees update attempt.", "FormTypeSignees", "Error");
+                return new StatusCodeResult(500);
+            }
+
+            var currentSignees = await _soilDataContext.FormTypeSignees
+                                    .Where( s =>  s.PlanningUnit == CurrentCountyCode)
+                                    .ToListAsync();
+            _soilDataContext.FormTypeSignees.RemoveRange(currentSignees);
+            _soilDataContext.FormTypeSignees.AddRange(signees.signees);
+            _soilDataContext.SaveChanges();
+            return new OkObjectResult(signees);
+        }
+
 
 
         [HttpGet("addresses/{countyid?}")]
@@ -165,5 +252,35 @@ namespace Kers.Controllers
             return new OkObjectResult(notes);
         }
 
+        [HttpGet("signeesByCounty/{countyid?}")]
+        public async Task<IActionResult> SigneesByCounty(int countyid = 0){
+            if( countyid == 0 ){
+                countyid = this.CurrentUser().RprtngProfile.PlanningUnitId;
+            }
+            var CurrentCountyCode = await this._soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == countyid).FirstOrDefaultAsync();
+            if( CurrentCountyCode == null) return new StatusCodeResult(500);
+            var FormTypes = this._soilDataContext.TypeForm.OrderBy( t => t.Code).ToListAsync();
+            var signeesPerCounty = new List<FormTypeSignees>();
+            foreach( var type in await FormTypes){
+                var signee = await _soilDataContext.FormTypeSignees
+                                    .Where( s => s.TypeForm == type && s.PlanningUnit == CurrentCountyCode)
+                                    .FirstOrDefaultAsync();
+                if(signee != null ){
+                    signeesPerCounty.Add(signee);
+                }else{
+                    var empty = new FormTypeSignees();
+                    empty.PlanningUnit = CurrentCountyCode;
+                    empty.TypeForm = type;
+                    signeesPerCounty.Add( empty );
+                }
+            }
+            return new OkObjectResult(signeesPerCounty);
+        }
+
+    }
+
+
+    public class SigneesObject{
+        public List<FormTypeSignees> signees;
     }
 }

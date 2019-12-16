@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
+import { FormTypeSignees, SoilReportBundle } from './soildata.report';
 
 @Injectable({
   providedIn: 'root'
@@ -74,6 +75,36 @@ export class SoildataService {
             .pipe(
                 catchError(this.handleError('notes by county', []))
             );
+      }
+
+      updateSignees(signees:Object, countId:number = 0):Observable<FormTypeSignees[]>{
+        var url = this.baseUrl + 'updateSignees/' + countId;
+        return this.http.post<FormTypeSignees[]>(this.location.prepareExternalUrl(url), signees)
+                .pipe(
+                    catchError(this.handleError('update signees', []))
+                );
+      }
+
+      signeesByCounty(id:number = 0):Observable<FormTypeSignees[]>{
+        var url = this.baseUrl + "signeesByCounty/"+id;
+        return this.http.get<FormTypeSignees[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('Form Type Signees by County', []))
+            );
+      }
+      getCustom(searchParams?:{}):Observable<SoilReportBundle[]>{
+        var url = this.baseUrl + "GetCustom/";
+        return this.http.get<SoilReportBundle[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustom', []))
+            );
+      }
+      private addParams(params:{}){
+        let searchParams = {};
+        for(let p in params){
+            searchParams[p] = params[p];
+        }
+        return  {params: searchParams};
       }
 
 }
