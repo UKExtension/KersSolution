@@ -9,8 +9,10 @@ import { SoilReportBundle } from '../soildata.report';
     <td *ngIf="default">{{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }}</td>
     <td *ngIf="default" class="text-right"><a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil"></i> review</a><a class="btn btn-info btn-xs"><i class="fa fa-download"></i> pdf</a></td>
     <td *ngIf="edit" colspan="4">
-      <div>
+      <div class="row">
+        <div class="col-xs-12">
           <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+        </div>
       </div>
       <soildata-report-form [report]="report"></soildata-report-form>
     </td>

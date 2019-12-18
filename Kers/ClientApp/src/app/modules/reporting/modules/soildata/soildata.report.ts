@@ -73,9 +73,9 @@ export class SoilReport{
 
 export class TestResults{
     id:number;
-    priveIndex:string;
+    priveIndex:number;
     labNum:string;
-    order:string;
+    order:number;
     testName:string;
     unit:string;
     result:string;

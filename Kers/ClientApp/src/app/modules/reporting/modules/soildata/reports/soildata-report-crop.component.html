@@ -1,0 +1,124 @@
+<h2><a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
+  <i class="fa fa-plus-square" *ngIf="!condition"></i> {{crop.cropInfo1}}
+</a></h2>
+<div *ngIf="condition"><br>
+
+  <h2>Crop Info</h2>
+  <div *ngIf="crop.cropInfo1 != undefined && crop.cropInfo1 != ''" class="crop-comment">
+    {{crop.cropInfo1}}
+  </div>
+  <div *ngIf="crop.cropInfo2 != undefined && crop.cropInfo2 != ''" class="crop-comment">
+    {{crop.cropInfo2}}
+  </div>
+  <div *ngIf="crop.cropInfo3 != undefined && crop.cropInfo3 != ''" class="crop-comment">
+    {{crop.cropInfo3}}
+  </div>
+  <div *ngIf="crop.cropInfo4 != undefined && crop.cropInfo4 != ''" class="crop-comment">
+    {{crop.cropInfo4}}
+  </div>
+  <div *ngIf="crop.cropInfo5 != undefined && crop.cropInfo5 != ''" class="crop-comment">
+    {{crop.cropInfo5}}
+  </div>
+  <div *ngIf="crop.cropInfo6 != undefined && crop.cropInfo6 != ''" class="crop-comment">
+    {{crop.cropInfo6}}
+  </div>
+  <div *ngIf="crop.cropInfo7 != undefined && crop.cropInfo7 != ''" class="crop-comment">
+    {{crop.cropInfo7}}
+  </div>
+  <div *ngIf="crop.cropInfo8 != undefined && crop.cropInfo8 != ''" class="crop-comment">
+    {{crop.cropInfo8}}
+  </div>
+  <div *ngIf="crop.cropInfo9 != undefined && crop.cropInfo9 != ''" class="crop-comment">
+    {{crop.cropInfo9}}
+  </div>
+  <div *ngIf="crop.cropInfo10 != undefined && crop.cropInfo10 != '' && crop.cropInfo10 != 'N/A'" class="crop-comment">
+    {{crop.cropInfo10}}
+  </div>
+  <div *ngIf="crop.cropInfo11 != undefined && crop.cropInfo11 != ''" class="crop-comment">
+    {{crop.cropInfo11}}
+  </div>
+  
+  <br>
+  <h2>Test Results</h2>
+
+
+  <table class="table table-bordered table-stripped">
+    <thead>
+      <tr>
+        <th>Test Name</th>
+        <th>Result</th>
+        <th>Level</th>
+        <th>Recomendation</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let labResult of testResults | async">
+        <td>{{labResult.testName}}</td>
+        <td>{{(labResult.result == undefined ? '': labResult.result) + (labResult.unit == '%' ? '' : ' ') + (labResult.unit == undefined ? '':labResult.unit)}}</td>
+        <td>{{labResult.level}}</td>
+        <td>{{labResult.recommmendation}}</td>
+        <td>{{labResult.suppInfo1}}</td>
+      </tr>
+    </tbody>
+  </table>
+<br>
+  <h2>Comments</h2>
+  <div *ngIf="crop.comment1 != undefined && crop.comment1 != ''" class="crop-comment">
+    {{crop.comment1}}
+  </div>
+  <div *ngIf="crop.comment2 != undefined && crop.comment2 != ''" class="crop-comment">
+    {{crop.comment2}}
+  </div>
+  <div *ngIf="crop.comment3 != undefined && crop.comment3 != ''" class="crop-comment">
+    {{crop.comment3}}
+  </div>
+  <div *ngIf="crop.comment4 != undefined && crop.comment4 != ''" class="crop-comment">
+    {{crop.comment4}}
+  </div>
+  <div *ngIf="crop.comment5 != undefined && crop.comment5 != ''" class="crop-comment">
+    {{crop.comment5}}
+  </div>
+  <div *ngIf="crop.comment6 != undefined && crop.comment6 != ''" class="crop-comment">
+    {{crop.comment6}}
+  </div>
+  <div *ngIf="crop.comment7 != undefined && crop.comment7 != ''" class="crop-comment">
+    {{crop.comment7}}
+  </div>
+  <div class="ln_solid"></div>
+  <loading *ngIf="loading"></loading>
+  <div class="row" *ngIf="!loading">
+    <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="noteForm">
+        <div class="col-sm-8 col-md-9">
+            <h2>Agent Note</h2>
+        </div>
+        <div class="col-sm-4 col-md-3">
+          <select class="form-control pull-right" (change)="onNoteChange($event.target.value)">
+            <option value="">-- Note Templates --</option>
+            <option *ngFor="let note of notes | async" [value]="note.note">{{note.name}}</option>
+          </select>
+        </div>
+      
+        <div class="form-group">           
+          <div class="col-xs-12">
+              <textarea name="note" formControlName="note" id="note" class="form-control col-xs-12"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12">
+                <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                <button type="submit" [disabled]="noteForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+        <div class="ln_solid"></div>
+      </form>
+  </div>
+
+
+
+
+</div>
+
+
+
+

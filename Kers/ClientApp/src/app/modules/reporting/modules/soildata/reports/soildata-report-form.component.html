@@ -1,3 +1,29 @@
-<p>
-  soildata-report-form works!
-</p>
+<h2>Soil Test Sample Submitted on {{report.sampleLabelCreated | date:'mediumDate'}}</h2>
+<div class="row">
+  <div class="col-sm-6">
+    <strong>{{report.typeForm.name}}</strong><br>
+    Lab Tests Performed: {{report.labTestsReady | date:'mediumDate'}}<br>
+    Data Analysis: {{report.dataProcessed | date:'mediumDate'}}
+  </div>
+  <div class="col-sm-6">
+    <strong>Farmer:</strong><br>
+    <div *ngIf="report.farmerForReport != null">
+      {{report.farmerForReport.first}} {{report.farmerForReport.last}}<br>
+      {{report.farmerForReport.address}}<br>
+      {{report.farmerForReport.city}}, {{report.farmerForReport.state}} {{report.farmerForReport.zip}}
+      <br><br>
+      <a class="btn btn-info btn-xs">change</a>
+    </div>
+    <div *ngIf="report.farmerForReport == null">
+      <br>
+      <a class="btn btn-info btn-xs">add</a>
+    </div>
+    
+  </div>
+</div><br><br>
+<h3>Crop(s)</h3>
+<div class="row">
+  <div class="col-xs-12" *ngFor="let crop of report.reports">
+    <soildata-report-crop [crop]="crop"></soildata-report-crop>
+  </div>
+</div>

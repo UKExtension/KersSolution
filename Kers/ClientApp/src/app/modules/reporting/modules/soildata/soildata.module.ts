@@ -17,6 +17,8 @@ import { MyDatePickerModule } from 'mydatepicker';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { SoildataReportsCatalogDetailsComponent } from './reports/soildata-reports-catalog-details.component';
 import { SoildataReportFormComponent } from './reports/soildata-report-form.component';
+import { SoildataReportCropComponent } from './reports/soildata-report-crop.component';
+import { SoildataReportLabResulsComponent } from './reports/soildata-report-lab-resuls.component';
 
 
 
@@ -34,7 +36,9 @@ import { SoildataReportFormComponent } from './reports/soildata-report-form.comp
   SoildataReportsComponent,
   SoildataReportsCatalogComponent,
   SoildataReportsCatalogDetailsComponent,
-  SoildataReportFormComponent],
+  SoildataReportFormComponent,
+  SoildataReportCropComponent,
+  SoildataReportLabResulsComponent],
   imports: [
     SharedModule,
     MyDatePickerModule,

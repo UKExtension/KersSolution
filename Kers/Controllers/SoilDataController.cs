@@ -90,7 +90,8 @@ namespace Kers.Controllers
             bundles = bundles
                         .Include( b => b.Reports)
                         .Include( b => b.FarmerForReport)
-                        .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus);
+                        .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                        .Include( b => b.TypeForm);
             return new OkObjectResult(bundles.OrderBy(t => t.DataProcessed));
         }
 
@@ -241,6 +242,17 @@ namespace Kers.Controllers
                                     ToListAsync();
             return new OkObjectResult(addresses);
         }
+
+        [HttpGet("labResults/{reportId}")]
+        [Authorize]
+        public async Task<IActionResult> labResults(int reportId){
+            var results = await _soilDataContext.TestResults
+                                    .Where(a => a.PrimeIndex == reportId)
+                                    .OrderBy( a => a.Order)
+                                    .ToListAsync();
+            return new OkObjectResult(results);
+        }
+
         [HttpGet("notesByCounty/{countyid?}")]
         public async Task<IActionResult> NotesByCounty(int countyid = 0){
             if( countyid == 0 ){

@@ -12,6 +12,7 @@ export class SoildataReportFormComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log(this.report);
   }
 
 }

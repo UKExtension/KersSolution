@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import { FormTypeSignees, SoilReportBundle } from './soildata.report';
+import { FormTypeSignees, SoilReportBundle, TestResults } from './soildata.report';
 
 @Injectable({
   providedIn: 'root'
@@ -92,6 +92,14 @@ export class SoildataService {
                 catchError(this.handleError('Form Type Signees by County', []))
             );
       }
+      labResults(reportId:number):Observable<TestResults[]>{
+        var url = this.baseUrl + "labResults/"+reportId;
+        return this.http.get<TestResults[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('Lab Data Results', []))
+            );
+      }
+
       getCustom(searchParams?:{}):Observable<SoilReportBundle[]>{
         var url = this.baseUrl + "GetCustom/";
         return this.http.get<SoilReportBundle[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
