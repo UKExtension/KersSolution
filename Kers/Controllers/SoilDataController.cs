@@ -96,7 +96,7 @@ namespace Kers.Controllers
         }
 
         private async void UpdateBundles(){
-            SoilReport OrphanedReport = await _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefaultAsync();
+            SoilReport OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
             if( OrphanedReport != null ){
                 do{
                     var SameSample = await _soilDataContext.SoilReport
