@@ -1,0 +1,34 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    var fy = FiscalYear.Name;
+    if(ViewData["Title"] == null){
+        ViewData["Title"] = "Succcess Stouries";
+    }
+    ViewData["Title"] += " of Faculty for FY" + FiscalYear.Name;
+    ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");
+    
+
+}
+@model List<Kers.Models.ViewModels.StoryViewModel>
+
+@foreach( var story in Model){
+
+<P style="page-break-before: always"> 
+<h3>@story.Title</h3>
+<p><strong>Fiscal Year: </strong><a 
+                                    >@fy</a></p>
+        <p><strong>Author: </strong><a>@story.KersUser.PersonalProfile.FirstName @story.KersUser.PersonalProfile.LastName</a></p>
+        <p><strong>Planning Unit: </strong><a>@story.PlanningUnit.Name</a></p>
+        <p><strong>Major Program: </strong><a 
+                                    >@story.MajorProgram.Name</a></p>
+                                    
+        
+        <environment names="Development">
+            <div class="fr-view">@Html.Raw(@story.Story)</div>
+        </environment>
+        <environment names="Staging,Production">
+            <div class="fr-view">@Html.Raw(@story.Story.Replace("fileuploads", "/fileuploads"))</div>
+        </environment>
+</P>
+}

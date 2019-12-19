@@ -19,8 +19,6 @@ export class Training extends ExtensionEvent{
     iHourId?:number;
     iHour:TainingInstructionalHour;
     seatLimit?:number;
-    tLocation:string;
-    tTime:string;
     day1:string;
     day2:string;
     day3:string;
@@ -31,6 +29,10 @@ export class Training extends ExtensionEvent{
     qualtricsSurveyID:string;
     evaluationLink:string;
     createdDateTime:Date;
+    sessions: TrainingSession[];
+    trainingSession: TrainingSession[];
+    trainingSessionWithTimes:TrainingSession[];
+    etimezone:boolean;
 }
 
 export class TainingRegisterWindow{
@@ -61,9 +63,34 @@ export class TrainingEnrollment{
     attendie:User;
     attendieId:number;
     trainingId:string;
+    training: Training;
     eStatus:string;
     enrolledDate:Date;
     cancelledDate:Date;
     attended?:boolean;
     evaluationMessageSent?:boolean;
 }
+
+export class TrainingSearchCriteria{
+    start: string;
+    end: string;
+    search: string = "";
+    status: string;
+    contacts: string = "";
+    day?: number;
+    order: string = 'dsc';
+    withseats: boolean = false;
+    attendance: boolean = false;
+    admin: boolean = false;
+  }
+
+  export class TrainingSession{
+      id:number;
+      date: Date | Object;
+      starttime:string;
+      endtime:string;
+      note:string;
+      index:number;
+      start:string;
+      end:string;
+  }

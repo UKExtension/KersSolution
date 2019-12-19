@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Kers.Models.Abstract;
 using Kers.Models.Repositories;
+using System.Text;
 
 namespace Kers.Controllers.Reports
 {
@@ -42,6 +43,94 @@ namespace Kers.Controllers.Reports
         {
             ViewData["fy"] = fy;
             return View();
+        }
+        
+        [HttpGet]
+        [Route("qltrx")]
+        public IActionResult Qualtrics(string title = "", string id = "", string dates = "")
+        {
+            var contents = "[[AdvancedFormat]]\n\n[[Question:Text]]\n" + 
+                            "Cooperative Extension In-Service Training Evaluation <br /><br />" + title +
+                            "[" + id + "] <br /><br />" +
+                            dates + "\n\n" +
+                            "[[Question:Matrix]]\n"+
+                            "The Content:\n"+
+                            "[[Choices]]\n"+
+                            "Was relevant to my needs.\n"+
+                            "Was well organized.\n"+
+                            "Was adequately related to the topic.\n"+
+                            "Was easy to understand.\n"+
+                            "[[AdvancedAnswers]]\n"+
+                            "[[Answer]]\n"+
+                            "Strongly Disagree\n"+
+                            "[[Answer]]\n"+
+                            "Disagree\n"+
+                            "[[Answer]]\n"+
+                            "Neutral\n"+
+                            "[[Answer]]\n"+
+                            "Agree\n"+
+                            "[[Answer]]\n"+
+                            "Strongly Agree\n"+
+                            "\n"+
+                            "[[Question:Matrix]]\n"+
+                            "The Instructor(s):\n"+
+                            "[[Choices]]\n"+
+                            "Were well-prepared.\n"+
+                            "Used teaching methods appropriate for the content/audience.\n"+
+                            "Was knowledgeable of the subject matter.\n"+
+                            "Engaged the participants in learning.\n"+
+                            "Related program content to practical situations.\n"+
+                            "Answered questions clearly and accurately.\n"+
+                            "[[AdvancedAnswers]]\n"+
+                            "[[Answer]]\n"+
+                            "Strongly Disagree\n"+
+                            "[[Answer]]\n"+
+                            "Disagree\n"+
+                            "[[Answer]]\n"+
+                            "Neutral\n"+
+                            "[[Answer]]\n"+
+                            "Agree\n"+
+                            "[[Answer]]\n"+
+                            "Strongly Agree\n"+
+                            "\n"+
+                            "[[Question:Matrix]]\n"+
+                            "Outcomes:\n"+
+                            "[[Choices]]\n"+
+                            "I gained knowledge/skills about the topics presented.\n"+
+                            "I will use what I learned in my county program.\n"+
+                            "This information will help my program move to the next level.\n"+
+                            "Based on the in-service, I am now able to teach this topic to others.\n"+
+                            "[[AdvancedAnswers]]\n"+
+                            "[[Answer]]\n"+
+                            "Strongly Disagree\n"+
+                            "[[Answer]]\n"+
+                            "Disagree\n"+
+                            "[[Answer]]\n"+
+                            "Neutral\n"+
+                            "[[Answer]]\n"+
+                            "Agree\n"+
+                            "[[Answer]]\n"+
+                            "Strongly Agree\n"+
+                            "\n"+
+                            "[[Question:TE]]\n"+
+                            "Based on this in-service, what are two things that you are encouraged to do within the next month?\n"+
+                            "\n"+
+                            "[[Question:TE]]\n"+
+                            "Based on this in-service, what are two things that you are encouraged to do within the next six (6) months?\n"+
+                            "\n"+
+                            "[[Question:TE]]\n"+
+                            "If you have a program related to this topic, what do you think will help take it to the next level (i.e., achieve higher level impact)?\n"+
+                            "\n"+
+                            "[[Question:TE]]\n"+
+                            "Please provide any additional comments about this training.\n"+
+                            "\n"+
+                            "[[Question:TE]]\n"+
+                            "Please provide any comments about the instructor or any additional instructors/presenters.\n"+
+                            "\n";
+
+
+            return Content(contents);
+
         }
 
         [HttpGet]

@@ -1,0 +1,121 @@
+<br><br>
+<h3>Budget Plan</h3>
+<br><br>
+<div id="wizard" class="form_wizard wizard_horizontal">
+    <ul class="wizard_steps anchor">
+        <li>
+            <a (click)="setStep(1)" [ngClass]="{'selected': step==1, 'disabled':step!=1}" isdone="1" rel="1">
+                <span class="step_no">1</span>
+                <span class="step_descr">Revenues<br><small></small></span>
+            </a>
+        </li>
+        <li>
+            <a (click)="setStep(2)" [ngClass]="{'selected': step==2, 'disabled':step!=2}" isdone="0" rel="2">
+                <span class="step_no">2</span>
+                <span class="step_descr">Personnel<br><small></small></span>
+            </a>
+        </li>
+        <li>
+            <a (click)="setStep(3)" [ngClass]="{'selected': step==3, 'disabled':step!=3}" isdone="0" rel="3">
+                <span class="step_no">3</span>
+                <span class="step_descr">Travel<br><small>& Program Support</small></span>
+            </a>
+        </li>
+        <li>
+            <a (click)="setStep(4)" [ngClass]="{'selected': step==4, 'disabled':step!=4}" isdone="0" rel="4">
+                <span class="step_no">4</span>
+                <span class="step_descr">Operations<br><small></small></span>
+            </a>
+        </li>
+        <li>
+            <a (click)="setStep(5)" [ngClass]="{'selected': step==5, 'disabled':step!=5}" isdone="0" rel="5">
+                <span class="step_no">5</span>
+                <span class="step_descr">Reserves<br><small></small></span>
+            </a>
+        </li>
+
+    </ul>
+    <div style="margin: 25px 50px;">
+        <form class="form-horizontal form-label-left" [formGroup]="budgetForm" (ngSubmit)="onSubmit()">
+            <div id="step-1" class="content"  [hidden]="step!=1">
+                <h3>Anticipated Income</h3>
+                <h2>Calculation of anticipated net income if county has an Extension Taxing District</h2><br><br>
+                <revenue-form-component [budgetForm]="budgetForm"></revenue-form-component>     
+            </div>
+            <div id="step-2" class="content" [hidden]="step!=2">
+                <h3 class="StepTitle">Personnel</h3>
+                <personel-form formControlName="budgetPlanStaffExpenditures"></personel-form>
+            </div>
+            <div id="step-3" class="content" [hidden]="step!=3">
+                <h3>Travel, 
+                Professional Improvement, 
+                Program Support</h3>
+                <div class="form-group" formArrayName="travelExpenses"><br>
+                    <h2>Travel</h2><br>
+                    <div class="col-xs-12">
+                        <div *ngFor="let userDefinedIncome of travelExpenses.controls; let i=index" class="form-group">
+                            <budget-travel-expenses [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [formControlName]="i"></budget-travel-expenses>
+                        </div>
+                        <a class="btn btn-info btn-xs" (click)="addTravelExpenditure()" style="margin-top: 8px;"> + add </a>
+                    </div>
+                    
+                </div>
+        </div>
+        <div id="step-4" class="content" *ngIf="step==4">
+                <h3>Office Operations</h3>
+                <p></p>
+                <office-operations formControlName="officeOperationValues" name="officeOperations"></office-operations>
+        </div>
+        <div id="step-5" class="content" [hidden]="step!=5">
+            <h3 class="StepTitle">Reserves</h3>
+            <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Reserve
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="number" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Capital Imp Fund
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="number" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Equipment Fund
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="number" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="first-name">Anticipated Carryover
+                    </label>
+                    <div class="col-md-6 col-sm-7 col-xs-6">
+                    <input type="number" class="form-control col-md-3 col-xs-6">
+                    </div>
+                </div>
+        
+        </div>
+        <div class="actionBar">
+            <div class="msgBox">
+                <div class="content"></div>
+                <a href="#" class="close">X</a></div>
+                <div class="loader">Loading</div>
+                <!-- <a class="buttonFinish buttonDisabled btn btn-default">Finish</a>-->
+                <a class="buttonPrevious btn btn-info" [class.buttonDisabled]="step<2" (click)="decreaseStep()">Previous</a>
+                <a class="buttonNext btn btn-info" [class.buttonDisabled]="step>4" (click)="increaseStep()">Next</a>
+                
+            </div>
+                
+        <div class="ln_solid"></div>
+            <div class="form-group">
+                <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3 col-md-offset-2">
+                    <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                    <button type="submit" [disabled]="budgetForm.invalid"  class="btn btn-success">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

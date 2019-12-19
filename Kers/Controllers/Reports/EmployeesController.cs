@@ -1,38 +1,16 @@
-using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Kers.Models.Repositories;
 using Kers.Models.Entities.KERScore;
-using Kers.Models.Entities.KERSmain;
 using Kers.Models.Abstract;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using Kers.Models.Entities;
 using Kers.Models.Contexts;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Distributed;
-using Kers.Models.ViewModels;
-using Microsoft.Extensions.Caching.Memory;
-using Kers.Models.Data;
 using Microsoft.Extensions.Configuration;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
-using System.Web;
-using System.Net;
-using System.Data.SqlClient;
-using System.Xml.Linq;
-using System.IO;
-using CsvHelper;
-using Kers.Models.Entities.UKCAReporting;
+using Kers.Models.ViewModels;
+using Kers.Models.Data;
 
 namespace Kers.Controllers.Reports
 {
@@ -51,6 +29,30 @@ namespace Kers.Controllers.Reports
         private FiscalYear currentFiscalYear;
 
         private IConfiguration _configuration;
+
+        string[] faculty = new string[] {
+                "daaron", "enad222", "aaadam3", "aad244", "saad232", "ctande2", "damaral", "landerso", "darchbol", "lmbi222",
+                "marthur", "ebailey", "abailey", "baba225", "aec137", "mbarrett", "barton", "sbastin", "arbe243", "rbessin",
+                "wlboat1", "dbolin","cbr269", "dbr239", "pbrid2", "rmbrow00", "ubryant", "scbu225", "dbullock", "kburdine", "fccama2",
+                "jhca235", "cncart4", "lmca222", "rca253", "tmcham1", "ckchow", "rcoffey", "rcoleman", "collivr", "elmars2", "tconners", "mco248", "rfcook1", "jjcox2", "mscoyn00", "ncranksh",
+                "evcr224", "crofche", "mjcr236", "edangelo", "adreum2", "tdda229", "sdebo2", "cdillon", "sdobson", "adownie", "wdunwell", "rdurham", "jdv223", "rmdwye2", "pdyk", "hetliz", "dedward", "dely",
+                "rep222", "eer222", "aes225", "kdfl224", "wiford2", "wfountai", "cfox", "dfresh", "clgask2", "nwa232", "rgeneve",
+                "djgo227", "mgoodin", "ktgraves", "jdgreen", "jgrove", "agu227", "bhain2", "kgrick2", "dlhale00", "gshali2", "jhans2", "erha235",
+                "raharg0", "dharmon", "rharris", "rwharr00", "mdhaye3", "khaynes", "cjheath", "gheersch", "crhe249", "bhennig", "jhenning",
+                "dhild", "rlhi227", "mbrum2", "dwhoro2", "jaberr0", "rhoutz", "dkhowe2", "aghunt00", "jhunter", "rhusted", "dingram", "sisaacs",
+                "jjjack3", "vpwick0", "yljack2", "klja223", "jgjane2", "krjone3", "apkach2", "pk62", "dwka224", "tska223", "tka234", "lakenn4",
+                "hkim3", "camurp2", "jko234", "afhosi2", "jkurzyns","knyo224", "mlacki", "llawrenc", "bdle222", "bdlee2", "cdlee2", "mlee6", "trle233",
+                "jwle222", "jmlhot2", "mdlind1","atloyn2", "ylu232", "jnmacl2", "tbmark0", "cjmato2", "jmatthew", "lmaynard", "rlmccu2", "kmcd", "jmmc259", "kmcleod", "dhmcne2", "smcneill",
+                "rme247", "almeye2", "rdmiller", "kspill", "arabad2", "lmo225", "montross", "mnewman", "jtietyen", "gcmuns0",
+                "pdnagy2", "mkni223", "snokes", "hlno222", "jobry2", "tooc222", "rpalli", "rpearce", "sperr2", "apescato", "mpe277", "tpfeiffe", "epf222", "jph235", "tphillip", "jpl225", "hjpo223",
+                "dapotter", "mpotter","sjpr223", "mapurs2", "mrreed", "wre232", "gkrent2", "lri244", "lrieske", "krign2", "jringe",
+                "elritc2", "ccri226", "cmro267", "dbro223", "mgross2", "jro225", "reru228", "reru226", "shsagh2", "aasa238", "msa293", "mpsama2",
+                "csa233", "schardl", "rrsc223", "jksc222", "akschw2", "rascot0", "acse223", "twsh226", "lsh237", "clshaf2", "cbsh232", "jsh278",
+                "jmshoc2","rcfi223", "jasmal3","hdf002", "srsmitd", "wsnell", "snyder", "msp238", "sdst245", "tjhann00", "tss", "cjst223",
+                "jstrang", "stringer", "spsuma2", "jrsw222", "zsy224", "ktanaka", "nmte222", "cdteut0", "ptimoney", "ttobin", "mhtr222", "otsyu2", "mlturn0", "junri2", "klur222", "avail2", "vaillan", "dvs", "evanzant",
+                "ava233", "ppvi223", "rtvi223", "pvincell", "skvinc2", "jlwahr2", "bawebb", "oowend2", "rjwern2", "tawe223", "scwesl2", "jawh222", "dwilliam",
+                "mawillia", "kwi283", "woodch", "nwo222", "tawoods", "ylxiong", "jya246", "lyuan3", "pzh227", "zyu232", "xnzh222", "hzhu4", "jzimm"
+            };
 
         string[] types = new string[]{ "District Reports", "Planning Unit Report", "KSU" };
         public EmployeesController( 
@@ -81,36 +83,7 @@ namespace Kers.Controllers.Reports
         [Route("")]
         public IActionResult Index()
         {
-            //List<zInServiceTrainingCatalog> inServices = this.trainingRepo.csv2list().Take(10).ToList();
-
-            //var inServices = reportingContext.zInServiceTrainingCatalog.Where(s => true).OrderByDescending(r => r.rID);
-            //ViewData["trainings"] = inServices;
-            //var trainings = this.trainingRepo.InServicesToTrainings(inServices.Skip(300).Take(10).ToList());
-            //this.context.Training.AddRange(trainings);
-            //this.context.SaveChanges();
-
-
-/* 
-            //Update Users timezones based on the timezone of their county
-
-
-            var cnts = context.PlanningUnit.Where( u => u.TimeZoneId != null);
-            foreach( var cnt in cnts){
-                var usrs = context.KersUser
-                    .Where( u => u.RprtngProfile.enabled == true && u.RprtngProfile.PlanningUnit == cnt)
-                    .Include( u => u.PersonalProfile);
-                foreach( var usr in usrs){
-                    usr.PersonalProfile.TimeZoneId = cnt.TimeZoneId;
-                }
-            }
-
-            context.SaveChanges();
-
-
- */
-
-            //var indctrs = this.moveIndicators("2020", "2019");
-            //var strs = this.moveStories("2020", "2019");
+            
 
 
             /* 
@@ -201,6 +174,164 @@ namespace Kers.Controllers.Reports
             return strs;
         }
 
+
+        [HttpGet]
+        [Route("facultydata/{year?}")]
+        public async Task<IActionResult> FacultyData(string year = "2019")
+        {
+            
+
+
+            var fiscalYear = this.GetFYByName(year);
+            ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
+
+
+
+
+
+            //var data = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End, 4, 0);
+
+            var data = new List<PerGroupActivities>();
+
+
+            var Contacts = context.Contact
+                                .Where( a =>    a.ContactDate < fiscalYear.End && a.ContactDate > fiscalYear.Start 
+                                                &&
+                                                faculty.Contains(a.KersUser.RprtngProfile.LinkBlueId))
+                                .GroupBy( a => a.KersUserId)
+                                .Select( c => new {
+                                                Ids = c.Select(s => s.Id).ToList(),
+                                                UserID = c.Key
+                                            }
+                                );
+
+
+            foreach( var contactGroup in Contacts ){
+                var GroupRevisions = new List<ContactRevision>();
+                var OptionNumbersValues = new List<IOptionNumberValue>();
+                var RaceEthnicities = new List<IRaceEthnicityValue>();
+                foreach( var rev in contactGroup.Ids){
+                
+                    var lstrvsn = context.ContactRevision.
+                                Where(r => r.ContactId == rev).
+                                Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
+                                Include(a => a.ContactRaceEthnicityValues).
+                                OrderBy(a => a.Created).LastOrDefault();
+                    if(lstrvsn != null ){
+                        GroupRevisions.Add(lstrvsn);
+                    }
+                    OptionNumbersValues.AddRange(lstrvsn.ContactOptionNumbers);
+                    RaceEthnicities.AddRange(lstrvsn.ContactRaceEthnicityValues);
+                }
+                var actvts = new PerGroupActivities();
+                actvts.RaceEthnicityValues = RaceEthnicities;
+                actvts.OptionNumberValues = OptionNumbersValues;
+                actvts.Hours = GroupRevisions.Sum( r => r.Days) * 8;
+                actvts.Audience = GroupRevisions.Sum( r => r.Male) + GroupRevisions.Sum( r => r.Female);
+                actvts.Male = GroupRevisions.Sum( r => r.Male);
+                actvts.Female = GroupRevisions.Sum( r => r.Female);
+                actvts.GroupId = contactGroup.UserID;
+                actvts.Multistate = GroupRevisions.Sum(r => r.Multistate) * 8;
+                data.Add(actvts);
+            }
+
+
+
+
+            var table = new TableViewModel();
+            table.Header = new List<string>{
+                                "Planning Unit", "LinkBlueId", "Employee", "Days", "Multistate", "Total Contacts"
+                            };
+
+            var Races = this.context.Race.OrderBy(r => r.Order);
+            var Ethnicities = this.context.Ethnicity.OrderBy( e => e.Order);
+            var OptionNumbers = this.context.ActivityOptionNumber.OrderBy( n => n.Order);
+            foreach( var race in Races){
+                table.Header.Add(race.Name);
+            }
+            foreach( var ethn in Ethnicities){
+                table.Header.Add(ethn.Name);
+            }
+            table.Header.Add("Male");
+            table.Header.Add("Female");
+            foreach( var opnmb in OptionNumbers){
+                table.Header.Add(opnmb.Name);
+            }
+            table.Header.Add("Success Stories Count");
+            var Rows = new List<List<string>>();
+
+
+            foreach( var d in data){
+                var user = await this.context.KersUser.Where(u => u.Id == d.GroupId)
+                                .Include( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
+                                .FirstOrDefaultAsync();
+                if( user != null && faculty.Contains(user.RprtngProfile.LinkBlueId) ){
+                    var row = new List<string>();
+                    row.Add(user.RprtngProfile.PlanningUnit.Name);
+                    row.Add( user.RprtngProfile.LinkBlueId);
+                    row.Add( user.RprtngProfile.Name);
+                    row.Add( (d.Hours / 8 ).ToString());
+                    row.Add( (d.Multistate / 8 ).ToString());
+                    row.Add( d.Audience.ToString());
+                    foreach( var race in Races){
+                        var raceAmount = d.RaceEthnicityValues.Where( v => v.RaceId == race.Id).Sum( r => r.Amount);
+                        row.Add(raceAmount.ToString());
+                    }
+                    foreach( var et in Ethnicities){
+                        var ethnAmount = d.RaceEthnicityValues.Where( v => v.EthnicityId == et.Id).Sum( r => r.Amount);
+                        row.Add(ethnAmount.ToString());
+                    }
+                    row.Add(d.Male.ToString());
+                    row.Add(d.Female.ToString());
+                    foreach( var opnmb in OptionNumbers){
+                        var optNmbAmount = d.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
+                        row.Add( optNmbAmount.ToString());
+                    }
+                    row.Add( context.Story.Where(s => s.KersUser == user && s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear).Count().ToString() );
+                    Rows.Add(row);
+                }
+            }
+            table.Rows = Rows;
+            table.Foother = new List<string>();
+            return View(table);
+        }
+
+
+        [HttpGet]
+        [Route("facultystories/{year?}")]
+        public async Task<IActionResult> FacultyStories(string year = "2019")
+        {
+            var fiscalYear = this.GetFYByName(year);
+            ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
+            var stories = new List<StoryViewModel>();
+            foreach( var LinkBlueId in faculty){
+                var user = await this.context.KersUser.Where( r => r.RprtngProfile.LinkBlueId == LinkBlueId).FirstOrDefaultAsync();
+                if( user != null){
+                    var userStories =  await this.context.Story
+                                        .Where( s => s.KersUser == user && s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear)
+                                        .Include( s => s.Revisions)
+                                        .Include( s => s.MajorProgram)
+                                        .Include( s => s.PlanningUnit)
+                                        .Include( s => s.KersUser).ThenInclude( u => u.PersonalProfile)
+                                        .ToListAsync();
+                    foreach( var story in userStories ){
+                        var storyModel = new StoryViewModel();
+                        storyModel.KersUser = user;
+                        storyModel.MajorProgram = story.MajorProgram;
+                        storyModel.PlanningUnit = story.PlanningUnit;
+                        storyModel.StoryId = story.Id;
+                        var lastRevision = story.Revisions.OrderBy( s => s.Created).Last();
+                        storyModel.Story = lastRevision.Story;
+                        storyModel.Title = lastRevision.Title;
+                        storyModel.Updated = lastRevision.Created;
+                        stories.Add( storyModel);
+                    }
+                }
+            }
+            return View(stories);
+        }
 
         [HttpGet]
         [Route("expenses/{districtid?}/{month?}/{year?}")]

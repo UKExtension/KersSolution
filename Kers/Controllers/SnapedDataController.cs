@@ -121,6 +121,21 @@ namespace Kers.Controllers
              return Ok(snapDirectRepo.SitesPerPersonPerMonth(fiscalYear));
         }
 
+        //audienceagecategory
+        [HttpGet]
+        [Route("audienceagecategory/{fy}/data.csv")]
+        [Authorize]
+        public IActionResult AudienceAgeCategory(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+             return Ok(snapDirectRepo.AudienceAgeCategory(fiscalYear));
+        }
+
 
         [HttpGet]
         [Route("specificsitenamesbymonth/{fy}/data.csv")]

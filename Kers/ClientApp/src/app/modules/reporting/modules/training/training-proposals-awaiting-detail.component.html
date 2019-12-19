@@ -8,7 +8,12 @@
       <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
   </div>
   <div *ngIf="edit">
-   <training-form [training]="training" (onFormSubmit)="editSubmitted($event)" (onFormCancel)="defaultView()"></training-form>
+      <ng-container *ngIf="training.trainingSession.length == 0">
+          <training-form [training]="training" (onFormCancel)="default()" (onFormSubmit)="editSubmitted($event)"></training-form>
+      </ng-container>
+      <ng-container *ngIf="training.trainingSession.length > 0">
+          <training-form-sessions [training]="training" (onFormCancel)="default()" (onFormSubmit)="editSubmitted($event)"></training-form-sessions>
+      </ng-container>
   </div>
   <div *ngIf="delete">
       Delete

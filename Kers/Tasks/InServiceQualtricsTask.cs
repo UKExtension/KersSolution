@@ -31,7 +31,7 @@ namespace Kers.Tasks
         ){
             this.serviceProvider = serviceProvider;
         }
-        public string Schedule => "52 1 * * *";
+        public string Schedule => "37 17 * * *";
         
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -47,13 +47,30 @@ namespace Kers.Tasks
                     var trainings = new List<vInServiceQualtricsSurveysToCreate>();
                     var data = "";
                     var _configuration = scope.ServiceProvider.GetService<IConfiguration>();
+
+
+
+                    var trnngs = context.Training
+                                .Where( t => t.qualtricsSurveyID == null
+                                                &&
+                                                t.Start > new DateTime(2017,01,01,0, 0, 0, 0)
+                                                &&
+                                                t.Start < DateTimeOffset.Now
+                                                &&
+                                                t.tStatus == "A"
+                                                )
+                                .Include( t => t.submittedBy).ThenInclude( s => s.RprtngProfile);
+
+
+/* 
+
                     var optionsBuilder = new DbContextOptionsBuilder<KersReportingContext>();
                     optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:connKersReporting"]);
 
                     using (var contexReporting = new KersReportingContext(optionsBuilder.Options))
                     {
                         trainings = contexReporting.vInServiceQualtricsSurveysToCreate.ToList();
-
+ */
                         var qualtricsApiHost = _configuration["QualtricsApi:sApiHost"];
                         var qualtricsUser = _configuration["QualtricsApi:sUser"];
                         var qualtricsToken = _configuration["QualtricsApi:sToken"];
@@ -63,10 +80,15 @@ namespace Kers.Tasks
                         var qualtricsActivate = _configuration["QualtricsApi:sActivate"];
                         var client = new HttpClient();
                         
-                        foreach( var training in trainings ){
+                        foreach( var training in trnngs ){
 
-                            string sSurveyURL = "https://kers.ca.uky.edu/CES/rpt/zQualtricsInServiceEvaluationSurveyText.aspx?t=" + training.tID;
-
+                            string sSurveyURL = "https://kers.ca.uky.edu/core/reports/Data/qltrx?title=" +
+                                                    HttpUtility.UrlEncode(training.Subject) +
+                                                    "&id=" + training.Id +
+                                                    "&dates=" + HttpUtility.UrlEncode(training.Start.ToString("MM/dd/yyyy") +
+                                                    (training.End != null ? " - " +training.End?.ToString("MM/dd/yyyy") : "")); //title/id/dates
+                            //"https://kers.ca.uky.edu/CES/rpt/zQualtricsInServiceEvaluationSurveyText.aspx?t=" + training.Id;
+ 
                             String url = qualtricsApiHost
                             + "Request=importSurvey"
                             + "&User=" + HttpUtility.UrlEncode(qualtricsUser)
@@ -75,7 +97,7 @@ namespace Kers.Tasks
                             + "&Version=" + qualtricsVersion
                             + "&ImportFormat=" + qualtricsImportFormat
                             + "&Activate=" + qualtricsActivate
-                            + "&Name=" + HttpUtility.UrlEncode(training.qualtricsTitle)
+                            + "&Name=" + HttpUtility.UrlEncode(training.Start.ToString("yyyyMMdd")+" ["+training.submittedBy.RprtngProfile.Name+"] "+training.Subject)
                             + "&URL=" + HttpUtility.UrlEncode(sSurveyURL);
                             
                             try
@@ -88,12 +110,8 @@ namespace Kers.Tasks
                                     {
                                         xmlDoc = XDocument.Parse(data);
                                         String surveyID = xmlDoc.Root.Element("Result").Value;
-                                        var commandText = "UPDATE [UKCA_Reporting]..[zInServiceTrainingCatalog] SET qualtricsSurveyID = @p1 WHERE rID = @p2";;
-                                        var surveyParameter = new SqlParameter("@p1", surveyID);
-                                        var trainingParameter = new SqlParameter("@p2", training.tID);
-                                        contexReporting.Database.ExecuteSqlCommand(commandText, parameters: new[] {
-                                                                                                        surveyParameter, trainingParameter
-                                                                                    });
+                                        training.qualtricsSurveyID = surveyID;
+
                                     }
                                     catch (Exception e)
                                     {
@@ -109,10 +127,10 @@ namespace Kers.Tasks
                                     "InServiceQualtricsTask", e, 
                                     "InService Qualtrics Task failed"
                                 );    
-                            }
+                            } 
                         }
-                    }
-
+                   // }
+                    context.SaveChanges();
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
                                     "InServiceQualtricsTask", data, 
@@ -147,3 +165,4 @@ namespace Kers.Tasks
     }
 
 }
+

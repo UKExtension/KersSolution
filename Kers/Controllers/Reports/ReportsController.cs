@@ -135,7 +135,7 @@ namespace Kers.Controllers.Reports
             DateTime ago = DateTime.Now.AddMonths(-2);
             var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month, id );
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
-            var TopPrograms = await activityRepo.TopProgramsPerMonth( 0, 0, 5, id );
+            var TopPrograms = await activityRepo.TopProgramsPerFiscalYear( fiscalYear, 5, id );
             ViewData["TopPrograms"] = TopPrograms;
             var sum = TopPrograms.Sum( a => a.DirectContacts );
             ViewData["TopProgramsAudienceSum"] = sum;

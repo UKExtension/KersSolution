@@ -12,7 +12,7 @@ export class TrainingAdminReportsComponent implements OnInit {
   trainings:Training[];
   years:number[] = [];
   thisYear:number;
-  loading = false;
+  loading = true;
 
   status='act';
 
@@ -45,8 +45,8 @@ export class TrainingAdminReportsComponent implements OnInit {
     this.service.trainingsbystatus(this.thisYear, stts).subscribe(
       res => {
         this.trainings = res;
-        this.loading = false;
         this.calculate();
+        this.loading = false;
       }
     );
   }

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import {Training, TainingRegisterWindow, TainingInstructionalHour, TrainingCancelEnrollmentWindow} from './training'
+import {Training, TainingRegisterWindow, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TrainingEnrollment} from './training'
 import { User } from '../user/user.service';
 
 @Injectable({
@@ -148,11 +148,11 @@ export class TrainingService {
                 catchError(this.handleError('add', <Training>{}))
             );
       }
-      enroll( training:Training ):Observable<Training>{
+      enroll( training:Training ):Observable<TrainingEnrollment>{
         var url = this.baseUrl + "enroll/" + training.id;
-        return this.http.post<Training>(this.location.prepareExternalUrl(url), training)
+        return this.http.post<TrainingEnrollment>(this.location.prepareExternalUrl(url), training)
           .pipe(
-              catchError(this.handleError('enroll', <Training>{}))
+              catchError(this.handleError('enroll', <TrainingEnrollment>{}))
           );
       }
       unenroll( training:Training ):Observable<Training>{
@@ -164,7 +164,6 @@ export class TrainingService {
       }
       delete(id:number):Observable<{}>{
         var url = this.baseUrl + 'deletetraining/' + id;
-        console.log(id);
         return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('delete'))
@@ -173,6 +172,13 @@ export class TrainingService {
 
       update(id:number, training:Training):Observable<Training>{
         var url = this.baseUrl + 'updatetraining/' + id;
+        return this.http.put<Training>(this.location.prepareExternalUrl(url), training)
+                .pipe(
+                    catchError(this.handleError('update', training))
+                );
+      } 
+      updateSessions(id:number, training:Training):Observable<Training>{
+        var url = this.baseUrl + 'updatesessionstraining/' + id;
         return this.http.put<Training>(this.location.prepareExternalUrl(url), training)
                 .pipe(
                     catchError(this.handleError('update', training))

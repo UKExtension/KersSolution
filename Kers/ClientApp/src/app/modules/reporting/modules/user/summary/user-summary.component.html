@@ -99,7 +99,7 @@
 
 
 <h2>CES IN-SERVICE ENROLLMENT</h2>
-<fiscal-year-switcher *ngIf="user" [initially]="'current'" [showNext]="false" (onSwitched)="inServiceFiscalYearSwitched($event)"></fiscal-year-switcher><br>
+<fiscal-year-switcher *ngIf="user" [initially]="'previous'" [isItFiscal]="false" [showNext]="false" (onSwitched)="inServiceFiscalYearSwitched($event)"></fiscal-year-switcher><br>
 <div class="table-responsive" *ngIf="inServiceEnrolment">
     <table class="table table-bordered table-striped" *ngIf="inServiceEnrolment.length == 0">
         <tbody>
@@ -116,13 +116,10 @@
                     Training Date
                 </th>
                 <th>
-                    ID
+                    Attended
                 </th>
                 <th>
                     Hours
-                </th>
-                <th>
-                    Attended
                 </th>
                 <th>
                     Title
@@ -138,25 +135,22 @@
         <tbody>
             <tr *ngFor="let enr of inServiceEnrolment">
                 <td align="left" style="white-space:nowrap;">
-                   {{enr[0]}}
-                </td>
-                <td align="right" style="white-space:nowrap;">
-                    {{enr[1]}}
-                </td>
-                <td align="center">
-                    {{enr[2]}}
+                   {{enr.training.start | date:shortDate}}
                 </td>
                 <td align="center" style="white-space:nowrap;">
-                    {{enr[3]}}
+                    {{enr.attended == true ? "Yes" : "No"}}
+                </td>
+                <td align="center">
+                    {{enr.training.iHour.iHourValue}}
                 </td>
                 <td align="left">
-                    {{enr[4]}}
+                    {{enr.training.subject}}
                 </td>
                 <td align="left">
-                    {{enr[5]}}
+                    {{enr.training.tLocation}}
                 </td>
                 <td align="left">
-                    {{enr[6]}}
+                    {{enr.training.day1}}
                 </td>
             </tr>
             <tr>
@@ -165,7 +159,7 @@
                 </td>
                 <td align="center">
                     {{hoursAttended}}
-                </td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                </td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
             </tr>
         </tbody>
     </table>

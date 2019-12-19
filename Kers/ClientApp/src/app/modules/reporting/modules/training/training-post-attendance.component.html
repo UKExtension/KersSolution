@@ -1,34 +1,3 @@
-<h3>Post Attendance</h3>
-<div class="row">
-  <div class="col-sm-6 col-xs-12" class="form-inline" style="margin-top: 3px;">
-    
-    <div class="form-group col-sm-6 col-xs-12" style="margin-bottom: 8px;">
-      <label for="exampleInputName2">Select Calendar Year: &nbsp;</label>
-      <select class="form-control" (change)="onYearChange($event.target.value)">
-        <option *ngFor="let year of years" [value]="year" [selected]="year == thisYear">{{year}}</option>
-      </select>
-    </div>
-    
-    
-      
-  </div>
-  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-  </div>
-
-</div>
+<app-training-catalog [attendance]="true" [startDate]="start" [endDate]="end"></app-training-catalog>
 
 
-
-<div class="table-responsive">
-  <table  class="table table-bordered table-striped" *ngIf="trainings">
-    <thead>
-        <tr>
-            <th>Training Date(s)</th>
-            <th>Hours</th>
-            <th>Title</th>
-            <th>&nbsp;</th>
-        </tr>
-    </thead>
-    <tr *ngFor="let training of trainings | async" [training-post-attendance-detail]="training"></tr>
-  </table>
-</div>

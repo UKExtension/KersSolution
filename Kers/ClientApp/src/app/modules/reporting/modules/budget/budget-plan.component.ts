@@ -1,22 +1,25 @@
 import { Component, OnInit } from '@angular/core';
+import {BudgetService, BudgetPlanOfficeOperation} from './budget.service';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-budget-plan',
+  selector: 'budget-plan',
   templateUrl: './budget-plan.component.html',
-  styles: [`
-  .form_wizard ul li{
-    cursor: pointer;
-  }
-  `]
+  styles: []
 })
 export class BudgetPlanComponent implements OnInit {
 
 
-  step = 1;
+  
 
-  constructor() { }
+  constructor(
+    
+  ) { 
+
+  }
 
   ngOnInit() {
+    
   }
 
 }

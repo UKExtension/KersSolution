@@ -208,6 +208,8 @@ namespace Kers.Controllers
             return "-1";
         }
 
+
+
         public static bool IsInternetExplorer(string userAgent) {
             if(userAgent.Contains("MSIE")) {
                 return true;

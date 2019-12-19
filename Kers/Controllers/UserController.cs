@@ -31,6 +31,7 @@ namespace Kers.Controllers
         private IMembershipService _service;
         private IDistributedCache _cache;
         IFiscalYearRepository fiscalYearRepo;
+        ITrainingRepository trainingRepository;
         private int DefaultNumberOfItems{
             get
             {
@@ -43,13 +44,15 @@ namespace Kers.Controllers
                                 KERScoreContext _context,
                                 IDistributedCache _cache,
                                 IMembershipService _service,
-                                IFiscalYearRepository fiscalYearRepo
+                                IFiscalYearRepository fiscalYearRepo,
+                                ITrainingRepository trainingRepository
                             ){
             this._mContext = _mContext;
             this._context = _context;
             this._service = _service;
             this._cache = _cache;
             this.fiscalYearRepo = fiscalYearRepo;
+            this.trainingRepository = trainingRepository;
         }
 
         [HttpGet()]
@@ -454,6 +457,25 @@ namespace Kers.Controllers
             return new OkObjectResult(await users.ToListAsync());
         }
 
+        [HttpGet("unitemployees/{unitId}")]
+        [Authorize]
+        public async Task<IActionResult> UnitEmployees(int unitId = 0){
+
+            if( unitId == 0){
+                var user = await this._context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == this.CurrentUserId())
+                                    .Include( u => u.RprtngProfile).FirstOrDefaultAsync();
+                if( user == null) return new StatusCodeResult(500);
+                unitId = user.RprtngProfile.PlanningUnitId;
+            }
+
+            var users = this._context.KersUser.Where( u => u.RprtngProfile.PlanningUnitId == unitId)
+                                .Include(u => u.RprtngProfile)
+                                .Include( u => u.PersonalProfile)
+                                .Include( u => u.ExtensionPosition)
+                                .Include( u => u.Specialties).ThenInclude( s => s.Specialty);
+            return new OkObjectResult(await users.ToListAsync());
+        }
+
 
 
         [HttpGet("InServiceEnrolment/{userId?}/{fy?}")]
@@ -481,6 +503,11 @@ namespace Kers.Controllers
             var data = result.Content.ReadAsStringAsync().Result;
 
             return new OkObjectResult(data);
+        }
+
+        [HttpGet("TrainingsEnrolment/{userId}/{year}")]
+        public IActionResult TrainingsEnrolment(int userId, int year = 2019){
+            return new OkObjectResult(trainingRepository.trainingsPerPersonPerYear(userId, year));
         }
 
 

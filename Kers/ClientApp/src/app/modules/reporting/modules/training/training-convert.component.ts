@@ -17,11 +17,12 @@ export class TrainingConvertComponent implements OnInit {
   trainings: Training[] = [];
   convertAllClicked = false;
   convertedItemIndex=0;
+  amount = 500;
 
   constructor(
     private service:TrainingService
   ) { 
-    this.services$ = service.getServices();
+    this.services$ = service.getServices(this.amount);
   }
 
   ngOnInit() {
@@ -41,6 +42,13 @@ export class TrainingConvertComponent implements OnInit {
   convertAll(){
     this.convertAllClicked = true;
     this.items[0].convert()
+  }
+  reload(){
+    this.items = [];
+    this.trainings = [];
+    this.convertAllClicked = false;
+    this.convertedItemIndex=0;
+    this.services$ = this.service.getServices(this.amount);
   }
 
 }

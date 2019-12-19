@@ -57,7 +57,6 @@ namespace Kers.Models.Entities.KERScore
         /// The type of location. The possible values are: default, conferenceRoom, homeAddress, businessAddress,geoCoordinates, streetAddress, hotel, restaurant, localBusiness, postalAddress. Read-only.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "locationType", Required = Newtonsoft.Json.Required.Default)]
-        [Column(TypeName = "nvarchar(24)")]
         public ExtensionEventLocationType? LocationType { get; set; }
     
         /// <summary>

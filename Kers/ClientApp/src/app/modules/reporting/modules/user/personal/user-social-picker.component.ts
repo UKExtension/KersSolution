@@ -4,9 +4,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
   selector: 'social-picker',
   template: `
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{selectedLabel}} <span class="caret"></span>
+            <button type="button" (click)="menuOpen = !menuOpen" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{selectedLabel}} <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-right" role="menu" *ngIf="connectionTypes">
+            <ul class="dropdown-menu dropdown-menu-right" role="menu" *ngIf="connectionTypes" [ngStyle]="{'display': menuOpen ? 'block':'none'}">
                 <li *ngFor="let type of connectionTypes" (click)="selectedConnection(type)"><a ><span class="fa {{type.icon}}" aria-hidden="true"></span> {{type.name}}</a></li>
             </ul>
   `,
@@ -27,6 +27,8 @@ export class UserSocialPickerComponent implements ControlValueAccessor, OnInit {
 
   selectedLabel = "Select Social Media ";
 
+  menuOpen = false;
+
   ngOnInit(){
       this.selectedLabel = "Select Social Media ";
   }
@@ -35,6 +37,7 @@ export class UserSocialPickerComponent implements ControlValueAccessor, OnInit {
         this.selectedLabel = type.name;
         this._value = type.id;
         this.propagateChange(type.id);
+        this.menuOpen = false;
   }
 
   writeValue(value: any) {

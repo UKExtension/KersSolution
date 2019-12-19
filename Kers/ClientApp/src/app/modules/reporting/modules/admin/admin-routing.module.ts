@@ -2,6 +2,7 @@ import { NgModule }             from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import {ReportingAdminHomeComponent} from './reportin-admin-home.component';
+import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
 
 @NgModule({
   imports: [RouterModule.forChild([
@@ -11,18 +12,22 @@ import {ReportingAdminHomeComponent} from './reportin-admin-home.component';
      },
      {
           path: 'roles', 
+          canActivate: [RolesAuthGuard],
           loadChildren: './roles/roles.module#RolesModule'      
       },
       {
           path: 'users', 
+          canActivate: [RolesAuthGuard],
           loadChildren: './users/users.module#UsersModule'      
       },
       {
           path: 'navigation', 
+          canActivate: [RolesAuthGuard],
           loadChildren: './navigation/navigation.module#NavigationModule'      
       },
       {
           path: 'fiscalyear', 
+          canActivate: [RolesAuthGuard],
           loadChildren: './fiscalyear/fiscalyear.module#FiscalyearModule'      
       },
       {
@@ -43,6 +48,7 @@ import {ReportingAdminHomeComponent} from './reportin-admin-home.component';
       },
       {
           path: 'log', 
+          canActivate: [RolesAuthGuard],
           loadChildren: './log/log.module#LogModule'      
       }
       ,

@@ -38,6 +38,8 @@ import { UserReportingFormComponent } from '../modules/user/reporting/user-repor
 import { FiscalYearSwitcherComponent } from './components/fiscal-year-switcher.component';
 import { ImageUploadComponent } from './form-controls/image-upload.component';
 import { MonthSwitcherComponent } from './components/month-switcher.component';
+import {CopyClipboardDirective} from './directives/copy-clipboard.directive';
+import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
 
 
 
@@ -65,7 +67,9 @@ import { MonthSwitcherComponent } from './components/month-switcher.component';
                   SafeHtmlPipe,
                   FiscalYearSwitcherComponent,
                   MonthSwitcherComponent,
-                  ImageUploadComponent 
+                  ImageUploadComponent ,
+                  CopyClipboardDirective,
+                  TimeFormat
                 ],
   exports:      [ 
       CommonModule, 
@@ -85,7 +89,9 @@ import { MonthSwitcherComponent } from './components/month-switcher.component';
       SelectModule,
       FiscalYearSwitcherComponent,
       MonthSwitcherComponent,
-      ImageUploadComponent 
+      ImageUploadComponent,
+      CopyClipboardDirective,
+      TimeFormat
  ]
 })
 export class SharedModule { }

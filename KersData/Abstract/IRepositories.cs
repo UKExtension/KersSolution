@@ -24,6 +24,7 @@ namespace Kers.Models.Abstract
         List<zInServiceTrainingCatalog>  csv2list(string fileUrl = "database/trainingsData.csv");
         List<Training> InServicesToTrainings(List<zInServiceTrainingCatalog> services);
         Training ServiceToTraining( zInServiceTrainingCatalog service);
+        List<TrainingEnrollment> trainingsPerPersonPerYear( int userId, int year);
      }
     public interface  IInitiativeRepository : IEntityBaseRepository<StrategicInitiative> {
         Task<List<ProgramIndicatorSumViewModel>> IndicatorSumPerMajorProgram(int MajorProgramId );
@@ -103,7 +104,7 @@ namespace Kers.Models.Abstract
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}
     public interface IMessageRepository: IEntityBaseRepository<Message>{
         List<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment);
-        Task<bool> ScheduleTrainingMessage(string type, Training training, KersUser To, DateTimeOffset? ScheduledFor = null);
+        bool ScheduleTrainingMessage(string type, Training training, KersUser To, DateTimeOffset? ScheduledFor = null);
     }
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
         FiscalYear currentFiscalYear(string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false);
@@ -126,6 +127,7 @@ namespace Kers.Models.Abstract
         string EstimatedSizeofAudiencesReached(FiscalYear fiscalYear, Boolean refreshCache = false);
         string IndirectByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
         string SessionTypebyMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string AudienceAgeCategory(FiscalYear fiscalYear, Boolean refreshCache = false);
         
     }
 

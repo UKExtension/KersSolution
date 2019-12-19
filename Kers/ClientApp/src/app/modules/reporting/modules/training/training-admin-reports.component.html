@@ -30,7 +30,8 @@
 
 
 <div class="table-responsive">
-    <table  class="table table-bordered table-striped" *ngIf="trainings">
+    <loading *ngIf="loading"></loading>
+    <table  class="table table-bordered table-striped" *ngIf="trainings && !loading">
       <thead>
           <tr>
               <th>Title</th>
@@ -60,6 +61,6 @@
         </tr>
       </tfoot>
     </table>
-    <loading *ngIf="loading"></loading>
+    
   </div>
   

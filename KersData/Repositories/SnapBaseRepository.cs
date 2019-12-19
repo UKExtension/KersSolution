@@ -74,20 +74,20 @@ namespace Kers.Models.Repositories
                     }      
                     SnapData.Add(data);
                 }
-/* 
+ 
                 var serializedData = JsonConvert.SerializeObject(SnapData);
                 _cache.SetString(cacheKeyData, serializedData, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(3)
                     });
- */
+
 
             }
             return SnapData;
         }
 
         protected List<int> LastActivityRevisionIds( FiscalYear fiscalYear ){
-            var cacheKey = CacheKeys.ActivityLastRevisionIdsPerFiscalYear + fiscalYear.Name;
+            var cacheKey = CacheKeys.ActivityLastRevisionIdsPerFiscalYear + fiscalYear.Name + fiscalYear.Type;
             var cacheString = _cache.GetString(cacheKey);
             List<int> ids;
             if (!string.IsNullOrEmpty(cacheString)){

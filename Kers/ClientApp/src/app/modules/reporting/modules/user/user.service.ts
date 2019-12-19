@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { Vehicle } from '../expense/vehicle/vehicle.service';
+import {TrainingEnrollment} from '../training/training';
 
 
 @Injectable()
@@ -90,6 +91,14 @@ export class UserService {
         return this.http.get(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('InServiceEnrolment', <User>{}))
+            );
+    }
+
+    trainingsEnrolment(id:number, year:number):Observable<TrainingEnrollment[]>{
+        var url = this.baseUrl + "TrainingsEnrolment/" + id + "/" + year;
+        return this.http.get<TrainingEnrollment[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('InServiceEnrolment', []))
             );
     }
 
@@ -216,6 +225,14 @@ export class UserService {
         return this.http.get<{}|null>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('personIdExists'))
+            );
+    }
+
+    unitEmployees( unitId:number = 0):Observable<User[]>{
+        var url = this.baseUrl + "unitemployees/" + unitId;
+        return this.http.get<User[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('unitEmployees', [] ))
             );
     }
     private addParams(params:{}){

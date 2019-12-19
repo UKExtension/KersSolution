@@ -140,6 +140,12 @@ namespace Kers.Models.Entities.KERScore
         /// The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 would look like this: '2014-01-01T00:00:00Z'
         /// </summary>
         public DateTimeOffset? LastModifiedDateTime { get; set; }
+        
+        [StringLength(200)]
+        public string tContact { get; set; }
+
+        [StringLength(300)]
+        public string tLocation { get; set; }
 
         public string DiscriminatorValue {
             get {

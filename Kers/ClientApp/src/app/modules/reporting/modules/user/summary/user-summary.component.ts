@@ -1,14 +1,15 @@
 import { Component, Input } from '@angular/core';
 import {Location} from '@angular/common';
-import { ActivatedRoute, Router, Params } from "@angular/router";
+import { ActivatedRoute, Params } from "@angular/router";
 
 import { Observable } from "rxjs/Observable";
 import { User, UserService } from "../user.service";
-import { Activity, ActivityService } from "../../activity/activity.service";
+import { Activity } from "../../activity/activity.service";
 import { Story, StoryService } from "../../story/story.service";
 import { ReportingService } from "../../../components/reporting/reporting.service";
 import { ExpenseService, ExpenseSummary } from "../../expense/expense.service";
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
+import { TrainingEnrollment } from '../../training/training';
 
 
 @Component({
@@ -53,7 +54,7 @@ export class UserSummaryComponent {
     latestStories:Observable<Story[]>;
     latestActivities:Observable<Activity[]>;
     expenseSummaries: Observable<ExpenseSummary[]>;
-    inServiceEnrolment;
+    inServiceEnrolment:TrainingEnrollment[];
     expenseFiscalYear:FiscalYear = null;
     hoursAttended = 0;
 
@@ -65,9 +66,7 @@ export class UserSummaryComponent {
         private reportingService: ReportingService,
         private location:Location,
         private route: ActivatedRoute,
-        private router: Router,
         private service: UserService,
-        private activityService: ActivityService,
         private expenseService: ExpenseService,
         private storyService: StoryService,
     )   
@@ -85,26 +84,13 @@ export class UserSummaryComponent {
                 {
                     this.user = user;
                     
-                    
-                    
-                    
-                    
-                    
                     this.reportingService.setSubtitle(this.user.personalProfile.firstName + " " +this.user.personalProfile.lastName);
                     this.reportingService.setTitle("Employee Summary");
                     if(this.user.personalProfile && this.user.personalProfile.uploadImage){
                         this.profilePicSrc = this.location.prepareExternalUrl('/image/crop/250/250/' + this.user.personalProfile.uploadImage.uploadFile.name);
                     }
-
-                    
-
-
             }
         )
-                    
-                   
-
-
     }
 
 
@@ -125,7 +111,7 @@ export class UserSummaryComponent {
         return new Date(dateString).toLocaleString("en-us", { month: "long" });
     }
 
-    externalUrl(url){
+    externalUrl(url:string){
         return this.location.prepareExternalUrl(url);
     }
 
@@ -139,6 +125,20 @@ export class UserSummaryComponent {
     }
 
     inServiceFiscalYearSwitched(event:FiscalYear){
+        this.inServiceEnrolment = null;
+        this.service.trainingsEnrolment(this.user.id, +event.name).subscribe(
+            res => {
+
+                this.inServiceEnrolment = res;
+                this.hoursAttended = 0;
+                for( let el of this.inServiceEnrolment){
+                    if(el.attended) this.hoursAttended += el.training.iHour.iHourValue;
+                }
+            }
+        )
+
+
+/* 
         this.service.InServiceEnrolment(this.user.id, event.name).subscribe(
             res => {
                 this.inServiceEnrolment = res;
@@ -149,6 +149,7 @@ export class UserSummaryComponent {
             },
             err => this.errorMessage = <any>err
         )
+         */
     }
 
     ngOnDestroy(){

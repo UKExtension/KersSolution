@@ -28,7 +28,7 @@ export class BudgetAuthGuard implements CanActivate, CanActivateChild {
   }
 
   checkRole(roles:string[]):Observable<boolean>{
-    return this.userService.currentUserHasAnyOfTheRoles(["SRVCTRNR"]).pipe(
+    return this.userService.currentUserHasAnyOfTheRoles(roles).pipe(
       tap(
         res => {
           if( ! res ){

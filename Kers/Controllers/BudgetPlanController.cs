@@ -51,13 +51,48 @@ namespace Kers.Controllers
             return new OkObjectResult(list.OrderBy( o => o.Order));
         }
 
+
+        [HttpPost("budget")]
+        [Authorize]
+        public IActionResult AddBudgetPlan( [FromBody] BudgetPlan plan){
+            if(plan != null){
+                this.context.BudgetPlan.Add(plan);
+                //this.context.SaveChanges();
+                this.Log(plan,"BudgetPlan", "BudgetPlan Added.");
+                return new OkObjectResult(plan);
+            }else{
+                this.Log( plan,"BudgetPlanOfficeOperation", "Error in adding Budget Plan Office Operation attempt.", "ExtensionEvent", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+        [HttpPut("budget/{id}")]
+        [Authorize]
+        public IActionResult UpdateOfficeOperation( int id, [FromBody] BudgetPlanRevision plan){
+            var pln = this.context.BudgetPlanRevision.Find(id);
+            if(pln != null ){
+                
+                
+                this.context.SaveChanges();
+
+                this.Log(plan,"BudgetPlan", "BudgetPlan Updated.");
+                
+                return new OkObjectResult(pln);
+            }else{
+                this.Log( plan ,"BudgetPlan", "Not Found BudgetPlan in an update attempt.", "BudgetPlanOfficeOperation", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
         [HttpPost()]
         [Authorize]
         public IActionResult AddOfficeOperation( [FromBody] BudgetPlanOfficeOperation officeOperation){
             if(officeOperation != null){
                 this.context.BudgetPlanOfficeOperation.Add(officeOperation);
                 this.context.SaveChanges();
-                return new OkObjectResult(officeOperation);
+                this.Log(officeOperation,"BudgetPlanOfficeOperation", "BudgetPlanOfficeOperation Added.");
+                return new OkObjectResult(officeOperation); 
             }else{
                 this.Log( officeOperation,"BudgetPlanOfficeOperation", "Error in adding Budget Plan Office Operation attempt.", "ExtensionEvent", "Error");
                 return new StatusCodeResult(500);
@@ -75,133 +110,13 @@ namespace Kers.Controllers
                 operation.Order = officeOperation.Order;
                 this.context.SaveChanges();
 
-                this.Log(officeOperation,"ExtensionEvent", "ExtensionEvent Updated.");
+                this.Log(officeOperation,"BudgetPlanOfficeOperation", "BudgetPlanOfficeOperation Updated.");
                 
                 return new OkObjectResult(officeOperation);
             }else{
                 this.Log( officeOperation ,"BudgetPlanOfficeOperation", "Not Found BudgetPlanOfficeOperation in an update attempt.", "BudgetPlanOfficeOperation", "Error");
                 return new StatusCodeResult(500);
             }
-        }
-
-
-
-
-
-
-
-/* 
-        [HttpGet]
-        [Route("range/{skip?}/{take?}/{order?}/{type?}")]
-        public virtual IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
-        {
-            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.End != null && t.DiscriminatorValue == type);
-            
-            if(order == "end"){
-                query = query.OrderByDescending(t => t.End);
-            }else if( order == "created"){
-                query = query.OrderByDescending(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderByDescending(t => t.Start);
-            }
-             
-            query = query.Skip(skip).Take(take);
-            query = query
-                        .Include( e => e.Organizer)
-                        .ThenInclude( o => o.PersonalProfile);
-            var list = query.ToList();
-            return new OkObjectResult(list);
-        }
-
-
-        [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]
-        [Authorize]
-        public virtual IActionResult PerPeriod(DateTime start, DateTime end, string order = "start", string type = "Training" ){
-            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.Start > start && t.Start < end && t.DiscriminatorValue == type);
-            
-            if(order == "end"){
-                query = query.OrderByDescending(t => t.End);
-            }else if( order == "created"){
-                query = query.OrderByDescending(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderByDescending(t => t.Start);
-            }
-             
-
-            var list = query.ToList();
-            return new OkObjectResult(list);
-        }
-
-
-        [HttpPost()]
-        [Authorize]
-        public IActionResult AddExtensionEvent( [FromBody] object ExEvent){
-            if(ExEvent != null){
-                
-                return new OkObjectResult(ExEvent);
-            }else{
-                this.Log( ExEvent,"ExtensionEvent", "Error in adding extension event attempt.", "ExtensionEvent", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
-
-
-
-        [HttpPut("{id}")]
-        [Authorize]
-        public IActionResult UpdateExtensionEvent( int id, [FromBody] ExtensionEvent ExEvent){
-           
-
-
-            if(ExEvent != null ){
-                
-                this.Log(ExEvent,"ExtensionEvent", "ExtensionEvent Updated.");
-                
-                return new OkObjectResult(ExEvent);
-            }else{
-                this.Log( ExEvent ,"ExtensionEvent", "Not Found ExtensionEvent in an update attempt.", "ExtensionEvent", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
-
-        [HttpDelete("{id}")]
-        [Authorize]
-        public IActionResult DeleteExtensionEvent( int id ){
-            var entity = context.ExtensionEvent.Find(id);
-            
-            
-            if(entity != null){
-                
-                context.ExtensionEvent.Remove(entity);
-                context.SaveChanges();
-                
-                this.Log(entity,"ExtensionEvent", "ExtensionEvent Removed.");
-
-                return new OkResult();
-            }else{
-                this.Log( id ,"ExtensionEvent", "Not Found ExtensionEvent in a delete attempt.", "ExtensionEvent", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
-
-
-
-
-
-
-
-
- */
-
-
-
-
-        
-
-        
-        public IActionResult Error()
-        {
-            return View();
         }
 
 

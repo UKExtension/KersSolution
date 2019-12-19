@@ -2,6 +2,7 @@ import { NgModule }             from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { EmailHomeComponent } from './email-home.component';
 import { EmailTemplateComponent } from './email-template.component';
+import { RolesAuthGuard } from '../../../shared/auth/roles-auth.guard';
 
 
 
@@ -13,6 +14,7 @@ import { EmailTemplateComponent } from './email-template.component';
       },
       {
         path: 'templates',
+        canActivate: [RolesAuthGuard],
         component: EmailTemplateComponent
       }
              

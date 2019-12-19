@@ -108,8 +108,15 @@ namespace Kers.Models.Contexts
         /***************************************/
         //  Budget Plan
         /***************************************/
-
         public virtual DbSet<BudgetPlanOfficeOperation> BudgetPlanOfficeOperation {get;set;}
+        public virtual DbSet<BudgetPlan> BudgetPlan {get;set;}
+        public virtual DbSet<BudgetPlanRevision> BudgetPlanRevision {get;set;}
+        public virtual DbSet<BudgetPlanOfficeOperationValue> BudgetPlanOfficeOperationValue {get;set;}
+        public virtual DbSet<BudgetPlanProfessionalImprovementExpenses> BudgetPlanProfessionalImprovementExpense {get;set;}
+        public virtual DbSet<BudgetPlanStaffExpenditure> BudgetPlanStaffExpenditure {get;set;}
+        public virtual DbSet<BudgetPlanStaffType> BudgetPlanStaffType {get;set;}
+        public virtual DbSet<BudgetPlanTravelExpenses> BudgetPlanTravelExpense {get;set;}
+        public virtual DbSet<BudgetPlanUserDefinedIncome> BudgetPlanUserDefinedIncome {get;set;}
         
         /***************************************/
         //  Service Log
@@ -186,10 +193,12 @@ namespace Kers.Models.Contexts
         public virtual DbSet<ExtensionEvent> ExtensionEvent {get;set;}
         public virtual DbSet<ExtensionEventGeoCoordinates> ExtensionEventGeoCoordinates {get;set;}
         public virtual DbSet<ExtensionEventLocation> ExtensionEventLocation {get;set;}
+        public virtual DbSet<ExtensionEventLocationConnection> ExtensionEventLocationConnection {get;set;}
         public virtual DbSet<ExtensionEventPatternedRecurrence> ExtensionEventPatternedRecurrence {get;set;}
         public virtual DbSet<ExtensionEventRecurrencePattern> ExtensionEventRecurrencePattern {get;set;}
         public virtual DbSet<ExtensionEventRecurrenceRange> ExtensionEventRecurrenceRange {get;set;}
         public virtual DbSet<PhysicalAddress> PhysicalAddress {get;set;}
+        public virtual DbSet<Meeting> Meeting {get;set;}
 
         /***************************************/
         //  Extension InService Training
@@ -203,13 +212,12 @@ namespace Kers.Models.Contexts
         
 
         /***************************************/
-        //  Scheduled Tasks
+        //  County Events
         /***************************************/
-        /* public virtual DbSet<TaskOperation> TaskOperation {get;set;}
-        public virtual DbSet<TaskPerformed> TaskPerformed {get;set;}
-        public virtual DbSet<TaskRecurringSchedule> TaskRecurringSchedule {get;set;}
-        public virtual DbSet <TaskSchedule> TaskSchedule {get;set;}
- */
+        public virtual DbSet<CountyEvent> CountyEvent {get;set;}
+        public virtual DbSet<CountyEventPlanningUnit> CountyEventPlanningUnit {get;set;}
+        public virtual DbSet<CountyEventProgramCategory> CountyEventProgramCategory {get;set;}
+
         /***************************************/
         //  General
         /***************************************/
@@ -217,15 +225,28 @@ namespace Kers.Models.Contexts
         public virtual DbSet<Message> Message {get; set;}
         public virtual DbSet<MessageTemplate> MessageTemplate {get; set;}
         public virtual DbSet<FiscalYear> FiscalYear {get;set;}
+        public virtual DbSet<ExtensionArea> ExtensionArea {get;set;}
+        public virtual DbSet<ExtensionRegion> ExtensionRegion {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /* 
+            modelBuilder.Entity<ExtensionEvent>()
+                .HasOne( e => e.Organizer)
+                .WithMany( u => u.Events);
+            modelBuilder.Entity<Training>()
+                .HasOne( e => e.submittedBy)
+                .WithMany( u => u.SubmittedTrainins);
+            modelBuilder.Entity<Training>()
+                .HasOne( e => e.approvedBy)
+                .WithMany( u => u.ApprovedTrainings);
+                
             modelBuilder.Entity<CountyEventPlanningUnit>()
                 .HasKey(t => new { t.CountyEventId, t.PlanningUnitId });
             
             modelBuilder.Entity<CountyEventProgramCategory>()
                 .HasKey(t => new { t.CountyEventId, t.ProgramCategoryId });
-            
+             */
             modelBuilder.Entity<Story>()
                 .Property(b => b.HasImages)
                 .HasDefaultValue(false);

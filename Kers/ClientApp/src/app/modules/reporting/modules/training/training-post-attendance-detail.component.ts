@@ -15,12 +15,16 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   default = true;
   post = false;
   loading = false;
+  enrolledFolks: TrainingEnrollment[];
+  moreInfo = false;
+  coppied = false;
 
   constructor(
     private service:TrainingService
   ) { }
 
   ngOnInit() {
+    this.enrolledFolks = this.training.enrollment.filter( e => e.eStatus == "E").sort((a, b) => a.attendie.rprtngProfile.name.localeCompare(b.attendie.rprtngProfile.name));
   }
 
   defaultView(){
@@ -33,10 +37,15 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   }
   checked(event:any, enrolled:TrainingEnrollment){
     if(event.currentTarget.checked){
-      enrolled.eStatus = "A";
+      enrolled.attended = true;
     }else{
-      enrolled.eStatus = "E";
+      enrolled.attended = false;
     }
+  }
+  public notify(payload: string) {
+    // Might want to notify the user that something has been pushed to the clipboard
+    //console.info(`'${payload}' has been copied to clipboard`);
+    this.coppied = true;
   }
   submit(){
     this.loading = true;

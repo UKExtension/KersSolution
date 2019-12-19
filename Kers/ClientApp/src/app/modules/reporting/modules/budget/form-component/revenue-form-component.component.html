@@ -1,0 +1,274 @@
+<div [formGroup]="budgetForm">
+
+
+
+
+
+
+
+    <div class="form-group">
+        <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Real Property
+        </label>
+        <div class="col-md-10 col-sm-9 col-xs-12">
+            <div class="row">
+                <div class="col-sm-6">
+                        <input type="number" class="form-control" formControlName="realPropertyAssesment"/>
+                        <small>(Assessment Subject to Rate)</small>
+                </div>
+                <div class="col-sm-1 math-sign text-center">
+                        x
+                </div>
+                <div class="col-sm-4">
+                        <input type="number" class="form-control" formControlName="realPropertyTaxRate"/>
+                        <small>(Tax Rate)</small>
+                </div>
+                
+            </div>
+        </div>
+      </div>
+
+
+      <br>
+
+      <div class="form-group">
+          <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Personal Property
+          </label>
+          <div class="col-md-10 col-sm-9 col-xs-12">
+                <div class="row">
+                    <div class="col-sm-6">
+                            <input type="number" class="form-control" formControlName="personalPropertyAssesment"/>
+                            <small>(Assessment Subject to Rate)</small>
+                    </div>
+                    <div class="col-sm-1 math-sign text-center">
+                            x
+                    </div>
+                    <div class="col-sm-4">
+                            <input type="number" class="form-control" formControlName="personalPropertyTaxRate"/>
+                            <small>(Tax Rate)</small>
+                    </div>
+                </div>
+          </div>
+      </div>
+
+
+      <br>
+
+      <div class="form-group">
+          <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Motor Veh/Watercraft
+          </label>
+          <div class="col-md-10 col-sm-9 col-xs-12">
+                <div class="row">
+                    <div class="col-sm-6">
+                            <input type="number" class="form-control" formControlName="motorVehicleAssesment"/>
+                            <small>(Assessment Subject to Rate)</small>
+                    </div>
+                    <div class="col-sm-1 math-sign text-center">
+                            x
+                    </div>
+                    <div class="col-sm-4">
+                            <input type="number" class="form-control" formControlName="motorVehicleTaxRate"/>
+                            <small>(Tax Rate)</small>
+                    </div>
+                    
+                </div>
+          </div>
+          </div>
+  
+  
+          <br>
+
+          <div class="form-group">
+              <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Anticipated Delinquency (%)
+              </label>
+              <div class="col-md-10 col-sm-9 col-xs-12">
+                    <div class="row">
+                        <div class="col-sm-6">
+                                <input type="number" class="form-control" formControlName="anticipatedDelinquency"/>
+                        </div>
+                    </div>
+              </div>
+          </div>
+
+          <br>
+
+          <div class="form-group">
+              <label class="control-label col-md-2 col-sm-3 col-xs-12" for="first-name">Collection (%)
+              </label>
+              <div class="col-md-10 col-sm-9 col-xs-12">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                                <input type="number" class="form-control" formControlName="collection"/>
+                        </div>
+
+                    </div>
+              </div>
+              </div>
+              <br><br>
+          <div class="form-group">
+              <div class="col-md-2 col-sm-3 col-xs-6 text-right"><strong><em>Source of Income</em></strong></div>
+              <div class="col-md-10 col-sm-9 col-xs-6"><strong><em>Amount</em></strong></div>
+          </div>
+              <br>
+          <div class="form-group">
+              <label class="control-label col-md-2 col-sm-3 col-xs-6">Ext Dist Tax
+              </label>
+              <div class="col-md-6 col-sm-7 col-xs-6  math-result">
+                {{subtotalGrossIncome() | currency:'USD':'symbol':'.0-2'}}
+              </div>
+          </div>
+
+
+
+
+
+
+  <div class="form-group">
+    <label class="control-label col-md-2 col-sm-3 col-xs-6">Other Ext Dist Taxes
+    </label>
+    <div class="col-md-6 col-sm-7 col-xs-6">
+    <input type="number" class="form-control col-md-3 col-xs-6" formControlName="otherExtDistTaxes1">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-2 col-sm-3 col-xs-6">Other Ext Dist Taxes
+    </label>
+    <div class="col-md-6 col-sm-7 col-xs-6">
+    <input type="number" class="form-control col-md-3 col-xs-6" formControlName="otherExtDistTaxes2">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-2 col-sm-3 col-xs-6" for="coGenFund">Co. Gen Fund
+    </label>
+    <div class="col-md-6 col-sm-7 col-xs-6">
+        <input type="number" class="form-control col-md-3 col-xs-6" formControlName="coGenFund">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-2 col-sm-3 col-xs-6">Interest
+    </label>
+    <div class="col-md-6 col-sm-7 col-xs-6">
+    <input type="number" class="form-control col-md-3 col-xs-6" formControlName="interest">
+    </div>
+  </div>
+  <div class="form-group" formArrayName="userDefinedIncome">
+    <label class="control-label col-md-2 col-sm-3 col-xs-6">User Defined
+    </label>
+    <div class="col-md-10 col-sm-9 col-xs-10">
+        
+        <div *ngFor="let userDefinedIncome of userDefinedIncomes.controls; let i=index" class="form-group">
+            <!-- repeated user defined income template -->
+            <budget-user-defined-income [index]="i" (removeMe)="userDefinedIncomeRemoved($event)" [formControlName]="i"></budget-user-defined-income>
+
+        </div>
+        <a class="btn btn-info btn-xs" (click)="addUserDefinedIncome()" style="margin-top: 8px;"> + add </a>
+    </div>
+  </div>
+</div><br><br>
+
+<table class="table table-bordered" style="background-color:rgba(233, 226, 122, 0.3);">
+  <thead>
+      <tr>
+          <th>Source of Income</th>
+          <th>Property Assessment Subject to Rate</th>
+          <th>Rate</th>
+          <th>Amount</th>
+      </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Real Property</td>
+      <td>{{ +budgetForm.get("realPropertyAssesment").value | currency:'USD':'symbol':'.2-2'}}</td>
+      <td>{{+budgetForm.get("realPropertyTaxRate").value}}%</td>
+      <td>{{+budgetForm.get("realPropertyAssesment").value/100 * +budgetForm.get("realPropertyTaxRate").value/100 | currency:'USD':'symbol':'.2-2'}}</td>
+    </tr>
+    <tr>
+        <td>Personal Property</td>
+        <td>{{ +budgetForm.get("personalPropertyAssesment").value | currency:'USD':'symbol':'.2-2'}}</td>
+        <td>{{+budgetForm.get("personalPropertyTaxRate").value}}%</td>
+        <td>{{+budgetForm.get("personalPropertyAssesment").value/100 * +budgetForm.get("personalPropertyTaxRate").value/100 | currency:'USD':'symbol':'.2-2'}}</td>
+      </tr>
+    <tr>
+        <td>Motor Veh/Watercraft</td>
+        <td>{{ +budgetForm.get("motorVehicleAssesment").value | currency:'USD':'symbol':'.2-2'}}</td>
+        <td>{{+budgetForm.get("motorVehicleTaxRate").value}}%</td>
+        <td>{{+budgetForm.get("motorVehicleAssesment").value/100 * +budgetForm.get("motorVehicleTaxRate").value/100 | currency:'USD':'symbol':'.2-2'}}
+          </td>
+      </tr>
+      <tr>
+          <td><strong>Total Gross Income</strong></td>
+          <td></td>
+          <td></td>
+          <td><strong>{{totalGrossIncome() | currency:'USD':'symbol':'.2-2'}}</strong></td>
+        </tr>
+      <tr>
+        
+        <td>Anticipated Delinquency</td>
+        <td></td>
+        <td>{{ +budgetForm.get("anticipatedDelinquency").value }}%</td>
+        <td>{{delinquency | currency:'USD':'symbol':'.2-2'}}</td>
+      </tr>
+      <tr>
+        <td>Collection</td>
+        <td></td>
+        <td>{{ +budgetForm.get("collection").value }}%</td>
+        <td>{{collection | currency:'USD':'symbol':'.2-2'}}</td>
+      </tr>
+      
+      <tr>
+        <td><strong>Net Income</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>{{subtotalGrossIncome() | currency:'USD':'symbol':'.2-2'}}</strong></td>
+      </tr>
+          
+  </tbody>
+  <thead>
+      <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td>Other Ext Dist Taxes</td>
+        <td></td>
+        <td></td>
+        <td>{{ +budgetForm.get("otherExtDistTaxes1").value | currency:'USD':'symbol':'.2-2'}}</td>
+      </tr>
+      <tr>
+        <td>Other Ext Dist Taxes</td>
+        <td></td>
+        <td></td>
+        <td>{{ +budgetForm.get("otherExtDistTaxes2").value | currency:'USD':'symbol':'.2-2'}}</td>
+      </tr>
+      <tr>
+        <td>Co. Gen Fund</td>
+        <td></td>
+        <td></td>
+        <td>{{ +budgetForm.get("coGenFund").value | currency:'USD':'symbol':'.2-2'}}</td>
+      </tr>
+      <tr>
+        <td>Interest</td>
+        <td></td>
+        <td></td>
+        <td>{{ +budgetForm.get("interest").value | currency:'USD':'symbol':'.2-2'}}</td>
+      </tr>
+      <tr *ngFor="let userDefinedIncome of userDefinedIncomes.controls; let i=index">
+          <td>{{userDefinedIncome.value.name}}</td>
+          <td></td>
+          <td></td>
+          <td>{{ +userDefinedIncome.value.value | currency:'USD':'symbol':'.2-2'}}</td>
+      </tr>
+  </tbody>
+  <tfoot>
+      <tr>
+        <td><strong>TOTAL</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>{{grandTotal | currency:'USD':'symbol':'.2-2'}}</strong></td>
+      </tr>
+  </tfoot>
+</table>
