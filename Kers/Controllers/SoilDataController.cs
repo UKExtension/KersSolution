@@ -119,6 +119,38 @@ namespace Kers.Controllers
             }
         }
 
+        [HttpPut("updatebundleaddress/{bundleId}")]
+        [Authorize]
+        public IActionResult UpdateBundleAddress( int bundleId, [FromBody] FarmerAddress address){
+            var bundle = _soilDataContext.SoilReportBundle
+                            .Where( b => b.Id == bundleId)
+                            .Include( b => b.FarmerForReport)
+                            .FirstOrDefault();
+            if(address != null && bundle != null ){
+                FarmerForReport adr;
+                if(bundle.FarmerForReport != null){
+                    adr = bundle.FarmerForReport;
+                }else{
+                    adr = new FarmerForReport();
+                }
+                adr.First = address.First;
+                adr.Last = address.Last;
+                adr.Address = address.Address;
+                adr.City = address.City;
+                adr.St = address.St;
+                adr.Zip = address.Zip;
+                adr.HomeNumber = address.HomeNumber;
+                adr.EmailAddress = address.EmailAddress;
+                bundle.FarmerForReport = adr;
+                _soilDataContext.SaveChanges();
+                this.Log(adr,"SoilReportBundle", "Bundle FarmerAddress Updated.");
+                return new OkObjectResult(bundle);
+            }else{
+                this.Log( address ,"SoilReportBundle", "Not Found SoilReportBundle or missing Farmer Address in an update bundle attempt.", "SoilReportBundle", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
 
         [HttpPost("addaddress")]
         [Authorize]

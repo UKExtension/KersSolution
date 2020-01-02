@@ -61,6 +61,16 @@ export class SoildataService {
                 );
       }
 
+      //
+
+      updateBundleFarmer(id:number, address:FarmerAddress):Observable<SoilReportBundle>{
+        var url = this.baseUrl + 'updatebundleaddress/' + id;
+        return this.http.put<SoilReportBundle>(this.location.prepareExternalUrl(url), address)
+                .pipe(
+                    catchError(this.handleError('update', <SoilReportBundle>{}))
+                );
+      }
+
       deleteNote(id:number):Observable<{}>{
         var url = this.baseUrl + "deleteNote/" + id;
         return this.http.delete(this.location.prepareExternalUrl(url))

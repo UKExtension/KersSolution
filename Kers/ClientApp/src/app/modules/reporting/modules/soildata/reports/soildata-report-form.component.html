@@ -7,18 +7,19 @@
   </div>
   <div class="col-sm-6">
     <strong>Farmer:</strong><br>
-    <div *ngIf="report.farmerForReport != null">
+    <loading *ngIf="loading"></loading>
+    <div *ngIf="report.farmerForReport != null && !loading">
       {{report.farmerForReport.first}} {{report.farmerForReport.last}}<br>
       {{report.farmerForReport.address}}<br>
       {{report.farmerForReport.city}}, {{report.farmerForReport.state}} {{report.farmerForReport.zip}}
       <br><br>
-      <a class="btn btn-info btn-xs">change</a>
+      <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true" *ngIf="!addressBrowserOpen">change</a>
     </div>
-    <div *ngIf="report.farmerForReport == null">
+    <div *ngIf="report.farmerForReport == null && !addressBrowserOpen">
       <br>
-      <a class="btn btn-info btn-xs">add</a>
+      <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">add</a>
     </div>
-    
+    <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
   </div>
 </div><br><br>
 <h3>Crop(s)</h3>
