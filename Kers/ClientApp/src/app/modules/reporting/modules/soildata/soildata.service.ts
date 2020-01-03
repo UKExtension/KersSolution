@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import { FormTypeSignees, SoilReportBundle, TestResults } from './soildata.report';
+import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults } from './soildata.report';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +61,13 @@ export class SoildataService {
                 );
       }
 
-      //
+      updateCropNote(id:number, note:SoilReport):Observable<SoilReport>{
+        var url = this.baseUrl + 'updatecropnote/' + id;
+        return this.http.put<SoilReport>(this.location.prepareExternalUrl(url), note)
+                .pipe(
+                    catchError(this.handleError('update', <SoilReport>{}))
+                );
+      }
 
       updateBundleFarmer(id:number, address:FarmerAddress):Observable<SoilReportBundle>{
         var url = this.baseUrl + 'updatebundleaddress/' + id;
@@ -70,6 +76,8 @@ export class SoildataService {
                     catchError(this.handleError('update', <SoilReportBundle>{}))
                 );
       }
+
+
 
       deleteNote(id:number):Observable<{}>{
         var url = this.baseUrl + "deleteNote/" + id;

@@ -3,6 +3,7 @@ import { SoilReport, TestResults } from '../soildata.report';
 import { Observable } from 'rxjs';
 import { SoildataService, CountyNote } from '../soildata.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { load } from '@angular/core/src/render3';
 
 @Component({
   selector: 'soildata-report-crop',
@@ -37,18 +38,29 @@ export class SoildataReportCropComponent implements OnInit {
   ngOnInit() {
     this.testResults = this.service.labResults(this.crop.id);
     this.notes = this.service.notesByCounty();
+    if( this.crop.agentNote != undefined) this.noteForm.patchValue({'note':this.crop.agentNote});
   }
 
   onCancel(){
     this.onFormCancel.emit();
+    this.condition = false;
   }
 
   onNoteChange(event:string){
-    this.noteForm.patchValue({'note':event});
+    var currentNote = this.noteForm.value.note;
+    this.noteForm.patchValue({'note':currentNote + (currentNote == ""?"":"\n") + event});
   }
 
   onSubmit(){
-    console.log( this.noteForm.value );
+    this.loading = true;
+    this.crop.agentNote = this.noteForm.value.note;
+    this.service.updateCropNote(this.crop.id, this.crop ).subscribe(
+      res => {
+        this.loading = false;
+        this.condition = false;
+        this.onFormSubmit.emit(res.agentNote);
+      }
+    )
 
     /* 
       if(!this.crop.agentNote){

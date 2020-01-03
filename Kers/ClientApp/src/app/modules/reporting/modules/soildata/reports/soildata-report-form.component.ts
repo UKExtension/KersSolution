@@ -17,7 +17,6 @@ export class SoildataReportFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.report);
   }
 
   addressSelected(event:FarmerAddress){
@@ -28,9 +27,7 @@ export class SoildataReportFormComponent implements OnInit {
         this.addressBrowserOpen = false;
         this.loading = false;
       }
-    )
-    console.log(event);
-    
+    );    
   }
   addressSelectionCanceled(){
     this.addressBrowserOpen = false;

@@ -151,6 +151,23 @@ namespace Kers.Controllers
             }
         }
 
+        [HttpPut("updatecropnote/{reportId}")]
+        [Authorize]
+        public IActionResult UpdateCropNote( int reportId, [FromBody] SoilReport note){
+            var crop = _soilDataContext.SoilReport
+                            .Where( b => b.Id == reportId)
+                            .FirstOrDefault();
+            if(crop != null && note != null ){
+                crop.AgentNote = note.AgentNote;
+                _soilDataContext.SaveChanges();
+                this.Log(crop,"SoilReport", "SoilReport note Updated.");
+                return new OkObjectResult(crop);
+            }else{
+                this.Log( note ,"SoilReport", "Not Found SoilReport or missing note in an update report attempt.", "SoilReport", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
 
         [HttpPost("addaddress")]
         [Authorize]
