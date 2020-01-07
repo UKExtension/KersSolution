@@ -48,294 +48,87 @@ namespace Kers.Controllers
            this.environment = env;
         }
 
-/* 
-        [HttpPost("addmeeting")]
+ 
+        [HttpPost("addlocation")]
         [Authorize]
-        public IActionResult AddMeeting( [FromBody] MeetingWithTime meeting){
-            if(meeting != null){
-
-                Meeting m = new Meeting();
-                var user = this.CurrentUser();
-                m.Organizer = user;
-                m.CreatedDateTime = DateTime.Now;
-                m.BodyPreview = m.Body = meeting.Body;
-                m.LastModifiedDateTime = meeting.CreatedDateTime;
-                var timezone = meeting.etimezone ? " -04:00":" -05:00";
-                var starttime = this.DefaultTime;
-                if(meeting.IsAllDay == false){
-                    var endtime = this.DefaultTime;
-                    if(meeting.Endtime != ""){
-                        endtime = meeting.Endtime+":00.1000000";
-                    }
-                    if(meeting.End.HasValue){
-                        m.End = DateTimeOffset.Parse(meeting.End.Value.ToString("yyyy-MM-dd ") + endtime + timezone);
-                    }
-                    if(meeting.Starttime != ""){
-                        starttime = meeting.Starttime+":00.1000000";
-                    }
-                }else{
-                    m.End = null; 
-                }
-                m.Start = DateTimeOffset.Parse(meeting.Start.ToString("yyyy-MM-dd ") + starttime + timezone);
-                m.Subject = meeting.Subject;
-                m.IsAllDay = meeting.IsAllDay;
-                m.IsCancelled = meeting.IsCancelled;
-                m.tContact = meeting.tContact;
-                m.tLocation = meeting.tLocation;
-                context.Add(m); 
+        public IActionResult AddLocation( [FromBody] ExtensionEventLocation location){
+            if(location != null){
+                context.Add(location); 
                 context.SaveChanges();
-                this.Log(meeting,"Meeting", "Meeting Added.");
-                return new OkObjectResult(meeting);
+                this.Log(location,"ExtensionEventLocation", "ExtensionEventLocation Added.");
+                return new OkObjectResult(location);
             }else{
-                this.Log( meeting ,"Meeting", "Error in adding meeting attempt.", "Meeting", "Error");
+                this.Log( location ,"ExtensionEventLocation", "Error in adding ExtensionEventLocation attempt.", "ExtensionEventLocation", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+        [HttpPost("addlocationconnection")]
+        [Authorize]
+        public IActionResult addlocationconnection( [FromBody] ExtensionEventLocationConnection location){
+            if(location != null){
+                context.Add(location);  
+                context.SaveChanges();
+                this.Log(location,"ExtensionEventLocation", "ExtensionEventLocation Added.");
+                return new OkObjectResult(location);
+            }else{
+                this.Log( location ,"ExtensionEventLocation", "Error in adding ExtensionEventLocation attempt.", "ExtensionEventLocation", "Error");
                 return new StatusCodeResult(500);
             }
         }
 
 
         
-        [HttpPut("updatemeeting/{id}")]
+        [HttpPut("updatelocation/{id}")]
         [Authorize]
-        public IActionResult UpdateMeeting( int id, [FromBody] MeetingWithTime meeting){
-            var mtng = context.Meeting.Where( t => t.Id == id).FirstOrDefault();
-            if(meeting != null && mtng != null ){
-                
-                var timezone = meeting.etimezone ? " -04:00":" -05:00";
-                var starttime = this.DefaultTime;
-                if(meeting.IsAllDay == false){
-                    var endtime = this.DefaultTime;
-                    if(meeting.Endtime != ""){
-                        endtime = meeting.Endtime+":00.1000000";
-                    }
-                    if(meeting.End.HasValue){
-                        mtng.End = DateTimeOffset.Parse(meeting.End.Value.ToString("yyyy-MM-dd ") + endtime + timezone);
-                    }
-                    if(meeting.Starttime != ""){
-                        starttime = meeting.Starttime+":00.1000000";
-                    }
-                }else{
-                    mtng.End = null;
-                }
-                mtng.Start = DateTimeOffset.Parse(meeting.Start.ToString("yyyy-MM-dd ") + starttime + timezone);
-                mtng.IsAllDay = meeting.IsAllDay;
-                mtng.Body = mtng.BodyPreview = meeting.Body;
-                mtng.tContact = meeting.tContact;
-                mtng.tLocation = meeting.tLocation;
-                mtng.Subject = meeting.Subject;
-                mtng.LastModifiedDateTime = DateTime.Now;
-                mtng.IsCancelled = meeting.IsCancelled;
+        public IActionResult UpdateLocaton( int id, [FromBody] ExtensionEventLocation location){
+            var lctn = context.ExtensionEventLocation
+                        .Where( t => t.Id == id)
+                        .Include( t => t.Address)
+                        .FirstOrDefault();
+            if(location != null && lctn != null ){
+                lctn.Address.Building = location.Address.Building;
+                lctn.Address.City = location.Address.City;
+                lctn.Address.PostalCode = location.Address.PostalCode;
+                lctn.Address.State = location.Address.State;
+                lctn.Address.Street = location.Address.Street;
                 context.SaveChanges();
-                this.Log(meeting,"Meeting", "Meeting Updated.");
-                return new OkObjectResult(meeting);
+                this.Log(location,"ExtensionEventLocation", "ExtensionEventLocation Updated.");
+                return new OkObjectResult(location);
             }else{
-                this.Log( meeting ,"Meeting", "Not Found Meeting in an update attempt.", "Meeting", "Error");
+                this.Log( location ,"ExtensionEventLocation", "Not Found ExtensionEventLocation in an update attempt.", "ExtensionEventLocation", "Error");
                 return new StatusCodeResult(500);
             }
         }
 
-        [HttpDelete("deletemeeting/{id}")]
-        public IActionResult DeleteMeeting( int id ){
-            var entity = context.Meeting.Find(id);
-            
-            if(entity != null){
-                
-                context.Meeting.Remove(entity);
-                context.SaveChanges();
-                
-                this.Log(entity,"Meeting", "Meeting Deleted.");
+        [HttpGet("countylocations/{id?}")]
+        [Authorize]
+        public IActionResult CountyLocations(int id = 0){
+            if( id == 0){
+                var user = CurrentUser();
+                id = user.RprtngProfile.PlanningUnitId;
+            }
+            var locations = this._context
+                            .ExtensionEventLocationConnection
+                            .Where( e => e.PlanningUnitId == id)
+                            .Include( e => e.ExtensionEventLocation)
+                                .ThenInclude( l => l.Address);
+            return new OkObjectResult(locations);
+        }
 
+        [HttpDelete("deletelocation/{id}")]
+        [Authorize]
+        public IActionResult DeleteLocation( int id ){
+            var entity = context.ExtensionEventLocation.Find(id);
+            if(entity != null){
+                context.ExtensionEventLocation.Remove(entity);
+                context.SaveChanges();
+                this.Log(entity,"ExtensionEventLocation", "ExtensionEventLocation Deleted.");
                 return new OkResult();
             }else{
-                this.Log( id ,"Meeting", "Not Found Meeting in a delete attempt.", "Meeting", "Error");
+                this.Log( id ,"ExtensionEventLocation", "Not Found ExtensionEventLocation in a delete attempt.", "ExtensionEventLocation", "Error");
                 return new StatusCodeResult(500);
             }
         }
-
-
-
-
-        [HttpGet("MeetingsPerPeriod/{start}/{end?}/{order?}")]
-        [Authorize]
-        public async Task<IActionResult> MeetingsPerPeriod(DateTime start, DateTime? end = null, string order = "start"){
-            IQueryable<Meeting> query = _context.Meeting.Where( t => t.Start > start);
-            if(end != null){
-                query = query.Where( t => t.Start < end);
-            }
-            if(order == "end"){
-                query = query.OrderBy(t => t.End);
-            }else if( order == "created"){
-                query = query.OrderBy(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderBy(t => t.Start);
-            }
-            
-
-            List<Meeting> list = await query.ToListAsync();
-
-            return new OkObjectResult(list);
-        }
-
-
-
-        [HttpGet("GetCustom")]
-        public IActionResult GetCustom( [FromQuery] string search, 
-                                        [FromQuery] DateTime start,
-                                        [FromQuery] DateTime end,
-                                        [FromQuery] string status,
-                                        [FromQuery] string contacts,
-                                        [FromQuery] int? day,
-                                        [FromQuery] string order,
-                                        [FromQuery] bool withseats,
-                                        [FromQuery] bool attendance
-                                        ){
-            
-            var trainings = from i in _context.Meeting select i;
-            if(search != null && search != ""){
-                if( environment.IsDevelopment()){
-                    trainings = trainings.Where( i => i.Subject.Contains(search));
-                }else{
-                    trainings = trainings.Where( i => EF.Functions.FreeText(i.Subject, search));
-                }
-                
-            }
-            if(contacts != null && contacts != ""){
-                trainings = trainings.Where( i => i.tContact.Contains(contacts));
-            }
-            if(start != null){
-                start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
-                trainings = trainings.Where( i => i.Start >= start);
-            }
-            if( end != null){
-                end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
-                trainings = trainings.Where( i => i.Start <= end);
-            }
-            if(day != null){
-                trainings = trainings
-                            .Where( i => 
-                                        (i.End == null && (int)i.Start.DayOfWeek == day)
-                                        ||
-                                        (i.End.HasValue == true && 
-                                            (i.Start.DayOfWeek < i.End.Value.DayOfWeek ? 
-                                                (int)i.Start.DayOfWeek <= day && (int)i.End.Value.DayOfWeek >= day
-                                                : 
-                                                (int)i.Start.DayOfWeek >= day && (int)i.End.Value.DayOfWeek <= day )
-                                        )
-                                    );
-            }                            
-            IOrderedQueryable<Meeting> result;
-            if(order == "asc"){
-                result = trainings.OrderByDescending(t => t.Start);
-            }else if( order == "alph"){
-                result = trainings.OrderBy(t => t.Subject);
-            }else{
-                result = trainings.OrderBy(t => t.Start);
-            }
-            var mtngs = new List<MeetingWithTime>();
-            foreach( var mtng in result){
-                var m = new MeetingWithTime(mtng);
-                mtngs.Add(m);
-            }
-            return new OkObjectResult(mtngs);
-        }
-
-
-
-
-
-        [HttpGet("migrate")]
-        public IActionResult MigrateInServiceTrainings(){
-            var meetings = new List<Meeting>();
-            var services = this._reportingContext.zCesEvent.OrderByDescending(m => m.rID);//.Skip(10).Take(10);
-            foreach( var service in services){
-               // var meeting = CES2Meeting( service );
-               // meetings.Add( meeting );
-            }
-            this.context.AddRange(meetings);
-            //await this.context.SaveChangesAsync();  
-            return new OkObjectResult(meetings);
-        }
-
-
-
-
-        private string ProcessTime( string time){
-            var hours = "12";
-            var minutes = "34";
-            var seconds = "56";
-            var timeshift = "-04:00";
-            var tmArr = time.Split(' ');
-            if( tmArr.Count() == 1 ) return tmArr[0]+":56.1000000 -04:00";
-            if( tmArr.Count() > 1 ){
-                if(tmArr.Count() > 2){
-                    if( tmArr[2] == "CST" || tmArr[2] == "CT" || tmArr[2] == "(CDT)" ){
-                        timeshift = "-05:00";
-                    }
-                }
-                var hrArr = tmArr[0].Split( ':' );
-                if (Int32.TryParse(hrArr[0], out int hourPart)){
-                    if( hrArr.Count() > 1 ){
-                        if( tmArr[1] == "pm" || tmArr[1]=="PM"){
-                            hours = hourPart < 12 ? (hourPart + 12).ToString("D2") : "12";
-                        }else{
-                            hours = hourPart.ToString("D2");
-                        }
-                    }
-                }
-                minutes = hrArr[1].Substring(0,2);
-            }
-            return hours + ":" + minutes + ":" + seconds + ".1000000 " + timeshift;
-        }
-        private string ToDateString( string oldDate){
-            var parts = oldDate.Split('/');
-            if(parts.Count() > 2){
-                return parts[2] + "-" + parts[0] + "-" + parts[1];
-            }
-            return null;
-        }
-
-
-
-
-
-    }
-
-
-    public class MeetingWithTime: Meeting{
-
-        public MeetingWithTime(){}
-
-        public MeetingWithTime(Meeting m){
-            this.Id = m.Id;
-            this.Body = m.Body;
-            this.BodyPreview = m.BodyPreview;
-            this.Start = m.Start;
-            this.End = m.End;
-            this.IsAllDay = m.IsAllDay;
-            this.CreatedDateTime = m.CreatedDateTime;
-            this.LastModifiedDateTime = m.LastModifiedDateTime;
-            this.Subject = m.Subject;
-            this.IsCancelled = m.IsCancelled;
-            this.tLocation = m.tLocation;
-            this.tContact = m.tContact;
-            
-
-            if(this.IsAllDay == false){
-                TimeSpan tmzn = m.Start.Offset;
-                var hrs = tmzn.TotalHours;
-                this.etimezone = hrs == -4;
-                if(this.End.HasValue ){
-                    this.Endtime = this.End.Value.Hour.ToString("D2")+ ":" + this.End.Value.Minute.ToString("D2");
-                }
-                
-            }
-            this.Starttime = this.Start.Hour.ToString("D2") + ":" + this.Start.Minute.ToString("D2");
-
-        }
-        public String Starttime;
-        public String Endtime;
-        public Boolean etimezone;
-
-*/
 
     }
  

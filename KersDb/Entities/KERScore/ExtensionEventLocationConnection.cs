@@ -2,12 +2,7 @@ namespace Kers.Models.Entities.KERScore
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Newtonsoft.Json;
 
-    /// <summary>
-    /// The type Location.
-    /// </summary>
-    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public partial class ExtensionEventLocationConnection
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

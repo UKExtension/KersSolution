@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { ProgramCategory, ProgramsService } from '../../admin/programs/programs.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
+import { UserService } from '../../user/user.service';
+import { ExtensionEventLocation } from '../extension-event';
 
 @Component({
   selector: 'county-event-form',
@@ -105,8 +107,20 @@ import { PlanningUnit } from '../../plansofwork/plansofwork.service';
         </div>
         
     </div>
-
-
+    <div class="form-group">
+      <div  class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+        <br>
+        <div *ngIf="selectedLocation">
+          Display selected location
+        </div>
+        <a *ngIf="!selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> add locaton</a>
+        <a *ngIf="selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> edit locaton</a>
+      </div>
+      <div *ngIf="locationBrowser" class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+        <location-browser *ngIf="county" [county]="county"></location-browser>
+      </div>
+    </div>
+    <!--
     <div formGroupName="location">
       <div class="col-md-9 col-sm-9 col-xs-12 col-sm-offset-3">
         <h3>Location</h3>
@@ -138,7 +152,7 @@ import { PlanningUnit } from '../../plansofwork/plansofwork.service';
         </div>
       </div>
     </div>
-
+-->
     <div class="ln_solid"></div>
     <div class="form-group">
         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
@@ -218,6 +232,7 @@ import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 export class CountyEventFormComponent implements OnInit {
   
   @Input() countyEvent:CountyEvent;
+  county:PlanningUnit;
   date = new Date();
   countyEventForm:any;
   isAllDay = false;
@@ -227,6 +242,8 @@ export class CountyEventFormComponent implements OnInit {
   programCategoriesOptions = Array<any>();
   planningUnitsOptions = Array<any>();
   multycounty = false;
+  selectedLocation:ExtensionEventLocation;
+  locationBrowser = false;
 
   options = { 
     placeholderText: 'Your Description Here!',
@@ -260,7 +277,8 @@ export class CountyEventFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private programsService: ProgramsService,
-    private planningUnitService: PlanningunitService
+    private planningUnitService: PlanningunitService,
+    private userService:UserService
   ) {
     
     this.countyEventForm = this.fb.group(
@@ -308,6 +326,9 @@ export class CountyEventFormComponent implements OnInit {
     if(this.countyEvent){
       this.countyEventForm.patchValue(this.countyEvent);
     }
+    this.userService.current().subscribe(
+      res => this.county = res.rprtngProfile.planningUnit
+    )
     this.programsService.categories().subscribe(
       res =>{
         this.programCategories = res;

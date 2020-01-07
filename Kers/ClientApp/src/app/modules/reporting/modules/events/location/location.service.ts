@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
-import { ExtensionEvent } from '../extension-event';
+import { ExtensionEvent, ExtensionEventLocation } from '../extension-event';
 import { User, PlanningUnit } from '../../user/user.service';
 
 
@@ -13,7 +13,7 @@ import { User, PlanningUnit } from '../../user/user.service';
 })
 export class LocationService {
 
-  private baseUrl = '/api/ExtensionEvent/';
+  private baseUrl = '/api/Location/';
 
   private handleError: HandleError;
 
@@ -22,48 +22,44 @@ export class LocationService {
       private location:Location,
       httpErrorHandler: HttpErrorHandler
       ) {
-          this.handleError = httpErrorHandler.createHandleError('UserService');
+          this.handleError = httpErrorHandler.createHandleError('LocationService');
       }
 
-/* 
-      current():Observable<User>{
-        if(this.usr == null){
-            var url = this.baseUrl + "current";
-            return this.http.get<User>(this.location.prepareExternalUrl(url))
+      addLocation( location:ExtensionEventLocation ):Observable<ExtensionEventLocation>{
+        return this.http.post<ExtensionEventLocation>(this.location.prepareExternalUrl(this.baseUrl + 'addlocation/'), location)
+            .pipe(
+                catchError(this.handleError('addNote', <ExtensionEventLocation>{}))
+            );
+      }
+      addLocationConnection( location:ExtensionEventLocationConnection ):Observable<ExtensionEventLocationConnection>{
+        return this.http.post<ExtensionEventLocationConnection>(this.location.prepareExternalUrl(this.baseUrl + 'addlocationconnection/'), location)
+            .pipe(
+                catchError(this.handleError('addNote', <ExtensionEventLocationConnection>{}))
+            );
+      }
+      updateLocation(id:number, location:ExtensionEventLocation):Observable<ExtensionEventLocation>{
+        var url = this.baseUrl + 'updatelocation/' + id;
+        return this.http.put<ExtensionEventLocation>(this.location.prepareExternalUrl(url), location)
                 .pipe(
-                    tap(
-                        res =>
-                        {
-                            this.usr = <User>res
-                        }
-                    ),
-                    catchError(this.handleError('current', <User>{}))
+                    catchError(this.handleError('update', location))
                 );
-                    
-        }else{
-            return of(this.usr);
-        }
-    }
-
-
-
-    getCustom(searchParams?:{}) : Observable<User[]>{
-        var url = this.baseUrl + "GetCustom/";
-        return this.http.get<User[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+      }
+      
+      deleteLocation(id:number):Observable<{}>{
+        var url = this.baseUrl + "deletelocation/" + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('getCustom', []))
+                catchError(this.handleError('delete note'))
             );
-    }
+      }
 
-    getCustomCount(searchParams?:{}):Observable<number>{
-        var url = this.baseUrl + "GetCustomCount/";
-        return this.http.get<number>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+      locationsByCounty(id:number = 0):Observable<ExtensionEventLocationConnection[]>{
+        var url = this.baseUrl + "countylocations/"+id;
+        return this.http.get<ExtensionEventLocationConnection[]>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('getCustomCount', 0))
+                catchError(this.handleError('notes by county', []))
             );
-    }
-
- */
+      }
 
 }
 
@@ -80,16 +76,6 @@ export interface ExtensionEventLocationConnection{
     extensionEventLocationId:number;
 }
 
-export interface ExtensionEventLocation{
-    id:number;
-    displayName:string;
-    locationEmailAddress:string;
-    address: PhysicalAddress;
-    locationUri:string;
-    ExtensionEventLocationType?:ExtensionEventLocationType;
-
-
-}
 
 export interface PhysicalAddress{
     id:number;
