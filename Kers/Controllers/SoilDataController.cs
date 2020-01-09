@@ -95,26 +95,40 @@ namespace Kers.Controllers
             return new OkObjectResult(bundles.OrderBy(t => t.DataProcessed));
         }
 
-        private async void UpdateBundles(){
-            SoilReport OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
+        private void UpdateBundles(){
+            SoilReport OrphanedReport =  _soilDataContext.SoilReport
+                                                .Where( r => r.SoilReportBundleId == null)
+                                                .FirstOrDefault();
             if( OrphanedReport != null ){
                 do{
-                    var SameSample = await _soilDataContext.SoilReport
+                    var SameSample = _soilDataContext.SoilReport
                                         .Where( r => r.CoId == OrphanedReport.CoId && r.CoSamnum == OrphanedReport.CoSamnum)
-                                        .ToListAsync();
+                                        .ToList();
                     var Bundle = new SoilReportBundle();
                     Bundle.Reports = SameSample;
                     Bundle.StatusHistory = new List<SoilReportStatusChange>();
-                    Bundle.PlanningUnit = await _soilDataContext.CountyCodes.Where( c => c.CountyID == OrphanedReport.CoId).FirstOrDefaultAsync();
-                    Bundle.FarmerForReport = await _soilDataContext.FarmerForReport.Where(f => f.FarmerID == OrphanedReport.FarmerID).FirstOrDefaultAsync();
+                    Bundle.PlanningUnit = _soilDataContext.CountyCodes.Where( c => c.CountyID == OrphanedReport.CoId).FirstOrDefault();
+                    if(Bundle.FarmerForReport == null){
+                        Bundle.FarmerForReport = _soilDataContext.FarmerForReport
+                                                        .Where(f => f.FarmerID == OrphanedReport.FarmerID)
+                                                        .FirstOrDefault();
+                        if(Bundle.FarmerForReport != null){
+                            Bundle.FarmerAddress = _soilDataContext.FarmerAddress
+                                                        .Where(f => f.FarmerID == Bundle.FarmerForReport.FarmerID.Substring(0,11))
+                                                        .FirstOrDefault();
+                        }
+                        
+                    }
                     Bundle.SampleLabelCreated = OrphanedReport.DateIn;
                     Bundle.LabTestsReady = OrphanedReport.DateOut;
                     Bundle.DataProcessed = OrphanedReport.DateSent;
-                    Bundle.TypeForm = await _soilDataContext.TypeForm.Where( f => f.Code == OrphanedReport.TypeForm).FirstOrDefaultAsync();
+                    Bundle.TypeForm = _soilDataContext.TypeForm
+                                                .Where( f => f.Code == OrphanedReport.TypeForm)
+                                                .FirstOrDefault();
                     Bundle.UniqueCode = Guid.NewGuid().ToString();
                     _soilDataContext.Add(Bundle);
-                    await _soilDataContext.SaveChangesAsync();
-                    OrphanedReport = await _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefaultAsync();
+                    _soilDataContext.SaveChanges();
+                    OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
                 }while( OrphanedReport != null);
             }
         }
@@ -142,6 +156,7 @@ namespace Kers.Controllers
                 adr.HomeNumber = address.HomeNumber;
                 adr.EmailAddress = address.EmailAddress;
                 bundle.FarmerForReport = adr;
+                bundle.FarmerAddressId = address.Id;
                 _soilDataContext.SaveChanges();
                 this.Log(adr,"SoilReportBundle", "Bundle FarmerAddress Updated.");
                 return new OkObjectResult(bundle);

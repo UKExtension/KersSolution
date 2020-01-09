@@ -19,7 +19,7 @@ namespace Kers.Models.Entities.SoilData
         public string TypeForm {get;set;}
         [Column("LAB_NUM")]
         public string LabNum {get;set;}
-        [Column("CO_ID")]
+        [Column("CountyCodeId")]
         public int? CoId {get;set;}
         [Column("CO_SAMNUM")]
         public string CoSamnum {get;set;}
