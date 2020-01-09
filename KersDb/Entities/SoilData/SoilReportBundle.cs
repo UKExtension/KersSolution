@@ -17,6 +17,8 @@ namespace Kers.Models.Entities.SoilData
         public DateTime AgentReviewed {get;set;}
         public CountyCode PlanningUnit {get;set;}
         public FarmerForReport FarmerForReport {get;set;}
+        public int FarmerAddressId {get;set;}
+        public FarmerAddress FarmerAddress {get;set;}
         public TypeForm TypeForm {get;set;}
         public List<SoilReport> Reports {get;set;}
         public List<SoilReportStatusChange> StatusHistory {get;set;}
