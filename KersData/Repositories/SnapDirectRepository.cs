@@ -1063,7 +1063,7 @@ namespace Kers.Models.Repositories
                 keys.Add("DirectDeliverySiteName");
                 keys.Add("DirectSpecificSiteName");
 
-                var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.FiscalYear == fiscalYear && a.Active).OrderBy(a => a.order);
+                var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.Active).OrderBy(a => a.order);
                 
                 foreach( var audnc in snapDirectAudience){
                     keys.Add(audnc.Name);
