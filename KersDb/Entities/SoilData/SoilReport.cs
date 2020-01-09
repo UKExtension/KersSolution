@@ -7,8 +7,9 @@ namespace Kers.Models.Entities.SoilData
 
     public partial class SoilReport : IEntityBase
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Column("Prime_Index")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public int Prime_Index {get;set;}
         [Column("DATE_IN")]
         public DateTime DateIn {get;set;}
         [Column("DATE_SENT")]
