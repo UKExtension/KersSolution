@@ -113,11 +113,11 @@ namespace Kers.Controllers
 
 				// Farmer Address
 				if(bundle.FarmerForReport != null){
-					pdfCanvas.DrawText(bundle.FarmerForReport.First + " " + bundle.FarmerForReport.Last, 205, 95, getPaint(10.0f, 1));
-					pdfCanvas.DrawText(bundle.FarmerForReport.Address , 205, 112, getPaint(10.0f, 1));
-					pdfCanvas.DrawText(bundle.FarmerForReport.City + ", " + bundle.FarmerForReport.St + " " + bundle.FarmerForReport.Zip , 205, 129, getPaint(10.0f, 1));
-					pdfCanvas.DrawText(bundle.FarmerForReport.HomeNumber , 205, 146, getPaint(10.0f, 1));
-					pdfCanvas.DrawText(bundle.FarmerForReport.EmailAddress , 205, 163, getPaint(10.0f, 1));
+					pdfCanvas.DrawText(bundle.FarmerForReport.First??"" + " " + bundle.FarmerForReport.Last??"", 205, 95, getPaint(10.0f, 1));
+					pdfCanvas.DrawText(bundle.FarmerForReport.Address??"" , 205, 112, getPaint(10.0f, 1));
+					pdfCanvas.DrawText(bundle.FarmerForReport.City??"" + ", " + bundle.FarmerForReport.St + " " + bundle.FarmerForReport.Zip , 205, 129, getPaint(10.0f, 1));
+					pdfCanvas.DrawText(bundle.FarmerForReport.HomeNumber??"" , 205, 146, getPaint(10.0f, 1));
+					pdfCanvas.DrawText(bundle.FarmerForReport.EmailAddress??"" , 205, 163, getPaint(10.0f, 1));
 				}
 				var signee = _soilContext.FormTypeSignees
 									.Where( s => s.TypeForm == bundle.TypeForm && s.PlanningUnit == bundle.PlanningUnit )
