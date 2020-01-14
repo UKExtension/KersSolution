@@ -34,7 +34,7 @@ namespace Kers.Models.Repositories
 
 
             string result;
-            var cacheKey = CacheKeys.AimedTowardsImprovement + fiscalYear.Name;
+            var cacheKey = CacheKeys.AimedTowardsImprovement + fiscalYear.Name + fiscalYear.Type;
             var cacheString = _cache.GetString(cacheKey);
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
                 result = cacheString;
@@ -125,7 +125,7 @@ namespace Kers.Models.Repositories
             
             
             string result;
-            var cacheKey = CacheKeys.SnapPartnerCategory + fiscalYear.Name;
+            var cacheKey = CacheKeys.SnapPartnerCategory + fiscalYear.Name + fiscalYear.Type;
             var cacheString = _cache.GetString(cacheKey);
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
                 result = cacheString;

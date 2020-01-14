@@ -288,7 +288,7 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult ByAimedTowardsImprovement(string fy){
 
-            FiscalYear fiscalYear = GetFYByName(fy);
+            FiscalYear fiscalYear = GetFYByName(fy,"snapEd");
 
             if(fiscalYear == null){
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");

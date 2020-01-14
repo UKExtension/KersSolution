@@ -30,7 +30,7 @@ namespace Kers.Models.Repositories
 
         protected List<UserRevisionData> SnapData( FiscalYear fiscalYear){
             List<UserRevisionData> SnapData;
-            var cacheKeyData = CacheKeys.SnapData + fiscalYear.Name;
+            var cacheKeyData = CacheKeys.SnapData + fiscalYear.Name + fiscalYear.Type;
             var cacheStringData = _cache.GetString(cacheKeyData);
             if (!string.IsNullOrEmpty(cacheStringData)){
                 SnapData = JsonConvert.DeserializeObject<List<UserRevisionData>>(cacheStringData);
