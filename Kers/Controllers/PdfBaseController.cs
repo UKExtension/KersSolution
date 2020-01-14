@@ -211,6 +211,15 @@ namespace Kers.Controllers
 				canvas.DrawPicture(svg.Picture, ref matrix);
 		}
 
+		public void addBitmap(SKCanvas pdfCanvas, string fileName = "RegSign.png", int tl = 315, int tr = 17, int bl = 431, int br = 75){
+			var dbFile = _context.UploadFile.Where(f => f.Name == fileName).FirstOrDefault();
+			if( dbFile != null){
+				var PngStream = new MemoryStream(dbFile.Content);
+				var webBitmap = SKBitmap.Decode(PngStream);
+				SKRect rect = new SKRect(tl, tr, bl, br);
+				pdfCanvas.DrawBitmap(webBitmap, rect);
+			}
+		}
 		public SKDocumentPdfMetadata metadata(string Keywrds = "Kers, Expense Reporting, Expense", string Ttl = "Summary Expense Report", string Sbj = "Summary Expense Report" ){
 			return new SKDocumentPdfMetadata
 			{
