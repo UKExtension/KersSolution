@@ -38,7 +38,7 @@ namespace Kers.Controllers
 								};
 
 
-
+		int currentYPosition = 0;
         public PdfSoilDataController(
             KERScoreContext _context,
 			IKersUserRepository userRepo,
@@ -67,7 +67,10 @@ namespace Kers.Controllers
 						foreach( var report in sample.Reports){
 							ReportPerCrop( document, report, sample);
 						}
-                    }
+                    }else{
+						this.Log( uniqueId,"SoilReportBundle", "Error in finding SoilReportBundle attempt.", "SoilReportBundle", "Error");
+                		return new StatusCodeResult(500);
+					}
                     
 					document.Close();
 
@@ -81,8 +84,9 @@ namespace Kers.Controllers
 				ReportHeader(pdfCanvas, report, bundle);
 				UnderTheHeader(pdfCanvas, report, bundle);
 				CropInfo(pdfCanvas, report, bundle);
-				
-				
+				currentYPosition = 265;
+				ExtraInfo(pdfCanvas, report);
+				TestResults(pdfCanvas, report);
 
 
 
@@ -183,11 +187,53 @@ namespace Kers.Controllers
 			for( var i = 1; i < 12; i++){
 				var val = report.GetType().GetProperty("CropInfo" + i.ToString())?.GetValue(report, null);
 				if(val != null){
-					pdfCanvas.DrawText(val.ToString(), coordinates[position], getPaint(10.0f, 1));
+					pdfCanvas.DrawText(val.ToString(), coordinates[position], getPaint(9.5f, 1));
 					position++;
 					if(position > 8) break;
 				} 
 			}
+		}
+		private void ExtraInfo(SKCanvas pdfCanvas, SoilReport report){
+			if(report.ExtInfo1 != null){
+				pdfCanvas.DrawText(report.ExtInfo1, 29, currentYPosition, getPaint(10.0f, 1));
+				currentYPosition+=12;
+			}
+			if(report.ExtInfo2 != null){
+				pdfCanvas.DrawText(report.ExtInfo2, 29, currentYPosition, getPaint(10.0f, 1));
+				currentYPosition+=12;
+			}
+			if(report.ExtInfo3 != null){
+				pdfCanvas.DrawText(report.ExtInfo3, 29, currentYPosition, getPaint(10.0f, 1));
+				currentYPosition+=12;
+			}
+		}
+		private void TestResults(SKCanvas pdfCanvas, SoilReport report){
+			var results = _soilContext.TestResults.Where( r => r.PrimeIndex == report.Prime_Index);
+			int[] tablePositionsX = {36, 126, 216, 316, 416, 516};
+			int[] verticalLinesX = {29, 121, 211, 311, 411, 511, width - 29};
+			using (var paint = new SKPaint()
+					{
+						Color = SKColors.LightGray,
+						Style = SKPaintStyle.Fill,
+						TextSize = 10,
+					}){
+						var area = SKRect.Create(29, currentYPosition, width - 58, 22);
+						pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
+						foreach( var position in verticalLinesX){
+							pdfCanvas.DrawLine(position,currentYPosition,position, currentYPosition + 22, thinLinePaint);
+						}
+						currentYPosition += 15;
+						// Background
+						pdfCanvas.DrawRect(area, paint);
+						pdfCanvas.DrawText("Determination", tablePositionsX[0], currentYPosition, getPaint(10.0f, 1));
+						pdfCanvas.DrawText("Result", tablePositionsX[1], currentYPosition, getPaint(10.0f, 1));
+						pdfCanvas.DrawText("unit", tablePositionsX[2], currentYPosition, getPaint(10.0f, 1));
+						pdfCanvas.DrawText("Level", tablePositionsX[3], currentYPosition, getPaint(10.0f, 1));
+						pdfCanvas.DrawText("Recomendation", tablePositionsX[4], currentYPosition, getPaint(10.0f, 1));
+						pdfCanvas.DrawText("Test Method", tablePositionsX[5], currentYPosition, getPaint(10.0f, 1));
+						currentYPosition += 7;
+						pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
+					}
 		}
 
 
