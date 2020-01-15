@@ -57,7 +57,7 @@ namespace Kers.Controllers
                 using (var document = SKDocument.CreatePdf (stream, this.metadata())) {
 					
 					var sample = this._soilContext.SoilReportBundle
-											.Where( b => b.UniqueCode == uniqueId)
+											.Where( b => b.UniqueCode == uniqueId && b.Reports.Count() > 0)
 											.Include( b => b.Reports)
 											.Include( b => b.PlanningUnit)
 											.Include( b => b.TypeForm)
@@ -77,91 +77,12 @@ namespace Kers.Controllers
 
 		private void ReportPerCrop(SKDocument document, SoilReport report, SoilReportBundle bundle){
 			using (var pdfCanvas = document.BeginPage(width, height)){
-				//Logo
-				addBitmap(pdfCanvas);
-
-				//Header Right
-				pdfCanvas.DrawText("Soil Test Report", 452, 42, getPaint(17.0f, 1));
-				if(bundle.LabTestsReady != null){
-					pdfCanvas.DrawText(bundle.LabTestsReady.ToString("d"), 490, 60, getPaint(10.0f, 1));
-				}
-				//County Office Address
-				var unit =  _context.PlanningUnit.Where( u => u.Id == bundle.PlanningUnit.PlanningUnitId).FirstOrDefault();   
-				pdfCanvas.DrawText(unit.FullName, 29, 29, getPaint(12.0f, 1));
-				pdfCanvas.DrawText(unit.Address, 29, 42, getPaint(10.0f));
-				pdfCanvas.DrawText(unit.City + ", KY " + unit.Zip, 29, 54, getPaint(10.0f));
-				pdfCanvas.DrawText(unit.Phone, 29, 66, getPaint(10.0f));
-
-				//Horizontal Lines
-
-				 SKPaint thinLinePaint = new SKPaint
-											{
-												Style = SKPaintStyle.Stroke,
-												Color = SKColors.Black,
-												StrokeWidth = 0.5f
-											};
-			
-			    pdfCanvas.DrawLine(29,80, 612 - 29, 80, thinLinePaint);
-
-				pdfCanvas.DrawLine(320,120, 612 - 29, 120, thinLinePaint);
-
-
-				// Under the header
-
-				pdfCanvas.DrawText("REPORT TYPE: " + bundle.TypeForm.Code, 29, 95, getPaint(10.0f, 1));
-				pdfCanvas.DrawText("LAB NUM: " + report.LabNum, 29, 112, getPaint(10.0f, 1));
-
-				// Farmer Address
-				if(bundle.FarmerForReport != null){
-					pdfCanvas.DrawText(bundle.FarmerForReport.First??"" + " " + bundle.FarmerForReport.Last??"", 205, 95, getPaint(10.0f, 1));
-					pdfCanvas.DrawText(bundle.FarmerForReport.Address??"" , 205, 112, getPaint(10.0f, 1));
-					pdfCanvas.DrawText(bundle.FarmerForReport.City??"" + ", " + bundle.FarmerForReport.St + " " + bundle.FarmerForReport.Zip , 205, 129, getPaint(10.0f, 1));
-					pdfCanvas.DrawText(bundle.FarmerForReport.HomeNumber??"" , 205, 146, getPaint(10.0f, 1));
-					pdfCanvas.DrawText(bundle.FarmerForReport.EmailAddress??"" , 205, 163, getPaint(10.0f, 1));
-				}
-				var signee = _soilContext.FormTypeSignees
-									.Where( s => s.TypeForm == bundle.TypeForm && s.PlanningUnit == bundle.PlanningUnit )
-									.FirstOrDefault();
-				if( signee != null){
-					if(signee.Signee != null ) pdfCanvas.DrawText(signee.Signee, 320, 146, getPaint(10.0f, 1));
-					if(signee.Title != null ) pdfCanvas.DrawText(signee.Title, 320, 163, getPaint(10.0f, 1));
-				}
-
-				// Bordered Rectangle
-
-				var rect = new SKRect(29, 180, 612 - 29, 250 );
-				SKPaint thickLinePaint = new SKPaint
-											{
-												Style = SKPaintStyle.Stroke,
-												Color = SKColors.Black,
-												StrokeWidth = 1.5f
-											};
-				pdfCanvas.DrawRect( rect, thickLinePaint);
-
-				// Inside the rectangle
-				var startingX = 29;
-				var startingY = 190;
-				var rectHeight = 72;
-				SKPoint[] coordinates  = new SKPoint[] {
-					new SKPoint( startingX + 5, startingY + 5),
-					new SKPoint( startingX + (612 - 58)/3, startingY + 5),
-					new SKPoint( startingX + (612 - 58)/3*2, startingY + 5),
-					new SKPoint( startingX + 5, startingY + rectHeight/3),
-					new SKPoint( startingX + (612 - 58)/3, startingY + rectHeight/3),
-					new SKPoint( startingX + (612 - 58)/3*2, startingY + rectHeight/3),
-					new SKPoint( startingX + 5, startingY + rectHeight/3*2),
-					new SKPoint( startingX + (612 - 58)/3, startingY + rectHeight/3*2),
-					new SKPoint( startingX + (612 - 58)/3*2, startingY + rectHeight/3*2)
-				};
-				var position = 0;
-				for( var i = 1; i < 12; i++){
-					var val = report.GetType().GetProperty("CropInfo" + i.ToString())?.GetValue(report, null);
-					if(val != null){
-						pdfCanvas.DrawText(val.ToString(), coordinates[position], getPaint(10.0f, 1));
-						position++;
-						if(position > 8) break;
-					} 
-				}
+				
+				ReportHeader(pdfCanvas, report, bundle);
+				UnderTheHeader(pdfCanvas, report, bundle);
+				CropInfo(pdfCanvas, report, bundle);
+				
+				
 
 
 
@@ -195,8 +116,79 @@ namespace Kers.Controllers
 			}
 		}
 
+		private void ReportHeader(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
+			//Logo
+			addBitmap(pdfCanvas);
+			//Header Right
+			pdfCanvas.DrawText("Soil Test Report", 452, 42, getPaint(17.0f, 1));
+			if(bundle.LabTestsReady != null){
+				pdfCanvas.DrawText(bundle.LabTestsReady.ToString("d"), 490, 60, getPaint(10.0f, 1));
+			}
+			//County Office Address
+			var unit =  _context.PlanningUnit.Where( u => u.Id == bundle.PlanningUnit.PlanningUnitId).FirstOrDefault();   
+			pdfCanvas.DrawText(unit.FullName, 29, 29, getPaint(12.0f, 1));
+			pdfCanvas.DrawText(unit.Address, 29, 42, getPaint(10.0f));
+			pdfCanvas.DrawText(unit.City + ", KY " + unit.Zip, 29, 54, getPaint(10.0f));
+			pdfCanvas.DrawText(unit.Phone, 29, 66, getPaint(10.0f));
+			//Horizontal Line
+			pdfCanvas.DrawLine(29, 80, width - 29, 80, thinLinePaint);
+		}
 
+		private void UnderTheHeader(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
+			pdfCanvas.DrawText("REPORT TYPE: " + bundle.TypeForm.Code, 29, 95, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("LAB NUM: " + report.LabNum, 29, 112, getPaint(10.0f, 1));
 
+			// Farmer Address
+			if(bundle.FarmerForReport != null){
+				pdfCanvas.DrawText(bundle.FarmerForReport.First??"" + " " + bundle.FarmerForReport.Last??"", 205, 95, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(bundle.FarmerForReport.Address??"" , 205, 112, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(bundle.FarmerForReport.City??"" + ", " + bundle.FarmerForReport.St + " " + bundle.FarmerForReport.Zip , 205, 129, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(bundle.FarmerForReport.HomeNumber??"" , 205, 146, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(bundle.FarmerForReport.EmailAddress??"" , 205, 163, getPaint(10.0f, 1));
+			}
+
+			pdfCanvas.DrawLine(330, 120, width - 29, 120, thinLinePaint);
+			var signee = _soilContext.FormTypeSignees
+								.Where( s => s.TypeForm == bundle.TypeForm && s.PlanningUnit == bundle.PlanningUnit )
+								.FirstOrDefault();
+			if( signee != null){
+				if(signee.Signee != null ) pdfCanvas.DrawText(signee.Signee, 330, 146, getPaint(10.0f, 1));
+				if(signee.Title != null ) pdfCanvas.DrawText(signee.Title, 330, 163, getPaint(10.0f, 1));
+			}
+		}
+
+		private void CropInfo(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
+			// Bordered Rectangle
+
+			var rect = new SKRect(29, 180, 612 - 29, 250 );
+			
+			pdfCanvas.DrawRect( rect, thickLinePaint);
+
+			// Inside the rectangle
+			var startingX = 29;
+			var startingY = 190;
+			var rectHeight = 72;
+			SKPoint[] coordinates  = new SKPoint[] {
+				new SKPoint( startingX + 5, startingY + 5),
+				new SKPoint( startingX + (612 - 58)/3, startingY + 5),
+				new SKPoint( startingX + (612 - 58)/3*2, startingY + 5),
+				new SKPoint( startingX + 5, startingY + rectHeight/3),
+				new SKPoint( startingX + (612 - 58)/3, startingY + rectHeight/3),
+				new SKPoint( startingX + (612 - 58)/3*2, startingY + rectHeight/3),
+				new SKPoint( startingX + 5, startingY + rectHeight/3*2),
+				new SKPoint( startingX + (612 - 58)/3, startingY + rectHeight/3*2),
+				new SKPoint( startingX + (612 - 58)/3*2, startingY + rectHeight/3*2)
+			};
+			var position = 0;
+			for( var i = 1; i < 12; i++){
+				var val = report.GetType().GetProperty("CropInfo" + i.ToString())?.GetValue(report, null);
+				if(val != null){
+					pdfCanvas.DrawText(val.ToString(), coordinates[position], getPaint(10.0f, 1));
+					position++;
+					if(position > 8) break;
+				} 
+			}
+		}
 
 
 

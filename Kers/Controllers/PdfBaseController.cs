@@ -41,6 +41,19 @@ namespace Kers.Controllers
 
 		SKTypeface[] typefaces;
 
+		protected SKPaint thinLinePaint = new SKPaint
+											{
+												Style = SKPaintStyle.Stroke,
+												Color = SKColors.Black,
+												StrokeWidth = 0.5f
+											};
+		protected SKPaint thickLinePaint = new SKPaint
+											{
+												Style = SKPaintStyle.Stroke,
+												Color = SKColors.Black,
+												StrokeWidth = 1.5f
+											};
+
 
 
         public PdfBaseController(
