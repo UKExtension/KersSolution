@@ -79,7 +79,7 @@ namespace Kers.Controllers
 		}
 
 		private void ReportPerCrop(SKDocument document, SoilReport report, SoilReportBundle bundle){
-			using (var pdfCanvas = document.BeginPage(width, height)){
+				var pdfCanvas = document.BeginPage(width, height);
 				
 				ReportHeader(pdfCanvas, report, bundle);
 				UnderTheHeader(pdfCanvas, report, bundle);
@@ -87,37 +87,16 @@ namespace Kers.Controllers
 				currentYPosition = 265;
 				ExtraInfo(pdfCanvas, report);
 				TestResults(pdfCanvas, report);
+				LimeComment(pdfCanvas, report, document);
+				AgentComment(pdfCanvas, report, document);
+				Comments(pdfCanvas, report, document);
+				BottomNote(pdfCanvas);
 
-
-
-
-
-
-
-
-
-
-
-				using (var paint = new SKPaint()
-					{
-						Color = SKColors.Red,
-						Style = SKPaintStyle.Fill,
-						TextSize = 10,
-					})
-					{
-						var area = SKRect.Create(50, 400, 300, 300);
-
-						// Background
-						pdfCanvas.DrawRect(area, paint);
-
-						paint.Color = SKColors.White;
-						this.DrawText(pdfCanvas,report.Comment1, area, paint);
-					}
 
 
 
 				document.EndPage();
-			}
+			
 		}
 
 		private void ReportHeader(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
@@ -208,7 +187,9 @@ namespace Kers.Controllers
 			}
 		}
 		private void TestResults(SKCanvas pdfCanvas, SoilReport report){
-			var results = _soilContext.TestResults.Where( r => r.PrimeIndex == report.Prime_Index);
+			var results = _soilContext.TestResults
+								.Where( r => r.PrimeIndex == report.Prime_Index)
+								.OrderBy( r => r.Order);
 			int[] tablePositionsX = {36, 126, 216, 316, 416, 516};
 			int[] verticalLinesX = {29, 121, 211, 311, 411, 511, width - 29};
 			using (var paint = new SKPaint()
@@ -217,26 +198,118 @@ namespace Kers.Controllers
 						Style = SKPaintStyle.Fill,
 						TextSize = 10,
 					}){
-						var area = SKRect.Create(29, currentYPosition, width - 58, 22);
-						pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
-						foreach( var position in verticalLinesX){
-							pdfCanvas.DrawLine(position,currentYPosition,position, currentYPosition + 22, thinLinePaint);
-						}
-						currentYPosition += 15;
-						// Background
-						pdfCanvas.DrawRect(area, paint);
-						pdfCanvas.DrawText("Determination", tablePositionsX[0], currentYPosition, getPaint(10.0f, 1));
-						pdfCanvas.DrawText("Result", tablePositionsX[1], currentYPosition, getPaint(10.0f, 1));
-						pdfCanvas.DrawText("unit", tablePositionsX[2], currentYPosition, getPaint(10.0f, 1));
-						pdfCanvas.DrawText("Level", tablePositionsX[3], currentYPosition, getPaint(10.0f, 1));
-						pdfCanvas.DrawText("Recomendation", tablePositionsX[4], currentYPosition, getPaint(10.0f, 1));
-						pdfCanvas.DrawText("Test Method", tablePositionsX[5], currentYPosition, getPaint(10.0f, 1));
-						currentYPosition += 7;
-						pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
-					}
+				var area = SKRect.Create(29, currentYPosition, width - 58, 22);
+				pdfCanvas.DrawRect(area, paint);
+			}
+			pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
+			foreach( var position in verticalLinesX){
+				pdfCanvas.DrawLine(position,currentYPosition,position, currentYPosition + 22, thinLinePaint);
+			}
+			currentYPosition += 15;
+			// Background
+			
+			pdfCanvas.DrawText("Determination", tablePositionsX[0], currentYPosition, getPaint(9.0f, 1));
+			pdfCanvas.DrawText("Result", tablePositionsX[1], currentYPosition, getPaint(9.0f, 1));
+			pdfCanvas.DrawText("Unit", tablePositionsX[2], currentYPosition, getPaint(9.0f, 1));
+			pdfCanvas.DrawText("Level", tablePositionsX[3], currentYPosition, getPaint(9.0f, 1));
+			pdfCanvas.DrawText("Recomendation", tablePositionsX[4], currentYPosition, getPaint(9.0f, 1));
+			pdfCanvas.DrawText("Test Method", tablePositionsX[5], currentYPosition, getPaint(9.0f, 1));
+			currentYPosition += 7;
+			pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
+			foreach( var result in results){
+				TestRow(pdfCanvas,result,tablePositionsX, verticalLinesX);
+			}
+					
+		}
+		private void TestRow(SKCanvas pdfCanvas, TestResults result, int[] tablePositionsX, int[] verticalLinesX){
+			var rowHeight = 18;
+			foreach( var position in verticalLinesX){
+				pdfCanvas.DrawLine(position,currentYPosition,position, currentYPosition + rowHeight, thinLinePaint);
+			}
+			currentYPosition += 12;	
+			pdfCanvas.DrawText(result.TestName??"", tablePositionsX[0], currentYPosition, getPaint(8.0f, 2));
+			pdfCanvas.DrawText(result.Result??"", tablePositionsX[1], currentYPosition, getPaint(8.0f, 2));
+			pdfCanvas.DrawText(result.Unit??"", tablePositionsX[2], currentYPosition, getPaint(8.0f, 2));
+			pdfCanvas.DrawText(result.Level??"", tablePositionsX[3], currentYPosition, getPaint(8.0f, 2));
+			pdfCanvas.DrawText(result.Recommmendation??"", tablePositionsX[4], currentYPosition, getPaint(8.0f, 2));
+			pdfCanvas.DrawText(result.SuppInfo1??"", tablePositionsX[5], currentYPosition, getPaint(8.0f, 2));
+			currentYPosition += (rowHeight - 12);
+			pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
+		}
+		private void LimeComment(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
+			var paint = getPaint(9.0f);
+			var lineHeight = 12;
+			if(report.LimeComment != null){
+				
+				var lines = this.SplitLines(report.LimeComment, paint, width - 2 * 29);
+				if( currentYPosition + lines.Count() * lineHeight + 20 > height - 2*29){
+					//BottomNote(pdfCanvas);
+					pdfCanvas = document.BeginPage(width, height);
+					currentYPosition = 29;
+				}
+				pdfCanvas.DrawText("Lime Recommendation:", 29, currentYPosition + 19, getPaint(9.0f, 1));
+				currentYPosition += 20;
+				SKRect area = new SKRect(29,currentYPosition, width - 29, currentYPosition + lines.Count() * lineHeight);
+				
+				this.DrawText(pdfCanvas, report.LimeComment, area, paint);
+				currentYPosition += (lines.Count() * lineHeight);
+			}
 		}
 
+		private void AgentComment(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
+			var paint = getPaint(9.0f);
+			var lineHeight = 12;
+			if(report.AgentNote != null){
+				
+				var lines = this.SplitLines(report.AgentNote, paint, width - 2 * 29);
 
+				if( currentYPosition + lines.Count() * lineHeight + 20 > height - 2*29){
+					BottomNote(pdfCanvas);
+					pdfCanvas = document.BeginPage(width, height);
+					currentYPosition = 29;
+				}
+				pdfCanvas.DrawText("Extension Agent Note:", 29, currentYPosition + 19, getPaint(9.0f, 1));
+				currentYPosition += 20;
+				SKRect area = new SKRect(29,currentYPosition, width - 29, currentYPosition + lines.Count() * lineHeight);
+				
+				this.DrawText(pdfCanvas, report.AgentNote, area, paint);
+				currentYPosition += (lines.Count() * lineHeight);
+			}
+		}
+
+		private void Comments(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
+			pdfCanvas.DrawText("Comments:", 29, currentYPosition + 19, getPaint(9.0f, 1));
+			currentYPosition += 20;
+			DisplayComment(pdfCanvas, report.Comment1, document);
+			DisplayComment(pdfCanvas, report.Comment2, document);
+			DisplayComment(pdfCanvas, report.Comment3, document);
+			DisplayComment(pdfCanvas, report.Comment4, document);
+		}
+		private void DisplayComment(SKCanvas pdfCanvas, string comment, SKDocument document){
+			var paint = getPaint(9.0f);
+			var lineHeight = 12;
+			if(comment != null){
+				
+				var lines = this.SplitLines(comment, paint, width - 2 * 29);
+				if( currentYPosition + lines.Count() * lineHeight + 10 > height - 2*29){
+					BottomNote(pdfCanvas);
+					pdfCanvas = document.BeginPage(width, height);
+					currentYPosition = 29;
+				}
+				currentYPosition += 10;
+				SKRect area = new SKRect(29,currentYPosition, width - 29, currentYPosition + lines.Count() * lineHeight);
+				this.DrawText(pdfCanvas, comment, area, paint);
+				currentYPosition += (lines.Count() * lineHeight);
+			}
+		}
+
+		private void BottomNote(SKCanvas pdfCanvas){
+
+			SKRect bottomArrea = new SKRect(29,height - 45 , width - 29, height - 15);
+			var text = "Education programs of the Kentucky Cooperative Extension Service serve all people regardless of race, color, age, sex,\n religion, disability, or national origin. UNIVERSITY OF KENTUCKY, KENTUCKY STAE UNIVERSITY, U.S. DEPARTMENT OF AGRICULTURE\n AND KENTUCKY COUNTIES COOPERATING";
+			this.DrawText(pdfCanvas, text, bottomArrea, getPaint(8.0f), "center");
+			
+		}
 
 
 
@@ -247,7 +320,7 @@ namespace Kers.Controllers
             public float Width { get; set; }
         }
 
-        private void DrawText(SKCanvas canvas, string text, SKRect area, SKPaint paint)
+        private void DrawText(SKCanvas canvas, string text, SKRect area, SKPaint paint, string align = "left")
         {
             float lineHeight = paint.TextSize * 1.2f;
             var lines = SplitLines(text, paint, area.Width);
@@ -258,8 +331,14 @@ namespace Kers.Controllers
             foreach (var line in lines)
             {
                 y += lineHeight;
-                var x = area.MidX - line.Width / 2;
-                canvas.DrawText(line.Value, x, y, paint);
+				if(align == "center"){
+					var x = area.MidX - line.Width / 2;
+					canvas.DrawText(line.Value, x, y, paint);
+				}else{
+					canvas.DrawText(line.Value, area.Left, y, paint);
+				}
+                
+                
             }
         }
 
