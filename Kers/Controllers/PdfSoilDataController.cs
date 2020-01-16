@@ -74,27 +74,23 @@ namespace Kers.Controllers
                     
 					document.Close();
 
-            	return new FileStreamResult(stream.DetachAsData().AsStream(), "application/pdf");	
+            	//return new FileStreamResult(stream.DetachAsData().AsStream(), "application/pdf");	
+				return File(stream.DetachAsData().AsStream(), "application/pdf", "SoilTestResult_"+sample.SampleLabelCreated.ToString("MM_dd_yyyy ")+".pdf");	
 			}			
 		}
 
 		private void ReportPerCrop(SKDocument document, SoilReport report, SoilReportBundle bundle){
 				var pdfCanvas = document.BeginPage(width, height);
-				
 				ReportHeader(pdfCanvas, report, bundle);
 				UnderTheHeader(pdfCanvas, report, bundle);
 				CropInfo(pdfCanvas, report, bundle);
 				currentYPosition = 265;
 				ExtraInfo(pdfCanvas, report);
 				TestResults(pdfCanvas, report);
-				LimeComment(pdfCanvas, report, document);
-				AgentComment(pdfCanvas, report, document);
-				Comments(pdfCanvas, report, document);
+				pdfCanvas = LimeComment(pdfCanvas, report, document);
+				pdfCanvas = AgentComment(pdfCanvas, report, document);
+				pdfCanvas = Comments(pdfCanvas, report, document);
 				BottomNote(pdfCanvas);
-
-
-
-
 				document.EndPage();
 			
 		}
@@ -236,14 +232,15 @@ namespace Kers.Controllers
 			currentYPosition += (rowHeight - 12);
 			pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
 		}
-		private void LimeComment(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
+		private SKCanvas LimeComment(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
 			var paint = getPaint(9.0f);
 			var lineHeight = 12;
 			if(report.LimeComment != null){
 				
 				var lines = this.SplitLines(report.LimeComment, paint, width - 2 * 29);
 				if( currentYPosition + lines.Count() * lineHeight + 20 > height - 2*29){
-					//BottomNote(pdfCanvas);
+					BottomNote(pdfCanvas);
+					document.EndPage();
 					pdfCanvas = document.BeginPage(width, height);
 					currentYPosition = 29;
 				}
@@ -254,9 +251,10 @@ namespace Kers.Controllers
 				this.DrawText(pdfCanvas, report.LimeComment, area, paint);
 				currentYPosition += (lines.Count() * lineHeight);
 			}
+			return pdfCanvas;
 		}
 
-		private void AgentComment(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
+		private SKCanvas AgentComment(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
 			var paint = getPaint(9.0f);
 			var lineHeight = 12;
 			if(report.AgentNote != null){
@@ -265,6 +263,7 @@ namespace Kers.Controllers
 
 				if( currentYPosition + lines.Count() * lineHeight + 20 > height - 2*29){
 					BottomNote(pdfCanvas);
+					document.EndPage();
 					pdfCanvas = document.BeginPage(width, height);
 					currentYPosition = 29;
 				}
@@ -275,17 +274,19 @@ namespace Kers.Controllers
 				this.DrawText(pdfCanvas, report.AgentNote, area, paint);
 				currentYPosition += (lines.Count() * lineHeight);
 			}
+			return pdfCanvas;
 		}
 
-		private void Comments(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
+		private SKCanvas Comments(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
 			pdfCanvas.DrawText("Comments:", 29, currentYPosition + 19, getPaint(9.0f, 1));
 			currentYPosition += 20;
-			DisplayComment(pdfCanvas, report.Comment1, document);
-			DisplayComment(pdfCanvas, report.Comment2, document);
-			DisplayComment(pdfCanvas, report.Comment3, document);
-			DisplayComment(pdfCanvas, report.Comment4, document);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment1, document);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment2, document);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment3, document);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment4, document);
+			return pdfCanvas;
 		}
-		private void DisplayComment(SKCanvas pdfCanvas, string comment, SKDocument document){
+		private SKCanvas DisplayComment(SKCanvas pdfCanvas, string comment, SKDocument document){
 			var paint = getPaint(9.0f);
 			var lineHeight = 12;
 			if(comment != null){
@@ -293,6 +294,7 @@ namespace Kers.Controllers
 				var lines = this.SplitLines(comment, paint, width - 2 * 29);
 				if( currentYPosition + lines.Count() * lineHeight + 10 > height - 2*29){
 					BottomNote(pdfCanvas);
+					document.EndPage();
 					pdfCanvas = document.BeginPage(width, height);
 					currentYPosition = 29;
 				}
@@ -301,6 +303,7 @@ namespace Kers.Controllers
 				this.DrawText(pdfCanvas, comment, area, paint);
 				currentYPosition += (lines.Count() * lineHeight);
 			}
+			return pdfCanvas;
 		}
 
 		private void BottomNote(SKCanvas pdfCanvas){

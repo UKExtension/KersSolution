@@ -125,6 +125,13 @@ export class SoildataService {
                 catchError(this.handleError('getCustom', []))
             );
       }
+      pdf(id:string):Observable<Blob>{
+        return this.http.get(this.location.prepareExternalUrl('/api/PdfSoilData/report/' + id ), {responseType: 'blob'})
+            .pipe(
+                catchError(this.handleError('pdf', <Blob>{}))
+            );
+    }
+
       private addParams(params:{}){
         let searchParams = {};
         for(let p in params){
