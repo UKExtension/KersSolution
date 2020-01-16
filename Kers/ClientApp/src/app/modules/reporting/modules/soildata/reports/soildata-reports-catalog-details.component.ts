@@ -53,7 +53,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     this.service.pdf(this.report.uniqueCode).subscribe(
         data => {
             var blob = new Blob([data], {type: 'application/pdf'});
-            saveAs(blob, "SoilTestResult_" + this.report.sampleLabelCreated + ".pdf");
+            saveAs(blob, "SoilTestResults.pdf");
             this.pdfLoading = false;
         },
         err => console.error(err)

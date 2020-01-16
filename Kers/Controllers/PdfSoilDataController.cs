@@ -119,7 +119,7 @@ namespace Kers.Controllers
 
 			// Farmer Address
 			if(bundle.FarmerForReport != null){
-				pdfCanvas.DrawText(bundle.FarmerForReport.First??"" + " " + bundle.FarmerForReport.Last??"", 205, 95, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(bundle.FarmerForReport.First + " " + bundle.FarmerForReport.Last, 205, 95, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(bundle.FarmerForReport.Address??"" , 205, 112, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(bundle.FarmerForReport.City??"" + ", " + bundle.FarmerForReport.St + " " + bundle.FarmerForReport.Zip , 205, 129, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(bundle.FarmerForReport.HomeNumber??"" , 205, 146, getPaint(10.0f, 1));
@@ -279,7 +279,7 @@ namespace Kers.Controllers
 
 		private SKCanvas Comments(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
 			pdfCanvas.DrawText("Comments:", 29, currentYPosition + 19, getPaint(9.0f, 1));
-			currentYPosition += 20;
+			currentYPosition += 10;
 			pdfCanvas = DisplayComment(pdfCanvas, report.Comment1, document);
 			pdfCanvas = DisplayComment(pdfCanvas, report.Comment2, document);
 			pdfCanvas = DisplayComment(pdfCanvas, report.Comment3, document);
