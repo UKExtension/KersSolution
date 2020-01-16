@@ -143,7 +143,14 @@ namespace Kers.Controllers
             if(address != null && bundle != null ){
                 FarmerForReport adr;
                 if(bundle.FarmerForReport != null){
-                    adr = bundle.FarmerForReport;
+                    if(_soilDataContext.SoilReportBundle
+                            .Where(b => b.FarmerForReport == bundle.FarmerForReport)
+                            .Count() > 1){
+                        adr = new FarmerForReport();
+                    }else{
+                        adr = bundle.FarmerForReport;
+                    }
+                    
                 }else{
                     adr = new FarmerForReport();
                 }
