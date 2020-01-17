@@ -12,7 +12,8 @@ namespace Kers.Models.Entities.SoilData
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public SoilReportStatus SoilReportStatus {get;set;}
-        //public SoilReportBundle SoilReportBundle {get;set;}
+        public SoilReportBundle SoilReportBundle {get;set;}
+        public int SoilReportBundleId {get;set;}
         public DateTime Created {get;set;}
     }
 }

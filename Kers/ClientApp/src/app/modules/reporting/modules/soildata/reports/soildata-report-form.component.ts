@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SoilReportBundle } from '../soildata.report';
+import { SoilReportBundle, SoilReport } from '../soildata.report';
 import { FarmerAddress, SoildataService } from '../soildata.service';
 
 @Component({
@@ -31,6 +31,9 @@ export class SoildataReportFormComponent implements OnInit {
   }
   addressSelectionCanceled(){
     this.addressBrowserOpen = false;
+  }
+  cropNoteUpdate(event:SoilReport){
+    this.report.lastStatus = event.soilReportBundle.lastStatus;
   }
 
 }

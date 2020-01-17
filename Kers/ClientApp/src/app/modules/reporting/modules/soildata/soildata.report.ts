@@ -69,6 +69,7 @@ export class SoilReport{
     extInfo2:string;
     extInfo3:string;
     extInfo4:string;
+    soilReportBundle:SoilReportBundle;
 }
 
 export class TestResults{

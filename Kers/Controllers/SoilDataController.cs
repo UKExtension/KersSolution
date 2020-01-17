@@ -85,7 +85,7 @@ namespace Kers.Controllers
                                 )            
                         );
             }
-            bundles = bundles.Where( b => criteria.FormType.Contains(b.TypeForm.Id) );
+            bundles = bundles.Where( b => criteria.FormType.Contains(b.TypeForm.Id) && criteria.status.Contains(b.LastStatus.SoilReportStatus.Id) );
             if(criteria.Start != null){
                 bundles = bundles.Where( i => i.DataProcessed > criteria.Start);
             }
@@ -97,7 +97,15 @@ namespace Kers.Controllers
                         .Include( b => b.FarmerForReport)
                         .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
                         .Include( b => b.TypeForm);
-            return new OkObjectResult(bundles.OrderBy(t => t.DataProcessed));
+            IOrderedQueryable orderedBundles;
+            if(criteria.Order == "smpl"){
+                orderedBundles = bundles.OrderByDescending( s => s.Reports.First().CoSamnum);
+            }else if( criteria.Order == "dsc"){
+                orderedBundles = bundles.OrderByDescending( s => s.DataProcessed);
+            }else{
+                orderedBundles = bundles.OrderBy( s => s.DataProcessed);
+            }
+            return new OkObjectResult(orderedBundles);
         }
 
         private void UpdateBundles(){
@@ -111,7 +119,7 @@ namespace Kers.Controllers
                                         .ToList();
                     var Bundle = new SoilReportBundle();
                     Bundle.Reports = SameSample;
-                    Bundle.StatusHistory = new List<SoilReportStatusChange>();
+                    //Bundle.StatusHistory = new List<SoilReportStatusChange>();
                     Bundle.PlanningUnit = _soilDataContext.CountyCodes.Where( c => c.CountyID == OrphanedReport.CoId).FirstOrDefault();
                     if(Bundle.FarmerForReport == null){
                         Bundle.FarmerForReport = _soilDataContext.FarmerForReport
@@ -130,6 +138,9 @@ namespace Kers.Controllers
                     Bundle.TypeForm = _soilDataContext.TypeForm
                                                 .Where( f => f.Code == OrphanedReport.TypeForm)
                                                 .FirstOrDefault();
+                    Bundle.LastStatus = new SoilReportStatusChange();
+                    Bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Received").FirstOrDefault();
+                    Bundle.LastStatus.Created = DateTime.Now;
                     Bundle.UniqueCode = Guid.NewGuid().ToString();
                     _soilDataContext.Add(Bundle);
                     _soilDataContext.SaveChanges();
@@ -183,9 +194,15 @@ namespace Kers.Controllers
         public IActionResult UpdateCropNote( int reportId, [FromBody] SoilReport note){
             var crop = _soilDataContext.SoilReport
                             .Where( b => b.Id == reportId)
+                            .Include( b => b.SoilReportBundle).ThenInclude( r => r.LastStatus).ThenInclude( s => s.SoilReportStatus)
                             .FirstOrDefault();
             if(crop != null && note != null ){
                 crop.AgentNote = note.AgentNote;
+                if( crop.SoilReportBundle.LastStatus == null || crop.SoilReportBundle.LastStatus.SoilReportStatus.Name == "Received"){
+                    crop.SoilReportBundle.LastStatus = new SoilReportStatusChange();
+                    crop.SoilReportBundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where(s => s.Name == "Reviewed").FirstOrDefault();
+                    crop.SoilReportBundle.LastStatus.Created = DateTime.Now;
+                }
                 _soilDataContext.SaveChanges();
                 this.Log(crop,"SoilReport", "SoilReport note Updated.");
                 return new OkObjectResult(crop);

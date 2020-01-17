@@ -33,7 +33,7 @@ export class SoildataReportCropComponent implements OnInit {
       });
   }
   @Output() onFormCancel = new EventEmitter<void>();
-  @Output() onFormSubmit = new EventEmitter<string>();
+  @Output() onFormSubmit = new EventEmitter<SoilReport>();
 
   ngOnInit() {
     this.testResults = this.service.labResults(this.crop.id);
@@ -58,7 +58,7 @@ export class SoildataReportCropComponent implements OnInit {
       res => {
         this.loading = false;
         this.condition = false;
-        this.onFormSubmit.emit(res.agentNote);
+        this.onFormSubmit.emit(res);
       }
     )
 

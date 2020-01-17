@@ -62,10 +62,17 @@ namespace Kers.Controllers
 											.Include( b => b.PlanningUnit)
 											.Include( b => b.TypeForm)
 											.Include( b => b.FarmerForReport)
+											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
 											.FirstOrDefault();
 					if( sample != null){
 						foreach( var report in sample.Reports){
 							ReportPerCrop( document, report, sample);
+						}
+						if( sample.LastStatus == null || sample.LastStatus.SoilReportStatus.Name != "Archived"){
+							sample.LastStatus = new SoilReportStatusChange();
+							sample.LastStatus.Created = DateTime.Now;
+							sample.LastStatus.SoilReportStatus = _soilContext.SoilReportStatus.Where( s => s.Name == "Archived").FirstOrDefault();
+							_soilContext.SaveChanges();
 						}
                     }else{
 						this.Log( uniqueId,"SoilReportBundle", "Error in finding SoilReportBundle attempt.", "SoilReportBundle", "Error");

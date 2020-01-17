@@ -126,7 +126,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   onReportStatusesChange(){
     this.criteria.status = this.selectedReportStatuses;
-    this.onRefresh;
+    this.onRefresh();
   }
 
   onRefresh() {
