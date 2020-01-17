@@ -85,7 +85,7 @@ namespace Kers.Controllers
                                 )            
                         );
             }
-            bundles = bundles.Where( b => criteria.FormType.Contains(b.TypeForm.Id) && (criteria.status == null || criteria.status.Contains(b.LastStatus.SoilReportStatus.Id)) );
+            bundles = bundles.Where( b => criteria.FormType.Contains(b.TypeForm.Id) && (b.LastStatus == null || criteria.status.Contains(b.LastStatus.SoilReportStatus.Id)) );
             if(criteria.Start != null){
                 bundles = bundles.Where( i => i.DataProcessed > criteria.Start);
             }
