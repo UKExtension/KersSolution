@@ -29,7 +29,7 @@ export class SoildataReportCropComponent implements OnInit {
   ) { 
     this.noteForm = this.fb.group(
       { 
-          note: ["", Validators.required]
+          note: [""]
       });
   }
   @Output() onFormCancel = new EventEmitter<void>();

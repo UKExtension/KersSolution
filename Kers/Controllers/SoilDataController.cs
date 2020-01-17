@@ -198,6 +198,7 @@ namespace Kers.Controllers
                             .FirstOrDefault();
             if(bundle != null ){
                 if(bundle.LastStatus.SoilReportStatus.Name != "Archived"){
+                    bundle.LastStatus = new SoilReportStatusChange();
                     bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Archived").FirstOrDefault();
                     bundle.LastStatus.Created = DateTime.Now;
                     _soilDataContext.SaveChanges();
