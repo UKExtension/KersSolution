@@ -77,6 +77,13 @@ export class SoildataService {
                 );
       }
 
+      updateBundleStatusToArchived(id:number, bundle:SoilReportBundle):Observable<SoilReportBundle>{
+        var url = this.baseUrl + 'updatebundlestatustoarchived/' + id;
+        return this.http.put<SoilReportBundle>(this.location.prepareExternalUrl(url), bundle)
+                .pipe(
+                    catchError(this.handleError('update status', <SoilReportBundle>{}))
+                );
+      }
 
 
       deleteNote(id:number):Observable<{}>{

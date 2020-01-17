@@ -15,6 +15,7 @@ import { SoildataService } from '../soildata.service';
       <a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil"></i> review</a>
       <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
+      <a class="btn btn-info btn-xs" (click)="email()" ><i class="fa fa-envelope"></i> email</a>
     </td>
     <td *ngIf="edit" colspan="6">
       <div class="row">
@@ -60,6 +61,18 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
         },
         err => console.error(err)
     )
-}
+  }
+
+  email(){
+    this.service.updateBundleStatusToArchived(this.report.id, this.report).subscribe(
+      res => this.report.lastStatus.soilReportStatus.name = res.lastStatus.soilReportStatus.name
+    )
+    var email = "";
+    if(this.report.farmerForReport.emailAddress != undefined){
+      email=this.report.farmerForReport.emailAddress;
+    }
+    var mailText = "mailto:"+email+"?subject=Soil Test Results&body=https://kers.ca.uky.edu/api/PdfSoilData/report/"+this.report.uniqueCode;
+    window.location.href = mailText;
+  }
 
 }

@@ -189,6 +189,26 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
         }
+        [HttpPut("updatebundlestatustoarchived/{bundleId}")]
+        [Authorize]
+        public IActionResult UpdateBundleStatus( int bundleId, [FromBody] SoilReportBundle sentBundle){
+            var bundle = _soilDataContext.SoilReportBundle
+                            .Where( b => b.Id == bundleId)
+                            .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                            .FirstOrDefault();
+            if(bundle != null ){
+                if(bundle.LastStatus.SoilReportStatus.Name != "Archived"){
+                    bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Archived").FirstOrDefault();
+                    bundle.LastStatus.Created = DateTime.Now;
+                    _soilDataContext.SaveChanges();
+                }
+                this.Log(bundle,"SoilReportBundle", "Bundle Status Updated.");
+                return new OkObjectResult(bundle);
+            }else{
+                this.Log( sentBundle ,"SoilReportBundle", "Not Found SoilReportBundle status update bundle attempt.", "SoilReportBundle", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
 
         [HttpPut("updatecropnote/{reportId}")]
         [Authorize]
