@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults } from './soildata.report';
+import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults, SoilReportSearchCriteria, TypeForm, SoilReportStatus } from './soildata.report';
 
 @Injectable({
   providedIn: 'root'
@@ -118,9 +118,27 @@ export class SoildataService {
             );
       }
 
-      getCustom(searchParams?:{}):Observable<SoilReportBundle[]>{
+      formTypes():Observable<TypeForm[]>{
+        var url = this.baseUrl + "formtypes";
+        return this.http.get<TypeForm[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('TypeForm', []))
+            );
+      }
+
+      reportStatuses():Observable<SoilReportStatus[]>{
+        var url = this.baseUrl + "reportstatus";
+        return this.http.get<SoilReportStatus[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('SoilReportStatus', []))
+            );
+      }
+
+      
+
+      getCustom(searchParams:SoilReportSearchCriteria):Observable<SoilReportBundle[]>{
         var url = this.baseUrl + "GetCustom/";
-        return this.http.get<SoilReportBundle[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+        return this.http.post<SoilReportBundle[]>(this.location.prepareExternalUrl(url), searchParams)
             .pipe(
                 catchError(this.handleError('getCustom', []))
             );

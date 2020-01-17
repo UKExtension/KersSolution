@@ -50,14 +50,18 @@ namespace Kers.Controllers
 
         }
 
+        public class SoilReportSearchCriteria{
+            public DateTime Start;
+            public DateTime End;
+            public string Search;
+            public int[] status;
+            public string Order;
+            public int[] FormType;
+        }
 
-
-        [HttpGet("GetCustom/{allCounties?}/{countyId?}")]
+        [HttpPost("GetCustom/{allCounties?}/{countyId?}")]
         [Authorize]
-        public IActionResult GetCustom( [FromQuery] string search, 
-                                        [FromQuery] DateTime start,
-                                        [FromQuery] DateTime end,
-                                        [FromQuery] string status,
+        public IActionResult GetCustom( [FromBody] SoilReportSearchCriteria criteria, 
                                         Boolean allCounties = false,
                                         int countyId = 0
                                         ){
@@ -71,21 +75,22 @@ namespace Kers.Controllers
                 }
                 bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
             }
-            if(search != null && search != ""){
+            if(criteria.Search != null && criteria.Search != ""){
                 bundles = bundles.Where( i => i.FarmerForReport != null 
                                     && 
                                 (
-                                    i.FarmerForReport.First.Contains(search)
+                                    i.FarmerForReport.First.Contains(criteria.Search)
                                     ||
-                                    i.FarmerForReport.Last.Contains(search)
+                                    i.FarmerForReport.Last.Contains(criteria.Search)
                                 )            
                         );
-            } 
-            if(start != null){
-                bundles = bundles.Where( i => i.DataProcessed > start);
             }
-            if( end != null){
-                bundles = bundles.Where( i => i.DataProcessed < end);
+            bundles = bundles.Where( b => criteria.FormType.Contains(b.TypeForm.Id) );
+            if(criteria.Start != null){
+                bundles = bundles.Where( i => i.DataProcessed > criteria.Start);
+            }
+            if( criteria.End != null){
+                bundles = bundles.Where( i => i.DataProcessed < criteria.End);
             }
             bundles = bundles
                         .Include( b => b.Reports)
@@ -358,6 +363,18 @@ namespace Kers.Controllers
                 }
             }
             return new OkObjectResult(signeesPerCounty);
+        }
+
+        [HttpGet("formtypes")]
+        public async Task<IActionResult> FormTypes(){
+            var FormTypes = this._soilDataContext.TypeForm.OrderBy( t => t.Code).ToListAsync();
+            return new OkObjectResult(await FormTypes);
+        }
+
+        [HttpGet("reportstatus")]
+        public async Task<IActionResult> ReportStatus(){
+            var FormTypes = this._soilDataContext.SoilReportStatus.OrderBy( t => t.Id).ToListAsync();
+            return new OkObjectResult(await FormTypes);
         }
 
     }

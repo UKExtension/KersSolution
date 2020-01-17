@@ -6,7 +6,9 @@ import { SoildataService } from '../soildata.service';
 @Component({
   selector: '[soildata-reports-catalog-details]',
   template: `
-    <td *ngIf="default">{{report.sampleLabelCreated | date:'mediumDate'}}</td>
+    <td *ngIf="default">{{report.labTestsReady | date:'mediumDate'}}</td>
+    <td *ngIf="default">{{report.typeForm.code}}</td>
+    <td *ngIf="default">{{report.reports[0].coSamnum}}</td>
     <td *ngIf="default">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
     <td *ngIf="default">{{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }}</td>
     <td *ngIf="default" class="text-right">
@@ -14,7 +16,7 @@ import { SoildataService } from '../soildata.service';
       <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
     </td>
-    <td *ngIf="edit" colspan="4">
+    <td *ngIf="edit" colspan="6">
       <div class="row">
         <div class="col-xs-12">
           <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>

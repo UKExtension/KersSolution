@@ -18,7 +18,40 @@
     <div class="col-sm-offset-3 col-sm-9">
       <h2>Refine Search</h2>
     </div>
-   
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Form Type</label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+          
+            
+              <label *ngFor="let option of typesCheckboxes" class="checkbox-inline">
+                  <input type="checkbox"
+                        (change)="onFormTypeChange($event)"
+                        name="options"
+                        value="{{option.value}}"
+                        [(ngModel)]="option.checked"/>
+                  {{option.name}}
+              </label>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Report Status</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        
+          
+            <label *ngFor="let option of statusesCheckboxes" class="checkbox-inline">
+                <input type="checkbox"
+                      (change)="onReportStatusesChange($event)"
+                      name="options"
+                      value="{{option.value}}"
+                      [(ngModel)]="option.checked"/>
+                {{option.name}}
+            </label>
+        </div>
+    </div>
+
+
     <div class="form-group" >
         <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -48,8 +81,10 @@
   <table class="table table-bordered table-striped" *ngIf="reports$ | async as reports">
       <thead>
           <tr>
-            <th>Label Created</th>
-            <th>Farmer</th>
+            <th>Report Date</th>
+            <th>Form Type</th>
+            <th>CO Sample Num</th>
+            <th>Client</th>
             <th>Status</th>
             <th></th>              
           </tr>

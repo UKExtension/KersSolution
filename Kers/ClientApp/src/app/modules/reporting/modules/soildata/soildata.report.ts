@@ -110,7 +110,7 @@ export class SoilReportSearchCriteria{
     start: string;
     end: string;
     search: string = "";
-    status: string;
-    order: string = 'dsc';
-    admin: boolean = false;
+    status: number[];
+    order:string;
+    formType: number[];
 }
