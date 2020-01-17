@@ -99,7 +99,7 @@ namespace Kers.Controllers
                         .Include( b => b.TypeForm);
             IOrderedQueryable orderedBundles;
             if(criteria.Order == "smpl"){
-                orderedBundles = bundles.OrderByDescending( s => s.Reports.First().CoSamnum);
+                orderedBundles = bundles.OrderByDescending( s => s.CoSamnum);
             }else if( criteria.Order == "dsc"){
                 orderedBundles = bundles.OrderByDescending( s => s.DataProcessed);
             }else{
@@ -132,6 +132,7 @@ namespace Kers.Controllers
                         }
                         
                     }
+                    Bundle.CoSamnum = OrphanedReport.CoSamnum;
                     Bundle.SampleLabelCreated = OrphanedReport.DateIn;
                     Bundle.LabTestsReady = OrphanedReport.DateOut;
                     Bundle.DataProcessed = OrphanedReport.DateSent;
