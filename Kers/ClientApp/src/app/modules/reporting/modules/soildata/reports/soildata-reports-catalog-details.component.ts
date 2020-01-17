@@ -8,7 +8,7 @@ import { SoildataService } from '../soildata.service';
   template: `
     <td *ngIf="default">{{report.labTestsReady | date:'mediumDate'}}</td>
     <td *ngIf="default">{{report.typeForm.code}}</td>
-    <td *ngIf="default">{{report.reports[0].coSamnum}}</td>
+    <td *ngIf="default">{{report.coSamnum}}</td>
     <td *ngIf="default">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
     <td *ngIf="default">{{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }}</td>
     <td *ngIf="default" class="text-right">

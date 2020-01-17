@@ -8,6 +8,7 @@ export class SoilReportBundle{
     labTestsReady:Date;
     dataProcessed:Date;
     agentReviewed:Date;
+    coSamnum:string;
     planningUnit:CountyCode;
     farmerForReport:FarmerForReport;
     typeForm:TypeForm;
