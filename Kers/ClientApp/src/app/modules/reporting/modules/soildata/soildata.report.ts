@@ -116,3 +116,9 @@ export class SoilReportSearchCriteria{
     order:string;
     formType: number[];
 }
+
+export class FarmerAddressSearchCriteria{
+    search: string;
+    order: string;
+    amount:number;
+}

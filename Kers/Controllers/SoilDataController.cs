@@ -108,6 +108,47 @@ namespace Kers.Controllers
             return new OkObjectResult(orderedBundles);
         }
 
+        public class FarmerAddressSearchCriteria{
+            public string Search;
+            public string Order;
+            public int Amount;
+        }
+
+        [HttpPost("GetCustomFarmerAddress/{allCounties?}/{countyId?}")]
+        [Authorize]
+        public IActionResult GetCustomFarmerAddress( [FromBody] FarmerAddressSearchCriteria criteria, 
+                                        Boolean allCounties = false,
+                                        int countyId = 0
+                                        ){
+            var addresses = from i in _soilDataContext.FarmerAddress select i;
+            // Allow reports by all counties
+            if( !allCounties ){
+                if(countyId == 0){
+                    var user = this.CurrentUser();
+                    countyId = user.RprtngProfile.PlanningUnitId;
+                }
+                addresses = addresses.Where( b => b.CountyCode.PlanningUnitId == countyId);
+            }
+            if(criteria.Search != null && criteria.Search != ""){
+                addresses = addresses.Where( i => i.First != null 
+                                    && 
+                                (
+                                    i.First.Contains(criteria.Search)
+                                    ||
+                                    i.Last.Contains(criteria.Search)
+                                )            
+                        );
+            }
+            if(criteria.Order == "frq"){
+                addresses = addresses.OrderByDescending( s => s.Reports.Count());
+            }else{
+                addresses = addresses.OrderBy( s => s.First).ThenBy( s => s.Last);
+            }
+            return new OkObjectResult( new {count = addresses.Count(), data = addresses.Take(criteria.Amount)} );
+        }
+
+
+
         private void UpdateBundles(){
             SoilReport OrphanedReport =  _soilDataContext.SoilReport
                                                 .Where( r => r.SoilReportBundleId == null)

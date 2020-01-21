@@ -54,7 +54,7 @@
 
     <div class="form-group" >
         <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
-        <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="col-md-9 col-sm-9 col-xs-12">
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn btn-default" [class.active]="type=='dsc'">
                 <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
@@ -68,7 +68,15 @@
             </div>
         </div>
     </div>  
-    
+    <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        
+          
+          <a class="btn btn-info btn-xs"><i class="fa fa-download"></i> pdf</a> Generate consolidated report of filtered results
+
+      </div>
+  </div>
     
     
   </form>

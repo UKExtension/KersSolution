@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults, SoilReportSearchCriteria, TypeForm, SoilReportStatus } from './soildata.report';
+import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults, SoilReportSearchCriteria, TypeForm, SoilReportStatus, FarmerAddressSearchCriteria } from './soildata.report';
 
 @Injectable({
   providedIn: 'root'
@@ -150,6 +150,14 @@ export class SoildataService {
                 catchError(this.handleError('getCustom', []))
             );
       }
+
+      getCustomAddresses(searchParams:FarmerAddressSearchCriteria):Observable<FarmerAddressSearchResult>{
+        var url = this.baseUrl + "GetCustomFarmerAddress/";
+        return this.http.post<FarmerAddressSearchResult>(this.location.prepareExternalUrl(url), searchParams)
+            .pipe(
+                catchError(this.handleError('getCustomAddress', <FarmerAddressSearchResult>{}))
+            );
+      }
       pdf(id:string):Observable<Blob>{
         return this.http.get(this.location.prepareExternalUrl('/api/PdfSoilData/report/' + id ), {responseType: 'blob'})
             .pipe(
@@ -165,6 +173,10 @@ export class SoildataService {
         return  {params: searchParams};
       }
 
+}
+export class FarmerAddressSearchResult{
+    data:FarmerAddress[];
+    count:number;
 }
 
 export interface CountyCode{
