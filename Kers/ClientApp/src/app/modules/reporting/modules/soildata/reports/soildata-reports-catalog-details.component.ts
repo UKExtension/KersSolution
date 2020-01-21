@@ -71,7 +71,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     if(this.report.farmerForReport.emailAddress != undefined){
       email=this.report.farmerForReport.emailAddress;
     }
-    var mailText = "mailto:"+email+"?subject=Soil Test Results&body=https://kers.ca.uky.edu/api/PdfSoilData/report/"+this.report.uniqueCode;
+    var mailText = "mailto:"+email+"?subject=Soil Test Results&body=https://kers.ca.uky.edu/core/api/PdfSoilData/report/"+this.report.uniqueCode;
     window.location.href = mailText;
   }
 
