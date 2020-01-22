@@ -33,6 +33,9 @@ namespace Kers.Controllers
 		const int width = 612;
 		const int height = 792;
 
+		private int numPages;
+		private int currentPage;
+
 		string[] typefaceNames = {	"HelveticaNeue", "HelveticaNeue-Bold", 
 									"HelveticaNeue-CondensedBold", "HelveticaNeue-Light"
 								};
@@ -86,8 +89,11 @@ namespace Kers.Controllers
 			}			
 		}
 
+
 		private void ReportPerCrop(SKDocument document, SoilReport report, SoilReportBundle bundle){
 				var pdfCanvas = document.BeginPage(width, height);
+				numPages = NumPages(report);
+				currentPage = 1;
 				ReportHeader(pdfCanvas, report, bundle);
 				UnderTheHeader(pdfCanvas, report, bundle);
 				CropInfo(pdfCanvas, report, bundle);
@@ -103,6 +109,8 @@ namespace Kers.Controllers
 		}
 
 		private void ReportHeader(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
+			//Page Info
+			PrintPageInfo(pdfCanvas, report);
 			//Logo
 			addBitmap(pdfCanvas);
 			//Header Right
@@ -112,17 +120,103 @@ namespace Kers.Controllers
 			}
 			//County Office Address
 			var unit =  _context.PlanningUnit.Where( u => u.Id == bundle.PlanningUnit.PlanningUnitId).FirstOrDefault();   
-			pdfCanvas.DrawText(unit.FullName, 29, 29, getPaint(12.0f, 1));
-			pdfCanvas.DrawText(unit.Address, 29, 42, getPaint(10.0f));
-			pdfCanvas.DrawText(unit.City + ", KY " + unit.Zip, 29, 54, getPaint(10.0f));
-			pdfCanvas.DrawText(unit.Phone, 29, 66, getPaint(10.0f));
+			pdfCanvas.DrawText(unit.FullName, 29, 31, getPaint(12.0f, 1));
+			pdfCanvas.DrawText(unit.Address, 29, 44, getPaint(10.0f));
+			pdfCanvas.DrawText(unit.City + ", KY " + unit.Zip, 29, 56, getPaint(10.0f));
+			pdfCanvas.DrawText(unit.Phone, 29, 68, getPaint(10.0f));
 			//Horizontal Line
 			pdfCanvas.DrawLine(29, 80, width - 29, 80, thinLinePaint);
 		}
 
+		private void PrintPageInfo( SKCanvas pdfCanvas, SoilReport report ){
+			pdfCanvas.DrawText("Sample Id: "+report.CoSamnum+", "+report.CropInfo1??"", 29, 16, getPaint(7.0f));
+			pdfCanvas.DrawText("Page "+currentPage+" of "+numPages.ToString(), width - 65, 16, getPaint(7.0f));
+			pdfCanvas.DrawText( "Report Generated: " + DateTime.Now.ToString(), 29, height - 16, getPaint(7.0f) );
+		}
+
+		private int NumPages(SoilReport report){
+			var numPages = 1;
+			var pageHeight = height - 2 * 30;
+			var pageWidth = width - 2 * 29;
+			//Header
+			var runningHeight = 255;
+			if(report.ExtInfo1 != null ) runningHeight += 12;
+			if(report.ExtInfo2 != null ) runningHeight += 12;
+			if(report.ExtInfo3 != null ) runningHeight += 12;
+			//Test Results Header
+			runningHeight+=22;
+			//Test Results
+			var TestResultsCount = _soilContext.TestResults
+								.Where( r => r.PrimeIndex == report.Prime_Index)
+								.Count();
+			runningHeight += TestResultsCount * 18;
+			
+			
+			//Lime Comment
+			var paint = getPaint(9.0f);
+			var lineHeight = 12;
+			if(report.LimeComment != null){
+				var lines = this.SplitLines(report.LimeComment, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 20 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += (lines.Count() * lineHeight);
+			}
+
+			// Agent Notes
+			if(report.AgentNote != null){
+				var lines = this.SplitLines(report.AgentNote, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 20 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += ((lines.Count() * lineHeight) + 29);
+			}
+
+
+			//Comments
+			if(report.Comment1 != null){
+				var lines = this.SplitLines(report.Comment1, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += 10;
+				runningHeight += (lines.Count() * lineHeight);
+			}
+			if(report.Comment2 != null){
+				var lines = this.SplitLines(report.Comment2, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += 10;
+				runningHeight += (lines.Count() * lineHeight);
+			}
+			if(report.Comment3 != null){
+				var lines = this.SplitLines(report.Comment3, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += 10;
+				runningHeight += (lines.Count() * lineHeight);
+			}
+			if(report.Comment4 != null){
+				var lines = this.SplitLines(report.Comment4, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
+					numPages++;
+				}
+			}
+			return numPages;
+		}
+
+
 		private void UnderTheHeader(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
 			pdfCanvas.DrawText("REPORT TYPE: " + bundle.TypeForm.Code, 29, 95, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("LAB NUM: " + report.LabNum, 29, 112, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("CO NUM: " + bundle.CoSamnum, 29, 129, getPaint(10.0f, 1));
 
 			// Farmer Address
 			if(bundle.FarmerForReport != null){
@@ -249,6 +343,8 @@ namespace Kers.Controllers
 					BottomNote(pdfCanvas);
 					document.EndPage();
 					pdfCanvas = document.BeginPage(width, height);
+					currentPage++;
+					PrintPageInfo(pdfCanvas, report);
 					currentYPosition = 29;
 				}
 				pdfCanvas.DrawText("Lime Recommendation:", 29, currentYPosition + 19, getPaint(9.0f, 1));
@@ -272,6 +368,8 @@ namespace Kers.Controllers
 					BottomNote(pdfCanvas);
 					document.EndPage();
 					pdfCanvas = document.BeginPage(width, height);
+					currentPage++;
+					PrintPageInfo(pdfCanvas, report);
 					currentYPosition = 29;
 				}
 				pdfCanvas.DrawText("Extension Agent Note:", 29, currentYPosition + 19, getPaint(9.0f, 1));
@@ -287,13 +385,13 @@ namespace Kers.Controllers
 		private SKCanvas Comments(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
 			pdfCanvas.DrawText("Comments:", 29, currentYPosition + 19, getPaint(9.0f, 1));
 			currentYPosition += 10;
-			pdfCanvas = DisplayComment(pdfCanvas, report.Comment1, document);
-			pdfCanvas = DisplayComment(pdfCanvas, report.Comment2, document);
-			pdfCanvas = DisplayComment(pdfCanvas, report.Comment3, document);
-			pdfCanvas = DisplayComment(pdfCanvas, report.Comment4, document);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment1, document, report);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment2, document, report);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment3, document, report);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment4, document, report);
 			return pdfCanvas;
 		}
-		private SKCanvas DisplayComment(SKCanvas pdfCanvas, string comment, SKDocument document){
+		private SKCanvas DisplayComment(SKCanvas pdfCanvas, string comment, SKDocument document, SoilReport report){
 			var paint = getPaint(9.0f);
 			var lineHeight = 12;
 			if(comment != null){
@@ -303,6 +401,8 @@ namespace Kers.Controllers
 					BottomNote(pdfCanvas);
 					document.EndPage();
 					pdfCanvas = document.BeginPage(width, height);
+					currentPage++;
+					PrintPageInfo(pdfCanvas, report);
 					currentYPosition = 29;
 				}
 				currentYPosition += 10;
@@ -315,9 +415,9 @@ namespace Kers.Controllers
 
 		private void BottomNote(SKCanvas pdfCanvas){
 
-			SKRect bottomArrea = new SKRect(29,height - 45 , width - 29, height - 15);
-			var text = "Education programs of the Kentucky Cooperative Extension Service serve all people regardless of race, color, age, sex,\n religion, disability, or national origin. UNIVERSITY OF KENTUCKY, KENTUCKY STAE UNIVERSITY, U.S. DEPARTMENT OF AGRICULTURE\n AND KENTUCKY COUNTIES COOPERATING";
-			this.DrawText(pdfCanvas, text, bottomArrea, getPaint(8.0f), "center");
+			SKRect bottomArrea = new SKRect(29,height - 45 , width - 29, height - 18);
+			var text = "Education programs of the Kentucky Cooperative Extension Service serve all people regardless of race, color, age, sex, religion, disability,\n or national origin. UNIVERSITY OF KENTUCKY, KENTUCKY STAE UNIVERSITY, U.S. DEPARTMENT\n OF AGRICULTURE AND KENTUCKY COUNTIES COOPERATING";
+			this.DrawText(pdfCanvas, text, bottomArrea, getPaint(7.0f), "center");
 			
 		}
 
