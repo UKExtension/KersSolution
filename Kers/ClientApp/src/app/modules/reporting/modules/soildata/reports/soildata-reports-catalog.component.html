@@ -10,96 +10,101 @@
 </div>
 
 
-<a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
-  <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
-</a>
-<div class="row">
-  <form *ngIf="condition" class="form-horizontal form-label-left">
-    <div class="col-sm-offset-3 col-sm-9">
-      <h2>Refine Search</h2>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12">Form Type</label>
+
+
+<div  *ngIf="reports$ | async as reports">
+
+  <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
+    <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
+  </a>
+  <div class="row">
+    <form *ngIf="condition" class="form-horizontal form-label-left">
+      <div class="col-sm-offset-3 col-sm-9">
+        <h2>Refine Search</h2>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">Form Type</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            
+              
+                <label *ngFor="let option of typesCheckboxes" class="checkbox-inline">
+                    <input type="checkbox"
+                          (change)="onFormTypeChange($event)"
+                          name="options"
+                          value="{{option.value}}"
+                          [(ngModel)]="option.checked"/>
+                    {{option.name}}
+                </label>
+
+          </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Report Status</label>
         <div class="col-md-6 col-sm-6 col-xs-12">
           
             
-              <label *ngFor="let option of typesCheckboxes" class="checkbox-inline">
+              <label *ngFor="let option of statusesCheckboxes" class="checkbox-inline">
                   <input type="checkbox"
-                        (change)="onFormTypeChange($event)"
+                        (change)="onReportStatusesChange($event)"
                         name="options"
                         value="{{option.value}}"
                         [(ngModel)]="option.checked"/>
                   {{option.name}}
               </label>
-
-        </div>
-    </div>
-
-    <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12">Report Status</label>
-      <div class="col-md-6 col-sm-6 col-xs-12">
-        
-          
-            <label *ngFor="let option of statusesCheckboxes" class="checkbox-inline">
-                <input type="checkbox"
-                      (change)="onReportStatusesChange($event)"
-                      name="options"
-                      value="{{option.value}}"
-                      [(ngModel)]="option.checked"/>
-                {{option.name}}
-            </label>
-        </div>
-    </div>
-
-
-    <div class="form-group" >
-        <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-default" [class.active]="type=='dsc'">
-                <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
-                </label>
-                <label class="btn btn-default" [class.active]="type=='asc'">
-                  <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
-                </label>
-                <label class="btn btn-default" [class.active]="type=='smpl'">
-                    <input type="radio" name="type" id="option4" (click)="switchOrder('smpl')"> CO Sample Num Descending
-                  </label>
-            </div>
-        </div>
-    </div>  
-    <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
-      <div class="col-md-6 col-sm-6 col-xs-12">
-        
-          
-          <a class="btn btn-info btn-xs"><i class="fa fa-download"></i> pdf</a> Generate consolidated report of filtered results
-
+          </div>
       </div>
+
+
+      <div class="form-group" >
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+              <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-default" [class.active]="type=='dsc'">
+                  <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
+                  </label>
+                  <label class="btn btn-default" [class.active]="type=='asc'">
+                    <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
+                  </label>
+                  <label class="btn btn-default" [class.active]="type=='smpl'">
+                      <input type="radio" name="type" id="option4" (click)="switchOrder('smpl')"> CO Sample Num Descending
+                    </label>
+              </div>
+          </div>
+      </div>  
+      <div class="form-group" *ngIf="reports.length > 0">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+          
+            
+            <a class="btn btn-info btn-xs" (click)="printAll(reports)"  *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a> Generate consolidated report of filtered results
+            <loading *ngIf="pdfLoading"></loading>
+        </div>
+    </div>
+      
+      
+    </form>
+  </div><br>
+
+
+
+  <div class="table-responsive">
+    
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+              <th>Report Date</th>
+              <th>Form Type</th>
+              <th>CO Sample Num</th>
+              <th>Client</th>
+              <th>Status</th>
+              <th></th>              
+            </tr>
+        </thead>
+        <tbody *ngIf="!loading">
+          <tr *ngFor="let report of reports" [soildata-reports-catalog-details]="report"></tr>
+        </tbody>
+    </table>
+    <loading *ngIf="loading"></loading>
   </div>
-    
-    
-  </form>
-</div><br>
-
-
-
-<div class="table-responsive">
-  
-  <table class="table table-bordered table-striped" *ngIf="reports$ | async as reports">
-      <thead>
-          <tr>
-            <th>Report Date</th>
-            <th>Form Type</th>
-            <th>CO Sample Num</th>
-            <th>Client</th>
-            <th>Status</th>
-            <th></th>              
-          </tr>
-      </thead>
-      <tbody *ngIf="!loading">
-        <tr *ngFor="let report of reports" [soildata-reports-catalog-details]="report"></tr>
-      </tbody>
-  </table>
-  <loading *ngIf="loading"></loading>
 </div>

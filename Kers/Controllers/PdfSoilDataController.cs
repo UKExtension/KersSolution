@@ -53,6 +53,48 @@ namespace Kers.Controllers
             this._soilContext = _soilContext;
         }
 
+
+
+		[HttpPost("reports")]
+		public IActionResult ConsolidatedReportsPdf([FromBody] UniqueIds unigueIds)
+        {
+			using (var stream = new SKDynamicMemoryWStream ())
+                using (var document = SKDocument.CreatePdf (stream, this.metadata())) {
+					
+
+					var samples = this._soilContext.SoilReportBundle
+											.Where( b => unigueIds.ids.Contains(b.UniqueCode) && b.Reports.Count() > 0)
+											.Include( b => b.Reports)
+											.Include( b => b.PlanningUnit)
+											.Include( b => b.TypeForm)
+											.Include( b => b.FarmerForReport)
+											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus);
+					foreach( var sample in samples){
+						if( sample != null){
+							foreach( var report in sample.Reports){
+								ReportPerCrop( document, report, sample);
+							}
+							if( sample.LastStatus == null || sample.LastStatus.SoilReportStatus.Name != "Archived"){
+								sample.LastStatus = new SoilReportStatusChange();
+								sample.LastStatus.Created = DateTime.Now;
+								sample.LastStatus.SoilReportStatus = _soilContext.SoilReportStatus.Where( s => s.Name == "Archived").FirstOrDefault();
+								_soilContext.SaveChanges();
+							}
+						}else{
+							this.Log( unigueIds,"SoilReportBundle", "Error in finding SoilReportBundle attempt.", "SoilReportBundle", "Error");
+							return new StatusCodeResult(500);
+						}
+					}
+				document.Close();
+				return File(stream.DetachAsData().AsStream(), "application/pdf", "SoilTestResults.pdf");
+			}
+		}
+		public class UniqueIds{
+			public List<string> ids;
+		}
+
+
+
         [HttpGet("report/{uniqueId}")]
 		public IActionResult ReportsPdf(string uniqueId)
         {

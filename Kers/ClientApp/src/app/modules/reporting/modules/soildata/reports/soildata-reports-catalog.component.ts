@@ -4,6 +4,7 @@ import { Subject, Observable } from 'rxjs';
 import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import { SoildataService } from '../soildata.service';
 import { startWith, flatMap, tap } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'soildata-reports-catalog',
@@ -14,7 +15,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
   loading: boolean = true; // Turn spinner on and off
   reports$:Observable<SoilReportBundle[]>;
   type="dsc";
-
+  pdfLoading = false;
 
   @Input() criteria:SoilReportSearchCriteria;
   @Input() startDate:Date;
@@ -138,6 +139,19 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.type = type;
     this.criteria["order"] = type;
     this.onRefresh();
+  }
+
+  printAll(reports:SoilReportBundle[]){
+    this.pdfLoading = true;
+    this.service.consolidatedPdf(reports.map(r => r.uniqueCode)).subscribe(
+      data => {
+        var blob = new Blob([data], {type: 'application/pdf'});
+        saveAs(blob, "SoilTestResults.pdf");
+        this.pdfLoading = false;
+      }
+    )
+    
+
   }
 
 

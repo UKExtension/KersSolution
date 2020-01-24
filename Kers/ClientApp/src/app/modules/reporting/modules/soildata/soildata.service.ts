@@ -163,14 +163,12 @@ export class SoildataService {
             .pipe(
                 catchError(this.handleError('pdf', <Blob>{}))
             );
-    }
-
-      private addParams(params:{}){
-        let searchParams = {};
-        for(let p in params){
-            searchParams[p] = params[p];
-        }
-        return  {params: searchParams};
+      }
+      consolidatedPdf(ids:string[]):Observable<Blob>{
+        return this.http.post(this.location.prepareExternalUrl('/api/PdfSoilData/reports/' ), {ids:ids}, {responseType: 'blob'})
+        .pipe(
+            catchError(this.handleError('pdf', <Blob>{}))
+        );
       }
 
 }
