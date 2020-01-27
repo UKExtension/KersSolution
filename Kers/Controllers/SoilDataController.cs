@@ -189,6 +189,13 @@ namespace Kers.Controllers
                     OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
                 }while( OrphanedReport != null);
             }
+            // Add Unique Code to Farmer Addresses
+            var addresses = _soilDataContext.FarmerAddress.Where( a => a.UniqueCode == null);
+            if( addresses.Any()){
+                foreach( var address in addresses) address.UniqueCode = Guid.NewGuid().ToString();
+                _soilDataContext.SaveChanges();
+            }
+            
         }
 
         [HttpPut("updatebundleaddress/{bundleId}")]
@@ -283,6 +290,7 @@ namespace Kers.Controllers
                 var user = this.CurrentUser();
                 var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
                 address.CountyCode = countyCode;
+                address.UniqueCode = Guid.NewGuid().ToString();
                 _soilDataContext.Add(address); 
                 _soilDataContext.SaveChanges();
                 this.Log(address,"FarmerAddress", "Farmer Address added.");

@@ -34,6 +34,7 @@ namespace Kers.Models.Entities.SoilData
         [Column("Historic_FarmerID")]
         public string HistoricFarmerId {get; set;}
         public string FarmerData {get;set;}
+        public string UniqueCode {get;set;}
         public List<SoilReportBundle> Reports {get;set;}
 
     }
