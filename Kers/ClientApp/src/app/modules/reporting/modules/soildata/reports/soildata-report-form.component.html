@@ -2,8 +2,14 @@
 <div class="row">
   <div class="col-sm-6">
     <strong>{{report.typeForm.name}}</strong><br>
+    Soil Test Sample Submitted: {{report.sampleLabelCreated | date:'mediumDate'}}<br>
     Lab Tests Performed: {{report.labTestsReady | date:'mediumDate'}}<br>
-    Data Analysis: {{report.dataProcessed | date:'mediumDate'}}
+    Data Analysis: {{report.dataProcessed | date:'mediumDate'}}<br>
+    Laboratory Number: {{report.reports[0].labNum}}<br>
+    Owner Sample Id: {{report.reports[0].osID}}<br>
+    <span *ngIf="report.reports[0].extra1">{{report.reports[0].extra1}}<br></span>
+    <span *ngIf="report.reports[0].extra2">{{report.reports[0].extra2}}<br></span>
+    <span *ngIf="report.reports[0].extra3">{{report.reports[0].extra3}}<br></span>
   </div>
   <div class="col-sm-6">
     <strong>Farmer:</strong><br>
