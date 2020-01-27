@@ -40,7 +40,7 @@ export class SoilReport{
     coId:string;
     coSamnum:string;
     farmerID:string;
-    osID:string;
+    osId:string;
     acres:string;
     cropInfo1:string;
     cropInfo2:string;

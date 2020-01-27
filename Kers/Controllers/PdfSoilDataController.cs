@@ -68,7 +68,8 @@ namespace Kers.Controllers
 											.Include( b => b.PlanningUnit)
 											.Include( b => b.TypeForm)
 											.Include( b => b.FarmerForReport)
-											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus);
+											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+											.ToList();
 					foreach( var sample in samples){
 						if( sample != null){
 							foreach( var report in sample.Reports){
