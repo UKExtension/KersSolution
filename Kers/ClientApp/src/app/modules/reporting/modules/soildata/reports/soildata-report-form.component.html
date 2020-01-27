@@ -6,7 +6,7 @@
     Lab Tests Performed: {{report.labTestsReady | date:'mediumDate'}}<br>
     Data Analysis: {{report.dataProcessed | date:'mediumDate'}}<br>
     Laboratory Number: {{report.reports[0].labNum}}<br>
-    Owner Sample Id: {{report.reports[0].osID}}<br>
+    Owner Sample Id: {{report.reports[0].osId}}<br>
     <span *ngIf="report.reports[0].extra1">{{report.reports[0].extra1}}<br></span>
     <span *ngIf="report.reports[0].extra2">{{report.reports[0].extra2}}<br></span>
     <span *ngIf="report.reports[0].extra3">{{report.reports[0].extra3}}<br></span>
