@@ -1,15 +1,16 @@
-<h2>Soil Test Sample Submitted on {{report.sampleLabelCreated | date:'mediumDate'}}</h2>
+<h2>County Sample Number {{report.coSamnum}}</h2>
 <div class="row">
   <div class="col-sm-6">
     <strong>{{report.typeForm.name}}</strong><br>
-    Soil Test Sample Submitted: {{report.sampleLabelCreated | date:'mediumDate'}}<br>
-    Lab Tests Performed: {{report.labTestsReady | date:'mediumDate'}}<br>
-    Data Analysis: {{report.dataProcessed | date:'mediumDate'}}<br>
+    Received Date: {{report.labTestsReady | date:'mediumDate'}}<br>
+    Report Date: {{report.dataProcessed | date:'mediumDate'}}<br>
     Laboratory Number: {{report.reports[0].labNum}}<br>
     Owner Sample Id: {{report.reports[0].osId}}<br>
+    <span *ngIf="report.reports[0].acres">Acres: {{report.reports[0].acres}}<br></span>
     <span *ngIf="report.reports[0].extra1">{{report.reports[0].extra1}}<br></span>
     <span *ngIf="report.reports[0].extra2">{{report.reports[0].extra2}}<br></span>
     <span *ngIf="report.reports[0].extra3">{{report.reports[0].extra3}}<br></span>
+    
   </div>
   <div class="col-sm-6">
     <strong>Farmer:</strong><br>
@@ -17,8 +18,8 @@
     <div *ngIf="report.farmerForReport != null && !loading">
       {{report.farmerForReport.first}} {{report.farmerForReport.last}}<br>
       {{report.farmerForReport.address}}<br>
-      {{report.farmerForReport.city}}, {{report.farmerForReport.state}} {{report.farmerForReport.zip}}
-      <br><br>
+      {{report.farmerForReport.city}}, {{report.farmerForReport.st}} {{report.farmerForReport.zip}}
+      <br><span *ngIf="report.farmerForReport.emailAddress">Email: {{report.farmerForReport.emailAddress}}</span><br>
       <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true" *ngIf="!addressBrowserOpen">change</a>
     </div>
     <div *ngIf="report.farmerForReport == null && !addressBrowserOpen">
@@ -28,7 +29,6 @@
     <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
   </div>
 </div><br><br>
-<h3>Crop(s)</h3>
 <div class="row">
   <div class="col-xs-12" *ngFor="let crop of report.reports">
     <soildata-report-crop [crop]="crop" (onFormSubmit)="cropNoteUpdate($event)"></soildata-report-crop>

@@ -257,7 +257,7 @@ namespace Kers.Controllers
 
 
 		private void UnderTheHeader(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
-			pdfCanvas.DrawText("REPORT TYPE: " + bundle.TypeForm.Code, 29, 95, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("REPORT TYPE: " + report.TypeForm, 29, 95, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("LAB NUM: " + report.LabNum, 29, 112, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("CO NUM: " + bundle.CoSamnum, 29, 129, getPaint(10.0f, 1));
 

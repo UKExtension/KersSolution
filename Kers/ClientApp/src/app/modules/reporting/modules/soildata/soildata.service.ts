@@ -209,6 +209,7 @@ export class FarmerAddress{
     longitude:string;
     altitude:string;
     farmerData:string;
+    uniqueCode:string;
 }
 
 export interface CountyNote{

@@ -32,6 +32,7 @@ export class SoilReportStatus{
 
 export class SoilReport{
     id:number;
+    prime_Index:number;
     dateIn:Date;
     dateSent:Date;
     dateOut:Date;

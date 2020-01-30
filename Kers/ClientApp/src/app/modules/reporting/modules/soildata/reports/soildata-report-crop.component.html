@@ -1,5 +1,5 @@
 <h2><a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
-  <i class="fa fa-plus-square" *ngIf="!condition"></i> {{crop.cropInfo1}}
+  <i class="fa fa-plus-square" *ngIf="!condition"></i> {{crop.cropInfo1}} (Form {{crop.typeForm}})
 </a></h2>
 <loading *ngIf="loading"></loading>
 <div *ngIf="condition && !loading"><br>

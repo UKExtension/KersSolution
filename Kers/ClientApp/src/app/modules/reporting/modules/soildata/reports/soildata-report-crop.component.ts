@@ -36,7 +36,7 @@ export class SoildataReportCropComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<SoilReport>();
 
   ngOnInit() {
-    this.testResults = this.service.labResults(this.crop.id);
+    this.testResults = this.service.labResults(this.crop.prime_Index);
     this.notes = this.service.notesByCounty();
     if( this.crop.agentNote != undefined) this.noteForm.patchValue({'note':this.crop.agentNote});
   }
