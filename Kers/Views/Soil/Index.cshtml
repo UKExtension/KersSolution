@@ -1,8 +1,32 @@
-@model List<Kers.Controllers.Reports.StrategicInitiativeIndicatorsViewModel>
+@model List<Kers.Models.Entities.SoilData.SoilReportBundle>
 @{
     Layout = "~/Views/Shared/_LayoutSoil.cshtml";
     
-    ViewData["Subtitle"] = "Kentucky Extension Reports";
+    ViewData["Subtitle"] = "Soil Test Results";
     
 }
-Address
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Sample Submitted Date</th>
+            <th>Form Type</th>
+            <th>CO Sample Num</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.SampleLabelCreated.ToString("d")</td>
+                <td>@item.TypeForm.Code</td>
+                <td>@item.CoSamnum</td>
+                <td>@item.LastStatus.SoilReportStatus.Name</td>
+                <td><a href="~/reports/soil/report/@item.UniqueCode">select</a></td>
+            </tr>
+            
+        }
+    </tbody>
+</table>
+

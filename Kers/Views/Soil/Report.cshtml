@@ -1,0 +1,23 @@
+@model Kers.Models.Entities.SoilData.SoilReportBundle
+@{
+    Layout = "~/Views/Shared/_LayoutSoil.cshtml";
+    
+    ViewData["Subtitle"] = "Soil Test Result";
+    
+}
+
+<h3>Soil Test Sample Submitted on @Model.SampleLabelCreated.ToString("d")</h3>
+<a href="~/api/PdfSoilData/report/@Model.UniqueCode" class="btn btn-sm btn-info">Download</a>
+<br><br>
+<h4>Form Type: @Model.TypeForm.Name</h4>
+<div>
+Lab Tests Performed: @Model.LabTestsReady.ToString("d")<br>
+Data Analysis: @Model.DataProcessed.ToString("d")<br>
+Laboratory Number: @Model.Reports.First().LabNum<br>
+Owner Sample Id: @Model.Reports.First().OsId <br>
+</div>
+<h5>Crop(s):</h5>
+@foreach (var item in Model.Reports)
+{
+    <h6>@item.CropInfo1</h6>
+}

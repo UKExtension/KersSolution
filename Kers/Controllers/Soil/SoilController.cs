@@ -31,7 +31,6 @@ namespace Kers.Controllers.Reports
     {
         KERScoreContext _coreContext;
         SoilDataContext _context;
-        private IDistributedCache _cache;
 
         public SoilController( 
                     SoilDataContext _context,
@@ -47,7 +46,30 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> Index(string code)
         {
             var address = await this._context.FarmerAddress.Where(a => a.UniqueCode == code).FirstOrDefaultAsync();
-            return View(address);
+            if(address == null) return NotFound();
+            ViewData["Title"] = address.First + " " + address.Last;
+            var results = this._context.SoilReportBundle
+                                    .Where( a => a.FarmerAddress == address)
+                                    .Include( a => a.TypeForm)
+                                    .Include( a => a.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                                    .ToListAsync();
+            return View(await results);
+        }
+
+        [HttpGet]
+        [Route("report/{code}/")]
+        public async Task<IActionResult> Report(string code)
+        {
+            var report = await this._context.SoilReportBundle
+                            .Where(a => a.UniqueCode == code)
+                            .Include( a => a.Reports)
+                            .Include( a => a.TypeForm)
+                            .FirstOrDefaultAsync();
+            if(report == null) return NotFound();
+
+            ViewData["Title"] = report.Reports.FirstOrDefault().OsId;
+            
+            return View(report);
         }
 
 /* 

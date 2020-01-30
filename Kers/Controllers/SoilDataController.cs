@@ -181,7 +181,7 @@ namespace Kers.Controllers
                                                 .Where( f => f.Code == OrphanedReport.TypeForm)
                                                 .FirstOrDefault();
                     Bundle.LastStatus = new SoilReportStatusChange();
-                    Bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Recieved").FirstOrDefault();
+                    Bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Received").FirstOrDefault();
                     Bundle.LastStatus.Created = DateTime.Now;
                     Bundle.UniqueCode = Guid.NewGuid().ToString();
                     _soilDataContext.Add(Bundle);
