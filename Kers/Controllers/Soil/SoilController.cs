@@ -49,7 +49,7 @@ namespace Kers.Controllers.Reports
             if(address == null) return NotFound();
             ViewData["Title"] = address.First + " " + address.Last;
             var results = this._context.SoilReportBundle
-                                    .Where( a => a.FarmerAddress == address)
+                                    .Where( a => a.FarmerAddress == address && a.LastStatus.SoilReportStatus.Name == "Archived")
                                     .Include( a => a.TypeForm)
                                     .Include( a => a.LastStatus).ThenInclude( s => s.SoilReportStatus)
                                     .ToListAsync();

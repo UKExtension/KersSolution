@@ -100,6 +100,8 @@ namespace Kers.Controllers
             IOrderedQueryable orderedBundles;
             if(criteria.Order == "smpl"){
                 orderedBundles = bundles.OrderByDescending( s => s.CoSamnum);
+            }else if( criteria.Order == "smplasc"){
+                orderedBundles = bundles.OrderBy( s => s.CoSamnum);
             }else if( criteria.Order == "dsc"){
                 orderedBundles = bundles.OrderByDescending( s => s.DataProcessed);
             }else{

@@ -61,14 +61,19 @@
           <div class="col-md-9 col-sm-9 col-xs-12">
               <div class="btn-group" data-toggle="buttons">
                   <label class="btn btn-default" [class.active]="type=='dsc'">
-                  <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
+                    <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Desc
                   </label>
                   <label class="btn btn-default" [class.active]="type=='asc'">
-                    <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
+                    <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Asc
                   </label>
                   <label class="btn btn-default" [class.active]="type=='smpl'">
-                      <input type="radio" name="type" id="option4" (click)="switchOrder('smpl')"> CO Sample Num Descending
-                    </label>
+                    <input type="radio" name="type" id="option4" (click)="switchOrder('smpl')"> CoSamNum Desc
+                  </label>
+                  <label class="btn btn-default" [class.active]="type=='smplasc'">
+                    <input type="radio" name="type" id="option4" (click)="switchOrder('smplasc')"> CoSamNum Asc
+                  </label>
+
+                    
               </div>
           </div>
       </div>  
