@@ -407,6 +407,7 @@ namespace Kers.Controllers
             }
             var addresses = await _soilDataContext.FarmerAddress.
                                     Where(a => a.CountyCode.PlanningUnitId == countyid).
+                                    OrderBy( a => a.Last).
                                     ToListAsync();
             return new OkObjectResult(addresses);
         }
