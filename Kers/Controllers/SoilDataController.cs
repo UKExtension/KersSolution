@@ -265,13 +265,17 @@ namespace Kers.Controllers
             var crop = _soilDataContext.SoilReport
                             .Where( b => b.Id == reportId)
                             .Include( b => b.SoilReportBundle).ThenInclude( r => r.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                            .Include( b => b.SoilReportBundle).ThenInclude( r => r.Reports)
                             .FirstOrDefault();
             if(crop != null && note != null ){
                 crop.AgentNote = note.AgentNote;
                 if( crop.SoilReportBundle.LastStatus == null || crop.SoilReportBundle.LastStatus.SoilReportStatus.Name == "Received"){
-                    crop.SoilReportBundle.LastStatus = new SoilReportStatusChange();
-                    crop.SoilReportBundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where(s => s.Name == "Reviewed").FirstOrDefault();
-                    crop.SoilReportBundle.LastStatus.Created = DateTime.Now;
+                    var otherReports = crop.SoilReportBundle.Reports.Where(r => r.Id != crop.Id && r.AgentNote == null);
+                    if( !otherReports.Any()){
+                        crop.SoilReportBundle.LastStatus = new SoilReportStatusChange();
+                        crop.SoilReportBundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where(s => s.Name == "Reviewed").FirstOrDefault();
+                        crop.SoilReportBundle.LastStatus.Created = DateTime.Now;
+                    }
                 }
                 _soilDataContext.SaveChanges();
                 this.Log(crop,"SoilReport", "SoilReport note Updated.");
