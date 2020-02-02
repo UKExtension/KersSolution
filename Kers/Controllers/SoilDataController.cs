@@ -144,7 +144,7 @@ namespace Kers.Controllers
             if(criteria.Order == "frq"){
                 addresses = addresses.OrderByDescending( s => s.Reports.Count());
             }else{
-                addresses = addresses.OrderBy( s => s.First).ThenBy( s => s.Last);
+                addresses = addresses.OrderBy( s => s.Last).ThenBy( s => s.First);
             }
             return new OkObjectResult( new {count = addresses.Count(), data = addresses.Take(criteria.Amount)} );
         }
