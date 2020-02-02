@@ -59,7 +59,7 @@ namespace Kers.Controllers
 		public IActionResult ConsolidatedReportsPdf([FromBody] UniqueIds unigueIds)
         {
 			using (var stream = new SKDynamicMemoryWStream ())
-                using (var document = SKDocument.CreatePdf (stream, this.metadata())) {
+                using (var document = SKDocument.CreatePdf (stream, this.metadata("Kers, Soil Testing, Consolidated Report", "Soil Test Reports", "Summary Soil Test Report"))) {
 					
 
 					var samples = this._soilContext.SoilReportBundle
@@ -100,7 +100,7 @@ namespace Kers.Controllers
 		public IActionResult ReportsPdf(string uniqueId)
         {
 			using (var stream = new SKDynamicMemoryWStream ())
-                using (var document = SKDocument.CreatePdf (stream, this.metadata())) {
+                using (var document = SKDocument.CreatePdf (stream, this.metadata("Kers, Soil Testing, Soil Test Report", "Soil Test Reports", "Detailed Soil Test Report"))) {
 					
 					var sample = this._soilContext.SoilReportBundle
 											.Where( b => b.UniqueCode == uniqueId && b.Reports.Count() > 0)
