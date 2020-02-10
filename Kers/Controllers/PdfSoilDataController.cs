@@ -269,6 +269,14 @@ namespace Kers.Controllers
 				pdfCanvas.DrawText(bundle.FarmerForReport.HomeNumber??"" , 205, 146, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(bundle.FarmerForReport.EmailAddress??"" , 205, 163, getPaint(10.0f, 1));
 			}
+			
+
+			var brushPaint = new SKPaint();
+			brushPaint.Typeface = new SKTypeface.FromFamilyName("Brush Script MT");
+			brushPaint.TextSize = 12.0f;
+
+			pdfCanvas.DrawText("Test Signature", 330, 110, brushPaint);
+
 
 			pdfCanvas.DrawLine(330, 120, width - 29, 120, thinLinePaint);
 			var signee = _soilContext.FormTypeSignees
