@@ -60,6 +60,7 @@ namespace Kers.Models.Entities.SoilData
         public string Comment7 {get;set;}
         public string LimeComment {get;set;}
         public string AgentNote {get;set;}
+        public int? NoteByKersUserId {get;set;}
         [Column("EXTRA1")]
         public string Extra1 {get;set;}
         [Column("EXTRA2")]

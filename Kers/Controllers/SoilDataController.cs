@@ -271,6 +271,8 @@ namespace Kers.Controllers
                             .FirstOrDefault();
             if(crop != null && note != null ){
                 crop.AgentNote = note.AgentNote;
+                var user = this.CurrentUser();
+                crop.NoteByKersUserId = user.Id;
                 if( crop.SoilReportBundle.LastStatus == null || crop.SoilReportBundle.LastStatus.SoilReportStatus.Name == "Received"){
                     var otherReports = crop.SoilReportBundle.Reports.Where(r => r.Id != crop.Id && r.AgentNote == null);
                     if( !otherReports.Any()){
