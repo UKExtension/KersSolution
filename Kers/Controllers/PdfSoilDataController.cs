@@ -36,10 +36,6 @@ namespace Kers.Controllers
 		private int numPages;
 		private int currentPage;
 
-		string[] typefaceNames = {	"HelveticaNeue", "HelveticaNeue-Bold", 
-									"HelveticaNeue-CondensedBold", "HelveticaNeue-Light"
-								};
-
 
 		int currentYPosition = 0;
         public PdfSoilDataController(
@@ -271,11 +267,7 @@ namespace Kers.Controllers
 			}
 			
 
-			var brushPaint = new SKPaint();
-			brushPaint.Typeface = new SKTypeface.FromFamilyName("Brush Script MT");
-			brushPaint.TextSize = 12.0f;
-
-			pdfCanvas.DrawText("Test Signature", 330, 110, brushPaint);
+			pdfCanvas.DrawText("Test Signature", 330, 110, getPaint(12.0f, 4));
 
 
 			pdfCanvas.DrawLine(330, 120, width - 29, 120, thinLinePaint);

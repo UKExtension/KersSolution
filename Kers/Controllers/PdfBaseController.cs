@@ -36,7 +36,8 @@ namespace Kers.Controllers
 		const int height = 792;
 
 		string[] typefaceNames = {	"HelveticaNeue", "HelveticaNeue-Bold", 
-									"HelveticaNeue-CondensedBold", "HelveticaNeue-Light"
+									"HelveticaNeue-CondensedBold", "HelveticaNeue-Light",
+									"BRUSHSCI"
 								};
 
 		SKTypeface[] typefaces;
