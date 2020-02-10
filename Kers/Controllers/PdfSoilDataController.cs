@@ -265,12 +265,18 @@ namespace Kers.Controllers
 				pdfCanvas.DrawText(bundle.FarmerForReport.HomeNumber??"" , 205, 146, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(bundle.FarmerForReport.EmailAddress??"" , 205, 163, getPaint(10.0f, 1));
 			}
-			
-
-			pdfCanvas.DrawText("Test Signature", 330, 110, getPaint(12.0f, 4));
-
-
-			pdfCanvas.DrawLine(330, 120, width - 29, 120, thinLinePaint);
+			if(report.NoteByKersUserId != null){
+				
+				var user = _context.KersUser.Where( u => u.Id == report.NoteByKersUserId)
+					.Include( u => u.PersonalProfile )
+					.FirstOrDefault();
+				if(user != null){
+					pdfCanvas.DrawText(user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName, 330, 125, getPaint(18.0f, 4));
+				}
+			}
+			pdfCanvas.DrawLine(330, 130, width - 29, 130, thinLinePaint);
+			pdfCanvas.DrawText("Extension Agent", 330, 146, getPaint(11.0f, 1));
+			/*
 			var signee = _soilContext.FormTypeSignees
 								.Where( s => s.TypeForm == bundle.TypeForm && s.PlanningUnit == bundle.PlanningUnit )
 								.FirstOrDefault();
@@ -278,6 +284,7 @@ namespace Kers.Controllers
 				if(signee.Signee != null ) pdfCanvas.DrawText(signee.Signee, 330, 146, getPaint(10.0f, 1));
 				if(signee.Title != null ) pdfCanvas.DrawText(signee.Title, 330, 163, getPaint(10.0f, 1));
 			}
+			*/
 		}
 
 		private void CropInfo(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
