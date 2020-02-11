@@ -134,9 +134,10 @@ namespace Kers.Controllers
 				numPages = NumPages(report);
 				currentPage = 1;
 				ReportHeader(pdfCanvas, report, bundle);
+				currentYPosition = 177;
 				UnderTheHeader(pdfCanvas, report, bundle);
 				CropInfo(pdfCanvas, report, bundle);
-				currentYPosition = 265;
+				
 				ExtraInfo(pdfCanvas, report);
 				TestResults(pdfCanvas, report);
 				pdfCanvas = LimeComment(pdfCanvas, report, document);
@@ -173,83 +174,7 @@ namespace Kers.Controllers
 			pdfCanvas.DrawText( "Report Generated: " + DateTime.Now.ToString(), 29, height - 16, getPaint(7.0f) );
 		}
 
-		private int NumPages(SoilReport report){
-			var numPages = 1;
-			var pageHeight = height - 2 * 30;
-			var pageWidth = width - 2 * 29;
-			//Header
-			var runningHeight = 255;
-			if(report.ExtInfo1 != null ) runningHeight += 12;
-			if(report.ExtInfo2 != null ) runningHeight += 12;
-			if(report.ExtInfo3 != null ) runningHeight += 12;
-			//Test Results Header
-			runningHeight+=22;
-			//Test Results
-			var TestResultsCount = _soilContext.TestResults
-								.Where( r => r.PrimeIndex == report.Prime_Index)
-								.Count();
-			runningHeight += TestResultsCount * 18;
-			
-			
-			//Lime Comment
-			var paint = getPaint(9.0f);
-			var lineHeight = 12;
-			if(report.LimeComment != null){
-				var lines = this.SplitLines(report.LimeComment, paint, pageWidth);
-				if( runningHeight + lines.Count() * lineHeight + 20 > pageHeight){
-					numPages++;
-					runningHeight = 29;
-				}
-				runningHeight += (lines.Count() * lineHeight);
-			}
-
-			// Agent Notes
-			if(report.AgentNote != null){
-				var lines = this.SplitLines(report.AgentNote, paint, pageWidth);
-				if( runningHeight + lines.Count() * lineHeight + 20 > pageHeight){
-					numPages++;
-					runningHeight = 29;
-				}
-				runningHeight += ((lines.Count() * lineHeight) + 29);
-			}
-
-
-			//Comments
-			if(report.Comment1 != null){
-				var lines = this.SplitLines(report.Comment1, paint, pageWidth);
-				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
-					numPages++;
-					runningHeight = 29;
-				}
-				runningHeight += 10;
-				runningHeight += (lines.Count() * lineHeight);
-			}
-			if(report.Comment2 != null){
-				var lines = this.SplitLines(report.Comment2, paint, pageWidth);
-				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
-					numPages++;
-					runningHeight = 29;
-				}
-				runningHeight += 10;
-				runningHeight += (lines.Count() * lineHeight);
-			}
-			if(report.Comment3 != null){
-				var lines = this.SplitLines(report.Comment3, paint, pageWidth);
-				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
-					numPages++;
-					runningHeight = 29;
-				}
-				runningHeight += 10;
-				runningHeight += (lines.Count() * lineHeight);
-			}
-			if(report.Comment4 != null){
-				var lines = this.SplitLines(report.Comment4, paint, pageWidth);
-				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
-					numPages++;
-				}
-			}
-			return numPages;
-		}
+		
 
 
 		private void UnderTheHeader(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
@@ -276,6 +201,11 @@ namespace Kers.Controllers
 			}
 			pdfCanvas.DrawLine(330, 130, width - 29, 130, thinLinePaint);
 			pdfCanvas.DrawText("Extension Agent", 330, 146, getPaint(11.0f, 1));
+
+			if(report.OsId != null && report.OsId != ""){
+				pdfCanvas.DrawText("OWNER SAMPLE ID: "+report.OsId, 29, currentYPosition, getPaint(10.0f, 1));
+				currentYPosition += 2;
+			}
 			/*
 			var signee = _soilContext.FormTypeSignees
 								.Where( s => s.TypeForm == bundle.TypeForm && s.PlanningUnit == bundle.PlanningUnit )
@@ -289,15 +219,55 @@ namespace Kers.Controllers
 
 		private void CropInfo(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
 			// Bordered Rectangle
-
-			var rect = new SKRect(29, 180, 612 - 29, 250 );
 			
-			pdfCanvas.DrawRect( rect, thickLinePaint);
+			//var rect = new SKRect(29, 180, 612 - 29, 250 );
+			
+			//pdfCanvas.DrawRect( rect, thickLinePaint);
 
 			// Inside the rectangle
-			var startingX = 29;
-			var startingY = 190;
+			
+			
+			
+			var cropInfo = "";
+			for( var i = 1; i < 12; i++){
+				var val = report.GetType().GetProperty("CropInfo" + i.ToString())?.GetValue(report, null);
+				if(val != null){
+					cropInfo +=  " " + val;
+				} 
+			}
+
+			var paint = getPaint(9.0f);
+			var lineHeight = 12;
+			if(cropInfo != ""){
+				currentYPosition += 3;
+				pdfCanvas.DrawLine(29, currentYPosition, width - 29, currentYPosition, thinLinePaint);
+				
+				
+				
+				
+				currentYPosition += 12;
+				pdfCanvas.DrawText("AGRICULTURE CROP INFORMATION:", 29, currentYPosition, getPaint(9.0f, 1));
+				
+
+				var lines = this.SplitLines(cropInfo, paint, width - 2 * 29);
+				SKRect area = new SKRect(29,currentYPosition, width - 29, currentYPosition + lines.Count() * lineHeight);
+				
+				this.DrawText(pdfCanvas, cropInfo, area, paint);
+				currentYPosition += (lines.Count() * lineHeight + 6);
+			}
+
+
+
+			
+			
+			
+
+
+			/* 
+
+			var startingY = currentYPosition;
 			var rectHeight = 72;
+			var startingX = 29;
 			SKPoint[] coordinates  = new SKPoint[] {
 				new SKPoint( startingX + 5, startingY + 5),
 				new SKPoint( startingX + (612 - 58)/3, startingY + 5),
@@ -318,20 +288,39 @@ namespace Kers.Controllers
 					if(position > 8) break;
 				} 
 			}
+			currentYPosition += rectHeight;
+			
+			 */
+			
 		}
 		private void ExtraInfo(SKCanvas pdfCanvas, SoilReport report){
+			var extraPresent = false;
 			if(report.Extra1 != null){
+				extraPresent = true;
+				pdfCanvas.DrawLine(29, currentYPosition, width - 29, currentYPosition, thinLinePaint);
+				currentYPosition += 10;
 				pdfCanvas.DrawText(report.Extra1, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition+=12;
 			}
 			if(report.Extra2 != null){
+				if( !extraPresent ){
+					pdfCanvas.DrawLine(29, currentYPosition, width - 29, currentYPosition, thinLinePaint);
+					currentYPosition += 10;
+					extraPresent = true;
+				}
 				pdfCanvas.DrawText(report.Extra2, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition+=12;
 			}
 			if(report.Extra3 != null){
+				if( !extraPresent ){
+					pdfCanvas.DrawLine(29, currentYPosition, width - 29, currentYPosition, thinLinePaint);
+					currentYPosition += 10;
+					extraPresent = true;
+				}
 				pdfCanvas.DrawText(report.Extra3, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition+=12;
 			}
+			if(extraPresent) currentYPosition -= 3;
 		}
 		private void TestResults(SKCanvas pdfCanvas, SoilReport report){
 			var results = _soilContext.TestResults
@@ -461,6 +450,85 @@ namespace Kers.Controllers
 				currentYPosition += (lines.Count() * lineHeight);
 			}
 			return pdfCanvas;
+		}
+
+		private int NumPages(SoilReport report){
+			var numPages = 1;
+			var pageHeight = height - 2 * 30;
+			var pageWidth = width - 2 * 29;
+			//Header
+			var runningHeight = 255;
+			if(report.OsId != null && report.OsId != "") runningHeight += 12;
+			if(report.ExtInfo1 != null ) runningHeight += 12;
+			if(report.ExtInfo2 != null ) runningHeight += 12;
+			if(report.ExtInfo3 != null ) runningHeight += 12;
+			//Test Results Header
+			runningHeight+=22;
+			//Test Results
+			var TestResultsCount = _soilContext.TestResults
+								.Where( r => r.PrimeIndex == report.Prime_Index)
+								.Count();
+			runningHeight += TestResultsCount * 18;
+			
+			
+			//Lime Comment
+			var paint = getPaint(9.0f);
+			var lineHeight = 12;
+			if(report.LimeComment != null){
+				var lines = this.SplitLines(report.LimeComment, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 20 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += (lines.Count() * lineHeight);
+			}
+
+			// Agent Notes
+			if(report.AgentNote != null){
+				var lines = this.SplitLines(report.AgentNote, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 20 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += ((lines.Count() * lineHeight) + 29);
+			}
+
+
+			//Comments
+			if(report.Comment1 != null){
+				var lines = this.SplitLines(report.Comment1, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += 10;
+				runningHeight += (lines.Count() * lineHeight);
+			}
+			if(report.Comment2 != null){
+				var lines = this.SplitLines(report.Comment2, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += 10;
+				runningHeight += (lines.Count() * lineHeight);
+			}
+			if(report.Comment3 != null){
+				var lines = this.SplitLines(report.Comment3, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
+					numPages++;
+					runningHeight = 29;
+				}
+				runningHeight += 10;
+				runningHeight += (lines.Count() * lineHeight);
+			}
+			if(report.Comment4 != null){
+				var lines = this.SplitLines(report.Comment4, paint, pageWidth);
+				if( runningHeight + lines.Count() * lineHeight + 10 > pageHeight){
+					numPages++;
+				}
+			}
+			return numPages;
 		}
 
 		private void BottomNote(SKCanvas pdfCanvas){
