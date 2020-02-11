@@ -320,16 +320,16 @@ namespace Kers.Controllers
 			}
 		}
 		private void ExtraInfo(SKCanvas pdfCanvas, SoilReport report){
-			if(report.ExtInfo1 != null){
-				pdfCanvas.DrawText(report.ExtInfo1, 29, currentYPosition, getPaint(10.0f, 1));
+			if(report.Extra1 != null){
+				pdfCanvas.DrawText(report.Extra1, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition+=12;
 			}
-			if(report.ExtInfo2 != null){
-				pdfCanvas.DrawText(report.ExtInfo2, 29, currentYPosition, getPaint(10.0f, 1));
+			if(report.Extra2 != null){
+				pdfCanvas.DrawText(report.Extra2, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition+=12;
 			}
-			if(report.ExtInfo3 != null){
-				pdfCanvas.DrawText(report.ExtInfo3, 29, currentYPosition, getPaint(10.0f, 1));
+			if(report.Extra3 != null){
+				pdfCanvas.DrawText(report.Extra3, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition+=12;
 			}
 		}

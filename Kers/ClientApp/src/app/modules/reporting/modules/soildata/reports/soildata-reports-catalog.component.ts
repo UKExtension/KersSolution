@@ -148,6 +148,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
         var blob = new Blob([data], {type: 'application/pdf'});
         saveAs(blob, "SoilTestResults.pdf");
         this.pdfLoading = false;
+        this.onRefresh();
       }
     )
     
