@@ -2,8 +2,8 @@
 <div class="row">
   <div class="col-sm-6">
     <strong>{{report.typeForm.name}}</strong><br>
-    Received Date: {{report.labTestsReady | date:'mediumDate'}}<br>
-    Report Date: {{report.dataProcessed | date:'mediumDate'}}<br>
+    Received Date: {{report.dataProcessed | date:'mediumDate'}}<br>
+    Report Date: {{report.labTestsReady | date:'mediumDate'}}<br>
     Laboratory Number: {{report.reports[0].labNum}}<br>
     Owner Sample Id: {{report.reports[0].osId}}<br>
     <span *ngIf="report.reports[0].acres">Acres: {{report.reports[0].acres}}<br></span>
