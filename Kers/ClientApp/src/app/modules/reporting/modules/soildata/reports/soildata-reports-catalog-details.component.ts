@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { SoilReportBundle } from '../soildata.report';
 import { saveAs } from 'file-saver';
 import { SoildataService } from '../soildata.service';
+import { UserService, User } from '../../user/user.service';
 
 @Component({
   selector: '[soildata-reports-catalog-details]',
@@ -28,13 +29,13 @@ import { SoildataService } from '../soildata.service';
   `,
   styles: [`
   .soil-report-status-recieved{
-    color: #3498DB;
+    background-color:#50C1CFg;
   }
   .soil-report-status-reviewed{
-    color: #1ABB9C;
+    background-color: #1ABB9C;
   }
   .soil-report-status-archived{
-    color: #34495E;
+    background-color: #e5e5e5;
   }
 
   `]
@@ -45,12 +46,17 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   default = true;
   edit = false;
   pdfLoading = false;
+  user:User;
 
   constructor(
-    private service:SoildataService
+    private service:SoildataService,
+    private  userService: UserService
   ) { }
 
   ngOnInit() {
+    this.userService.current().subscribe(
+      res => this.user = res
+    )
   }
 
   defaultView(){
@@ -83,7 +89,14 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     if(this.report.farmerForReport.emailAddress != undefined){
       email=this.report.farmerForReport.emailAddress;
     }
-    var mailText = "mailto:"+email+"?subject=Soil Test Results&body=https://kers.ca.uky.edu/core/api/PdfSoilData/report/"+this.report.uniqueCode;
+    var body = "https://kers.ca.uky.edu/core/api/PdfSoilData/report/"+this.report.uniqueCode+'%0D%0A%0D%0A';
+    body += this.report.farmerForReport.first + ',';
+    body += "%0D%0A%0D%0AThe link above contains your soil test report for";
+    body += "%0D%0AOwner Sample ID: "+this.report.reports[0].osId+".%0D%0A%0D%0A";
+    body += "Click on the link or copy and paste it into a web browser and hit Enter. Choose to open the pdf file.";
+    body += '%0D%0A%0D%0A' + this.user.rprtngProfile.planningUnit.name;
+    body += '%0D%0A' + this.user.rprtngProfile.planningUnit.phone;
+    var mailText = "mailto:"+email+"?subject=Soil Test Results&body=" + body;
     window.location.href = mailText;
   }
 

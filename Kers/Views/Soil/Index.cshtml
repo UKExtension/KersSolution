@@ -8,8 +8,9 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Sample Submitted Date</th>
+            <th>Report Date</th>
             <th>Form Type</th>
+            <th>Owner Sample ID</th>
             <th>CO Sample Num</th>
             <th>Status</th>
             <th></th>
@@ -19,8 +20,9 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.SampleLabelCreated.ToString("d")</td>
+                <td>@item.LabTestsReady.ToString("d")</td>
                 <td>@item.TypeForm.Code</td>
+                <td>@item.Reports.First().OsId</td>
                 <td>@item.CoSamnum</td>
                 <td>@item.LastStatus.SoilReportStatus.Name</td>
                 <td><a href="~/reports/soil/report/@item.UniqueCode">select</a></td>

@@ -48,12 +48,13 @@ namespace Kers.Controllers.Reports
             var address = await this._context.FarmerAddress.Where(a => a.UniqueCode == code).FirstOrDefaultAsync();
             if(address == null) return NotFound();
             ViewData["Title"] = address.First + " " + address.Last;
-            var results = this._context.SoilReportBundle
+            var results = await this._context.SoilReportBundle
                                     .Where( a => a.FarmerAddress == address && a.LastStatus.SoilReportStatus.Name == "Archived")
                                     .Include( a => a.TypeForm)
                                     .Include( a => a.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                                    .Include(a => a.Reports)
                                     .ToListAsync();
-            return View(await results);
+            return View(results);
         }
 
         [HttpGet]
