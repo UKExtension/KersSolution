@@ -103,34 +103,28 @@
           
           </div>
       </div>
-      <div class="col-md-12"><br>
-          <h4>Help NEP Decide POSSIBLE Reinforcement Items
-  <small>Click below next to items desired.</small></h4><br>
-
-
-  <div class="row fontawesome-icon-list">
+      <ng-container *ngIf="reinforcementItems.length > 0">
+        <div class="col-md-12"><br>
+            <h4>Help NEP Decide POSSIBLE Reinforcement Items
+                <small>Click below next to items desired.</small>
+            </h4><br>
+            <div class="row fontawesome-icon-list">
                                                 
-        <div *ngFor="let opt of reinforcementItems" class="col-md-4 fa-hover">
-            <i class="fa" [class.fa-close]="!isItemSelected(opt)" [class.fa-check]="isItemSelected(opt)"></i> {{opt.name}}
+                <div *ngFor="let opt of reinforcementItems" class="col-md-4 fa-hover">
+                    <i class="fa" [class.fa-close]="!isItemSelected(opt)" [class.fa-check]="isItemSelected(opt)"></i> {{opt.name}}
+                </div>
+            </div>
+
         </div>
+        <div class="col-xs-12"><br><br></div>
     
-        
+            <div class="form-group">
+                <label class="col-lg-3 col-xs-12">Suggested Incentive items: </label> 
+                <div class="col-lg-9 col-xs-12">{{getSuggestion()}}</div>
+            </div><br>
+        </ng-container>    
+    </div>
     
-</div>
-
-
-
-
-
-      </div>
-      <div class="col-xs-12"><br><br></div>
-  
-      <div class="form-group">
-        <label class="col-lg-3 col-xs-12">Suggested Incentive items: </label> 
-        <div class="col-lg-9 col-xs-12">{{getSuggestion()}}</div>
-      </div><br>
-  </div>
-
   <div class="col-xs-12"><br><br></div>
 
   </div>

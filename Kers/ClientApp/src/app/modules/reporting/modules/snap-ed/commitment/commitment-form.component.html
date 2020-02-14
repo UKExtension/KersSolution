@@ -105,29 +105,30 @@
           
           </div>
       </div>
-      <div class="col-md-12"><br>
-          <h4>Help NEP Decide POSSIBLE Reinforcement Items
-<small>Click below next to items desired.</small></h4><br>
-          <div class="row" formArrayName="items">
+      <ng-container *ngIf="reinforcementItems.length > 0">
+        <div class="col-md-12"><br>
+            <h4>Help NEP Decide POSSIBLE Reinforcement Items
+                <small>Click below next to items desired.</small></h4><br>
+            <div class="row" formArrayName="items">
 
-                      <div *ngFor="let opt of commitmentForm.controls.items.controls; let i=index" [formGroupName]="i"  class="col-md-4 checkbox">
-                          <label>
-                              <input type="checkbox" id="item_1" formControlName="selected">&nbsp;{{reinforcementItems[i].name}}
-                          </label>
-                      </div>
+                        <div *ngFor="let opt of commitmentForm.controls.items.controls; let i=index" [formGroupName]="i"  class="col-md-4 checkbox">
+                            <label>
+                                <input type="checkbox" id="item_1" formControlName="selected">&nbsp;{{reinforcementItems[i].name}}
+                            </label>
+                        </div>
 
-              
-          </div>
-      </div>
-      <div class="col-xs-12"><br><br></div>
-
-      <div class="form-group">
-        <label class="col-lg-3 col-xs-12">Suggested Incentive items:</label> 
-        <div class="col-lg-9 col-xs-12">
-          <input type="text" name="suggestion" formControlName="suggestion" id="suggestion" class="form-control col-xs-12" />
+                
+            </div>
         </div>
-      </div><br>
+        <div class="col-xs-12"><br><br></div>
 
+        <div class="form-group">
+            <label class="col-lg-3 col-xs-12">Suggested Incentive items:</label> 
+            <div class="col-lg-9 col-xs-12">
+            <input type="text" name="suggestion" formControlName="suggestion" id="suggestion" class="form-control col-xs-12" />
+            </div>
+        </div><br>
+    </ng-container>
      
       <div class="ln_solid col-xs-12 "></div>
       <div class="form-group">
