@@ -96,7 +96,7 @@ export class ServicelogSnapedComponent implements OnInit {
             err => this.errorMessage  = <any>err
         );
 
-        this.reportingService.setTitle('FY2018 Supplemental Nutrition Assistance Program');
+        this.reportingService.setTitle('Supplemental Nutrition Assistance Program');
 
         
         this.service.latest().subscribe(

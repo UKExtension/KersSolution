@@ -21,14 +21,14 @@
         </div>
     </div>
 </div>
-<!--
+
 <div class="row" *ngIf="newOff">
         <div class="col-xs-12">
             <div class="x_panel">
                 <div class="x_content">
                     <div class="row">
                         <div class="col-xs-12">
-                                <a *ngIf="!showCommitment" class="btn btn-dark btn-lg btn-block" (click)="showCommitment = true">Commitment Worksheet for Oct 1, 2019 - Sep 30, 2020</a>
+                                <a *ngIf="!showCommitment" class="btn btn-dark btn-lg btn-block" (click)="showCommitment = true">Commitment Worksheet for Oct 1, 2020 - Sep 30, 2021</a>
                                 <a *ngIf="showCommitment" class="btn btn-primary btn-xs pull-right" (click)="showCommitment = false"><i class="fa fa-close"></i> Close</a>
                         </div>
                         <div class="col-xs-12">
@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
--->
+
 
 
 <servicelog-form *ngIf="newDirect" [isNewDirect]="true" (onFormCancel)="closeNew()" (onFormSubmit)="newActivitySubmitted($event)"></servicelog-form>
