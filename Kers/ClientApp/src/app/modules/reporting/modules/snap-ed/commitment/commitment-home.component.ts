@@ -24,7 +24,7 @@ export class CommitmentHomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.reportingService.setTitle('Commitment Worksheet for October 1, 2018 - September 30, 2019');
+    this.reportingService.setTitle('Commitment Worksheet');
     this.getCommitment();
   }
   getCommitment(): void {
