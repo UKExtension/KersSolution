@@ -169,7 +169,7 @@ namespace Kers.Controllers
 		}
 
 		private void PrintPageInfo( SKCanvas pdfCanvas, SoilReport report ){
-			pdfCanvas.DrawText("Sample Id: "+report.CoSamnum+", "+report.CropInfo1??"", 29, 16, getPaint(7.0f));
+			pdfCanvas.DrawText("CO NUM: "+report.CoSamnum+", "+report.CropInfo1??"", 29, 16, getPaint(7.0f));
 			pdfCanvas.DrawText("Page "+currentPage+" of "+numPages.ToString(), width - 65, 16, getPaint(7.0f));
 			pdfCanvas.DrawText( "Report Generated: " + DateTime.Now.ToString(), 29, height - 16, getPaint(7.0f) );
 		}
@@ -186,7 +186,7 @@ namespace Kers.Controllers
 			if(bundle.FarmerForReport != null){
 				pdfCanvas.DrawText(bundle.FarmerForReport.First + " " + bundle.FarmerForReport.Last, 205, 95, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(bundle.FarmerForReport.Address??"" , 205, 112, getPaint(10.0f, 1));
-				pdfCanvas.DrawText(bundle.FarmerForReport.City??"" + ", " + bundle.FarmerForReport.St + " " + bundle.FarmerForReport.Zip , 205, 129, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(bundle.FarmerForReport.City + ", " + bundle.FarmerForReport.St + " " + bundle.FarmerForReport.Zip , 205, 129, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(bundle.FarmerForReport.HomeNumber??"" , 205, 146, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(bundle.FarmerForReport.EmailAddress??"" , 205, 163, getPaint(10.0f, 1));
 			}
@@ -196,11 +196,11 @@ namespace Kers.Controllers
 					.Include( u => u.PersonalProfile )
 					.FirstOrDefault();
 				if(user != null){
-					pdfCanvas.DrawText(user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName, 330, 125, getPaint(18.0f, 4));
+					pdfCanvas.DrawText(user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName, 365, 125, getPaint(18.0f, 4));
 				}
 			}
-			pdfCanvas.DrawLine(330, 130, width - 29, 130, thinLinePaint);
-			pdfCanvas.DrawText("Extension Agent", 330, 146, getPaint(11.0f, 1));
+			pdfCanvas.DrawLine(365, 130, width - 29, 130, thinLinePaint);
+			pdfCanvas.DrawText("Extension Agent", 365, 146, getPaint(11.0f, 1));
 
 			if(report.OsId != null && report.OsId != ""){
 				pdfCanvas.DrawText("OWNER SAMPLE ID: "+report.OsId, 29, currentYPosition, getPaint(10.0f, 1));
@@ -246,7 +246,10 @@ namespace Kers.Controllers
 				
 				
 				currentYPosition += 12;
-				pdfCanvas.DrawText("AGRICULTURE CROP INFORMATION:", 29, currentYPosition, getPaint(9.0f, 1));
+				var header = "AGRICULTURE CROP INFORMATION:";
+				if(report.TypeForm == "H") header = "HOME LAWN AND GARDEN CROP INFORMATION:";
+				if(report.TypeForm == "C") header = "COMMERCIAL HORTICULTURE CROP INFORMATION:";
+				pdfCanvas.DrawText(header, 29, currentYPosition, getPaint(9.0f, 1));
 				
 
 				var lines = this.SplitLines(cropInfo, paint, width - 2 * 29);
