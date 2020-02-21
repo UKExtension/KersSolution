@@ -22,7 +22,7 @@
             <tr>
                 <td>@item.LabTestsReady.ToString("d")</td>
                 <td>@item.TypeForm.Code</td>
-                <td>@item.Reports.First().OsId</td>
+                <td>@(@item.Reports.Count() > 0 ? @item.Reports.First().OsId : "")</td>
                 <td>@item.CoSamnum</td>
                 <td>@item.LastStatus.SoilReportStatus.Name</td>
                 <td><a href="~/reports/soil/report/@item.UniqueCode">select</a></td>

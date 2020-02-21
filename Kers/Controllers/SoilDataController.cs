@@ -103,9 +103,9 @@ namespace Kers.Controllers
             }else if( criteria.Order == "smplasc"){
                 orderedBundles = bundles.OrderBy( s => s.CoSamnum);
             }else if( criteria.Order == "dsc"){
-                orderedBundles = bundles.OrderByDescending( s => s.DataProcessed);
+                orderedBundles = bundles.OrderByDescending( s => s.LabTestsReady);
             }else{
-                orderedBundles = bundles.OrderBy( s => s.DataProcessed);
+                orderedBundles = bundles.OrderBy( s => s.LabTestsReady);
             }
             return new OkObjectResult(orderedBundles);
         }
