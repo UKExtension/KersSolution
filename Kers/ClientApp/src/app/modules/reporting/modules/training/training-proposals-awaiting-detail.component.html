@@ -16,7 +16,9 @@
       </ng-container>
   </div>
   <div *ngIf="delete">
-      Delete
+    <div>
+        Do you really want to delete training <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+    </div>
   </div>
 </td>
   

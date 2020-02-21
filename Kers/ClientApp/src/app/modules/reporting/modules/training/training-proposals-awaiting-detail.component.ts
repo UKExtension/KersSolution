@@ -11,11 +11,12 @@ export class TrainingProposalsAwaitingDetailComponent implements OnInit {
 
   @Input('training-proposals-awaiting-detail') training: Training;
   @Output() onEdit = new EventEmitter<Training>();
-  @Output() onDelete = new EventEmitter<Training>();
+  @Output() onDeleted = new EventEmitter<Training>();
 
   default = true;
   edit = false;
   delete = false;
+  errorMessage: string;
 
 
   constructor(
@@ -44,5 +45,16 @@ export class TrainingProposalsAwaitingDetailComponent implements OnInit {
     this.defaultView();
     this.onEdit.emit(training);
   }
+  confirmDelete(){
+        
+    this.service.delete(this.training.id).subscribe(
+        res=>{
+            this.defaultView();
+            this.onDeleted.emit(this.training);  
+        },
+        err => this.errorMessage = <any> err
+    );
+    
+}
 
 }
