@@ -232,7 +232,7 @@ namespace Kers.Controllers
 			for( var i = 1; i < 12; i++){
 				var val = report.GetType().GetProperty("CropInfo" + i.ToString())?.GetValue(report, null);
 				if(val != null){
-					cropInfo +=  " " + val;
+					cropInfo +=  " . . . . " + val;
 				} 
 			}
 
