@@ -64,6 +64,8 @@ import { saveAs } from 'file-saver';
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'directbypersonbymonth'" [filename]="'DirectByPersonPerMonth'" [label]="'Direct Sites By Person, By Month - including number of contacts'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'indirectbyemployee'" [filename]="'IndirectByEmployee'" [label]="'Indirects per Person per Number Reached'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'audienceagecategory'" [filename]="'AudienceAgeCategory'" [label]="'Audience Age and Category Totals'"></snaped-download-button><br>
+    <br><br>
+    <button class="btn btn-success btn-xs" routerLink="/reporting/admin/snaped/reports">Custom Reports</button>
   </div>
 </div>
   `

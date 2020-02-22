@@ -22,6 +22,7 @@ import { SnapedReimbursmentItem } from './snaped-reimbursment-item';
 import { SnapedBudgetHomeComponent } from './snaped-budget-home.component';
 import { SnapEdModule } from '../../snap-ed/snap-ed.module';
 import { SnapedDownloadButtonComponent } from './snaped-download-button.component';
+import { SnapedReportsComponent } from './snaped-reports.component';
 
 
 
@@ -45,7 +46,8 @@ import { SnapedDownloadButtonComponent } from './snaped-download-button.componen
                   SnapedReimbursmentFormComponent,
                   SnapedReimbursmentItem,
                   SnapedBudgetHomeComponent,
-                  SnapedDownloadButtonComponent
+                  SnapedDownloadButtonComponent,
+                  SnapedReportsComponent
 
                 ],
   providers:    [  

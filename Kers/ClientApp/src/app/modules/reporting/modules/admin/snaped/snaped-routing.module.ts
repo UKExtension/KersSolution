@@ -5,6 +5,7 @@ import { SnapedComponent } from './snaped.component';
 import { SnapedCountyComponent } from './snaped-county.component';
 import { SnapedUserComponent } from './snaped-user.component';
 import { SnapedBudgetHomeComponent } from './snaped-budget-home.component';
+import { SnapedReportsComponent } from './snaped-reports.component';
 
 
 @NgModule({
@@ -31,6 +32,10 @@ import { SnapedBudgetHomeComponent } from './snaped-budget-home.component';
                 {
                   path: 'user/:id',
                   component: SnapedUserComponent
+                },
+                {
+                  path: 'reports',
+                  component: SnapedReportsComponent
                 }
             ]
       }
