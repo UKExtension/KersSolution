@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 import { User } from '../../user/user.service';
+import { Servicelog } from '../../servicelog/servicelog.service';
 
 
 
@@ -149,6 +150,15 @@ export class SnapedAdminService {
                 catchError(this.handleError('countyReimbursments', budget))
             );
     }
+
+    getCustom(criteria:SnapedSearchCriteria):Observable<Servicelog>{
+        console.log('ff');
+        var url = this.baseUrl + 'getCustom/';
+        return this.http.post<Servicelog>(this.location.prepareExternalUrl(url), criteria)
+            .pipe(
+                catchError(this.handleError('addCountyReimbursment',<Servicelog>{}))
+            );
+    }
     
 }
 
@@ -168,4 +178,12 @@ export interface SnapBudgetReimbursementsNepAssistant{
     toId:number;
     amount:number;
     notes:string;
+}
+
+export class SnapedSearchCriteria{
+    start: string;
+    end: string;
+    search: string = "";
+    type = "direct";
+    order: string = 'dsc';
 }

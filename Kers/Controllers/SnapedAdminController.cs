@@ -46,6 +46,37 @@ namespace Kers.Controllers
                 this.activityRepo = activityRepo;
         }
 
+
+
+        [HttpPost("GetCustom")]
+        [Authorize]
+        public IActionResult GetCustom( [FromBody] SnapedSearchCriteria criteria
+                                        ){
+            var ids =  (from rec in this.context.ActivityRevision 
+                                    where rec.ActivityDate >= criteria.Start && rec.ActivityDate <= criteria.End
+                                    group rec by rec.ActivityId into grp 
+                    select grp.OrderByDescending(r => r.Id).Select(x => x.Id).FirstOrDefault()
+                    
+                );
+            var result = context.ActivityRevision
+                            .Where( a => ids.Contains( a.Id));
+
+
+
+
+                                            /* 
+            var result = this.context.ActivityRevision
+                                .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End);
+            if(criteria.Type == "Indirect") result = result.Where( a => a.SnapDirect != null);
+            if( criteria.Type == "Direct") result = result.Where( a => a.SnapIndirect != null);
+            if(criteria.Type == "Policy") result = result.Where( a => a.SnapPolicy != null);
+             */
+            return new OkObjectResult(result);
+        }
+
+
+
+
         [HttpPut("countybudget/{countyId}")]
         public IActionResult UpdateCountyBudget( int countyId, [FromBody] SnapCountyBudget budget){
            
@@ -348,6 +379,15 @@ namespace Kers.Controllers
             }
             var defaultBudget = this.context.SnapBudgetAllowance.Where( b => b.FiscalYear == fiscalYear && b.BudgetDescription == "SNAP Ed NEP Assistant Budget").FirstOrDefault();
             return new OkObjectResult(defaultBudget.AnnualBudget);
+        }
+
+
+        public class SnapedSearchCriteria{
+            public DateTime Start;
+            public DateTime End;
+            public string Search;
+            public string Type;
+            public string Order;
         }
 
     }
