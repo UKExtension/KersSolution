@@ -58,15 +58,17 @@
 </div><br>
 
 
-
+<div class="text-right">
+  <a class="btn btn-info btn-xs" (click)="csv()"><i class="fa fa-download"></i> Csv</a>
+</div>
 <div class="table-responsive">
   
   <table class="table table-bordered table-striped" *ngIf="revisions$ | async as revisions">
       <thead>
           <tr>
-            <th>Date(s)</th>
-            <th>Title</th>
-            <th>Location</th>
+            <th>Date</th>
+            <th>Name</th>
+            <th>County</th>
             <th>Time</th>
             <th>Proposed By</th>
             <th>Enrolled</th>
@@ -75,13 +77,13 @@
       </thead>
       <tbody *ngIf="!loading">
         <tr *ngFor="let revision of revisions">
-          <td>{{revision.id}}</td>
+          <td>{{revision.revision.activityDate  | date:'shortDate'}}</td>
+          <td>{{revision.user.rprtngProfile.name}}</td>
+          <td>{{revision.unit.name}}</td>
           <td></td>
           <td></td>
           <td></td>
           <td></td>
-          <td></td>
-          <td>7</td>
         </tr>
       </tbody>
       

@@ -6,6 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 import { User } from '../../user/user.service';
 import { Servicelog } from '../../servicelog/servicelog.service';
+import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 
 
 
@@ -151,12 +152,12 @@ export class SnapedAdminService {
             );
     }
 
-    getCustom(criteria:SnapedSearchCriteria):Observable<Servicelog>{
+    getCustom(criteria:SnapedSearchCriteria):Observable<SnapSearchResult>{
         console.log('ff');
         var url = this.baseUrl + 'getCustom/';
-        return this.http.post<Servicelog>(this.location.prepareExternalUrl(url), criteria)
+        return this.http.post<SnapSearchResult>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
-                catchError(this.handleError('addCountyReimbursment',<Servicelog>{}))
+                catchError(this.handleError('addCountyReimbursment',<SnapSearchResult>{}))
             );
     }
     
@@ -186,4 +187,10 @@ export class SnapedSearchCriteria{
     search: string = "";
     type = "direct";
     order: string = 'dsc';
+}
+
+export class SnapSearchResult{
+    user: User;
+    revision: Servicelog;
+    unit: PlanningUnit
 }
