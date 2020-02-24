@@ -52,26 +52,19 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult GetCustom( [FromBody] SnapedSearchCriteria criteria
                                         ){
-            var ids =  (from rec in this.context.ActivityRevision 
-                                    where rec.ActivityDate >= criteria.Start && rec.ActivityDate <= criteria.End
-                                    group rec by rec.ActivityId into grp 
-                    select grp.OrderByDescending(r => r.Id).Select(x => x.Id).FirstOrDefault()
-                    
-                );
-            var result = context.ActivityRevision
-                            .Where( a => ids.Contains( a.Id));
 
-
-
-
-                                            /* 
             var result = this.context.ActivityRevision
                                 .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End);
             if(criteria.Type == "Indirect") result = result.Where( a => a.SnapDirect != null);
             if( criteria.Type == "Direct") result = result.Where( a => a.SnapIndirect != null);
             if(criteria.Type == "Policy") result = result.Where( a => a.SnapPolicy != null);
-             */
-            return new OkObjectResult(result);
+
+            var grouped = result
+                            .GroupBy( a => a.ActivityId)
+                            .Select( g => g.OrderBy( r => r.Id).Last() );
+
+
+            return new OkObjectResult(grouped);
         }
 
 
