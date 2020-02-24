@@ -73,7 +73,7 @@
             <th></th>
           </tr>
       </thead>
-      <tbody>
+      <tbody *ngIf="!loading">
         <tr *ngFor="let revision of revisions">
           <td>{{revision.id}}</td>
           <td></td>

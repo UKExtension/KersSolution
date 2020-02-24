@@ -38,7 +38,7 @@ export class SnapedReportsComponent implements OnInit {
   ngOnInit() {
 
     var startDate = new Date();
-    startDate.setMonth( startDate.getMonth() - 5);
+    startDate.setMonth( startDate.getMonth() - 1);
     var endDate = new Date();
 
     this.model.beginDate = {year: startDate.getFullYear(), month: startDate.getMonth() + 1, day: startDate.getDate()};
