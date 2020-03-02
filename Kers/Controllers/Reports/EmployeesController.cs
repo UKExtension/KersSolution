@@ -85,6 +85,18 @@ namespace Kers.Controllers.Reports
         {
             
 
+            // Import Areas
+
+            var areasData = this.context.Areas;
+            foreach( var contyData in areasData){
+                var county = context.PlanningUnit.Where( u => u.Name.Count() > 11
+                                                                &&
+                                                                u.Name.Substring(0,u.Name.Count() - 11).ToUpper() == contyData.County.ToUpper()).FirstOrDefault();
+                if(county == null) {
+                    
+                }
+            }
+
 
             /* 
             var fiscalYear = this.fiscalYearRepository.byName("2019", FiscalYearType.ServiceLog);
