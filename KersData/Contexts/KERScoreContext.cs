@@ -227,6 +227,8 @@ namespace Kers.Models.Contexts
         public virtual DbSet<FiscalYear> FiscalYear {get;set;}
         public virtual DbSet<ExtensionArea> ExtensionArea {get;set;}
         public virtual DbSet<ExtensionRegion> ExtensionRegion {get;set;}
+        public virtual DbSet<CongressionalDistrict> CongressionalDistrict {get;set;}
+        public virtual DbSet<Areas> Areas {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
