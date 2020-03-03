@@ -11,6 +11,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Kers.Models.ViewModels;
 using Kers.Models.Data;
+using System;
 
 namespace Kers.Controllers.Reports
 {
@@ -145,13 +146,14 @@ namespace Kers.Controllers.Reports
                     }
                     var areaNum = contyData.RegionArea.Substring(1);
 
-                    var ar = currentRegion.Arreas.Where( a => a.Name == areaNum);
+                    var ar = currentRegion.Arreas.Where( a => a.Name == currentRegion.Name + areaNum);
                     ExtensionArea currentArrea;
                     if( ar.Any()){
                         currentArrea = ar.FirstOrDefault();
                     }else{
                         currentArrea = new ExtensionArea();
-                        currentArrea.Name = areaNum;
+                        currentArrea.Name = currentRegion.Name + areaNum;
+                        currentArrea.order = Int32.Parse(areaNum);
                         currentArrea.Units = new List<PlanningUnit>();
                         currentRegion.Arreas.Add(currentArrea);
                     }
@@ -175,7 +177,7 @@ namespace Kers.Controllers.Reports
                 }
                 context.ExtensionRegion.AddRange(regions);
                 context.CongressionalDistrict.AddRange(congressional);
-                //context.SaveChanges();
+                context.SaveChanges();
             }
             
 
