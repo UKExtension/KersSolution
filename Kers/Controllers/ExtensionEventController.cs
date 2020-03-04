@@ -228,18 +228,21 @@ namespace Kers.Controllers
 
 
         private StartAndEndTimes ProcessTime( string time){
-            var parts = time.Split('-');
-            if(parts.Count() > 1){
-                var start = TryToParseTime( parts[0] );
-                var end = TryToParseTime( parts[1] );
-                if( start != null && end != null){
-                    return new StartAndEndTimes(){
-                        start = start,
-                        end = end,
-                        timeshift = this.Timeshift( time )
-                    };
+            if(time != null){
+                var parts = time.Split('-');
+                if(parts.Count() > 1){
+                    var start = TryToParseTime( parts[0] );
+                    var end = TryToParseTime( parts[1] );
+                    if( start != null && end != null){
+                        return new StartAndEndTimes(){
+                            start = start,
+                            end = end,
+                            timeshift = this.Timeshift( time )
+                        };
+                    }
                 }
             }
+            
             return null;
         }
 
