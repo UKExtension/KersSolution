@@ -63,7 +63,7 @@ namespace Kers.Models.Entities.KERScore
         public string qualtricsSurveyID { get; set; }
 
         public string evaluationLink { get; set; }
-        public List<TrainingSurveyResult> SurveyResults {get;set;}
+        //public List<TrainingSurveyResult> SurveyResults {get;set;}
 
 
     }
