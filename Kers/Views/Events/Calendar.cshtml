@@ -96,7 +96,9 @@
           result += event.start.toLocaleDateString("en-US");
           if(event.end != undefined) result += " - " + event.end.toLocaleDateString("en-US");
           if(event.extendedProps.type == "Training"){
-              result += "<br><strong>Day 1:</strong> " + event.extendedProps.day1;
+              if(event.extendedProps.day1 != undefined && event.extendedProps.day1 != "" ){
+                result += "<br><strong>Day 1:</strong> " + event.extendedProps.day1;
+              }
               if(event.extendedProps.day2 != undefined && event.extendedProps.day2 != "" ){
                   result += "<br><strong>Day 2:</strong> " + event.extendedProps.day2;
               }
@@ -184,7 +186,9 @@
           result += event.start.toLocaleDateString("en-US");
           if(event.end != undefined) result += " - " + event.end.toLocaleDateString("en-US");
           if(event.extendedProps.type == "Training"){
-              result += "<br><strong>Day 1:</strong> " + event.extendedProps.day1;
+              if(event.extendedProps.day1 != undefined && event.extendedProps.day1 != "" ){
+                result += "<br><strong>Day 1:</strong> " + event.extendedProps.day1;
+              }
               if(event.extendedProps.day2 != undefined && event.extendedProps.day2 != "" ){
                   result += "<br><strong>Day 2:</strong> " + event.extendedProps.day2;
               }

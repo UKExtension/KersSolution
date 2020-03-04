@@ -15,6 +15,7 @@ import { TrainingEnrollmentComponent } from './training-enrollment.component';
 import { TrainingManagersComponent } from './training-managers.component';
 import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
 import { TrainingFormSessionsComponent } from './training-form-sessions.component';
+import { TrainingSurveyComponent } from './survey/training-survey.component';
 
 const routes: Routes = [{
   path: '',
@@ -66,6 +67,10 @@ const routes: Routes = [{
         {
           path: 'adminmanagers',
           component: TrainingManagersComponent
+        },
+        {
+          path: 'survey/:id',
+          component: TrainingSurveyComponent
         },
         {
           path: ':id',

@@ -99,6 +99,7 @@ namespace Kers.Controllers
                                     .Include( t => t.RegisterCutoffDays)
                                     .Include( t => t.CancelCutoffDays)
                                     .Include( t => t.TrainingSession)
+                                    .Include( t => t.SurveyResults)
                                     .FirstOrDefaultAsync();
             //if( training != null){
                 return new OkObjectResult(this.ToTimezone( await training));
@@ -731,7 +732,7 @@ namespace Kers.Controllers
                 where enfolment.AttendieId == id
                 where training.Start.Year == year
                 select training;
-            trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour);
+            trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour).Include( t => t.SurveyResults);
             var tnngs = await trainings.OrderBy(t => t.Start).ToListAsync();
             return new OkObjectResult(tnngs);
         }

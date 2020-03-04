@@ -1,0 +1,15 @@
+<h1>Survey</h1>
+<loading *ngIf="loading"></loading>
+<div *ngIf="!loading">
+  <h2>{{training.subject}}</h2>
+  <div *ngIf="isQualified">
+    <survey [json]="json" (submitSurvey)="sendData($event)"></survey>
+  </div>
+  <div *ngIf="!attended">
+    You did not attend this training.
+  </div>
+  <div *ngIf="attended && completed">
+    You already completed this survey.
+  </div>
+</div>
+

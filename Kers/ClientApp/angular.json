@@ -31,7 +31,8 @@
               "./node_modules/froala-editor/css/froala_editor.pkgd.min.css",
               "./node_modules/froala-editor/css/froala_style.min.css",
               "./node_modules/font-awesome/css/font-awesome.css",
-              "./node_modules/angular-calendar/css/angular-calendar.css"
+              "./node_modules/angular-calendar/css/angular-calendar.css",
+              "./node_modules/survey-angular/survey.css"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js",

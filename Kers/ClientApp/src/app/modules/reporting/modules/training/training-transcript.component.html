@@ -27,6 +27,7 @@
             <th>Hours</th>
             <th>Title</th>
             <th>Attendance</th>
+            <th>Survey</th>
         </tr>
     </thead>
     <tr *ngFor="let training of trainings">
@@ -34,6 +35,7 @@
       <td><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
       <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
       <td>{{attendance(training)}}</td>
+      <td><span *ngIf="survey(training)"><a routerLink="/reporting/training/survey/{{training.id}}">survey</a></span><span *ngIf="!survey(training)">-</span></td>
     </tr>
     <tfoot *ngIf="totalHours != null">
       <tr>
@@ -41,7 +43,7 @@
           <strong>Hours Earned:</strong>
         </td>
         <td><strong>{{totalHours}}</strong></td>
-        <td colspan="2">&nbsp;</td>
+        <td colspan="3">&nbsp;</td>
       </tr>
     </tfoot>
   </table>

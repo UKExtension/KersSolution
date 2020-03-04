@@ -100,70 +100,119 @@ namespace Kers.Controllers
             var events = this.context.ExtensionEvent.Where( e => e.Start < EndtDate && e.Start > StartDate);
             foreach( var e in events ){
                 if(e.DiscriminatorValue == "Training"){
-                    var trnng = context.Training.Find(e.Id);
-                    if(trnng.tStatus == "A"){
-                        if(trnng != null ){
-                            if( trnng.End == null || trnng.Start.ToString("ddMMyyyy") == trnng.End?.ToString("ddMMyyyy") ){
-                                var times = ProcessTime(trnng.day1);
-                                if( times != null ){
-                                    var startDate = new DateTimeOffset(new DateTime(trnng.Start.Year, trnng.Start.Month, trnng.Start.Day, times.start.hour, times.start.minute, 0), new TimeSpan(times.timeshift, 0, 0));
-                                    var endDate = new DateTimeOffset(new DateTime(trnng.Start.Year, trnng.Start.Month, trnng.Start.Day, times.end.hour, times.end.minute, 0), new TimeSpan(times.timeshift, 0, 0));
-                                    list.Add(new {
-                                        title = "In-Service Training: " + e.Subject,
-                                        start = startDate,
-                                        end = endDate,
-                                        description = e.Body,
-                                        tContact = e.tContact,
-                                        tLocation = e.tLocation,
-                                        day1=trnng.day1,
-                                        day2=trnng.day2,
-                                        day3=trnng.day3,
-                                        day4=trnng.day4,
-                                        allDay = false,
-                                        id = e.Id,
-                                        type = e.DiscriminatorValue,
-                                        backgroundColor = "#3a87ad"
-                                    });
+                    var trnng = context.Training
+                                    .Where(t => t.Id == e.Id)
+                                    .Include( t => t.TrainingSession)
+                                    .FirstOrDefault();
+                    if( trnng != null && trnng.tStatus == "A"){
+                        
+                        if(trnng.TrainingSession != null && trnng.TrainingSession.Count() > 0){
+                            var i = 1;
+                            foreach( var session in trnng.TrainingSession){
+                                list.Add(new {
+                                                title = "In-Service Training: " + e.Subject + " (Session "+i.ToString()+")",
+                                                start = session.Start,
+                                                end = session.End,
+                                                description = e.Body,
+                                                tContact = e.tContact,
+                                                tLocation = e.tLocation,
+                                                allDay = false,
+                                                id = e.Id,
+                                                type = e.DiscriminatorValue,
+                                                backgroundColor = "#3a87ad"
+                                            });
 
-                                }else{
-                                    list.Add(new {
-                                        title = "In-Service Training: " + e.Subject,
-                                        start = e.Start,
-                                        end = e.End,
-                                        description = e.Body,
-                                        tContact = e.tContact,
-                                        tLocation = e.tLocation,
-                                        day1=trnng.day1,
-                                        day2=trnng.day2,
-                                        day3=trnng.day3,
-                                        day4=trnng.day4,
-                                        allDay = true,
-                                        id = e.Id,
-                                        type = e.DiscriminatorValue,
-                                        backgroundColor = "#3a87ad"
-                                    });
+                                i++;
+                            }
+
+
+
+
+                        }else{
+
+
+
+
+                        
+
+
+
+
+                                    if( trnng.End == null || trnng.Start.ToString("ddMMyyyy") == trnng.End?.ToString("ddMMyyyy") ){
+                                        var times = ProcessTime(trnng.day1);
+                                        if( times != null ){
+                                            var startDate = new DateTimeOffset(new DateTime(trnng.Start.Year, trnng.Start.Month, trnng.Start.Day, times.start.hour, times.start.minute, 0), new TimeSpan(times.timeshift, 0, 0));
+                                            var endDate = new DateTimeOffset(new DateTime(trnng.Start.Year, trnng.Start.Month, trnng.Start.Day, times.end.hour, times.end.minute, 0), new TimeSpan(times.timeshift, 0, 0));
+                                            list.Add(new {
+                                                title = "In-Service Training: " + e.Subject,
+                                                start = startDate,
+                                                end = endDate,
+                                                description = e.Body,
+                                                tContact = e.tContact,
+                                                tLocation = e.tLocation,
+                                                day1=trnng.day1,
+                                                day2=trnng.day2,
+                                                day3=trnng.day3,
+                                                day4=trnng.day4,
+                                                allDay = false,
+                                                id = e.Id,
+                                                type = e.DiscriminatorValue,
+                                                backgroundColor = "#3a87ad"
+                                            });
+
+                                        }else{
+                                            list.Add(new {
+                                                title = "In-Service Training: " + e.Subject,
+                                                start = e.Start,
+                                                end = e.End,
+                                                description = e.Body,
+                                                tContact = e.tContact,
+                                                tLocation = e.tLocation,
+                                                day1=trnng.day1,
+                                                day2=trnng.day2,
+                                                day3=trnng.day3,
+                                                day4=trnng.day4,
+                                                allDay = true,
+                                                id = e.Id,
+                                                type = e.DiscriminatorValue,
+                                                backgroundColor = "#3a87ad"
+                                            });
+                                        }
+
+                                    }else{
+                                        list.Add(new {
+                                            title = "In-Service Training: " + e.Subject,
+                                            start = e.Start,
+                                            end = e.End,
+                                            description = e.Body,
+                                            tContact = e.tContact,
+                                            tLocation = e.tLocation,
+                                            day1=trnng.day1,
+                                            day2=trnng.day2,
+                                            day3=trnng.day3,
+                                            day4=trnng.day4,
+                                            allDay = true,
+                                            id = e.Id,
+                                            type = e.DiscriminatorValue,
+                                            backgroundColor = "#3a87ad"
+                                        });
+                                    }
+
+
                                 }
 
-                            }else{
-                                list.Add(new {
-                                    title = "In-Service Training: " + e.Subject,
-                                    start = e.Start,
-                                    end = e.End,
-                                    description = e.Body,
-                                    tContact = e.tContact,
-                                    tLocation = e.tLocation,
-                                    day1=trnng.day1,
-                                    day2=trnng.day2,
-                                    day3=trnng.day3,
-                                    day4=trnng.day4,
-                                    allDay = true,
-                                    id = e.Id,
-                                    type = e.DiscriminatorValue,
-                                    backgroundColor = "#3a87ad"
-                                });
 
-                            }
-                        }
+
+
+
+
+
+
+
+
+
+
+                        
                     }
                 }else{
                     list.Add(new {

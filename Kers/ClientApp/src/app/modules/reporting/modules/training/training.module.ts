@@ -24,6 +24,8 @@ import { TrainingManagersComponent } from './training-managers.component';
 import { TrainingAdminReportsComponent } from './training-admin-reports.component';
 import { TrainingFormSessionsComponent } from './training-form-sessions.component';
 import { SessionFormElementComponent } from './form-element/session-form-element.component';
+import { TrainingSurveyComponent } from './survey/training-survey.component';
+import { SurveyComponent } from './survey/survey.component';
 
 
 
@@ -47,7 +49,9 @@ import { SessionFormElementComponent } from './form-element/session-form-element
     TrainingManagersComponent,
     TrainingAdminReportsComponent,
     TrainingFormSessionsComponent,
-    SessionFormElementComponent
+    SessionFormElementComponent,
+    TrainingSurveyComponent,
+    SurveyComponent
   ],
   imports: [
     SharedModule,

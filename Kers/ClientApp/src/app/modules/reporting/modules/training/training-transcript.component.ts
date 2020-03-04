@@ -67,6 +67,16 @@ export class TrainingTranscriptComponent implements OnInit {
     }
     return attended;
   }
+
+  survey(training:Training){
+    if(this.isAttended( training )){
+      var surveyTaken = training.surveyResults.filter( e => e.userId == this.user.id);
+      if(surveyTaken.length == 0) return true;
+    }
+    return false;
+  }
+
+
   isAttended( training:Training ):boolean{
     var enrollment = training.enrollment.filter( e => e.attendieId == this.user.id);
     if( enrollment.length != 0){
@@ -76,6 +86,7 @@ export class TrainingTranscriptComponent implements OnInit {
     }
     return false;
   }
+
   getTotalHours(trainings:Training[]):number{
     var totalHours = 0;
     for( let training of trainings){

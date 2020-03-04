@@ -32,7 +32,17 @@ export class Training extends ExtensionEvent{
     sessions: TrainingSession[];
     trainingSession: TrainingSession[];
     trainingSessionWithTimes:TrainingSession[];
+    surveyResults:TrainingSurveyResult[];
     etimezone:boolean;
+}
+export class TrainingSurveyResult{
+    id:number;
+    result:string;
+    userId:number;
+    user:User;
+    training:Training;
+    trainingId:number;
+    created:Date;
 }
 
 export class TainingRegisterWindow{
