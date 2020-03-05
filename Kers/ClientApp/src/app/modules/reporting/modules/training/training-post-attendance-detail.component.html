@@ -1,7 +1,21 @@
 <td *ngIf="default">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
 <td *ngIf="default"><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
 <td *ngIf="default">{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
-<td *ngIf="default"><a class="btn btn-info btn-xs pull-right" (click)="postView()">Post Attendance</a></td>
+<td *ngIf="default">
+  <a class="btn btn-info btn-xs pull-right" (click)="postView()">Post Attendance</a>
+  <div *ngIf="training.surveyResults != undefined && training.surveyResults.length > 0">
+     <a class="btn btn-success btn-xs pull-right" (click)="evaluationView()">Evaluation Results</a>
+  </div>
+</td>
+<td *ngIf="survey" colspan="4">
+  <div>
+    <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+  </div>
+  <table>
+    <tr><td>kk</td></tr>
+  </table>
+
+</td>
 <td *ngIf="post" colspan="4">
     <div>
       <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>

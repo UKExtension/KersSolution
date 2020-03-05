@@ -1,9 +1,13 @@
-<td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
-<td><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
-<td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
-<td>{{attendance(training)}}</td>
-<td>
-  <span *ngIf="attended && !surveyTaken"><a routerLink="/reporting/training/survey/{{training.id}}">survey</a></span>
+<td *ngIf="default">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+<td *ngIf="default"><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
+<td *ngIf="default">{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+<td *ngIf="default">{{attendance(training)}}</td>
+<td *ngIf="default">
+  <span *ngIf="attended && !surveyTaken"><a (click)="default=false;" class="btn btn-info btn-xs">survey</a></span>
   <span *ngIf="!attended">-</span>
   <span *ngIf="attended && surveyTaken"><i class="fa fa-check"></i></span>
+</td>
+<td *ngIf="!default" colspan="5">
+  <div class="text-right"><a (click)="default=true;" class="btn btn-info btn-xs">close</a></div>
+  <training-survey [training]="training" [user]="user" [redirect]="false" (submitSurvey)="surveySubmitte($event)"></training-survey>
 </td>

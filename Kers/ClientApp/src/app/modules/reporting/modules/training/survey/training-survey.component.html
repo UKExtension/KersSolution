@@ -1,7 +1,8 @@
-<h1>Survey</h1>
 <loading *ngIf="loading"></loading>
 <div *ngIf="!loading">
-  <h2>{{training.subject}}</h2>
+  <h3>{{training.subject}}</h3>
+  <h2>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"> - {{training.end | date:'mediumDate'}}</span></h2>
+  <h2>Contact: {{training.tContact}}</h2>
   <div *ngIf="isQualified">
     <survey [json]="json" (submitSurvey)="sendData($event)"></survey>
   </div>

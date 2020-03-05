@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Training } from './training';
+import { Training, TrainingSurveyResult } from './training';
 import { User } from '../user/user.service';
 
 @Component({
@@ -16,6 +16,7 @@ export class TrainingTranscriptDetailComponent implements OnInit {
   attended = false;
   surveyTaken = false;
 
+  default = true;
 
 
   constructor() { }
@@ -50,6 +51,11 @@ export class TrainingTranscriptDetailComponent implements OnInit {
       }
     }
     this.attended = false;
+  }
+  surveySubmitte(event:TrainingSurveyResult){
+    this.training.surveyResults.push(event);
+    this.default = true;
+    this.surveyTaken = true;
   }
 
 

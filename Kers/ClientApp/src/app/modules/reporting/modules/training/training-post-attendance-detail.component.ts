@@ -14,6 +14,7 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
 
   default = true;
   post = false;
+  survey = false;
   loading = false;
   enrolledFolks: TrainingEnrollment[];
   moreInfo = false;
@@ -30,10 +31,15 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   defaultView(){
     this.default = true;
     this.post = false;
+    this.survey = false;
   }
   postView(){
     this.default = false;
     this.post = true;
+  }
+  evaluationView(){
+    this.survey = true;
+    this.default = false;
   }
   checked(event:any, enrolled:TrainingEnrollment){
     if(event.currentTarget.checked){

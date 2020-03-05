@@ -443,6 +443,7 @@ namespace Kers.Controllers
             var trn = context.Training
                                 .Where( t => t.Id == id)
                                 .Include( t => t.Enrollment)
+                                .Include( t => t.SurveyResults)
                                 .FirstOrDefault();
             if(training != null && trn != null ){
                 foreach( var enr in trn.Enrollment ){
@@ -640,7 +641,7 @@ namespace Kers.Controllers
                             .Include( t => t.TrainingSession)
                             .Include( t => t.iHour);
             if(attendance){
-                trainings = trainings.Where(t => t.tStatus == "A" && t.Enrollment.Count() > 0 ).Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit);
+                trainings = trainings.Where(t => t.tStatus == "A" && t.Enrollment.Count() > 0 ).Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit).Include( t => t.SurveyResults);
             }else if( admin ){
                 trainings = trainings.Include(t => t.Enrollment);
             }
@@ -749,7 +750,8 @@ namespace Kers.Controllers
                                 .ThenInclude( e => e.Attendie)
                                     .ThenInclude( a => a.RprtngProfile)
                                         .ThenInclude( u => u.PlanningUnit)
-                            .Include(t => t.iHour);
+                            .Include(t => t.iHour)
+                            .Include( t => t.SurveyResults);
             var tnngs = await trainings.ToListAsync();
             foreach( var tn in tnngs ){
                 foreach( var enr in tn.Enrollment){
