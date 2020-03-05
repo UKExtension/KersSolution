@@ -68,13 +68,6 @@ export class TrainingTranscriptComponent implements OnInit {
     return attended;
   }
 
-  survey(training:Training){
-    if(this.isAttended( training )){
-      var surveyTaken = training.surveyResults.filter( e => e.userId == this.user.id);
-      if(surveyTaken.length == 0) return true;
-    }
-    return false;
-  }
 
 
   isAttended( training:Training ):boolean{

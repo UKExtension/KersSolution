@@ -11,7 +11,7 @@ namespace Kers.Models.Entities.KERScore
         public string Result { get; set; }
 
         public KersUser User { get; set; }
-        public int UserId {get;set;}
+        public int? UserId {get;set;}
         public Training Training {get;set;}
         public int TrainingId {get;set;}
         public DateTime Created {get;set;}

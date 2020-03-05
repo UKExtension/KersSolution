@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Training } from '../training';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Training, TrainingSurveyResult } from '../training';
 import { UserService, User } from '../../user/user.service';
 import { TrainingService } from '../training.service';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { switchMap, tap } from 'rxjs/operators';
+import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
   selector: 'training-survey',
@@ -13,6 +14,8 @@ import { switchMap, tap } from 'rxjs/operators';
 export class TrainingSurveyComponent implements OnInit {
   @Input() training:Training;
   @Input() user:User;
+  @Input() redirect = true;
+  @Output() submitSurvey = new EventEmitter<TrainingSurveyResult>();
   loading = true;
   isQualified = false;
   attended = false;
@@ -20,8 +23,10 @@ export class TrainingSurveyComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private service:TrainingService,
-    private userService:UserService
+    private userService:UserService,
+    private reportingService: ReportingService
   ) { }
 
   ngOnInit() {
@@ -93,8 +98,22 @@ export class TrainingSurveyComponent implements OnInit {
   }
 
   sendData(result) {
-    //TODO update with your own behavior    
-    console.log(result);
+    this.loading = true;
+    var obj = <TrainingSurveyResult>{};
+    obj.userId = this.user.id;
+    obj.trainingId = this.training.id;
+    obj.result = JSON.stringify(result);
+    this.service.addSurvey(obj).subscribe(
+      res =>{
+        if(this.redirect){
+          this.reportingService.setAlert("Evaluation Survey was Submitted. Thank You.");
+          this.router.navigate(['/reporting/training/catalog']);
+        } 
+        this.submitSurvey.emit(res);
+        this.loading = false;
+      }
+    )
+    
   }
 
   json = {
@@ -105,173 +124,173 @@ export class TrainingSurveyComponent implements OnInit {
       "elements": [
        {
         "type": "matrix",
-        "name": "The Content",
+        "name": "1. Content",
+        "title": "The Content",
         "columns": [
          {
-          "value": "Column 1",
+          "value": "1",
           "text": "Strongly Disagree"
          },
          {
-          "value": "Column 2",
+          "value": "2",
           "text": "Disagree"
          },
          {
-          "value": "Column 3",
+          "value": "3",
           "text": "Neutral"
          },
          {
-          "value": "Column 4",
+          "value": "4",
           "text": "Agree"
          },
          {
-          "value": "Column 5",
+          "value": "5",
           "text": "Strongly Agree"
          }
         ],
         "rows": [
          {
-          "value": "Row 1",
+          "value": "1.1",
           "text": "Was relevant to my needs."
          },
          {
-          "value": "Row 2",
+          "value": "1.2",
           "text": "Was well organized."
          },
          {
-          "value": "Row 3",
+          "value": "1.3",
           "text": "Was adequately related to the topic."
          },
          {
-          "value": "Row 4",
+          "value": "1.4",
           "text": "Was easy to understand."
          }
         ]
        },
        {
         "type": "matrix",
-        "name": "question2",
+        "name": "2. Instructors",
         "title": "The Instructors",
         "columns": [
          {
-          "value": "Column 1",
+          "value": "1",
           "text": "Strongly Disagree"
          },
          {
-          "value": "Column 2",
+          "value": "2",
           "text": "Disagree"
          },
          {
-          "value": "Column 3",
+          "value": "3",
           "text": "Neutral"
          },
          {
-          "value": "Column 4",
+          "value": "4",
           "text": "Agree"
          },
          {
-          "value": "Column 5",
+          "value": "5",
           "text": "Strongly Agree"
          }
         ],
         "rows": [
          {
-          "value": "Row 1",
+          "value": "2.1",
           "text": "Were well-prepared."
          },
          {
-          "value": "Row 2",
+          "value": "2.2",
           "text": "Used teaching methods appropriate for the content/audience."
          },
          {
-          "value": "Row 3",
+          "value": "2.3",
           "text": "Was knowledgeable of the subject matter."
          },
          {
-          "value": "Row 4",
+          "value": "2.4",
           "text": "Engaged the participants in learning."
          },
          {
-          "value": "Row 5",
+          "value": "2.5",
           "text": "Related program content to practical situations."
          },
          {
-          "value": "Row 6",
+          "value": "2.6",
           "text": "Answered questions clearly and accurately."
          }
         ]
        },
        {
         "type": "matrix",
-        "name": "question1",
+        "name": "3. Outcomes",
         "title": "Outcomes:",
         "columns": [
          {
-          "value": "Column 1",
+          "value": "1",
           "text": "Strongly Disagree"
          },
          {
-          "value": "Column 2",
+          "value": "2",
           "text": "Disagree"
          },
          {
-          "value": "Column 3",
+          "value": "3",
           "text": "Neutral"
          },
          {
-          "value": "Column 4",
+          "value": "4",
           "text": "Agree"
          },
          {
-          "value": "Column 5",
+          "value": "5",
           "text": "Strongly Agree"
          }
         ],
         "rows": [
          {
-          "value": "Row 1",
+          "value": "3.1",
           "text": "I gained knowledge/skills about the topics presented."
          },
          {
-          "value": "Row 2",
+          "value": "3.2",
           "text": "I will use what I learned in my county program."
          },
          {
-          "value": "Row 3",
+          "value": "3.3",
           "text": "This information will help my program move to the next level."
          },
          {
-          "value": "Row 4",
+          "value": "3.4",
           "text": "Based on the in-service, I am now able to teach this topic to others."
          }
         ]
        },
        {
         "type": "text",
-        "name": "question3",
+        "name": "4. Teach",
         "title": "Based on the in-service, I am now able to teach this topic to others."
        },
        {
         "type": "text",
-        "name": "question4",
+        "name": "5. Encouraged",
         "title": "Based on this in-service, what are two things that you are encouraged to do within the next six (6) months?  "
        },
        {
         "type": "text",
-        "name": "question5",
+        "name": "6. Program",
         "title": "If you have a program related to this topic, what do you think will help take it to the next level (i.e., achieve higher level impact)?"
        },
        {
         "type": "text",
-        "name": "question6",
+        "name": "7. Training Comments",
         "title": "Please provide any additional comments about this training."
        },
        {
         "type": "text",
-        "name": "question7",
+        "name": "8. Instructors",
         "title": "Please provide any comments about the instructor or any additional instructors/presenters."
        }
-      ],
-      "title": "The Content:"
+      ]
      }
     ]
    }

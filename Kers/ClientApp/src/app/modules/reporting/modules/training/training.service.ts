@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import {Training, TainingRegisterWindow, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TrainingEnrollment} from './training'
+import {Training, TainingRegisterWindow, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TrainingEnrollment, TrainingSurveyResult} from './training'
 import { User } from '../user/user.service';
 
 @Injectable({
@@ -139,6 +139,13 @@ export class TrainingService {
         return this.http.get<TrainingCancelEnrollmentWindow[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('cancelEnrollmentWindows', []))
+            );
+      }
+
+      addSurvey( survey:TrainingSurveyResult ):Observable<TrainingSurveyResult>{
+        return this.http.post<TrainingSurveyResult>(this.location.prepareExternalUrl(this.baseUrl + 'addsurvey/'), survey)
+            .pipe(
+                catchError(this.handleError('addSurvey', <TrainingSurveyResult>{}))
             );
       }
 

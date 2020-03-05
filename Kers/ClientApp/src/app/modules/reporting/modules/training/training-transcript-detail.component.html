@@ -1,0 +1,9 @@
+<td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+<td><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
+<td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+<td>{{attendance(training)}}</td>
+<td>
+  <span *ngIf="attended && !surveyTaken"><a routerLink="/reporting/training/survey/{{training.id}}">survey</a></span>
+  <span *ngIf="!attended">-</span>
+  <span *ngIf="attended && surveyTaken"><i class="fa fa-check"></i></span>
+</td>

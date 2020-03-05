@@ -99,7 +99,7 @@ namespace Kers.Controllers
                                     .Include( t => t.RegisterCutoffDays)
                                     .Include( t => t.CancelCutoffDays)
                                     .Include( t => t.TrainingSession)
-                                    //.Include( t => t.SurveyResults)
+                                    .Include( t => t.SurveyResults)
                                     .FirstOrDefaultAsync();
             //if( training != null){
                 return new OkObjectResult(this.ToTimezone( await training));
@@ -173,39 +173,29 @@ namespace Kers.Controllers
 
             return new OkObjectResult(list);
         }
-        /* 
         
-        [HttpPost("addtrainingold")]
-        [Authorize]
-        public IActionResult AddTrainingOld( [FromBody] Training training){
-            if(training != null){
-                var user = this.CurrentUser();
-                training.Start = new DateTime(training.Start.Year, training.Start.Month, training.Start.Day, 14, 5, 6);
-                if(training.End.HasValue){
-                    training.End = new DateTime(training.End.Value.Year, training.End.Value.Month, training.End.Value.Day, 14, 5, 6);
-                }else{
-                    training.End = null;
-                }
-                training.submittedBy = user;
-                training.CreatedDateTime = DateTime.Now;
-                training.BodyPreview = training.Body;
-                training.LastModifiedDateTime = training.CreatedDateTime;
-                training.Organizer = training.submittedBy;
-                training.tStatus = "P";
-                training.TrainDateBegin = training.Start.ToString("yyyyMMdd");
-                training.TrainDateEnd = training.End?.ToString("yyyyMMdd");
-                context.Add(training); 
-                context.SaveChanges();
-                this.Log(training,"Training", "Training Proposed.");
 
-                return new OkObjectResult(training);
+        [HttpPost("addsurvey")]
+        [Authorize]
+        public IActionResult AddSurvey( [FromBody] TrainingSurveyResult survey){
+            if(survey != null){
+                if(survey.UserId == null){
+                    var user = this.CurrentUser();
+                    survey.UserId = user.Id;
+                }
+                
+                survey.Created = DateTime.Now;
+                context.Add(survey); 
+                context.SaveChanges();
+                this.Log(survey,"TrainingSurveyResult", "Training Survey Results saved.");
+
+                return new OkObjectResult(survey);
             }else{
-                this.Log( training ,"Training", "Error in adding training attempt.", "Training", "Error");
+                this.Log( survey ,"TrainingSurveyResult", "Error in adding training survey attempt.", "TrainingSurveyResult", "Error");
                 return new StatusCodeResult(500);
             }
         }
-        
-         */
+
   
 
 
@@ -733,8 +723,7 @@ namespace Kers.Controllers
                 where training.Start.Year == year
                 select training;
             trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour)
-            //.Include( t => t.SurveyResults)
-            ;
+            .Include( t => t.SurveyResults);
             var tnngs = await trainings.OrderBy(t => t.Start).ToListAsync();
             return new OkObjectResult(tnngs);
         }
