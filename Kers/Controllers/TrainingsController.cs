@@ -641,7 +641,13 @@ namespace Kers.Controllers
                             .Include( t => t.TrainingSession)
                             .Include( t => t.iHour);
             if(attendance){
-                trainings = trainings.Where(t => t.tStatus == "A" && t.Enrollment.Count() > 0 ).Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ThenInclude( a => a.RprtngProfile).ThenInclude( r => r.PlanningUnit).Include( t => t.SurveyResults);
+                trainings = trainings
+                        .Where(t => t.tStatus == "A" && t.Enrollment.Count() > 0 )
+                        .Include( t => t.SurveyResults)
+                        .Include(t => t.Enrollment)
+                            .ThenInclude( e => e.Attendie)
+                            .ThenInclude( a => a.RprtngProfile)
+                            .ThenInclude( r => r.PlanningUnit);
             }else if( admin ){
                 trainings = trainings.Include(t => t.Enrollment);
             }
