@@ -18,6 +18,7 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
   loading = false;
   enrolledFolks: TrainingEnrollment[];
   moreInfo = false;
+  moreInfoSurvey = false;
   coppied = false;
 
   constructor(
@@ -62,5 +63,8 @@ export class TrainingPostAttendanceDetailComponent implements OnInit {
         this.defaultView();
       }
     );
+  }
+  csv(){
+
   }
 }

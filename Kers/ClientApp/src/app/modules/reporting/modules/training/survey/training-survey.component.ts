@@ -5,6 +5,7 @@ import { TrainingService } from '../training.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { switchMap, tap } from 'rxjs/operators';
 import { ReportingService } from '../../../components/reporting/reporting.service';
+import {outlineJson} from './outline';
 
 @Component({
   selector: 'training-survey',
@@ -20,6 +21,7 @@ export class TrainingSurveyComponent implements OnInit {
   isQualified = false;
   attended = false;
   completed = true;
+  json:object;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,6 +32,7 @@ export class TrainingSurveyComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.json = outlineJson;
     if( this.training == null){
       this.route.paramMap.pipe(
         switchMap((params: ParamMap) =>{
@@ -115,7 +118,7 @@ export class TrainingSurveyComponent implements OnInit {
     )
     
   }
-
+/* 
   json = {
     "title": "In Service Training Evaluation",
     "pages": [
@@ -294,6 +297,6 @@ export class TrainingSurveyComponent implements OnInit {
      }
     ]
    }
-  
+   */
 
 }

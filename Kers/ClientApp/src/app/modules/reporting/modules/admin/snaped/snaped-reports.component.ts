@@ -90,6 +90,9 @@ export class SnapedReportsComponent implements OnInit {
     this.type = type;
     this.onRefresh();
   }
+  csv(){
+    
+  }
 
 
 

@@ -8,11 +8,12 @@ import * as Survey from 'survey-angular';
 export class SurveyComponent  {
     @Output() submitSurvey = new EventEmitter<any>();
     @Input() json: any;
+    @Input() previousResult: any;
     result: any;
 
     ngOnInit() {
         let surveyModel = new Survey.Model(this.json);
-
+        console.log(this.json);
         surveyModel.onAfterRenderQuestion.add((survey, options) => {
             if (!options.question.popupdescription) { return; }
             // Add a button;
@@ -35,7 +36,10 @@ export class SurveyComponent  {
               this.result = result.data;
             }
             );
-
+        if(this.previousResult != null){
+          surveyModel.mode = 'display';
+          surveyModel.data = this.previousResult;
+        }
 
 
         Survey.SurveyNG.render('surveyElement', { model: surveyModel });

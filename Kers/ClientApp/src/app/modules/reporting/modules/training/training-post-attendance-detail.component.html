@@ -11,8 +11,32 @@
   <div>
     <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
   </div>
-  <table>
-    <tr><td>kk</td></tr>
+  <h3>{{training.subject}}</h3>
+    <a (click)="moreInfoSurvey = !moreInfoSurvey" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="moreInfo"></i>
+      <i class="fa fa-plus-square" *ngIf="!moreInfoSurvey"></i> info
+    </a>
+    <div *ngIf="moreInfoSurvey">
+      
+      <h5><strong>Date(s):</strong> {{training.start | date:'mediumDate'}} <span *ngIf="training.end"> - {{training.end | date:'mediumDate'}}</span></h5>
+      <h5><strong>Location:</strong> {{training.tLocation}}</h5>
+      <h5><strong>Contact:</strong> {{training.tContact}}</h5>
+      <h5><strong>Url:</strong>&nbsp;<a [routerLink]="['/reporting/training/', training.id]">https://kers.ca.uky.edu/core/reporting/training/{{training.id}}</a> &nbsp;<button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
+          <i class="fa fa-clipboard"></i>&nbsp;
+          <ng-container *ngIf="!coppied">Copy</ng-container> <ng-container *ngIf="coppied">Copied</ng-container>
+      </button></h5><br><br>
+    </div>
+    <h4>Training Session Evaluation Results</h4>
+    <div>
+      <a class="btn btn-info btn-xs pull-right" (click)="csv()"><i class="fa fa-download"></i> Csv</a>
+    </div>
+  <table class="table">
+    <thead>
+      <th>Survey Submitted</th>
+      <th>Details</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let result of training.surveyResults" [training-survey-row]="result"></tr>
+    </tbody>
   </table>
 
 </td>
