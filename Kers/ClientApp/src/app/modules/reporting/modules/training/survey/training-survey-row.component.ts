@@ -6,7 +6,7 @@ import {outlineJson} from './outline';
   selector: '[training-survey-row]',
   template: `
     <td *ngIf="default">{{result.created | date:'mediumDate'}}</td>
-    <td *ngIf="default"><a (click)="detailsView()" class="btn btn-info btn-xs">details</a></td>
+    <td *ngIf="default"><a (click)="detailsView()" class="btn btn-info btn-xs pull-right">details</a></td>
     <td *ngIf="details" colspan="2"><br>
       <div>
         <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close survey details</a>

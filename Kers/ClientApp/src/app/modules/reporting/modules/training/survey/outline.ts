@@ -155,7 +155,7 @@ export const outlineJson = {
        {
         "type": "text",
         "name": "5. Encouraged",
-        "title": "Based on this in-service, what are two things that you are encouraged to do within the next six (6) months?  "
+        "title": "Based on this in-service, what are two things that you are encouraged to do within the next six (6) months?"
        },
        {
         "type": "text",
