@@ -121,7 +121,7 @@ namespace Kers.Models.Repositories
 
         public List<TrainingEnrollment> SetEvaluationReminders(){
             List<TrainingEnrollment> trainings = this.context.TrainingEnrollment
-                        .Where( t => t.Training.qualtricsSurveyID != null && t.evaluationMessageSent == false && t.attended == true)
+                        .Where( t => t.evaluationMessageSent == false && t.attended == true)
                         .Include( t => t.Training)
                         .Include(t => t.Attendie).ThenInclude( e => e.RprtngProfile)
                         .ToList();
@@ -130,8 +130,8 @@ namespace Kers.Models.Repositories
                 foreach( var enr in trainings){
                     var message = new Message();
                     message.Subject = template.Subject;
-                    message.BodyHtml = string.Format(template.BodyHtml, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.qualtricsSurveyID);
-                    message.BodyText = string.Format(template.BodyText, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.qualtricsSurveyID);
+                    message.BodyHtml = string.Format(template.BodyHtml, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.Id);
+                    message.BodyText = string.Format(template.BodyText, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.Id);
                     message.FromId = enr.Training.submittedById;
                     message.ToId = enr.AttendieId;
                     this.context.Message.Add(message);
