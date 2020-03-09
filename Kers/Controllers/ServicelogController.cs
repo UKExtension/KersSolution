@@ -49,8 +49,9 @@ namespace Kers.Controllers
             
             var activity = await context.Activity.
                                 Where(e=> e.Id == Id).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
+                                Include( e => e.MajorProgram).
+                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
+                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude( o => o.ActivityOptionNumber).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).

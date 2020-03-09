@@ -23,6 +23,8 @@ import { SnapedBudgetHomeComponent } from './snaped-budget-home.component';
 import { SnapEdModule } from '../../snap-ed/snap-ed.module';
 import { SnapedDownloadButtonComponent } from './snaped-download-button.component';
 import { SnapedReportsComponent } from './snaped-reports.component';
+import { SnapedReportsDetailComponent } from './snaped-reports-detail.component';
+import { ActivityModule } from '../../activity/activity.module';
 
 
 
@@ -35,6 +37,7 @@ import { SnapedReportsComponent } from './snaped-reports.component';
                   PlanningunitModule,
                   UserModule,
                   ServicelogModule,
+                  ActivityModule,
                   SnapEdModule
                 ],
   declarations: [ 
@@ -47,7 +50,8 @@ import { SnapedReportsComponent } from './snaped-reports.component';
                   SnapedReimbursmentItem,
                   SnapedBudgetHomeComponent,
                   SnapedDownloadButtonComponent,
-                  SnapedReportsComponent
+                  SnapedReportsComponent,
+                  SnapedReportsDetailComponent
 
                 ],
   providers:    [  

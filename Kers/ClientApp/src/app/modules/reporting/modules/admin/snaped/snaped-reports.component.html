@@ -10,8 +10,11 @@
           <input type="radio" name="type" id="option3" (click)="switchType('indirect')"> Indirect
         </label>
         <label class="btn btn-default" [class.active]="type=='policy'">
-            <input type="radio" name="type" id="option4" (click)="switchType('policy')"> Policy
-          </label>
+          <input type="radio" name="type" id="option4" (click)="switchType('policy')"> Policy
+        </label>
+        <label class="btn btn-default" [class.active]="type=='admin'">
+          <input type="radio" name="type" id="option4" (click)="switchType('policy')"> Admin
+        </label>
     </div>
   </div>
   <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
@@ -69,21 +72,13 @@
             <th>Date</th>
             <th>Name</th>
             <th>County</th>
-            <th>Time</th>
-            <th>Proposed By</th>
-            <th>Enrolled</th>
+            <th>Title</th>
             <th></th>
           </tr>
       </thead>
       <tbody *ngIf="!loading">
-        <tr *ngFor="let revision of revisions">
-          <td>{{revision.revision.activityDate  | date:'shortDate'}}</td>
-          <td>{{revision.user.rprtngProfile.name}}</td>
-          <td>{{revision.unit.name}}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+        <tr *ngFor="let revision of revisions" [snaped-reports-detail]="revision">
+          
         </tr>
       </tbody>
       

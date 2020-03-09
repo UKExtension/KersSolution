@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Activity, ActivityOption, Race, Ethnicity, ActivityOptionNumber, ActivityService } from '../../activity.service';
 import { Observable } from 'rxjs/Observable';
+import { ServicelogService } from '../../../servicelog/servicelog.service';
 
 @Component({
   selector: 'service-log-full-details',
@@ -8,17 +9,34 @@ import { Observable } from 'rxjs/Observable';
 })
 export class ServiceLogFullDetailsComponent implements OnInit {
   @Input() activity:Activity;
+  @Input() activityId:number;
   races:Observable<Race[]>;
   ethnicities:Observable<Ethnicity[]>;
+  loading = true;
 
   constructor(
-    private service: ActivityService
+    private service: ActivityService,
+    private serviceLogService: ServicelogService
   ) {
     this.races = this.service.races();
     this.ethnicities = this.service.ethnicities();
    }
 
   ngOnInit() {
+    if(this.activity == null){
+      if(this.activityId != null){
+        this.serviceLogService.byId(this.activityId).subscribe(
+          res => {
+            this.activity = res;
+            this.loading = false;
+          }
+        )
+        
+      }
+      
+    }else{
+      this.loading = false;
+    }
   }
 
   getRaceEthnicityValue(raceId:number, ethnicityId:number){

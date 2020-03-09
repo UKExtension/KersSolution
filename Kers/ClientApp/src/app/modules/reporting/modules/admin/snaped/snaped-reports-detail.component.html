@@ -1,0 +1,8 @@
+<td *ngIf="!details">{{revision.revision.activityDate  | date:'shortDate'}}</td>
+<td *ngIf="!details">{{revision.user.rprtngProfile.name}}</td>
+<td *ngIf="!details">{{revision.unit.name}}</td>
+<td *ngIf="!details">{{revision.revision.title}}</td>
+<td *ngIf="!details"><a class="btn btn-info btn-xs" (click)="details=true">details</a></td>
+<td *ngIf="details" colspan="5">
+  <service-log-full-details [activityId]="revision.revision.activityId"></service-log-full-details>
+</td>

@@ -77,7 +77,8 @@ import { ServiceLogSnapPolicyDetailsComponent } from './reports/fulldetails/serv
                     ActivityReportsHomeComponent,
                     ActivityStatsMonthComponent,
                     ActivityStatsProgramComponent,
-                    ActivityReportsSummaryComponent
+                    ActivityReportsSummaryComponent,
+                    ServiceLogFullDetailsComponent
                 ]
 })
 export class ActivityModule { }

@@ -153,7 +153,6 @@ export class SnapedAdminService {
     }
 
     getCustom(criteria:SnapedSearchCriteria):Observable<SnapSearchResult>{
-        console.log('ff');
         var url = this.baseUrl + 'getCustom/';
         return this.http.post<SnapSearchResult>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
