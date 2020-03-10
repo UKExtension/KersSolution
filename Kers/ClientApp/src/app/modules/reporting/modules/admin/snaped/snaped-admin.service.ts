@@ -152,11 +152,11 @@ export class SnapedAdminService {
             );
     }
 
-    getCustom(criteria:SnapedSearchCriteria):Observable<SnapSearchResult>{
+    getCustom(criteria:SnapedSearchCriteria):Observable<SnapSeearchResultsWithCount>{
         var url = this.baseUrl + 'getCustom/';
-        return this.http.post<SnapSearchResult>(this.location.prepareExternalUrl(url), criteria)
+        return this.http.post<SnapSeearchResultsWithCount>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
-                catchError(this.handleError('addCountyReimbursment',<SnapSearchResult>{}))
+                catchError(this.handleError('addCountyReimbursment',<SnapSeearchResultsWithCount>{}))
             );
     }
     
@@ -186,10 +186,16 @@ export class SnapedSearchCriteria{
     search: string = "";
     type = "direct";
     order: string = 'dsc';
+    skip:number = 0;
+    take?:number;
 }
 
 export class SnapSearchResult{
     user: User;
     revision: Servicelog;
     unit: PlanningUnit
+}
+export class SnapSeearchResultsWithCount{
+    results:SnapSearchResult[];
+    resultsCount:number;
 }

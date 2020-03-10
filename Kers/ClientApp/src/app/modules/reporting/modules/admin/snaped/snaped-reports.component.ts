@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SnapedSearchCriteria, SnapedAdminService, SnapSearchResult } from './snaped-admin.service';
+import { SnapedSearchCriteria, SnapedAdminService, SnapSearchResult, SnapSeearchResultsWithCount } from './snaped-admin.service';
 import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
@@ -15,7 +15,7 @@ export class SnapedReportsComponent implements OnInit {
   @Input() criteria:SnapedSearchCriteria;
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
-  revisions$:Observable<SnapSearchResult>;
+  revisions$:Observable<SnapSeearchResultsWithCount>;
   type="direct";
   order = "dsc";
 
@@ -49,7 +49,8 @@ export class SnapedReportsComponent implements OnInit {
       end: endDate.toISOString(),
       search: "",
       order: 'dsc',
-      type: this.type
+      type: this.type,
+      skip: 0
     }
 
 

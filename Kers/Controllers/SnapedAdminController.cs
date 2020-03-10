@@ -117,6 +117,10 @@ namespace Kers.Controllers
             public ActivityRevision Revision;
             public PlanningUnit Unit;
         }
+        class SnapSeearchResultsWithCount{
+            public List<SnapSearchResult> Results;
+            public int ResultsCount;
+        }
 
 
 
@@ -432,6 +436,9 @@ namespace Kers.Controllers
             public string Search;
             public string Type;
             public string Order;
+            public int? Skip;
+            public int? Take;
+
         }
 
     }
