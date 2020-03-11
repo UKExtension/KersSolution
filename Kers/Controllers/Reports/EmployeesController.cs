@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Kers.Models.ViewModels;
 using Kers.Models.Data;
 using System;
+using System.IO;
+using CsvHelper;
 
 namespace Kers.Controllers.Reports
 {
@@ -87,7 +89,7 @@ namespace Kers.Controllers.Reports
             
 
             // Import Areas
-            ImportAreas();
+            //ImportAreas();
             
 
             /* 
@@ -128,6 +130,84 @@ namespace Kers.Controllers.Reports
 
 
             if(!context.ExtensionArea.Any()){
+
+                 using (var reader = new StreamReader("database/Areas.csv"))
+                    using (var csv = new CsvReader(reader))
+                    {    
+                        var newRecords = new List<Training>();
+                        csv.Read();
+                        csv.ReadHeader();
+                        while (csv.Read())
+                        {
+
+                            var County = csv.GetField("County");
+                            var District = csv.GetField("District");
+                            var RegionArea = csv.GetField("RegionArea");
+                            var Congressional = csv.GetField("Congressional");
+                            var IsMulty = csv.GetField("IsMulty");
+                            
+
+                        var county = context.PlanningUnit.Where( u => u.Name.Count() > 11
+                                                                    &&
+                                                                    u.Name.Substring(0,u.Name.Count() - 11).ToUpper() == County.ToUpper()).FirstOrDefault();
+                    var region = RegionArea.Substring(0,1);
+                    var reg = regions.Where( a => a.Name == region);
+                    ExtensionRegion currentRegion;
+                    if( reg.Any()){
+                        currentRegion = reg.FirstOrDefault();
+                    }else{
+                        currentRegion = new ExtensionRegion();
+                        currentRegion.Arreas = new List<ExtensionArea>();
+                        currentRegion.Name = region;
+                        regions.Add(currentRegion);
+                    }
+                    var areaNum = RegionArea.Substring(1);
+
+                    var ar = currentRegion.Arreas.Where( a => a.Name == currentRegion.Name + areaNum);
+                    ExtensionArea currentArrea;
+                    if( ar.Any()){
+                        currentArrea = ar.FirstOrDefault();
+                    }else{
+                        currentArrea = new ExtensionArea();
+                        currentArrea.Name = currentRegion.Name + areaNum;
+                        currentArrea.order = Int32.Parse(areaNum);
+                        currentArrea.Units = new List<PlanningUnit>();
+                        currentRegion.Arreas.Add(currentArrea);
+                    }
+                    currentArrea.Units.Add(county);
+
+                    var cng = congressional
+                                .Where( a => a.Name == Congressional.ToString());
+                    CongressionalDistrict currentCongressionalDistrict;
+                    if( cng.Any()){
+                        currentCongressionalDistrict = cng.FirstOrDefault();
+                    }else{
+                        currentCongressionalDistrict = new CongressionalDistrict();
+                        currentCongressionalDistrict.Units = new List<CongressionalDistrictUnit>();
+                        currentCongressionalDistrict.Name = Congressional.ToString();
+                        congressional.Add(currentCongressionalDistrict);
+                    }
+                    var congrUnit = new CongressionalDistrictUnit();
+                    congrUnit.PlanningUnit = county;
+                    congrUnit.IsMultiDistrict = IsMulty == "1";
+                    currentCongressionalDistrict.Units.Add(congrUnit);
+                }
+                context.ExtensionRegion.AddRange(regions);
+                context.CongressionalDistrict.AddRange(congressional);
+                context.SaveChanges();
+
+
+
+                    }
+
+                
+
+
+/* 
+
+
+
+
                 var areasData = this.context.Areas;
                 foreach( var contyData in areasData){
                     var county = context.PlanningUnit.Where( u => u.Name.Count() > 11
@@ -178,6 +258,9 @@ namespace Kers.Controllers.Reports
                 context.ExtensionRegion.AddRange(regions);
                 context.CongressionalDistrict.AddRange(congressional);
                 context.SaveChanges();
+
+
+                 */
             }
             
 
