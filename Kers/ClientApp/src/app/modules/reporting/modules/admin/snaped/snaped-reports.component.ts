@@ -50,7 +50,8 @@ export class SnapedReportsComponent implements OnInit {
       search: "",
       order: 'dsc',
       type: this.type,
-      skip: 0
+      skip: 0,
+      take: 15
     }
 
 
@@ -93,6 +94,12 @@ export class SnapedReportsComponent implements OnInit {
   }
   csv(){
     
+  }
+
+  loadMore(){
+    this.criteria.take += 10;
+    this.onRefresh();
+
   }
 
 

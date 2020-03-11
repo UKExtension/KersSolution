@@ -56,8 +56,9 @@ namespace Kers.Controllers
             var result = this.context.Activity
                                 .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End)
                                 .Include( a=>a.Revisions);
+            var rslt = result.Skip(criteria.Skip??0).Take(criteria.Take??100);
             var searchResult = new List<SnapSearchResult>();
-            foreach(var actvt in result){
+            foreach(var actvt in rslt){
                 var lastRev = actvt.Revisions.OrderBy( r => r.Id).Last();
                 if(criteria.Type == "indirect"){
                     if(lastRev.SnapIndirectId != null){
