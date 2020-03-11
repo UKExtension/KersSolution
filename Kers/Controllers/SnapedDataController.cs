@@ -182,7 +182,7 @@ namespace Kers.Controllers
             }
 
             
-            return Ok(snapDirectRepo.PersonalHourDetails(fiscalYear));
+            return Ok(snapDirectRepo.PersonalHourDetails(fiscalYear, true));
         }
 
 
