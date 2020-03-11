@@ -51,7 +51,7 @@ export class SnapedReportsComponent implements OnInit {
       order: 'dsc',
       type: this.type,
       skip: 0,
-      take: 15
+      take: 20
     }
 
 
@@ -97,7 +97,7 @@ export class SnapedReportsComponent implements OnInit {
   }
 
   loadMore(){
-    this.criteria.take += 10;
+    this.criteria.take += 20;
     this.onRefresh();
 
   }

@@ -52,65 +52,47 @@ namespace Kers.Controllers
         [Authorize]
         public async Task<IActionResult> GetCustom( [FromBody] SnapedSearchCriteria criteria
                                         ){
-
             var result = this.context.Activity
                                 .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End)
                                 .Include( a=>a.Revisions);
-            var rslt = result.Skip(criteria.Skip??0).Take(criteria.Take??100);
+            var LastRevs = new List<ActivityRevision>();
+            foreach( var res in result) LastRevs.Add(res.Revisions.Last());
             var searchResult = new List<SnapSearchResult>();
-            foreach(var actvt in rslt){
-                var lastRev = actvt.Revisions.OrderBy( r => r.Id).Last();
-                if(criteria.Type == "indirect"){
-                    if(lastRev.SnapIndirectId != null){
-                        var res = new SnapSearchResult();
-                        res.User = await this.context.KersUser
-                                                    .Where( u => u.Id == actvt.KersUserId)
-                                                    .Include( u => u.RprtngProfile)
-                                                    .FirstOrDefaultAsync();
-                        res.Unit = await this.context.PlanningUnit.Where( r => r.Id == actvt.PlanningUnitId).FirstOrDefaultAsync();
-                        res.Unit.GeoFeature = null;
-                        res.Revision = await this.context.ActivityRevision
-                                                    .Where( a => a.Id == lastRev.Id)
-                                                    .Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectMethodSelections)
-                                                    .Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
-                                                    .FirstOrDefaultAsync();
-                        searchResult.Add(res);
-                    }
-                }else if( criteria.Type == "direct"){
-                    if(lastRev.SnapDirectId != null){
-                        var res = new SnapSearchResult();
-                        res.User = await this.context.KersUser
-                                                    .Where( u => u.Id == actvt.KersUserId)
-                                                    .Include( u => u.RprtngProfile)
-                                                    .FirstOrDefaultAsync();
-                        res.Unit = await this.context.PlanningUnit.Where( r => r.Id == actvt.PlanningUnitId).FirstOrDefaultAsync();
-                        res.Unit.GeoFeature = null;
-                        res.Revision = await this.context.ActivityRevision
-                                                    .Where( a => a.Id == lastRev.Id)
-                                                    .Include( r => r.SnapDirect).ThenInclude( i => i.SnapDirectAgesAudienceValues)
-                                                    .Include( r => r.SnapDirect).ThenInclude( i => i.SnapDirectDeliverySite)
-                                                    .FirstOrDefaultAsync();
-                        searchResult.Add(res);
-                    }
-                }else{
-                    if(lastRev.SnapPolicyId != null){
-                        var res = new SnapSearchResult();
-                        res.User = await this.context.KersUser
-                                                    .Where( u => u.Id == actvt.KersUserId)
-                                                    .Include( u => u.RprtngProfile)
-                                                    .FirstOrDefaultAsync();
-                        res.Unit = await this.context.PlanningUnit.Where( r => r.Id == actvt.PlanningUnitId).FirstOrDefaultAsync();
-                        res.Unit.GeoFeature = null;
-                        res.Revision = await this.context.ActivityRevision
-                                                    .Where( a => a.Id == lastRev.Id)
-                                                    .Include( r => r.SnapPolicy).ThenInclude( i => i.SnapPolicyAimedSelections)
-                                                    .Include( r => r.SnapPolicy).ThenInclude( i => i.SnapPolicyPartnerValue)
-                                                    .FirstOrDefaultAsync();
-                        searchResult.Add(res);
-                    }
-                }
+            var ret = new SnapSeearchResultsWithCount();
+            var skipped = 0;
+            var taken = 0;
+            IEnumerable<ActivityRevision> filtered = null;
+            if(criteria.Type == "direct"){
+                filtered = LastRevs.Where( r => r.SnapDirectId != null);
+            }else if( criteria.Type == "indirect"){
+                filtered = LastRevs.Where( r => r.SnapIndirectId != null);
+            }else if( criteria.Type == "policy"){
+                filtered = LastRevs.Where( r => r.SnapPolicyId != null);
+            }else if( criteria.Type == "admin"){
+                filtered = LastRevs.Where( r => r.SnapAdmin == true && r.SnapPolicyId == null && r.SnapIndirectId == null && r.SnapDirectId == null);
             }
-            return new OkObjectResult(searchResult);
+            ret.ResultsCount =  filtered == null ? 0 : filtered.Count() ;
+            foreach( var rev in filtered){
+                skipped++;
+                if( criteria.Skip < skipped){
+                    if( taken >= criteria.Take) break;
+                    var res = new SnapSearchResult();
+                    var activity = await this.context.Activity.Where( a => a.Id == rev.ActivityId)
+                                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
+                                                .Include( a => a.PlanningUnit)
+                                                .FirstOrDefaultAsync();
+                    res.User = activity.KersUser;
+                    res.Unit = activity.PlanningUnit;
+                    res.Unit.GeoFeature = null;
+                    res.Revision = rev;
+                    searchResult.Add(res);
+                    taken++;
+                }   
+                
+            }
+            ret.Results = searchResult;
+
+            return new OkObjectResult(ret);
         }
 
         class SnapSearchResult{

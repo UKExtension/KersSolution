@@ -13,7 +13,7 @@
           <input type="radio" name="type" id="option4" (click)="switchType('policy')"> Policy
         </label>
         <label class="btn btn-default" [class.active]="type=='admin'">
-          <input type="radio" name="type" id="option4" (click)="switchType('policy')"> Admin
+          <input type="radio" name="type" id="option4" (click)="switchType('admin')"> Admin
         </label>
     </div>
   </div>
@@ -87,7 +87,7 @@
 
 
   <div class="col-xs-12"><br><br>
-    <div *ngIf="revisions.resultsCount != 0" class="text-center">
+    <div *ngIf="revisions.resultsCount != 0 && !loading" class="text-center">
       <div>Showing {{ (criteria.take < revisions.resultsCount ? criteria.take : revisions.resultsCount)}} of {{revisions.resultsCount}} Records</div>
       <div *ngIf="revisions.resultsCount >= criteria.take" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
           load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
