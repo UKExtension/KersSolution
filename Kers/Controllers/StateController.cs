@@ -58,6 +58,16 @@ namespace Kers.Controllers
             var counties = this.context.PlanningUnit.Where(u => u.District != null).OrderBy(d => d.Name);
             return new OkObjectResult(counties);
         }
+        [HttpGet("regions")]
+        public IActionResult GetRegions(){
+            var regions = this.context.ExtensionRegion;
+            return new OkObjectResult(regions);
+        }
+        [HttpGet("congressional")]
+        public IActionResult GetCongressionalDistricts(){
+            var regions = this.context.CongressionalDistrict;
+            return new OkObjectResult(regions);
+        }
 
         [HttpGet("notcounties")]
         public IActionResult GetNotCounties(){

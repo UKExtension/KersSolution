@@ -53,10 +53,12 @@ namespace Kers.Controllers
         public async Task<IActionResult> GetCustom( [FromBody] SnapedSearchCriteria criteria
                                         ){
             var result = this.context.Activity
-                                .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End)
-                                .Include( a=>a.Revisions);
+                                .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End);
+            if( criteria.Search != ""){
+                result = result.Where( a => a.KersUser.RprtngProfile.Name.Contains(criteria.Search));
+            }
             var LastRevs = new List<ActivityRevision>();
-            foreach( var res in result) LastRevs.Add(res.Revisions.Last());
+            foreach( var res in result.Include( a=>a.Revisions)) LastRevs.Add(res.Revisions.Last());
             var searchResult = new List<SnapSearchResult>();
             var ret = new SnapSeearchResultsWithCount();
             var skipped = 0;
@@ -72,6 +74,13 @@ namespace Kers.Controllers
                 filtered = LastRevs.Where( r => r.SnapAdmin == true && r.SnapPolicyId == null && r.SnapIndirectId == null && r.SnapDirectId == null);
             }
             ret.ResultsCount =  filtered == null ? 0 : filtered.Count() ;
+            if(criteria.Order == "asc"){
+                filtered = filtered.OrderBy(r => r.ActivityDate);
+            }else if(criteria.Order == "dsc" ){
+                filtered = filtered.OrderByDescending( r => r.ActivityDate);
+            }else{
+                filtered = filtered.OrderBy( r => r.Title);
+            }
             foreach( var rev in filtered){
                 skipped++;
                 if( criteria.Skip < skipped){
