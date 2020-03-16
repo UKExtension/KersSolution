@@ -46,6 +46,15 @@ export class StateService {
                 catchError(this.handleError('counties', []))
             );
     }
+
+    congressional():Observable<District[]>{
+        var url = this.baseUrl + "congressional";
+        return this.http.get<District[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('districts', []))
+            );
+    }
+
     notCounties():Observable<PlanningUnit[]>{
         var url = this.baseUrl + "notcounties";
         return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
@@ -82,3 +91,5 @@ export class StateService {
     }
 
 }
+
+
