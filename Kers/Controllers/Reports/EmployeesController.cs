@@ -200,67 +200,7 @@ namespace Kers.Controllers.Reports
 
                     }
 
-                
-
-
-/* 
-
-
-
-
-                var areasData = this.context.Areas;
-                foreach( var contyData in areasData){
-                    var county = context.PlanningUnit.Where( u => u.Name.Count() > 11
-                                                                    &&
-                                                                    u.Name.Substring(0,u.Name.Count() - 11).ToUpper() == contyData.County.ToUpper()).FirstOrDefault();
-                    var region = contyData.RegionArea.Substring(0,1);
-                    var reg = regions.Where( a => a.Name == region);
-                    ExtensionRegion currentRegion;
-                    if( reg.Any()){
-                        currentRegion = reg.FirstOrDefault();
-                    }else{
-                        currentRegion = new ExtensionRegion();
-                        currentRegion.Arreas = new List<ExtensionArea>();
-                        currentRegion.Name = region;
-                        regions.Add(currentRegion);
-                    }
-                    var areaNum = contyData.RegionArea.Substring(1);
-
-                    var ar = currentRegion.Arreas.Where( a => a.Name == currentRegion.Name + areaNum);
-                    ExtensionArea currentArrea;
-                    if( ar.Any()){
-                        currentArrea = ar.FirstOrDefault();
-                    }else{
-                        currentArrea = new ExtensionArea();
-                        currentArrea.Name = currentRegion.Name + areaNum;
-                        currentArrea.order = Int32.Parse(areaNum);
-                        currentArrea.Units = new List<PlanningUnit>();
-                        currentRegion.Arreas.Add(currentArrea);
-                    }
-                    currentArrea.Units.Add(county);
-
-                    var cng = congressional
-                                .Where( a => a.Name == contyData.Congressional.ToString());
-                    CongressionalDistrict currentCongressionalDistrict;
-                    if( cng.Any()){
-                        currentCongressionalDistrict = cng.FirstOrDefault();
-                    }else{
-                        currentCongressionalDistrict = new CongressionalDistrict();
-                        currentCongressionalDistrict.Units = new List<CongressionalDistrictUnit>();
-                        currentCongressionalDistrict.Name = contyData.Congressional.ToString();
-                        congressional.Add(currentCongressionalDistrict);
-                    }
-                    var congrUnit = new CongressionalDistrictUnit();
-                    congrUnit.PlanningUnit = county;
-                    congrUnit.IsMultiDistrict = contyData.IsMulty == 1;
-                    currentCongressionalDistrict.Units.Add(congrUnit);
-                }
-                context.ExtensionRegion.AddRange(regions);
-                context.CongressionalDistrict.AddRange(congressional);
-                context.SaveChanges();
-
-
-                 */
+        
             }
             
 
