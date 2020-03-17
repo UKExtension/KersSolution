@@ -10,7 +10,9 @@ import { District } from "../district/district.service";
 
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+  })
 export class StateService {
 
     private baseUrl = '/api/state/';
@@ -47,9 +49,9 @@ export class StateService {
             );
     }
 
-    congressional():Observable<District[]>{
+    congressional():Observable<CongressionalDistrict[]>{
         var url = this.baseUrl + "congressional";
-        return this.http.get<District[]>(this.location.prepareExternalUrl(url))
+        return this.http.get<CongressionalDistrict[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('districts', []))
             );
@@ -90,6 +92,20 @@ export class StateService {
             );
     }
 
+}
+
+export interface CongressionalDistrict{
+    id:number;
+    order?:number;
+    name:string;
+    units:CongressionalDistrictUnit[];
+}
+export interface CongressionalDistrictUnit{
+    id:number;
+    order?:number;
+    PlanningUnit:PlanningUnit;
+    PlanningUnitId:number;
+    IsMultiDistrict:boolean;
 }
 
 

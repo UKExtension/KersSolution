@@ -39,6 +39,15 @@
         </div>
     </div>
     <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Congressional District</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onCongressionalChange($event)" name="CongressionalDistrict">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let congressional of congressional$ | async" value="{{congressional.id}}">{{congressional.name}}</option>
+      </select>
+      </div>
+  </div>
+    <div class="form-group" >
         <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
         <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="btn-group" data-toggle="buttons">

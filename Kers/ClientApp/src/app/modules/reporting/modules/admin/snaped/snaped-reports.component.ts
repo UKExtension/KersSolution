@@ -3,6 +3,7 @@ import { SnapedSearchCriteria, SnapedAdminService, SnapSearchResult, SnapSeearch
 import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
+import { StateService, CongressionalDistrict } from '../../state/state.service';
 
 @Component({
   selector: 'snaped-reports',
@@ -16,6 +17,7 @@ export class SnapedReportsComponent implements OnInit {
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
   revisions$:Observable<SnapSeearchResultsWithCount>;
+  congressional$:Observable<CongressionalDistrict[]>;
   type="direct";
   order = "dsc";
 
@@ -31,10 +33,12 @@ export class SnapedReportsComponent implements OnInit {
 
 
   constructor(
-    private service:SnapedAdminService
+    private service:SnapedAdminService,
+    private stateService:StateService
   ) { }
 
   ngOnInit() {
+    this.congressional$ = this.stateService.congressional();
 
     var startDate = new Date();
     startDate.setMonth( startDate.getMonth() - 1);
@@ -49,6 +53,7 @@ export class SnapedReportsComponent implements OnInit {
       end: endDate.toISOString(),
       search: "",
       order: 'dsc',
+      congressionalDistrictId: null,
       type: this.type,
       skip: 0,
       take: 20
@@ -73,6 +78,11 @@ export class SnapedReportsComponent implements OnInit {
   dateCnanged(event: IMyDateRangeModel){
     this.criteria["start"] = event.beginJsDate.toISOString();
     this.criteria["end"] = event.endJsDate.toISOString();
+    this.onRefresh();
+  }
+
+  onCongressionalChange(event){
+    this.criteria["congressionalDistrictId"] = event.target.value;
     this.onRefresh();
   }
 

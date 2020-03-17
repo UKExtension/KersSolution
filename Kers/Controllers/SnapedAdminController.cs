@@ -428,6 +428,7 @@ namespace Kers.Controllers
             public string Search;
             public string Type;
             public string Order;
+            public int? CongressionalDistrictId;
             public int? Skip;
             public int? Take;
 

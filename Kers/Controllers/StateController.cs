@@ -65,7 +65,7 @@ namespace Kers.Controllers
         }
         [HttpGet("congressional")]
         public IActionResult GetCongressionalDistricts(){
-            var regions = this.context.CongressionalDistrict;
+            var regions = this.context.CongressionalDistrict.OrderBy( c => c.Name);
             return new OkObjectResult(regions);
         }
 
