@@ -57,6 +57,11 @@ namespace Kers.Controllers
             if( criteria.Search != ""){
                 result = result.Where( a => a.KersUser.RprtngProfile.Name.Contains(criteria.Search));
             }
+            if( criteria.CongressionalDistrictId != null && criteria.CongressionalDistrictId != 0){
+                var counties = await context.CongressionalDistrict.Where( c => c.Id == criteria.CongressionalDistrictId).Include( c => c.Units).FirstOrDefaultAsync();
+                List<int> countyIds = counties.Units.Select( c => c.Id).ToList();
+                result = result.Where( a => countyIds.Contains(a.PlanningUnitId??0));
+            }
             var LastRevs = new List<ActivityRevision>();
             foreach( var res in result.Include( a=>a.Revisions)) LastRevs.Add(res.Revisions.Last());
             var searchResult = new List<SnapSearchResult>();
@@ -103,6 +108,20 @@ namespace Kers.Controllers
 
             return new OkObjectResult(ret);
         }
+
+        
+        public class SnapedSearchCriteria{
+            public DateTime Start;
+            public DateTime End;
+            public string Search;
+            public string Type;
+            public string Order;
+            public int? CongressionalDistrictId;
+            public int? Skip;
+            public int? Take;
+
+        }
+
 
         class SnapSearchResult{
             public KersUser User;
@@ -421,18 +440,6 @@ namespace Kers.Controllers
             return new OkObjectResult(defaultBudget.AnnualBudget);
         }
 
-
-        public class SnapedSearchCriteria{
-            public DateTime Start;
-            public DateTime End;
-            public string Search;
-            public string Type;
-            public string Order;
-            public int? CongressionalDistrictId;
-            public int? Skip;
-            public int? Take;
-
-        }
 
     }
 }
