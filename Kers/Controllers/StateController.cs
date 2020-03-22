@@ -55,18 +55,26 @@ namespace Kers.Controllers
 
         [HttpGet("counties")]
         public IActionResult GetCounties(){
-            var counties = this.context.PlanningUnit.Where(u => u.District != null).OrderBy(d => d.Name);
+            var counties = this.context.PlanningUnit
+                                .Where(u => u.District != null && u.Name.Substring(u.Name.Count() - 3) == "CES" && u.Name != "Wildcat County CES (demo only)")
+                                .OrderBy(d => d.Name);
             return new OkObjectResult(counties);
         }
         [HttpGet("regions")]
         public IActionResult GetRegions(){
-            var regions = this.context.ExtensionRegion;
+            var regions = this.context.ExtensionRegion.OrderBy( r => r.order);
             return new OkObjectResult(regions);
+        }
+        [HttpGet("areas/{regionId?}")]
+        public IActionResult GetAreas(int regionId = 0){
+            IQueryable<ExtensionArea> areas = this.context.ExtensionArea;
+            if(regionId != 0) areas = areas.Where( a => a.ExtensionRegionId == regionId);
+            return new OkObjectResult(areas.OrderBy( r => r.order));
         }
         [HttpGet("congressional")]
         public IActionResult GetCongressionalDistricts(){
             var regions = this.context.CongressionalDistrict.OrderBy( c => c.Name);
-            return new OkObjectResult(regions);
+            return new OkObjectResult(regions.OrderBy( r => r.order));
         }
 
         [HttpGet("notcounties")]

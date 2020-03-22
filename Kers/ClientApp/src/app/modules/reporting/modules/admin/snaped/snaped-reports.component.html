@@ -44,9 +44,36 @@
         <select class="form-control" (change)="onCongressionalChange($event)" name="CongressionalDistrict">
           <option value="null">-- Select --</option>
           <option *ngFor="let congressional of congressional$ | async" value="{{congressional.id}}">{{congressional.name}}</option>
-      </select>
+        </select>
       </div>
-  </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Region</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onRegionChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let region of regions$ | async" value="{{region.id}}">{{region.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="criteria.regionId != null && criteria.regionId != 0">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Area</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onAreaChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let area of areas$ | async" value="{{area.id}}">{{area.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">County</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onCountyChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let county of counties$ | async" value="{{county.id}}">{{county.name}}</option>
+        </select>
+      </div>
+    </div>
     <div class="form-group" >
         <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
         <div class="col-md-6 col-sm-6 col-xs-12">

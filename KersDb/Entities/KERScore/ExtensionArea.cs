@@ -15,6 +15,8 @@ namespace Kers.Models.Entities.KERScore
         public string Description {get;set;}
         public KersUser Admin {get; set;}
         public KersUser Assistant {get;set;}
+        public int ExtensionRegionId {get;set;}
+        public ExtensionRegion ExtensionRegion {get;set;}
         public List<PlanningUnit> Units {get;set;}
     }
 }

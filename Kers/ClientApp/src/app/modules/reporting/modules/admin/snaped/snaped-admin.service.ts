@@ -187,6 +187,9 @@ export class SnapedSearchCriteria{
     type = "direct";
     order: string = 'dsc';
     congressionalDistrictId?:number;
+    regionId?:number;
+    areaId?:number;
+    unitId?:number;
     skip:number = 0;
     take?:number;
 }

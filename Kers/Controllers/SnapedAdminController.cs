@@ -62,6 +62,15 @@ namespace Kers.Controllers
                 List<int> countyIds = counties.Units.Select( c => c.Id).ToList();
                 result = result.Where( a => countyIds.Contains(a.PlanningUnitId??0));
             }
+            if(criteria.RegionId != null && criteria.RegionId != 0){
+                result = result.Where( a => a.PlanningUnit.ExtensionArea.ExtensionRegionId == criteria.RegionId);
+            }
+            if(criteria.AreaId != null && criteria.AreaId != 0){
+                result = result.Where( a => a.PlanningUnit.ExtensionAreaId == criteria.AreaId);
+            }
+            if( criteria.UnitId != null && criteria.UnitId != 0){
+                result = result.Where( a => a.PlanningUnitId == criteria.UnitId);
+            }
             var LastRevs = new List<ActivityRevision>();
             foreach( var res in result.Include( a=>a.Revisions)) LastRevs.Add(res.Revisions.Last());
             var searchResult = new List<SnapSearchResult>();
@@ -117,6 +126,9 @@ namespace Kers.Controllers
             public string Type;
             public string Order;
             public int? CongressionalDistrictId;
+            public int? RegionId;
+            public int? AreaId;
+            public int? UnitId;
             public int? Skip;
             public int? Take;
 

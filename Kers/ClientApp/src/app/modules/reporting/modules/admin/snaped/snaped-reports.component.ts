@@ -3,7 +3,8 @@ import { SnapedSearchCriteria, SnapedAdminService, SnapSearchResult, SnapSeearch
 import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
-import { StateService, CongressionalDistrict } from '../../state/state.service';
+import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } from '../../state/state.service';
+import { PlanningUnit } from "../../user/user.service";
 
 @Component({
   selector: 'snaped-reports',
@@ -18,6 +19,9 @@ export class SnapedReportsComponent implements OnInit {
   loading: boolean = true; // Turn spinner on and off
   revisions$:Observable<SnapSeearchResultsWithCount>;
   congressional$:Observable<CongressionalDistrict[]>;
+  regions$:Observable<ExtensionRegion[]>;
+  areas$:Observable<ExtensionArea[]>;
+  counties$:Observable<PlanningUnit[]>
   type="direct";
   order = "dsc";
 
@@ -39,6 +43,8 @@ export class SnapedReportsComponent implements OnInit {
 
   ngOnInit() {
     this.congressional$ = this.stateService.congressional();
+    this.regions$ = this.stateService.regions();
+    this.counties$ = this.stateService.counties();
 
     var startDate = new Date();
     startDate.setMonth( startDate.getMonth() - 1);
@@ -54,6 +60,9 @@ export class SnapedReportsComponent implements OnInit {
       search: "",
       order: 'dsc',
       congressionalDistrictId: null,
+      regionId: null,
+      areaId: null,
+      unitId: null,
       type: this.type,
       skip: 0,
       take: 20
@@ -80,9 +89,39 @@ export class SnapedReportsComponent implements OnInit {
     this.criteria["end"] = event.endJsDate.toISOString();
     this.onRefresh();
   }
-
   onCongressionalChange(event){
-    this.criteria["congressionalDistrictId"] = event.target.value;
+    if(event.target.value == "null"){
+      this.criteria.congressionalDistrictId = undefined;
+    }else{
+      this.criteria.congressionalDistrictId = <number>event.target.value;
+    }
+    this.onRefresh();
+  }
+  onRegionChange(event){
+    this.criteria.areaId = undefined;
+    if(event.target.value == "null"){
+      this.criteria.regionId = undefined;
+    }else{
+      this.criteria.regionId = <number>event.target.value;
+      this.areas$ = this.stateService.areas(this.criteria.regionId);
+    }
+    this.onRefresh();
+  }
+
+  onAreaChange(event){
+    if(event.target.value == "null"){
+      this.criteria.areaId = undefined;
+    }else{
+      this.criteria.areaId = <number>event.target.value;
+    } 
+    this.onRefresh();
+  }
+  onCountyChange(event){
+    if(event.target.value == "null"){
+      this.criteria.unitId = undefined;
+    }else{
+      this.criteria["unitId"] = event.target.value;
+    }
     this.onRefresh();
   }
 

@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { PlanningUnit } from "../user/user.service";
 import { District } from "../district/district.service";
+import { AssignmentProgramIndicatorsComponent } from '../district/assignments/assignment-program-indicators.component';
 
 
 
@@ -54,6 +55,20 @@ export class StateService {
         return this.http.get<CongressionalDistrict[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('districts', []))
+            );
+    }
+    regions():Observable<ExtensionRegion[]>{
+        var url = this.baseUrl + "regions";
+        return this.http.get<ExtensionRegion[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('regions', []))
+            );
+    }
+    areas(regionId:number = 0):Observable<ExtensionArea[]>{
+        var url = this.baseUrl + "areas" + "/" + regionId;
+        return this.http.get<ExtensionArea[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('areas', []))
             );
     }
 
@@ -106,6 +121,21 @@ export interface CongressionalDistrictUnit{
     PlanningUnit:PlanningUnit;
     PlanningUnitId:number;
     IsMultiDistrict:boolean;
+}
+export interface ExtensionRegion{
+    id:number;
+    name:string;
+    areaName:string;
+    description:string;
+    arreas:ExtensionArea[];
+}
+export interface ExtensionArea{
+    id:number;
+    name:string;
+    areaName:string;
+    description:string;
+    order?:number;
+    extensionRegionId?:number;
 }
 
 
