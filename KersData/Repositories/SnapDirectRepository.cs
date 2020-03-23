@@ -475,7 +475,7 @@ namespace Kers.Models.Repositories
                     
                     foreach( var setting in settings){
                         var row = fiscalYear.Name + ",";
-                        row += setting.Name + ",";
+                        row +=    string.Concat("\"", setting.Name, "\"") + ",";
                         for( i = 0; i< difference; i++){
                                 var directs = context.SnapDirect.Where(s => snapPerMonth[i].Contains(s.Id) );
                                 row +=  directs.Where( s => s.SnapDirectDeliverySiteId == setting.Id).Count().ToString() + ",";
