@@ -11,7 +11,8 @@ import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/progr
 import { Observable } from "rxjs/Observable";
 import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectAges, SnapDirectAudience, SnapDirectDeliverySite, SnapIndirectMethod, SnapIndirectReached, SnapPolicyAimed, SnapPolicyPartner } from "./servicelog.service";
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
-
+import {Location} from '@angular/common';
+import { UserService, User } from '../user/user.service';
 
 
 @Component({
@@ -44,6 +45,7 @@ export class ServicelogFormComponent implements OnInit{
     initiatives:StrategicInitiative[];
 
     fiscalYear:FiscalYear;
+    currentUser:User;
 
     snapEligable = false;
     hasIndirect = false;
@@ -92,18 +94,13 @@ export class ServicelogFormComponent implements OnInit{
         private fb: FormBuilder,
         private service: ServicelogService,
         private programsService:ProgramsService,
-        private fiscalYearService: FiscalyearService
+        private fiscalYearService: FiscalyearService,
+        private location: Location,
+        private userService:UserService,
     )   
     {
           
-        this.options = { 
-            placeholderText: 'Your Description Here!',
-            toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL'],
-            toolbarButtonsMD: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat'],
-            toolbarButtonsSM: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat'],
-            toolbarButtonsXS: ['undo', 'redo', 'bold', 'italic'],
-            quickInsertButtons: ['ul', 'ol', 'hr'],    
-        }
+        
 
         // Snap Direct
         this.sessiontypes = this.service.sessiontypes();
@@ -117,9 +114,36 @@ export class ServicelogFormComponent implements OnInit{
     }
 
     ngOnInit(){
-
-        
-
+        this.userService.current().subscribe(
+            res => {
+                this.currentUser = <User> res;
+                var thisObject = this;
+                this.options = { 
+                    placeholderText: 'Your Description Here!',
+                    toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL', 'insertImage'],
+                    toolbarButtonsMD: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'insertImage'],
+                    toolbarButtonsSM: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'insertImage'],
+                    toolbarButtonsXS: ['undo', 'redo', 'bold', 'italic', '|', 'insertImage'],
+                    quickInsertButtons: ['ul', 'ol', 'hr'], 
+                    imageUploadParams: { profileId: this.currentUser.id },
+                    imageUploadURL: this.location.prepareExternalUrl('/FroalaApi/UploadImage'),  
+                    events: {
+                        'froalaEditor.image.uploaded':function (e, editor, response){
+                            //var o = <ImageResponse>JSON.parse(response);
+                            //var im = <StoryImage>{uploadImageId: o.imageId}
+                            //thisObject.storyImages.push(im);
+                            console.log(response);
+                        },
+                        'froalaEditor.image.beforeRemove':function (image){
+                            //var o = <ImageResponse>JSON.parse(response);
+                            //var im = <StoryImage>{uploadImageId: o.imageId}
+                            //thisObject.storyImages.push(im);
+                            console.log(image);
+                        }
+                    } 
+                }
+            }
+        );
         if( this.activity != null){
             this.getFiscalYear(new Date(this.activity.activityDate));
         }else if( this.activityDate != null ){
