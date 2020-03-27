@@ -4,7 +4,7 @@ import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/
 import {    ActivityService, Activity, 
             ActivityOption, ActivityOptionNumber, 
             ActivityOptionNumberValue, ActivityOptionSelection,
-            Race, Ethnicity, RaceEthnicityValue
+            Race, Ethnicity, RaceEthnicityValue, ActivityImage
         } from '../activity/activity.service';
 import { SnapClassic, SnapClassicService, zzSnapEdDeliverySite, zzSnapEdSessionTypes} from '../activity/snap-classic.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
@@ -43,6 +43,7 @@ export class ServicelogFormComponent implements OnInit{
     ethnicities:Ethnicity[];
     optionNumbers:ActivityOptionNumber[];
     initiatives:StrategicInitiative[];
+    activityImages:ActivityImage[] = [];
 
     fiscalYear:FiscalYear;
     currentUser:User;
@@ -129,16 +130,16 @@ export class ServicelogFormComponent implements OnInit{
                     imageUploadURL: this.location.prepareExternalUrl('/FroalaApi/UploadImage'),  
                     events: {
                         'froalaEditor.image.uploaded':function (e, editor, response){
-                            //var o = <ImageResponse>JSON.parse(response);
-                            //var im = <StoryImage>{uploadImageId: o.imageId}
-                            //thisObject.storyImages.push(im);
-                            console.log(response);
+                            var o = <ImageResponse>JSON.parse(response);
+                            var im = <ActivityImage>{uploadImageId: o.imageId}
+                            thisObject.activityImages.push(im);
+                            console.log(thisObject.activityImages);
                         },
                         'froalaEditor.image.beforeRemove':function (image){
                             //var o = <ImageResponse>JSON.parse(response);
                             //var im = <StoryImage>{uploadImageId: o.imageId}
                             //thisObject.storyImages.push(im);
-                            console.log(image);
+                            //console.log(image);
                         }
                     } 
                 }
@@ -535,6 +536,7 @@ export class ServicelogFormComponent implements OnInit{
             this.isAdmin = false;
             val.snapAdmin = false;
         }
+        val.activityImages = this.activityImages;
         if(this.activity == null){
             this.service.add(val).subscribe(
                 res => {
@@ -678,6 +680,13 @@ export class ServicelogFormComponent implements OnInit{
 
 
 }
+interface ImageResponse{
+
+    link:string,
+    imageId:number
+
+
+};
 
 
 

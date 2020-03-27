@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {MajorProgram } from '../admin/programs/programs.service';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
+import { ActivityImage } from '../activity/activity.service';
 
 
 @Injectable()
@@ -277,6 +278,7 @@ export interface Servicelog{
     snapCopiesBW:number;
     snapAdmin:boolean;
     isPolicy: boolean;
+    activityImages:ActivityImage[];
 }
 export interface ActivityOption{
     id:number;

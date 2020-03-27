@@ -37,5 +37,6 @@ namespace Kers.Models.Entities.KERScore
         public int SnapCopiesBW {get;set;}
         public Boolean SnapAdmin {get;set;}
         public Boolean IsPolicy {get;set;}
+        public List<ActivityImage> ActivityImages {get;set;}
     }
 }

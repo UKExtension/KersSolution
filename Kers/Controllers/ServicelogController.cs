@@ -188,6 +188,8 @@ namespace Kers.Controllers
                 act.Hours = activity.Hours;
                 act.Audience = activity.Male + activity.Female;
                 act.MajorProgramId = activity.MajorProgramId;
+                foreach( var im in activity.ActivityImages ) im.Created = DateTime.Now;
+                act.ActivityImages = activity.ActivityImages;
                 act.Revisions = new List<ActivityRevision>();
                 act.Revisions.Add(activity);
                 context.Add(act); 
@@ -242,7 +244,10 @@ namespace Kers.Controllers
            
             
             var entity = context.ActivityRevision.Find(id);
-            var acEntity = context.Activity.Find(entity.ActivityId);
+            var acEntity = context.Activity
+                                    .Where( a => a.Id == entity.ActivityId)
+                                    .Include( a => a.ActivityImages)
+                                    .FirstOrDefault();
 
             if(activity != null && acEntity != null){
                 activity.Created = DateTime.Now;
@@ -271,6 +276,8 @@ namespace Kers.Controllers
                 acEntity.Hours = activity.Hours;
                 acEntity.Audience = activity.Male + activity.Female;
                 acEntity.MajorProgramId = activity.MajorProgramId;
+                foreach( var im in activity.ActivityImages ) im.Created = DateTime.Now;
+                acEntity.ActivityImages.AddRange( activity.ActivityImages );
 
 
 

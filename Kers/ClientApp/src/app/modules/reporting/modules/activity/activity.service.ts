@@ -223,6 +223,13 @@ export interface Activity{
     isSnap:boolean;
     classicSnapId?: number;
     classicIndirectSnapId?:number;
+    activityImages:ActivityImage[];
+}
+export interface ActivityImage{
+    id:number;
+    activityRevisionId:number;
+    uploadImageId:number;
+    created:Date;
 }
 export interface ActivityOption{
     id:number;
