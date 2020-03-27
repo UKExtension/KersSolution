@@ -87,12 +87,10 @@ namespace Kers.Controllers.Reports
             var cacheStringCounties = _cache.GetString(cacheKeyCounties);
             List<ReportingCountiesPerProgram> ReportingCountiesPerProgram;
             List<StrategicInitiativeIndicatorsViewModel> indicators;
-            /* 
             if (!string.IsNullOrEmpty(cacheString)){
                 indicators = JsonConvert.DeserializeObject<List<StrategicInitiativeIndicatorsViewModel>>(cacheString);
                 ReportingCountiesPerProgram = JsonConvert.DeserializeObject<List<ReportingCountiesPerProgram>>(cacheStringCounties);
             }else{
- */
                 indicators = new List<StrategicInitiativeIndicatorsViewModel>();
 
 
@@ -168,8 +166,7 @@ namespace Kers.Controllers.Reports
 
                     indicators.Add( intv );
                 }
-
-                /* 
+ 
                 _cache.SetString(cacheKey, JsonConvert.SerializeObject(indicators), new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -178,7 +175,7 @@ namespace Kers.Controllers.Reports
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                     });
-            } */
+            }
             ViewData["fy"] = fiscalYear.Name;
             ViewData["id"] = id;
             ViewData["ReportingCountiesPerProgram"] = ReportingCountiesPerProgram;
