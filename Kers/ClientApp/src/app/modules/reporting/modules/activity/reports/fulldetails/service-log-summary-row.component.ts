@@ -27,5 +27,11 @@ export class ServiceLogSummaryRowComponent implements OnInit {
   close(){
     this.detailsOpened = false;
   }
+  replaceImageTag(s:string):string{
+    var re = /<img/gi; 
+    var str = "Apples are round, and apples are juicy.";
+    var newstr = s.replace(re, "<img width=50"); 
+    return newstr;
+  }
 
 }

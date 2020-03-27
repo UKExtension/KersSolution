@@ -25,7 +25,7 @@ import { saveAs } from 'file-saver';
                 <div class="row invoice-info">
                     <div class="col-sm-6 col-xs-12">
                         <strong>Description:</strong>
-                        <p innerHtml="{{activity.description}}"></p>
+                        <p innerHtml="{{replaceImageTag(activity.description)}}"></p>
                     </div>
                     <div class="col-sm-6 col-xs-12">
                         <strong>Major Program: </strong>{{activity.majorProgram.name}}<br>
@@ -78,6 +78,12 @@ export class ActivityReportsDetailsComponent {
         }
         return sum;
     }
+    replaceImageTag(s:string):string{
+        var re = /<img/gi; 
+        var str = "Apples are round, and apples are juicy.";
+        var newstr = s.replace(re, "<img width=50"); 
+        return newstr;
+      }
 
     print(){
         this.pdfLoading = true;

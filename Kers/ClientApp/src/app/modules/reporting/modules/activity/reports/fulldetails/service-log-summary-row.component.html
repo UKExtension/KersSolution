@@ -1,6 +1,6 @@
 <td *ngIf="!detailsOpened">{{activity.activityDate| date:'shortDate'}}</td>
 <td *ngIf="!detailsOpened">{{activity.title}}</td>
-<td innerHtml="{{activity.description}}"  *ngIf="!detailsOpened"></td>
+<td innerHtml="{{replaceImageTag(activity.description)}}"  *ngIf="!detailsOpened"></td>
 <td *ngIf="!detailsOpened">{{activity.majorProgram.name}}</td>
 <td *ngIf="!detailsOpened">{{activity.hours}}</td>
 <td *ngIf="!detailsOpened">{{attendance(activity)}}</td>
