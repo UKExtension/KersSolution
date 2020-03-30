@@ -170,18 +170,12 @@ namespace Kers.Controllers.Admin
 
 
             bool saveContext = true;
-            //(coreContext.MajorProgram.Count() == 0);
-/* 
-            FiscalYear year = coreContext.FiscalYear.Find(1);
-
-            int initiativeOrder = 1;
-            int programOrder = 1;
- */
+   
             List<StrategicInitiative> newInitiatives = new List<StrategicInitiative>();
             List<MajorProgram> programs = new List<MajorProgram>();
             List<ProgramCategory> categories = new List<ProgramCategory>();
 
-            var fiscalYear = this.GetFYByName("2020", FiscalYearType.ServiceLog);
+            var fiscalYear = this.GetFYByName("2019", FiscalYearType.ServiceLog);
             var nextFiscalYear = this.GetFYByName("2021", FiscalYearType.ServiceLog);
             var initiatives = context.StrategicInitiative.AsNoTracking().Where( i => i.FiscalYear == fiscalYear)
                                     .Include( i => i.ProgramCategory)
@@ -204,52 +198,6 @@ namespace Kers.Controllers.Admin
                 context.Add(initiative);
             }
 
-/* 
-
-            StrategicInitiative currentInitiative = null;
-            
-            var pacs = mainContext.zzPacs;
-            
-            foreach(var pac in pacs){
-
-                ProgramCategory category = categories.
-                                                Where( c => c.ShortName == pac.cesProgCategoryNameShort).
-                                                FirstOrDefault();
-                if(category == null){
-                    category = new ProgramCategory();
-                    category.Name = pac.pacTitle;
-                    category.ShortName = pac.cesProgCategoryNameShort;
-                    categories.Add(category);
-
-                    coreContext.Add(category);
-                }
-
-                if(pac.rptCodeType == 1){
-                    var initiative = new StrategicInitiative();
-
-                    initiative.Name = pac.pacTitle.Substring(4, pac.pacTitle.Length - 4);
-                    initiative.FiscalYear = year;
-                    initiative.PacCode = pac.pacCodeID??0;
-                    initiative.ProgramCategory = category;
-                    initiative.order = initiativeOrder;
-                    initiatives.Add(initiative);
-                    coreContext.Add(initiative);
-                    initiativeOrder++;
-                    currentInitiative = initiative;
-                }else{
-                    var program = new MajorProgram();
-
-                    program.Name = pac.pacTitle.Substring(7, pac.pacTitle.Length - 7);
-                    program.StrategicInitiative = currentInitiative;
-                    program.PacCode = pac.pacCodeID??0;
-                    program.ProgramCategory = category;
-                    program.order = programOrder;
-                    programOrder++;
-                    coreContext.Add(program);
-                    programs.Add(program);
-                }
-            }
- */
             if(saveContext && context.StrategicInitiative.Where( i => i.FiscalYear == nextFiscalYear).FirstOrDefault() == null){
                 coreContext.SaveChanges();
             }

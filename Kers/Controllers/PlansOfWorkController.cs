@@ -418,7 +418,7 @@ namespace Kers.Controllers
                                     if( !this.context.Map.Where( m => m.FiscalYear == fiscalYearTo && m.PlanningUnitId == county.Id).Any()){
 
                                         
-                                        
+                                        /* 
                                         var maps = context.Map.AsNoTracking().Where(
                                                         m =>
                                                             m.FiscalYear.Id == fiscalYearFrom.Id
@@ -529,12 +529,12 @@ namespace Kers.Controllers
                                             
                                         }
 
-
+ */
 
                         }
                     }
 
-                    context.Map.AddRange(newMaps);
+                    //context.Map.AddRange(newMaps);
                     context.PlanOfWork.AddRange(newPlans);
                     
                     
