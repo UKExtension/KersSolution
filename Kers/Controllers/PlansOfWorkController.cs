@@ -585,7 +585,7 @@ namespace Kers.Controllers
                     
             }*/
             context.PlanOfWork.AddRange(newPlans);
-            context.SaveChanges();
+            //context.SaveChanges();
             if( newPlans.Count() > 0)  return new OkObjectResult( newPlans );
             return NotFound(new {Error = "no need to import plans"});
         }
