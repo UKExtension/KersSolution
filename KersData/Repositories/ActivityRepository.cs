@@ -968,6 +968,53 @@ namespace Kers.Models.Repositories
             return result;
         }
 
+        public List<string> ReportRow(  int id, 
+                                        Activity activity = null, 
+                                        List<Race> races = null,
+                                        List<Ethnicity> ethnicities = null,
+                                        List<ActivityOption> options = null, 
+                                        List<ActivityOptionNumber> optionNumbers = null,
+                                        List<SnapDirectAges> ages = null,
+                                        List<SnapDirectAudience> audience = null,
+                                        List<SnapIndirectMethod> method = null,
+                                        List<SnapIndirectReached> reached = null,
+                                        List<SnapPolicyAimed> aimed = null,
+                                        List<SnapPolicyPartner> partners = null){
+            var result = new List<string>();
+            ActivityRevision lastRevision;
+            if( activity == null){
+                activity = this.coreContext.Activity
+                            .Where( a => a.Id == id)
+                            .Include( a => a.PlanningUnit)
+                            .Include( a => a.KersUser).ThenInclude( u => u.Specialties ).ThenInclude( s => s.Specialty)
+                            .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
+                            .Include( a => a.Revisions)
+                            .FirstOrDefault();
+                if( activity == null ) return null;
+                lastRevision = this.coreContext.ActivityRevision
+                                    .Where( r => r.Id == activity.Revisions.OrderByDescending( lr => lr.Created).First().Id)
+                                    .Include( r => r.RaceEthnicityValues)
+                                    .Include( r => r.ActivityOptionNumbers)
+                                    .Include( r => r.ActivityOptionSelections)
+                                    .Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues)
+                                    .Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectDeliverySite)
+                                    .Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectSessionType)
+                                    .Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectMethodSelections)
+                                    .Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
+                                    .Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyAimedSelections)
+                                    .Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyPartnerValue)
+                                    .FirstOrDefault();
+            }else{
+                lastRevision = activity.Revisions.OrderByDescending(r => r.Created).FirstOrDefault();
+            }
+            result.Add( lastRevision.ActivityDate.ToString("MM-dd-yy"));
+            result.Add( lastRevision.Title);
+            result.Add( activity.KersUser.RprtngProfile.Name);
+
+
+            return result;
+        }
+
 
 
     }

@@ -46,12 +46,26 @@ namespace Kers.Controllers
                 this.activityRepo = activityRepo;
         }
 
+        [HttpPost("GetCustomData")]
+        [Authorize]
+        public async Task<IActionResult> GetCustomData( [FromBody] SnapedSearchCriteria criteria ){
+            var ret = new List<string>();
+            var result = await SeearchResults(criteria);
 
+            return new OkObjectResult(ret);
+
+
+        }
 
         [HttpPost("GetCustom")]
         [Authorize]
         public async Task<IActionResult> GetCustom( [FromBody] SnapedSearchCriteria criteria
                                         ){
+            var ret = await SeearchResults(criteria);
+
+            return new OkObjectResult(ret);
+        }
+        private async Task<SnapSeearchResultsWithCount> SeearchResults(SnapedSearchCriteria criteria){
             var result = this.context.Activity
                                 .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End);
             if( criteria.Search != ""){
@@ -114,8 +128,7 @@ namespace Kers.Controllers
                 
             }
             ret.Results = searchResult;
-
-            return new OkObjectResult(ret);
+            return ret;
         }
 
         
