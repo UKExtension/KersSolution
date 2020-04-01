@@ -49,8 +49,11 @@ namespace Kers.Controllers
         [HttpPost("GetCustomData")]
         [Authorize]
         public async Task<IActionResult> GetCustomData( [FromBody] SnapedSearchCriteria criteria ){
-            var ret = new List<string>();
+            var ret = new List<List<string>>();
             var result = await SeearchResults(criteria);
+            foreach( var res in result.Results){
+                ret.Add( activityRepo.ReportRow(res.Revision.ActivityId));
+            }
 
             return new OkObjectResult(ret);
 

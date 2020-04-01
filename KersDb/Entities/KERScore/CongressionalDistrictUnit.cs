@@ -12,6 +12,8 @@ namespace Kers.Models.Entities.KERScore
         public int? order { get; set; }
         public PlanningUnit PlanningUnit { get; set; }
         public int PlanningUnitId {get;set;}
-        public bool IsMultiDistrict {get;set;}        
+        public bool IsMultiDistrict {get;set;} 
+        public CongressionalDistrict CongressionalDistrict {get;set;}  
+        public int CongressionalDistrictId {get;set;}     
     }
 }

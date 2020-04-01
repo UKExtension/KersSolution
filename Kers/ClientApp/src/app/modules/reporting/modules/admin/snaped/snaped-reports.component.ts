@@ -142,6 +142,11 @@ export class SnapedReportsComponent implements OnInit {
     this.onRefresh();
   }
   csv(){
+    this.service.getCustomData(this.criteria).subscribe(
+      res => {
+        console.log(res)
+      }
+    )
     
   }
 

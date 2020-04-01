@@ -14,6 +14,7 @@ using Kers.Models.Entities;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Kers.Models.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace Kers.Models.Repositories
 {
@@ -985,7 +986,7 @@ namespace Kers.Models.Repositories
             if( activity == null){
                 activity = this.coreContext.Activity
                             .Where( a => a.Id == id)
-                            .Include( a => a.PlanningUnit)
+                            .Include( a => a.PlanningUnit).ThenInclude( u => u.ExtensionArea).ThenInclude(a => a.ExtensionRegion)
                             .Include( a => a.KersUser).ThenInclude( u => u.Specialties ).ThenInclude( s => s.Specialty)
                             .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
                             .Include( a => a.Revisions)
@@ -993,6 +994,7 @@ namespace Kers.Models.Repositories
                 if( activity == null ) return null;
                 lastRevision = this.coreContext.ActivityRevision
                                     .Where( r => r.Id == activity.Revisions.OrderByDescending( lr => lr.Created).First().Id)
+                                    .Include( r => r.MajorProgram)
                                     .Include( r => r.RaceEthnicityValues)
                                     .Include( r => r.ActivityOptionNumbers)
                                     .Include( r => r.ActivityOptionSelections)
@@ -1009,7 +1011,28 @@ namespace Kers.Models.Repositories
             }
             result.Add( lastRevision.ActivityDate.ToString("MM-dd-yy"));
             result.Add( lastRevision.Title);
+            string pattern = @"<(.|\n)*?>";
+            result.Add(Regex.Replace(lastRevision.Description, pattern, string.Empty));
             result.Add( activity.KersUser.RprtngProfile.Name);
+            result.Add( activity.PlanningUnit.Name);
+            if(activity.PlanningUnit.ExtensionArea != null){
+                result.Add( activity.PlanningUnit.ExtensionArea.Name);
+                result.Add( activity.PlanningUnit.ExtensionArea.ExtensionRegion.Name);
+            }else{
+                result.Add("");
+                result.Add("");
+            }
+            var congrDistrict = coreContext.CongressionalDistrictUnit
+                                        .Where( d => d.PlanningUnit == activity.PlanningUnit)
+                                        .Include( d => d.CongressionalDistrict)
+                                        .FirstOrDefault();
+            if(congrDistrict != null){
+                result.Add(congrDistrict.CongressionalDistrict.Name);
+            }else{
+                result.Add("");
+            }
+            result.Add( lastRevision.MajorProgram.Name);
+            
 
 
             return result;
