@@ -992,19 +992,19 @@ namespace Kers.Models.Repositories
                             .Include( a => a.Revisions)
                             .FirstOrDefault();
                 if( activity == null ) return null;
-                lastRevision = this.coreContext.ActivityRevision
+                    lastRevision = this.coreContext.ActivityRevision
                                     .Where( r => r.Id == activity.Revisions.OrderByDescending( lr => lr.Created).First().Id)
                                     .Include( r => r.MajorProgram)
                                     .Include( r => r.RaceEthnicityValues)
                                     .Include( r => r.ActivityOptionNumbers)
                                     .Include( r => r.ActivityOptionSelections)
-                                    .Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues)
-                                    .Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectDeliverySite)
-                                    .Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectSessionType)
-                                    .Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectMethodSelections)
-                                    .Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
-                                    .Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyAimedSelections)
-                                    .Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyPartnerValue)
+                                    //.Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues)
+                                    //.Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectDeliverySite)
+                                    //.Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectSessionType)
+                                    //.Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectMethodSelections)
+                                    //.Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
+                                    //.Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyAimedSelections)
+                                    //.Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyPartnerValue)
                                     .FirstOrDefault();
             }else{
                 lastRevision = activity.Revisions.OrderByDescending(r => r.Created).FirstOrDefault();
