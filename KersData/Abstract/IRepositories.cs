@@ -71,6 +71,19 @@ namespace Kers.Models.Abstract
         //Task<TableViewModel> StateByMajorProgram(FiscalYear fiscalYear, int type = 0, bool refreshCache = false);
         Task<List<ProgramDataViewModel>> TopProgramsPerMonth(int year = 0, int month = 0, int amount = 5, int PlanningUnitId = 0, bool refreshCache = false);
         Task<List<ProgramDataViewModel>> TopProgramsPerFiscalYear(FiscalYear FiscalYear, int amount = 5, int PlanningUnitId = 0, bool refreshCache = false);
+        
+        List<string> ReportHeaderRow(   
+                                        List<Race> races = null,
+                                        List<Ethnicity> ethnicities = null,
+                                        List<ActivityOption> options = null, 
+                                        List<ActivityOptionNumber> optionNumbers = null,
+                                        List<SnapDirectAges> ages = null,
+                                        List<SnapDirectAudience> audience = null,
+                                        List<SnapIndirectMethod> method = null,
+                                        List<SnapIndirectReached> reached = null,
+                                        List<SnapPolicyAimed> aimed = null,
+                                        List<SnapPolicyPartner> partners = null);
+        
         List<string> ReportRow(     int id, 
                                     Activity activity = null, 
                                     List<Race> races = null,

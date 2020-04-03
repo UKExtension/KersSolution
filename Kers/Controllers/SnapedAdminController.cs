@@ -56,8 +56,11 @@ namespace Kers.Controllers
             }
 
             return new OkObjectResult(ret);
-
-
+        }
+        [HttpGet("GetCustomDataHeader")]
+        [Authorize]
+        public IActionResult GetCustomDataHeader(  ){
+            return new OkObjectResult( activityRepo.ReportHeaderRow() );
         }
 
         [HttpPost("GetCustom")]

@@ -969,6 +969,115 @@ namespace Kers.Models.Repositories
             return result;
         }
 
+
+        
+/*
+
+ActivityDate
+Title
+Description
+Employee Name
+Position
+Program(s)
+Employed
+Planning Unit
+ExtensionArea
+ExtensionRegion
+CongressionalDistrict
+MajorProgram
+Hours
+--- activity options ---
+--- race ethnicity details --
+Male
+Female
+--- option numbers ---
+SNAP Ed eligible
+Snap Admin
+Snap Direct Delivery Site
+Site Name
+Session Type
+--- snap age audience values ---
+Snap Policy Purpose
+Snap Policy Result
+--- snap policy aimed ---
+--- snap policy partners ---
+--- snap indirect reached ---
+--- snap indirect method ---
+snap copies
+
+*/
+
+        public List<string> ReportHeaderRow(   
+                                        List<Race> races = null,
+                                        List<Ethnicity> ethnicities = null,
+                                        List<ActivityOption> options = null, 
+                                        List<ActivityOptionNumber> optionNumbers = null,
+                                        List<SnapDirectAges> ages = null,
+                                        List<SnapDirectAudience> audience = null,
+                                        List<SnapIndirectMethod> method = null,
+                                        List<SnapIndirectReached> reached = null,
+                                        List<SnapPolicyAimed> aimed = null,
+                                        List<SnapPolicyPartner> partners = null)
+        {
+            var result = new List<string>();
+            result.Add("ActivityDate");
+            result.Add("Title");
+            result.Add("Description");
+            result.Add("Employee Name");
+            result.Add("Position");
+            result.Add("Program(s)");
+            result.Add("Employed");
+            result.Add("Planning Unit");
+            result.Add("ExtensionArea");
+            result.Add("ExtensionRegion");
+            result.Add("CongressionalDistrict");
+            result.Add("MajorProgram");
+            result.Add("Hours");
+            if(options == null) options = coreContext.ActivityOption.OrderBy( o => o.Order).ToList();
+            foreach( var option in options) result.Add( option.Name );
+            if( races == null) races = coreContext.Race.OrderBy( r => r.Order).ToList();
+            if( ethnicities == null ) ethnicities = coreContext.Ethnicity.OrderBy( e => e.Order).ToList();
+            foreach( var race in races){
+                foreach( var ethnicity in ethnicities ){
+                    result.Add( race.Name + " " + ethnicity.Name);
+                }
+            }
+            result.Add("Male");
+            result.Add("Female");
+            //--- option numbers ---
+            if( optionNumbers == null ) optionNumbers = coreContext.ActivityOptionNumber.OrderBy( v => v.Order).ToList();
+            foreach( var optNum in optionNumbers) result.Add( optNum.Name );
+            result.Add("SNAP Ed eligible");
+            result.Add("Snap Admin");
+            result.Add("Snap Direct Delivery Site");
+            result.Add("Site Name");
+            result.Add("Session Type");
+            //--- snap age audience values ---
+            if(audience == null ) audience = coreContext.SnapDirectAudience.Where( a => a.Active).OrderBy( a => a.order).ToList();
+            if( ages == null ) ages = coreContext.SnapDirectAges.Where( a => a.Active).OrderBy( a => a.order).ToList();
+            foreach( var aud in audience)
+                foreach( var age in ages)
+                    result.Add( aud.Name + " " + age.Name );
+            result.Add("Snap Policy Purpose");
+            result.Add("Snap Policy Result");
+            //--- snap policy aimed ---
+            if(aimed == null ) aimed = coreContext.SnapPolicyAimed.Where( a => a.Active ).OrderBy( a => a.order).ToList();
+            foreach( var am in aimed ){
+                result.Add( am.Name );
+            }
+            //--- snap policy partners ---
+            if( partners == null ) partners = coreContext.SnapPolicyPartner.Where( p => p.Active ).OrderBy( p => p.order ).ToList();
+            foreach( var par in partners ) result.Add( par.Name );
+            //--- snap indirect reached ---
+            if(reached == null) reached = coreContext.SnapIndirectReached.Where( r => r.Active).OrderBy( r => r.order).ToList();
+            foreach( var reac in reached ) result.Add( reac.Name );
+            if( method == null ) method = coreContext.SnapIndirectMethod.Where( a => a.Active).OrderBy( a => a.order).ToList();
+            foreach( var met in method) result.Add( met.Name );
+            //--- snap indirect method ---
+            result.Add("snap copies");
+            return result;
+        }
+
         public List<string> ReportRow(  int id, 
                                         Activity activity = null, 
                                         List<Race> races = null,
@@ -989,6 +1098,7 @@ namespace Kers.Models.Repositories
                             .Include( a => a.PlanningUnit).ThenInclude( u => u.ExtensionArea).ThenInclude(a => a.ExtensionRegion)
                             .Include( a => a.KersUser).ThenInclude( u => u.Specialties ).ThenInclude( s => s.Specialty)
                             .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
+                            .Include( a => a.KersUser).ThenInclude( u => u.ExtensionPosition)
                             .Include( a => a.Revisions)
                             .FirstOrDefault();
                 if( activity == null ) return null;
@@ -998,13 +1108,6 @@ namespace Kers.Models.Repositories
                                     .Include( r => r.RaceEthnicityValues)
                                     .Include( r => r.ActivityOptionNumbers)
                                     .Include( r => r.ActivityOptionSelections)
-                                    //.Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues)
-                                    //.Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectDeliverySite)
-                                    //.Include( r => r.SnapDirect).ThenInclude( d => d.SnapDirectSessionType)
-                                    //.Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectMethodSelections)
-                                    //.Include( r => r.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
-                                    //.Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyAimedSelections)
-                                    //.Include( r => r.SnapPolicy).ThenInclude( p => p.SnapPolicyPartnerValue)
                                     .FirstOrDefault();
             }else{
                 lastRevision = activity.Revisions.OrderByDescending(r => r.Created).FirstOrDefault();
@@ -1014,6 +1117,16 @@ namespace Kers.Models.Repositories
             string pattern = @"<(.|\n)*?>";
             result.Add(Regex.Replace(lastRevision.Description, pattern, string.Empty));
             result.Add( activity.KersUser.RprtngProfile.Name);
+            result.Add( activity.KersUser.ExtensionPosition.Code);
+
+            var spclt = "";
+            foreach( var sp in activity.KersUser.Specialties.OrderBy( s => s.Specialty.Code)){
+                spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
+            }
+            result.Add( spclt);
+            result.Add(activity.KersUser.RprtngProfile.enabled.ToString());
+
+
             result.Add( activity.PlanningUnit.Name);
             if(activity.PlanningUnit.ExtensionArea != null){
                 result.Add( activity.PlanningUnit.ExtensionArea.Name);
@@ -1032,8 +1145,122 @@ namespace Kers.Models.Repositories
                 result.Add("");
             }
             result.Add( lastRevision.MajorProgram.Name);
-            
+            result.Add( lastRevision.Hours.ToString());
 
+
+            if(options == null) options = coreContext.ActivityOption.OrderBy( o => o.Order).ToList();
+            foreach( var option in options){
+                var actvtOpt = lastRevision.ActivityOptionSelections.Where( o => o.ActivityOption == option).Any();
+                result.Add( actvtOpt.ToString() );
+            }
+
+            if( races == null) races = coreContext.Race.OrderBy( r => r.Order).ToList();
+            if( ethnicities == null ) ethnicities = coreContext.Ethnicity.OrderBy( e => e.Order).ToList();
+            
+            foreach( var race in races){
+                foreach( var ethnicity in ethnicities){
+                    var val = lastRevision.RaceEthnicityValues.Where( v => v.Race == race && v.Ethnicity == ethnicity).FirstOrDefault();
+                    if( val == null ){
+                        result.Add("0");
+                    }else{
+                        result.Add( val.Amount.ToString());
+                    }
+                }
+            }
+            result.Add(lastRevision.Male.ToString());
+            result.Add( lastRevision.Female.ToString());
+
+            if( optionNumbers == null ) optionNumbers = coreContext.ActivityOptionNumber.OrderBy( v => v.Order).ToList();
+            foreach( var optNum in optionNumbers){
+                var opnum = lastRevision.ActivityOptionNumbers.Where( n => n.ActivityOptionNumber == optNum).FirstOrDefault();
+                if( opnum == null){
+                    result.Add("0");
+                }else{
+                    result.Add( opnum.Value.ToString() );
+                }
+            }
+            result.Add( lastRevision.isSnap.ToString() );
+            if( !lastRevision.isSnap ){
+                var numRemainingFields = 17 + 40 + 24 + 1;
+                for( var i = 0; i < numRemainingFields; i++) result.Add("");
+            }else if( lastRevision.SnapAdmin ){
+                result.Add( "True");
+            }else{
+                result.Add( "False");
+                if(lastRevision.SnapDirectId != null && lastRevision.SnapDirectId != 0 ){
+                    var direct = coreContext.SnapDirect
+                                        .Where( a => a.Id == lastRevision.SnapDirectId)
+                                            .Include( d => d.SnapDirectAgesAudienceValues)
+                                            .Include( d => d.SnapDirectDeliverySite)
+                                            .Include( d => d.SnapDirectSessionType)
+                                        .FirstOrDefault();
+                    result.Add(direct.SnapDirectDeliverySite.Name);
+                    result.Add( direct.SiteName );
+                    result.Add( direct.SnapDirectSessionType.Name);
+                    if(audience == null ) audience = coreContext.SnapDirectAudience.Where( a => a.Active).OrderBy( a => a.order).ToList();
+                    if( ages == null ) ages = coreContext.SnapDirectAges.Where( a => a.Active).OrderBy( a => a.order).ToList();
+                    foreach( var aud in audience){
+                        foreach( var age in ages){
+                            var aaval = direct.SnapDirectAgesAudienceValues.Where( v => v.SnapDirectAges == age && v.SnapDirectAudience == aud).FirstOrDefault();
+                            if( aaval == null ){
+                                result.Add("0");
+                            }else{
+                                result.Add( aaval.Value.ToString());
+                            }
+                        }
+                    }
+                }else{
+                    var directFieldsCount = 24;
+                    for( var i = 0; i < directFieldsCount; i++) result.Add("");
+                }
+                if( lastRevision.SnapPolicyId != null && lastRevision.SnapPolicyId != 0 ){
+                    var policy = coreContext.SnapPolicy.Where( p => p.Id == lastRevision.SnapPolicyId)
+                                                    .Include(p => p.SnapPolicyAimedSelections)
+                                                    .Include( p => p.SnapPolicyPartnerValue )
+                                                    .FirstOrDefault();
+                    result.Add(Regex.Replace(policy.Purpose, pattern, string.Empty));
+                    result.Add(Regex.Replace(policy.Result, pattern, string.Empty));
+                    if(aimed == null ) aimed = coreContext.SnapPolicyAimed.Where( a => a.Active ).OrderBy( a => a.order).ToList();
+                    foreach( var am in aimed ){
+                        result.Add( policy.SnapPolicyAimedSelections.Where( a => a.SnapPolicyAimed == am).Any().ToString());
+                    }
+                    if( partners == null ) partners = coreContext.SnapPolicyPartner.Where( p => p.Active ).OrderBy( p => p.order ).ToList();
+                    foreach( var par in partners ){
+                        var parVal = policy.SnapPolicyPartnerValue.Where( a => a.SnapPolicyPartner == par ).FirstOrDefault();
+                        if( parVal == null ){
+                            result.Add("");
+                        }else{
+                            result.Add( parVal.Value.ToString() );
+                        }
+                    }
+                }else{
+                    var partnFieldCount = 40;
+                    for( var i = 0; i < partnFieldCount; i++) result.Add("");
+                }
+                if( lastRevision.SnapIndirectId != null && lastRevision.SnapIndirectId != 0 ){
+                    var indirect = coreContext.SnapIndirect
+                                                .Where( i => i.Id == lastRevision.SnapIndirectId)
+                                                    .Include( i => i.SnapIndirectMethodSelections)
+                                                    .Include( i => i.SnapIndirectReachedValues)
+                                                .FirstOrDefault();
+                    if(reached == null) reached = coreContext.SnapIndirectReached.Where( r => r.Active).OrderBy( r => r.order).ToList();
+                    foreach( var reac in reached ){
+                        var reach = indirect.SnapIndirectReachedValues.Where( r => r.SnapIndirectReached == reac).FirstOrDefault();
+                        if( reac == null){
+                            result.Add("0");
+                        }else{
+                            result.Add( reach.Value.ToString());
+                        }
+                    }
+                    if( method == null ) method = coreContext.SnapIndirectMethod.Where( a => a.Active).OrderBy( a => a.order).ToList();
+                    foreach( var met in method) 
+                        result.Add( indirect.SnapIndirectMethodSelections.Where( s => s.SnapIndirectMethod == met).Any().ToString() );
+                }else{
+                    var indirectFieldCount = 17;
+                    for( var i = 0; i < indirectFieldCount; i++) result.Add("");
+                }
+                result.Add( lastRevision.SnapCopies.ToString() );
+            }
 
             return result;
         }

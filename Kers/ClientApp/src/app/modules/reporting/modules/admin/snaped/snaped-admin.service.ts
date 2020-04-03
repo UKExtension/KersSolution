@@ -159,6 +159,13 @@ export class SnapedAdminService {
                 catchError(this.handleError('addCountyReimbursment',<SnapSeearchResultsWithCount>{}))
             );
     }
+    GetCustomDataHeader():Observable<string[]>{
+        var url = this.baseUrl + 'GetCustomDataHeader/';
+        return this.http.get<string[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('GetCustomDataHeader', []))
+            );
+    }
     getCustomData(criteria:SnapedSearchCriteria):Observable<string[]>{
         var url = this.baseUrl + 'getCustomData/';
         return this.http.post<string[]>(this.location.prepareExternalUrl(url), criteria)
