@@ -1095,12 +1095,13 @@ snap copies
             if( activity == null){
                 activity = this.coreContext.Activity
                             .Where( a => a.Id == id)
-                            .Include( a => a.PlanningUnit).ThenInclude( u => u.ExtensionArea).ThenInclude(a => a.ExtensionRegion)
+                            //.Include( a => a.PlanningUnit).ThenInclude( u => u.ExtensionArea).ThenInclude(a => a.ExtensionRegion)
                             .Include( a => a.KersUser).ThenInclude( u => u.Specialties ).ThenInclude( s => s.Specialty)
                             .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
                             .Include( a => a.KersUser).ThenInclude( u => u.ExtensionPosition)
                             .Include( a => a.Revisions)
                             .FirstOrDefault();
+               
                 if( activity == null ) return null;
                     lastRevision = this.coreContext.ActivityRevision
                                     .Where( r => r.Id == activity.Revisions.OrderByDescending( lr => lr.Created).First().Id)
@@ -1112,6 +1113,12 @@ snap copies
             }else{
                 lastRevision = activity.Revisions.OrderByDescending(r => r.Created).FirstOrDefault();
             }
+            var unit = this.coreContext.PlanningUnit.Where( u => u.Id == activity.PlanningUnitId)
+                                .Select( u => new {
+                                    name = u.Name,
+                                    area = u.ExtensionArea.Name,
+                                    region = u.ExtensionArea.ExtensionRegion.Name
+                                }).FirstOrDefault();
             result.Add( lastRevision.ActivityDate.ToString("MM-dd-yy"));
             result.Add( lastRevision.Title);
             string pattern = @"<(.|\n)*?>";
@@ -1127,16 +1134,16 @@ snap copies
             result.Add(activity.KersUser.RprtngProfile.enabled.ToString());
 
 
-            result.Add( activity.PlanningUnit.Name);
-            if(activity.PlanningUnit.ExtensionArea != null){
-                result.Add( activity.PlanningUnit.ExtensionArea.Name);
-                result.Add( activity.PlanningUnit.ExtensionArea.ExtensionRegion.Name);
+            result.Add( unit.name);
+            if(unit.area != null){
+                result.Add( unit.area);
+                result.Add( unit.region);
             }else{
                 result.Add("");
                 result.Add("");
             }
             var congrDistrict = coreContext.CongressionalDistrictUnit
-                                        .Where( d => d.PlanningUnit == activity.PlanningUnit)
+                                        .Where( d => d.PlanningUnit.Id == activity.PlanningUnitId)
                                         .Include( d => d.CongressionalDistrict)
                                         .FirstOrDefault();
             if(congrDistrict != null){
@@ -1246,7 +1253,7 @@ snap copies
                     if(reached == null) reached = coreContext.SnapIndirectReached.Where( r => r.Active).OrderBy( r => r.order).ToList();
                     foreach( var reac in reached ){
                         var reach = indirect.SnapIndirectReachedValues.Where( r => r.SnapIndirectReached == reac).FirstOrDefault();
-                        if( reac == null){
+                        if( reach == null){
                             result.Add("0");
                         }else{
                             result.Add( reach.Value.ToString());
