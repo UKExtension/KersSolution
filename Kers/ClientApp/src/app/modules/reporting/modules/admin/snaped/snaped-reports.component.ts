@@ -51,7 +51,7 @@ export class SnapedReportsComponent implements OnInit {
   csvData = [];
   csvCriteria:SnapedSearchCriteria;
   csvInitiated = false;
-  csvChunkSize = 5;
+  csvChunkSize = 2;
   csvTotalBatches:number;
   csvBatchesCompleted = 0;
   csvResultsCount = 0;
@@ -168,7 +168,7 @@ export class SnapedReportsComponent implements OnInit {
     this.csvCriteria = Object.assign({}, this.criteria);
     this.csvCriteria.skip = 0;
     this.csvCriteria.take = this.csvChunkSize;
-    this.csvTotalBatches = this.csvResultsCount%this.csvChunkSize + 1;
+    this.csvTotalBatches = Math.ceil( this.csvResultsCount/this.csvChunkSize );
     this.service.GetCustomDataHeader().subscribe(
       res => {
         this.csvData.push(res);
@@ -182,6 +182,7 @@ export class SnapedReportsComponent implements OnInit {
     if(this.csvCriteria.skip < this.csvResultsCount && this.csvInitiated){
       this.service.getCustomData(this.criteria).subscribe(
         res => {
+          console.log( res );
           this.csvData = this.csvData.concat(res);
           this.csvBatchesCompleted++;
           this.csvCriteria.skip = this.csvCriteria.skip + this.csvChunkSize;
@@ -198,6 +199,7 @@ export class SnapedReportsComponent implements OnInit {
     this.csvResultsCount = count;
     return count;
   }
+
 
   loadMore(){
     this.criteria.take += 20;
