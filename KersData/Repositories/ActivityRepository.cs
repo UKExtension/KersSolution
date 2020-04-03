@@ -1116,8 +1116,8 @@ snap copies
             var unit = this.coreContext.PlanningUnit.Where( u => u.Id == activity.PlanningUnitId)
                                 .Select( u => new {
                                     name = u.Name,
-                                    area = u.ExtensionArea.Name,
-                                    region = u.ExtensionArea.ExtensionRegion.Name
+                                    area = ( u.ExtensionArea != null ? u.ExtensionArea.Name : null),
+                                    region = ( u.ExtensionArea != null ? u.ExtensionArea.ExtensionRegion.Name : null)
                                 }).FirstOrDefault();
             result.Add( lastRevision.ActivityDate.ToString("MM-dd-yy"));
             result.Add( lastRevision.Title);

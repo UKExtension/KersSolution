@@ -9,7 +9,19 @@ import { PlanningUnit } from "../../user/user.service";
 @Component({
   selector: 'snaped-reports',
   templateUrl: './snaped-reports.component.html',
-  styles: []
+  styles: [`
+  .download-overlay{
+    background-color:rgba(220,239,230, 0.8);
+    border: 3px solid rgba(120,139,130, 0.2);
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index: 100;
+    padding: 10px;
+  }
+  `]
 })
 export class SnapedReportsComponent implements OnInit {
   condition = false;
@@ -35,6 +47,14 @@ export class SnapedReportsComponent implements OnInit {
   model = {beginDate: {year: 2018, month: 10, day: 9},
                            endDate: {year: 2018, month: 10, day: 19}};
 
+
+  csvData = [];
+  csvCriteria:SnapedSearchCriteria;
+  csvInitiated = false;
+  csvChunkSize = 5;
+  csvTotalBatches:number;
+  csvBatchesCompleted = 0;
+  csvResultsCount = 0;
 
   constructor(
     private service:SnapedAdminService,
@@ -67,6 +87,8 @@ export class SnapedReportsComponent implements OnInit {
       skip: 0,
       take: 20
     }
+
+    
 
 
     this.refresh = new Subject();
@@ -142,12 +164,39 @@ export class SnapedReportsComponent implements OnInit {
     this.onRefresh();
   }
   csv(){
-    this.service.getCustomData(this.criteria).subscribe(
+    this.csvInitiated=true;
+    this.csvCriteria = Object.assign({}, this.criteria);
+    this.csvCriteria.skip = 0;
+    this.csvCriteria.take = this.csvChunkSize;
+    this.csvTotalBatches = this.csvResultsCount%this.csvChunkSize + 1;
+    this.service.GetCustomDataHeader().subscribe(
       res => {
-        console.log(res)
+        this.csvData.push(res);
+        this.getCsvData();
       }
     )
-    
+     
+  }
+
+  getCsvData(){
+    if(this.csvCriteria.skip < this.csvResultsCount && this.csvInitiated){
+      this.service.getCustomData(this.criteria).subscribe(
+        res => {
+          this.csvData = this.csvData.concat(res);
+          this.csvBatchesCompleted++;
+          this.csvCriteria.skip = this.csvCriteria.skip + this.csvChunkSize;
+          this.getCsvData();
+        }
+      )
+    }else{
+      console.log(this.csvData);
+      this.csvInitiated=false;
+    }
+     
+  }
+  getCount(count:number){
+    this.csvResultsCount = count;
+    return count;
   }
 
   loadMore(){

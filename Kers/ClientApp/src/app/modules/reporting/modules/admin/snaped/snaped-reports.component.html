@@ -1,4 +1,10 @@
 <div class="text-right"><button class="btn btn-info btn-xs" routerLink="/reporting/admin/snaped/">Admin Dashboard</button></div>
+<div class="download-overlay" *ngIf="csvInitiated">
+  <div class="text-right"><button class="btn btn-info btn-xs" (click)="csvInitiated=false">cancel</button></div>
+  total: {{csvTotalBatches}}<br>
+  completed: {{csvBatchesCompleted}}<br>
+  percentage: {{csvBatchesCompleted/csvTotalBatches*100}}%
+</div>
 <h3>Snap-Ed Records</h3><br>
 <div class="row">
   <div class="col-md-6 col-sm-6 col-xs-12">
@@ -123,7 +129,7 @@
 
 
   <div class="col-xs-12"><br><br>
-    <div *ngIf="revisions.resultsCount != 0 && !loading" class="text-center">
+    <div *ngIf="getCount(revisions.resultsCount) != 0 && !loading" class="text-center">
       <div>Showing {{ (criteria.take < revisions.resultsCount ? criteria.take : revisions.resultsCount)}} of {{revisions.resultsCount}} Records</div>
       <div *ngIf="revisions.resultsCount >= criteria.take" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
           load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
