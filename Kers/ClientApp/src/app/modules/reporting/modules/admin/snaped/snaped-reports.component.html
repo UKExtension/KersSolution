@@ -1,9 +1,12 @@
 <div class="text-right"><button class="btn btn-info btn-xs" routerLink="/reporting/admin/snaped/">Admin Dashboard</button></div>
 <div class="download-overlay" *ngIf="csvInitiated">
   <div class="text-right"><button class="btn btn-info btn-xs" (click)="csvInitiated=false">cancel</button></div>
-  total: {{csvTotalBatches}}<br>
-  completed: {{csvBatchesCompleted}}<br>
-  percentage: {{csvBatchesCompleted/csvTotalBatches*100}}%
+<br>
+<br>
+
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" [style.width.%]="csvBatchesCompleted/csvTotalBatches*100"></div>
+  </div>
 </div>
 <h3>Snap-Ed Records</h3><br>
 <div class="row">

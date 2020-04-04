@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
 import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } from '../../state/state.service';
 import { PlanningUnit } from "../../user/user.service";
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'snaped-reports',
@@ -13,7 +14,7 @@ import { PlanningUnit } from "../../user/user.service";
   .download-overlay{
     background-color:rgba(220,239,230, 0.8);
     border: 3px solid rgba(120,139,130, 0.2);
-    position: absolute;
+    position: fixed;
     top:0;
     bottom:0;
     left:0;
@@ -169,9 +170,10 @@ export class SnapedReportsComponent implements OnInit {
     this.csvCriteria.skip = 0;
     this.csvCriteria.take = this.csvChunkSize;
     this.csvTotalBatches = Math.ceil( this.csvResultsCount/this.csvChunkSize );
+    this.csvBatchesCompleted = 0;
     this.service.GetCustomDataHeader().subscribe(
       res => {
-        this.csvData.push(res);
+        this.csvData=[res];
         this.getCsvData();
       }
     )
@@ -182,7 +184,6 @@ export class SnapedReportsComponent implements OnInit {
     if(this.csvCriteria.skip < this.csvResultsCount && this.csvInitiated){
       this.service.getCustomData(this.criteria).subscribe(
         res => {
-          console.log( res );
           this.csvData = this.csvData.concat(res);
           this.csvBatchesCompleted++;
           this.csvCriteria.skip = this.csvCriteria.skip + this.csvChunkSize;
@@ -190,10 +191,20 @@ export class SnapedReportsComponent implements OnInit {
         }
       )
     }else{
-      console.log(this.csvData);
+      this.downloadFile(this.csvData);
       this.csvInitiated=false;
     }
      
+  }
+  downloadFile(data: any) {
+    const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
+    const header = Object.keys(data[0]);
+    let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+    //csv.unshift(header.join(','));
+    let csvArray = csv.join('\r\n');
+
+    var blob = new Blob([csvArray], {type: 'text/csv' })
+    saveAs(blob, "KERS_ServiceLogData.csv");
   }
   getCount(count:number){
     this.csvResultsCount = count;
