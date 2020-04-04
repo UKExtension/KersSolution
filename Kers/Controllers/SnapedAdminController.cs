@@ -78,9 +78,13 @@ namespace Kers.Controllers
                 result = result.Where( a => a.KersUser.RprtngProfile.Name.Contains(criteria.Search));
             }
             if( criteria.CongressionalDistrictId != null && criteria.CongressionalDistrictId != 0){
+                /* 
                 var counties = await context.CongressionalDistrict.Where( c => c.Id == criteria.CongressionalDistrictId).Include( c => c.Units).FirstOrDefaultAsync();
                 List<int> countyIds = counties.Units.Select( c => c.Id).ToList();
                 result = result.Where( a => countyIds.Contains(a.PlanningUnitId??0));
+ */
+                result = result.Where( a => a.PlanningUnit.CongressionalDistrictUnit.CongressionalDistrictId == criteria.CongressionalDistrictId);
+
             }
             if(criteria.RegionId != null && criteria.RegionId != 0){
                 result = result.Where( a => a.PlanningUnit.ExtensionArea.ExtensionRegionId == criteria.RegionId);

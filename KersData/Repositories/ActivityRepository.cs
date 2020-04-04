@@ -1117,8 +1117,9 @@ snap copies
             var unit = this.coreContext.PlanningUnit.Where( u => u.Id == activity.PlanningUnitId)
                                 .Select( u => new {
                                     name = u.Name,
-                                    area = ( u.ExtensionArea != null ? u.ExtensionArea.Name : null),
-                                    region = ( u.ExtensionArea != null ? u.ExtensionArea.ExtensionRegion.Name : null)
+                                    area = ( u.ExtensionArea != null ? u.ExtensionArea.Name : ""),
+                                    region = ( u.ExtensionArea != null ? u.ExtensionArea.ExtensionRegion.Name : ""),
+                                    congressional = ( u.CongressionalDistrictUnit != null ? u.CongressionalDistrictUnit.CongressionalDistrict.Name : "")
                                 }).FirstOrDefault();
             result.Add( lastRevision.ActivityDate.ToString("MM-dd-yy"));
             result.Add( lastRevision.Title);
@@ -1135,13 +1136,12 @@ snap copies
             result.Add(activity.KersUser.RprtngProfile.enabled.ToString());
 
             result.Add( unit.name);
-            if(unit.area != null){
-                result.Add( unit.area);
-                result.Add( unit.region);
-            }else{
-                result.Add("");
-                result.Add("");
-            }
+
+            result.Add( unit.area);
+            result.Add( unit.region);
+            result.Add( unit.congressional);
+
+/* 
             var congrDistrict = coreContext.CongressionalDistrictUnit
                                         .Where( d => d.PlanningUnit.Id == activity.PlanningUnitId)
                                         .Include( d => d.CongressionalDistrict)
@@ -1151,6 +1151,7 @@ snap copies
             }else{
                 result.Add("");
             }
+             */
             result.Add( lastRevision.MajorProgram.Name);
             result.Add( lastRevision.Hours.ToString());
 

@@ -31,6 +31,7 @@ namespace Kers.Models.Entities.KERScore
         public Region Region {get; set;}
         public int? ExtensionAreaId {get;set;}
         public ExtensionArea ExtensionArea {get;set;}
+        public CongressionalDistrictUnit CongressionalDistrictUnit {get;set;}
         public ICollection<CountyVehicle> Vehicles {get;set;}
         public int Population {get;set;}
         [Column(TypeName="text")]
