@@ -1103,8 +1103,9 @@ snap copies
                             .FirstOrDefault();
                
                 if( activity == null ) return null;
-                    lastRevision = this.coreContext.ActivityRevision
-                                    .Where( r => r.Id == activity.Revisions.OrderByDescending( lr => lr.Created).First().Id)
+                var lastOne = activity.Revisions.OrderByDescending( lr => lr.Created).First();
+                lastRevision = this.coreContext.ActivityRevision
+                                    .Where( r => r.Id == lastOne.Id)
                                     .Include( r => r.MajorProgram)
                                     .Include( r => r.RaceEthnicityValues)
                                     .Include( r => r.ActivityOptionNumbers)
@@ -1133,7 +1134,6 @@ snap copies
             result.Add( spclt);
             result.Add(activity.KersUser.RprtngProfile.enabled.ToString());
 
-
             result.Add( unit.name);
             if(unit.area != null){
                 result.Add( unit.area);
@@ -1154,7 +1154,6 @@ snap copies
             result.Add( lastRevision.MajorProgram.Name);
             result.Add( lastRevision.Hours.ToString());
 
-
             if(options == null) options = coreContext.ActivityOption.OrderBy( o => o.Order).ToList();
             foreach( var option in options){
                 var actvtOpt = lastRevision.ActivityOptionSelections.Where( o => o.ActivityOption == option).Any();
@@ -1173,10 +1172,9 @@ snap copies
                         result.Add( val.Amount.ToString());
                     }
                 }
-            }
+            } 
             result.Add(lastRevision.Male.ToString());
             result.Add( lastRevision.Female.ToString());
-
             if( optionNumbers == null ) optionNumbers = coreContext.ActivityOptionNumber.OrderBy( v => v.Order).ToList();
             foreach( var optNum in optionNumbers){
                 var opnum = lastRevision.ActivityOptionNumbers.Where( n => n.ActivityOptionNumber == optNum).FirstOrDefault();
@@ -1192,7 +1190,7 @@ snap copies
                 for( var i = 0; i < numRemainingFields; i++) result.Add("");
             }else if( lastRevision.SnapAdmin ){
                 result.Add( "True");
-            }else{
+            }else{ 
                 result.Add( "False");
                 if(lastRevision.SnapDirectId != null && lastRevision.SnapDirectId != 0 ){
                     var direct = coreContext.SnapDirect
