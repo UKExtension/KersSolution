@@ -51,8 +51,24 @@ namespace Kers.Controllers
         public async Task<IActionResult> GetCustomData( [FromBody] SnapedSearchCriteria criteria ){
             var ret = new List<List<string>>();
             var result = await SeearchResults(criteria);
+            var races = context.Race.OrderBy( r => r.Order).ToList();
+            var ethnicities = context.Ethnicity.OrderBy( r => r.Order).ToList();
+            var options = context.ActivityOption.OrderBy( o => o.Order).ToList();
+            var optionNumbers = context.ActivityOptionNumber.OrderBy( v => v.Order).ToList();
+            var ages = context.SnapDirectAges.Where( a => a.Active).OrderBy( a => a.order).ToList();
+            var audience = context.SnapDirectAudience.Where( a => a.Active).OrderBy( a => a.order).ToList();
             foreach( var res in result.Results){
-                ret.Add( activityRepo.ReportRow(res.Revision.ActivityId));
+                ret.Add( activityRepo.ReportRow(
+                                            res.Revision.ActivityId,
+                                            null,
+                                            races,
+                                            ethnicities,
+                                            options,
+                                            optionNumbers,
+                                            ages,
+                                            audience
+                                        )      
+                        );
             }
 
             return new OkObjectResult(ret);
@@ -78,13 +94,7 @@ namespace Kers.Controllers
                 result = result.Where( a => a.KersUser.RprtngProfile.Name.Contains(criteria.Search));
             }
             if( criteria.CongressionalDistrictId != null && criteria.CongressionalDistrictId != 0){
-                /* 
-                var counties = await context.CongressionalDistrict.Where( c => c.Id == criteria.CongressionalDistrictId).Include( c => c.Units).FirstOrDefaultAsync();
-                List<int> countyIds = counties.Units.Select( c => c.Id).ToList();
-                result = result.Where( a => countyIds.Contains(a.PlanningUnitId??0));
- */
                 result = result.Where( a => a.PlanningUnit.CongressionalDistrictUnit.CongressionalDistrictId == criteria.CongressionalDistrictId);
-
             }
             if(criteria.RegionId != null && criteria.RegionId != 0){
                 result = result.Where( a => a.PlanningUnit.ExtensionArea.ExtensionRegionId == criteria.RegionId);
@@ -134,8 +144,7 @@ namespace Kers.Controllers
                     res.Revision = rev;
                     searchResult.Add(res);
                     taken++;
-                }   
-                
+                }      
             }
             ret.Results = searchResult;
             return ret;

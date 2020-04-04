@@ -1140,18 +1140,6 @@ snap copies
             result.Add( unit.area);
             result.Add( unit.region);
             result.Add( unit.congressional);
-
-/* 
-            var congrDistrict = coreContext.CongressionalDistrictUnit
-                                        .Where( d => d.PlanningUnit.Id == activity.PlanningUnitId)
-                                        .Include( d => d.CongressionalDistrict)
-                                        .FirstOrDefault();
-            if(congrDistrict != null){
-                result.Add(congrDistrict.CongressionalDistrict.Name);
-            }else{
-                result.Add("");
-            }
-             */
             result.Add( lastRevision.MajorProgram.Name);
             result.Add( lastRevision.Hours.ToString());
 

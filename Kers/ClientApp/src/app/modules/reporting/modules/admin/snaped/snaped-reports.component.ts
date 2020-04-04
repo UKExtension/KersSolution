@@ -56,6 +56,7 @@ export class SnapedReportsComponent implements OnInit {
   csvTotalBatches:number;
   csvBatchesCompleted = 0;
   csvResultsCount = 0;
+  csvAverageBatchTime = 0;
 
   constructor(
     private service:SnapedAdminService,
@@ -182,16 +183,21 @@ export class SnapedReportsComponent implements OnInit {
 
   getCsvData(){
     if(this.csvCriteria.skip < this.csvResultsCount && this.csvInitiated){
+      var startDate = new Date();
       this.service.getCustomData(this.criteria).subscribe(
         res => {
           this.csvData = this.csvData.concat(res);
           this.csvBatchesCompleted++;
           this.csvCriteria.skip = this.csvCriteria.skip + this.csvChunkSize;
+          var endDate   = new Date();
+          var seconds = (endDate.getTime() - startDate.getTime()) / 1000;
+          this.csvAverageBatchTime = (this.csvAverageBatchTime == 0 ? seconds : (this.csvAverageBatchTime + seconds) /2)
           this.getCsvData();
         }
       )
     }else{
       this.downloadFile(this.csvData);
+      this.csvAverageBatchTime = 0;
       this.csvInitiated=false;
     }
      
@@ -206,6 +212,13 @@ export class SnapedReportsComponent implements OnInit {
     var blob = new Blob([csvArray], {type: 'text/csv' })
     saveAs(blob, "KERS_ServiceLogData.csv");
   }
+
+  getTimeRemaining():number{
+    return (this.csvTotalBatches - this.csvBatchesCompleted ) * this.csvAverageBatchTime / 60;
+
+  }
+
+
   getCount(count:number){
     this.csvResultsCount = count;
     return count;
