@@ -84,7 +84,11 @@ namespace Kers.Controllers
         public async Task<IActionResult> GetCustom( [FromBody] SnapedSearchCriteria criteria
                                         ){
             var ret = await SeearchResults(criteria);
-
+            if( criteria.Skip == 0 ){
+                this.Log( criteria ,"SnapedSearchCriteria", "Custom Snap-Ed Report Initiated", "SnapedSearchCriteria", "Info");
+                this.context.SaveChanges();
+            }
+            
             return new OkObjectResult(ret);
         }
         private async Task<SnapSeearchResultsWithCount> SeearchResults(SnapedSearchCriteria criteria){
