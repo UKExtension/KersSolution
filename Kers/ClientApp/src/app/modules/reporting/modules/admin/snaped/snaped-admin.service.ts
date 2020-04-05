@@ -148,7 +148,7 @@ export class SnapedAdminService {
         var url = this.baseUrl + 'countybudget/' + countyId;
         return this.http.put<SnapBudgetReimbursementsCounty>(this.location.prepareExternalUrl(url), budget)
             .pipe(
-                catchError(this.handleError('countyReimbursments', budget))
+                catchError(this.handleError('updateCountyBudget', budget))
             );
     }
 
@@ -156,7 +156,7 @@ export class SnapedAdminService {
         var url = this.baseUrl + 'getCustom/';
         return this.http.post<SnapSeearchResultsWithCount>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
-                catchError(this.handleError('addCountyReimbursment',<SnapSeearchResultsWithCount>{}))
+                catchError(this.handleError('getCustom',<SnapSeearchResultsWithCount>{}))
             );
     }
     GetCustomDataHeader():Observable<string[]>{
@@ -170,7 +170,7 @@ export class SnapedAdminService {
         var url = this.baseUrl + 'getCustomData/';
         return this.http.post<string[]>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
-                catchError(this.handleError('addCountyReimbursment',[]))
+                catchError(this.handleError('getCustomData',[]))
             );
     }
     

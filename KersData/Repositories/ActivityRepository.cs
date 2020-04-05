@@ -1092,18 +1092,36 @@ snap copies
                                         List<SnapPolicyPartner> partners = null){
             var result = new List<string>();
             ActivityRevision lastRevision;
+            KersUser user;
+            int? UnitId;
             if( activity == null){
+                /* 
                 activity = this.coreContext.Activity
                             .Where( a => a.Id == id)
-                            //.Include( a => a.PlanningUnit).ThenInclude( u => u.ExtensionArea).ThenInclude(a => a.ExtensionRegion)
                             .Include( a => a.KersUser).ThenInclude( u => u.Specialties ).ThenInclude( s => s.Specialty)
                             .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
                             .Include( a => a.KersUser).ThenInclude( u => u.ExtensionPosition)
                             .Include( a => a.Revisions)
                             .FirstOrDefault();
-               
-                if( activity == null ) return null;
-                var lastOne = activity.Revisions.OrderByDescending( lr => lr.Created).First();
+                 */
+                var revs = this.coreContext.Activity
+                            .Where( a => a.Id == id)
+                            .Select( a => new {
+                                    revisions = a.Revisions,
+                                    userId = a.KersUserId,
+                                    unitId = a.PlanningUnitId
+                                }
+                            )
+                            .FirstOrDefault();
+                user = this.coreContext.KersUser
+                                .Where( u => u.Id == revs.userId)
+                                .Include( u => u.Specialties ).ThenInclude( s => s.Specialty)
+                                .Include( u => u.RprtngProfile)
+                                .Include( u => u.ExtensionPosition)
+                                .FirstOrDefault();
+                UnitId = revs.unitId;
+                if( revs == null ) return null;
+                var lastOne = revs.revisions.OrderByDescending( lr => lr.Created).First();
                 lastRevision = this.coreContext.ActivityRevision
                                     .Where( r => r.Id == lastOne.Id)
                                     .Include( r => r.MajorProgram)
@@ -1113,8 +1131,10 @@ snap copies
                                     .FirstOrDefault();
             }else{
                 lastRevision = activity.Revisions.OrderByDescending(r => r.Created).FirstOrDefault();
+                user = activity.KersUser;
+                UnitId = activity.PlanningUnitId;
             }
-            var unit = this.coreContext.PlanningUnit.Where( u => u.Id == activity.PlanningUnitId)
+            var unit = this.coreContext.PlanningUnit.Where( u => u.Id == UnitId)
                                 .Select( u => new {
                                     name = u.Name,
                                     area = ( u.ExtensionArea != null ? u.ExtensionArea.Name : ""),
@@ -1125,15 +1145,15 @@ snap copies
             result.Add( lastRevision.Title);
             string pattern = @"<(.|\n)*?>";
             result.Add(Regex.Replace(lastRevision.Description, pattern, string.Empty));
-            result.Add( activity.KersUser.RprtngProfile.Name);
-            result.Add( activity.KersUser.ExtensionPosition.Code);
+            result.Add( user.RprtngProfile.Name);
+            result.Add( user.ExtensionPosition.Code);
 
             var spclt = "";
-            foreach( var sp in activity.KersUser.Specialties.OrderBy( s => s.Specialty.Code)){
+            foreach( var sp in user.Specialties.OrderBy( s => s.Specialty.Code)){
                 spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
             }
             result.Add( spclt);
-            result.Add(activity.KersUser.RprtngProfile.enabled.ToString());
+            result.Add(user.RprtngProfile.enabled.ToString());
 
             result.Add( unit.name);
 

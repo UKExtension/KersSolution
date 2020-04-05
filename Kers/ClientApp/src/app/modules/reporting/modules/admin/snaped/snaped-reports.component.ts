@@ -52,7 +52,7 @@ export class SnapedReportsComponent implements OnInit {
   csvData = [];
   csvCriteria:SnapedSearchCriteria;
   csvInitiated = false;
-  csvChunkSize = 2;
+  csvChunkSize = 3;
   csvTotalBatches:number;
   csvBatchesCompleted = 0;
   csvResultsCount = 0;
