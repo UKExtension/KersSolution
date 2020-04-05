@@ -92,7 +92,7 @@ namespace Kers.Controllers
             return new OkObjectResult(ret);
         }
         private async Task<SnapSeearchResultsWithCount> SeearchResults(SnapedSearchCriteria criteria){
-            var result = this.context.Activity
+            var result = this.context.Activity.AsNoTracking()
                                 .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End);
             if( criteria.Search != ""){
                 result = result.Where( a => a.KersUser.RprtngProfile.Name.Contains(criteria.Search));
@@ -110,7 +110,7 @@ namespace Kers.Controllers
                 result = result.Where( a => a.PlanningUnitId == criteria.UnitId);
             }
             var LastRevs = new List<ActivityRevision>();
-            foreach( var res in result.Include( a=>a.Revisions)) LastRevs.Add(res.Revisions.Last());
+            foreach( var res in result.Include( a=>a.Revisions)) LastRevs.Add(res.Revisions.OrderBy( r => r.Created).Last());
             var searchResult = new List<SnapSearchResult>();
             var ret = new SnapSeearchResultsWithCount();
             var skipped = 0;
@@ -124,6 +124,8 @@ namespace Kers.Controllers
                 filtered = LastRevs.Where( r => r.SnapPolicyId != null);
             }else if( criteria.Type == "admin"){
                 filtered = LastRevs.Where( r => r.SnapAdmin == true && r.SnapPolicyId == null && r.SnapIndirectId == null && r.SnapDirectId == null);
+            }else if( criteria.Type == "all"){
+                filtered = LastRevs;
             }
             ret.ResultsCount =  filtered == null ? 0 : filtered.Count() ;
             if(criteria.Order == "asc"){
@@ -138,7 +140,7 @@ namespace Kers.Controllers
                 if( criteria.Skip < skipped){
                     if( taken >= criteria.Take) break;
                     var res = new SnapSearchResult();
-                    var activity = await this.context.Activity.Where( a => a.Id == rev.ActivityId)
+                    var activity = await this.context.Activity.AsNoTracking().Where( a => a.Id == rev.ActivityId)
                                                 .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
                                                 .Include( a => a.PlanningUnit)
                                                 .FirstOrDefaultAsync();
