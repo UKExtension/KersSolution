@@ -8,7 +8,7 @@
     <div class="progress-bar progress-bar-striped bg-info" role="progressbar" [style.width.%]="csvBatchesCompleted/(csvTotalBatches - 1)*100"></div>
   </div>
   <div >
-    <span *ngIf="csvAverageBatchTime != 0">Time Remining: {{getTimeRemaining() | number:'1.0-1' }} min.</span>&nbsp;
+    <span *ngIf="csvAverageBatchTime != 0">Time Remaining: {{getTimeRemaining() | number:'1.0-1' }} min.</span>&nbsp;
   </div>
 
 </div>
