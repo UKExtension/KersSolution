@@ -1095,15 +1095,6 @@ snap copies
             KersUser user;
             int? UnitId;
             if( activity == null){
-                /* 
-                activity = this.coreContext.Activity
-                            .Where( a => a.Id == id)
-                            .Include( a => a.KersUser).ThenInclude( u => u.Specialties ).ThenInclude( s => s.Specialty)
-                            .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
-                            .Include( a => a.KersUser).ThenInclude( u => u.ExtensionPosition)
-                            .Include( a => a.Revisions)
-                            .FirstOrDefault();
-                 */
                 var revs = this.coreContext.Activity
                             .Where( a => a.Id == id)
                             .Select( a => new {
@@ -1194,8 +1185,14 @@ snap copies
                 }
             }
             result.Add( lastRevision.isSnap.ToString() );
+
+            var directFieldsCount = 27;
+            var partnFieldCount = 40;
+            var indirectFieldCount = 17;
+
+
             if( !lastRevision.isSnap ){
-                var numRemainingFields = 17 + 40 + 24 + 1;
+                var numRemainingFields = indirectFieldCount + partnFieldCount + directFieldsCount + 1;
                 for( var i = 0; i < numRemainingFields; i++) result.Add("");
             }else if( lastRevision.SnapAdmin ){
                 result.Add( "True");
@@ -1224,7 +1221,6 @@ snap copies
                         }
                     }
                 }else{
-                    var directFieldsCount = 24;
                     for( var i = 0; i < directFieldsCount; i++) result.Add("");
                 }
                 if( lastRevision.SnapPolicyId != null && lastRevision.SnapPolicyId != 0 ){
@@ -1248,7 +1244,6 @@ snap copies
                         }
                     }
                 }else{
-                    var partnFieldCount = 40;
                     for( var i = 0; i < partnFieldCount; i++) result.Add("");
                 }
                 if( lastRevision.SnapIndirectId != null && lastRevision.SnapIndirectId != 0 ){
@@ -1270,7 +1265,6 @@ snap copies
                     foreach( var met in method) 
                         result.Add( indirect.SnapIndirectMethodSelections.Where( s => s.SnapIndirectMethod == met).Any().ToString() );
                 }else{
-                    var indirectFieldCount = 17;
                     for( var i = 0; i < indirectFieldCount; i++) result.Add("");
                 }
                 result.Add( lastRevision.SnapCopies.ToString() );
