@@ -184,7 +184,7 @@ export class SnapedReportsComponent implements OnInit {
   getCsvData(){
     if(this.csvCriteria.skip < this.csvResultsCount && this.csvInitiated){
       var startDate = new Date();
-      this.service.getCustomData(this.criteria).subscribe(
+      this.service.getCustomData(this.csvCriteria).subscribe(
         res => {
           this.csvData = this.csvData.concat(res);
           this.csvBatchesCompleted++;
