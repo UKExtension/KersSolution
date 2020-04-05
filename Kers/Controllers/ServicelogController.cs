@@ -50,6 +50,7 @@ namespace Kers.Controllers
             var activity = await context.Activity.
                                 Where(e=> e.Id == Id).
                                 Include( e => e.MajorProgram).
+                                Include( e => e.ActivityImages).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude( o => o.ActivityOptionNumber).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
@@ -82,6 +83,7 @@ namespace Kers.Controllers
                                         OrderBy(r => r.SnapPolicyPartner.order).
                                         ToList();
             }
+            a.ActivityImages = activity.ActivityImages;
             return new OkObjectResult(a);
         }
 

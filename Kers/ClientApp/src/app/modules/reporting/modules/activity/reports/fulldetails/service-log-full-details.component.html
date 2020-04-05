@@ -20,8 +20,10 @@
           <div class="row invoice-info">
             <div class="col-sm-6 invoice-col">
               <b>Description:</b>
-              <address innerHtml="{{replaceImageTag(activity.description)}}">
-              </address>
+              <address *ngIf="!fullSizeImages"  innerHtml="{{replaceImageTag(activity.description)}}"></address>
+              <address *ngIf="fullSizeImages"  innerHtml="{{activity.description}}"></address>
+              <div *ngIf="!fullSizeImages && activity.activityImages.length > 0"><a class="btn btn-info btn-xs" (click)="fullSizeImages=true">show documents</a></div>
+              <div *ngIf="fullSizeImages && activity.activityImages.length > 0"><a class="btn btn-info btn-xs" (click)="fullSizeImages=false">hide documents</a></div>
             </div>
             <!-- /.col -->
             <div class="col-sm-3 invoice-col">

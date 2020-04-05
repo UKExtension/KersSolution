@@ -13,6 +13,7 @@ export class ServiceLogFullDetailsComponent implements OnInit {
   races:Observable<Race[]>;
   ethnicities:Observable<Ethnicity[]>;
   loading = true;
+  fullSizeImages = false;
 
   constructor(
     private service: ActivityService,

@@ -312,7 +312,9 @@ namespace Kers.Controllers
                             Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                             Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                             Include(a => a.RaceEthnicityValues).
+                            Include( a => a.ActivityImages).
                             OrderBy(a => a.Created).Last();
+                            lstrvsn.ActivityImages = context.Activity.Where( a => a.Id == rev).Include( a => a.ActivityImages).First().ActivityImages;
                             var revSerialized = JsonConvert.SerializeObject(lstrvsn);
                             _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
                                 {
