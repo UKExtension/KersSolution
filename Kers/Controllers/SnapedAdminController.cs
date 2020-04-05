@@ -125,7 +125,7 @@ namespace Kers.Controllers
             }else if( criteria.Type == "admin"){
                 filtered = LastRevs.Where( r => r.SnapAdmin == true && r.SnapPolicyId == null && r.SnapIndirectId == null && r.SnapDirectId == null);
             }else if( criteria.Type == "all"){
-                filtered = LastRevs;
+                filtered = LastRevs.Where( r => r.isSnap );
             }
             ret.ResultsCount =  filtered == null ? 0 : filtered.Count() ;
             if(criteria.Order == "asc"){
