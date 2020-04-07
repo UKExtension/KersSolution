@@ -300,12 +300,12 @@ export class ActivitySearchCriteria{
     start: string;
     end: string;
     search: string = "";
-    type = "direct";
     order: string = 'dsc';
     congressionalDistrictId?:number;
     regionId?:number;
     areaId?:number;
     unitId?:number;
+    options:number[];
     skip:number = 0;
     take?:number;
 }

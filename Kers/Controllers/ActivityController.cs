@@ -228,16 +228,10 @@ namespace Kers.Controllers
             var skipped = 0;
             var taken = 0;
             IEnumerable<ActivityRevision> filtered = null;
-            if(criteria.Type == "direct"){
-                filtered = LastRevs.Where( r => r.SnapDirectId != null);
-            }else if( criteria.Type == "indirect"){
-                filtered = LastRevs.Where( r => r.SnapIndirectId != null);
-            }else if( criteria.Type == "policy"){
-                filtered = LastRevs.Where( r => r.SnapPolicyId != null);
-            }else if( criteria.Type == "admin"){
-                filtered = LastRevs.Where( r => r.SnapAdmin == true && r.SnapPolicyId == null && r.SnapIndirectId == null && r.SnapDirectId == null);
-            }else if( criteria.Type == "all"){
-                filtered = LastRevs.Where( r => r.isSnap );
+            if(criteria.Options != null && criteria.Options.Count() > 0){
+                filtered = LastRevs.Where( r => r.ActivityOptionSelections.All( a => criteria.Options.Contains( a.ActivityOptionId) ) );
+            }else{
+                filtered = LastRevs;
             }
             ret.ResultsCount =  filtered == null ? 0 : filtered.Count() ;
             if(criteria.Order == "asc"){
@@ -273,7 +267,7 @@ namespace Kers.Controllers
             public DateTime Start;
             public DateTime End;
             public string Search;
-            public string Type;
+            public int[] Options;
             public string Order;
             public int? CongressionalDistrictId;
             public int? RegionId;

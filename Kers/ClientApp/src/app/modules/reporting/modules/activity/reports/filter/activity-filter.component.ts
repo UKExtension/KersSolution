@@ -6,6 +6,7 @@ import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } f
 import { PlanningUnit } from "../../../user/user.service";
 import { saveAs } from 'file-saver';
 import { ActivitySearchCriteria, ActivitySeearchResultsWithCount, ActivityService } from '../../activity.service';
+import { ActivityOption } from '../../../servicelog/servicelog.service';
 
 @Component({
   selector: 'activity-filter',
@@ -24,7 +25,8 @@ export class ActivityFilterComponent implements OnInit {
   congressional$:Observable<CongressionalDistrict[]>;
   regions$:Observable<ExtensionRegion[]>;
   areas$:Observable<ExtensionArea[]>;
-  counties$:Observable<PlanningUnit[]>
+  counties$:Observable<PlanningUnit[]>;
+  options$:Observable<ActivityOption[]>;
   type="direct";
   order = "dsc";
 
@@ -57,7 +59,7 @@ export class ActivityFilterComponent implements OnInit {
     this.congressional$ = this.stateService.congressional();
     this.regions$ = this.stateService.regions();
     this.counties$ = this.stateService.counties();
-
+    this.options$ = this.service.options();
     var startDate = new Date();
     startDate.setMonth( startDate.getMonth() - 1);
     var endDate = new Date();
@@ -75,7 +77,7 @@ export class ActivityFilterComponent implements OnInit {
       regionId: null,
       areaId: null,
       unitId: null,
-      type: this.type,
+      options: [],
       skip: 0,
       take: 20
     }
@@ -150,11 +152,6 @@ export class ActivityFilterComponent implements OnInit {
     this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
   }
 
-  switchType(type:string){
-    this.criteria.type = type;
-    this.type = type;
-    this.onRefresh();
-  }
   csv(){
     this.csvInitiated=true;
     this.csvCriteria = Object.assign({}, this.criteria);
