@@ -34,6 +34,8 @@ import { ServiceLogSnapDirectDetailsComponent } from './reports/fulldetails/serv
 import { ServiceLogSnapIndirectDetailsComponent } from './reports/fulldetails/service-log-snap-indirect-details.component';
 import { ServicelogService } from '../servicelog/servicelog.service';
 import { ServiceLogSnapPolicyDetailsComponent } from './reports/fulldetails/service-log-snap-policy-details.component';
+import { ActivityFilterComponent } from './reports/filter/activity-filter.component';
+import { ActivityReportsDetailComponent } from './reports/filter/activity-reports-detail.component';
 
 @NgModule({
   imports:      [ SharedModule,
@@ -65,7 +67,9 @@ import { ServiceLogSnapPolicyDetailsComponent } from './reports/fulldetails/serv
                     ServiceLogSummaryRowComponent,
                     ServiceLogSnapDirectDetailsComponent,
                     ServiceLogSnapIndirectDetailsComponent,
-                    ServiceLogSnapPolicyDetailsComponent
+                    ServiceLogSnapPolicyDetailsComponent,
+                    ActivityFilterComponent,
+                    ActivityReportsDetailComponent
                 ],
   providers:    [  
                     ActivityService,

@@ -1,0 +1,153 @@
+<div class="text-right"><button class="btn btn-info btn-xs" routerLink="/reporting/admin/snaped/">Admin Dashboard</button></div>
+<div class="download-overlay" *ngIf="csvInitiated">
+  <div class="text-right"><button class="btn btn-info btn-xs" (click)="csvInitiated=false">cancel</button></div>
+<br>
+<br>
+  <h4>Generating Report</h4>
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" [style.width.%]="csvBatchesCompleted/(csvTotalBatches - 1)*100"></div>
+  </div>
+  <div >
+    <span *ngIf="csvAverageBatchTime != 0">Time Remaining: {{getTimeRemaining() | number:'1.0-1' }} min.</span>&nbsp;
+  </div>
+
+</div>
+<h3>Snap-Ed Records</h3><br>
+<div class="row">
+  <div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="btn-group" data-toggle="buttons">
+        <label class="btn btn-default" [class.active]="type=='direct'">
+        <input type="radio" name="type" id="option2" (click)="switchType('direct')"> Direct
+        </label>
+        <label class="btn btn-default" [class.active]="type=='indirect'">
+          <input type="radio" name="type" id="option3" (click)="switchType('indirect')"> Indirect
+        </label>
+        <label class="btn btn-default" [class.active]="type=='policy'">
+          <input type="radio" name="type" id="option4" (click)="switchType('policy')"> Policy
+        </label>
+        <label class="btn btn-default" [class.active]="type=='admin'">
+          <input type="radio" name="type" id="option5" (click)="switchType('admin')"> Admin
+        </label>
+        <label class="btn btn-default" [class.active]="type=='all'">
+          <input type="radio" name="type" id="option6" (click)="switchType('all')"> All
+        </label>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
+      <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
+  </div>
+
+</div>
+
+
+<a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
+  <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
+</a>
+<div class="row">
+  <form *ngIf="condition" class="form-horizontal form-label-left">
+    <div class="col-sm-offset-3 col-sm-9">
+      <h2>Refine Search</h2>
+    </div>
+    <div class="form-group" >
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Name</label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <input class="form-control" name="contact" (keyup)="onSearch($event)" />
+        </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Congressional District</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onCongressionalChange($event)" name="CongressionalDistrict">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let congressional of congressional$ | async" value="{{congressional.id}}">{{congressional.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Region</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onRegionChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let region of regions$ | async" value="{{region.id}}">{{region.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="criteria.regionId != null && criteria.regionId != 0">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Area</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onAreaChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let area of areas$ | async" value="{{area.id}}">{{area.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">County</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onCountyChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let county of counties$ | async" value="{{county.id}}">{{county.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default" [class.active]="order=='dsc'">
+                <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
+                </label>
+                <label class="btn btn-default" [class.active]="order=='asc'">
+                  <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
+                </label>
+                <label class="btn btn-default" [class.active]="order=='alph'">
+                    <input type="radio" name="type" id="option4" (click)="switchOrder('alph')"> Alphabetically
+                  </label>
+            </div>
+        </div>
+    </div>  
+    
+    
+    
+  </form>
+</div><br>
+
+
+<div class="text-right">
+  <a class="btn btn-info btn-xs" (click)="csv()"><i class="fa fa-download"></i> Csv</a>
+</div>
+<div class="table-responsive" *ngIf="revisions$ | async as revisions">
+  
+  <table class="table table-bordered table-striped">
+      <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>County</th>
+            <th>Title</th>
+            <th></th>
+          </tr>
+      </thead>
+      <tbody *ngIf="!loading">
+        <tr *ngFor="let revision of revisions.results" [activity-reports-detail]="revision">
+          
+        </tr>
+      </tbody>
+      
+  </table>
+
+
+
+  <div class="col-xs-12"><br><br>
+    <div *ngIf="getCount(revisions.resultsCount) != 0 && !loading" class="text-center">
+      <div>Showing {{ (criteria.take < revisions.resultsCount ? criteria.take : revisions.resultsCount)}} of {{revisions.resultsCount}} Records</div>
+      <div *ngIf="revisions.resultsCount >= criteria.take" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+          load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </div>
+  </div><br><br>
+
+
+
+
+  <loading *ngIf="loading"></loading>
+</div>

@@ -156,6 +156,148 @@ namespace Kers.Controllers
             return Ok(Output);
         }
  */
+
+
+        [HttpPost("GetCustomData")]
+        [Authorize]
+        public async Task<IActionResult> GetCustomData( [FromBody] ActivitySearchCriteria criteria ){
+            var ret = new List<List<string>>();
+            var result = await SeearchResults(criteria);
+            var races = context.Race.OrderBy( r => r.Order).ToList();
+            var ethnicities = context.Ethnicity.OrderBy( r => r.Order).ToList();
+            var options = context.ActivityOption.OrderBy( o => o.Order).ToList();
+            var optionNumbers = context.ActivityOptionNumber.OrderBy( v => v.Order).ToList();
+            var ages = context.SnapDirectAges.Where( a => a.Active).OrderBy( a => a.order).ToList();
+            var audience = context.SnapDirectAudience.Where( a => a.Active).OrderBy( a => a.order).ToList();
+            foreach( var res in result.Results){
+                ret.Add( activityRepo.ReportRow(
+                                            res.Revision.ActivityId,
+                                            null,
+                                            races,
+                                            ethnicities,
+                                            options,
+                                            optionNumbers,
+                                            ages,
+                                            audience
+                                        )      
+                        );
+            }
+
+            return new OkObjectResult(ret);
+        }
+        [HttpGet("GetCustomDataHeader")]
+        [Authorize]
+        public IActionResult GetCustomDataHeader(  ){
+            return new OkObjectResult( activityRepo.ReportHeaderRow() );
+        }
+
+        [HttpPost("GetCustom")]
+        [Authorize]
+        public async Task<IActionResult> GetCustom( [FromBody] ActivitySearchCriteria criteria
+                                        ){
+            var ret = await SeearchResults(criteria);
+            if( criteria.Skip == 0 ){
+                this.Log( criteria ,"SnapedSearchCriteria", "Custom Snap-Ed Report Initiated", "SnapedSearchCriteria", "Info");
+                this.context.SaveChanges();
+            }
+            
+            return new OkObjectResult(ret);
+        }
+        private async Task<ActivitySeearchResultsWithCount> SeearchResults(ActivitySearchCriteria criteria){
+            var result = this.context.Activity.AsNoTracking()
+                                .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End);
+            if( criteria.Search != ""){
+                result = result.Where( a => a.KersUser.RprtngProfile.Name.Contains(criteria.Search));
+            }
+            if( criteria.CongressionalDistrictId != null && criteria.CongressionalDistrictId != 0){
+                result = result.Where( a => a.PlanningUnit.CongressionalDistrictUnit.CongressionalDistrictId == criteria.CongressionalDistrictId);
+            }
+            if(criteria.RegionId != null && criteria.RegionId != 0){
+                result = result.Where( a => a.PlanningUnit.ExtensionArea.ExtensionRegionId == criteria.RegionId);
+            }
+            if(criteria.AreaId != null && criteria.AreaId != 0){
+                result = result.Where( a => a.PlanningUnit.ExtensionAreaId == criteria.AreaId);
+            }
+            if( criteria.UnitId != null && criteria.UnitId != 0){
+                result = result.Where( a => a.PlanningUnitId == criteria.UnitId);
+            }
+            var LastRevs = new List<ActivityRevision>();
+            foreach( var res in result.Include( a=>a.Revisions)) LastRevs.Add(res.Revisions.OrderBy( r => r.Created).Last());
+            var searchResult = new List<ActivitySearchResult>();
+            var ret = new ActivitySeearchResultsWithCount();
+            var skipped = 0;
+            var taken = 0;
+            IEnumerable<ActivityRevision> filtered = null;
+            if(criteria.Type == "direct"){
+                filtered = LastRevs.Where( r => r.SnapDirectId != null);
+            }else if( criteria.Type == "indirect"){
+                filtered = LastRevs.Where( r => r.SnapIndirectId != null);
+            }else if( criteria.Type == "policy"){
+                filtered = LastRevs.Where( r => r.SnapPolicyId != null);
+            }else if( criteria.Type == "admin"){
+                filtered = LastRevs.Where( r => r.SnapAdmin == true && r.SnapPolicyId == null && r.SnapIndirectId == null && r.SnapDirectId == null);
+            }else if( criteria.Type == "all"){
+                filtered = LastRevs.Where( r => r.isSnap );
+            }
+            ret.ResultsCount =  filtered == null ? 0 : filtered.Count() ;
+            if(criteria.Order == "asc"){
+                filtered = filtered.OrderBy(r => r.ActivityDate);
+            }else if(criteria.Order == "dsc" ){
+                filtered = filtered.OrderByDescending( r => r.ActivityDate);
+            }else{
+                filtered = filtered.OrderBy( r => r.Title);
+            }
+            foreach( var rev in filtered){
+                skipped++;
+                if( criteria.Skip < skipped){
+                    if( taken >= criteria.Take) break;
+                    var res = new ActivitySearchResult();
+                    var activity = await this.context.Activity.AsNoTracking().Where( a => a.Id == rev.ActivityId)
+                                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile)
+                                                .Include( a => a.PlanningUnit)
+                                                .FirstOrDefaultAsync();
+                    res.User = activity.KersUser;
+                    res.Unit = activity.PlanningUnit;
+                    res.Unit.GeoFeature = null;
+                    res.Revision = rev;
+                    searchResult.Add(res);
+                    taken++;
+                }      
+            }
+            ret.Results = searchResult;
+            return ret;
+        }
+
+        
+        public class ActivitySearchCriteria{
+            public DateTime Start;
+            public DateTime End;
+            public string Search;
+            public string Type;
+            public string Order;
+            public int? CongressionalDistrictId;
+            public int? RegionId;
+            public int? AreaId;
+            public int? UnitId;
+            public int? Skip;
+            public int? Take;
+
+        }
+
+
+        class ActivitySearchResult{
+            public KersUser User;
+            public ActivityRevision Revision;
+            public PlanningUnit Unit;
+        }
+        class ActivitySeearchResultsWithCount{
+            public List<ActivitySearchResult> Results;
+            public int ResultsCount;
+        }
+
+
+
+
         [HttpGet("numb")]
         [Authorize]
         public IActionResult GetNumb(){

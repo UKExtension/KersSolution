@@ -5,6 +5,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {MajorProgram } from '../admin/programs/programs.service';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
+import { User, PlanningUnit } from '../user/user.service';
+import { Servicelog } from '../servicelog/servicelog.service';
 
 
 @Injectable()
@@ -201,6 +203,27 @@ export class ActivityService {
                 catchError(this.handleError('delete'))
             );
     }
+    getCustom(criteria:ActivitySearchCriteria):Observable<ActivitySeearchResultsWithCount>{
+        var url = this.baseUrl + 'getCustom/';
+        return this.http.post<ActivitySeearchResultsWithCount>(this.location.prepareExternalUrl(url), criteria)
+            .pipe(
+                catchError(this.handleError('getCustom',<ActivitySeearchResultsWithCount>{}))
+            );
+    }
+    GetCustomDataHeader():Observable<string[]>{
+        var url = this.baseUrl + 'GetCustomDataHeader/';
+        return this.http.get<string[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('GetCustomDataHeader', []))
+            );
+    }
+    getCustomData(criteria:ActivitySearchCriteria):Observable<string[]>{
+        var url = this.baseUrl + 'getCustomData/';
+        return this.http.post<string[]>(this.location.prepareExternalUrl(url), criteria)
+            .pipe(
+                catchError(this.handleError('getCustomData',[]))
+            );
+    }
 
 
     
@@ -271,4 +294,28 @@ export interface ActivityMonth{
     year:number;
     date:Date;
     activities:Activity[];
+}
+
+export class ActivitySearchCriteria{
+    start: string;
+    end: string;
+    search: string = "";
+    type = "direct";
+    order: string = 'dsc';
+    congressionalDistrictId?:number;
+    regionId?:number;
+    areaId?:number;
+    unitId?:number;
+    skip:number = 0;
+    take?:number;
+}
+
+export class ActivitySearchResult{
+    user: User;
+    revision: Servicelog;
+    unit: PlanningUnit
+}
+export class ActivitySeearchResultsWithCount{
+    results:ActivitySearchResult[];
+    resultsCount:number;
 }
