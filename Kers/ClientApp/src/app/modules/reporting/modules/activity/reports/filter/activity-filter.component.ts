@@ -27,6 +27,9 @@ export class ActivityFilterComponent implements OnInit {
   areas$:Observable<ExtensionArea[]>;
   counties$:Observable<PlanningUnit[]>;
   options$:Observable<ActivityOption[]>;
+
+  selectedOptions = [];
+
   type="direct";
   order = "dsc";
 
@@ -39,6 +42,8 @@ export class ActivityFilterComponent implements OnInit {
   };
   model = {beginDate: {year: 2018, month: 10, day: 9},
                            endDate: {year: 2018, month: 10, day: 19}};
+
+
 
 
   csvData = [];
@@ -63,6 +68,7 @@ export class ActivityFilterComponent implements OnInit {
     var startDate = new Date();
     startDate.setMonth( startDate.getMonth() - 1);
     var endDate = new Date();
+    
 
     this.model.beginDate = {year: startDate.getFullYear(), month: startDate.getMonth() + 1, day: startDate.getDate()};
     this.model.endDate = {year: endDate.getFullYear(), month: endDate.getMonth() + 1, day: endDate.getDate()};
@@ -121,6 +127,10 @@ export class ActivityFilterComponent implements OnInit {
       this.criteria.regionId = <number>event.target.value;
       this.areas$ = this.stateService.areas(this.criteria.regionId);
     }
+    this.onRefresh();
+  }
+  onFormTypeChange(){
+    this.criteria.options = this.selectedOptions;
     this.onRefresh();
   }
 

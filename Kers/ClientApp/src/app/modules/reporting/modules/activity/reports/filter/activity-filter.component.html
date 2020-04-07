@@ -72,7 +72,16 @@
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Selected</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
         <div *ngFor="let option of options$ | async">
-          <label><input type="checkbox"> {{option.name}}</label>
+
+          
+          <label>
+            <input type="checkbox"
+                                (change)="onFormTypeChange($event)"
+                                name="options"
+                                value="{{option.value}}"
+                                [(ngModel)]="option.checked"/>
+            {{option.name}}
+          </label>
         </div>
         
       </div>
