@@ -11,7 +11,19 @@ import { ActivityOption } from '../../../servicelog/servicelog.service';
 @Component({
   selector: 'activity-filter',
   templateUrl: './activity-filter.component.html',
-  styles: []
+  styles: [`
+  .download-overlay{
+    background-color:rgba(220,239,230, 0.8);
+    border: 3px solid rgba(120,139,130, 0.2);
+    position: fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index: 100;
+    padding: 10px;
+  }
+  `]
 })
 export class ActivityFilterComponent implements OnInit {
 
@@ -26,9 +38,7 @@ export class ActivityFilterComponent implements OnInit {
   regions$:Observable<ExtensionRegion[]>;
   areas$:Observable<ExtensionArea[]>;
   counties$:Observable<PlanningUnit[]>;
-  options$:Observable<ActivityOption[]>;
 
-  selectedOptions = [];
 
   type="direct";
   order = "dsc";
@@ -43,6 +53,14 @@ export class ActivityFilterComponent implements OnInit {
   model = {beginDate: {year: 2018, month: 10, day: 9},
                            endDate: {year: 2018, month: 10, day: 19}};
 
+
+  
+  optionsCheckboxes = [];
+  get selectedOptions() { 
+    return this.optionsCheckboxes
+              .filter(opt => opt.checked)
+              .map(opt => opt.value)
+  }
 
 
 
@@ -64,7 +82,15 @@ export class ActivityFilterComponent implements OnInit {
     this.congressional$ = this.stateService.congressional();
     this.regions$ = this.stateService.regions();
     this.counties$ = this.stateService.counties();
-    this.options$ = this.service.options();
+    this.service.options().subscribe(
+      res => {
+        for( let type of res){
+          this.optionsCheckboxes.push(
+            { name: type.name, value: type.id, checked:false }
+          )
+        }
+      }
+    );
     var startDate = new Date();
     startDate.setMonth( startDate.getMonth() - 1);
     var endDate = new Date();
@@ -129,7 +155,7 @@ export class ActivityFilterComponent implements OnInit {
     }
     this.onRefresh();
   }
-  onFormTypeChange(){
+  onOptionChange(){
     this.criteria.options = this.selectedOptions;
     this.onRefresh();
   }

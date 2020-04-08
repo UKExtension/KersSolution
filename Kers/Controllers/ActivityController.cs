@@ -222,16 +222,14 @@ namespace Kers.Controllers
                 result = result.Where( a => a.PlanningUnitId == criteria.UnitId);
             }
             var LastRevs = new List<ActivityRevision>();
-            foreach( var res in result.Include( a=>a.Revisions)) LastRevs.Add(res.Revisions.OrderBy( r => r.Created).Last());
+            foreach( var res in result.Include( a=>a.Revisions).ThenInclude(r => r.ActivityOptionSelections)) LastRevs.Add(res.Revisions.OrderBy( r => r.Created).Last());
             var searchResult = new List<ActivitySearchResult>();
             var ret = new ActivitySeearchResultsWithCount();
             var skipped = 0;
             var taken = 0;
-            IEnumerable<ActivityRevision> filtered = null;
+            IEnumerable<ActivityRevision> filtered = LastRevs;
             if(criteria.Options != null && criteria.Options.Count() > 0){
-                filtered = LastRevs.Where( r => r.ActivityOptionSelections.All( a => criteria.Options.Contains( a.ActivityOptionId) ) );
-            }else{
-                filtered = LastRevs;
+                filtered = filtered.Where( r => r.ActivityOptionSelections.Any( a => criteria.Options.Contains( a.ActivityOptionId) ) );
             }
             ret.ResultsCount =  filtered == null ? 0 : filtered.Count() ;
             if(criteria.Order == "asc"){
