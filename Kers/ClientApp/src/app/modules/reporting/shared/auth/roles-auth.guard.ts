@@ -28,7 +28,7 @@ export class RolesAuthGuard implements CanActivate, CanActivateChild {
     },
     <RouteRolesPermission>{
       url:"/reporting/admin/log",
-      roles: ["SYSADM"]
+      roles: ["SYSADM", "LOGSVIEW"]
     },
     <RouteRolesPermission>{
       url:"/reporting/admin/fiscalyear",
