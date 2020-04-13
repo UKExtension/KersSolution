@@ -254,7 +254,7 @@ namespace Kers.Controllers
                                         .FirstOrDefaultAsync();
             if(training != null){
                 var user = this.CurrentUser();
-                if( !training.Enrollment.Where(e => e.Attendie == user).Any()){
+                if( !training.Enrollment.Where(e => e.AttendieId == user.Id).Any()){
                     var enrollment = new TrainingEnrollment();
                     enrollment.rDT = DateTime.Now;
                     enrollment.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
@@ -272,15 +272,16 @@ namespace Kers.Controllers
                     
                     this.Log(enrollment,"TrainingEnrollment", "Enrolled In Training.", "TrainingEnrollment");
                 }else{
-                    var enr = training.Enrollment.Where(e => e.Attendie == user).FirstOrDefault();
+                    var enr = training.Enrollment.Where(e => e.AttendieId == user.Id).FirstOrDefault();
                     if(enr.eStatus == "W"){
                         enr.eStatus = "E";
                         messageRepo.ScheduleTrainingMessage("ENROLLMENT", training, user);
                         await context.SaveChangesAsync();
+                        this.Log(enr,"TrainingEnrollment", "Enrolled In Training from the Waiting List.", "TrainingEnrollment");
                     }
                 }
                 
-                return new OkObjectResult(training.Enrollment.Where(e => e.Attendie == user).FirstOrDefault());
+                return new OkObjectResult(training.Enrollment.Where(e => e.AttendieId == user.Id).FirstOrDefault());
             }else{
                 this.Log( trainingId ,"TrainingEnrollment", "Error in training enrolment attempt.", "TrainingEnrollment", "Error");
                 return new StatusCodeResult(500);

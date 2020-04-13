@@ -44,8 +44,8 @@ export class HttpErrorHandler {
       // TODO: better job of transforming error for user consumption
 
       var log = <Log>{};
-      log.object = `${serviceName}: ${operation} failed: ${message}`;
-      log.description = `${serviceName}: ${operation} failed`;
+      log.object = JSON.stringify(`${serviceName}: ${operation} failed: ${message}`);
+      log.description = `${serviceName}: ${operation} failed`; 
       this.http.post<Log>(this.location.prepareExternalUrl('/api/log/'), log).subscribe();
       this.messageService.add(log.description);
       // Let the app keep running by returning a safe result.

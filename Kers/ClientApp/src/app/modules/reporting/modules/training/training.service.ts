@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, retry } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import {Training, TainingRegisterWindow, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TrainingEnrollment, TrainingSurveyResult} from './training'
 import { User } from '../user/user.service';
@@ -159,6 +159,7 @@ export class TrainingService {
         var url = this.baseUrl + "enroll/" + training.id;
         return this.http.post<TrainingEnrollment>(this.location.prepareExternalUrl(url), training)
           .pipe(
+              retry(3),
               catchError(this.handleError('enroll', <TrainingEnrollment>{}))
           );
       }
