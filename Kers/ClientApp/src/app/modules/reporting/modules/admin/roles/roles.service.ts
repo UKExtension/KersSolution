@@ -2,7 +2,7 @@ import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, tap, retry } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 
 
@@ -28,6 +28,7 @@ export class RolesService {
             return this.http.get<Role[]>(this.location.prepareExternalUrl(url))
                 .pipe(
                     tap( res => this.rls = res),
+                    retry(3),
                     catchError(this.handleError('listRoles', []))
                 );
     }
