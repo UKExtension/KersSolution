@@ -85,7 +85,7 @@ namespace Kers.Controllers
         [Route("get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var training = context.Training
+            var training = await context.Training
                                     .Where( t => t.Id == id)
                                     .Include( t => t.Enrollment)
                                             .ThenInclude( e => e.Attendie)
@@ -101,13 +101,15 @@ namespace Kers.Controllers
                                     .Include( t => t.TrainingSession)
                                     .Include( t => t.SurveyResults)
                                     .FirstOrDefaultAsync();
-            //if( training != null){
-                return new OkObjectResult(this.ToTimezone( await training));
-      /*      
+            foreach( var enr in  training.Enrollment){
+                enr.Attendie.RprtngProfile.PlanningUnit.GeoFeature = null;
+            }
+            if( training != null){
+                return new OkObjectResult(this.ToTimezone( training ));     
             }else{
                 this.Log( id ,"Training", "Not Found Training with this id.", "Training", "Error");
                 return new StatusCodeResult(500);
-            }   */         
+            }           
         }
 
         [HttpGet]

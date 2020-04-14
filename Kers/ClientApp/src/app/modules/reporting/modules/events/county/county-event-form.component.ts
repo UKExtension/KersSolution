@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl} from '@angular/forms';
-import { CountyEvent } from './county-event.service';
+import { CountyEvent, CountyEventService } from './county-event.service';
 import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
 import { Observable } from 'rxjs';
 import { ProgramCategory, ProgramsService } from '../../admin/programs/programs.service';
@@ -276,6 +276,7 @@ export class CountyEventFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private service: CountyEventService,
     private programsService: ProgramsService,
     private planningUnitService: PlanningunitService,
     private userService:UserService
@@ -366,7 +367,24 @@ export class CountyEventFormComponent implements OnInit {
 
   onSubmit(){
     console.log(this.countyEventForm.value);
-    //this.onFormSubmit.emit(this.countyEventForm.value)
+    var result = <CountyEvent> this.countyEventForm.value;
+
+    result.start = new Date(this.countyEventForm.value.start.date.year, this.countyEventForm.value.start.date.month - 1, this.countyEventForm.value.start.date.day);
+    if( this.countyEventForm.value.end != null && this.countyEventForm.value.end.date != null ){
+      result.end = new Date(this.countyEventForm.value.end.date.year, this.countyEventForm.value.end.date.month - 1, this.countyEventForm.value.end.date.day);
+    }else{
+      result.end = null;
+    }
+
+
+
+    console.log( result );
+    this.service.add(result).subscribe(
+      res => {
+        console.log(res);
+        this.onFormSubmit.emit(res);
+      }
+    )
   }
   onCancel(){
     this.onFormCancel.emit();

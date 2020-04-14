@@ -14,7 +14,7 @@ import { ProgramCategory } from '../../admin/programs/programs.service';
 })
 export class CountyEventService {
 
-  private baseUrl = '/api/ExtensionEvent/';
+  private baseUrl = '/api/CountyEvent/';
 
   private handleError: HandleError;
 
@@ -26,6 +26,29 @@ export class CountyEventService {
           this.handleError = httpErrorHandler.createHandleError('CountyEventService');
       }
 
+      add( event:CountyEvent ):Observable<CountyEvent>{
+        return this.http.post<CountyEvent>(this.location.prepareExternalUrl(this.baseUrl + 'addcountyevent/'), event)
+            .pipe(
+                catchError(this.handleError('add', <CountyEvent>{}))
+            );
+      }
+
+      delete(id:number):Observable<{}>{
+        var url = this.baseUrl + 'deletecountyevent/' + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
+      }
+
+      update(id:number, event:CountyEvent):Observable<CountyEvent>{
+        var url = this.baseUrl + 'updatecountyevent/' + id;
+        return this.http.put<CountyEvent>(this.location.prepareExternalUrl(url), event)
+                .pipe(
+                    catchError(this.handleError('update', event))
+                );
+      }
+
 /* 
       current():Observable<User>{
         if(this.usr == null){
@@ -35,7 +58,7 @@ export class CountyEventService {
                     tap(
                         res =>
                         {
-                            this.usr = <User>res
+                            this.usr = <User>resevent
                         }
                     ),
                     catchError(this.handleError('current', <User>{}))
