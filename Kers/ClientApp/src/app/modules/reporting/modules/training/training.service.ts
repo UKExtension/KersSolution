@@ -157,7 +157,7 @@ export class TrainingService {
       }
       enroll( training:Training ):Observable<TrainingEnrollment>{
         var url = this.baseUrl + "enroll/" + training.id;
-        return this.http.post<TrainingEnrollment>(this.location.prepareExternalUrl(url), training)
+        return this.http.post<TrainingEnrollment>(this.location.prepareExternalUrl(url), training.subject)
           .pipe(
               retry(3),
               catchError(this.handleError('enroll', <TrainingEnrollment>{}))
@@ -165,7 +165,7 @@ export class TrainingService {
       }
       unenroll( training:Training ):Observable<Training>{
         var url = this.baseUrl + "unenroll/" + training.id;
-        return this.http.post<Training>(this.location.prepareExternalUrl(url), training)
+        return this.http.post<Training>(this.location.prepareExternalUrl(url), training.subject)
           .pipe(
               catchError(this.handleError('unenroll', <Training>{}))
           );
