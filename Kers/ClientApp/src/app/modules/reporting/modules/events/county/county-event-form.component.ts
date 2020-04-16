@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl} from '@angular/forms';
-import { CountyEvent, CountyEventService } from './county-event.service';
+import { CountyEvent, CountyEventService, CountyEventProgramCategory, CountyEventPlanningUnit } from './county-event.service';
 import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
 import { Observable } from 'rxjs';
 import { ProgramCategory, ProgramsService } from '../../admin/programs/programs.service';
@@ -24,15 +24,25 @@ import { ExtensionEventLocation } from '../extension-event';
       <div class="col-md-4 col-sm-6 col-xs-7">
           <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
       </div>
-      <div *ngIf="!countyEventForm.value.isAllDay" class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3"><timepicker formControlName="starttime"></timepicker></div>
+      <div *ngIf="!countyEventForm.value.isAllDay" class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3">
+        <div [class.notvalid]="countyEventForm.hasError('startTime')" class="clearfix">
+          <timepicker formControlName="starttime" [start]="6" [end]="22"></timepicker>
+        </div>
+      </div>
     </div>
     <div *ngIf="!countyEventForm.value.isAllDay">
       <div class="form-group">
           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
           <div class="col-md-4 col-sm-6 col-xs-7">
+            <div [class.notvalid]="countyEventForm.hasError('endDate')" >
               <my-date-picker [class.ng-invalid]="countyEventForm.hasError('endDate')" [options]="myDatePickerOptionsEnd" (dateChanged)="onDateChanged($event)" formControlName="end"></my-date-picker>
+            </div>
           </div>
-          <div class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3"><timepicker formControlName="endtime"></timepicker></div>
+          <div class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3">
+            <div [class.notvalid]="countyEventForm.hasError('endTime')" >
+              <timepicker formControlName="endtime" [start]="6" [end]="22" class="clearfix"></timepicker>
+            </div>
+          </div>
       </div>
     </div>
 
@@ -65,7 +75,7 @@ import { ExtensionEventLocation } from '../extension-event';
     <div class="form-group">
       <label for="webLink" class="control-label col-md-3 col-sm-3 col-xs-12">Url:</label>           
       <div class="col-md-9 col-sm-9 col-xs-12">
-          <input type="text" name="webLink" formControlName="webLink" id="webLink" class="form-control col-xs-12" />
+          <input type="text" name="webLink" formControlName="webLink" id="webLink" class="form-control col-xs-12"/>
           <small> A web address for more information (optional).</small>
       </div>
     </div>
@@ -108,7 +118,8 @@ import { ExtensionEventLocation } from '../extension-event';
         
     </div>
     <div class="form-group">
-      <div  class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Location:</label>
+      <div  class="col-md-6 col-sm-9 col-xs-12">
         <br>
         <div *ngIf="selectedLocation">
           Display selected location
@@ -116,7 +127,7 @@ import { ExtensionEventLocation } from '../extension-event';
         <a *ngIf="!selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> add locaton</a>
         <a *ngIf="selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> edit locaton</a>
       </div>
-      <div *ngIf="locationBrowser" class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+      <div *ngIf="locationBrowser" class="col-md-9 col-sm-9 col-xs-12">
         <location-browser *ngIf="county" [county]="county"></location-browser>
       </div>
     </div>
@@ -226,6 +237,10 @@ import { ExtensionEventLocation } from '../extension-event';
     .slider.round:before {
       border-radius: 50%;
     }
+    .notvalid{
+      border: 1px solid #CE5454;
+      border-radius: 5px;
+    }
     `
   ]
 })
@@ -233,6 +248,7 @@ export class CountyEventFormComponent implements OnInit {
   
   @Input() countyEvent:CountyEvent;
   county:PlanningUnit;
+  countyId: number;
   date = new Date();
   countyEventForm:any;
   isAllDay = false;
@@ -265,7 +281,8 @@ export class CountyEventFormComponent implements OnInit {
             dateFormat: 'mm/dd/yyyy',
             showTodayBtn: false,
             satHighlight: true,
-            firstDayOfWeek: 'su'
+            firstDayOfWeek: 'su',
+            showClearDateBtn: false
         };
     
   defaultTime = "12:34:56.1000000 -04:00";
@@ -290,11 +307,12 @@ export class CountyEventFormComponent implements OnInit {
                 month: this.date.getMonth() + 1,
                 day: this.date.getDate()}
             }, Validators.required],
-          starttime: "",
+          starttime: [""],
           end: [{
+            date:{
             year: this.date.getFullYear(),
             month: this.date.getMonth() + 1,
-            day: this.date.getDate()}],
+            day: this.date.getDate()}}],
           endtime: "",
           etimezone:true,
           isAllDay:false,
@@ -328,7 +346,26 @@ export class CountyEventFormComponent implements OnInit {
       this.countyEventForm.patchValue(this.countyEvent);
     }
     this.userService.current().subscribe(
-      res => this.county = res.rprtngProfile.planningUnit
+      res =>{
+        this.county = res.rprtngProfile.planningUnit;
+        this.countyId = res.rprtngProfile.planningUnitId;
+        var cntId = res.rprtngProfile.planningUnitId;
+        this.planningUnitService.counties().subscribe(
+          res =>{
+            this.planningUnits = res;
+            var optns = Array<any>();
+            this.planningUnits.forEach(function(element){
+              if(element.id != cntId){
+                optns.push(
+                  {value: element.id, label: element.name}
+                );
+              }
+              
+            });
+            this.planningUnitsOptions = optns;
+          }
+        );
+      } 
     )
     this.programsService.categories().subscribe(
       res =>{
@@ -342,19 +379,8 @@ export class CountyEventFormComponent implements OnInit {
         this.programCategoriesOptions = optns;
       } 
     );
-    this.planningUnitService.counties().subscribe(
-      res =>{
-        this.planningUnits = res;
-        var optns = Array<any>();
-        this.planningUnits.forEach(function(element){
-          optns.push(
-                {value: element.id, label: element.name}
-            );
-        });
-        this.planningUnitsOptions = optns;
-      }
-    );
   }
+
   onDateChanged(event: IMyDateModel) {
     
   }
@@ -366,7 +392,7 @@ export class CountyEventFormComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log(this.countyEventForm.value);
+  
     var result = <CountyEvent> this.countyEventForm.value;
 
     result.start = new Date(this.countyEventForm.value.start.date.year, this.countyEventForm.value.start.date.month - 1, this.countyEventForm.value.start.date.day);
@@ -375,10 +401,23 @@ export class CountyEventFormComponent implements OnInit {
     }else{
       result.end = null;
     }
+    if(result.programCategories.length > 0){
+      var cats = <CountyEventProgramCategory[]>[];
+      for( let catId of this.countyEventForm.value.programCategories) cats.push( { programCategoryId: catId } as CountyEventProgramCategory);
+      result.programCategories = cats;
+    }
+
+
+    var unts = <CountyEventPlanningUnit[]>[];
+    unts.push(<CountyEventPlanningUnit>{planningUnitId:this.countyId, isHost:true})
+    for( let unitId of this.countyEventForm.value.units) unts.push( { planningUnitId: unitId, isHost:false } as CountyEventPlanningUnit);
+    result.units = unts;
 
 
 
     console.log( result );
+
+    
     this.service.add(result).subscribe(
       res => {
         console.log(res);
@@ -397,13 +436,37 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
 
   let start = control.get('start');
   let end = control.get('end');
+  var errors = {};
+  var hasErrors = false;
 
   if( end.value != null && end.value.date != null){
     let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
     let endDate = new Date(end.value.date.year, end.value.date.month - 1, end.value.date.day);
     if( startDate.getTime() > endDate.getTime()){
-      return {"endDate":true};
+      errors["endDate"] = true ;
+      hasErrors = true;
+    }
+  }else if(end.value.date == null){
+    errors["endDate"] = true ;
+    hasErrors = true;
+  }
+
+  var isAllDay = control.get("isAllDay");
+  var starttime = control.get("starttime");
+  var endtime = control.get("endtime");
+  if( !isAllDay.value ){
+    if(starttime.value == ""){
+      errors["startTime"] = true ;
+      hasErrors = true;
+    }if(endtime.value == ""){
+      errors["endTime"] = true ;
+      hasErrors = true;
     }
   }
+  if(hasErrors){
+    return errors;
+  }
+
+
   return null;
 }

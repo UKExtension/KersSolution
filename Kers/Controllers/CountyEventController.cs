@@ -79,12 +79,13 @@ namespace Kers.Controllers
 
         [HttpPost("addcountyevent")]
         [Authorize]
-        public IActionResult AddCountyEvent( [FromBody] CountyEvent ExEvent){
-            if(ExEvent != null){
-                
-                return new OkObjectResult(ExEvent);
+        public IActionResult AddCountyEvent( [FromBody] CountyEvent CntEvent){
+            if(CntEvent != null){
+                this.context.Add(CntEvent);
+                this.context.SaveChanges();
+                return new OkObjectResult(CntEvent);
             }else{
-                this.Log( ExEvent,"ExtensionEvent", "Error in adding extension event attempt.", "ExtensionEvent", "Error");
+                this.Log( CntEvent,"ExtensionEvent", "Error in adding extension event attempt.", "ExtensionEvent", "Error");
                 return new StatusCodeResult(500);
             }
         }
@@ -93,17 +94,18 @@ namespace Kers.Controllers
 
         [HttpPut("updatecountyevent/{id}")]
         [Authorize]
-        public IActionResult UpdateCountyEvent( int id, [FromBody] CountyEvent ExEvent){
+        public IActionResult UpdateCountyEvent( int id, [FromBody] CountyEvent CntEvent){
            
 
 
-            if(ExEvent != null ){
+            if(CntEvent != null ){
                 
-                this.Log(ExEvent,"ExtensionEvent", "ExtensionEvent Updated.");
                 
-                return new OkObjectResult(ExEvent);
+                this.Log(CntEvent,"ExtensionEvent", "ExtensionEvent Updated.");
+                
+                return new OkObjectResult(CntEvent);
             }else{
-                this.Log( ExEvent ,"ExtensionEvent", "Not Found ExtensionEvent in an update attempt.", "ExtensionEvent", "Error");
+                this.Log( CntEvent ,"ExtensionEvent", "Not Found ExtensionEvent in an update attempt.", "ExtensionEvent", "Error");
                 return new StatusCodeResult(500);
             }
         }

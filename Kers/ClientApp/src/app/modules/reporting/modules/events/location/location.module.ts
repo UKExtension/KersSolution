@@ -4,6 +4,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { LocationRoutingModule } from './location-routing.module';
 import { LocationHomeComponent } from './location-home.component';
 import { LocationFormComponent } from './location-form.component';
+import { LocationDetailComponent } from './location-detail.component';
 
 
 
@@ -16,7 +17,8 @@ import { LocationFormComponent } from './location-form.component';
   declarations: [ 
                     
                 LocationHomeComponent,
-                LocationFormComponent
+                LocationFormComponent,
+                LocationDetailComponent
               ],
   providers:    [  
                     

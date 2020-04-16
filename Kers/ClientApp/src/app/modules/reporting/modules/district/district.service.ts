@@ -30,7 +30,7 @@ export class DistrictService {
         var url = this.baseUrl + district;
         return this.http.get<District>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('perPeriod', <District>{}))
+                catchError(this.handleError('get', <District>{}))
             );
     }
 
