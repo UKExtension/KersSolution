@@ -42,6 +42,7 @@ export class ExtensionEventLocation{
 
 export class PhysicalAddress{
   id: number;
+  building:string;
   street: string;
   city: string;
   state: string;

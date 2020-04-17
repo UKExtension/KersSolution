@@ -37,9 +37,9 @@ export class LocationService {
                 catchError(this.handleError('addNote', <ExtensionEventLocationConnection>{}))
             );
       }
-      updateLocation(id:number, location:ExtensionEventLocation):Observable<ExtensionEventLocation>{
+      updateLocation(id:number, location:ExtensionEventLocationConnection):Observable<ExtensionEventLocationConnection>{
         var url = this.baseUrl + 'updatelocation/' + id;
-        return this.http.put<ExtensionEventLocation>(this.location.prepareExternalUrl(url), location)
+        return this.http.put<ExtensionEventLocationConnection>(this.location.prepareExternalUrl(url), location)
                 .pipe(
                     catchError(this.handleError('update', location))
                 );
@@ -76,7 +76,7 @@ export interface ExtensionEventLocationConnection{
     extensionEventLocationId:number;
 }
 
-
+/* 
 export interface PhysicalAddress{
     id:number;
     building:string;
@@ -85,7 +85,7 @@ export interface PhysicalAddress{
     state:string;
     postalCode:string;
 }
-
+ */
 export enum ExtensionEventLocationType {
     Default = 0,
     ConferenceRoom = 1,

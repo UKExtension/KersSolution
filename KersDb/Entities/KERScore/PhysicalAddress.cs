@@ -16,6 +16,7 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "building", Required = Newtonsoft.Json.Required.Default)]
         public string Building { get; set; }
 
         /// <summary>

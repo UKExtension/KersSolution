@@ -1,12 +1,18 @@
-<div style="padding: 6px;">
+<div *ngIf="isDefault" style="padding: 6px;" class="col-md-3">
 
 
     <div class="text-right">
         <a><i style="cursor: pointer;" class="fa fa-pencil-square-o" (click)="edit()"></i></a>&nbsp;<a><i  style="cursor: pointer;" class="fa fa-trash-o" (click)="delete()"></i></a>
     </div>
-    <h4>{{location.displayName}}</h4>
-    <h5>{{location.address.street}}</h5>
-    <h5>{{location.address.city}} {{location.address.state != ""?", "+location.address.state:""}}</h5>
+    <h4>{{location.extensionEventLocation.address.building}}</h4>
+    <h5>{{location.extensionEventLocation.address.street}}</h5>
+    <h5>{{location.extensionEventLocation.address.city}} {{location.extensionEventLocation.address.state != ""?", "+location.extensionEventLocation.address.state:""}} {{location.extensionEventLocation.address.postalCode}}</h5>
     <a class="btn btn-info btn-xs" (click)="selection()">select</a>
 
+</div>
+<div *ngIf="isEditing">
+    <location-form [location]="location" (onFormCancel)="default()" (onFormSubmit)="changed($event)"></location-form>
+</div>
+<div *ngIf="isDeleting">
+    deleting
 </div>

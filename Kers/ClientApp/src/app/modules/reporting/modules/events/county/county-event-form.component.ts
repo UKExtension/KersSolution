@@ -259,7 +259,7 @@ export class CountyEventFormComponent implements OnInit {
   planningUnitsOptions = Array<any>();
   multycounty = false;
   selectedLocation:ExtensionEventLocation;
-  locationBrowser = false;
+  locationBrowser = true;
 
   options = { 
     placeholderText: 'Your Description Here!',

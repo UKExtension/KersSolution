@@ -65,19 +65,18 @@ export class LocationFormComponent implements OnInit {
   @Input() county:PlanningUnit;
   @Input() user:User;
   
-  @Input() location:ExtensionEventLocation;
+  @Input() location:ExtensionEventLocationConnection;
   locationForm:any;
   loading = false;
 
     
   @Output() onFormCancel = new EventEmitter<void>();
-  @Output() onFormSubmit = new EventEmitter<ExtensionEventLocation>();
+  @Output() onFormSubmit = new EventEmitter<ExtensionEventLocationConnection>();
 
   constructor(
     private fb: FormBuilder,
     private service: LocationService
   ) {
-    
     this.locationForm = this.fb.group(
       {
         address: this.fb.group(
@@ -96,7 +95,7 @@ export class LocationFormComponent implements OnInit {
 
   ngOnInit() {
     if(this.location){
-      this.locationForm.patchValue(this.location);
+      this.locationForm.patchValue(this.location.extensionEventLocation);
     }
   }
   
@@ -104,32 +103,35 @@ export class LocationFormComponent implements OnInit {
   onSubmit(){
     this.loading = true;
     if(this.location){
-      this.service.updateLocation(this.location.id, this.locationForm.value).subscribe(
+      console.log( this.location ); 
+      this.location.extensionEventLocation = <ExtensionEventLocation> this.locationForm.value;
+      this.service.updateLocation(this.location.id, this.location).subscribe(
         res => {
           this.onFormSubmit.emit(res);
           this.loading = false;
         }
-      )
+      ) 
     }else if(this.user || this.county){
       var loc = <ExtensionEventLocation> this.locationForm.value;
       const conn:ExtensionEventLocationConnection = <ExtensionEventLocationConnection>{};
       conn.extensionEventLocation = loc;
       if( this.user ) conn.kersUserId = this.user.id;
       if( this.county) conn.planningUnitId = this.county.id;
-      console.log(conn);
       this.service.addLocationConnection(conn).subscribe(
-        res => {
-          this.onFormSubmit.emit(res.extensionEventLocation);
-          this.loading = false;
-        }
-      )
-    }else{
-      this.service.addLocation(this.locationForm.value).subscribe(
         res => {
           this.onFormSubmit.emit(res);
           this.loading = false;
         }
       )
+    }else{
+
+      /* 
+      this.service.addLocation(this.locationForm.value).subscribe(
+        res => {
+          this.onFormSubmit.emit(res);
+          this.loading = false;
+        }
+      ) */
     }
   }
   onCancel(){

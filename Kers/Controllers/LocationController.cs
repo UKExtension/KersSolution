@@ -80,17 +80,17 @@ namespace Kers.Controllers
         
         [HttpPut("updatelocation/{id}")]
         [Authorize]
-        public IActionResult UpdateLocaton( int id, [FromBody] ExtensionEventLocation location){
-            var lctn = context.ExtensionEventLocation
+        public IActionResult UpdateLocaton( int id, [FromBody] ExtensionEventLocationConnection location){
+            var lctn = context.ExtensionEventLocationConnection
                         .Where( t => t.Id == id)
-                        .Include( t => t.Address)
+                        .Include( t => t.ExtensionEventLocation).ThenInclude( l => l.Address)
                         .FirstOrDefault();
             if(location != null && lctn != null ){
-                lctn.Address.Building = location.Address.Building;
-                lctn.Address.City = location.Address.City;
-                lctn.Address.PostalCode = location.Address.PostalCode;
-                lctn.Address.State = location.Address.State;
-                lctn.Address.Street = location.Address.Street;
+                lctn.ExtensionEventLocation.Address.Building = location.ExtensionEventLocation.Address.Building;
+                lctn.ExtensionEventLocation.Address.City = location.ExtensionEventLocation.Address.City;
+                lctn.ExtensionEventLocation.Address.PostalCode = location.ExtensionEventLocation.Address.PostalCode;
+                lctn.ExtensionEventLocation.Address.State = location.ExtensionEventLocation.Address.State;
+                lctn.ExtensionEventLocation.Address.Street = location.ExtensionEventLocation.Address.Street;
                 context.SaveChanges();
                 this.Log(location,"ExtensionEventLocation", "ExtensionEventLocation Updated.");
                 return new OkObjectResult(location);

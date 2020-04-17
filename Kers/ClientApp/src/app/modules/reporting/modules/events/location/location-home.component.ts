@@ -15,8 +15,8 @@ import { Observable } from 'rxjs';
     </div>
     <location-form *ngIf="newLocation" [county]="county" [user]="user" (onFormCancel)="newLocation=false" (onFormSubmit)="newLocationSubmitted($event)"></location-form>
     <div class="row">
-      <div *ngFor="let locationConnection of countyLocations$ | async" class="col-md-3">
-        <location-detail [location]="locationConnection.extensionEventLocation"></location-detail>
+      <div *ngFor="let locationConnection of countyLocations$ | async">
+        <location-detail [location]="locationConnection"></location-detail>
       </div>
     </div>
   </div>
