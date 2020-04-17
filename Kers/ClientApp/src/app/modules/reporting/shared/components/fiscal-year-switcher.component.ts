@@ -50,9 +50,14 @@ export class FiscalYearSwitcherComponent implements OnInit {
     this.fiscalYearService.byType(this.type).subscribe(
         res => {
             this.fiscalYears = <FiscalYear[]>res;
+            
             if(!this.showNext){
               var now = new Date();
               this.fiscalYears = this.fiscalYears.filter( y => new Date(y.start) < now);
+            }
+            if(!this.isItFiscal){
+              this.fiscalYears.unshift( <FiscalYear>{name:"2017", id:12345});
+              this.fiscalYears.unshift( <FiscalYear>{name:"2016", id:12346});
             }
             this.onLoaded.emit(this.fiscalYears);
         }
