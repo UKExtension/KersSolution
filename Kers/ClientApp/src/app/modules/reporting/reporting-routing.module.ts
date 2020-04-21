@@ -102,6 +102,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/budget/budget.module#BudgetModule'
           },
           {
+            path:'ladder',
+            loadChildren: './modules/ladder/ladder.module#LadderModule'
+          },
+          {
             path: 'soildata', 
             loadChildren: './modules/soildata/soildata.module#SoildataModule'
           },
