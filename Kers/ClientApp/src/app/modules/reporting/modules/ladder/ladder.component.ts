@@ -4,6 +4,7 @@ import { ReportingService } from '../../components/reporting/reporting.service';
 @Component({
   selector: 'ladder-home',
   template: `
+  <ladder-application-form></ladder-application-form>
     <p>
       ladder works!
     </p>
