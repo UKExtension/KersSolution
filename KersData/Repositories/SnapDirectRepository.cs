@@ -1088,7 +1088,7 @@ namespace Kers.Models.Repositories
                     foreach( var sp in rw.User.Specialties){
                         spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
                     }
-                    row += spclt + ", ";
+                    row += spclt + ",";
                     if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
                         row += string.Concat("\"", lastRevision.SnapDirect.SnapDirectDeliverySite.Name, "\"") + ",";
                     }else{
@@ -1160,7 +1160,7 @@ namespace Kers.Models.Repositories
                     foreach( var sp in userData.User.Specialties){
                         spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
                     }
-                    row += spclt + ", ";
+                    row += spclt + ",";
                     
                     var optNumbrs = new List<ActivityOptionNumberValue>();
                     
