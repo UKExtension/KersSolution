@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
 import { FormBuilder, Validators } from '@angular/forms';
-import { TrainingService } from '../training/training.service';
+import { LadderService } from './ladder.service';
 
 @Component({
   selector: 'ladder-application-form',
@@ -16,10 +16,7 @@ export class LadderApplicationFormComponent implements OnInit {
     }[];
   
     date = new Date();
-    trainingForm:any;
-
-    proposed = false;
-    coppied = false;
+    ladderForm:any;
 
     options = { 
         placeholderText: 'Your Description Here!',
@@ -50,32 +47,21 @@ export class LadderApplicationFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service:TrainingService
+    private service:LadderService
   ) {
-    this.date.setMonth(this.date.getMonth() + 2);
-    this.trainingForm = this.fb.group(
-      {
-          start: [{
+        this.ladderForm = this.fb.group(
+        {
+          ladderLevelId: [],
+          lastPromotion: [{
               date: {
                   year: this.date.getFullYear() - 3,
                   month: this.date.getMonth() + 1,
                   day: this.date.getDate()}
               }, Validators.required],
-          end: [{}],
-          subject: [""],
+          positionNumber: [""],
           body: [""],
           tAudience: [""],
           tContact: [""],
-          tLocation: [""],
-          day1: ["", Validators.required],
-          day2: [""],
-          day3: [""],
-          day4: [""],
-          iHourId: "",
-          cancelCutoffDaysId: "",
-          registerCutoffDaysId: "",
-          seatLimit: "",
-          tStatus: "P",
           demoArray: this.fb.array([])
     },);
     let today = new Date();

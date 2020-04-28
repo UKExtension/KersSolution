@@ -23,5 +23,6 @@ namespace Kers.Models.Entities.KERScore
         
         public ICollection<LadderApplicationStage> Stages {get;set;}
         public ICollection<LadderPerformanceRating> Ratings {get;set;}
+        public ICollection<LadderImage> Images {get;set;}
     }
 }
