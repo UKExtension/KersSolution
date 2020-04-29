@@ -5,14 +5,25 @@ export class LadderApplication{
     kersUser:User;
     kersUserId:number;
     positionNumber:string;
+    programOfStudy:string;
+    evidence:string;
+    numberOfYears?:number;
     lastPromotion:Date;
     ladderLevel:LadderLevel;
     ladderLevelId:number;
+    ladderEducationLevel:LadderEducationLevel;
+    ladderEducationLevelId:number;
     lastStage:LadderStage;
     lastStageId:number;
     stages:LadderApplicationStage[];
     ratings:LadderPerformanceRating[];
     images:LadderImage[];
+}
+
+export class LadderEducationLevel{
+    id:number;
+    name:string;
+    order:number;
 }
 
 export class LadderImage{
@@ -24,7 +35,7 @@ export class LadderPerformanceRating{
     id:number;
     year:string;
     ratting:string;
-    order:number;
+    order?:number;
 }
 
 export class LadderLevel{

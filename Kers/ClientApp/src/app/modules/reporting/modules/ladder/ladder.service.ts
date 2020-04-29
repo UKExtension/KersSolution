@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
 import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
 import { HttpClient } from '@angular/common/http';
-import { LadderApplication } from './ladder';
+import { LadderApplication, LadderLevel, LadderEducationLevel } from './ladder';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
@@ -22,6 +22,20 @@ export class LadderService {
         this.handleError = httpErrorHandler.createHandleError('Meeting');
     }
 
+    levels():Observable<LadderLevel[]>{
+        var url = this.baseUrl + "levels/";
+        return this.http.get<LadderLevel[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('levels', []))
+            );
+    }
+    educationLevels():Observable<LadderEducationLevel[]>{
+        var url = this.baseUrl + "educationlevels/";
+        return this.http.get<LadderEducationLevel[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('levels', []))
+            );
+    }
 
   /*****************************/
   // CRUD operations

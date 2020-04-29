@@ -9,55 +9,50 @@
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="tStatus">Requesting Promotion to Level:</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
           <select name="registerCutoffDaysId" formControlName="ladderLevelId" class="form-control col-md-7 col-xs-12">
-              <option [value]="'P'">Level II</option>
-              <option [value]="'A'">Level III</option>
-              <option [value]="'C'">Level IV</option>
-              <option [value]="'C'">Level V</option>
+              <option *ngFor="let level of levels | async" [value]="level.id">{{level.name}}</option>
           </select>
       </div>
     </div> 
 
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Date of last Career Ladder Promotion:</label>
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastPromotion">Date of last Career Ladder Promotion:</label>
       <div class="col-md-4 col-sm-6 col-xs-7">
-          <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
+          <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="lastPromotion"></my-date-picker>
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Historical Training Transcript:</label>
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Historical Training Transcript:</label>
       <div class="col-md-4 col-sm-6 col-xs-7">
         InService Hours Earned from 06/21/2017 till 01/01/2020: <strong>58</strong><br>
         <a class="btn btn-info btn-xs" (click)="addRating()">Details </a>
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="tStatus">Highest level of education attained by January 1, 2020:</label>
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ladderEducationLevelId">Highest level of education attained by January 1, 2020:</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
-          <select name="registerCutoffDaysId" formControlName="tStatus" class="form-control col-md-7 col-xs-12">
-              <option [value]="'P'">Bachelor's Degree</option>
-              <option [value]="'A'">Masters</option>
-              <option [value]="'C'">PhD</option>
+          <select name="ladderEducationLevelId" formControlName="ladderEducationLevelId" class="form-control col-md-7 col-xs-12">
+              <option *ngFor="let educationlevel of educationLevels | async" [value]="educationlevel.id">{{educationlevel.name}}</option>
           </select>
       </div>
     </div> 
     <div class="form-group">
         <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Program of Study:</label>           
         <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="subject" formControlName="subject" id="subject" class="form-control col-xs-12" />
+            <input type="text" name="programOfStudy" formControlName="programOfStudy" id="subject" class="form-control col-xs-12" />
             <p>An official transcript is needed to verify completion of 12 hours or more of graduate education or for a newly completed Masters. The program of study in which an agent has been accepted should be evident on the transcript or otherwise documented. Only hours earned prior to January 1 of the current year will be considered and an overall GPA of 3.0 is required.
             </p>
         </div>
     </div>
     <div class="form-group">
         <label for="body" class="control-label col-md-3 col-sm-3 col-xs-12">Evidence of Further Professioal or academic Training:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!trainingForm.controls.body.valid">
-            <textarea [froalaEditor]="options" name="body" formControlName="body" id="body" class="form-control col-xs-12"></textarea>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <textarea [froalaEditor]="options" name="evidence" formControlName="evidence" id="evidence" class="form-control col-xs-12"></textarea>
         </div>
     </div>
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="startDate">Start Date:</label>
       <div class="col-md-4 col-sm-6 col-xs-7">
-          <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
+          <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="startDate"></my-date-picker>
       </div>
     </div>
     
@@ -65,22 +60,30 @@
     <div class="form-group">
         <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12">Number of years of Extension service as of July 1, 2020:</label>           
         <div class="col-md-4 col-sm-6 col-xs-10">
-            <input type="number" name="seatLimit" formControlName="seatLimit" id="seatLimit" class="form-control col-md-3 col-xs-6" />
+            <input type="text" formControlName="numberOfYears" class="form-control col-md-3 col-xs-6" />
             <p>Includes years as an Extension Agent, Extension Associate, or Extension Specialist.</p>
         </div>
     </div>
     <div class="form-group">
       <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12">Performance ratings:<br><small style="font-weight: normal;">Check the Career Ladder Guidelines for the appropriate number of ratings to include. Attach print outs verifying information.</small></label>           
-      <div class="col-md-4 col-sm-6 col-xs-10">
+      <div class="col-md-4 col-sm-6 col-xs-10" formArrayName="ratings">
           
-        <div *ngFor="let arrayItem of ratings; let i=index"><br>
-          <div class="row">
-            <div class="col-md-4">Year {{i+1}}</div>
-            <div class="col-md-8"><input  class="form-control" type="text"></div>
-          </div><br>
-          <div class="row">
-            <div class="col-md-4">Rating {{i+1}}</div>
-            <div class="col-md-8"><input  class="form-control" type="text"></div>
+        <div *ngFor="let ratingGroup of ratings.controls; let i=index"><br>
+          <div [formGroup]="ratingGroup" class="row">
+            <div class="col-xs-10">
+              <div class="row">
+                <div class="col-md-4">Year {{i+1}}</div>
+                <div class="col-md-8"><input  class="form-control" type="text" formControlName="year"></div>
+              </div><br>
+              <div class="row">
+                <div class="col-md-4">Rating {{i+1}}</div>
+                <div class="col-md-8"><input  class="form-control" type="text" formControlName="ratting"></div>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <a (click)="removeRating(i)" style="cursor: pointer;">x</a>
+            </div>
+            
           </div>
         </div>
         <a class="btn btn-info btn-xs" (click)="addRating()" style="margin-top: 8px;"> + add year</a>

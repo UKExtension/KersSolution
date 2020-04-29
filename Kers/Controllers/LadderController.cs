@@ -36,7 +36,18 @@ namespace Kers.Controllers
         }
 
 
-
+        [HttpGet("levels")]
+        [Authorize]
+        public async Task<IActionResult> Levels(){
+            var levels = context.LadderLevel.OrderBy( o => o.Order);
+            return new OkObjectResult(await levels.ToListAsync());
+        }
+        [HttpGet("educationlevels")]
+        [Authorize]
+        public async Task<IActionResult> EducationLevels(){
+            var levels = context.LadderEducationLevel.OrderBy( o => o.Order);
+            return new OkObjectResult(await levels.ToListAsync());
+        }
 
 
         [HttpPost("addladder")]
