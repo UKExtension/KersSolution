@@ -94,7 +94,7 @@ namespace Kers.Models.Repositories
                 foreach( var act in perPerson){
                     var last = context.ActivityRevision.Where( a => a.ActivityId == act.Id )
                                     .OrderBy( r => r.Created ).Last();
-                    if(last.SnapDirectId != null || last.SnapIndirect != null){
+                    if(last.SnapDirectId != null || last.SnapIndirectId != null){
                         var perPers = new UserRevisionData();
                         perPers.Revision = last;
                         perPers.User = context.KersUser.Where( u => u.Id == act.KersUserId )
