@@ -9,6 +9,7 @@
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="tStatus">Requesting Promotion to Level:</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
           <select name="registerCutoffDaysId" formControlName="ladderLevelId" class="form-control col-md-7 col-xs-12">
+              <option value="">-- select --</option>
               <option *ngFor="let level of levels | async" [value]="level.id">{{level.name}}</option>
           </select>
       </div>
@@ -31,7 +32,8 @@
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ladderEducationLevelId">Highest level of education attained by January 1, 2020:</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
           <select name="ladderEducationLevelId" formControlName="ladderEducationLevelId" class="form-control col-md-7 col-xs-12">
-              <option *ngFor="let educationlevel of educationLevels | async" [value]="educationlevel.id">{{educationlevel.name}}</option>
+              <option value="">-- select --</option>
+              <option *ngFor="let educationlevel of educationLevels | async" value="{{educationlevel.id}}">{{educationlevel.name}}</option>
           </select>
       </div>
     </div> 

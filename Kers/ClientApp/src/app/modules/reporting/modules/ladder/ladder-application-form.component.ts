@@ -55,12 +55,12 @@ export class LadderApplicationFormComponent implements OnInit {
   ) {
         this.ladderForm = this.fb.group(
         {
-          ladderLevelId: [],
+          ladderLevelId: ["", Validators.required],
           lastPromotion: [{
               date: {
                   year: this.date.getFullYear() - 3,
-                  month: this.date.getMonth() + 1,
-                  day: this.date.getDate()}
+                  month: 7,
+                  day: 1}
               }, Validators.required],
           startDate: [{
                 date: {
@@ -69,7 +69,7 @@ export class LadderApplicationFormComponent implements OnInit {
                     day: this.date.getDate()}
                 }, Validators.required],
           positionNumber: [""],
-          ladderEducationLevelId:[],
+          ladderEducationLevelId:["", Validators.required],
           programOfStudy: [""],
           evidence: [""],
           numberOfYears: [""],
@@ -93,7 +93,6 @@ export class LadderApplicationFormComponent implements OnInit {
       ratting: new FormControl('')
     });
     this.ratings.push(group);
-    //this.ratings.push({year:"", ratting:""} as LadderPerformanceRating);
   }
   removeRating(i:number){
     this.ratings.removeAt(i);
@@ -106,7 +105,7 @@ export class LadderApplicationFormComponent implements OnInit {
 
   onSubmit(){
     
-    
+    console.log(this.ladderForm.value);
      
   }
   onCancel(){
