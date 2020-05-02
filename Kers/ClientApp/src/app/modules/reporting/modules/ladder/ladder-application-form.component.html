@@ -23,9 +23,14 @@
     </div>
     <div class="form-group">
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Historical Training Transcript:</label>
-      <div class="col-md-4 col-sm-6 col-xs-7">
-        InService Hours Earned from 06/21/2017 till 01/01/2020: <strong>58</strong><br>
-        <a class="btn btn-info btn-xs" (click)="addRating()">Details </a>
+      <div class="col-md-9 col-sm-9 col-xs-12">
+        InService Hours Earned from {{lastPromotionDate | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}: <strong>{{hoursAttended | async}}</strong><br>
+        <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a>
+        <div *ngIf="trainingDetails">
+          <div><a class="btn btn-info btn-xs" (click)="trainingDetails=false">close</a></div>
+          <training-transcript [start]="lastPromotionDate" [end]="firstOfTheYear"></training-transcript>
+        </div>
+        
       </div>
     </div>
     <div class="form-group">
@@ -54,7 +59,7 @@
     <div class="form-group">
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="startDate">Start Date:</label>
       <div class="col-md-4 col-sm-6 col-xs-7">
-          <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="startDate"></my-date-picker>
+          <my-date-picker [options]="myDatePickerOptions" formControlName="startDate"></my-date-picker>
       </div>
     </div>
     

@@ -4,6 +4,7 @@ import { FormBuilder, Validators, FormArray, FormGroup, FormControl } from '@ang
 import { LadderService } from './ladder.service';
 import { LadderLevel, LadderEducationLevel, LadderPerformanceRating } from './ladder';
 import { Observable } from 'rxjs';
+import { TrainingService } from '../training/training.service';
 
 @Component({
   selector: 'ladder-application-form',
@@ -17,10 +18,16 @@ export class LadderApplicationFormComponent implements OnInit {
       return this.ladderForm.get('ratings') as FormArray;
     }
   
-    date = new Date();
     ladderForm:any;
     levels:Observable<LadderLevel[]>;
     educationLevels:Observable<LadderEducationLevel[]>;
+    trainingDetails = false;
+
+    lastPromotionDate:Date;
+    hoursAttended:Observable<number>;
+
+    today:Date;
+    firstOfTheYear:Date;
 
     options = { 
         placeholderText: 'Your Description Here!',
@@ -51,22 +58,24 @@ export class LadderApplicationFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service:LadderService
+    private service:LadderService,
+    private trainingService:TrainingService
   ) {
+        this.today = new Date();
         this.ladderForm = this.fb.group(
         {
           ladderLevelId: ["", Validators.required],
           lastPromotion: [{
               date: {
-                  year: this.date.getFullYear() - 3,
+                  year: this.today.getFullYear() - 3,
                   month: 7,
                   day: 1}
               }, Validators.required],
           startDate: [{
                 date: {
-                    year: this.date.getFullYear() - 3,
-                    month: this.date.getMonth() + 1,
-                    day: this.date.getDate()}
+                    year: this.today.getFullYear() - 5,
+                    month: 1,
+                    day: 1}
                 }, Validators.required],
           positionNumber: [""],
           ladderEducationLevelId:["", Validators.required],
@@ -75,9 +84,10 @@ export class LadderApplicationFormComponent implements OnInit {
           numberOfYears: [""],
           ratings: this.fb.array([])
     },);
-    let today = new Date();
-    this.myDatePickerOptions.disableUntil = {year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()};
-
+    
+    this.myDatePickerOptions.disableSince = {year: this.today.getFullYear(), month: this.today.getMonth() + 1, day: this.today.getDate()};
+    this.lastPromotionDate = new Date(this.today.getFullYear() -3, 6, 1);
+    this.firstOfTheYear = new Date(this.today.getFullYear(), 0, 1)
    }
 
   ngOnInit() {
@@ -85,6 +95,10 @@ export class LadderApplicationFormComponent implements OnInit {
     this.educationLevels = this.service.educationLevels();
     this.loading = false;
     this.addRating();
+    this.updateHours();
+  }
+  updateHours(){
+    this.hoursAttended = this.trainingService.hoursByUser(0,this.lastPromotionDate, this.firstOfTheYear);
   }
 
   addRating() {
@@ -100,7 +114,9 @@ export class LadderApplicationFormComponent implements OnInit {
 
 
   onDateChanged(event: IMyDateModel) {
-    
+    this.lastPromotionDate = event.jsdate;
+    this.updateHours();
+    this.trainingDetails = false;
   }
 
   onSubmit(){

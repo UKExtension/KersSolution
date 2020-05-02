@@ -25,6 +25,7 @@ export class Training extends ExtensionEvent{
     day4:string;
     tContact:string;
     tAudience:string;
+    isCore:boolean;
     enrollment:TrainingEnrollment[];
     qualtricsSurveyID:string;
     evaluationLink:string;
