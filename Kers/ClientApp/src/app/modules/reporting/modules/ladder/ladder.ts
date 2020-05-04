@@ -9,6 +9,7 @@ export class LadderApplication{
     evidence:string;
     numberOfYears?:number;
     lastPromotion:Date;
+    startDate:Date;
     ladderLevel:LadderLevel;
     ladderLevelId:number;
     ladderEducationLevel:LadderEducationLevel;

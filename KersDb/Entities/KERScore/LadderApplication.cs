@@ -17,6 +17,7 @@ namespace Kers.Models.Entities.KERScore
         public string Evidence {get;set;}
         public int? NumberOfYears {get;set;}
         public DateTime LastPromotion {get;set;}
+        public DateTime StartDate {get;set;}
         public LadderEducationLevel LadderEducationLevel {get;set;}
         public int LadderEducationLevelId {get;set;}
         public KersUser KersUser { get; set; }

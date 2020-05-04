@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
 import { FormBuilder, Validators, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { LadderService } from './ladder.service';
-import { LadderLevel, LadderEducationLevel, LadderPerformanceRating } from './ladder';
+import { LadderLevel, LadderEducationLevel, LadderPerformanceRating, LadderApplication } from './ladder';
 import { Observable } from 'rxjs';
 import { TrainingService } from '../training/training.service';
 
@@ -120,8 +120,29 @@ export class LadderApplicationFormComponent implements OnInit {
   }
 
   onSubmit(){
+    var formValue = this.ladderForm.value;
+    var application = <LadderApplication> formValue;
+    application.lastPromotion = new Date(formValue.lastPromotion.date.year,formValue.lastPromotion.date.month-1, formValue.lastPromotion.date.day);
+    application.startDate = new Date(formValue.startDate.date.year,formValue.startDate.date.month-1, formValue.startDate.date.day);
+    /* 
     
-    console.log(this.ladderForm.value);
+    var rtngs = [];
+    for( var r in application.ratings){
+      var rtng = <LadderPerformanceRating>{
+        year: r["year"],
+        ratting: r["ratting"]
+      };
+    }
+ */
+    console.log(application);
+    this.service.add(application).subscribe(
+      res => {
+        console.log(res);
+      }
+    )
+
+    
+    
      
   }
   onCancel(){

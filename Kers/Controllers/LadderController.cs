@@ -54,6 +54,7 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult AddLadderApplication( [FromBody] LadderApplication LadderApplication){
             if(LadderApplication != null){
+                
                 this.context.Add(LadderApplication);
                 this.context.SaveChanges();
                 return new OkObjectResult(LadderApplication);
@@ -72,7 +73,10 @@ namespace Kers.Controllers
 
 
             if(LadderApplication != null ){
-                
+                if(LadderApplication.KersUserId == 0){
+                    var user = this.CurrentUser();
+                    LadderApplication.KersUserId = user.Id;
+                }
                 
                 this.Log(LadderApplication,"LadderApplication", "LadderApplication Updated.");
                 
