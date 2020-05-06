@@ -36,6 +36,15 @@ export class LadderService {
                 catchError(this.handleError('levels', []))
             );
     }
+    postFile(fileToUpload: File): Observable<boolean> {
+        const endpoint = this.baseUrl + 'UploadFiles';
+        const formData: FormData = new FormData();
+        formData.append('fileKey', fileToUpload, fileToUpload.name);
+        return this.http.post<boolean>(endpoint, formData)
+            .pipe(
+                catchError(this.handleError('levels', false))
+            );
+    }
 
   /*****************************/
   // CRUD operations

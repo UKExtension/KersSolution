@@ -1,10 +1,14 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { HttpClient, HttpBackend } from '@angular/common/http';
 import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
 import { FormBuilder, Validators, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { LadderService } from './ladder.service';
 import { LadderLevel, LadderEducationLevel, LadderPerformanceRating, LadderApplication } from './ladder';
 import { Observable } from 'rxjs';
 import { TrainingService } from '../training/training.service';
+import { catchError } from 'rxjs/operators';
+import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
+import { UserService, User } from '../user/user.service';
 
 @Component({
   selector: 'ladder-application-form',
@@ -12,8 +16,11 @@ import { TrainingService } from '../training/training.service';
   styles: []
 })
 export class LadderApplicationFormComponent implements OnInit {
+    private httpClient: HttpClient;
+    private handleError: HandleError;
+    private currentUser:User;
 
-    //ratings: LadderPerformanceRating[];
+
     get ratings() {
       return this.ladderForm.get('ratings') as FormArray;
     }
@@ -28,6 +35,8 @@ export class LadderApplicationFormComponent implements OnInit {
 
     today:Date;
     firstOfTheYear:Date;
+
+    fileToUpload: File = null;
 
     options = { 
         placeholderText: 'Your Description Here!',
@@ -58,9 +67,17 @@ export class LadderApplicationFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private userService: UserService,
     private service:LadderService,
-    private trainingService:TrainingService
+    private trainingService:TrainingService,
+    handler: HttpBackend,
+    httpErrorHandler: HttpErrorHandler
   ) {
+        this.userService.current().subscribe(
+          res => this.currentUser = res
+        );
+        this.handleError = httpErrorHandler.createHandleError('Ladder Form');
+        this.httpClient = new HttpClient(handler);
         this.today = new Date();
         this.ladderForm = this.fb.group(
         {
@@ -111,7 +128,35 @@ export class LadderApplicationFormComponent implements OnInit {
   removeRating(i:number){
     this.ratings.removeAt(i);
   }
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+    console.log(this.fileToUpload);
 
+
+    const endpoint = '/api/Ladder/UploadFiles/' + this.currentUser.id;
+    const formData: FormData = new FormData();
+    formData.append('file', this.fileToUpload, this.fileToUpload.name);
+    this.httpClient.post<FileUploadResult>(endpoint, formData)
+      .pipe(
+          catchError(this.handleError('levels', false))
+      )
+      .subscribe(
+          res => {
+            console.log(res);
+          }
+      );
+
+
+
+/* 
+    this.service.postFile(this.fileToUpload).subscribe(
+      res => {
+        console.log(res);
+      }
+    )
+ */
+
+  }
 
   onDateChanged(event: IMyDateModel) {
     this.lastPromotionDate = event.jsdate;
@@ -149,4 +194,12 @@ export class LadderApplicationFormComponent implements OnInit {
     this.onFormCancel.emit();
   }
 
+}
+
+class FileUploadResult{
+  success:boolean;
+  message:string;
+  fileId:number;
+  imageId:number;
+  fileName:string;
 }

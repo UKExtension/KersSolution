@@ -17,5 +17,6 @@ namespace Kers.Models.Entities.KERScore
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
         public KersUser By {get;set;}
+        public int? ById {get;set;}
     }
 }
