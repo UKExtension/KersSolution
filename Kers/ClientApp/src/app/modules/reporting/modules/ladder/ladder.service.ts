@@ -83,22 +83,22 @@ export class LadderService {
                 catchError(this.handleError('add', <LadderApplication>{}))
             );
     }
-/*
-  update(id:number, unit:MeetingWithTime):Observable<Meeting>{
-      var url = this.baseUrl + "updatemeeting/" + id;
-      return this.http.put<Meeting>(this.location.prepareExternalUrl(url), unit)
+
+    update(id:number, application:LadderApplication):Observable<LadderApplication>{
+      var url = this.baseUrl + "updateladder/" + id;
+      return this.http.put<LadderApplication>(this.location.prepareExternalUrl(url), application)
           .pipe(
-              catchError(this.handleError('update', <Meeting>{}))
+              catchError(this.handleError('update', <LadderApplication>{}))
           );
-  }
-  delete(id:number):Observable<{}>{
-      var url = this.baseUrl + "deletemeeting/" + id;
+    }
+    delete(id:number):Observable<{}>{
+      var url = this.baseUrl + "deleteladder/" + id;
       return this.http.delete(this.location.prepareExternalUrl(url))
           .pipe(
               catchError(this.handleError('delete'))
           );
-  }
-
+    }
+/*
   private addParams(params:{}){
       let searchParams = {};
       for(let p in params){

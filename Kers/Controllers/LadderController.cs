@@ -97,6 +97,7 @@ namespace Kers.Controllers
         public IActionResult AddLadderApplication( [FromBody] LadderApplication LadderApplication){
             if(LadderApplication != null){
                 LadderApplication.Created = DateTime.Now;
+                LadderApplication.LastUpdated = DateTime.Now;
                 if(!LadderApplication.Draft){
                     var FirstStage = context.LadderStage.OrderByDescending( s => s.Order).FirstOrDefault();
                     var FirstApplicationStage = new LadderApplicationStage();
@@ -106,6 +107,9 @@ namespace Kers.Controllers
                 }
                 this.context.Add(LadderApplication);
                 this.context.SaveChanges();
+                foreach( var e in LadderApplication.Images ){
+                    e.UploadImage = context.UploadImage.Where( i => i.Id == e.UploadImageId).FirstOrDefault();
+                }
                 return new OkObjectResult(LadderApplication);
             }else{
                 this.Log( LadderApplication,"LadderApplication", "Error in adding LadderApplication attempt.", "LadderApplication", "Error");
@@ -119,17 +123,37 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult UpdateLadderApplication( int id, [FromBody] LadderApplication LadderApplication){
            
-
+            var entity = this.context.LadderApplication.Where( a => a.Id == id)
+                            .Include( a => a.Images)
+                            .Include( a => a.Ratings)
+                            .Include( a => a.Stages)
+                            .FirstOrDefault();
 
             if(LadderApplication != null ){
-                if(LadderApplication.KersUserId == 0){
-                    var user = this.CurrentUser();
-                    LadderApplication.KersUserId = user.Id;
+                entity.LadderLevelId = LadderApplication.LadderLevelId;
+                entity.PositionNumber = LadderApplication.PositionNumber;
+                entity.ProgramOfStudy = LadderApplication.ProgramOfStudy;
+                entity.Evidence = LadderApplication.Evidence;
+                entity.NumberOfYears = LadderApplication.NumberOfYears;
+                entity.LastPromotion = LadderApplication.LastPromotion;
+                entity.StartDate = LadderApplication.StartDate;
+                entity.LadderEducationLevelId = LadderApplication.LadderEducationLevelId;
+                entity.Draft = LadderApplication.Draft;
+                if(!LadderApplication.Draft){
+                    var FirstStage = context.LadderStage.OrderByDescending( s => s.Order).FirstOrDefault();
+                    var FirstApplicationStage = new LadderApplicationStage();
+                    FirstApplicationStage.LadderStage = FirstStage;
+                    LadderApplication.Stages.Add( FirstApplicationStage );
                 }
-                
+                entity.Ratings = LadderApplication.Ratings;
+                entity.Images = LadderApplication.Images;
+                entity.LastUpdated = DateTime.Now;
+                this.context.SaveChanges();
                 this.Log(LadderApplication,"LadderApplication", "LadderApplication Updated.");
-                
-                return new OkObjectResult(LadderApplication);
+                foreach( var e in entity.Images ){
+                    e.UploadImage = context.UploadImage.Where( i => i.Id == e.UploadImageId).FirstOrDefault();
+                }
+                return new OkObjectResult(entity);
             }else{
                 this.Log( LadderApplication ,"LadderApplication", "Not Found LadderApplication in an update attempt.", "LadderApplication", "Error");
                 return new StatusCodeResult(500);
@@ -139,22 +163,28 @@ namespace Kers.Controllers
         [HttpDelete("deleteladder/{id}")]
         [Authorize]
         public IActionResult DeleteLadderApplication( int id ){
-            //var entity = context.LadderApplication.Find(id);
+            var entity = context.LadderApplication
+                            .Where( a => a.Id == id)
+                            .Include( a => a.Ratings)
+                            .Include( a => a.Images).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
+                            .FirstOrDefault();
             
-            /* 
             if(entity != null){
+                foreach( var img in entity.Images){
+                    context.Remove( img.UploadImage.UploadFile);
+                    context.Remove( img.UploadImage);
+                }
                 
-                context.ExtensionEvent.Remove(entity);
+                context.LadderApplication.Remove(entity);
                 context.SaveChanges();
                 
-                this.Log(entity,"ExtensionEvent", "ExtensionEvent Removed.");
+                this.Log(entity,"LadderApplication", "LadderApplication Removed.");
 
                 return new OkResult();
             }else{
-                this.Log( id ,"ExtensionEvent", "Not Found ExtensionEvent in a delete attempt.", "ExtensionEvent", "Error");
+                this.Log( id ,"LadderApplication", "Not Found LadderApplication in a delete attempt.", "LadderApplication", "Error");
                 return new StatusCodeResult(500);
-            } */
-            return new OkResult();
+            } 
         }
 
         

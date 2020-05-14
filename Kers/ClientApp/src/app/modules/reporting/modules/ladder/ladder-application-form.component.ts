@@ -148,7 +148,6 @@ export class LadderApplicationFormComponent implements OnInit {
       for( let rating of this.application.ratings){
         this.addRating( rating.year, rating.ratting );
       }
-      console.log( this.application);
       for( let img of this.application.images){
         this.addImage( img.uploadImageId, img.uploadImage.name, img.description);
       }
@@ -221,13 +220,17 @@ export class LadderApplicationFormComponent implements OnInit {
   }
 
   deleteImageClick(imageId:number, index:number){
-    this.service.deleteImage(imageId).subscribe(
-      res => {
-        this.formImages.removeAt(index);
-        this.images.splice(index, 1);
-        console.log(this.formImages);
-      }
-    );
+    if( this.application == null ){
+      this.service.deleteImage(imageId).subscribe(
+        res => {
+          this.formImages.removeAt(index);
+          this.images.splice(index, 1);
+        }
+      );
+    }else{
+      this.formImages.removeAt(index);
+      this.images.splice(index, 1);
+    }
   }
 
   addMessage(message: string) {
@@ -280,21 +283,34 @@ export class LadderApplicationFormComponent implements OnInit {
     application.images = ladderImages;
     application.kersUserId = this.currentUser.id;
     application.draft = this.isItaDraft;
-    console.log( application );
-    
-    this.service.add(application).subscribe(
-      res => {
-        console.log(res);
-        if(this.isItaDraft){
-          this.onDraftSaved.emit(res);
-        }else{
-          this.onFormSubmit.emit(res);
+    if( this.application != null){
+      this.service.update(this.application.id, application).subscribe(
+        res => {
+          if(this.isItaDraft){
+            this.onDraftSaved.emit(res);
+          }else{
+            this.onFormSubmit.emit(res);
+          }
+          this.isItaDraft = false;
+          this.loading = false;
+  
         }
-        this.isItaDraft = false;
-        this.loading = false;
-
-      }
-    )   
+      )   
+    }else{
+      this.service.add(application).subscribe(
+        res => {
+          if(this.isItaDraft){
+            this.onDraftSaved.emit(res);
+          }else{
+            this.onFormSubmit.emit(res);
+          }
+          this.isItaDraft = false;
+          this.loading = false;
+  
+        }
+      )   
+    }
+    
   }
   onCancel(){
     if( this.application == null && this.images.length > 0){

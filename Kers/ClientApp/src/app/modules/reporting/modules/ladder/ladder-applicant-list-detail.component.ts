@@ -1,5 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LadderApplication } from './ladder';
+import { LadderService } from './ladder.service';
+import { Router } from '@angular/router';
+import { ReportingService } from '../../components/reporting/reporting.service';
 
 @Component({
   selector: 'ladder-applicant-list-detail',
@@ -15,9 +18,19 @@ export class LadderApplicantListDetailComponent implements OnInit {
   rowEdit = false;
 
 
-  constructor() { }
+  constructor(
+    private service:LadderService,
+    private router:Router,
+    private reportingService: ReportingService,
+  ) { }
 
   ngOnInit() {
+  }
+
+  formSaved(event:LadderApplication){
+    this.application = event;
+    this.default();
+
   }
 
   edit(){
@@ -32,6 +45,15 @@ export class LadderApplicantListDetailComponent implements OnInit {
     this.rowDelete = true;
     this.rowDetails = false;
     this.rowEdit = false;
+  }
+
+  confirmDelete(){
+    this.service.delete(this.application.id).subscribe(
+      _ => {
+        this.reportingService.setAlert("Professional Promotion Application draft has been deleted.");
+        this.router.navigate(['']);
+      }
+    )
   }
 
   default(){

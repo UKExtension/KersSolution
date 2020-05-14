@@ -45,10 +45,11 @@ export class LadderApplicantComponent implements OnInit {
   }
 
   canceled(){
-    this.router.navigate(['']);
+    this.router.navigate(['/reporting/']);
   }
-  submitted(){
-    this.router.navigate(['']);
+  submitted(event:LadderApplication){
+    this.application = event;
+    this.newApplication = false;
   }
 
 }

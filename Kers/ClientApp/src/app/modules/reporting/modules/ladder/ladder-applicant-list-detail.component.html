@@ -1,5 +1,5 @@
 <div class="row" *ngIf="rowDefault">
-  <div class="col-xs-6">Created: {{application.created | date:'shortDate'}}</div>
+  <div class="col-xs-6">Professional Promotion Application Created on {{application.created | date:'shortDate'}}</div>
   <div class="col-xs-6 text-right">
     <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault && application.draft">edit</a>
     <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault && application.draft">delete</a>
@@ -10,6 +10,9 @@
   <div class="col-xs-12">
     <a class="btn btn-info btn-xs pull-right" (click)="default()" *ngIf="!rowDefault">close</a>
   </div>
+  <div>
+    Do you really want to delete Professional Promotion Application draft created on <strong>{{application.created | date:'shortDate'}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+</div>
 </div>
 <div class="row" *ngIf="rowDetails">
   <div class="col-xs-12">
@@ -18,6 +21,6 @@
 </div>
 <div class="row" *ngIf="rowEdit">
   <div class="col-xs-12">
-    <ladder-application-form [application]="application" (onFormCancel)="default()"></ladder-application-form>
+    <ladder-application-form [application]="application" (onFormCancel)="default()" (onFormSubmit)="formSaved($event)" (onDraftSaved)="formSaved($event)"></ladder-application-form>
   </div>
 </div>
