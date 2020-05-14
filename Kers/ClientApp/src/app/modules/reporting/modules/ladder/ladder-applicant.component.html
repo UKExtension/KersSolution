@@ -1,0 +1,5 @@
+<loading *ngIf="loading"></loading>
+<div *ngIf="!loading">
+  <ladder-application-form *ngIf="newApplication" (onFormCancel)="canceled()" (onFormSubmit)="submitted()"></ladder-application-form>
+  <ladder-applicant-list-detail *ngIf="!newApplication" [application]="application"></ladder-applicant-list-detail>
+</div>

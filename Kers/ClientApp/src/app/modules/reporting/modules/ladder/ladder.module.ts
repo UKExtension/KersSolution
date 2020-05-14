@@ -7,9 +7,12 @@ import { LadderComponent } from './ladder.component';
 import { LadderApplicationFormComponent } from './ladder-application-form.component';
 import { MyDatePickerModule } from 'mydatepicker';
 import { TrainingModule } from '../training/training.module';
+import { LadderApplicantComponent } from './ladder-applicant.component';
+import { LadderApplicationsListComponent } from './ladder-applications-list.component';
+import { LadderApplicantListDetailComponent } from './ladder-applicant-list-detail.component';
 
 @NgModule({
-  declarations: [LadderComponent, LadderApplicationFormComponent],
+  declarations: [LadderComponent, LadderApplicationFormComponent, LadderApplicantComponent, LadderApplicationsListComponent, LadderApplicantListDetailComponent],
   imports: [
     CommonModule,
     MyDatePickerModule,

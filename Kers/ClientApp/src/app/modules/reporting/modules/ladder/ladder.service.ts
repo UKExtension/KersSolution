@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
 import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpBackend } from '@angular/common/http';
 import { LadderApplication, LadderLevel, LadderEducationLevel } from './ladder';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -13,13 +13,16 @@ export class LadderService {
 
   private baseUrl = '/api/Ladder/';
   private handleError: HandleError;
+  private httpClient: HttpClient;
 
   constructor( 
       private http:HttpClient, 
       private location:Location,
-      httpErrorHandler: HttpErrorHandler
+      httpErrorHandler: HttpErrorHandler,
+      handler: HttpBackend,
     ) {
-        this.handleError = httpErrorHandler.createHandleError('Meeting');
+        this.handleError = httpErrorHandler.createHandleError('LadderApplication');
+        this.httpClient = new HttpClient(handler);
     }
 
     levels():Observable<LadderLevel[]>{
@@ -36,26 +39,50 @@ export class LadderService {
                 catchError(this.handleError('levels', []))
             );
     }
-    postFile(fileToUpload: File): Observable<boolean> {
-        const endpoint = this.baseUrl + 'UploadFiles';
-        const formData: FormData = new FormData();
-        formData.append('fileKey', fileToUpload, fileToUpload.name);
-        return this.http.post<boolean>(endpoint, formData)
+
+    applicationsByUser(id:number = 0):Observable<LadderApplication[]>{
+        var url = this.baseUrl + "applicationsByUser/" + id;
+        return this.http.get<LadderApplication[]>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('levels', false))
+                catchError(this.handleError('applicationsByUser', []))
+            );
+    }
+    applicationByUserByFiscalYear(id:number = 0, fy:string = "0"):Observable<LadderApplication>{
+        var url = this.baseUrl + "applicationByUserByFiscalYear/" + id + "/" + fy;
+        return this.http.get<LadderApplication>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('applicationsByUser', <LadderApplication>{}))
             );
     }
 
-  /*****************************/
-  // CRUD operations
-  /*****************************/
- 
-  add( ladder:LadderApplication ):Observable<LadderApplication>{
-    return this.http.post<LadderApplication>(this.location.prepareExternalUrl(this.baseUrl + "addladder"), ladder)
-        .pipe(
-            catchError(this.handleError('add', <LadderApplication>{}))
-        );
-  }
+    postFile(fileToUpload: File, userId:number): Observable<FileUploadResult> {
+        const endpoint = '/api/Ladder/UploadFiles/' + userId;
+        const formData: FormData = new FormData();
+        formData.append('file', fileToUpload, fileToUpload.name);
+        return this.httpClient.post<FileUploadResult>(endpoint, formData)
+            .pipe(
+                catchError(this.handleError('levels', <FileUploadResult>{}))
+            ); 
+    }
+
+    deleteImage(id:number):Observable<{}>{
+        var url = this.baseUrl + "deleteimage/" + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
+    }
+
+    /*****************************/
+    // CRUD operations
+    /*****************************/
+    
+    add( ladder:LadderApplication ):Observable<LadderApplication>{
+        return this.http.post<LadderApplication>(this.location.prepareExternalUrl(this.baseUrl + "addladder"), ladder)
+            .pipe(
+                catchError(this.handleError('add', <LadderApplication>{}))
+            );
+    }
 /*
   update(id:number, unit:MeetingWithTime):Observable<Meeting>{
       var url = this.baseUrl + "updatemeeting/" + id;
@@ -82,3 +109,11 @@ export class LadderService {
 
    */
 }
+
+export class FileUploadResult{
+    success:boolean;
+    message:string;
+    fileId:number;
+    imageId:number;
+    fileName:string;
+  }

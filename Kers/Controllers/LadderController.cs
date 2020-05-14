@@ -31,14 +31,17 @@ namespace Kers.Controllers
 
         private readonly IHostingEnvironment _hostingEnvironment;
         KERScoreContext _context;
+        IFiscalYearRepository fiscalYearRepo;
         public LadderController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
-                    IHostingEnvironment hostingEnvironment
+                    IHostingEnvironment hostingEnvironment,
+                    IFiscalYearRepository fiscalYearRepo
             ):base(mainContext, context, userRepo){
                 _context = context;
                 _hostingEnvironment = hostingEnvironment;
+                this.fiscalYearRepo = fiscalYearRepo;
         }
 
 
@@ -55,12 +58,52 @@ namespace Kers.Controllers
             return new OkObjectResult(await levels.ToListAsync());
         }
 
+        [HttpGet("applicationsByUser/{UserId?}")]
+        [Authorize]
+        public async Task<IActionResult> ApplicationsByUser(int UserId = 0){
+            if(UserId == 0){
+                var user = this.CurrentUser();
+                UserId = user.Id;
+            }
+            var appilcations = context.LadderApplication.Where( a => a.KersUserId == UserId).OrderBy( o => o.Created);
+            return new OkObjectResult(await appilcations.ToListAsync());
+        }
+
+        [HttpGet("applicationByUserByFiscalYear/{UserId?}/{fy?}")]
+        [Authorize]
+        public async Task<IActionResult> ApplicationsByUserByFiscalYear(int UserId = 0, string fy="0"){
+            FiscalYear fiscalYear;
+            if(fy != "0"){
+                fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
+            }else{
+                fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            }
+            if(UserId == 0){
+                var user = this.CurrentUser();
+                UserId = user.Id;
+            }
+            var appilcations = context.LadderApplication
+                            .Where( a => a.KersUserId == UserId && a.Created <= fiscalYear.End && a.Created >= fiscalYear.Start)
+                            .Include( a => a.Ratings)
+                            .Include( a => a.Images).ThenInclude( i => i.UploadImage)
+                            .OrderBy( o => o.Created);
+            var appl = await appilcations.FirstOrDefaultAsync();
+            return new OkObjectResult(appl);
+        }
+
 
         [HttpPost("addladder")]
         [Authorize]
         public IActionResult AddLadderApplication( [FromBody] LadderApplication LadderApplication){
             if(LadderApplication != null){
-                
+                LadderApplication.Created = DateTime.Now;
+                if(!LadderApplication.Draft){
+                    var FirstStage = context.LadderStage.OrderByDescending( s => s.Order).FirstOrDefault();
+                    var FirstApplicationStage = new LadderApplicationStage();
+                    FirstApplicationStage.LadderStage = FirstStage;
+                    LadderApplication.Stages = new List<LadderApplicationStage>();
+                    LadderApplication.Stages.Add( FirstApplicationStage );
+                }
                 this.context.Add(LadderApplication);
                 this.context.SaveChanges();
                 return new OkObjectResult(LadderApplication);
@@ -117,7 +160,32 @@ namespace Kers.Controllers
         
 
 
+        [HttpDelete("deleteimage/{id}")]
+        [Authorize]
+        public IActionResult DeleteLadderImage( int id ){
+            var entity = context.UploadImage.Find(id);
+ 
+            if(entity != null){
+                
+                
 
+                var LadderImage = context.LadderImage.Where( i => i.UploadImageId == id).FirstOrDefault();
+                if( LadderImage != null) context.LadderImage.Remove(LadderImage);
+                var file = context.UploadFile.Find(entity.UploadFileId);
+                if(file != null ) context.UploadFile.Remove(file);
+                
+                context.UploadImage.Remove(entity);
+
+                context.SaveChanges();
+                
+                this.Log(entity,"LadderImage", "LadderImage Removed.");
+
+                return new OkResult();
+            }else{
+                this.Log( id ,"LadderImage", "Not Found LadderImage in a delete attempt.", "LadderImage", "Error");
+                return new StatusCodeResult(500);
+            } 
+        }
 
 
         [HttpPost("UploadFiles/{userId}")]

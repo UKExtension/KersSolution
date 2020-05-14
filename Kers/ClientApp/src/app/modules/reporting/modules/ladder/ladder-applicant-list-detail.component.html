@@ -1,0 +1,23 @@
+<div class="row" *ngIf="rowDefault">
+  <div class="col-xs-6">Created: {{application.created | date:'shortDate'}}</div>
+  <div class="col-xs-6 text-right">
+    <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault && application.draft">edit</a>
+    <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault && application.draft">delete</a>
+    <a class="btn btn-info btn-xs" (click)="details()" *ngIf="rowDefault">details</a>
+  </div>
+</div>
+<div class="row" *ngIf="rowDelete">
+  <div class="col-xs-12">
+    <a class="btn btn-info btn-xs pull-right" (click)="default()" *ngIf="!rowDefault">close</a>
+  </div>
+</div>
+<div class="row" *ngIf="rowDetails">
+  <div class="col-xs-12">
+    <a class="btn btn-info btn-xs pull-right" (click)="default()" *ngIf="!rowDefault">close</a>
+  </div>
+</div>
+<div class="row" *ngIf="rowEdit">
+  <div class="col-xs-12">
+    <ladder-application-form [application]="application" (onFormCancel)="default()"></ladder-application-form>
+  </div>
+</div>

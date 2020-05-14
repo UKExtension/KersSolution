@@ -311,11 +311,13 @@ export class PersonalProfile{
 }
 
 export class Image{
+    public id:number;
     public uploadFile:UploadFile;
     public name:string;
 }
 
 export class UploadFile{
+    public id:number;
     public name:string;
 }
 

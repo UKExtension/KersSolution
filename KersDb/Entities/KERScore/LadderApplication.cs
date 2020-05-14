@@ -22,11 +22,12 @@ namespace Kers.Models.Entities.KERScore
         public int LadderEducationLevelId {get;set;}
         public KersUser KersUser { get; set; }
         public int KersUserId { get; set; }
+        public Boolean Draft {get;set;}
         public LadderStage LastStage {get;set;}
         public int LastStageId {get;set;}
-        
-        public ICollection<LadderApplicationStage> Stages {get;set;}
-        public ICollection<LadderPerformanceRating> Ratings {get;set;}
-        public ICollection<LadderImage> Images {get;set;}
+        public List<LadderApplicationStage> Stages {get;set;}
+        public List<LadderPerformanceRating> Ratings {get;set;}
+        public List<LadderImage> Images {get;set;}
+        public DateTime Created {get;set;}
     }
 }

@@ -10,6 +10,7 @@ export class LadderApplication{
     numberOfYears?:number;
     lastPromotion:Date;
     startDate:Date;
+    draft:boolean;
     ladderLevel:LadderLevel;
     ladderLevelId:number;
     ladderEducationLevel:LadderEducationLevel;
@@ -29,8 +30,14 @@ export class LadderEducationLevel{
 
 export class LadderImage{
     id:number;
-    uploadImage:Image;
+    uploadImage:UploadImage;
+    uploadImageId:number;
     created:Date;
+    description:string;
+}
+export class UploadImage{
+    id:number;
+    name:string;
 }
 export class LadderPerformanceRating{
     id:number;
