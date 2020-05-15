@@ -141,13 +141,10 @@ namespace Kers.Controllers
                 entity.Draft = LadderApplication.Draft;
                 if(!LadderApplication.Draft){
                     var FirstStage = context.LadderStage.OrderByDescending( s => s.Order).FirstOrDefault();
-                    if( entity.Stages == null){
-                        entity.Stages = new List<LadderApplicationStage>();
-                    }
                     var FirstApplicationStage = new LadderApplicationStage();
                     FirstApplicationStage.LadderStage = FirstStage;
-                    FirstApplicationStage.Note = "";
-                    LadderApplication.Stages.Add( FirstApplicationStage );
+                    entity.Stages.Add( FirstApplicationStage );
+                    entity.LastStage = FirstStage;
                 }
                 entity.Ratings = LadderApplication.Ratings;
                 entity.Images = LadderApplication.Images;
