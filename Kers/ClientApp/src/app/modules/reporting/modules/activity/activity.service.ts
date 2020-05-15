@@ -2,7 +2,7 @@ import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, retry } from 'rxjs/operators';
 import {MajorProgram } from '../admin/programs/programs.service';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { User, PlanningUnit } from '../user/user.service';
@@ -221,6 +221,7 @@ export class ActivityService {
         var url = this.baseUrl + 'getCustomData/';
         return this.http.post<string[]>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
+                retry(3),
                 catchError(this.handleError('getCustomData',[]))
             );
     }
