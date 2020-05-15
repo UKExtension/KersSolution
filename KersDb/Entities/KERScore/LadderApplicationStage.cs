@@ -14,6 +14,7 @@ namespace Kers.Models.Entities.KERScore
         public DateTime Created { get; set; }
         public LadderStage LadderStage {get;set;}
         public KersUser KersUser {get;set;}
+        public int? KersUserId {get;set;}
         public string  Note {get;set;}
         
     }
