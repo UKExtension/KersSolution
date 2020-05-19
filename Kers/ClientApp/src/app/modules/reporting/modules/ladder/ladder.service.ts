@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
 import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
 import { HttpClient, HttpBackend } from '@angular/common/http';
-import { LadderApplication, LadderLevel, LadderEducationLevel } from './ladder';
+import { LadderApplication, LadderLevel, LadderEducationLevel, LadderStage } from './ladder';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { LadderApplicantComponent } from './ladder-applicant.component';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,24 @@ export class LadderService {
                 catchError(this.handleError('levels', []))
             );
     }
+
+    getStage(id:number):Observable<LadderStage>{
+        var url = this.baseUrl + "getStage/" + id;
+        return this.http.get<LadderStage>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('levels', <LadderStage>{}))
+            );
+    }
+
+    getApplicationsForReview(stageId:number):Observable<LadderApplication[]>{
+        var url = this.baseUrl + "GetApplicationsForReview/" + stageId;
+        return this.http.get<LadderApplication[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('levels', []))
+            );
+    }
+
+    
 
     applicationsByUser(id:number = 0):Observable<LadderApplication[]>{
         var url = this.baseUrl + "applicationsByUser/" + id;

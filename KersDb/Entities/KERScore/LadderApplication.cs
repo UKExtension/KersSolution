@@ -23,6 +23,7 @@ namespace Kers.Models.Entities.KERScore
         public KersUser KersUser { get; set; }
         public int KersUserId { get; set; }
         public Boolean Draft {get;set;}
+        public Boolean Approved {get;set;}
         public LadderStage LastStage {get;set;}
         public int? LastStageId {get;set;}
         public List<LadderApplicationStage> Stages {get;set;}

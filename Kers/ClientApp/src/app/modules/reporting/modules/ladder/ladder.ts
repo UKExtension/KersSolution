@@ -66,7 +66,7 @@ export class LadderStage{
     id:number;
     name:string;
     order:number;
-    LadderStageRoles:LadderStageRole[];
+    ladderStageRoles:LadderStageRole[];
 
 }
 

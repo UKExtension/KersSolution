@@ -45,6 +45,8 @@ namespace Kers.Controllers
         }
 
 
+
+
         [HttpGet("levels")]
         [Authorize]
         public async Task<IActionResult> Levels(){
@@ -56,6 +58,23 @@ namespace Kers.Controllers
         public async Task<IActionResult> EducationLevels(){
             var levels = context.LadderEducationLevel.OrderBy( o => o.Order);
             return new OkObjectResult(await levels.ToListAsync());
+        }
+
+        [HttpGet("getStage/{StageId}")]
+        [Authorize]
+        public async Task<IActionResult> GetStage(int StageId){
+            var stage = context.LadderStage.Where(a => a.Id == StageId)
+                            .Include( a => a.LadderStageRoles).ThenInclude( r => r.zEmpRoleType)
+                            .FirstOrDefaultAsync();
+            return new OkObjectResult(await stage);
+        }
+
+        [HttpGet("GetApplicationsForReview/{StageId}")]
+        [Authorize]
+        public async Task<IActionResult> GetApplicationsForReview(int StageId){
+            var apps = context.LadderApplication.Where(a => a.LastStageId == StageId)
+                            .ToListAsync();
+            return new OkObjectResult(await apps);
         }
 
         [HttpGet("applicationsByUser/{UserId?}")]
@@ -99,11 +118,12 @@ namespace Kers.Controllers
                 LadderApplication.Created = DateTime.Now;
                 LadderApplication.LastUpdated = DateTime.Now;
                 if(!LadderApplication.Draft){
-                    var FirstStage = context.LadderStage.OrderByDescending( s => s.Order).FirstOrDefault();
+                    var FirstStage = context.LadderStage.OrderBy( s => s.Order).FirstOrDefault();
                     var FirstApplicationStage = new LadderApplicationStage();
                     FirstApplicationStage.LadderStage = FirstStage;
                     LadderApplication.Stages = new List<LadderApplicationStage>();
                     LadderApplication.Stages.Add( FirstApplicationStage );
+                    LadderApplication.LastStage = FirstStage;
                 }
                 this.context.Add(LadderApplication);
                 this.context.SaveChanges();
@@ -140,7 +160,7 @@ namespace Kers.Controllers
                 entity.LadderEducationLevelId = LadderApplication.LadderEducationLevelId;
                 entity.Draft = LadderApplication.Draft;
                 if(!LadderApplication.Draft){
-                    var FirstStage = context.LadderStage.OrderByDescending( s => s.Order).FirstOrDefault();
+                    var FirstStage = context.LadderStage.OrderBy( s => s.Order).FirstOrDefault();
                     var FirstApplicationStage = new LadderApplicationStage();
                     FirstApplicationStage.LadderStage = FirstStage;
                     entity.Stages.Add( FirstApplicationStage );

@@ -67,7 +67,7 @@
     <div class="form-group">
         <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12">Number of years of Extension service as of July 1, 2020:</label>           
         <div class="col-md-4 col-sm-6 col-xs-10">
-            <input type="text" formControlName="numberOfYears" class="form-control col-md-3 col-xs-6" />
+            <input type="number" formControlName="numberOfYears" class="form-control col-md-3 col-xs-6" />
             <p>Includes years as an Extension Agent, Extension Associate, or Extension Specialist.</p>
         </div>
     </div>
@@ -102,7 +102,7 @@
     
 
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="startDate">Upload Documents:</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="startDate">Upload Documents:<br><small style="font-weight: normal;">(jpg or png images)</small></label>
     <div class="col-md-8 col-sm-9 col-xs-12" formArrayName="images">
       
       <div *ngIf="messages.length>0" style="color:salmon;font-weight: bold;">{{messages[0]}}<br></div>

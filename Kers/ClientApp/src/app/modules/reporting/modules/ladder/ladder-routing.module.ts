@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LadderComponent } from './ladder.component';
 import { LadderApplicantComponent } from './ladder-applicant.component';
+import { LadderReviewComponent } from './ladder-review.component';
 
 const routes: Routes = [{
   path: '',
@@ -14,6 +15,10 @@ const routes: Routes = [{
   {
     path: 'applicant',
     component: LadderApplicantComponent
+  },
+  {
+    path: 'review/:stageId',
+    component: LadderReviewComponent
   }
   
 ];
