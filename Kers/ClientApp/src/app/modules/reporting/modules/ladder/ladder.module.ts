@@ -12,9 +12,10 @@ import { LadderApplicationsListComponent } from './ladder-applications-list.comp
 import { LadderApplicantListDetailComponent } from './ladder-applicant-list-detail.component';
 import { LadderReviewComponent } from './ladder-review.component';
 import { LadderApplicationDetailsComponent } from './ladder-application-details.component';
+import { LadderDetailImageComponent } from './ladder-detail-image.component';
 
 @NgModule({
-  declarations: [LadderComponent, LadderApplicationFormComponent, LadderApplicantComponent, LadderApplicationsListComponent, LadderApplicantListDetailComponent, LadderReviewComponent, LadderApplicationDetailsComponent],
+  declarations: [LadderComponent, LadderApplicationFormComponent, LadderApplicantComponent, LadderApplicationsListComponent, LadderApplicantListDetailComponent, LadderReviewComponent, LadderApplicationDetailsComponent, LadderDetailImageComponent],
   imports: [
     CommonModule,
     MyDatePickerModule,

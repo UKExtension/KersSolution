@@ -87,6 +87,23 @@ namespace Kers.Controllers
             var appilcations = context.LadderApplication.Where( a => a.KersUserId == UserId).OrderBy( o => o.Created);
             return new OkObjectResult(await appilcations.ToListAsync());
         }
+        [HttpGet("application/{Id}")]
+        [Authorize]
+        public async Task<IActionResult> Application(int Id){
+           
+            var appilcation = await  context.LadderApplication
+                                            .Where( a => a.Id == Id)
+                                            .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
+                                            .Include( a => a.LadderEducationLevel)
+                                            .Include( a => a.LadderLevel)
+                                            .Include( a => a.Ratings)
+                                            .Include( a => a.Images).ThenInclude( a => a.UploadImage)
+                                            .Include( a => a.Stages).ThenInclude( s => s.LadderStage)
+                                            .Include( a => a.Stages).ThenInclude( s => s.KersUser).ThenInclude( u => u.RprtngProfile)
+                                            .FirstOrDefaultAsync();
+            appilcation.KersUser.RprtngProfile.PlanningUnit.GeoFeature = "";
+            return new OkObjectResult(appilcation);
+        }
 
         [HttpGet("applicationByUserByFiscalYear/{UserId?}/{fy?}")]
         [Authorize]

@@ -48,6 +48,13 @@ export class LadderService {
                 catchError(this.handleError('levels', <LadderStage>{}))
             );
     }
+    getApplication(id:number):Observable<LadderApplication>{
+        var url = this.baseUrl + "Application/" + id;
+        return this.http.get<LadderApplication>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('levels', <LadderApplication>{}))
+            );
+    }
 
     getApplicationsForReview(stageId:number):Observable<LadderApplication[]>{
         var url = this.baseUrl + "GetApplicationsForReview/" + stageId;
