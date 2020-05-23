@@ -31,7 +31,7 @@ export class TrainingPostAttendanceComponent implements OnInit {
       this.years.push(year);
     }
  */
-    this.start.setMonth( this.start.getMonth() -3);
+    this.start.setMonth( this.start.getMonth() - 1 );
 
   }
 
