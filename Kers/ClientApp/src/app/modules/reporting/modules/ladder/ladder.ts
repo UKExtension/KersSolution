@@ -20,6 +20,8 @@ export class LadderApplication{
     stages:LadderApplicationStage[];
     ratings:LadderPerformanceRating[];
     images:LadderImage[];
+    created:Date;
+    lastUpdated:Date;
 }
 
 export class LadderEducationLevel{
@@ -55,6 +57,7 @@ export class LadderLevel{
 export class LadderApplicationStage{
     id:number;
     ladderApplication:LadderApplication;
+    ladderApplicationId:number;
     created:Date;
     ladderStage:LadderStage;
     kersUser:User;

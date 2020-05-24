@@ -1,0 +1,47 @@
+<div class="row" *ngIf="rowDefault">
+  <div class="col-xs-4">{{application.kersUser.rprtngProfile.name}}</div>
+  <div class="col-xs-3">{{application.kersUser.rprtngProfile.planningUnit.name}}</div>
+  <div class="col-xs-3">Submitted: {{application.lastUpdated | date:'shortDate'}}</div>
+  <div class="col-xs-2 text-right">
+    <a class="btn btn-info btn-xs" (click)="review()" *ngIf="rowDefault">review</a>
+  </div>
+</div>
+<div class="row" *ngIf="rowReview" style="padding-bottom: 20px;">
+  <div class="col-xs-12">
+    <a class="btn btn-info btn-xs pull-right" (click)="default()" *ngIf="!rowDefault">close</a>
+  </div>
+  <div class="col-xs-12" style="margin-bottom: 10px;">
+    <ladder-application-details [applicationId]="application.id"></ladder-application-details>
+  </div>
+  <div class="ln_solid clear" ></div>
+  <div class="col-sm-4 col-xs-12 text-right">
+    Review Notes:
+
+  </div>
+  <div class="col-sm-8 col-xs-12 text-right" style="padding-bottom: 15px;">
+   <textarea class="form-control" [(ngModel)]="notes"></textarea>
+
+  </div>
+  <div class="ln_solid clear" ></div>
+  <div>
+    <div class="col-xs-6">
+      <a class="btn btn-success" (click)="submit(false)">Return Back</a>
+      
+      <ng-container *ngIf="previousStage$ | async as previousStage; else loading">
+        to {{previousStage.name}}
+       </ng-container>
+       <ng-template #loading> to Employee</ng-template>
+      
+      
+      <div></div>
+    </div>
+    <div class="col-xs-6 text-right">
+      <ng-container *ngIf="nextStage$ | async as nextStage; else final">
+       Advance to {{nextStage.name}}
+       </ng-container>
+       <ng-template #final>Final Decision&nbsp;</ng-template>
+      <a class="btn btn-success" (click)="submit(true)">Approve</a>
+      
+    </div>
+  </div>
+</div>

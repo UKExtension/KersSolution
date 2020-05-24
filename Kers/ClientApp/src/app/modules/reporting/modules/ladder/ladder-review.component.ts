@@ -14,7 +14,7 @@ import { ReportingService } from '../../components/reporting/reporting.service';
 })
 export class LadderReviewComponent implements OnInit {
 
-  aplications$:Observable<LadderApplication>;
+  aplications$:Observable<LadderApplication[]>;
   user:User;
   loading = true;
 
@@ -27,6 +27,7 @@ export class LadderReviewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.defaultTitle();
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>{
           return this.service.getStage(+params.get('stageId'));
@@ -47,12 +48,16 @@ export class LadderReviewComponent implements OnInit {
                   this.router.navigate(['']);
                 }else{
                   // Load applications
-                  this.service.getApplicationsForReview(stage.id).subscribe(
+                  
+                  this.aplications$ = this.service.getApplicationsForReview(stage.id);
+                  this.loading = false;
+                  /* 
+                  .subscribe(
                     apps => {
                       console.log( apps );
                       this.loading = false;
                     }
-                  )
+                  ) */
 
                 }
               }
@@ -82,8 +87,8 @@ export class LadderReviewComponent implements OnInit {
   }
 
   defaultTitle(){
-    this.reportingService.setTitle("Professional Promotion Application");
-    this.reportingService.setSubtitle("Review");
+    this.reportingService.setTitle("Professional Promotion Applications");
+    this.reportingService.setSubtitle("Pending Review");
   }
 
 }

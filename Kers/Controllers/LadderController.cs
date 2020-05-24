@@ -73,8 +73,91 @@ namespace Kers.Controllers
         [Authorize]
         public async Task<IActionResult> GetApplicationsForReview(int StageId){
             var apps = context.LadderApplication.Where(a => a.LastStageId == StageId)
+                            .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
                             .ToListAsync();
-            return new OkObjectResult(await apps);
+            var appls = await apps;
+            foreach( var app in appls) app.KersUser.RprtngProfile.PlanningUnit.GeoFeature = null;
+            return new OkObjectResult(appls);
+        }
+
+
+        [HttpPost("review/{Approved}")]
+        [Authorize]
+        public IActionResult ReviewLadderApplication( Boolean Approved, [FromBody] LadderApplicationStage ApplStage){
+            var application = context.LadderApplication.Where( a => a.Id == ApplStage.LadderApplicationId)
+                                .Include( a => a.Stages).ThenInclude( s => s.LadderStage)
+                                .Include( a => a.KersUser)
+                                .Include( a => a.LadderLevel)
+                                .FirstOrDefault();
+
+
+            var LastStage = application.Stages.OrderBy( a => a.Created ).Last();
+            LastStage.KersUser = this.CurrentUser();
+            LastStage.Reviewed = DateTime.Now;
+            LastStage.Note = ApplStage.Note;
+            if( Approved ){
+                var Next = this.NextStage(LastStage.LadderStage.Id);
+                if( Next == null ){
+                    application.Approved = true;
+                    var Approval = new LadderKersUserLevel();
+                    Approval.LadderApplication = application;
+                    Approval.KersUser = application.KersUser;
+                    Approval.Created = DateTime.Now;
+                    Approval.LadderLevel = application.LadderLevel;
+                    context.Add(Approval);
+                }else{
+                    var NextStage = new LadderApplicationStage();
+                    NextStage.LadderStage = Next;
+                    NextStage.Created = DateTime.Now;
+                    application.Stages.Add( NextStage );
+                    application.LastStageId = Next.Id;
+                }
+            }else{
+                var Previous = this.PreviousStage( LastStage.LadderStage.Id );
+                if( Previous == null ){
+                    application.Draft = true;
+                    application.LastStageId = null;
+                }else{
+                    var NextStage = new LadderApplicationStage();
+                    NextStage.LadderStage = Previous;
+                    NextStage.Created = DateTime.Now;
+                    application.Stages.Add( NextStage );
+                    application.LastStageId = Previous.Id;
+                }
+            }
+            this.context.SaveChanges();
+            return new OkObjectResult(application);
+        }
+
+        private LadderStage NextStage( int StageId){
+            var current = context.LadderStage.Find(StageId);
+            if( current != null){
+                var nxt = context.LadderStage.Where( a => a.Order > current.Order).OrderBy( a => a.Order ).FirstOrDefault();
+                return nxt;
+            }
+            return null;
+        }
+
+        [HttpGet("nextstage/{StageId}")]
+        [Authorize]
+        public IActionResult NextStageAction(int StageId){
+            var n = NextStage(StageId);
+            return new OkObjectResult(n);
+        }
+
+        [HttpGet("previousstage/{StageId}")]
+        [Authorize]
+        public IActionResult PreviousStageAction(int StageId){
+            return new OkObjectResult(PreviousStage(StageId));
+        }
+
+        private LadderStage PreviousStage( int StageId){
+            var current = context.LadderStage.Find(StageId);
+            if( current != null){
+                var prv = context.LadderStage.Where( a => a.Order < current.Order).OrderByDescending( a => a.Order ).FirstOrDefault();
+                return prv;
+            }
+            return null;
         }
 
         [HttpGet("applicationsByUser/{UserId?}")]
@@ -138,6 +221,7 @@ namespace Kers.Controllers
                     var FirstStage = context.LadderStage.OrderBy( s => s.Order).FirstOrDefault();
                     var FirstApplicationStage = new LadderApplicationStage();
                     FirstApplicationStage.LadderStage = FirstStage;
+                    FirstApplicationStage.Created = DateTime.Now;
                     LadderApplication.Stages = new List<LadderApplicationStage>();
                     LadderApplication.Stages.Add( FirstApplicationStage );
                     LadderApplication.LastStage = FirstStage;

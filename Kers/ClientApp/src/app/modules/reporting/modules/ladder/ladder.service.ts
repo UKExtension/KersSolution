@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
 import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
 import { HttpClient, HttpBackend } from '@angular/common/http';
-import { LadderApplication, LadderLevel, LadderEducationLevel, LadderStage } from './ladder';
+import { LadderApplication, LadderLevel, LadderEducationLevel, LadderStage, LadderApplicationStage } from './ladder';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { LadderApplicantComponent } from './ladder-applicant.component';
@@ -48,6 +48,23 @@ export class LadderService {
                 catchError(this.handleError('levels', <LadderStage>{}))
             );
     }
+
+    nextStage(id:number):Observable<LadderStage>{
+        var url = this.baseUrl + "nextstage/" + id;
+        return this.http.get<LadderStage>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('levels', <LadderStage>{}))
+            );
+    }
+
+    previousStage(id:number):Observable<LadderStage>{
+        var url = this.baseUrl + "previousstage/" + id;
+        return this.http.get<LadderStage>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('levels', <LadderStage>{}))
+            );
+    }
+
     getApplication(id:number):Observable<LadderApplication>{
         var url = this.baseUrl + "Application/" + id;
         return this.http.get<LadderApplication>(this.location.prepareExternalUrl(url))
@@ -96,6 +113,14 @@ export class LadderService {
         return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('delete'))
+            );
+    }
+
+    review( stage:LadderApplicationStage, approved:boolean ):Observable<LadderApplication>{
+        var url = this.baseUrl + "review/"+ approved;
+        return this.http.post<LadderApplication>(this.location.prepareExternalUrl(url), stage)
+            .pipe(
+                catchError(this.handleError('add', <LadderApplication>{}))
             );
     }
 

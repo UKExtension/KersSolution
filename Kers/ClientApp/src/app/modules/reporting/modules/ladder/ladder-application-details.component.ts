@@ -14,7 +14,6 @@ export class LadderApplicationDetailsComponent implements OnInit {
   @Input() applicationId:number;
 
   loading = true;
-  today:Date;
   firstOfTheYear:Date;
   lastPromotionDate:Date;
   hoursAttended:Observable<number>;
@@ -23,13 +22,12 @@ export class LadderApplicationDetailsComponent implements OnInit {
     private service:LadderService,
     private trainingService:TrainingService
   ) { 
-    this.today = new Date();
-    this.firstOfTheYear = new Date(this.today.getFullYear(), 0, 1)
   }
 
   ngOnInit() {
     if(this.application != null){
       this.loading = false;
+      this.firstOfTheYear = new Date(new Date(this.application.created).getFullYear(), 0, 1);
       this.lastPromotionDate = new Date(this.application.lastPromotion);
       this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.lastPromotionDate, this.firstOfTheYear);
     }else if( this.applicationId != null){
@@ -37,6 +35,7 @@ export class LadderApplicationDetailsComponent implements OnInit {
         res => {
           this.application = res;
           this.loading = false;
+          this.firstOfTheYear = new Date(new Date(this.application.created).getFullYear(), 0, 1);
           this.lastPromotionDate = new Date(this.application.lastPromotion);
           this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.lastPromotionDate, this.firstOfTheYear);
         }
