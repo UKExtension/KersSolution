@@ -106,4 +106,29 @@
       </div>
     </div>
   </div>
-</ng-container>
+  <div class="col-xs-12" style="border-top: 1px solid #ccc; margin-top: 20px; padding: 20px 0;" *ngIf="!application.draft">
+    <h2>Status:</h2>
+    {{application.lastStage.name}} Review
+    
+  </div>
+  <div class="col-xs-12" style="border-top: 1px solid #ccc; margin-top: 20px; padding: 20px 0;">
+    <h2>Reviews:</h2>
+    <ng-container *ngFor="let stage of application.stages">
+      <div class="row" *ngIf="stage.kersUser">
+        <div class="col-xs-3">
+          {{stage.reviewed | date:'short'}}
+        </div>
+        <div class="col-xs-3">
+          {{stage.ladderStage.name}}
+        </div>
+        <div class="col-xs-3">
+          {{stage.kersUser.rprtngProfile.name}}
+        </div>
+        <div class="col-xs-3">
+          {{stage.note}}
+        </div>
+      </div>
+    </ng-container>
+    
+  </div>
+</ng-container> 

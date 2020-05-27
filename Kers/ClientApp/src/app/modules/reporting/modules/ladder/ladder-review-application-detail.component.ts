@@ -28,6 +28,7 @@ export class LadderReviewApplicationDetailComponent implements OnInit {
 
   rowDefault = true;
   rowReview = false;
+  approved = false;
   notes:string;
   constructor(
     private service:LadderService
@@ -50,11 +51,12 @@ export class LadderReviewApplicationDetailComponent implements OnInit {
     let stage = <LadderApplicationStage>{};
     stage.note = this.notes;
     stage.ladderApplicationId = this.application.id;
+    this.approved = approve;
     this.service.review(stage,approve).subscribe(
       res => {
         this.reviewPending = false;
         this.reviewed = true;
-        console.log( res );
+        this.default();
       }
     )
 

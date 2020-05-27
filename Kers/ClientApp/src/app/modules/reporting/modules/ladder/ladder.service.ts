@@ -26,6 +26,14 @@ export class LadderService {
         this.httpClient = new HttpClient(handler);
     }
 
+    getCustom(criteria:LadderApplicationSearchCriteria):Observable<LadderSeearchResultsWithCount>{
+        var url = this.baseUrl + 'getCustom/';
+        return this.http.post<LadderSeearchResultsWithCount>(this.location.prepareExternalUrl(url), criteria)
+            .pipe(
+                catchError(this.handleError('getCustom',<LadderSeearchResultsWithCount>{}))
+            );
+    }
+
     levels():Observable<LadderLevel[]>{
         var url = this.baseUrl + "levels/";
         return this.http.get<LadderLevel[]>(this.location.prepareExternalUrl(url))
@@ -149,16 +157,6 @@ export class LadderService {
               catchError(this.handleError('delete'))
           );
     }
-/*
-  private addParams(params:{}){
-      let searchParams = {};
-      for(let p in params){
-          searchParams[p] = params[p];
-      }
-      return  {params: searchParams};
-  }
-
-   */
 }
 
 export class FileUploadResult{
@@ -168,3 +166,21 @@ export class FileUploadResult{
     imageId:number;
     fileName:string;
   }
+
+export class LadderApplicationSearchCriteria{
+    search:string;
+    order:string;
+    regionId?: number;
+    areaId?: number;
+    unitId?: number;
+    levelId?:number;
+    reviewStageId?:number;
+    skip:number;
+    take:number;
+    fy:string;
+}
+
+export class LadderSeearchResultsWithCount{
+    results:LadderApplication[];
+    resultsCount:number;
+}

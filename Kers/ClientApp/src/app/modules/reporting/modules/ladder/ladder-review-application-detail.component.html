@@ -1,12 +1,13 @@
-<div class="row" *ngIf="rowDefault">
+<loading *ngIf="reviewPending"></loading>
+<div class="row" *ngIf="rowDefault && !reviewPending">
   <div class="col-xs-4">{{application.kersUser.rprtngProfile.name}}</div>
   <div class="col-xs-3">{{application.kersUser.rprtngProfile.planningUnit.name}}</div>
   <div class="col-xs-3">Submitted: {{application.lastUpdated | date:'shortDate'}}</div>
   <div class="col-xs-2 text-right">
-    <a class="btn btn-info btn-xs" (click)="review()" *ngIf="rowDefault">review</a>
+    <a class="btn btn-info btn-xs" (click)="review()" *ngIf="!reviewed">review</a><span *ngIf="reviewed && approved">Approved</span><span *ngIf="reviewed && !approved">Rejected</span>
   </div>
 </div>
-<div class="row" *ngIf="rowReview" style="padding-bottom: 20px;">
+<div class="row" *ngIf="rowReview && !reviewPending" style="padding-bottom: 20px;">
   <div class="col-xs-12">
     <a class="btn btn-info btn-xs pull-right" (click)="default()" *ngIf="!rowDefault">close</a>
   </div>

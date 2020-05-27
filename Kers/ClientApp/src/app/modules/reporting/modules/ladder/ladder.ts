@@ -59,6 +59,7 @@ export class LadderApplicationStage{
     ladderApplication:LadderApplication;
     ladderApplicationId:number;
     created:Date;
+    reviewed:Date;
     ladderStage:LadderStage;
     kersUser:User;
     note:string;
