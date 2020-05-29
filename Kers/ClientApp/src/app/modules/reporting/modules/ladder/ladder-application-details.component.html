@@ -1,0 +1,135 @@
+<loading *ngIf="loading"></loading>
+<ng-container *ngIf="!loading">
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Employee:
+    </div>
+    <div class="col-sm-4 font-weight-bold">
+    <strong>{{application.kersUser.rprtngProfile.name}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      County:
+    </div>
+    <div class="col-sm-4 font-weight-bold">
+      <strong>{{application.kersUser.rprtngProfile.planningUnit.name}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Promotion to Level:
+    </div>
+    <div class="col-sm-4">
+      <strong>{{application.ladderLevel.name}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Date of last Career Ladder Promotion:
+    </div>
+    <div class="col-sm-4">
+      <strong>{{application.lastPromotion | date:'shortDate'}}</strong>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      InService Hours Earned from {{application.lastPromotion | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}:
+    </div>
+    <div class="col-sm-8">
+      <strong>{{hoursAttended | async}}</strong><br>
+      <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a>
+      <div *ngIf="trainingDetails">
+        <div><a class="btn btn-info btn-xs" (click)="trainingDetails=false">close</a></div>
+        <training-transcript [user]="application.kersUser" [start]="lastPromotionDate" [end]="firstOfTheYear"></training-transcript>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Highest level of education:
+    </div>
+    <div class="col-sm-4">
+      <strong>{{application.ladderEducationLevel.name}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Program of Study:
+    </div>
+    <div class="col-sm-4">
+      <strong>{{application.programOfStudy}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Evidence of Further Professioal or academic Training:
+    </div>
+    <div class="col-sm-4" [froalaView]="application.evidence"></div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Start Date:
+    </div>
+    <div class="col-sm-4">
+      <strong>{{application.startDate | date:'shortDate'}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Number of years of Extension service:
+    </div>
+    <div class="col-sm-4">
+      <strong>{{application.numberOfYears}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      Performance ratings:
+    </div>
+    <div class="col-sm-4">
+      <div *ngFor="let rat of application.ratings">
+        {{rat.year}}: {{rat.ratting}}
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="application.images != undefined && application.images.length > 0">
+    <div class="col-sm-4 text-right">
+      Documents:
+    </div>
+    <div class="col-sm-8">
+      <div class="row">
+        <ng-container *ngFor="let img of application.images">
+          <ladder-detail-image [image]="img"></ladder-detail-image>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12" style="border-top: 1px solid #ccc; margin-top: 20px; padding: 20px 0;" *ngIf="!application.draft">
+    <h2>Status:</h2>
+    <span *ngIf="application.lastStage != null">{{application.lastStage.name}} Review</span>
+    <span *ngIf="application.approved">Approved</span>
+    
+  </div>
+  <div class="col-xs-12" style="border-top: 1px solid #ccc; margin-top: 20px; padding: 20px 0;">
+    <h2>Reviews:</h2>
+    <ng-container *ngFor="let stage of application.stages">
+      <div class="row" *ngIf="stage.kersUser">
+        <div class="col-xs-3">
+          {{stage.reviewed | date:'short'}}
+        </div>
+        <div class="col-xs-3">
+          {{stage.ladderStage.name}}
+        </div>
+        <div class="col-xs-3">
+          {{stage.kersUser.rprtngProfile.name}}
+        </div>
+        <div class="col-xs-3">
+          {{stage.note}}
+        </div>
+      </div>
+    </ng-container>
+    
+  </div>
+</ng-container> 

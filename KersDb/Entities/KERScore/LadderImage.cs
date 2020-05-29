@@ -15,5 +15,6 @@ namespace Kers.Models.Entities.KERScore
         public int UploadImageId {get;set;}
         public UploadImage UploadImage {get;set;}
         public DateTime Created { get; set; }
+        public string Description {get;set;}
     }
 }

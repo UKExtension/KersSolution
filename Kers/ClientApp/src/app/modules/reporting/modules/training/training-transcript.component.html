@@ -1,5 +1,5 @@
-<h3>Trainings Transcript</h3>
-<div class="row">
+<h3 *ngIf="!start">Trainings Transcript</h3>
+<div *ngIf="!start" class="row">
   <div class="col-sm-6 col-xs-12" class="form-inline" style="margin-top: 3px;">
     
     <div class="form-group col-sm-6 col-xs-12" style="margin-bottom: 8px;">

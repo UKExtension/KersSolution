@@ -88,7 +88,8 @@ export class TrainingFormSessionsComponent implements OnInit {
           cancelCutoffDaysId: "",
           registerCutoffDaysId: "",
           seatLimit: "",
-          tStatus: "P"
+          tStatus: "P",
+          isCore: [false]
     });
    }
 

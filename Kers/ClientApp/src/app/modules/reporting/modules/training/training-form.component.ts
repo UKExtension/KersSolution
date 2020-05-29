@@ -82,7 +82,8 @@ export class TrainingFormComponent implements OnInit {
           cancelCutoffDaysId: "",
           registerCutoffDaysId: "",
           seatLimit: "",
-          tStatus: "P"
+          tStatus: "P",
+          isCore:[false]
     }, { validator: trainingValidator });
     let today = new Date();
     this.myDatePickerOptions.disableUntil = {year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()};

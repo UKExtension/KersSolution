@@ -130,7 +130,7 @@
                 <option [value]="'P'">Keep as Pending Proposal</option>
                 <option [value]="'A'">Move to Catalog</option>
                 <option [value]="'C'">Canceled Training</option>
-            </select>
+            </select><input type="checkbox" formControlName="isCore" /> Core Training
         </div>
     </div> 
     <div class="form-group" *ngIf="training">

@@ -13,6 +13,8 @@ export class TrainingTranscriptComponent implements OnInit {
 
   @Input() user:User;
   @Input() year:number = 0;
+  @Input() start:Date = undefined;
+  @Input() end:Date = undefined;
 
   years:number[] = [];
   thisYear:number;
@@ -49,7 +51,7 @@ export class TrainingTranscriptComponent implements OnInit {
   }
   loadData(){
     
-      this.service.enrolledByUser(this.user.id,this.thisYear).subscribe(
+      this.service.enrolledByUser(this.user.id,this.thisYear, this.start, this.end).subscribe(
         res =>{
           this.trainings = res;
           this.totalHours = this.getTotalHours(this.trainings);

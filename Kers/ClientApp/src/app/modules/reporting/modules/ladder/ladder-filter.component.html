@@ -1,0 +1,118 @@
+<h3>Proffesional Promotion Application Records</h3><br>
+<div class="row">
+  <div class="col-md-6 col-sm-6 col-xs-12">
+    <input class="form-control" name="contact" (keyup)="onSearch($event)" placeholder="Employee Name"/>
+  </div>
+  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
+       </div>
+
+</div>
+
+
+<a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
+  <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
+</a>
+<div class="row">
+  <form *ngIf="condition" class="form-horizontal form-label-left">
+    <div class="col-sm-offset-3 col-sm-9">
+      <h2>Refine Search</h2>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Applying for Level</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onLevelChange($event)" name="Level">
+          <option value="null">All Levels</option>
+          <option *ngFor="let level of levels$ | async" value="{{level.id}}">{{level.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Review Stage</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onStageChange($event)" name="Stage">
+          <option value="null">All Review Stages</option>
+          <option *ngFor="let stage of stages$ | async" value="{{stage.id}}">{{stage.name}}</option>
+          <option value="0">Approved</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Region</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onRegionChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let region of regions$ | async" value="{{region.id}}">{{region.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="criteria.regionId != null && criteria.regionId != 0">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Area</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onAreaChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let area of areas$ | async" value="{{area.id}}">{{area.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">County</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onCountyChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let county of counties$ | async" value="{{county.id}}">{{county.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default" [class.active]="order=='dsc'">
+                <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
+                </label>
+                <label class="btn btn-default" [class.active]="order=='asc'">
+                  <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
+                </label>
+                <label class="btn btn-default" [class.active]="order=='alph'">
+                    <input type="radio" name="type" id="option4" (click)="switchOrder('alph')"> Alphabetically
+                  </label>
+            </div>
+        </div>
+    </div>  
+    
+    
+    
+  </form>
+</div><br>
+<div class="table-responsive" *ngIf="applications$ | async as revisions">
+  
+  <table class="table table-bordered table-striped">
+      <thead>
+          <tr>
+            <th>Date Submitted</th>
+            <th>Name</th>
+            <th>County</th>
+            <th></th>
+          </tr>
+      </thead>
+      <tbody *ngIf="!loading">
+        <tr *ngFor="let revision of revisions.results" [ladder-filter-detail]="revision"></tr>
+      </tbody>
+      
+  </table>
+
+
+
+  <div class="col-xs-12"><br><br>
+    <div *ngIf="getCount(revisions.resultsCount) != 0 && !loading" class="text-center">
+      <div>Showing {{ (criteria.take < revisions.resultsCount ? criteria.take : revisions.resultsCount)}} of {{revisions.resultsCount}} Records</div>
+      <div *ngIf="revisions.resultsCount >= criteria.take" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+          load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+    </div>
+  </div><br><br>
+
+
+
+
+  <loading *ngIf="loading"></loading>
+</div>

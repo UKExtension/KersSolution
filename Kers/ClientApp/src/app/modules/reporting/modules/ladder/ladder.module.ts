@@ -6,14 +6,25 @@ import { LadderRoutingModule } from './ladder-routing.module';
 import { LadderComponent } from './ladder.component';
 import { LadderApplicationFormComponent } from './ladder-application-form.component';
 import { MyDatePickerModule } from 'mydatepicker';
+import { TrainingModule } from '../training/training.module';
+import { LadderApplicantComponent } from './ladder-applicant.component';
+import { LadderApplicationsListComponent } from './ladder-applications-list.component';
+import { LadderApplicantListDetailComponent } from './ladder-applicant-list-detail.component';
+import { LadderReviewComponent } from './ladder-review.component';
+import { LadderApplicationDetailsComponent } from './ladder-application-details.component';
+import { LadderDetailImageComponent } from './ladder-detail-image.component';
+import { LadderReviewApplicationDetailComponent } from './ladder-review-application-detail.component';
+import { LadderFilterComponent } from './ladder-filter.component';
+import { LadderFilterDetailComponent } from './ladder-filter-detail.component';
 
 @NgModule({
-  declarations: [LadderComponent, LadderApplicationFormComponent],
+  declarations: [LadderComponent, LadderApplicationFormComponent, LadderApplicantComponent, LadderApplicationsListComponent, LadderApplicantListDetailComponent, LadderReviewComponent, LadderApplicationDetailsComponent, LadderDetailImageComponent, LadderReviewApplicationDetailComponent, LadderFilterComponent, LadderFilterDetailComponent],
   imports: [
     CommonModule,
     MyDatePickerModule,
     SharedModule,
-    LadderRoutingModule
+    LadderRoutingModule,
+    TrainingModule
   ]
 })
 export class LadderModule { }

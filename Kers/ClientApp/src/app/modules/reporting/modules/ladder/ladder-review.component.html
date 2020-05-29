@@ -1,0 +1,7 @@
+<loading *ngIf="loading"></loading>
+<div *ngIf="!loading">
+  <ng-container *ngFor="let ap of aplications$ | async">
+    <ladder-review-application-detail [application]="ap"></ladder-review-application-detail>
+  </ng-container>
+</div>
+

@@ -352,6 +352,7 @@ namespace Kers.Controllers
                 trn.day3 = training.day3;
                 trn.day4 = training.day4;
                 trn.tAudience = training.tAudience;
+                trn.IsCore = training.IsCore;
                 trn.TrainDateBegin = training.Start.ToString("yyyyMMdd");
                 trn.TrainDateEnd = training.End?.ToString("yyyyMMdd");
                 trn.LastModifiedDateTime = DateTime.Now;
@@ -424,6 +425,7 @@ namespace Kers.Controllers
                 trn.RegisterCutoffDaysId = training.RegisterCutoffDaysId;
                 trn.seatLimit = training.seatLimit;
                 trn.BodyPreview = training.Body;
+                trn.IsCore = training.IsCore;
                 context.SaveChanges();
                 if(isMovedToCatalog){
                     messageRepo.ScheduleTrainingMessage("PROPOSALCOMFIRMED",trn,trn.submittedBy);
@@ -717,26 +719,59 @@ namespace Kers.Controllers
             return with;
         }
 
-        [HttpGet("byuser/{id?}/{year?}")]
-        public async Task<IActionResult> TrainingsByUser( int id = 0, int year = 0 ){
+        [HttpGet("byuser/{id?}/{year?}/{start?}/{end?}")]
+        public async Task<IActionResult> TrainingsByUser( int id = 0, int? year = null,  DateTime? start = null, DateTime? end = null){
             KersUser user;
             if( id == 0 ){
                 user = CurrentUser();
                 id = user.Id;
             }
-            if( year == 0){
-                year = DateTime.Now.Year;
-            }
             var trainings = from training in context.Training
                 from enfolment in training.Enrollment
                 where enfolment.AttendieId == id
-                where training.Start.Year == year
+                //where training.Start.Year == year
                 select training;
+            
+            if(start == null){
+                if( year == 0){
+                    year = DateTime.Now.Year;
+                }
+                trainings = trainings.Where( t => t.Start.Year == year);
+            }else{
+                trainings = trainings.Where( t => t.Start > start && t.Start < end);
+            }
+            
+
             trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour)
             .Include( t => t.SurveyResults);
             var tnngs = await trainings.OrderBy(t => t.Start).ToListAsync();
             return new OkObjectResult(tnngs);
         }
+
+
+        [HttpGet("userhours/{id}/{start}/{end}")]
+        public async Task<IActionResult> HourssByUser( int id, DateTime start, DateTime end){
+            KersUser user;
+            if( id == 0 ){
+                user = CurrentUser();
+                id = user.Id;
+            }
+            var trainings = from training in context.Training
+            from enfolment in training.Enrollment
+            where enfolment.AttendieId == id && enfolment.attended == true
+            select training;
+        
+
+            trainings = trainings.Where( t => t.Start > start && t.Start < end);
+            
+
+            trainings = trainings.Include(t => t.iHour);
+            var hours = await trainings.SumAsync( t => t.iHour == null ? 0 : t.iHour.iHourValue );
+            return new OkObjectResult(hours);
+        }
+
+
+
 
 
         [HttpGet("proposedbyuser/{id?}/{year?}")]

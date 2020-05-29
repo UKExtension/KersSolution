@@ -5,26 +5,47 @@ export class LadderApplication{
     kersUser:User;
     kersUserId:number;
     positionNumber:string;
+    programOfStudy:string;
+    evidence:string;
+    numberOfYears?:number;
     lastPromotion:Date;
+    startDate:Date;
+    draft:boolean;
     ladderLevel:LadderLevel;
     ladderLevelId:number;
+    ladderEducationLevel:LadderEducationLevel;
+    ladderEducationLevelId:number;
     lastStage:LadderStage;
     lastStageId:number;
     stages:LadderApplicationStage[];
     ratings:LadderPerformanceRating[];
     images:LadderImage[];
+    created:Date;
+    lastUpdated:Date;
+}
+
+export class LadderEducationLevel{
+    id:number;
+    name:string;
+    order:number;
 }
 
 export class LadderImage{
     id:number;
-    uploadImage:Image;
+    uploadImage:UploadImage;
+    uploadImageId:number;
     created:Date;
+    description:string;
+}
+export class UploadImage{
+    id:number;
+    name:string;
 }
 export class LadderPerformanceRating{
     id:number;
     year:string;
     ratting:string;
-    order:number;
+    order?:number;
 }
 
 export class LadderLevel{
@@ -36,7 +57,9 @@ export class LadderLevel{
 export class LadderApplicationStage{
     id:number;
     ladderApplication:LadderApplication;
+    ladderApplicationId:number;
     created:Date;
+    reviewed:Date;
     ladderStage:LadderStage;
     kersUser:User;
     note:string;
@@ -47,7 +70,7 @@ export class LadderStage{
     id:number;
     name:string;
     order:number;
-    LadderStageRoles:LadderStageRole[];
+    ladderStageRoles:LadderStageRole[];
 
 }
 

@@ -2,7 +2,7 @@ import { Injectable} from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, retry } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 import { User } from '../../user/user.service';
 import { Servicelog } from '../../servicelog/servicelog.service';
@@ -170,6 +170,7 @@ export class SnapedAdminService {
         var url = this.baseUrl + 'getCustomData/';
         return this.http.post<string[]>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
+                retry(3),
                 catchError(this.handleError('getCustomData',[]))
             );
     }

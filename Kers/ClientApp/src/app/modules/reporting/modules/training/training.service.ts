@@ -52,13 +52,30 @@ export class TrainingService {
                 catchError(this.handleError('registerWindows', <Training>{}))
             );
       }
-      enrolledByUser(userId:number = 0, year:number = 0):Observable<Training[]>{
-        var url = this.baseUrl + "byuser/" + userId + '/' + year;
+      enrolledByUser(userId:number = 0, year:number = 0, start:Date = undefined, end:Date = undefined):Observable<Training[]>{
+        var url:string;  
+        if( start == undefined){
+            url = this.baseUrl + "byuser/" + userId + '/' + year;
+        }else{
+            url = this.baseUrl + "byuser/" + userId + '/' + year + '/' + start.toISOString() + '/' + end.toISOString();
+        }
         return this.http.get<Training[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('enrolledByUser', []))
             );
       }
+
+
+      hoursByUser(userId:number = 0, start:Date, end:Date):Observable<number>{
+        
+        var url = this.baseUrl + "userhours/" + userId + '/' + start.toISOString() + '/' + end.toISOString();
+        
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('hoursByUser', 0))
+            );
+      }
+
       proposals():Observable<Training[]>{
         var url = this.baseUrl + "proposalsawaiting/";
         return this.http.get<Training[]>(this.location.prepareExternalUrl(url))

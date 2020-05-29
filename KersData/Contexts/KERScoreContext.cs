@@ -218,6 +218,18 @@ namespace Kers.Models.Contexts
         public virtual DbSet<CountyEventPlanningUnit> CountyEventPlanningUnit {get;set;}
         public virtual DbSet<CountyEventProgramCategory> CountyEventProgramCategory {get;set;}
 
+
+        /***************************************/
+        //  Career Ladder
+        /***************************************/
+        public virtual DbSet<LadderApplication> LadderApplication {get;set;}
+        public virtual DbSet<LadderLevel> LadderLevel {get;set;}
+        public virtual DbSet<LadderImage> LadderImage {get;set;}
+        public virtual DbSet<LadderEducationLevel> LadderEducationLevel {get;set;}
+        public virtual DbSet<LadderStage> LadderStage {get;set;}
+
+        public virtual DbSet<LadderKersUserLevel> LadderKersUserLevel {get;set;}
+
         /***************************************/
         //  General
         /***************************************/

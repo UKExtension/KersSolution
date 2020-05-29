@@ -56,6 +56,7 @@ namespace Kers.Models.Entities.KERScore
         public string day4 { get; set; }
 
         public string tAudience { get; set; }
+        public Boolean? IsCore {get;set;}
         public List<TrainingEnrollment> Enrollment {get; set; }
         public List<TrainingSession> TrainingSession {get;set;}
 

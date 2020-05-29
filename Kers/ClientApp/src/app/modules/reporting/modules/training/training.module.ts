@@ -63,6 +63,7 @@ import { TrainingSurveyRowComponent } from './survey/training-survey-row.compone
     MyDateRangePickerModule,
     CommonModule,
     TrainingRoutingModule
-  ]
+  ],
+  exports: [TrainingTranscriptComponent]
 })
 export class TrainingModule { }
