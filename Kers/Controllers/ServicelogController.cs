@@ -196,6 +196,7 @@ namespace Kers.Controllers
                 act.Revisions.Add(activity);
                 context.Add(act); 
                 this.Log(activity,"ActivityRevision", "Activity Added.");
+                act.LastRevisionId = activity.Id;
                 context.SaveChanges();
                 return new OkObjectResult(activity);
             }else{
@@ -285,6 +286,9 @@ namespace Kers.Controllers
 
 
                 acEntity.Revisions.Add(activity);
+                //acEntity.LastRevision = activity;
+                context.SaveChanges();
+                acEntity.LastRevisionId = activity.Id;
                 context.SaveChanges();
                 this.Log(entity,"ActivityRevision", "Activity Updated.");
                 return new OkObjectResult(activity);

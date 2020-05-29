@@ -20,6 +20,8 @@ namespace Kers.Models.Entities.KERScore
         public MajorProgram MajorProgram {get;set;}
         public PlanningUnit PlanningUnit {get;set;}
         public List<ActivityRevision> Revisions {get;set;}
+        public ActivityRevision LastRevision {get;set;}
+        public int? LastRevisionId {get;set;}
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
         public List<ActivityImage> ActivityImages {get;set;}
