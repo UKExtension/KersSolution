@@ -53,6 +53,12 @@ namespace Kers.Controllers
             var levels = context.LadderLevel.OrderBy( o => o.Order);
             return new OkObjectResult(await levels.ToListAsync());
         }
+        [HttpGet("stages")]
+        [Authorize]
+        public async Task<IActionResult> Stages(){
+            var levels = context.LadderStage.OrderBy( o => o.Order);
+            return new OkObjectResult(await levels.ToListAsync());
+        }
         [HttpGet("educationlevels")]
         [Authorize]
         public async Task<IActionResult> EducationLevels(){
@@ -531,24 +537,47 @@ namespace Kers.Controllers
             return new OkObjectResult(ret);
         }
         private async Task<LadderSeearchResultsWithCount> SeearchResults(LadderApplicationSearchCriteria criteria){
+            
+            var fiscalYear = fiscalYearRepo.byName(criteria.Fy, FiscalYearType.ServiceLog);
+            if(fiscalYear == null) fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
+            
             var result = this.context.LadderApplication.AsNoTracking()
-                                .Where( a => a.Created != null);
-            /* if( criteria.Search != ""){
+                                .Where( a => a.Created > fiscalYear.Start && a.Created < fiscalYear.End && a.Draft == false);
+            if( criteria.Search != ""){
                 result = result.Where( a => a.KersUser.RprtngProfile.Name.Contains(criteria.Search));
             }
-            if( criteria.CongressionalDistrictId != null && criteria.CongressionalDistrictId != 0){
-                result = result.Where( a => a.PlanningUnit.CongressionalDistrictUnit.CongressionalDistrictId == criteria.CongressionalDistrictId);
-            }
+
             if(criteria.RegionId != null && criteria.RegionId != 0){
-                result = result.Where( a => a.PlanningUnit.ExtensionArea.ExtensionRegionId == criteria.RegionId);
+                result = result.Where( a => a.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegionId == criteria.RegionId);
             }
             if(criteria.AreaId != null && criteria.AreaId != 0){
-                result = result.Where( a => a.PlanningUnit.ExtensionAreaId == criteria.AreaId);
+                result = result.Where( a => a.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId == criteria.AreaId);
             }
             if( criteria.UnitId != null && criteria.UnitId != 0){
-                result = result.Where( a => a.PlanningUnitId == criteria.UnitId);
+                result = result.Where( a => a.KersUser.RprtngProfile.PlanningUnitId == criteria.UnitId);
             }
-            var LastRevs = new List<ActivityRevision>();
+            if( criteria.LevelId != null ){
+                result = result.Where( a => a.LadderLevelId == criteria.LevelId);
+            }
+            if( criteria.ReviewStageId != null ){
+                if( criteria.ReviewStageId == 0 ){
+                    result = result.Where( a => a.Approved == true);
+                }else{
+                    result = result.Where( a => a.LastStageId == criteria.ReviewStageId && a.Approved == false);
+                }
+                
+            }else{
+                result = result.Where( a => a.Approved == false);
+            }
+
+            if(criteria.Order == "asc"){
+                result = result.OrderBy(r => r.Created);
+            }else if(criteria.Order == "dsc" ){
+                result = result.OrderByDescending( r => r.Created);
+            }else{
+                result = result.OrderBy( r => r.KersUser.RprtngProfile.Name);
+            }
+            /* var LastRevs = new List<ActivityRevision>();
             foreach( var res in result.Include( a=>a.Revisions).ThenInclude(r => r.ActivityOptionSelections)) LastRevs.Add(res.Revisions.OrderBy( r => r.Created).Last());
             var searchResult = new List<ActivitySearchResult>();
             var ret = new ActivitySeearchResultsWithCount();
@@ -584,10 +613,13 @@ namespace Kers.Controllers
                 }      
             }
             ret.Results = searchResult; */
+            result = result.Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude(p => p.PlanningUnit);
 
+            //var rslt = await result.ToListAsync();
             var ret = new LadderSeearchResultsWithCount();
-            ret.Results = await result.ToListAsync();
-            ret.ResultsCount = 100;
+            ret.ResultsCount = result.Count();
+            ret.Results = await result.Skip(criteria.Skip).Take(criteria.Take).ToListAsync();
+            foreach( var r in ret.Results) r.KersUser.RprtngProfile.PlanningUnit.GeoFeature = "";
             return ret;
         }
 

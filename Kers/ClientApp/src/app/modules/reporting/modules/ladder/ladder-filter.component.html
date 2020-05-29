@@ -1,4 +1,4 @@
-<h3>Service Log Records</h3><br>
+<h3>Proffesional Promotion Application Records</h3><br>
 <div class="row">
   <div class="col-md-6 col-sm-6 col-xs-12">
     <input class="form-control" name="contact" (keyup)="onSearch($event)" placeholder="Employee Name"/>
@@ -16,6 +16,25 @@
   <form *ngIf="condition" class="form-horizontal form-label-left">
     <div class="col-sm-offset-3 col-sm-9">
       <h2>Refine Search</h2>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Applying for Level</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onLevelChange($event)" name="Level">
+          <option value="null">All Levels</option>
+          <option *ngFor="let level of levels$ | async" value="{{level.id}}">{{level.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Review Stage</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onStageChange($event)" name="Stage">
+          <option value="null">All Review Stages</option>
+          <option *ngFor="let stage of stages$ | async" value="{{stage.id}}">{{stage.name}}</option>
+          <option value="0">Approved</option>
+        </select>
+      </div>
     </div>
     <div class="form-group" >
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Region</label>
@@ -65,25 +84,19 @@
     
   </form>
 </div><br>
-
-
-<div class="text-right">
-  <a class="btn btn-info btn-xs" (click)="csv()"><i class="fa fa-download"></i> Csv</a>
-</div>
 <div class="table-responsive" *ngIf="applications$ | async as revisions">
   
   <table class="table table-bordered table-striped">
       <thead>
           <tr>
-            <th>Date</th>
+            <th>Date Submitted</th>
             <th>Name</th>
+            <th>County</th>
             <th></th>
           </tr>
       </thead>
       <tbody *ngIf="!loading">
-        <tr *ngFor="let revision of revisions.results" [ladder-filter-detail]="revision">
-          
-        </tr>
+        <tr *ngFor="let revision of revisions.results" [ladder-filter-detail]="revision"></tr>
       </tbody>
       
   </table>

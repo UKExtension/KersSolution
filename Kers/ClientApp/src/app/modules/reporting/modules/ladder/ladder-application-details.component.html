@@ -108,7 +108,8 @@
   </div>
   <div class="col-xs-12" style="border-top: 1px solid #ccc; margin-top: 20px; padding: 20px 0;" *ngIf="!application.draft">
     <h2>Status:</h2>
-    {{application.lastStage.name}} Review
+    <span *ngIf="application.lastStage != null">{{application.lastStage.name}} Review</span>
+    <span *ngIf="application.approved">Approved</span>
     
   </div>
   <div class="col-xs-12" style="border-top: 1px solid #ccc; margin-top: 20px; padding: 20px 0;">

@@ -1,6 +1,14 @@
-<tr>
-  <td>{{application.created}}</td>
-  <td></td>
-  <td></td>
-</tr>
-
+<ng-container *ngIf="!details">
+  <td>{{application.lastUpdated | date:'short'}}</td>
+  <td>{{application.kersUser.rprtngProfile.name}}</td>
+  <td>{{application.kersUser.rprtngProfile.planningUnit.name}}</td>
+  <td><a class="btn btn-info btn-xs pull-right" (click)="details = true">details</a></td>
+</ng-container>
+<ng-container *ngIf="details">
+  <td colspan="4">
+    <div>
+      <a class="btn btn-info btn-xs pull-right" (click)="details = false">close</a>
+    </div>
+    <ladder-application-details [applicationId]="application.id"></ladder-application-details>
+  </td>
+</ng-container>

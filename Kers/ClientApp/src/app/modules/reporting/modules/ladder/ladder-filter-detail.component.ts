@@ -10,6 +10,8 @@ export class LadderFilterDetailComponent implements OnInit {
 
   @Input('ladder-filter-detail') application:LadderApplication;
 
+  details = false;
+
   constructor() { }
 
   ngOnInit() {

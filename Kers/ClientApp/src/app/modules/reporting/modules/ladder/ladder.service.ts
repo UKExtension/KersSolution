@@ -49,6 +49,14 @@ export class LadderService {
             );
     }
 
+    stages():Observable<LadderStage[]>{
+        var url = this.baseUrl + "stages/";
+        return this.http.get<LadderStage[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('levels', []))
+            );
+    }
+
     getStage(id:number):Observable<LadderStage>{
         var url = this.baseUrl + "getStage/" + id;
         return this.http.get<LadderStage>(this.location.prepareExternalUrl(url))

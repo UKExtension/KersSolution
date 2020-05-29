@@ -228,6 +228,8 @@ namespace Kers.Models.Contexts
         public virtual DbSet<LadderEducationLevel> LadderEducationLevel {get;set;}
         public virtual DbSet<LadderStage> LadderStage {get;set;}
 
+        public virtual DbSet<LadderKersUserLevel> LadderKersUserLevel {get;set;}
+
         /***************************************/
         //  General
         /***************************************/

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LadderApplication } from './ladder';
+import { LadderApplication, LadderLevel, LadderStage } from './ladder';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
 import { LadderService, LadderApplicationSearchCriteria, LadderSeearchResultsWithCount } from './ladder.service';
@@ -17,10 +17,13 @@ export class LadderFilterComponent implements OnInit {
   applications$: Observable<LadderSeearchResultsWithCount>;
   loading: boolean = true; // Turn spinner on and off
   refresh: Subject<string>; // For load/reload
+  order = "dsc";
 
   regions$:Observable<ExtensionRegion[]>;
   areas$:Observable<ExtensionArea[]>;
   counties$:Observable<PlanningUnit[]>;
+  levels$:Observable<LadderLevel[]>;
+  stages$:Observable<LadderStage[]>;
 
   condition = false;
 
@@ -38,6 +41,8 @@ export class LadderFilterComponent implements OnInit {
   ngOnInit() {
     this.regions$ = this.stateService.regions();
     this.counties$ = this.stateService.counties();
+    this.levels$ = this.service.levels();
+    this.stages$ = this.service.stages();
 
 
     this.criteria = {
@@ -48,7 +53,9 @@ export class LadderFilterComponent implements OnInit {
       unitId: null,
       skip: 0,
       take: 20,
-      fy: ""
+      fy: "",
+      levelId: undefined,
+      reviewStageId: undefined
     }
 
     
@@ -97,6 +104,23 @@ export class LadderFilterComponent implements OnInit {
     }else{
       this.criteria["unitId"] = event.target.value;
     }
+    this.onRefresh();
+  }
+  onLevelChange(event){
+    var val = event.target.value;
+    this.criteria["levelId"] = val == "null" ? undefined : val;
+    this.onRefresh();
+  }
+
+  onStageChange(event){
+    var val = event.target.value;
+    this.criteria["reviewStageId"] = val == "null" ? undefined : val;
+    this.onRefresh();
+  }
+
+  switchOrder(type:string){
+    this.order = type;
+    this.criteria["order"] = type;
     this.onRefresh();
   }
 
