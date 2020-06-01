@@ -309,7 +309,8 @@ namespace Kers.Controllers
                                 FirstOrDefault();
             
             if(acEntity != null){
-                
+                acEntity.LastRevision = null;
+                context.SaveChanges();
                 context.Activity.Remove(acEntity);
                 context.SaveChanges();
                 
