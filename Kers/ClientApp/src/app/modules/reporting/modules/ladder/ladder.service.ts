@@ -115,7 +115,7 @@ export class LadderService {
     }
 
     postFile(fileToUpload: File, userId:number): Observable<FileUploadResult> {
-        const endpoint = '/api/Ladder/UploadFiles/' + userId;
+        const endpoint = this.location.prepareExternalUrl('/api/Ladder/UploadFiles/' + userId);
         const formData: FormData = new FormData();
         formData.append('file', fileToUpload, fileToUpload.name);
         return this.httpClient.post<FileUploadResult>(endpoint, formData)
