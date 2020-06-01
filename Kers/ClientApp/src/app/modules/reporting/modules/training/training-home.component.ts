@@ -40,7 +40,7 @@ export class TrainingHomeComponent implements OnInit {
 
   defaultTitle(){
     this.reportingService.setTitle("In-Service Training");
-    this.reportingService.setSubtitle("For specific In-Service related questions or assistance, please email: agpsd@lsv.uky.edu");
+    //this.reportingService.setSubtitle("For specific In-Service related questions or assistance, please email: agpsd@lsv.uky.edu");
   }
   ngOnDestroy(){
     this.reportingService.setTitle("Kentucky Extension Reporting System");

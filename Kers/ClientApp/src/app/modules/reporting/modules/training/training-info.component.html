@@ -55,6 +55,14 @@
   <div></div>
   <div class="row">
     <div class="col-sm-3 col-xs-12">
+      <strong>Contact:</strong>
+    </div>
+    <div class="col-sm-9 col-xs-12">
+      {{training.tContact}}&nbsp;
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3 col-xs-12">
       <strong>Description:</strong>
     </div>
     <div class="col-sm-9 col-xs-12" [innerHTML]="training.body + '&nbsp;'"></div>
@@ -64,14 +72,6 @@
       <strong>Audience:</strong>
     </div>
     <div class="col-sm-9 col-xs-12" [innerHTML]="training.tAudience + '&nbsp;'"></div>
-  </div>
-  <div class="row">
-      <div class="col-sm-3 col-xs-12">
-        <strong>Contact:</strong>
-      </div>
-      <div class="col-sm-9 col-xs-12">
-        {{training.tContact}}&nbsp;
-      </div>
   </div>
   <div class="row">
       <div class="col-sm-3 col-xs-12">
