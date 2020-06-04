@@ -1,6 +1,9 @@
 <td *ngIf="default">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
 <td *ngIf="default"><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
-<td *ngIf="default">{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+<td *ngIf="default">
+  {{training.subject}}
+  <ng-container *ngIf="training.isCore"> (Core In-Service)</ng-container>
+  <span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
 <td *ngIf="default">{{attendance(training)}}</td>
 <td *ngIf="default">
   <span *ngIf="attended && !surveyTaken"><a (click)="default=false;" class="btn btn-info btn-xs">survey</a></span>
