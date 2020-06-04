@@ -599,7 +599,8 @@ namespace Kers.Controllers
                                         [FromQuery] string order,
                                         [FromQuery] bool withseats,
                                         [FromQuery] bool attendance,
-                                        [FromQuery] bool admin
+                                        [FromQuery] bool admin,
+                                        [FromQuery] bool core
                                         ){
             
             var trainings = from i in _context.Training select i;
@@ -640,6 +641,9 @@ namespace Kers.Controllers
             }
             if(withseats){
                 trainings = trainings.Where( i => i.seatLimit == null || i.seatLimit > i.Enrollment.Where(e => e.eStatus == "E").Count());
+            }
+            if(core){
+                trainings = trainings.Where( i => i.IsCore == true );
             }
             trainings = trainings
                             .Include( t => t.submittedBy).ThenInclude( u => u.PersonalProfile)

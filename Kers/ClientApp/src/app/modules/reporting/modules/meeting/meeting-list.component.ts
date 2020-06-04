@@ -148,7 +148,8 @@ export class MeetingListComponent implements OnInit {
       order: 'dsc',
       withseats: false,
       attendance: false,
-      admin: false
+      admin: false,
+      core:false
     }
 
     this.model.beginDate = {year: this.startDate.getFullYear(), month: this.startDate.getMonth() + 1, day: this.startDate.getDate()};

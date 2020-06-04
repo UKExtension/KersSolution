@@ -87,7 +87,8 @@ export class TrainingCatalogComponent implements OnInit {
               order: 'dsc',
               withseats: false,
               attendance: this.attendance,
-              admin: this.admin
+              admin: this.admin,
+              core: false
             }
 
           } 
@@ -147,6 +148,10 @@ export class TrainingCatalogComponent implements OnInit {
 
   onSeatsChange(event){
     this.criteria["withseats"] = event.target.checked;
+    this.onRefresh();
+  }
+  onIsCoreChange(event){
+    this.criteria["core"] = event.target.checked;
     this.onRefresh();
   }
 

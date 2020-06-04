@@ -46,6 +46,12 @@
             <input type="checkbox" (change)="onSeatsChange($event)" name="withSeats" />
         </div>
     </div>
+    <div class="form-group" *ngIf="admin">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Core Training</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+          <input type="checkbox" (change)="onIsCoreChange($event)" name="isCore" />
+      </div>
+    </div>
     <div class="form-group" >
         <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
         <div class="col-md-6 col-sm-6 col-xs-12">

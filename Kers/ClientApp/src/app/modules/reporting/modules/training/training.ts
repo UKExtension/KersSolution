@@ -93,6 +93,7 @@ export class TrainingSearchCriteria{
     withseats: boolean = false;
     attendance: boolean = false;
     admin: boolean = false;
+    core: boolean = false;
   }
 
   export class TrainingSession{
