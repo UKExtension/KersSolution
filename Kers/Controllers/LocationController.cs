@@ -91,6 +91,7 @@ namespace Kers.Controllers
                 lctn.ExtensionEventLocation.Address.PostalCode = location.ExtensionEventLocation.Address.PostalCode;
                 lctn.ExtensionEventLocation.Address.State = location.ExtensionEventLocation.Address.State;
                 lctn.ExtensionEventLocation.Address.Street = location.ExtensionEventLocation.Address.Street;
+                lctn.ExtensionEventLocation.LocationUri = location.ExtensionEventLocation.LocationUri;
                 context.SaveChanges();
                 this.Log(location,"ExtensionEventLocation", "ExtensionEventLocation Updated.");
                 return new OkObjectResult(location);
@@ -113,6 +114,26 @@ namespace Kers.Controllers
                             .Include( e => e.ExtensionEventLocation)
                                 .ThenInclude( l => l.Address);
             return new OkObjectResult(locations);
+        }
+
+
+        [HttpDelete("deletelocationconnection/{id}")]
+        [Authorize]
+        public IActionResult DeleteLocationConnnection( int id ){
+            var entity = context.ExtensionEventLocationConnection.Where( c => c.Id == id)
+                            .Include( c => c.ExtensionEventLocation ).ThenInclude( l => l.Address)
+                            .FirstOrDefault();
+            if(entity != null){
+                context.Remove(entity.ExtensionEventLocation.Address);
+                context.Remove( entity.ExtensionEventLocation);
+                context.ExtensionEventLocationConnection.Remove(entity);
+                context.SaveChanges();
+                this.Log(entity,"ExtensionEventLocation", "ExtensionEventLocation Deleted.");
+                return new OkResult();
+            }else{
+                this.Log( id ,"ExtensionEventLocation", "Not Found ExtensionEventLocation in a delete attempt.", "ExtensionEventLocation", "Error");
+                return new StatusCodeResult(500);
+            }
         }
 
         [HttpDelete("deletelocation/{id}")]

@@ -8,6 +8,7 @@ import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 import { UserService } from '../../user/user.service';
 import { ExtensionEventLocation } from '../extension-event';
+import { ExtensionEventLocationConnection } from '../location/location.service';
 
 @Component({
   selector: 'county-event-form',
@@ -118,52 +119,21 @@ import { ExtensionEventLocation } from '../extension-event';
         
     </div>
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12">Location:</label>
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Location:</label>
       <div  class="col-md-6 col-sm-9 col-xs-12">
         <br>
-        <div *ngIf="selectedLocation">
-          Display selected location
+        <div *ngIf="!locationBrowser">
+          <h4>{{selectedLocation.address.building}}</h4>
+          <h5>{{selectedLocation.address.street}}</h5>
+          <h5>{{selectedLocation.address.city}} {{selectedLocation.address.state != ""?", "+selectedLocation.address.state:""}} {{selectedLocation.address.postalCode}}</h5>
         </div>
         <a *ngIf="!selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> add locaton</a>
-        <a *ngIf="selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> edit locaton</a>
+        <a *ngIf="selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="editLocation()"> edit locaton</a>
       </div>
       <div *ngIf="locationBrowser" class="col-md-9 col-sm-9 col-xs-12">
-        <location-browser *ngIf="county" [county]="county"></location-browser>
+        <location-browser *ngIf="county" [county]="county" (onSelected)="locationSelected($event)"></location-browser>
       </div>
     </div>
-    <!--
-    <div formGroupName="location">
-      <div class="col-md-9 col-sm-9 col-xs-12 col-sm-offset-3">
-        <h3>Location</h3>
-      </div>
-      <div formGroupName="address">
-        <div class="form-group">
-          <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12">Building:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="building" formControlName="building" id="building" class="form-control col-xs-12" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="street" class="control-label col-md-3 col-sm-3 col-xs-12">Address:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="street" formControlName="street" id="street" class="form-control col-xs-12" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="city" class="control-label col-md-3 col-sm-3 col-xs-12">City:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="city" formControlName="city" id="city" class="form-control col-xs-12" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="postalCode" class="control-label col-md-3 col-sm-3 col-xs-12">Zip:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="postalCode" formControlName="postalCode" id="postalCode" class="form-control col-xs-12" />
-          </div>
-        </div>
-      </div>
-    </div>
--->
     <div class="ln_solid"></div>
     <div class="form-group">
         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
@@ -379,6 +349,15 @@ export class CountyEventFormComponent implements OnInit {
         this.programCategoriesOptions = optns;
       } 
     );
+  }
+
+  locationSelected(event:ExtensionEventLocationConnection){
+    this.selectedLocation = event.extensionEventLocation;
+    this.locationBrowser = false;
+  }
+
+  editLocation(){
+    this.locationBrowser = true;
   }
 
   onDateChanged(event: IMyDateModel) {

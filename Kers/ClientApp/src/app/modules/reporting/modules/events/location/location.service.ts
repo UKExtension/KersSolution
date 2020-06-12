@@ -45,8 +45,10 @@ export class LocationService {
                 );
       }
       
-      deleteLocation(id:number):Observable<{}>{
-        var url = this.baseUrl + "deletelocation/" + id;
+      // id: ExtensionEventLocationConnection.id
+      // Deletes Connection as well as location itself
+      deleteLocationConnection(id:number):Observable<{}>{
+        var url = this.baseUrl + "deletelocationconnection/" + id;
         return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('delete note'))

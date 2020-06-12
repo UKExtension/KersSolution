@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { ExtensionEventLocation } from '../extension-event';
-import { ExtensionEventLocationConnection } from './location.service';
+import { ExtensionEventLocationConnection, LocationService } from './location.service';
 
 @Component({
   selector: 'location-detail',
@@ -8,12 +8,16 @@ import { ExtensionEventLocationConnection } from './location.service';
   styles: []
 })
 export class LocationDetailComponent implements OnInit {
-  @Input() location:ExtensionEventLocation;
-  @Output() onSelected = new EventEmitter<ExtensionEventLocation>();
+  @Input() location:ExtensionEventLocationConnection;
+  @Output() onSelected = new EventEmitter<ExtensionEventLocationConnection>();
+  @Output() onDeleted = new EventEmitter<ExtensionEventLocationConnection>();
+  
   isEditing:boolean = false;
   isDeleting:boolean = false;
   isDefault:boolean = true;
-  constructor() { }
+  constructor(
+    private service:LocationService
+  ) { }
 
   ngOnInit() {
   }
@@ -41,7 +45,12 @@ export class LocationDetailComponent implements OnInit {
     this.isDefault = true;
   }
   confirmDelete(){
-    
+    this.default();
+    this.service.deleteLocationConnection(this.location.id).subscribe(
+      _ => {
+        this.onDeleted.emit(this.location);
+      }
+    )
   }
 
 }

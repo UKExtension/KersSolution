@@ -1,4 +1,4 @@
-<div *ngIf="isDefault" style="padding: 6px;" class="col-md-3">
+<div *ngIf="isDefault" style="padding: 35px;" class="col-md-4 col-sm-6 col-xs-12">
 
 
     <div class="text-right">
@@ -13,6 +13,6 @@
 <div *ngIf="isEditing">
     <location-form [location]="location" (onFormCancel)="default()" (onFormSubmit)="changed($event)"></location-form>
 </div>
-<div *ngIf="isDeleting">
-    deleting
+<div *ngIf="isDeleting" style="padding: 6px;" class="col-md-3">
+    Do you really want to delete location <strong>{{location.extensionEventLocation.address.building}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
 </div>

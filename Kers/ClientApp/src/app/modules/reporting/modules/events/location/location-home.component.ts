@@ -16,7 +16,7 @@ import { Observable } from 'rxjs';
     <location-form *ngIf="newLocation" [county]="county" [user]="user" (onFormCancel)="newLocation=false" (onFormSubmit)="newLocationSubmitted($event)"></location-form>
     <div class="row">
       <div *ngFor="let locationConnection of countyLocations$ | async">
-        <location-detail [location]="locationConnection"></location-detail>
+        <location-detail [location]="locationConnection" (onSelected)="locationSelected($event)" (onDeleted)="deleted($event)"></location-detail>
       </div>
     </div>
   </div>
@@ -27,7 +27,7 @@ export class LocationHomeComponent implements OnInit {
   @Input() county:PlanningUnit;
   @Input() user:User;
 
-  @Output() onSelected = new EventEmitter<ExtensionEventLocation>();
+  @Output() onSelected = new EventEmitter<ExtensionEventLocationConnection>();
   @Output() onCanceled = new EventEmitter<void>();
 
   countyLocations$: Observable<ExtensionEventLocationConnection[]>;
@@ -41,8 +41,15 @@ export class LocationHomeComponent implements OnInit {
     this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
   }
   newLocationSubmitted(event:ExtensionEventLocation){
-    console.log(event);
     this.newLocation = false;
+    this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
+  }
+  locationSelected(event:ExtensionEventLocationConnection){
+    this.onSelected.emit(event);
+  }
+
+  deleted(_:ExtensionEventLocation){
+    this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
   }
 
 }
