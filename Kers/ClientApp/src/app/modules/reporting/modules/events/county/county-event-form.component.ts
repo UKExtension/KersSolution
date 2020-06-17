@@ -391,7 +391,7 @@ export class CountyEventFormComponent implements OnInit {
     unts.push(<CountyEventPlanningUnit>{planningUnitId:this.countyId, isHost:true})
     for( let unitId of this.countyEventForm.value.units) unts.push( { planningUnitId: unitId, isHost:false } as CountyEventPlanningUnit);
     result.units = unts;
-
+    result.location = this.selectedLocation;
 
 
     console.log( result );
