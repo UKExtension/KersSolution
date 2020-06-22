@@ -6,6 +6,7 @@ import { catchError, tap, map } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { Vehicle } from '../expense/vehicle/vehicle.service';
 import {TrainingEnrollment} from '../training/training';
+import { District } from '../district/district.service';
 
 
 @Injectable()
@@ -398,6 +399,7 @@ export class PlanningUnit{
         public timeZoneId:string,
         public reportsExtension:boolean,
         public vehicles:Vehicle[],
+        public district:District,
         public fipsCode?:number,
         public districtId?:number,
         public geoFeature?:string,

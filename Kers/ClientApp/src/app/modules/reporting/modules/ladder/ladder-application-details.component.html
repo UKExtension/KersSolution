@@ -10,10 +10,38 @@
   </div>
   <div class="row">
     <div class="col-sm-4 text-right">
+      Program Area/Responsibility:
+    </div>
+    <div class="col-sm-8 font-weight-bold">
+    <strong>
+      <div *ngFor="let specialty of application.kersUser.specialties">
+        {{specialty.specialty.name}}
+      </div>
+    </strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      UK/person ID:
+    </div>
+    <div class="col-sm-4 font-weight-bold">
+    <strong>{{application.kersUser.rprtngProfile.personId}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
       County:
     </div>
     <div class="col-sm-4 font-weight-bold">
       <strong>{{application.kersUser.rprtngProfile.planningUnit.name}}</strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-right">
+      District:
+    </div>
+    <div class="col-sm-4 font-weight-bold">
+      <strong>{{application.kersUser.rprtngProfile.planningUnit.district.name}}</strong>
     </div>
   </div>
   <div class="row">

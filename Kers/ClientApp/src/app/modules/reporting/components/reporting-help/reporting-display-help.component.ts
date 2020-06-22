@@ -7,7 +7,9 @@ import {ReportingHelpService, Help} from './reporting-help.service';
 })
 
 export class ReportingDisplayHelpComponent implements OnInit{
-    @Input () id: number;
+    @Input() id: number;
+    @Input() label:string = 'help';
+    @Input() symbol:string = 'fa-question-circle';
 
     help:Help = null;
     errorMessage: string;

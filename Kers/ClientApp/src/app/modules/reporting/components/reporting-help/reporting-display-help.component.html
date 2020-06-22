@@ -1,13 +1,13 @@
-<div class="fontawesome-icon-list help-block" style="width: auto" *ngIf="help">
+<div class="fontawesome-icon-list help-block" style="width: auto; cursor: pointer;" *ngIf="help">
     <div class="fa-hover text-right">
-        <a (click)="condition = !condition"><i class="fa fa-question-circle"></i>help &nbsp;</a>
+        <a (click)="condition = !condition"><i class="fa {{symbol}}"></i>{{label}} &nbsp;</a>
     </div>
 
     <div *ngIf="condition">
         <div class="ln_solid"></div>
         <div [innerHTML]="help.body | safeHtml" class="fr-view"></div>
         <div class="fa-hover text-right">
-            <a (click)="condition = !condition"><i class="fa fa-question-circle"></i>hide &nbsp;</a>
+            <a (click)="condition = !condition"><i class="fa {{symbol}}"></i>hide &nbsp;</a>
         </div>
         <div class="ln_solid"></div>
     </div>

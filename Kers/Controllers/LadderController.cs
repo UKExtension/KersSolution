@@ -95,19 +95,19 @@ namespace Kers.Controllers
                                             .Select( a => a.Id )
                                             .ToList();
                             apps = context.LadderApplication.Where(a => a.LastStageId == StageId && areaIds.Contains( a.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId ?? 0 ) )
-                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                 .ToListAsync();
                         }
                     }else if( stage.Restriction == LadderStageRestrictionKeys.Area ){
                         if( area != null ){
                             apps = context.LadderApplication.Where(a => a.LastStageId == StageId && a.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId == area.Id )
-                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                 .ToListAsync();
                         }
                     }else if( stage.Restriction == LadderStageRestrictionKeys.District ){
                         if( district != null ){
                             apps = context.LadderApplication.Where(a => a.LastStageId == StageId && a.KersUser.RprtngProfile.PlanningUnit.DistrictId == district.Id )
-                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                 .ToListAsync();
                         }
                     }
@@ -118,7 +118,7 @@ namespace Kers.Controllers
 
                     }
                     apps = context.LadderApplication.Where(a => a.LastStageId == StageId)
-                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                 .ToListAsync();
                 }
                 if( apps == null ){
@@ -230,7 +230,8 @@ namespace Kers.Controllers
            
             var appilcation = await  context.LadderApplication
                                             .Where( a => a.Id == Id)
-                                            .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
+                                            .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit).ThenInclude( u => u.District)
+                                            .Include( a => a.KersUser).ThenInclude( u => u.Specialties).ThenInclude( s => s.Specialty)
                                             .Include( a => a.LadderEducationLevel)
                                             .Include( a => a.LadderLevel)
                                             .Include( a => a.Ratings)

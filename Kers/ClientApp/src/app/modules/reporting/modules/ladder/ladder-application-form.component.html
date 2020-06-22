@@ -1,7 +1,13 @@
 <loading *ngIf="loading"></loading>
 <div class="row" *ngIf="!loading">
+  
   <div class="col-sm-offset-3 col-sm-9">
       <h2>Application for Professional Promotion<small> Due February 1</small></h2>
+      <br><br>
+      <div>
+        <reporting-display-help [symbol]="'fa-check-circle-o'" [label]="'Promotion Procedures for County Extension Agents'" id="13"></reporting-display-help>
+        Note:  Be sure to click on the link above and thoroughly review the <em>Professional Promotion Procedures for County Extension Agents</em> document prior to completing this application. 
+      </div>
       <br><br>
   </div>
   <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="ladderForm">
@@ -11,9 +17,10 @@
           <select name="registerCutoffDaysId" formControlName="ladderLevelId" class="form-control col-md-7 col-xs-12">
               <option value="">-- select --</option>
               <option *ngFor="let level of levels | async" [value]="level.id">{{level.name}}</option>
-          </select>
+          </select><div class="red"><br><br>Individuals applying for a Career Ladder Promotion MUST include all support documents for each area.<br>Incomplete applications will be rejected.<br><br></div>
+        </div> 
       </div>
-    </div> 
+      
 
     <div class="form-group">
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastPromotion">Date of last Career Ladder Promotion:</label>
@@ -24,8 +31,8 @@
     <div class="form-group">
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Historical Training Transcript:</label>
       <div class="col-md-9 col-sm-9 col-xs-12">
-        InService Hours Earned from {{lastPromotionDate | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}: <strong>{{hoursAttended | async}}</strong><br>
-        <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a>
+        InService Hours Earned from {{lastPromotionDate | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}: <strong>{{hoursAttended | async}}</strong><br><br>
+        <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a> <span *ngIf="!trainingDetails"><br>Clicking on details will reveil your training transcript for selected period.<br>It is going to be submit with your application.<br></span><br>
         <div *ngIf="trainingDetails">
           <div><a class="btn btn-info btn-xs" (click)="trainingDetails=false">close</a></div>
           <training-transcript [start]="lastPromotionDate" [end]="firstOfTheYear"></training-transcript>
@@ -51,7 +58,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="body" class="control-label col-md-3 col-sm-3 col-xs-12">Evidence of Further Professioal or academic Training:</label>           
+        <label for="body" class="control-label col-md-3 col-sm-3 col-xs-12">Evidence of Further Professional or Academic Training Received Since Last Promotion:</label>           
         <div class="col-md-9 col-sm-9 col-xs-12">
             <textarea [froalaEditor]="options" name="evidence" formControlName="evidence" id="evidence" class="form-control col-xs-12"></textarea>
         </div>
@@ -72,7 +79,7 @@
         </div>
     </div>
     <div class="form-group">
-      <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12">Performance ratings:<br><small style="font-weight: normal;">Check the Career Ladder Guidelines for the appropriate number of ratings to include. Attach print outs verifying information.</small></label>           
+      <label for="seatLimit" class="control-label col-md-3 col-sm-3 col-xs-12">Performance ratings:<br><small style="font-weight: normal;">Check the Career Ladder Guidelines for the appropriate number of ratings to include. Attach printouts verifying information.</small></label>           
       <div class="col-md-4 col-sm-6 col-xs-10" formArrayName="ratings">
           
         <div *ngFor="let ratingGroup of ratings.controls; let i=index"><br>
@@ -90,14 +97,15 @@
             <div class="col-xs-2">
               <a (click)="removeRating(i)" style="cursor: pointer;">x</a>
             </div>
-            
-          </div>
+            </div>
         </div>
         <a class="btn btn-info btn-xs" (click)="addRating()" style="margin-top: 8px;"> + add year</a>
 
-
+          
 
       </div>
+      <div class="col-sm-9 col-xs-12 col-sm-offset-3" ><br><br>Note: In addition to including the appropriate number of ratings, agents applying for promotion to Level IV are required to attach a statement of how they have met the General and Formal Education Criteria (See Standards). This statement cannot exceed two pages of narrative (one-sided, double spaced, 12 pt. font, Times-New Roman or similar commonly used font). Agents applying for Level V are required to attach a statement of how they have met the General and Formal Education Criteria AND Professional Development Criteria as outlined in the Standards. This statement cannot exceed two pages of narrative to support General Criteria and two pages to support Professional Development (one-sided, double spaced, 12 point font, Times-New Roman or similar commonly used font).<br></div>
+        
   </div>
     
 
