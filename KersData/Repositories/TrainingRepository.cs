@@ -286,6 +286,7 @@ namespace Kers.Models.Repositories
             var trainings = context.TrainingEnrollment
                             .Where( e => e.Training.Start.Year == year && e.Training.tStatus == "A" && e.AttendieId == userId)
                             .Include( e => e.Training).ThenInclude( t => t.iHour)
+                            .OrderBy( e => e.Training.Start)
                             .ToList();
             return trainings;
         }
