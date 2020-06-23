@@ -32,7 +32,7 @@
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Historical Training Transcript:</label>
       <div class="col-md-9 col-sm-9 col-xs-12">
         InService Hours Earned from {{lastPromotionDate | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}: <strong>{{hoursAttended | async}}</strong><br><br>
-        <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a> <span *ngIf="!trainingDetails"><br>Clicking on details will reveil your training transcript for selected period.<br>It is going to be submit with your application.<br></span><br>
+        <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a> <span *ngIf="!trainingDetails"><br>Clicking on <em>details</em> will show your training transcript for selected period.<br>It is going to be submit with your application.<br></span><br>
         <div *ngIf="trainingDetails">
           <div><a class="btn btn-info btn-xs" (click)="trainingDetails=false">close</a></div>
           <training-transcript [start]="lastPromotionDate" [end]="firstOfTheYear"></training-transcript>
