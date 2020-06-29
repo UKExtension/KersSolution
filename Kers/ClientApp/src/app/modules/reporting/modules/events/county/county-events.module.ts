@@ -7,6 +7,7 @@ import { LocationModule } from '../location/location.module';
 import { CountyEventFormComponent } from './county-event-form.component';
 import { MyDatePickerModule } from 'mydatepicker';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
+import { CountyEventListDetailsComponent } from './county-event-list-details.component';
 
 
 
@@ -21,7 +22,8 @@ import { MyDateRangePickerModule } from 'mydaterangepicker';
                 ],
   declarations: [ 
                   CountyEventsHomeComponent,
-                  CountyEventFormComponent
+                  CountyEventFormComponent,
+                  CountyEventListDetailsComponent
                 ],
   providers:    [  
                     

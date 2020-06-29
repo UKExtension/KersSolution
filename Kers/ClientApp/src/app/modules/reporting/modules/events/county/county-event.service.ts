@@ -48,6 +48,13 @@ export class CountyEventService {
                     catchError(this.handleError('update', event))
                 );
       }
+      range():Observable<CountyEvent[]>{
+          var url = this.baseUrl + 'range';
+          return this.http.get<CountyEvent[]>(url)
+                .pipe(
+                    catchError( this.handleError('range', []))
+                );
+      }
 
 }
 

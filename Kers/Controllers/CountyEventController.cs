@@ -36,11 +36,17 @@ namespace Kers.Controllers
         }
 
         [HttpGet]
-        [Route("range/{skip?}/{take?}/{order?}/{type?}")]
-        public virtual IActionResult GetRange(int skip = 0, int take = 10, string order = "start", string type = "Training")
+        [Route("range/{countyId?}/{skip?}/{take?}/{order?}")]
+        public virtual IActionResult GetRange(int skip = 0, int take = 10, string order = "start", int countyId = 0)
         {
-            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.End != null && t.DiscriminatorValue == type);
-            
+            if(countyId == 0 ){
+                var user = CurrentUser();
+                countyId = user.RprtngProfile.PlanningUnitId;
+            }
+            IQueryable<ExtensionEvent> query = _context.CountyEvent
+                        .Where( e => e.Units.Select( u => u.PlanningUnitId).Contains(countyId))
+                        .Include( e => e.Location).ThenInclude( l => l.Address);
+             
             if(order == "end"){
                 query = query.OrderByDescending(t => t.End);
             }else if( order == "created"){
@@ -50,13 +56,12 @@ namespace Kers.Controllers
             }
              
             query = query.Skip(skip).Take(take);
-            query = query
-                        .Include( e => e.Organizer)
-                        .ThenInclude( o => o.PersonalProfile);
+            
+            
             var list = query.ToList();
             return new OkObjectResult(list);
         }
-
+/* 
 
         [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]
         [Authorize]
@@ -75,12 +80,13 @@ namespace Kers.Controllers
             var list = query.ToList();
             return new OkObjectResult(list);
         }
-
+ */
 
         [HttpPost("addcountyevent")]
         [Authorize]
         public IActionResult AddCountyEvent( [FromBody] CountyEvent CntEvent){
             if(CntEvent != null){
+                CntEvent.Organizer = this.CurrentUser();
                 this.context.Add(CntEvent);
                 this.context.SaveChanges();
                 return new OkObjectResult(CntEvent);

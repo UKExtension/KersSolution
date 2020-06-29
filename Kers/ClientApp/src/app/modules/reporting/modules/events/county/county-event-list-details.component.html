@@ -1,0 +1,24 @@
+<ng-container>
+  <td *ngIf="rowDefault">{{event.start | date:'mediumDate'}}</td>
+  <td *ngIf="rowDefault">{{event.subject}}</td>
+  <td *ngIf="rowDefault"><span *ngIf="event.location != undefined">{{event.location.address.building}} {{event.location.address.street}} {{event.location.address.city}}</span></td>
+  <td *ngIf="rowDefault" class="text-right">
+      <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
+      <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
+      <a class="btn btn-primary btn-xs" (click)="default()" *ngIf="!rowDefault"><i class="fa fa-close"></i> Close</a>
+  </td>
+  <td *ngIf="rowEdit" colspan="5">
+      <div class="text-right">
+          <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+      </div>
+      <county-event-form [countyEvent]="event"></county-event-form>
+  </td>
+  <td *ngIf="rowDelete" colspan="5">
+      <div class="text-right">
+          <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+      </div>
+      <div>
+          Do you really want to delete County Event <strong>{{event.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+      </div>
+  </td>
+</ng-container>

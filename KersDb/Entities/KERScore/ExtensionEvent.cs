@@ -45,6 +45,7 @@ namespace Kers.Models.Entities.KERScore
         /// The date, time, and time zone that the event starts.
         /// </summary>
         public DateTimeOffset Start { get; set; }
+        public bool HasStartTime { get; set; }
         //public ExtensionEventDateTimeTimeZone Start { get; set; }
     
         /// <summary>
@@ -52,6 +53,7 @@ namespace Kers.Models.Entities.KERScore
         /// The date, time, and time zone that the event ends.
         /// </summary>
         public DateTimeOffset? End { get; set; }
+        public bool HasEndTime { get; set; }
         //public ExtensionEventDateTimeTimeZone End { get; set; }
     
         /// <summary>

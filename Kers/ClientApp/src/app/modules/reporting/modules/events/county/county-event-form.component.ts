@@ -46,7 +46,12 @@ import { ExtensionEventLocationConnection } from '../location/location.service';
           </div>
       </div>
     </div>
-
+    <div class="form-group">
+      <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">End date/time:</label>           
+      <div class="col-md-9 col-sm-9 col-xs-12">
+        <input type="checkbox" formControlName="isAllDay" />
+      </div>
+    </div>
     <div class="form-group" >
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="etimezone"><span *ngIf="!countyEventForm.value.isAllDay">Timezone:</span></label>
       <div *ngIf="!countyEventForm.value.isAllDay" class="col-md-5 col-sm-7 col-xs-8">
@@ -59,7 +64,7 @@ import { ExtensionEventLocationConnection } from '../location/location.service';
                   </label>
               </div>
       </div>
-      <label>&nbsp; &nbsp;<input type="checkbox" formControlName="isAllDay" /> All Day Event</label>
+      
     </div>
     <div class="form-group">
       <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Title:</label>           
@@ -394,12 +399,11 @@ export class CountyEventFormComponent implements OnInit {
     result.location = this.selectedLocation;
 
 
-    console.log( result );
 
     
     this.service.add(result).subscribe(
       res => {
-        console.log(res);
+        this.countyEventForm.reset();
         this.onFormSubmit.emit(res);
       }
     )
@@ -419,13 +423,15 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
   var hasErrors = false;
 
   if( end.value != null && end.value.date != null){
-    let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
-    let endDate = new Date(end.value.date.year, end.value.date.month - 1, end.value.date.day);
-    if( startDate.getTime() > endDate.getTime()){
-      errors["endDate"] = true ;
-      hasErrors = true;
-    }
-  }else if(end.value.date == null){
+    if(start.value != null){
+      let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
+      let endDate = new Date(end.value.date.year, end.value.date.month - 1, end.value.date.day);
+      if( startDate.getTime() > endDate.getTime()){
+        errors["endDate"] = true ;
+        hasErrors = true;
+      }
+    }    
+  }else if(end.value == null || end.value.date == null){
     errors["endDate"] = true ;
     hasErrors = true;
   }
