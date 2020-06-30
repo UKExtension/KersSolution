@@ -162,7 +162,7 @@ export class ServicelogFormComponent implements OnInit{
 
     getFiscalYear(date:Date){
         var dt = new Date(date);
-        this.fiscalYearService.forDate(  date, 'serviceLog',true ).subscribe(
+        this.fiscalYearService.forDate(  date ).subscribe(
             res => {
                 this.fiscalYear = <FiscalYear> res;
                 this.getInitiatives(this.fiscalYear);
