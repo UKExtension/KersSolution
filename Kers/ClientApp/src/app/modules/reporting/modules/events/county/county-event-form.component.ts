@@ -25,13 +25,13 @@ import { ExtensionEventLocationConnection } from '../location/location.service';
       <div class="col-md-4 col-sm-6 col-xs-7">
           <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
       </div>
-      <div *ngIf="!countyEventForm.value.isAllDay" class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3">
+      <div class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3">
         <div [class.notvalid]="countyEventForm.hasError('startTime')" class="clearfix">
           <timepicker formControlName="starttime" [start]="6" [end]="22"></timepicker>
         </div>
       </div>
     </div>
-    <div *ngIf="!countyEventForm.value.isAllDay">
+    <div *ngIf="countyEventForm.value.hasEndDate">
       <div class="form-group">
           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
           <div class="col-md-4 col-sm-6 col-xs-7">
@@ -47,14 +47,14 @@ import { ExtensionEventLocationConnection } from '../location/location.service';
       </div>
     </div>
     <div class="form-group">
-      <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">End date/time:</label>           
+      <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">End Date/Time:</label>           
       <div class="col-md-9 col-sm-9 col-xs-12">
-        <input type="checkbox" formControlName="isAllDay" />
+        <input type="checkbox" formControlName="hasEndDate" style="margin-top: 12px; margin-bottom: 18px;"/>
       </div>
     </div>
     <div class="form-group" >
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="etimezone"><span *ngIf="!countyEventForm.value.isAllDay">Timezone:</span></label>
-      <div *ngIf="!countyEventForm.value.isAllDay" class="col-md-5 col-sm-7 col-xs-8">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="etimezone"><span *ngIf="!countyEventForm.value.hasEndDate">Timezone:</span></label>
+      <div class="col-md-5 col-sm-7 col-xs-8">
               <div class="btn-group" data-toggle="buttons">
                   <label class="btn btn-default" (click)="isEastern(true)" [class.active]="easternTimezone">
                   <input type="radio" name="etimezone" formControlName="etimezone" [value]="true"> Eastern Timezone
@@ -226,7 +226,7 @@ export class CountyEventFormComponent implements OnInit {
   countyId: number;
   date = new Date();
   countyEventForm:any;
-  isAllDay = false;
+  hasEndDate = false;
   easternTimezone = true;
   programCategories: ProgramCategory[];
   planningUnits: PlanningUnit[];
@@ -273,7 +273,7 @@ export class CountyEventFormComponent implements OnInit {
     private planningUnitService: PlanningunitService,
     private userService:UserService
   ) {
-    
+    this.date = new Date( this.date.getFullYear(), this.date.getMonth() + 3, this.date.getDate() );
     this.countyEventForm = this.fb.group(
         {
           start: [{
@@ -290,7 +290,7 @@ export class CountyEventFormComponent implements OnInit {
             day: this.date.getDate()}}],
           endtime: "",
           etimezone:true,
-          isAllDay:false,
+          hasEndDate:false,
           subject:["", Validators.required],
           body:"",
           webLink:"",
@@ -436,18 +436,7 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
     hasErrors = true;
   }
 
-  var isAllDay = control.get("isAllDay");
-  var starttime = control.get("starttime");
-  var endtime = control.get("endtime");
-  if( !isAllDay.value ){
-    if(starttime.value == ""){
-      errors["startTime"] = true ;
-      hasErrors = true;
-    }if(endtime.value == ""){
-      errors["endTime"] = true ;
-      hasErrors = true;
-    }
-  }
+  
   if(hasErrors){
     return errors;
   }
