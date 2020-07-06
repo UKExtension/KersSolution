@@ -206,14 +206,15 @@ namespace Kers.Controllers
         }
 
         private int? validateMajorProgramId( int MajorProgramId, DateTime ActivityDate ){
-            var dt = new DateTime(ActivityDate.Year, ActivityDate.Month, ActivityDate.Day, 12, 0, 0);
+            var dt = new DateTime(ActivityDate.Year, ActivityDate.Month, ActivityDate.Day, 11, 59, 59);
             var year = context.FiscalYear
                         .Where( f => 
                                 f.Type == FiscalYearType.ServiceLog
                                 &&
-                                f.Start <= dt
-                                &&  
-                                f.End >= dt    
+                                f.Start.Date <= dt.Date
+                                && 
+                                f.End.Date >= dt.Date
+
                             )
                         .FirstOrDefault();
             if( year == null ){
