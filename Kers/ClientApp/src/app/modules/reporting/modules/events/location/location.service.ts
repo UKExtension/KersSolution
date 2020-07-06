@@ -55,11 +55,11 @@ export class LocationService {
             );
       }
 
-      locationsByCounty(id:number = 0):Observable<ExtensionEventLocationConnection[]>{
+      locationsByCounty(id:number = 0):Observable<ExtensionEventLocationConnectionSearchResult>{
         var url = this.baseUrl + "countylocations/"+id;
-        return this.http.get<ExtensionEventLocationConnection[]>(this.location.prepareExternalUrl(url))
+        return this.http.get<ExtensionEventLocationConnectionSearchResult>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('notes by county', []))
+                catchError(this.handleError('notes by county', <ExtensionEventLocationConnectionSearchResult> {}))
             );
       }
 
@@ -76,6 +76,11 @@ export interface ExtensionEventLocationConnection{
     active:boolean;
     extensionEventLocation:ExtensionEventLocation;
     extensionEventLocationId:number;
+}
+
+export interface ExtensionEventLocationConnectionSearchResult{
+    results: ExtensionEventLocationConnection[];
+    count: number;
 }
 
 /* 

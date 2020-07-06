@@ -113,7 +113,10 @@ namespace Kers.Controllers
                             .Where( e => e.PlanningUnitId == id)
                             .Include( e => e.ExtensionEventLocation)
                                 .ThenInclude( l => l.Address);
-            return new OkObjectResult(locations);
+            var res = new ExtensionEventLocationConnectionSearchResult();
+            res.Results = locations.ToList();
+            res.Count = 10;
+            return new OkObjectResult(res);
         }
 
 
@@ -149,6 +152,11 @@ namespace Kers.Controllers
                 this.Log( id ,"ExtensionEventLocation", "Not Found ExtensionEventLocation in a delete attempt.", "ExtensionEventLocation", "Error");
                 return new StatusCodeResult(500);
             }
+        }
+
+        public class ExtensionEventLocationConnectionSearchResult{
+            public List<ExtensionEventLocationConnection> Results;
+            public int Count;
         }
 
     }
