@@ -55,8 +55,8 @@ export class LocationService {
             );
       }
 
-      locationsByCounty(id:number = 0):Observable<ExtensionEventLocationConnectionSearchResult>{
-        var url = this.baseUrl + "countylocations/"+id;
+      locationsByCounty(id:number = 0, skip:number = 0, take:number = 5, order:string = "often", search:string = ""):Observable<ExtensionEventLocationConnectionSearchResult>{
+        var url = this.baseUrl + "countylocations/"+id+"/"+skip+"/"+take+"/"+order+"/"+search;
         return this.http.get<ExtensionEventLocationConnectionSearchResult>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('notes by county', <ExtensionEventLocationConnectionSearchResult> {}))

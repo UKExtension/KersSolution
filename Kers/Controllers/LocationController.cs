@@ -101,9 +101,9 @@ namespace Kers.Controllers
             }
         }
 
-        [HttpGet("countylocations/{id?}")]
+        [HttpGet("countylocations/{id?}/{skip?}/{take?}/{order?}/{search?}")]
         [Authorize]
-        public IActionResult CountyLocations(int id = 0){
+        public IActionResult CountyLocations(int id = 0, int skip = 0, int take = 10, string order = "", string search = ""){
             if( id == 0){
                 var user = CurrentUser();
                 id = user.RprtngProfile.PlanningUnitId;
@@ -115,7 +115,8 @@ namespace Kers.Controllers
                                 .ThenInclude( l => l.Address);
             var res = new ExtensionEventLocationConnectionSearchResult();
             res.Results = locations.ToList();
-            res.Count = 10;
+            res.Count = res.Results.Count();
+            res.Results = res.Results.Skip(skip).Take(take).ToList();
             return new OkObjectResult(res);
         }
 

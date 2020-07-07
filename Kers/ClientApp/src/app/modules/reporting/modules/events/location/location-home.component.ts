@@ -3,20 +3,51 @@ import { ExtensionEventLocation } from '../extension-event';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 import { User } from '../../user/user.service';
 import { LocationService, ExtensionEventLocationConnection, ExtensionEventLocationConnectionSearchResult,  } from './location.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { startWith, flatMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'location-browser',
   template: `
   <div *ngIf="!user && !county">No county or user provided</div>
   <div *ngIf="user || county">
-    <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newLocation" (click)="newLocation = true">+ new location</a>
-    </div>
-    <location-form *ngIf="newLocation" [county]="county" [user]="user" (onFormCancel)="newLocation=false" (onFormSubmit)="newLocationSubmitted($event)"></location-form>
-    <div class="row">
-      <div *ngFor="let locationConnection of countyLocations$.results | async">
-        <location-detail [location]="locationConnection" (onSelected)="locationSelected($event)" (onDeleted)="deleted($event)"></location-detail>
+    <div *ngIf="countyLocations$ | async as countyLocations">
+      <div class="text-right">
+          <a class="btn btn-info btn-xs" *ngIf="!newLocation" (click)="newLocation = true">+ new location</a>
+      </div><br><br>
+      <div class="row">
+          <div class="col-sm-6 col-xs-12">
+            <input type="text" [(ngModel)]="search" placeholder="search by building name" (keyup)="onSearch($event)" class="form-control" name="Search" />
+          </div>
+          <div class="col-sm-6 col-xs-12 text-right">
+
+Order by:&nbsp; 
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-default" [class.active]="order=='often'">
+                <input type="radio" name="type" id="option2" (click)="switchOrder('often')"> Often Used
+              </label>
+              <label class="btn btn-default" [class.active]="order=='asc'">
+                <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Name
+              </label>
+            </div>
+
+
+
+        </div>
+      </div>
+      <location-form *ngIf="newLocation" [county]="county" [user]="user" (onFormCancel)="newLocation=false" (onFormSubmit)="newLocationSubmitted($event)"></location-form>
+      <loading *ngIf="loading"></loading>      
+      <div class="row" *ngIf="!loading">
+        <div *ngFor="let locationConnection of countyLocations.results">
+          <location-detail [location]="locationConnection" (onSelected)="locationSelected($event)" (onDeleted)="deleted($event)"></location-detail>
+        </div>
+        <div class="col-xs-12"><br><br>
+          <div *ngIf="countyLocations.count != 0" class="text-center">
+            <div>Showing {{ ((skip + take) < countyLocations.count ? (skip + take) : countyLocations.count)}} of {{countyLocations.count}} Addresses</div>
+            <div *ngIf="countyLocations.count >= (skip + take)" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+                load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+          </div>
+        </div><br><br>
       </div>
     </div>
   </div>
@@ -26,6 +57,14 @@ import { Observable } from 'rxjs';
 export class LocationHomeComponent implements OnInit {
   @Input() county:PlanningUnit;
   @Input() user:User;
+
+  refresh: Subject<string>; // For load/reload
+  loading: boolean = true; // Turn spinner on and off
+
+  skip:number = 0;
+  take:number = 5;
+  order:string = "often";
+  search:string = "";
 
   @Output() onSelected = new EventEmitter<ExtensionEventLocationConnection>();
   @Output() onCanceled = new EventEmitter<void>();
@@ -37,9 +76,47 @@ export class LocationHomeComponent implements OnInit {
     private service: LocationService
   ) { }
 
+
   ngOnInit() {
-    this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
+
+    /* 
+    this.criteria = {
+      search: "",
+      order: 'frq',
+      amount: 6
+    }
+     */
+    this.refresh = new Subject();
+
+    this.countyLocations$ = this.refresh.asObservable()
+      .pipe(
+        startWith('onInit'), // Emit value to force load on page load; actual value does not matter
+        flatMap(_ => this.service.locationsByCounty(( this.county ? this.county.id : 0))), // Get some items
+        tap(_ => this.loading = false) // Turn off the spinner
+      );
   }
+  onSearch(event){
+    this.search = event.target.value;
+    this.onRefresh();
+  }
+   
+
+  onRefresh() {
+    this.loading = true; // Turn on the spinner.
+    this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
+  }
+ 
+  switchOrder(type:string){
+    this.order = type;
+    this.onRefresh();
+  }
+
+  loadMore(){
+    this.take += 6;
+    this.onRefresh();
+  }
+
+
   newLocationSubmitted(event:ExtensionEventLocation){
     this.newLocation = false;
     this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
