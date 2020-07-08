@@ -62,6 +62,13 @@ export class LocationService {
                 catchError(this.handleError('notes by county', <ExtensionEventLocationConnectionSearchResult> {}))
             );
       }
+      selected(id:number):Observable<ExtensionEventLocationConnection>{
+        var url = this.baseUrl + 'selected/' + id;
+        return this.http.get<ExtensionEventLocationConnection>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    catchError(this.handleError('selected', <ExtensionEventLocationConnection>{}))
+                );
+      }
 
 }
 
@@ -76,6 +83,7 @@ export interface ExtensionEventLocationConnection{
     active:boolean;
     extensionEventLocation:ExtensionEventLocation;
     extensionEventLocationId:number;
+    selectedCount:number;
 }
 
 export interface ExtensionEventLocationConnectionSearchResult{

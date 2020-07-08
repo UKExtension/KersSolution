@@ -62,7 +62,7 @@ export class LocationHomeComponent implements OnInit {
   loading: boolean = true; // Turn spinner on and off
 
   skip:number = 0;
-  take:number = 5;
+  take:number = 6;
   order:string = "often";
   search:string = "";
 
@@ -91,7 +91,7 @@ export class LocationHomeComponent implements OnInit {
     this.countyLocations$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        flatMap(_ => this.service.locationsByCounty(( this.county ? this.county.id : 0))), // Get some items
+        flatMap(_ => this.service.locationsByCounty(( this.county ? this.county.id : 0),this.skip,this.take, this.order, this.search)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
   }
@@ -122,6 +122,7 @@ export class LocationHomeComponent implements OnInit {
     this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
   }
   locationSelected(event:ExtensionEventLocationConnection){
+    this.service.selected(event.id).subscribe();
     this.onSelected.emit(event);
   }
 

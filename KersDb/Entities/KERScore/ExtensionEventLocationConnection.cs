@@ -12,6 +12,7 @@ namespace Kers.Models.Entities.KERScore
         public PlanningUnit PlanningUnit {get;set;}
         public int? PlanningUnitId {get;set;}
         public bool active {get;set;}
+        public int SelectedCount {get;set;}
         public ExtensionEventLocation ExtensionEventLocation {get;set;}
         public int ExtensionEventLocationId {get;set;}
     }

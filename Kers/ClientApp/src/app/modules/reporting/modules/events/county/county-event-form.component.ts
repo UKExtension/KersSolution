@@ -133,7 +133,7 @@ import { ExtensionEventLocationConnection } from '../location/location.service';
           <h5>{{selectedLocation.address.city}} {{selectedLocation.address.state != ""?", "+selectedLocation.address.state:""}} {{selectedLocation.address.postalCode}}</h5>
         </div>
         <a *ngIf="!selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> add locaton</a>
-        <a *ngIf="selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="editLocation()"> edit locaton</a>
+        <a *ngIf="selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="editLocation()"> change locaton</a>
       </div>
       <div *ngIf="locationBrowser" class="col-md-9 col-sm-9 col-xs-12">
         <location-browser *ngIf="county" [county]="county" (onSelected)="locationSelected($event)"></location-browser>

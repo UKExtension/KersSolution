@@ -76,7 +76,22 @@ namespace Kers.Controllers
             }
         }
 
-
+        [HttpGet("selected/{id}")]
+        [Authorize]
+        public IActionResult UpdatSelectionCount( int id){
+            var lctn = context.ExtensionEventLocationConnection
+                        .Where( t => t.Id == id)
+                        .FirstOrDefault();
+            if(lctn != null ){
+                lctn.SelectedCount++;
+                context.SaveChanges();
+                this.Log(lctn,"ExtensionEventLocation", "ExtensionEventLocation Selection Couny Updated.");
+                return new OkObjectResult(lctn);
+            }else{
+                this.Log( id ,"ExtensionEventLocation", "Not Found ExtensionEventLocation in an update count attempt.", "ExtensionEventLocation", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
         
         [HttpPut("updatelocation/{id}")]
         [Authorize]
@@ -110,11 +125,19 @@ namespace Kers.Controllers
             }
             var locations = this._context
                             .ExtensionEventLocationConnection
-                            .Where( e => e.PlanningUnitId == id)
-                            .Include( e => e.ExtensionEventLocation)
-                                .ThenInclude( l => l.Address);
+                            .Where( e => e.PlanningUnitId == id);
+            if(search != ""){
+                locations = locations.Where( l => l.ExtensionEventLocation.Address.Building.Contains(search));
+            }
+            if(order=="often"){
+                locations = locations.OrderByDescending( l => l.SelectedCount);
+            }else{
+                locations = locations.OrderBy(l => l.ExtensionEventLocation.Address.Building);
+            }
             var res = new ExtensionEventLocationConnectionSearchResult();
-            res.Results = locations.ToList();
+            res.Results = locations.Include( e => e.ExtensionEventLocation)
+                                .ThenInclude( l => l.Address).ToList();
+            
             res.Count = res.Results.Count();
             res.Results = res.Results.Skip(skip).Take(take).ToList();
             return new OkObjectResult(res);
