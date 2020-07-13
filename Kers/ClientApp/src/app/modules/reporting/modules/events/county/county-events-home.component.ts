@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CountyEvent, CountyEventService } from './county-event.service';
+import { CountyEvent, CountyEventService, CountyEventWithTime } from './county-event.service';
 
 @Component({
   selector: 'app-county-events-home',
@@ -18,7 +18,7 @@ import { CountyEvent, CountyEventService } from './county-event.service';
 })
 export class CountyEventsHomeComponent implements OnInit {
 
-  events:Observable<CountyEvent[]>;
+  events:Observable<CountyEventWithTime[]>;
   newEvent = false;
 
   constructor(

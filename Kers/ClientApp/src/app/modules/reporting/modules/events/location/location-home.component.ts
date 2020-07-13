@@ -10,7 +10,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
   selector: 'location-browser',
   template: `
   <div *ngIf="!user && !county">No county or user provided</div>
-  <div *ngIf="user || county">
+  <div *ngIf="user || county" style="background-color: #F8F8F8; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 12px 7px; ">
     <div *ngIf="countyLocations$ | async as countyLocations">
       <div class="text-right">
           <a class="btn btn-info btn-xs" *ngIf="!newLocation" (click)="newLocation = true">+ new location</a>

@@ -27,6 +27,7 @@ namespace Kers.Controllers
     {
 
         KERScoreContext _context;
+        private string DefaultTime = "12:34:56.1000000";
         public CountyEventController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
@@ -43,9 +44,11 @@ namespace Kers.Controllers
                 var user = CurrentUser();
                 countyId = user.RprtngProfile.PlanningUnitId;
             }
-            IQueryable<ExtensionEvent> query = _context.CountyEvent
+            IQueryable<CountyEvent> query = _context.CountyEvent
                         .Where( e => e.Units.Select( u => u.PlanningUnitId).Contains(countyId))
-                        .Include( e => e.Location).ThenInclude( l => l.Address);
+                        .Include( e => e.Location).ThenInclude( l => l.Address)
+                        .Include( e => e.Units)
+                        .Include( e => e.ProgramCategories);
              
             if(order == "end"){
                 query = query.OrderByDescending(t => t.End);
@@ -56,10 +59,13 @@ namespace Kers.Controllers
             }
              
             query = query.Skip(skip).Take(take);
-            
-            
-            var list = query.ToList();
-            return new OkObjectResult(list);
+            var reslt = new List<CountyEventWithTime>();
+            foreach( var ce in query){
+                var e = new CountyEventWithTime(ce);
+                reslt.Add( e );
+            }
+
+            return new OkObjectResult(reslt);
         }
 /* 
 
@@ -84,12 +90,39 @@ namespace Kers.Controllers
 
         [HttpPost("addcountyevent")]
         [Authorize]
-        public IActionResult AddCountyEvent( [FromBody] CountyEvent CntEvent){
+        public IActionResult AddCountyEvent( [FromBody] CountyEventWithTime CntEvent){
             if(CntEvent != null){
-                CntEvent.Organizer = this.CurrentUser();
-                this.context.Add(CntEvent);
+                CountyEvent evnt = new CountyEvent();
+                evnt.Organizer = this.CurrentUser();
+                evnt.CreatedDateTime = DateTimeOffset.Now;
+                evnt.LastModifiedDateTime = DateTimeOffset.Now;
+                var starttime = this.DefaultTime;
+                evnt.IsAllDay = true;
+                var timezone = CntEvent.Etimezone ? " -04:00":" -05:00";
+                if(CntEvent.Starttime != ""){
+                    starttime = CntEvent.Starttime+":00.1000000";
+                    evnt.IsAllDay = false;
+                    evnt.HasStartTime = true;
+                } 
+                evnt.Start = DateTimeOffset.Parse(CntEvent.Start.ToString("yyyy-MM-dd ") + starttime + timezone);
+                
+                if(CntEvent.End != null ){
+                    var endtime = this.DefaultTime;
+                    if(CntEvent.Endtime != ""){
+                        endtime = CntEvent.Endtime+":00.1000000";
+                        evnt.HasEndTime = true;
+                    }
+                    evnt.End = DateTimeOffset.Parse(CntEvent.End?.ToString("yyyy-MM-dd ") + endtime + timezone);
+                }
+                evnt.BodyPreview = evnt.Body = CntEvent.Body;
+                evnt.WebLink = CntEvent.WebLink;
+                evnt.Subject = CntEvent.Subject;
+                evnt.Location = CntEvent.Location;
+                evnt.Units = CntEvent.Units;
+                evnt.ProgramCategories = CntEvent.ProgramCategories;
+                this.context.Add(evnt);
                 this.context.SaveChanges();
-                return new OkObjectResult(CntEvent);
+                return new OkObjectResult(evnt);
             }else{
                 this.Log( CntEvent,"ExtensionEvent", "Error in adding extension event attempt.", "ExtensionEvent", "Error");
                 return new StatusCodeResult(500);
@@ -140,6 +173,47 @@ namespace Kers.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+
+    }
+
+    public class CountyEventWithTime:CountyEvent{
+        public string Starttime;
+        public string Endtime;
+        public bool Etimezone;
+
+        public CountyEventWithTime(){}
+
+        public CountyEventWithTime(CountyEvent m){
+            this.Id = m.Id;
+            this.Body = m.Body;
+            this.BodyPreview = m.BodyPreview;
+            this.Start = m.Start;
+            this.End = m.End;
+            this.IsAllDay = m.IsAllDay;
+            this.CreatedDateTime = m.CreatedDateTime;
+            this.LastModifiedDateTime = m.LastModifiedDateTime;
+            this.Subject = m.Subject;
+            this.IsCancelled = m.IsCancelled;
+            this.HasEndTime = m.HasEndTime;
+            this.HasStartTime = m.HasStartTime;
+            this.Units = m.Units;
+            this.ProgramCategories = m.ProgramCategories;
+            this.WebLink = m.WebLink;
+            this.Location = m.Location;
+
+            if(m.End != null){
+                TimeSpan tmzn = m.Start.Offset;
+                var hrs = tmzn.TotalHours;
+                this.Etimezone = hrs == -4;
+                if(this.End.HasValue ){
+                    this.Endtime = this.End.Value.Hour.ToString("D2")+ ":" + this.End.Value.Minute.ToString("D2");
+                }
+                
+            }
+            this.Starttime = this.Start.Hour.ToString("D2") + ":" + this.Start.Minute.ToString("D2");
+
         }
 
 

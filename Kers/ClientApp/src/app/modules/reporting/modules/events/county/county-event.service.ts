@@ -26,10 +26,10 @@ export class CountyEventService {
           this.handleError = httpErrorHandler.createHandleError('CountyEventService');
       }
 
-      add( event:CountyEvent ):Observable<CountyEvent>{
-        return this.http.post<CountyEvent>(this.location.prepareExternalUrl(this.baseUrl + 'addcountyevent/'), event)
+      add( event:CountyEventWithTime ):Observable<CountyEventWithTime>{
+        return this.http.post<CountyEventWithTime>(this.location.prepareExternalUrl(this.baseUrl + 'addcountyevent/'), event)
             .pipe(
-                catchError(this.handleError('add', <CountyEvent>{}))
+                catchError(this.handleError('add', <CountyEventWithTime>{}))
             );
       }
 
@@ -48,9 +48,9 @@ export class CountyEventService {
                     catchError(this.handleError('update', event))
                 );
       }
-      range():Observable<CountyEvent[]>{
+      range():Observable<CountyEventWithTime[]>{
           var url = this.baseUrl + 'range';
-          return this.http.get<CountyEvent[]>(url)
+          return this.http.get<CountyEventWithTime[]>(url)
                 .pipe(
                     catchError( this.handleError('range', []))
                 );
@@ -63,6 +63,12 @@ export interface CountyEvent extends ExtensionEvent{
     rDT:Date;
     units:CountyEventPlanningUnit[];
     programCategories:CountyEventProgramCategory[];
+}
+
+export interface CountyEventWithTime extends CountyEvent{
+    starttime:string;
+    endtime:string;
+    etimezone:boolean;
 }
 
 export interface CountyEventPlanningUnit{
