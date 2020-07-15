@@ -247,16 +247,26 @@ export class CountyEventFormComponent implements OnInit {
     result.units = unts;
     result.location = this.selectedLocation;
     
-
+    if( this.countyEvent ){
+      this.service.update( this.countyEvent.id, result).subscribe(
+        res => {
+          console.log(res);
+  
+          this.onFormSubmit.emit(res);
+        }
+      )
+    }else{
+      this.service.add(result).subscribe(
+        res => {
+          this.countyEventForm.reset();
+          console.log(res);
+  
+          this.onFormSubmit.emit(res);
+        }
+      )
+    }
     
-    this.service.add(result).subscribe(
-      res => {
-        this.countyEventForm.reset();
-        console.log(result);
-
-        this.onFormSubmit.emit(res);
-      }
-    )
+    
   }
   onCancel(){
     this.onFormCancel.emit();

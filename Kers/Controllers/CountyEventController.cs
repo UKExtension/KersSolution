@@ -133,18 +133,65 @@ namespace Kers.Controllers
 
         [HttpPut("updatecountyevent/{id}")]
         [Authorize]
-        public IActionResult UpdateCountyEvent( int id, [FromBody] CountyEvent CntEvent){
+        public IActionResult UpdateCountyEvent( int id, [FromBody] CountyEventWithTime CntEvent){
            
+            var evnt = context.CountyEvent.Where(a => a.Id == id)
+            
+                        .Include(a => a.Location)
+                        .Include( a => a.ProgramCategories)
+                        .Include( a => a.Units)
+                        .FirstOrDefault();
+
+            if(CntEvent != null && evnt != null ){
 
 
-            if(CntEvent != null ){
+                evnt.LastModifiedDateTime = DateTimeOffset.Now;
+                var starttime = this.DefaultTime;
+                evnt.IsAllDay = true;
+                var timezone = CntEvent.Etimezone ? " -04:00":" -05:00";
+                if(CntEvent.Starttime != ""){
+                    starttime = CntEvent.Starttime+":00.1000000";
+                    evnt.IsAllDay = false;
+                    evnt.HasStartTime = true;
+                }else{
+                    evnt.HasEndTime = false;
+                }
+                evnt.Start = DateTimeOffset.Parse(CntEvent.Start.ToString("yyyy-MM-dd ") + starttime + timezone);
+                
+                if(CntEvent.End != null ){
+                    var endtime = this.DefaultTime;
+                    if(CntEvent.Endtime != ""){
+                        endtime = CntEvent.Endtime+":00.1000000";
+                        evnt.HasEndTime = true;
+                    }else{
+                        evnt.HasEndTime = false;
+                    }
+                    evnt.End = DateTimeOffset.Parse(CntEvent.End?.ToString("yyyy-MM-dd ") + endtime + timezone);
+                }else{
+                    evnt.End = null;
+                }
+                evnt.BodyPreview = evnt.Body = CntEvent.Body;
+                evnt.WebLink = CntEvent.WebLink;
+                evnt.Subject = CntEvent.Subject;
+
+                context.Remove( evnt.Location );
+
+                //context.Remove( evnt.Units );
+                //context.Remove( evnt.ProgramCategories );
+
+
+                evnt.Location = CntEvent.Location;
+                evnt.Units = CntEvent.Units;
+                evnt.ProgramCategories = CntEvent.ProgramCategories;
+
+
                 
                 
-                this.Log(CntEvent,"ExtensionEvent", "ExtensionEvent Updated.");
+                this.Log(CntEvent,"CountyEvent", "County Event Updated.");
                 
                 return new OkObjectResult(CntEvent);
             }else{
-                this.Log( CntEvent ,"ExtensionEvent", "Not Found ExtensionEvent in an update attempt.", "ExtensionEvent", "Error");
+                this.Log( CntEvent ,"CountyEvent", "Not Found CountyEvent in an update attempt.", "CountyEvent", "Error");
                 return new StatusCodeResult(500);
             }
         }
