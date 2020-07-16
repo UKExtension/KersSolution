@@ -11,7 +11,7 @@ import { CountyEvent, CountyEventService, CountyEventWithTime } from './county-e
     <county-event-form *ngIf="newEvent" (onFormCancel)="newEvent = false" (onFormSubmit)="newEventSubmitted($event)"></county-event-form>
     <br><br>
     <table class="table table-bordered table-striped">
-      <tr [county-event-list-details]="ev" *ngFor="let ev of events | async"></tr>
+      <tr [county-event-list-details]="ev" *ngFor="let ev of events | async" (onDeleted)="newEventSubmitted($event)"></tr>
     </table>
   `,
   styles: []
@@ -30,7 +30,6 @@ export class CountyEventsHomeComponent implements OnInit {
   }
 
   newEventSubmitted(_:CountyEvent){
-    console.log( 'sbmtd');
     this.newEvent = false;
     this.events = this.service.range();
   }

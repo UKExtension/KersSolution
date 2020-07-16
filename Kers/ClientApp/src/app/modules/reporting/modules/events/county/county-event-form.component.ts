@@ -225,7 +225,7 @@ export class CountyEventFormComponent implements OnInit {
   }
 
   onSubmit(){
-  
+    this.loading = true;
     var result = <CountyEventWithTime> this.countyEventForm.value;
 
     result.start = new Date(this.countyEventForm.value.start.date.year, this.countyEventForm.value.start.date.month - 1, this.countyEventForm.value.start.date.day);
@@ -242,25 +242,28 @@ export class CountyEventFormComponent implements OnInit {
 
 
     var unts = <CountyEventPlanningUnit[]>[];
-    unts.push(<CountyEventPlanningUnit>{planningUnitId:this.countyId, isHost:true})
-    for( let unitId of this.countyEventForm.value.units) unts.push( { planningUnitId: unitId, isHost:false } as CountyEventPlanningUnit);
+    unts.push({planningUnitId:this.countyId, isHost:true} as CountyEventPlanningUnit)
+    if( this.countyEventForm.value.multycounty ){
+      for( let unitId of this.countyEventForm.value.units){
+        unts.push( { planningUnitId: unitId, isHost:false } as CountyEventPlanningUnit);
+      }
+    }
     result.units = unts;
     result.location = this.selectedLocation;
+    
     
     if( this.countyEvent ){
       this.service.update( this.countyEvent.id, result).subscribe(
         res => {
-          console.log(res);
-  
+          this.loading = false;
           this.onFormSubmit.emit(res);
         }
       )
     }else{
       this.service.add(result).subscribe(
         res => {
+          this.loading = false;
           this.countyEventForm.reset();
-          console.log(res);
-  
           this.onFormSubmit.emit(res);
         }
       )

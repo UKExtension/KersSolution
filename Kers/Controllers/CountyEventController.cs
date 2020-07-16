@@ -149,7 +149,7 @@ namespace Kers.Controllers
                 var starttime = this.DefaultTime;
                 evnt.IsAllDay = true;
                 var timezone = CntEvent.Etimezone ? " -04:00":" -05:00";
-                if(CntEvent.Starttime != ""){
+                if(CntEvent.Starttime != null && CntEvent.Starttime != ""){
                     starttime = CntEvent.Starttime+":00.1000000";
                     evnt.IsAllDay = false;
                     evnt.HasStartTime = true;
@@ -173,23 +173,14 @@ namespace Kers.Controllers
                 evnt.BodyPreview = evnt.Body = CntEvent.Body;
                 evnt.WebLink = CntEvent.WebLink;
                 evnt.Subject = CntEvent.Subject;
-
-                context.Remove( evnt.Location );
-
-                //context.Remove( evnt.Units );
-                //context.Remove( evnt.ProgramCategories );
-
-
+                context.RemoveRange( evnt.ProgramCategories );
+                if(evnt.Location != null) context.Remove( evnt.Location );
                 evnt.Location = CntEvent.Location;
                 evnt.Units = CntEvent.Units;
                 evnt.ProgramCategories = CntEvent.ProgramCategories;
-
-
-                
-                
                 this.Log(CntEvent,"CountyEvent", "County Event Updated.");
                 
-                return new OkObjectResult(CntEvent);
+                return new OkObjectResult(evnt);
             }else{
                 this.Log( CntEvent ,"CountyEvent", "Not Found CountyEvent in an update attempt.", "CountyEvent", "Error");
                 return new StatusCodeResult(500);
@@ -199,12 +190,14 @@ namespace Kers.Controllers
         [HttpDelete("deletecountyevent/{id}")]
         [Authorize]
         public IActionResult DeleteExtensionEvent( int id ){
-            var entity = context.ExtensionEvent.Find(id);
-            
-            
+            var entity = context.CountyEvent.Where(c => c.Id == id)
+                            .Include( c => c.Units )
+                            .Include( c => c.Location)
+                            .FirstOrDefault();
             if(entity != null){
-                
-                context.ExtensionEvent.Remove(entity);
+                this.context.RemoveRange( this.context.CountyEventProgramCategory.Where(c => c.CountyEventId == id));
+                context.Remove(entity.Location);
+                context.CountyEvent.Remove(entity);
                 context.SaveChanges();
                 
                 this.Log(entity,"ExtensionEvent", "ExtensionEvent Removed.");

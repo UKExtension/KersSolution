@@ -11,7 +11,7 @@
       <div class="text-right">
           <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
       </div>
-      <county-event-form [countyEvent]="event"></county-event-form>
+      <county-event-form [countyEvent]="event" (onFormSubmit)="eventEdited($event)" (onFormCancel)="default()"></county-event-form>
   </td>
   <td *ngIf="rowDelete" colspan="5">
       <div class="text-right">
