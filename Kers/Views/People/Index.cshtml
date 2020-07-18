@@ -26,50 +26,15 @@
 
 <form asp-controller="People" asp-action="Index" method="get" class="form-inline">
     <div class="search-filters">
-        <div class="form-group">
-            <label class="sr-only" for="SearchString">Search</label>
-            <input type="search" class="form-control input-sm" name="SearchString" value="@srch" placeholder="Search"></label>
-        </div>
-
-        <div class="form-group">
-            <label for="planningUnitId">&nbsp;&nbsp;&nbsp;Planning Unit</label>
-            <select class="form-control" name="planningUnitId" onchange="this.form.submit()">
-                <option>-- Select --</option>
-                @foreach( var unit in units )
-                {
-                    if(unit.Id == @currUnit)
-                    {
-                        <option value="@unit.Id" selected="selected">@unit.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@unit.Id">@unit.Name</option>
-                    }
-                    
-                }
-                
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="extensionPositionId">&nbsp;&nbsp;&nbsp;Position</label>
-            <select class="form-control" name="extensionPositionId" onchange="this.form.submit()">
-                <option value="0">-- Select --</option>
-                @foreach( var position in positions )
-                {
-                    if(position.Id == @currPosition)
-                    {
-                        <option value="@position.Id" selected="selected">@position.Title</option>
-                    }else{
-                        <option value="@position.Id">@position.Title</option>
-                    }
-                }
-            </select>
-        </div>
+        <div>
+            <div class="form-group">
+                <label class="sr-only" for="SearchString">Search</label>
+                <input type="search" class="form-control input-sm" name="SearchString" value="@srch" placeholder="Search"></label>
+            </div>
 
 
-
-        <div class="form-group" style="float: right">
-            <label>
+            <div class="form-group" style="float: right">
+                <label>
                 Order By: 
                 <div class="btn-group" data-toggle="buttons">
                         
@@ -113,6 +78,50 @@
                     </div>
             </label>
         </div>
+
+
+        </div>
+        
+        <div class="text-center" style="padding-top: 35px;">
+            <div class="form-group">
+                <label for="planningUnitId">&nbsp;&nbsp;&nbsp;Planning Unit</label>
+                <select class="form-control" name="planningUnitId" onchange="this.form.submit()">
+                    <option>-- Select --</option>
+                    @foreach( var unit in units )
+                    {
+                        if(unit.Id == @currUnit)
+                        {
+                            <option value="@unit.Id" selected="selected">@unit.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@unit.Id">@unit.Name</option>
+                        }
+                        
+                    }
+                    
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="extensionPositionId">&nbsp;&nbsp;&nbsp;Position</label>
+                <select class="form-control" name="extensionPositionId" onchange="this.form.submit()">
+                    <option value="0">-- Select --</option>
+                    @foreach( var position in positions )
+                    {
+                        if(position.Id == @currPosition)
+                        {
+                            <option value="@position.Id" selected="selected">@position.Title</option>
+                        }else{
+                            <option value="@position.Id">@position.Title</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+
+
+        
 
 
 
