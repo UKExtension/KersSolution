@@ -67,6 +67,54 @@ namespace Kers.Controllers
 
             return new OkObjectResult(reslt);
         }
+
+        [HttpGet]
+        [Route("GetCustom")]
+        public virtual IActionResult GetCustom(
+                                        [FromQuery] string search, 
+                                        [FromQuery] DateTime start,
+                                        [FromQuery] DateTime end,
+                                        [FromQuery] int? day,
+                                        [FromQuery] string order,
+                                        [FromQuery] int? countyId
+
+        )
+        {
+            
+            IQueryable<CountyEvent> query = _context.CountyEvent.Where( e => e.Start.Date >= start.Date && e.Start.Date <= end.Date);
+            if( countyId != null){
+                if(countyId == 0 ){
+                    var user = CurrentUser();
+                    countyId = user.RprtngProfile.PlanningUnitId;
+                }
+                query = query.Where( e => e.Units.Select( u => u.PlanningUnitId ).Contains(countyId??0));
+            }
+            if( day != null){
+                query = query.Where( e => (int) e.Start.DayOfWeek == (day??0) );
+            }
+            if( search != ""){
+                query = query.Where( e => e.Subject.Contains( search ));
+            }
+                        
+            query = query .Include( e => e.Location).ThenInclude( l => l.Address)
+                        .Include( e => e.Units)
+                        .Include( e => e.ProgramCategories);
+             
+            if(order == "dsc"){
+                query = query.OrderByDescending(t => t.Start);
+            }else if( order == "asc"){
+                query = query.OrderBy(t => t.CreatedDateTime);
+            }else{
+                query = query.OrderBy(t => t.Subject);
+            }
+            var reslt = new List<CountyEventWithTime>();
+            foreach( var ce in query){
+                var e = new CountyEventWithTime(ce);
+                reslt.Add( e );
+            }
+
+            return new OkObjectResult(reslt);
+        }
 /* 
 
         [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]

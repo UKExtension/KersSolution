@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { IMyDrpOptions, IMyDateRangeModel } from "mydaterangepicker";
 import { startWith, flatMap, delay, map, tap } from 'rxjs/operators';
-import { ActivatedRoute, ParamMap } from '@angular/router';
 import { TrainingSearchCriteria } from '../training/training';
 import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
 

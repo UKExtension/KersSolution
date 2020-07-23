@@ -57,6 +57,21 @@ export class CountyEventService {
                 );
       }
 
+      getCustom(searchParams?:{}):Observable<CountyEventWithTime[]>{
+        var url = this.baseUrl + "GetCustom/";
+        return this.http.get<CountyEventWithTime[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+            .pipe(
+                catchError(this.handleError('getCustom', []))
+            );
+      }
+      private addParams(params:{}){
+        let searchParams = {};
+        for(let p in params){
+            searchParams[p] = params[p];
+        }
+        return  {params: searchParams};
+    }
+
 }
 
 export interface CountyEvent extends ExtensionEvent{
@@ -84,6 +99,15 @@ export interface CountyEventProgramCategory{
     programCategoryId:number;
 }
 
+
+export class CountyEventSearchCriteria{
+    start: string;
+    end: string;
+    search: string = "";
+    day?: number;
+    order: string = 'dsc';
+    countyId?:number = 0
+  }
 
 
 
