@@ -9,7 +9,7 @@ namespace Kers.Models.Entities.KERScore
 
     public partial class CountyEvent:ExtensionEvent
     {
-        public int classicCountyEventId { get; set; }
+        public int? classicCountyEventId { get; set; }
         public DateTime? rDt { get; set; }
         public ICollection<CountyEventPlanningUnit> Units { get; set; }
         public ICollection<CountyEventProgramCategory> ProgramCategories { get; set; }

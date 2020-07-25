@@ -64,6 +64,22 @@ export class CountyEventService {
                 catchError(this.handleError('getCustom', []))
             );
       }
+    
+      getLegacyCountyEvents(amount:number = 20, notConverted:boolean = true, order:string = "DESC"): Observable<Object[]>{
+        var url = this.baseUrl + "getlegacy/" + amount + "/" + notConverted + "/" + order;
+        return this.http.get<Object[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('getLegacyCountyEvents', []))
+            );
+      }
+
+      migrate( id:number ):Observable<CountyEvent>{
+        var url = this.baseUrl + "migrate/" + id;
+        return this.http.get<CountyEvent>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('migrate', <CountyEvent>{}))
+            );
+      }
       private addParams(params:{}){
         let searchParams = {};
         for(let p in params){

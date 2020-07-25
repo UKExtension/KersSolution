@@ -83,6 +83,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
     </table>
     <loading *ngIf="loading"></loading>
   </div>
+  <router-outlet></router-outlet>
   `,
   styles: []
 })

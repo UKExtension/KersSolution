@@ -8,6 +8,8 @@ import { CountyEventFormComponent } from './county-event-form.component';
 import { MyDatePickerModule } from 'mydatepicker';
 import { MyDateRangePickerModule } from 'mydaterangepicker';
 import { CountyEventListDetailsComponent } from './county-event-list-details.component';
+import { CountyEventConvertItemComponent } from './county-events-convert-item.component';
+import { CountyEventConvertComponent } from './county-events-convert.component';
 
 
 
@@ -23,7 +25,9 @@ import { CountyEventListDetailsComponent } from './county-event-list-details.com
   declarations: [ 
                   CountyEventsHomeComponent,
                   CountyEventFormComponent,
-                  CountyEventListDetailsComponent
+                  CountyEventListDetailsComponent,
+                  CountyEventConvertComponent,
+                  CountyEventConvertItemComponent
                 ],
   providers:    [  
                     

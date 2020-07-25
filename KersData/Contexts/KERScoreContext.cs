@@ -217,6 +217,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<CountyEvent> CountyEvent {get;set;}
         public virtual DbSet<CountyEventPlanningUnit> CountyEventPlanningUnit {get;set;}
         public virtual DbSet<CountyEventProgramCategory> CountyEventProgramCategory {get;set;}
+        public virtual DbSet<LegacyCountyEvents> LegacyCountyEvents {get;set;}
 
 
         /***************************************/

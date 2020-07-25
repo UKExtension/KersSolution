@@ -1,0 +1,9 @@
+
+Convert<div><a class="btn btn-default" (click)="reload()">Reload</a></div>
+<div  *ngIf="services$ | async as services">
+    <div [hidden]="services.length != items.length && !this.convertAllClicked && convertedItemIndex <= items.length">
+        <a class="btn btn-default" (click)="convertAll()">Convert All</a><br><br>
+    </div>
+    <div [hidden]="convertedItemIndex <= items.length">Reload</div>
+    <county-events-convert-item *ngFor="let s of services" (onLoaded)="addItem($event)" (onConverted)="addTraining($event)" [service]="s"></county-events-convert-item>
+</div>
