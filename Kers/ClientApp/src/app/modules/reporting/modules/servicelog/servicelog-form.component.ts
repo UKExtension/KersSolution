@@ -133,7 +133,6 @@ export class ServicelogFormComponent implements OnInit{
                             var o = <ImageResponse>JSON.parse(response);
                             var im = <ActivityImage>{uploadImageId: o.imageId}
                             thisObject.activityImages.push(im);
-                            console.log(thisObject.activityImages);
                         },
                         'froalaEditor.image.beforeRemove':function (image){
                             //var o = <ImageResponse>JSON.parse(response);

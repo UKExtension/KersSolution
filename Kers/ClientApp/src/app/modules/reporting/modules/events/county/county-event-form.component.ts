@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl} from '@angular/forms';
+import {Location} from '@angular/common';
 import { CountyEvent, CountyEventService, CountyEventProgramCategory, CountyEventPlanningUnit, CountyEventWithTime } from './county-event.service';
 import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
 import { ProgramCategory, ProgramsService } from '../../admin/programs/programs.service';
@@ -29,15 +30,8 @@ export class CountyEventFormComponent implements OnInit {
   multycounty = false;
   selectedLocation:ExtensionEventLocation;
   locationBrowser = true;
-
-  options = { 
-    placeholderText: 'Your Description Here!',
-    toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL'],
-    toolbarButtonsMD: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat'],
-    toolbarButtonsSM: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat'],
-    toolbarButtonsXS: ['undo', 'redo', 'bold', 'italic'],
-    quickInsertButtons: ['ul', 'ol', 'hr'],    
-  };
+  options:object;
+  
   loading = true;
   public myDatePickerOptions: IMyDpOptions = {
           dateFormat: 'mm/dd/yyyy',
@@ -64,6 +58,7 @@ export class CountyEventFormComponent implements OnInit {
     private fb: FormBuilder,
     private service: CountyEventService,
     private programsService: ProgramsService,
+    private location: Location,
     private planningUnitService: PlanningunitService,
     private userService:UserService
   ) {
@@ -140,6 +135,28 @@ export class CountyEventFormComponent implements OnInit {
     }
     this.userService.current().subscribe(
       res =>{
+
+        var thisObject = this;
+        this.options = { 
+          placeholderText: 'Your Description Here!',
+          toolbarButtons: ['undo', 'redo' , 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'formatUL', 'formatOL', 'insertImage'],
+          toolbarButtonsMD: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'insertImage'],
+          toolbarButtonsSM: ['undo', 'redo', 'bold', 'italic', 'underline', 'paragraphFormat', '|', 'insertImage'],
+          toolbarButtonsXS: ['undo', 'redo', 'bold', 'italic'],
+          quickInsertButtons: ['ul', 'ol', 'hr'],
+          imageUploadParams: { profileId: res.id },
+                                imageUploadURL: this.location.prepareExternalUrl('/FroalaApi/UploadImage'),  
+                                events: {
+                                    'froalaEditor.image.uploaded':function (e, editor, response){
+                                        var o = <ImageResponse>JSON.parse(response);
+                                        //var im = <ActivityImage>{uploadImageId: o.imageId}
+                                        //thisObject.activityImages.push(im);
+                                    }    
+                                  }
+        };
+
+
+
         this.county = res.rprtngProfile.planningUnit;
         if( !this.countyEvent && (this.county.timeZoneId == "Central Standard Time" ||this.county.timeZoneId == "America/Chicago") ){
           this.countyEventForm.patchValue({etimezone:false});
@@ -304,3 +321,11 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
 
   return null;
 }
+
+interface ImageResponse{
+
+  link:string,
+  imageId:number
+
+
+};
