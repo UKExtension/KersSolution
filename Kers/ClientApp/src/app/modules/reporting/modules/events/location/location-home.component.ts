@@ -117,9 +117,12 @@ export class LocationHomeComponent implements OnInit {
   }
 
 
-  newLocationSubmitted(event:ExtensionEventLocation){
+  newLocationSubmitted(event:ExtensionEventLocationConnection){
     this.newLocation = false;
-    this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
+    //this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
+    
+    this.onSelected.emit(event);
+    this.onRefresh();
   }
   locationSelected(event:ExtensionEventLocationConnection){
     this.service.selected(event.id).subscribe();

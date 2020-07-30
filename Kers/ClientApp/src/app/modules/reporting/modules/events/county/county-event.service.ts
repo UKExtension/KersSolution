@@ -43,7 +43,6 @@ export class CountyEventService {
 
       update(id:number, event:CountyEventWithTime):Observable<CountyEventWithTime>{
         var url = this.baseUrl + 'updatecountyevent/' + id;
-        console.log(event);
         return this.http.put<CountyEventWithTime>(this.location.prepareExternalUrl(url), event)
                 .pipe(
                     catchError(this.handleError('update', event))

@@ -92,7 +92,7 @@ namespace Kers.Controllers
             if( day != null){
                 query = query.Where( e => (int) e.Start.DayOfWeek == (day??0) );
             }
-            if( search != ""){
+            if( search != null && search != ""){
                 query = query.Where( e => e.Subject.Contains( search ));
             }
                         
@@ -115,26 +115,7 @@ namespace Kers.Controllers
 
             return new OkObjectResult(reslt);
         }
-/* 
 
-        [HttpGet("perPeriod/{start}/{end}/{order?}/{type?}")]
-        [Authorize]
-        public virtual IActionResult PerPeriod(DateTime start, DateTime end, string order = "start", string type = "Training" ){
-            IQueryable<ExtensionEvent> query = _context.ExtensionEvent.Where( t => t.Start > start && t.Start < end && t.DiscriminatorValue == type);
-            
-            if(order == "end"){
-                query = query.OrderByDescending(t => t.End);
-            }else if( order == "created"){
-                query = query.OrderByDescending(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderByDescending(t => t.Start);
-            }
-             
-
-            var list = query.ToList();
-            return new OkObjectResult(list);
-        }
- */
 
         [HttpPost("addcountyevent")]
         [Authorize]
@@ -248,11 +229,11 @@ namespace Kers.Controllers
                 context.CountyEvent.Remove(entity);
                 context.SaveChanges();
                 
-                this.Log(entity,"ExtensionEvent", "ExtensionEvent Removed.");
+                this.Log(entity,"CountyEvent", "CountyEvent Removed.");
 
                 return new OkResult();
             }else{
-                this.Log( id ,"ExtensionEvent", "Not Found ExtensionEvent in a delete attempt.", "ExtensionEvent", "Error");
+                this.Log( id ,"CountyEvent", "Not Found CountyEvent in a delete attempt.", "ExtensionEvent", "Error");
                 return new StatusCodeResult(500);
             }
         }
