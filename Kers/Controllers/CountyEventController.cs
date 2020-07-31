@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Kers.Models.Repositories;
 using Kers.Models.Entities.KERScore;
+using Kers.Models.Entities.UKCAReporting;
 using Kers.Models.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,13 +28,16 @@ namespace Kers.Controllers
     {
 
         KERScoreContext _context;
+        KERSreportingContext _reportingContext;
         private string DefaultTime = "12:34:56.1000000";
         public CountyEventController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
-                    IKersUserRepository userRepo
+                    IKersUserRepository userRepo,
+                    KERSreportingContext reportingContext
             ):base(mainContext, context, userRepo){
                 _context = context;
+                _reportingContext = reportingContext;
         }
 
         [HttpGet]
@@ -238,33 +242,20 @@ namespace Kers.Controllers
             }
         }
 
-
-        [HttpGet("migrate/{id}")]
+[HttpGet("migrate/{id}")]
         public async Task<IActionResult> MigrateCountyEvent(int id){
             try{
- 
                 if( !(await context.CountyEvent.Where( t => t.classicCountyEventId == id).AnyAsync()) ){
-
-
-
-                    var service = await this.context.LegacyCountyEvents.Where( s => s.rID == id).FirstOrDefaultAsync();
+                    var service = await this._reportingContext.zCesCountyEvent.Where( s => s.rID == id).FirstOrDefaultAsync();
                     if( service != null){
                         if( !this.context.CountyEvent.Where( t => t.classicCountyEventId == service.rID).Any() ){
-                            
                                 var CountyEvent = ConvertCountyEvent(service);
                                 this.context.Add(CountyEvent);
                                 await this.context.SaveChangesAsync();
-                                return new OkObjectResult(CountyEvent);
-                            
-                            
+                                return new OkObjectResult(CountyEvent);   
                         }
                     } 
-
-
-
-
                 }
-
                 return new OkObjectResult(null);
             }catch( Exception e ){
                 this.Log( e.Message ,"CountyEvent", "Migration Error.", "CountyEvent", "Error");
@@ -272,6 +263,60 @@ namespace Kers.Controllers
             }
         }
 
+
+
+/* 
+        [HttpGet("migrate/{id}")]
+        public async Task<IActionResult> MigrateCountyEvent(int id){
+            try{
+                if( !(await context.CountyEvent.Where( t => t.classicCountyEventId == id).AnyAsync()) ){
+                    var service = await this.context.LegacyCountyEvents.Where( s => s.rID == id).FirstOrDefaultAsync();
+                    if( service != null){
+                        if( !this.context.CountyEvent.Where( t => t.classicCountyEventId == service.rID).Any() ){
+                                var CountyEvent = ConvertCountyEvent(service);
+                                this.context.Add(CountyEvent);
+                                await this.context.SaveChangesAsync();
+                                return new OkObjectResult(CountyEvent);   
+                        }
+                    } 
+                }
+                return new OkObjectResult(null);
+            }catch( Exception e ){
+                this.Log( e.Message ,"CountyEvent", "Migration Error.", "CountyEvent", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+ */
+        
+        [HttpGet("getlegacy/{limit}")]
+        public async Task<IActionResult> GetLegacyCountyEvents(int limit){
+            var leg = new List<zCesCountyEvent>();
+            do{
+                var serv = await _reportingContext.zCesCountyEvent.OrderBy(r => Guid.NewGuid()).LastAsync();
+                if( serv == null ) break;
+                if( !context.CountyEvent.Where( t => t.classicCountyEventId == serv.rID).Any()){
+                    leg.Add(serv);
+                }
+                
+
+            }while(leg.Count() < limit);
+
+/* 
+
+            IQueryable<zCesCountyEvent> services;
+            List<int> converted = await context.CountyEvent.Where( t => t.classicCountyEventId != null && t.classicCountyEventId != 0).Select( t => t.classicCountyEventId??0).ToListAsync();
+            services = _reportingContext.zCesCountyEvent.Where( s => !converted.Contains( s.rID ));
+            var sc = await services.Take(limit).ToListAsync();
+
+             */
+            return new OkObjectResult(leg);
+        }
+
+
+
+
+/* 
         [HttpGet("getlegacy/{limit}/{notConverted?}/{order?}")]
         public async Task<IActionResult> GetLegacyCountyEvents(int limit, Boolean notConverted = true, string order = "ASC"){
             IOrderedQueryable<LegacyCountyEvents> services;
@@ -291,9 +336,148 @@ namespace Kers.Controllers
             }
             var sc = await services.Take(limit).ToListAsync();
             return new OkObjectResult(sc);
+        } */
+
+        
+        private CountyEvent ConvertCountyEvent( zCesCountyEvent legacy){
+            CountyEvent evnt = new CountyEvent();
+            evnt.Subject = legacy.eventTitle;
+            evnt.Body = evnt.BodyPreview = legacy.eventDescription;
+            evnt.classicCountyEventId = legacy.rID;
+            evnt.CreatedDateTime = Convert.ToDateTime(legacy.rDt);
+            evnt.LastModifiedDateTime = DateTimeOffset.Now;
+            var user = context.KersUser.Where( u => u.RprtngProfile.PersonId == legacy.rBy).FirstOrDefault();
+            if( user != null ){
+                evnt.Organizer = user;
+            }else{
+                evnt.OrganizerId = 2;
+            }
+            var unit = context.PlanningUnit.Where( u => u.Code == legacy.planningUnitID.ToString()).FirstOrDefault();
+            evnt.Units = new List<CountyEventPlanningUnit>();
+            bool isEastern = true;
+            if( unit != null){
+                var host = new CountyEventPlanningUnit();     
+                host.CountyEvent = evnt;
+                host.PlanningUnitId = unit.Id;
+                host.IsHost = true;
+                evnt.Units.Add(host);
+                if( unit.TimeZoneId == "Central Standard Time" || unit.TimeZoneId == "America/Chicago"){
+                    isEastern = false;
+                }
+            }
+            if(legacy.eventCounties != null && legacy.eventCounties != "NULL" && legacy.eventCounties != ""){
+                string[] cnts = legacy.eventCounties.Split(',');
+                foreach( var cnt in cnts){
+                    if( cnt != ""){
+                        var otherCounty = context.PlanningUnit.Where( u => u.Code == cnt ).FirstOrDefault();
+                        if( otherCounty != null ){
+                            var cntConnection = new CountyEventPlanningUnit();
+                            cntConnection.PlanningUnitId = otherCounty.Id;
+                            cntConnection.CountyEvent = evnt;
+                            cntConnection.IsHost = false;
+                            evnt.Units.Add(cntConnection);
+                        }
+                    }
+                }
+            }
+            var timezone = isEastern ? " -04:00":" -05:00";
+            var starttime = this.DefaultTime;
+            if(legacy.eventTimeBegin != null && legacy.eventTimeBegin != "" && legacy.eventTimeBegin != "NULL"){
+                starttime = legacy.eventTimeBegin.Insert(2, ":")+":00.1000000";
+                evnt.IsAllDay = false;
+                evnt.HasStartTime = true;
+            }else{
+                evnt.HasEndTime = false;
+            }
+            string[] beginDate = legacy.eventDateBegin.Split("/");
+            if(beginDate.Count() < 3 ) beginDate = legacy.eventDateBegin.Split("-");
+            if(beginDate[2].Count() < 3) beginDate[2] = "20"+beginDate[1];
+            evnt.Start = DateTimeOffset.Parse(beginDate[2] + "-" + beginDate[0] + "-" + beginDate[1] + " " + starttime + timezone);
+            if(
+                legacy.eventDateEnd != null 
+                &&
+                legacy.eventDateEnd != "NULL"
+                && 
+                legacy.eventDateEnd != ""
+                &&
+                 !(
+                     legacy.eventDateEnd == legacy.eventDateBegin 
+                     && 
+                     (legacy.eventTimeEnd == "NULL" || legacy.eventTimeEnd == null)
+                 )
+                
+                ){
+                var endtime = this.DefaultTime;
+                if(legacy.eventTimeEnd != null && legacy.eventTimeEnd != "" && legacy.eventTimeEnd != "NULL"){
+                    endtime = legacy.eventTimeEnd.Insert(2, ":")+":00.1000000";
+                    evnt.HasEndTime = true;
+                }else{
+                    evnt.HasEndTime = false;
+                }
+                string[] endDate = legacy.eventDateEnd.Split("/");
+                if(endDate.Count() < 3 ) endDate = legacy.eventDateEnd.Split("-");
+                if(endDate[2].Count() < 3) endDate[2] = "20"+endDate[1];
+                evnt.End = DateTimeOffset.Parse( endDate[2] + "-" + endDate[0] + "-" + endDate[1] + " " + endtime + timezone);
+            }else{
+                evnt.End = null;
+            }
+            if( legacy.eventUrl != "NULL" && legacy.eventUrl != "" && legacy.eventUrl != null){
+                evnt.WebLink = legacy.eventUrl;
+            }
+            evnt.ProgramCategories = new List<CountyEventProgramCategory>();
+            if(legacy.progANR == true || legacy.progHORT == true){
+                int? ANRcategoryId = context.ProgramCategory.Where( a => a.ShortName == "ANR").Select( c => c.Id ).FirstOrDefault();
+                if( ANRcategoryId != null ){
+                    var AnrCat = new CountyEventProgramCategory();
+                    AnrCat.ProgramCategoryId = ANRcategoryId??0;
+                    AnrCat.CountyEvent = evnt;
+                    evnt.ProgramCategories.Add(AnrCat);
+                }
+            }
+            if(legacy.prog4HYD == true){
+                int? HcategoryId = context.ProgramCategory.Where( a => a.ShortName == "4-H").Select( c => c.Id ).FirstOrDefault();
+                if( HcategoryId != null ){
+                    var HCat = new CountyEventProgramCategory();
+                    HCat.ProgramCategoryId = HcategoryId??0;
+                    HCat.CountyEvent = evnt;
+                    evnt.ProgramCategories.Add(HCat);
+                }
+            }
+            if(legacy.progFA == true){
+                int? FAcategoryId = context.ProgramCategory.Where( a => a.ShortName == "CED").Select( c => c.Id ).FirstOrDefault();
+                if( FAcategoryId != null ){
+                    var FACat = new CountyEventProgramCategory();
+                    FACat.ProgramCategoryId = FAcategoryId??0;
+                    FACat.CountyEvent = evnt;
+                    evnt.ProgramCategories.Add(FACat);
+                }
+            }
+            if(legacy.progFCS == true){
+                int? FCScategoryId = context.ProgramCategory.Where( a => a.ShortName == "FCS").Select( c => c.Id ).FirstOrDefault();
+                if( FCScategoryId != null ){
+                    var FCSCat = new CountyEventProgramCategory();
+                    FCSCat.ProgramCategoryId = FCScategoryId??0;
+                    FCSCat.CountyEvent = evnt;
+                    evnt.ProgramCategories.Add(FCSCat);
+                }
+            }
+            if(legacy.progOther == true){
+                int? OcategoryId = context.ProgramCategory.Where( a => a.ShortName == "OTHR").Select( c => c.Id ).FirstOrDefault();
+                if( OcategoryId != null ){
+                    var OCat = new CountyEventProgramCategory();
+                    OCat.ProgramCategoryId = OcategoryId??0;
+                    OCat.CountyEvent = evnt;
+                    evnt.ProgramCategories.Add(OCat);
+                }
+            }
+            evnt.Location = ProcessAddress(legacy, unit);
+            return evnt;
         }
 
 
+
+
+/* 
         private CountyEvent ConvertCountyEvent( LegacyCountyEvents legacy){
             CountyEvent evnt = new CountyEvent();
             evnt.Subject = legacy.eventTitle;
@@ -419,8 +603,8 @@ namespace Kers.Controllers
             return evnt;
         }
 
-
-        private ExtensionEventLocation ProcessAddress( LegacyCountyEvents legacy, PlanningUnit unit ){
+ */
+        private ExtensionEventLocation ProcessAddress( zCesCountyEvent legacy, PlanningUnit unit ){
             
             var Location = new ExtensionEventLocation();
             Location.Address = new PhysicalAddress();

@@ -64,8 +64,8 @@ export class CountyEventService {
             );
       }
     
-      getLegacyCountyEvents(amount:number = 20, notConverted:boolean = true, order:string = "DESC"): Observable<Object[]>{
-        var url = this.baseUrl + "getlegacy/" + amount + "/" + notConverted + "/" + order;
+      getLegacyCountyEvents(amount:number = 20): Observable<Object[]>{
+        var url = this.baseUrl + "getlegacy/" + amount ;
         return this.http.get<Object[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('getLegacyCountyEvents', []))

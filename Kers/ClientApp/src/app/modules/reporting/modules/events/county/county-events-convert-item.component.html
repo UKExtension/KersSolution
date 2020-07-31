@@ -1,6 +1,6 @@
 <loading *ngIf="loading" [type]="'bars'"></loading>
 <div *ngIf="!loading">
-  <p *ngIf="!training">
+  <p *ngIf="!evnt">
     <a class="btn btn-default" (click)="convert()">convert</a>
 
     {{s.eventDateBegin}} - {{s.eventTitle}}
