@@ -1382,13 +1382,17 @@ namespace Kers.Models.Repositories
                 }else if( filter == 6 ){
                     activities = activities.Where( a => a.KersUserId == id);
                 }
+
+                ids = await activities.Select( a => a.LastRevisionId??0).ToListAsync();
+
+/* 
                 activities = activities.Include( r => r.Revisions);
                 foreach( var actvt in activities){
                     var rev = actvt.Revisions.OrderBy( r => r.Created );
                     var last = rev.Last();
                     ids.Add(last.Id);
                 }
-                    
+    */                 
                 var serialized = JsonConvert.SerializeObject(ids);
 
                 // If keep cache is not specified, figure it out depending on the past or current period
