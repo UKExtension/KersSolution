@@ -153,7 +153,7 @@ namespace Kers.Models.Repositories
                 float TotalMultistate = 0;
                 int TotalVoluntiers = 0;
                 int TotalNumActivities = 0;
-                var revs = await this.LastActivityRevisionIds(start, end, filter, id );
+                var revs = await this.LastActivityRevisionIds(start, end, filter, id, refreshCache );
                 // Divide revs into batches as SQL server is having trouble to process more then several thousands at once
                 var FilteredActivities = new List<ActivityRevision>();
                 var batchCount = 10000;
@@ -1363,7 +1363,7 @@ namespace Kers.Models.Repositories
             var cacheKey = CacheKeys.ActivityLastRevisionIdsPerPeriod + filter.ToString() + "_" + id.ToString() + start.ToString("s") + end.ToString("s");
             var cacheString = await _cache.GetStringAsync(cacheKey);
             List<int> ids;
-            if (!string.IsNullOrEmpty(cacheString)){
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
                 ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
             }else{
                 ids = new List<int>();

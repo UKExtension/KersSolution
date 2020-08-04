@@ -988,7 +988,7 @@ namespace Kers.Controllers.Reports
         }
 
 
-        private async Task<List<List<PerGroupSummary>>> DataByMonth(FiscalYear fiscalYear, int filter = 1, int grouppedBy = 1, int id = 0)
+        private async Task<List<List<PerGroupSummary>>> DataByMonth(FiscalYear fiscalYear, int filter = 1, int grouppedBy = 1, int id = 0, bool refreshCache = false)
         {
 
             var result = new List<List<PerGroupSummary>>();
@@ -997,7 +997,7 @@ namespace Kers.Controllers.Reports
             var cacheKey = CacheKeys.ReportsDataByMonth + filter.ToString() + id.ToString() + "_" + grouppedBy.ToString() + "_" + fiscalYear.Name;
             var cachedTypes = await _cache.GetStringAsync(cacheKey);
 
-            if (!string.IsNullOrEmpty(cachedTypes)){
+            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
                 result = JsonConvert.DeserializeObject<List<List<PerGroupSummary>>>(cachedTypes);
             }else{
 
@@ -1011,7 +1011,7 @@ namespace Kers.Controllers.Reports
                     var first = new DateTime( dt.Year, dt.Month, 1, 0, 0, 0);
                     var last = new DateTime( dt.Year, dt.Month , DateTime.DaysInMonth(dt.Year, dt.Month), 23, 59, 59 );
 
-                    List<PerGroupSummary> activities = await contactRepo.GetActivitiesAndContactsSummaryAsync( first, last, filter, grouppedBy, id );
+                    List<PerGroupSummary> activities = await contactRepo.GetActivitiesAndContactsSummaryAsync( first, last, filter, grouppedBy, id, refreshCache );
                     result.Add( activities );
                 }    
                 _cache.SetString(cacheKey, JsonConvert.SerializeObject(result), new DistributedCacheEntryOptions
