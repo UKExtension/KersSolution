@@ -236,6 +236,7 @@ namespace Kers.Controllers
                 cnt.Revisions.Add(contact);
                 context.Add(cnt); 
                 this.Log(contact,"ContactRevision", "Statistical Contact Added.");
+                cnt.LastRevisionId = contact.Id;
                 context.SaveChanges();
                 contact.MajorProgram = this.context.MajorProgram
                                         .Where( m => m.Id == contact.MajorProgramId)
@@ -266,6 +267,7 @@ namespace Kers.Controllers
                 acEntity.Days = contact.Days;
                 acEntity.Revisions.Add(contact);
                 context.SaveChanges();
+                acEntity.LastRevisionId = contact.Id;
                 this.Log(entity,"ContactRevision", "Statistical Contact Updated.");
                 contact.MajorProgram = this.context.MajorProgram
                                         .Where( m => m.Id == contact.MajorProgramId)
@@ -288,7 +290,8 @@ namespace Kers.Controllers
                                 FirstOrDefault();
             
             if(acEntity != null){
-                
+                acEntity.LastRevision = null;
+                context.SaveChanges();
                 context.Contact.Remove(acEntity);
                 context.SaveChanges();
                 

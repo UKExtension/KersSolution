@@ -19,6 +19,8 @@ namespace Kers.Models.Entities.KERScore
         public int MajorProgramId {get;set;}
         public MajorProgram MajorProgram {get;set;}
         public List<ContactRevision> Revisions {get;set;}
+        public ContactRevision LastRevision {get;set;}
+        public int? LastRevisionId {get;set;}
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
     }
