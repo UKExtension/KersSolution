@@ -3,6 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { CountyEvent, CountyEventService, CountyEventWithTime, CountyEventSearchCriteria } from './county-event.service';
 import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import { startWith, flatMap, tap } from 'rxjs/operators';
+import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
   selector: 'app-county-events-home',
@@ -78,7 +79,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
 
 
   <div class="table-responsive">
-    <table class="table table-bordered table-striped" *ngIf="events$ | async as events">
+    <table class="table table-bordered table-striped" *ngIf="events$ | async as events" [hidden]="loading">
       <tr [county-event-list-details]="ev" *ngFor="let ev of events" (onDeleted)="newEventSubmitted($event)"></tr>
     </table>
     <loading *ngIf="loading"></loading>
@@ -119,12 +120,11 @@ export class CountyEventsHomeComponent implements OnInit {
 
 
   constructor(
-    private service:CountyEventService
+    private service:CountyEventService,
+    private reportingService: ReportingService,
   ) { }
 
   ngOnInit() {
-
-
     this.startDate = new Date();
     this.endDate = new Date();
     this.endDate.setMonth( this.endDate.getMonth() + 5);
@@ -147,6 +147,7 @@ export class CountyEventsHomeComponent implements OnInit {
         flatMap(_ => this.service.getCustom(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
+      this.defaultTitle();
   }
 
   dateCnanged(event: IMyDateRangeModel){
@@ -189,6 +190,14 @@ export class CountyEventsHomeComponent implements OnInit {
   newEventSubmitted(_:CountyEvent){
     this.newEvent = false;
     this.events$ = this.service.range();
+  }
+  defaultTitle(){
+    this.reportingService.setTitle("County Events");
+    //this.reportingService.setSubtitle("For specific In-Service related questions or assistance, please email: agpsd@lsv.uky.edu");
+  }
+  ngOnDestroy(){
+    this.reportingService.setTitle("Kentucky Extension Reporting System");
+    this.reportingService.setSubtitle("");
   }
 
 }

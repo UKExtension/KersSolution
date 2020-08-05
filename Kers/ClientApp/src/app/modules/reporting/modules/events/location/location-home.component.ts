@@ -14,7 +14,9 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
     <div *ngIf="countyLocations$ | async as countyLocations">
       <div class="text-right">
           <a class="btn btn-info btn-xs" *ngIf="!newLocation" (click)="newLocation = true">+ new location</a>
-      </div><br><br>
+      </div>
+      <location-form *ngIf="newLocation" [county]="county" [user]="user" (onFormCancel)="newLocation=false" (onFormSubmit)="newLocationSubmitted($event)"></location-form>
+      <br><br>
       <div class="row">
           <div class="col-sm-6 col-xs-12">
             <input type="text" [(ngModel)]="search" placeholder="search by building name" (keyup)="onSearch($event)" class="form-control" name="Search" />
@@ -35,7 +37,6 @@ Order by:&nbsp;
 
         </div>
       </div>
-      <location-form *ngIf="newLocation" [county]="county" [user]="user" (onFormCancel)="newLocation=false" (onFormSubmit)="newLocationSubmitted($event)"></location-form>
       <loading *ngIf="loading"></loading>      
       <div class="row" *ngIf="!loading">
         <div *ngFor="let locationConnection of countyLocations.results">

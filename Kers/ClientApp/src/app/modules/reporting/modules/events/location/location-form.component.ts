@@ -35,7 +35,7 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
               <input type="text" name="city" formControlName="city" id="city" class="form-control col-xs-12" />
           </div>
       </div> 
-      <div class="form-group">
+      <div class="form-group" *ngIf="showState">
           <label for="state" class="control-label col-md-3 col-sm-3 col-xs-12">State:</label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="text" name="state" formControlName="state" id="state" class="form-control col-xs-12" />
@@ -48,8 +48,8 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
           </div>
       </div>
     </div> 
-    <div class="form-group">
-          <label for="postalCode" class="control-label col-md-3 col-sm-3 col-xs-12">URL:<br><small>A web address for more information (optional).</small></label>           
+    <div class="form-group" *ngIf="showUrl">
+          <label for="locationUri" class="control-label col-md-3 col-sm-3 col-xs-12">URL:<br><small>A web address for more information (optional).</small></label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="text" name="locationUri" formControlName="locationUri" id="locationUri" class="form-control col-xs-12" />
           </div>
@@ -70,6 +70,8 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
 export class LocationFormComponent implements OnInit {
   @Input() county:PlanningUnit;
   @Input() user:User;
+  @Input() showState:boolean = false;
+  @Input() showUrl:boolean = false;
   
   @Input() location:ExtensionEventLocationConnection;
   locationForm:any;
