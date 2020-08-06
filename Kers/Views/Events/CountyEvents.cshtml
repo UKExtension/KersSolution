@@ -46,7 +46,7 @@
                                                     
                                                     @(e.HasEndTime ? 
                                                     (
-                                                        " - " + ( e.End?.Date != e.Start.Date ?  e.End?.ToString("MM/dd/yyyy") ?? "" : "")
+                                                        " - " + ( e.End?.Date != e.Start.Date ?  e.End?.ToString("MM/dd/yyyy ") ?? "" : "")
                                                                                 +   e.End?.ToString("hh:mm tt")  
                                                                                 +  ( e.Start.ToString("%K") == "-04:00" ? " (ET)" : " (CT)") 
                                                     )
@@ -66,7 +66,7 @@
                                                                                 :
                                                                                 "")
                                                                                 +
-                                                                            ( e.Location.Address.City != ""
+                                                                            ( e.Location.Address.City != null && e.Location.Address.City != ""
                                                                                 ?
                                                                                 e.Location.Address.City + ", KY " + (e.Location.Address.PostalCode != "" ? e.Location.Address.PostalCode : "")
                                                                                 :
