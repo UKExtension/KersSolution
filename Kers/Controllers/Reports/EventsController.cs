@@ -59,6 +59,40 @@ namespace Kers.Controllers.Reports
         }
 
         [HttpGet]
+        [Route("county/info/{id}/{conuntyId?}", Name="CountyEventDetails")]
+        public async Task<ActionResult> CountyEvent(int id, int countyId = 0)
+        {
+            var evnt = await this.context.CountyEvent
+                                .Where( e => e.Id == id )
+                                .Include( e => e.Units).ThenInclude( u => u.PlanningUnit)
+                                .Include( e => e.ProgramCategories).ThenInclude( c => c.ProgramCategory)
+                                .FirstOrDefaultAsync();
+            ViewData["unit"] = await this.context.PlanningUnit
+                                        .Where( u => u.Id ==  (countyId != 0 ? countyId : evnt.Units.First().PlanningUnitId))
+                                        .FirstOrDefaultAsync();
+            return View(evnt);
+        }
+
+        [HttpGet]
+        [Route("county/{id}")]
+        public async Task<ActionResult> CountyEvents(int id)
+        {
+            ViewData["unit"] = await this.context.PlanningUnit.Where( u => u.Id == id).FirstOrDefaultAsync();
+            var evnt = await this.context.CountyEvent
+                                .Where( e => e.Units.Select( u => u.PlanningUnitId ).Contains(id) )
+                                    .Include( e => e.Location ).ThenInclude( l => l.Address)
+                                .OrderBy( e => e.Start)
+                                .GroupBy( e => e.Start.Date)
+                                .Select( d => new GroupedCountyEvents {
+                                    events = d.ToList(),
+                                    date = d.First().Start
+                                })
+                                
+                                .ToListAsync();
+            return View(evnt);
+        }
+
+        [HttpGet]
         [Route("calendar/{fy?}")]
         public ActionResult Calendar(string fy="0")
         {
@@ -94,5 +128,10 @@ namespace Kers.Controllers.Reports
 
 
 
+    }
+
+    public class GroupedCountyEvents{
+        public List<CountyEvent> events;
+        public DateTimeOffset date;
     }
 }
