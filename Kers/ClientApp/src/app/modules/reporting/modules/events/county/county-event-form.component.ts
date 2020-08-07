@@ -6,7 +6,7 @@ import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
 import { ProgramCategory, ProgramsService } from '../../admin/programs/programs.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { UserService, PlanningUnit } from '../../user/user.service';
-import { ExtensionEventLocation } from '../extension-event';
+import { ExtensionEventLocation, ExtensionEventImage } from '../extension-event';
 import { ExtensionEventLocationConnection } from '../location/location.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class CountyEventFormComponent implements OnInit {
   @Input() countyEvent:CountyEventWithTime;
   county:PlanningUnit;
   countyId: number;
+  images:ExtensionEventImage[] = [];
   date = new Date();
   countyEventForm:any;
   hasEndDate = false;
@@ -149,8 +150,8 @@ export class CountyEventFormComponent implements OnInit {
                                 events: {
                                     'froalaEditor.image.uploaded':function (e, editor, response){
                                         var o = <ImageResponse>JSON.parse(response);
-                                        //var im = <ActivityImage>{uploadImageId: o.imageId}
-                                        //thisObject.activityImages.push(im);
+                                        var im = <ExtensionEventImage>{uploadImageId: o.imageId}
+                                        thisObject.images.push(im);
                                     }    
                                   }
         };
@@ -268,7 +269,7 @@ export class CountyEventFormComponent implements OnInit {
     result.units = unts;
     result.location = this.selectedLocation;
     
-    
+    result.extensionEventImages = this.images; 
     if( this.countyEvent ){
       this.service.update( this.countyEvent.id, result).subscribe(
         res => {

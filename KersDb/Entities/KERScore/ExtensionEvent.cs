@@ -129,7 +129,7 @@ namespace Kers.Models.Entities.KERScore
         /// Gets or sets Images Associated with the Event.
         /// A list of images that are uploaded to the Event
         /// </summary>
-        public ICollection<ExtensionEventImage> ExtensionEventImages {get;set;}
+        public List<ExtensionEventImage> ExtensionEventImages {get;set;}
 
         /// <summary>
         /// Gets or sets created date time.

@@ -189,7 +189,7 @@ export class CountyEventsHomeComponent implements OnInit {
 
   newEventSubmitted(_:CountyEvent){
     this.newEvent = false;
-    this.events$ = this.service.range();
+    this.onRefresh();
   }
   defaultTitle(){
     this.reportingService.setTitle("County Events");

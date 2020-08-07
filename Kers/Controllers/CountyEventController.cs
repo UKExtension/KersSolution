@@ -153,6 +153,8 @@ namespace Kers.Controllers
                 evnt.Location = CntEvent.Location;
                 evnt.Units = CntEvent.Units;
                 evnt.ProgramCategories = CntEvent.ProgramCategories;
+                CntEvent.ExtensionEventImages.ForEach(s => s.Created = DateTime.Now);
+                evnt.ExtensionEventImages = CntEvent.ExtensionEventImages;
                 this.context.Add(evnt);
                 this.context.SaveChanges();
                 return new OkObjectResult(evnt);
@@ -173,6 +175,7 @@ namespace Kers.Controllers
                         .Include(a => a.Location)
                         .Include( a => a.ProgramCategories)
                         .Include( a => a.Units)
+                        .Include( a => a.ExtensionEventImages)
                         .FirstOrDefault();
 
             if(CntEvent != null && evnt != null ){
@@ -209,6 +212,12 @@ namespace Kers.Controllers
                 context.RemoveRange( evnt.ProgramCategories );
                 if(evnt.Location != null) context.Remove( evnt.Location );
                 evnt.Location = CntEvent.Location;
+                CntEvent.ExtensionEventImages.ForEach(s => s.Created = DateTime.Now);
+                if( evnt.ExtensionEventImages == null){
+                    evnt.ExtensionEventImages = CntEvent.ExtensionEventImages;
+                }else{
+                    evnt.ExtensionEventImages.AddRange(CntEvent.ExtensionEventImages);
+                }
                 evnt.Units = CntEvent.Units;
                 evnt.ProgramCategories = CntEvent.ProgramCategories;
                 this.Log(CntEvent,"CountyEvent", "County Event Updated.");
@@ -226,10 +235,17 @@ namespace Kers.Controllers
             var entity = context.CountyEvent.Where(c => c.Id == id)
                             .Include( c => c.Units )
                             .Include( c => c.Location)
+                            .Include( c => c.ExtensionEventImages)
                             .FirstOrDefault();
             if(entity != null){
                 this.context.RemoveRange( this.context.CountyEventProgramCategory.Where(c => c.CountyEventId == id));
-                context.Remove(entity.Location);
+                foreach( var im in entity.ExtensionEventImages ){
+                    var imgs = this.context.UploadImage.Where( i => i.Id == im.UploadImageId).First();
+                    this.context.Remove( this.context.UploadFile.Where( f => f.Id == imgs.UploadFileId).First());
+                    this.context.Remove( imgs );
+                } 
+                this.context.RemoveRange( entity.ExtensionEventImages);
+                if( entity.Location != null ) context.Remove(entity.Location);
                 context.CountyEvent.Remove(entity);
                 context.SaveChanges();
                 
@@ -242,7 +258,7 @@ namespace Kers.Controllers
             }
         }
 
-[HttpGet("migrate/{id}")]
+        [HttpGet("migrate/{id}")]
         public async Task<IActionResult> MigrateCountyEvent(int id){
             try{
                 if( !(await context.CountyEvent.Where( t => t.classicCountyEventId == id).AnyAsync()) ){
