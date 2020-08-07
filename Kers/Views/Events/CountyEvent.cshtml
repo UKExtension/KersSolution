@@ -10,54 +10,131 @@
 <br><br>
 
     <div class="row">
-        <div class="col-md-10 col-sm-12">
-            Event
+        <div class="col-md-8 col-sm-12">
+            <h3 class="green">@Model.Subject</h3>
+            <p><br>
+              <strong>Starts:</strong><br> @( Model.HasStartTime 
+                            ? 
+                                Model.Start.ToString("dddd, dd MMMM, yyyy hh:mm tt") 
+                                     + 
+                                ( Model.Start.ToString("%K") == "-04:00" ? " (ET)" : " (CT)")
+                            :
+                                 Model.Start.ToString("dddd, dd MMMM, yyyy")
+                        )
+            </p>
+            @Html.Raw( 
+                (Model.End != null 
+                  ? 
+                    "<p><strong>Ends:</strong><br> "+
+                      (     Model.HasEndTime 
+                            ? 
+                                Model.End?.ToString("dddd, dd MMMM, yyyy hh:mm tt") 
+                                     + 
+                                ( Model.End?.ToString("%K") == "-04:00" ? " (ET)" : " (CT)")
+                            :
+                                 Model.End?.ToString("dddd, dd MMMM, yyyy"))
+                      +"</p>"
+                  :
+                    ""
+                )
+
+                +
+
+                ( Model.Location != null
+                    ?
+                        "<strong>Location:</strong><br>" +
+                        (
+                            Model.Location.Address.Building != null && Model.Location.Address.Building != ""
+                          ?
+                            Model.Location.Address.Building + "<br>"
+                          :
+                            ""
+                        ) 
+                        +
+                        (   Model.Location.Address.City != null && Model.Location.Address.City != ""
+                          ?
+                            Model.Location.Address.City + ", KY " 
+                            + 
+                            (Model.Location.Address.PostalCode != null && Model.Location.Address.PostalCode != ""
+                              ?
+                              Model.Location.Address.PostalCode
+                              :
+                              ""
+                              )
+                            +
+                            "<br>"
+                          :
+                            ""
+
+                        )
+                    :
+                    ""
+                    
+                    )
+            )
+            <br>
+            <strong>Description: </strong><br>
+            <environment names="Development">
+            <div class="fr-view">@Html.Raw(@Model.Body)</div>
+            </environment>
+            <environment names="Staging,Production">
+                <div class="fr-view">@Html.Raw(@Model.Body.Replace("fileuploads", "/core/fileuploads"))</div>
+            </environment>
+            @Html.Raw(
+              Model.WebLink != null && Model.WebLink != ""
+              ?
+                "<br><br><strong><a href='" + Model.WebLink + "' target='_blank'>Additional Information<a></strong><br>" 
+              :
+                ""
+            )
         </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="panel">
+                <div class="x_title">
+                    <h2>@unit.Name.Substring( 0, unit.Name.Count() - 4 )</h2>
+                    <div class="clearfix"></div>
+                </div>
+                
+                <div class="panel-body">
+                    <strong><a class="title" href="@Url.RouteUrl("CountyEvents", new { id=unit.Id })">Upcoming Events</a></strong><br><br>
+                    <strong><a class="title" href="@unit.WebSite">Website</a></strong><br> 
+                    <br>
+                    <em>Email:</em><br> @unit.Email
+                    <br>
+                    <em>Phone:</em><br> @unit.Phone
+                </div>
+            </div>
+        </div>
+
     </div>
 
 <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
       "@@type": "Event",
-      "name": "The Adventures of Kira and Morrison",
-      "startDate": "2025-07-21T19:00-05:00",
-      "endDate": "2025-07-21T23:00-05:00",
+      "name": "@Model.Subject",
+      "startDate": "@Model.Start",
+      "endDate": "@Model.End",
       "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
       "eventStatus": "https://schema.org/EventScheduled",
       "location": {
         "@@type": "Place",
-        "name": "Snickerpark Stadium",
+        "name": "@Model.Location?.Address.Building",
         "address": {
           "@@type": "PostalAddress",
-          "streetAddress": "100 West Snickerpark Dr",
-          "addressLocality": "Snickertown",
-          "postalCode": "19019",
-          "addressRegion": "PA",
+          "streetAddress": "@Model.Location?.Address.Street",
+          "addressLocality": "@Model.Location?.Address.City",
+          "postalCode": "@Model.Location?.Address.PostalCode",
+          "addressRegion": "KY",
           "addressCountry": "US"
         }
       },
-      "image": [
-        "https://example.com/photos/1x1/photo.jpg",
-        "https://example.com/photos/4x3/photo.jpg",
-        "https://example.com/photos/16x9/photo.jpg"
-       ],
-      "description": "The Adventures of Kira and Morrison is coming to Snickertown in a can’t miss performance.",
-      "offers": {
-        "@@type": "Offer",
-        "url": "https://www.example.com/event_offer/12345_201803180430",
-        "price": "30",
-        "priceCurrency": "USD",
-        "availability": "https://schema.org/InStock",
-        "validFrom": "2024-05-21T12:00"
-      },
-      "performer": {
-        "@@type": "PerformingGroup",
-        "name": "Kira and Morrison"
-      },
+      "image": [],
+      "description": "@Model.Body",
       "organizer": {
         "@@type": "Organization",
-        "name": "Kira and Morrison Music",
-        "url": "https://kiraandmorrisonmusic.com"
+        "name": "Kentucky Cooperative Extension",
+        "url": "https://extension.ca.uky.edu"
       }
     }
     </script>
