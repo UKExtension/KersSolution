@@ -76,12 +76,21 @@ namespace Kers.Controllers.Reports
         }
 
         [HttpGet]
-        [Route("county/{id}", Name="CountyEvents")]
-        public async Task<ActionResult> CountyEvents(int id)
+        [Route("county/{id}/{upcomming?}", Name="CountyEvents")]
+        public async Task<ActionResult> CountyEvents(int id, int upcomming = 1)
         {
             ViewData["unit"] = await this.context.PlanningUnit.Where( u => u.Id == id).FirstOrDefaultAsync();
             var evnt = await this.context.CountyEvent
-                                .Where( e => e.Units.Select( u => u.PlanningUnitId ).Contains(id) )
+                                .Where( e => 
+                                                e.Units.Select( u => u.PlanningUnitId ).Contains(id) 
+                                                &&
+                                                (upcomming == 1 ? 
+                                                    e.Start.Date >= DateTime.Now.Date
+                                                    :
+                                                    e.Start.Date < DateTime.Now.Date
+                                                    )
+                                                
+                                                )
                                     .Include( e => e.Location ).ThenInclude( l => l.Address)
                                 .OrderBy( e => e.Start)
                                 .GroupBy( e => e.Start.Date)
@@ -89,7 +98,7 @@ namespace Kers.Controllers.Reports
                                     events = d.ToList(),
                                     date = d.First().Start
                                 })
-                                
+                                .Take( 100 )
                                 .ToListAsync();
             return View(evnt);
         }

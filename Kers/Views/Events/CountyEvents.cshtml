@@ -18,7 +18,9 @@
                 
                 <div class="panel-body">
                     <div class="row">
-                        
+                        @if( Model.Count() == 0 ){
+                            <div>No Events Scheduled</div>
+                        }
                     
                             @foreach( var grpd in Model )
                             {
@@ -111,11 +113,11 @@
                 </div>
                 
                 <div class="panel-body">
-                    Website: @unit.WebSite
+                    <strong><a class="title" href="@unit.WebSite">Website</a></strong><br> 
                     <br>
-                    Email: @unit.Email
+                    <em>Email:</em><br> @unit.Email
                     <br>
-                    Phone: @unit.Phone
+                    <em>Phone:</em><br> @unit.Phone
                 </div>
             </div>
         </div>
