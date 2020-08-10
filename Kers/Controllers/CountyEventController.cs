@@ -308,8 +308,26 @@ namespace Kers.Controllers
         [HttpGet("getlegacy/{limit}")]
         public async Task<IActionResult> GetLegacyCountyEvents(int limit){
             var leg = new List<zCesCountyEvent>();
+
+            var serv = _reportingContext.zCesCountyEvent
+                                    .Where( a => a.rDt != null 
+                                                &&
+                                                     a.rDt.Value.Year > 2012
+                                                &&
+                                                     a.rDt.Value.Year < 2016
+                                                 )
+                                    .OrderByDescending(r => r.rDt).ToListAsync();
+            foreach( var srv in  await serv){
+                 if( !context.CountyEvent.Where( t => t.classicCountyEventId == srv.rID).Any()){
+                    leg.Add(srv);
+                }
+            }
+/* 
+
             do{
-                var serv = await _reportingContext.zCesCountyEvent.OrderBy(r => Guid.NewGuid()).LastAsync();
+                var serv = await _reportingContext.zCesCountyEvent
+                                    .Where( a => a.rDt != null && a.rDt.Value.Year > 2018 )
+                                    .OrderBy(r => Guid.NewGuid()).LastAsync();
                 if( serv == null ) break;
                 if( !context.CountyEvent.Where( t => t.classicCountyEventId == serv.rID).Any()){
                     leg.Add(serv);
@@ -317,7 +335,7 @@ namespace Kers.Controllers
                 
 
             }while(leg.Count() < limit);
-
+ */
 /* 
 
             IQueryable<zCesCountyEvent> services;

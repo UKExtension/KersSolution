@@ -15,7 +15,7 @@ export class CountyEventConvertComponent implements OnInit {
   evnts: CountyEvent[] = [];
   convertAllClicked = false;
   convertedItemIndex=0;
-  amount = 600;
+  amount = 46;
 
   constructor(
     private service:CountyEventService
