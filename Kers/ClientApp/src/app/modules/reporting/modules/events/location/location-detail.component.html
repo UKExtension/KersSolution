@@ -1,4 +1,4 @@
-<div *ngIf="isDefault" style="padding: 35px 35px 0 35px; min-height: 200px;" class="col-md-4 col-sm-6 col-xs-12">
+<div *ngIf="isDefault" style="padding: 35px 35px 0 35px; min-height: 210px;" class="col-md-4 col-sm-6 col-xs-12">
 
 
     <div class="text-right">
@@ -6,7 +6,7 @@
     </div>
     <h4>{{location.extensionEventLocation.address.building}}</h4>
     <h5>{{location.extensionEventLocation.address.street}}</h5>
-    <h5>{{location.extensionEventLocation.address.city}} {{location.extensionEventLocation.address.state != ""?", "+location.extensionEventLocation.address.state:""}} {{location.extensionEventLocation.address.postalCode}}</h5>
+    <h5 *ngIf="location.extensionEventLocation.address.city != null && location.extensionEventLocation.address.city != '' && location.extensionEventLocation.address.city != 'NULL'">{{location.extensionEventLocation.address.city}} {{location.extensionEventLocation.address.state != "" ? ", "+location.extensionEventLocation.address.state:""}} {{location.extensionEventLocation.address.postalCode}}</h5>
     <a class="btn btn-info btn-xs" (click)="selection()">select</a>
 
 </div>
