@@ -1,7 +1,7 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     var unit = ViewData["unit"] as Kers.Models.Entities.KERScore.PlanningUnit;
-    ViewData["Title"] = unit.Name;
+    ViewData["Title"] = unit == null ? "State" : unit.Name;
     ViewData["Subtitle"] = "Events";
     
 }
@@ -38,7 +38,7 @@
                                     
                                     
                                     <div class="media-body">
-                                        <a class="title" href="@Url.RouteUrl("CountyEventDetails", new { id = e.Id, conuntyId=unit.Id })">@e.Subject</a>
+                                        <a class="title" href="@Url.RouteUrl("CountyEventDetails", new { id = e.Id, conuntyId= (unit == null ? 0 : unit.Id) })">@e.Subject</a>
                                         <p>
                                             <em>
                                                     @( e.HasStartTime ? e.Start.ToString("hh:mm tt")  + 
@@ -107,6 +107,7 @@
 
         <div class="col-md-4 col-sm-12">
             <div class="panel">
+                @if( unit != null ){
                 <div class="x_title">
                     <h2>@unit.Name.Substring( 0, unit.Name.Count() - 4 )</h2>
                     <div class="clearfix"></div>
@@ -119,6 +120,7 @@
                     <br>
                     <em>Phone:</em><br> @unit.Phone
                 </div>
+                }
             </div>
         </div>
 
