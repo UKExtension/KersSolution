@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Entities;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Kers.Models.Repositories
 {
@@ -1095,7 +1096,8 @@ namespace Kers.Models.Repositories
                     }
                     row += spclt + ",";
                     row +=  string.Concat("\"", lastRevision.Title, "\"")  + ",";
-                    row +=  string.Concat("\"", lastRevision.Description, "\"")  + ",";
+                    string pattern = @"<(.|\n)*?>";
+                    row +=  string.Concat("\"", Regex.Replace(lastRevision.Description, pattern, string.Empty), "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Male, "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Female, "\"")  + ",";
                     if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
