@@ -1087,7 +1087,7 @@ namespace Kers.Models.Repositories
                     var row = rw.Revision.ActivityDate.Year.ToString() + rw.Revision.ActivityDate.Month.ToString() + ",";
                     row += rw.Revision.ActivityDate.ToString( "yyyy-MMM") + ",";
                     row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                    row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.District.Name, "\"") + ",";
+                    row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.District != null  ? rw.User.RprtngProfile.PlanningUnit.District.Name : "", "\"") + ",";
                     row +=  string.Concat("\"", rw.User.RprtngProfile.Name, "\"")  + ",";
                     row += rw.User.ExtensionPosition.Code + ",";
                     var spclt = "";
