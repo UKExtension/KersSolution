@@ -84,6 +84,14 @@ namespace Kers.Controllers.Reports
             if( unit == null ) return RedirectToAction("CountyEvents", "Events");
             return RedirectToAction("CountyEvents", "Events", new {id = unit.Id});
         }
+        [HttpGet]
+        [Route("redirectevent/{code}", Name="RedirectCountyEvent")]
+        public ActionResult RedirectCountyEvent(int code)
+        {
+            var evnt = this.context.CountyEvent.Where( u => u.classicCountyEventId == code).FirstOrDefault();
+            if( evnt == null ) return RedirectToAction("CountyEvents", "Events");
+            return RedirectToAction("CountyEvent", "Events", new {id = evnt.Id});
+        }
 
         [HttpGet]
         [Route("county/{id?}/{upcomming?}", Name="CountyEvents")]

@@ -312,9 +312,9 @@ namespace Kers.Controllers
             var serv = _reportingContext.zCesCountyEvent
                                     .Where( a => a.rDt != null 
                                                 &&
-                                                     a.rDt.Value.Year > 2012
+                                                     a.rDt.Value.Year > 2019
                                                 &&
-                                                     a.rDt.Value.Year < 2016
+                                                     a.rDt.Value.Year < 2022
                                                  )
                                     .OrderByDescending(r => r.rDt).ToListAsync();
             foreach( var srv in  await serv){
