@@ -1057,9 +1057,14 @@ namespace Kers.Models.Repositories
                 keys.Add("YearMonth");
                 keys.Add("YearMonthName");
                 keys.Add("PlanningUnit");
+                keys.Add("District");
                 keys.Add("PersonName");
                 keys.Add("Position");
                 keys.Add("Program");
+                keys.Add("Title");
+                keys.Add("Description");
+                keys.Add("Male");
+                keys.Add("Female");
                 keys.Add("DirectDeliverySiteName");
                 keys.Add("DirectSpecificSiteName");
 
@@ -1081,7 +1086,7 @@ namespace Kers.Models.Repositories
                     var row = rw.Revision.ActivityDate.Year.ToString() + rw.Revision.ActivityDate.Month.ToString() + ",";
                     row += rw.Revision.ActivityDate.ToString( "yyyy-MMM") + ",";
                     row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                    
+                    row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.District.Name, "\"") + ",";
                     row +=  string.Concat("\"", rw.User.RprtngProfile.Name, "\"")  + ",";
                     row += rw.User.ExtensionPosition.Code + ",";
                     var spclt = "";
@@ -1089,6 +1094,10 @@ namespace Kers.Models.Repositories
                         spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
                     }
                     row += spclt + ",";
+                    row +=  string.Concat("\"", lastRevision.Title, "\"")  + ",";
+                    row +=  string.Concat("\"", lastRevision.Description, "\"")  + ",";
+                    row +=  string.Concat("\"", lastRevision.Male, "\"")  + ",";
+                    row +=  string.Concat("\"", lastRevision.Female, "\"")  + ",";
                     if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
                         row += string.Concat("\"", lastRevision.SnapDirect.SnapDirectDeliverySite.Name, "\"") + ",";
                     }else{
