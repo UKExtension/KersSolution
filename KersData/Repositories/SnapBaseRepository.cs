@@ -76,12 +76,13 @@ namespace Kers.Models.Repositories
                 }
  
                 var serializedData = JsonConvert.SerializeObject(SnapData);
+                /* 
                 _cache.SetString(cacheKeyData, serializedData, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(3)
                     });
 
-
+ */
             }
             return SnapData;
         }

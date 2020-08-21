@@ -75,6 +75,24 @@ namespace Kers.Controllers.Reports
             return View(evnt);
         }
 
+
+        [HttpGet]
+        [Route("redirect/{code}", Name="RedirectCountyEvents")]
+        public ActionResult RedirectCountyEvents(string code)
+        {
+            var unit = this.context.PlanningUnit.Where( u => u.Code.Substring(2) == code).FirstOrDefault();
+            if( unit == null ) return RedirectToAction("CountyEvents", "Events");
+            return RedirectToAction("CountyEvents", "Events", new {id = unit.Id});
+        }
+        [HttpGet]
+        [Route("redirectevent/{code}", Name="RedirectCountyEvent")]
+        public ActionResult RedirectCountyEvent(int code)
+        {
+            var evnt = this.context.CountyEvent.Where( u => u.classicCountyEventId == code).FirstOrDefault();
+            if( evnt == null ) return RedirectToAction("CountyEvents", "Events");
+            return RedirectToAction("CountyEvent", "Events", new {id = evnt.Id});
+        }
+
         [HttpGet]
         [Route("county/{id?}/{upcomming?}", Name="CountyEvents")]
         public async Task<ActionResult> CountyEvents(int id = 0, int upcomming = 1)
