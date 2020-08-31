@@ -12,6 +12,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Kers.Models.Entities;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
@@ -22,19 +23,21 @@ namespace Kers.Models.Repositories
 
         private KERScoreContext context;
         private IDistributedCache _cache;
-        public SnapBaseRepository(KERScoreContext context, IDistributedCache _cache)
+        private IMemoryCache _memoryCache;
+        public SnapBaseRepository(  KERScoreContext context, 
+                                    IDistributedCache _cache,
+                                    IMemoryCache _memoryCache)
         { 
             this.context = context;
             this._cache = _cache;
+            this._memoryCache = _memoryCache;
         }
 
         protected List<UserRevisionData> SnapData( FiscalYear fiscalYear){
             List<UserRevisionData> SnapData;
             var cacheKeyData = CacheKeys.SnapData + fiscalYear.Name + fiscalYear.Type;
             var cacheStringData = _cache.GetString(cacheKeyData);
-            if (!string.IsNullOrEmpty(cacheStringData)){
-                SnapData = JsonConvert.DeserializeObject<List<UserRevisionData>>(cacheStringData);
-            }else{
+            if (!_memoryCache.TryGetValue(cacheKeyData, out SnapData)){
                 var today = DateTime.Now;            
                 var snapEligible = RevisionsWithSnapData(fiscalYear);
                 SnapData = new List<UserRevisionData>();
@@ -75,14 +78,14 @@ namespace Kers.Models.Repositories
                     SnapData.Add(data);
                 }
  
-                var serializedData = JsonConvert.SerializeObject(SnapData);
-                /* 
-                _cache.SetString(cacheKeyData, serializedData, new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(3)
-                    });
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    // Keep in cache for this time, reset time if accessed.
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(6));
+                
+                _memoryCache.Set(cacheKeyData, SnapData, cacheEntryOptions);
+           
 
- */
+ 
             }
             return SnapData;
         }
