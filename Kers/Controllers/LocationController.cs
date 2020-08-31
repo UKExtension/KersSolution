@@ -85,7 +85,7 @@ namespace Kers.Controllers
             if(lctn != null ){
                 lctn.SelectedCount++;
                 context.SaveChanges();
-                this.Log(lctn,"ExtensionEventLocation", "ExtensionEventLocation Selection Couny Updated.");
+                this.Log(lctn,"ExtensionEventLocation", "ExtensionEventLocation Selection Couny Updated.", "ExtensionEventLocation");
                 return new OkObjectResult(lctn);
             }else{
                 this.Log( id ,"ExtensionEventLocation", "Not Found ExtensionEventLocation in an update count attempt.", "ExtensionEventLocation", "Error");
