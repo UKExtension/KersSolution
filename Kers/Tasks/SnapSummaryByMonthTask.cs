@@ -39,8 +39,9 @@ namespace Kers.Tasks
                 try{
                     var mainContext = scope.ServiceProvider.GetService<KERSmainContext>();
                     var cache = scope.ServiceProvider.GetService<IDistributedCache>();
+                    var memoryCache = scope.ServiceProvider.GetService<IMemoryCache>();
                     var fiscalYearRepo = new FiscalYearRepository( context );
-                    var repo = new SnapDirectRepository(context, cache, mainContext);
+                    var repo = new SnapDirectRepository(context, cache, mainContext, memoryCache);
                     var startTime = DateTime.Now;
                     var str = repo.TotalByMonth(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
                     Random rnd = new Random();

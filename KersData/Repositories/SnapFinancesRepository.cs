@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Entities;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Models.Repositories
 {
@@ -21,8 +22,8 @@ namespace Kers.Models.Repositories
 
         private KERScoreContext context;
         private IDistributedCache _cache;
-        public SnapFinancesRepository(KERScoreContext context, IDistributedCache _cache)
-            : base(context, _cache)
+        public SnapFinancesRepository(KERScoreContext context, IDistributedCache _cache, IMemoryCache _memoryCache)
+            : base(context, _cache, _memoryCache)
         { 
             this.context = context;
             this._cache = _cache;

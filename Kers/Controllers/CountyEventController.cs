@@ -157,9 +157,10 @@ namespace Kers.Controllers
                 evnt.ExtensionEventImages = CntEvent.ExtensionEventImages;
                 this.context.Add(evnt);
                 this.context.SaveChanges();
+                this.Log(evnt,"CountyEvent", "County Event Added.");
                 return new OkObjectResult(evnt);
             }else{
-                this.Log( CntEvent,"ExtensionEvent", "Error in adding extension event attempt.", "ExtensionEvent", "Error");
+                this.Log( CntEvent,"CountyEvent", "Error in adding county event attempt.", "CountyEvent", "Error");
                 return new StatusCodeResult(500);
             }
         }

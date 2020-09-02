@@ -14,6 +14,7 @@ using Kers.Models.Entities;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Models.Repositories
 {
@@ -26,9 +27,10 @@ namespace Kers.Models.Repositories
         public SnapDirectRepository(
             KERScoreContext context, 
             IDistributedCache _cache,
-            KERSmainContext mainContext
+            KERSmainContext mainContext,
+            IMemoryCache _memoryCache
             )
-            : base(context, _cache)
+            : base(context, _cache,_memoryCache)
         { 
             this.context = context;
             this._cache = _cache;
