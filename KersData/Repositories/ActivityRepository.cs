@@ -148,6 +148,10 @@ namespace Kers.Models.Repositories
                 ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
             }else{
                 ids = new List<int>();
+                ids = coreContext.Activity.
+                    Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End).
+                    Select( r => r.LastRevisionId??0).ToList();
+                /* 
                 var activities = coreContext.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End)
                     .Include( r => r.Revisions);
@@ -156,7 +160,7 @@ namespace Kers.Models.Repositories
                     var last = rev.Last();
                     ids.Add(last.Id);
                 }
-                    
+                */
                 var serialized = JsonConvert.SerializeObject(ids);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
