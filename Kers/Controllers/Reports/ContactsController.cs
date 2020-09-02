@@ -762,7 +762,7 @@ namespace Kers.Controllers.Reports
         [Route("[action]")]
         public async Task<IActionResult> Person()
         {
-            FiscalYear fiscalYear = GetFYByName("2019");
+            FiscalYear fiscalYear = GetFYByName("2020");
             ViewData["fy"] = fiscalYear.Name;
             //Get All Data for the fy by employee
             var result = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End,4);
@@ -881,7 +881,7 @@ namespace Kers.Controllers.Reports
         [Route("[action]")]
         public async Task<IActionResult> Indicators()
         {
-            FiscalYear fiscalYear = GetFYByName("2019");
+            FiscalYear fiscalYear = GetFYByName("2020");
             //Get All Data for the fy by employee
             
 
