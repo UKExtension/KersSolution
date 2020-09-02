@@ -671,12 +671,10 @@ namespace Kers.Models.Repositories
                                                         ).ToList(),
                                                         Hours = c.Sum(s => s.Hours),
                                                         Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.KersUser.Id,
-                                                        Male = (int) c.Where( s => s.LastRevision != null).Sum( s => s.LastRevision.Male),
-                                                        Female = (int) c.Where( s => s.LastRevision != null).Sum( s => s.LastRevision.Female) 
+                                                        GroupId = c.Key.KersUser.Id
                                                     })
                                                     .ToListAsync();
-/* 
+
             foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
@@ -687,9 +685,7 @@ namespace Kers.Models.Repositories
                 }
                 activity.Male = males;
                 activity.Female = females;
-            }
-            
-       */      
+            }     
             
             return activities;
 
