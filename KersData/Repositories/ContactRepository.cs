@@ -672,8 +672,8 @@ namespace Kers.Models.Repositories
                                                         Hours = c.Sum(s => s.Hours),
                                                         Audience = c.Sum(s => s.Audience),
                                                         GroupId = c.Key.KersUser.Id,
-                                                        Male = c.Sum( s => (s.LastRevision == null ? 0 : s.LastRevision.Male)),
-                                                        Female = c.Sum( s => (s.LastRevision == null ? 0 : s.LastRevision.Female)) 
+                                                        Male = (int) c.Where( s => s.LastRevision != null).Sum( s => s.LastRevision.Male),
+                                                        Female = (int) c.Where( s => s.LastRevision != null).Sum( s => s.LastRevision.Female) 
                                                     })
                                                     .ToListAsync();
 /* 
