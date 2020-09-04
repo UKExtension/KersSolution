@@ -35,9 +35,10 @@ namespace Kers.Tasks
                 var context = scope.ServiceProvider.GetService<KERScoreContext>();
                 try{
                     var cache = scope.ServiceProvider.GetService<IDistributedCache>();
+                    var memoryCache = scope.ServiceProvider.GetService<IMemoryCache>();
                     var fiscalYearRepo = new FiscalYearRepository( context );
                     var repo = new ActivityRepository(cache, context);
-                    var contactRepo = new ContactRepository(cache, context);
+                    var contactRepo = new ContactRepository(cache, context, memoryCache);
                     
                     var counties = context.PlanningUnit.Where( c => c.Name.Substring(c.Name.Count() - 3) == "CES");
                     var currnetfiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);

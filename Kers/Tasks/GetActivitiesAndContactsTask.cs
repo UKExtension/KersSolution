@@ -37,8 +37,9 @@ namespace Kers.Tasks
                 var context = scope.ServiceProvider.GetService<KERScoreContext>();
                 try{
                     var cache = scope.ServiceProvider.GetService<IDistributedCache>();
+                    var memoryCache = scope.ServiceProvider.GetService<IMemoryCache>();
                     var fiscalYearRepo = new FiscalYearRepository( context );
-                    var repo = new ContactRepository(cache, context);
+                    var repo = new ContactRepository(cache, context, memoryCache);
 
 
                     Random rnd = new Random();

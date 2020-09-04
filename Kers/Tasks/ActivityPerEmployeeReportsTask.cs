@@ -37,8 +37,9 @@ namespace Kers.Tasks
                 var progressLog = "";
                 try{
                     var cache = scope.ServiceProvider.GetService<IDistributedCache>();
+                    var memoryCache = scope.ServiceProvider.GetService<IMemoryCache>();
                     var fiscalYearRepo = new FiscalYearRepository( context );
-                    var repo = new ContactRepository(cache, context);
+                    var repo = new ContactRepository(cache, context, memoryCache);
                     var startTime = DateTime.Now;
                     progressLog += startTime.ToString() + ": ActivityPerEmployeeReportsTask Started\n";
                     Random rnd = new Random();
