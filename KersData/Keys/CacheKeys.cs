@@ -21,6 +21,7 @@ namespace Kers.Models.Repositories
         public static string FilteredContactSummaries = "ContactSummariesPerGroup";
         public static string TopProgramsPerFiscalYear = "TopProgramsPerFiscalYear";
         public static string ReportsDataByMonth = "ReportsDataByMonth";
+        public static string ActivitiesPerPeriod = "ActivitiesPerPeriod";
 
         //TableViewModel
         public static string ActivityContactsByCountyByMajorProgram = "ActivityContactsByCountyByMajorProgram";

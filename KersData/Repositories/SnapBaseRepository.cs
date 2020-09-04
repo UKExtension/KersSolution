@@ -36,7 +36,6 @@ namespace Kers.Models.Repositories
         protected List<UserRevisionData> SnapData( FiscalYear fiscalYear){
             List<UserRevisionData> SnapData;
             var cacheKeyData = CacheKeys.SnapData + fiscalYear.Name + fiscalYear.Type;
-            var cacheStringData = _cache.GetString(cacheKeyData);
             if (!_memoryCache.TryGetValue(cacheKeyData, out SnapData)){
                 var today = DateTime.Now;            
                 var snapEligible = RevisionsWithSnapData(fiscalYear);

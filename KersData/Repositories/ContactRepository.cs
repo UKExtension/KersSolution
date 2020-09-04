@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Entities;
 using Kers.Models.Data;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Kers.Models.ViewModels;
 
@@ -22,16 +23,19 @@ namespace Kers.Models.Repositories
 
         private KERScoreContext coreContext;
         private IDistributedCache _cache;
+        private IMemoryCache _memoryCache;
 
         const int workDaysPerYear = 228;
         public ContactRepository(
             IDistributedCache _cache,
-            KERScoreContext context
+            KERScoreContext context,
+            IMemoryCache _memoryCache
             )
             : base(context)
         { 
             this.coreContext = context;
             this._cache = _cache;
+            this._memoryCache = _memoryCache;
         }
 
 
@@ -654,27 +658,32 @@ namespace Kers.Models.Repositories
 
 
         private async Task<List<ActivityGrouppedResult>> DistrictEmployeeGroupppedActivities(int id, DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < end 
-                                                                && 
-                                                                a.ActivityDate > start
-                                                                &&
-                                                                a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        KersUser = e.KersUser
-                                                    })
-                                                    .Select(c => new ActivityGrouppedResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.KersUser.Id
-                                                    })
-                                                    .ToListAsync();
+            
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                        .Where( a => 
+                                                    a.ActivityDate < end 
+                                                    && 
+                                                    a.ActivityDate > start
+                                                    &&
+                                                    a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
+                                                )
+                                        .GroupBy(e => new {
+                                            KersUser = e.KersUser
+                                        })
+                                        .Select(c => new ActivityGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            Hours = c.Sum(s => s.Hours),
+                                            Audience = c.Sum(s => s.Audience),
+                                            GroupId = c.Key.KersUser.Id,
+                                            Male = c.Sum( a => a.LastRevision.Male),
+                                            Female = c.Sum( a => a.LastRevision.Female),
 
+                                        })
+                                        .ToList();
+/* 
             foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
@@ -686,7 +695,7 @@ namespace Kers.Models.Repositories
                 activity.Male = males;
                 activity.Female = females;
             }     
-            
+             */
             return activities;
 
         }
@@ -1458,6 +1467,21 @@ namespace Kers.Models.Repositories
             return ids;
         }
 
+
+        private async Task<List<Activity>> ActivitiesPerPeriod( DateTime start, DateTime end ){
+            List<Activity> ActivityData;
+            var cacheKeyData = CacheKeys.ActivitiesPerPeriod + start.ToString() + end.ToString();
+            if (!_memoryCache.TryGetValue(cacheKeyData, out ActivityData)){
+                ActivityData = await this.coreContext.Activity
+                                    .Where(a => a.ActivityDate < end && a.ActivityDate > start)
+                                    .Include( a => a.LastRevision)
+                                    .ToListAsync();
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                _memoryCache.Set(cacheKeyData, ActivityData, cacheEntryOptions);
+            }
+            return ActivityData;
+        }
 
 
 
