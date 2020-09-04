@@ -662,10 +662,6 @@ namespace Kers.Models.Repositories
             var AllActivities = await ActivitiesPerPeriod( start, end);
             var activities = AllActivities
                                         .Where( a => 
-                                                    a.ActivityDate < end 
-                                                    && 
-                                                    a.ActivityDate > start
-                                                    &&
                                                     a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
                                                 )
                                         .GroupBy(e => new {
@@ -679,23 +675,10 @@ namespace Kers.Models.Repositories
                                             Audience = c.Sum(s => s.Audience),
                                             GroupId = c.Key.KersUser.Id,
                                             Male = c.Sum( a => a.LastRevision.Male),
-                                            Female = c.Sum( a => a.LastRevision.Female),
+                                            Female = c.Sum( a => a.LastRevision.Female)
 
                                         })
                                         .ToList();
-/* 
-            foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            }     
-             */
             return activities;
 
         }
@@ -724,26 +707,27 @@ namespace Kers.Models.Repositories
 
 
         private async Task<List<ActivityGrouppedResult>> UnitEmployeeGroupppedActivities(int id, DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < end 
-                                                                && 
-                                                                a.ActivityDate > start
-                                                                &&
-                                                                a.KersUser.RprtngProfile.PlanningUnitId == id
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        KersUser = e.KersUser
-                                                    })
-                                                    .Select(c => new ActivityGrouppedResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.KersUser.Id
-                                                    })
-                                                    .ToListAsync();
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                    .Where( a => 
+                                                a.KersUser.RprtngProfile.PlanningUnitId == id
+                                            )
+                                    .GroupBy(e => new {
+                                        KersUser = e.KersUser
+                                    })
+                                    .Select(c => new ActivityGrouppedResult{
+                                        Ids = c.Select(
+                                            s => s.Id
+                                        ).ToList(),
+                                        Hours = c.Sum(s => s.Hours),
+                                        Audience = c.Sum(s => s.Audience),
+                                        GroupId = c.Key.KersUser.Id,
+                                        Male = c.Sum( a => a.LastRevision.Male),
+                                        Female = c.Sum( a => a.LastRevision.Female)
+                                    })
+                                    .ToList();
+            
+/*             
             foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
@@ -755,7 +739,7 @@ namespace Kers.Models.Repositories
                 activity.Male = males;
                 activity.Female = females;
             }
-
+ */
             return activities;
 
         }
@@ -784,26 +768,27 @@ namespace Kers.Models.Repositories
 
 
         private async Task<List<ActivityGrouppedResult>> KSUEmployeeGroupppedActivities(DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < end 
-                                                                && 
-                                                                a.ActivityDate > start
-                                                                &&
-                                                                a.KersUser.RprtngProfile.Institution.Code == "21000-1890"
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        KersUser = e.KersUser
-                                                    })
-                                                    .Select(c => new ActivityGrouppedResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.KersUser.Id
-                                                    })
-                                                    .ToListAsync();
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                            .Where( a => 
+                                                        a.KersUser.RprtngProfile.Institution.Code == "21000-1890"
+                                                    )
+                                            .GroupBy(e => new {
+                                                KersUser = e.KersUser
+                                            })
+                                            .Select(c => new ActivityGrouppedResult{
+                                                Ids = c.Select(
+                                                    s => s.Id
+                                                ).ToList(),
+                                                Hours = c.Sum(s => s.Hours),
+                                                Audience = c.Sum(s => s.Audience),
+                                                GroupId = c.Key.KersUser.Id,
+                                                Male = c.Sum( a => a.LastRevision.Male),
+                                                Female = c.Sum( a => a.LastRevision.Female)
+                                            })
+                                            .ToList();
+
+    /*                                         
             foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
@@ -815,7 +800,7 @@ namespace Kers.Models.Repositories
                 activity.Male = males;
                 activity.Female = females;
             }
-
+ */
             return activities;
 
         }
@@ -843,27 +828,26 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ActivityGrouppedResult>> UKEmployeeGroupppedActivities(DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < end 
-                                                                && 
-                                                                a.ActivityDate > start
-                                                                &&
-                                                                a.KersUser.RprtngProfile.Institution.Code != "21000-1890"
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        KersUser = e.KersUser
-                                                    })
-                                                    .Select(c => new ActivityGrouppedResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.KersUser.Id
-                                                    })
-                                                    .ToListAsync();
-
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                            .Where( a => 
+                                                        a.KersUser.RprtngProfile.Institution.Code != "21000-1890"
+                                                    )
+                                            .GroupBy(e => new {
+                                                KersUser = e.KersUser
+                                            })
+                                            .Select(c => new ActivityGrouppedResult{
+                                                Ids = c.Select(
+                                                    s => s.Id
+                                                ).ToList(),
+                                                Hours = c.Sum(s => s.Hours),
+                                                Audience = c.Sum(s => s.Audience),
+                                                GroupId = c.Key.KersUser.Id,
+                                                Male = c.Sum( a => a.LastRevision.Male),
+                                                Female = c.Sum( a => a.LastRevision.Female)
+                                            })
+                                            .ToList();
+/* 
             foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
@@ -874,7 +858,7 @@ namespace Kers.Models.Repositories
                 }
                 activity.Male = males;
                 activity.Female = females;
-            }
+            } */
             return activities;
 
         }
@@ -902,25 +886,23 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ActivityGrouppedResult>> AllEmployeeGroupppedActivities(DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < end 
-                                                                && 
-                                                                a.ActivityDate > start
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        KersUser = e.KersUser
-                                                    })
-                                                    .Select(c => new ActivityGrouppedResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.KersUser.Id
-                                                    })
-                                                    .ToListAsync();
-
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                            .GroupBy(e => new {
+                                                KersUser = e.KersUser
+                                            })
+                                            .Select(c => new ActivityGrouppedResult{
+                                                Ids = c.Select(
+                                                    s => s.Id
+                                                ).ToList(),
+                                                Hours = c.Sum(s => s.Hours),
+                                                Audience = c.Sum(s => s.Audience),
+                                                GroupId = c.Key.KersUser.Id,
+                                                Male = c.Sum( a => a.LastRevision.Male),
+                                                Female = c.Sum( a => a.LastRevision.Female)
+                                            })
+                                            .ToList();
+/* 
             foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
@@ -931,7 +913,7 @@ namespace Kers.Models.Repositories
                 }
                 activity.Male = males;
                 activity.Female = females;
-            }
+            } */
             return activities;
 
         }
@@ -959,27 +941,30 @@ namespace Kers.Models.Repositories
 
 
         private async Task<List<ActivityGrouppedResult>> DistrictProgramGroupppedActivities(int id, DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
-                                                    .Where( a => 
-                                                                a.ActivityDate < end 
-                                                                && 
-                                                                a.ActivityDate > start
-                                                                &&
-                                                                a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
-                                                            )
-                                                    .GroupBy(e => new {
-                                                        ProgramId = e.MajorProgramId
-                                                    })
-                                                    .Select(c => new ActivityGrouppedResult{
-                                                        Ids = c.Select(
-                                                            s => s.Id
-                                                        ).ToList(),
-                                                        Hours = c.Sum(s => s.Hours),
-                                                        Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.ProgramId
-                                                    })
-                                                    .ToListAsync();
-
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                            .Where( a => 
+                                                        a.ActivityDate < end 
+                                                        && 
+                                                        a.ActivityDate > start
+                                                        &&
+                                                        a.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
+                                                    )
+                                            .GroupBy(e => new {
+                                                ProgramId = e.MajorProgramId
+                                            })
+                                            .Select(c => new ActivityGrouppedResult{
+                                                Ids = c.Select(
+                                                    s => s.Id
+                                                ).ToList(),
+                                                Hours = c.Sum(s => s.Hours),
+                                                Audience = c.Sum(s => s.Audience),
+                                                GroupId = c.Key.ProgramId,
+                                                Male = c.Sum( a => a.LastRevision.Male),
+                                                Female = c.Sum( a => a.LastRevision.Female)
+                                            })
+                                            .ToList();
+/* 
             foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
@@ -992,7 +977,7 @@ namespace Kers.Models.Repositories
                 activity.Female = females;
             }
             
-            
+             */
             
             return activities;
 
@@ -1022,7 +1007,8 @@ namespace Kers.Models.Repositories
 
 
         private async Task<List<ActivityGrouppedResult>> UnitProgramGroupppedActivities(int id, DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
                                                     .Where( a => 
                                                                 a.ActivityDate < end 
                                                                 && 
@@ -1039,10 +1025,12 @@ namespace Kers.Models.Repositories
                                                         ).ToList(),
                                                         Hours = c.Sum(s => s.Hours),
                                                         Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.ProgramId
+                                                        GroupId = c.Key.ProgramId,
+                                                        Male = c.Sum( a => a.LastRevision.Male),
+                                                        Female = c.Sum( a => a.LastRevision.Female)
                                                     })
-                                                    .ToListAsync();
-            foreach( var activity in activities){
+                                                    .ToList();
+        /*     foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
                 foreach( var perUserId in activity.Ids ){
@@ -1052,7 +1040,7 @@ namespace Kers.Models.Repositories
                 }
                 activity.Male = males;
                 activity.Female = females;
-            }
+            } */
 
             return activities;
 
@@ -1082,12 +1070,9 @@ namespace Kers.Models.Repositories
 
 
         private async Task<List<ActivityGrouppedResult>> KSUProgramGroupppedActivities(DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
                                                     .Where( a => 
-                                                                a.ActivityDate < end 
-                                                                && 
-                                                                a.ActivityDate > start
-                                                                &&
                                                                 a.KersUser.RprtngProfile.Institution.Code == "21000-1890"
                                                             )
                                                     .GroupBy(e => new {
@@ -1099,10 +1084,12 @@ namespace Kers.Models.Repositories
                                                         ).ToList(),
                                                         Hours = c.Sum(s => s.Hours),
                                                         Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.ProgramId
+                                                        GroupId = c.Key.ProgramId,
+                                                        Male = c.Sum( a => a.LastRevision.Male),
+                                                        Female = c.Sum( a => a.LastRevision.Female)
                                                     })
-                                                    .ToListAsync();
-            foreach( var activity in activities){
+                                                    .ToList();
+         /*    foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
                 foreach( var perUserId in activity.Ids ){
@@ -1112,7 +1099,7 @@ namespace Kers.Models.Repositories
                 }
                 activity.Male = males;
                 activity.Female = females;
-            }
+            } */
 
             return activities;
 
@@ -1141,12 +1128,9 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ActivityGrouppedResult>> UKProgramGroupppedActivities(DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
                                                     .Where( a => 
-                                                                a.ActivityDate < end 
-                                                                && 
-                                                                a.ActivityDate > start
-                                                                &&
                                                                 a.KersUser.RprtngProfile.Institution.Code != "21000-1890"
                                                             )
                                                     .GroupBy(e => new {
@@ -1158,11 +1142,13 @@ namespace Kers.Models.Repositories
                                                         ).ToList(),
                                                         Hours = c.Sum(s => s.Hours),
                                                         Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.ProgramId
+                                                        GroupId = c.Key.ProgramId,
+                                                        Male = c.Sum( a => a.LastRevision.Male),
+                                                        Female = c.Sum( a => a.LastRevision.Female)
                                                     })
-                                                    .ToListAsync();
+                                                    .ToList();
 
-            foreach( var activity in activities){
+            /* foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
                 foreach( var perUserId in activity.Ids ){
@@ -1172,7 +1158,7 @@ namespace Kers.Models.Repositories
                 }
                 activity.Male = males;
                 activity.Female = females;
-            }
+            } */
             return activities;
 
         }
@@ -1200,7 +1186,8 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ActivityGrouppedResult>> AllProgramGroupppedActivities(DateTime start, DateTime end){
-            var activities = await this.coreContext.Activity
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
                                                     .Where( a => 
                                                                 a.ActivityDate < end 
                                                                 && 
@@ -1215,10 +1202,12 @@ namespace Kers.Models.Repositories
                                                         ).ToList(),
                                                         Hours = c.Sum(s => s.Hours),
                                                         Audience = c.Sum(s => s.Audience),
-                                                        GroupId = c.Key.ProgramId
+                                                        GroupId = c.Key.ProgramId,
+                                                        Male = c.Sum( a => a.LastRevision.Male),
+                                                        Female = c.Sum( a => a.LastRevision.Female)
                                                     })
-                                                    .ToListAsync();
-
+                                                    .ToList();
+/* 
             foreach( var activity in activities){
                 var males = 0;
                 var females = 0;
@@ -1229,7 +1218,7 @@ namespace Kers.Models.Repositories
                 }
                 activity.Male = males;
                 activity.Female = females;
-            }
+            } */
             return activities;
 
         }
@@ -1475,6 +1464,8 @@ namespace Kers.Models.Repositories
                 ActivityData = await this.coreContext.Activity
                                     .Where(a => a.ActivityDate < end && a.ActivityDate > start)
                                     .Include( a => a.LastRevision)
+                                    .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit )
+                                    .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.Institution )
                                     .ToListAsync();
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromHours(1));
