@@ -1467,8 +1467,9 @@ namespace Kers.Models.Repositories
                                     .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit )
                                     .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.Institution )
                                     .ToListAsync();
+                ActivityData = ActivityData.Select(x => { x.KersUser.RprtngProfile.PlanningUnit.GeoFeature = null; return x; }).ToList();
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(2));
                 _memoryCache.Set(cacheKeyData, ActivityData, cacheEntryOptions);
             }
             return ActivityData;
