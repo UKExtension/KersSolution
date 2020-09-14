@@ -21,7 +21,8 @@ namespace Kers.Controllers.Reports.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync( int PlanningUnitId = 0, FiscalYear fiscalYear = null ){
             
 
-            var users = context.KersUser.Where( u => u.PersonalProfile.Bio != null && u.PersonalProfile.Bio.Length > 100 && u.PersonalProfile.UploadImage != null);
+            var users = context.KersUser
+                            .Where( u => u.RprtngProfile.enabled == true &&  u.PersonalProfile.Bio != null && u.PersonalProfile.Bio.Length > 100 && u.PersonalProfile.UploadImage != null);
 
             if( PlanningUnitId != 0 ){
                 users = users.Where( u => u.RprtngProfile.PlanningUnitId == PlanningUnitId);
