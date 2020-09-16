@@ -142,6 +142,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<SnapDirectAgesAudienceValue> SnapDirectAgesAudienceValue {get;set;}
         public virtual DbSet<SnapDirectDeliverySite> SnapDirectDeliverySite {get;set;}
         public virtual DbSet<SnapDirectSessionType> SnapDirectSessionType {get;set;}
+        public virtual DbSet<SnapDirectSessionLength> SnapDirectSessionLength {get;set;}
         public virtual DbSet<SnapIndirectMethod> SnapIndirectMethod {get;set;}
         public virtual DbSet<SnapIndirectMethodSelection> SnapIndirectMethodSelection {get;set;}
         public virtual DbSet<SnapIndirectReached> SnapIndirectReached {get;set;}

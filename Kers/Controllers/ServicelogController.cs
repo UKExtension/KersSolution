@@ -451,6 +451,11 @@ namespace Kers.Controllers
             var sst = this.context.SnapDirectSessionType.Where(o => o.Active).OrderBy(o => o.order);
             return new OkObjectResult(sst);
         }
+        [HttpGet("sessionlengths")]
+        public IActionResult SessionLengths(){
+            var sst = this.context.SnapDirectSessionLength.Where(o => o.Active).OrderBy(o => o.order);
+            return new OkObjectResult(sst);
+        }
         [HttpGet("snapdirectages")]
         public IActionResult SnapDirectAges(){
             var sst = this.context.SnapDirectAges.Where(o => o.Active).OrderBy(o => o.order);

@@ -9,7 +9,7 @@ import {    ActivityService, Activity,
 import { SnapClassic, SnapClassicService, zzSnapEdDeliverySite, zzSnapEdSessionTypes} from '../activity/snap-classic.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from "rxjs/Observable";
-import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectAges, SnapDirectAudience, SnapDirectDeliverySite, SnapIndirectMethod, SnapIndirectReached, SnapPolicyAimed, SnapPolicyPartner } from "./servicelog.service";
+import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectAges, SnapDirectAudience, SnapDirectDeliverySite, SnapIndirectMethod, SnapIndirectReached, SnapPolicyAimed, SnapPolicyPartner, SnapDirectSessionLength } from "./servicelog.service";
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import {Location} from '@angular/common';
 import { UserService, User } from '../user/user.service';
@@ -65,6 +65,7 @@ export class ServicelogFormComponent implements OnInit{
     // Snap Direct
 
     sessiontypes:Observable<SnapDirectSessionType[]>;
+    sessionlengths:Observable<SnapDirectSessionLength[]>;
     snapdirectdeliverysite: Observable<SnapDirectDeliverySite[]>;
 
     // Snap Indirect
@@ -105,6 +106,7 @@ export class ServicelogFormComponent implements OnInit{
 
         // Snap Direct
         this.sessiontypes = this.service.sessiontypes();
+        this.sessionlengths = this.service.sessionlengths();
         this.snapdirectdeliverysite = this.service.snapdirectdeliverysite();
 
         // Snap Indirect
@@ -389,6 +391,7 @@ export class ServicelogFormComponent implements OnInit{
                         siteName: [""],
                         snapDirectDeliverySiteId: [""],
                         snapDirectSessionTypeId: [""],
+                        snapDirectSessionLengthId: [""],
                         snapDirectAgesAudienceValues:[[]]
                 }),
                 snapIndirect: this.fb.group({
@@ -715,10 +718,36 @@ export const snapValidator = (control: AbstractControl): {[key: string]: boolean
 
         return null;
     }
+
+
     let site = control.get('snapDirect').get('snapDirectDeliverySiteId');
     let session = control.get('snapDirect').get('snapDirectSessionTypeId');
+    let length = control.get('snapDirect').get('snapDirectSessionLengthId');
     let specificSite = control.get('snapDirect').get('siteName');
 
+    var error = {};
+    var hasError = false;
+
+    if(!site.value){
+        error["nosite"] = true;
+        hasError = true;
+    }
+    if(!session.value){
+        error["nosession"] = true;
+        hasError = true;
+    }
+    if(!length.value){
+        error["nolength"] = true;
+        hasError = true;
+    }
+    if(!specificSite.value){
+        error["nospecificSite"] = true;
+        hasError = true;
+    }
+    if(hasError) return error;
+
+
+/* 
     if(!site.value && !session.value && !specificSite.value){
         return { nosite: true, nosession: true, nospecificSite: true };
     }else if(!site.value && !session.value){
@@ -735,6 +764,6 @@ export const snapValidator = (control: AbstractControl): {[key: string]: boolean
         return { nospecificSite: true };
     }
     
-
+ */
     return null;
 };
