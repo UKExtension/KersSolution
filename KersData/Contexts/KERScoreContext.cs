@@ -222,6 +222,14 @@ namespace Kers.Models.Contexts
 
 
         /***************************************/
+        //  Tax Exempt/Volunteer Entities
+        /***************************************/
+        public virtual DbSet<TaxExempt> TaxExempt {get;set;}
+        public virtual DbSet<TaxExemptFundsHandled> TaxExemptFundsHandled {get;set;}
+        public virtual DbSet<TaxExemptFinancialYear> TaxExemptFinancialYear {get;set;}
+
+
+        /***************************************/
         //  Career Ladder
         /***************************************/
         public virtual DbSet<LadderApplication> LadderApplication {get;set;}
@@ -229,7 +237,6 @@ namespace Kers.Models.Contexts
         public virtual DbSet<LadderImage> LadderImage {get;set;}
         public virtual DbSet<LadderEducationLevel> LadderEducationLevel {get;set;}
         public virtual DbSet<LadderStage> LadderStage {get;set;}
-
         public virtual DbSet<LadderKersUserLevel> LadderKersUserLevel {get;set;}
 
         /***************************************/
