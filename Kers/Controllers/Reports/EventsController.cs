@@ -59,7 +59,7 @@ namespace Kers.Controllers.Reports
         }
 
         [HttpGet]
-        [Route("county/info/{id}/{conuntyId?}", Name="CountyEventDetails")]
+        [Route("county/info/{id}/{countyId?}", Name="CountyEventDetails")]
         public async Task<ActionResult> CountyEvent(int id, int countyId = 0)
         {
             var evnt = await this.context.CountyEvent
@@ -69,8 +69,9 @@ namespace Kers.Controllers.Reports
                                 .Include( e => e.ProgramCategories).ThenInclude( c => c.ProgramCategory)
                                 .Include( e => e.ExtensionEventImages)
                                 .FirstOrDefaultAsync();
+            int cntId =  (countyId != 0 ? countyId : evnt.Units.First().PlanningUnitId);
             ViewData["unit"] = await this.context.PlanningUnit
-                                        .Where( u => u.Id ==  (countyId != 0 ? countyId : evnt.Units.First().PlanningUnitId))
+                                        .Where( u => u.Id == cntId )
                                         .FirstOrDefaultAsync();
             return View(evnt);
         }
