@@ -101,8 +101,11 @@ namespace Kers.Controllers
                                     .Include( t => t.TrainingSession)
                                     .Include( t => t.SurveyResults)
                                     .FirstOrDefaultAsync();
-            foreach( var enr in  training.Enrollment){
-                enr.Attendie.RprtngProfile.PlanningUnit.GeoFeature = null;
+            if(training.Enrollment != null){
+                foreach( var enr in  training.Enrollment){
+                    if(enr.Attendie.RprtngProfile.PlanningUnit != null)
+                            enr.Attendie.RprtngProfile.PlanningUnit.GeoFeature = null;
+                }
             }
             if( training != null){
                 return new OkObjectResult(this.ToTimezone( training ));     
