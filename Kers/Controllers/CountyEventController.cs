@@ -157,7 +157,7 @@ namespace Kers.Controllers
                 evnt.ExtensionEventImages = CntEvent.ExtensionEventImages;
                 this.context.Add(evnt);
                 this.context.SaveChanges();
-                this.Log(evnt,"CountyEvent", "County Event Added.");
+                this.Log(evnt,"CountyEvent", "County Event Added.", "CountyEvent");
                 return new OkObjectResult(evnt);
             }else{
                 this.Log( CntEvent,"CountyEvent", "Error in adding county event attempt.", "CountyEvent", "Error");
@@ -221,7 +221,7 @@ namespace Kers.Controllers
                 }
                 evnt.Units = CntEvent.Units;
                 evnt.ProgramCategories = CntEvent.ProgramCategories;
-                this.Log(CntEvent,"CountyEvent", "County Event Updated.");
+                this.Log(CntEvent,"CountyEvent", "County Event Updated.", "CountyEvent");
                 
                 return new OkObjectResult(evnt);
             }else{
@@ -250,7 +250,7 @@ namespace Kers.Controllers
                 context.CountyEvent.Remove(entity);
                 context.SaveChanges();
                 
-                this.Log(entity,"CountyEvent", "CountyEvent Removed.");
+                this.Log(entity,"CountyEvent", "CountyEvent Removed.", "CountyEvent");
 
                 return new OkResult();
             }else{
