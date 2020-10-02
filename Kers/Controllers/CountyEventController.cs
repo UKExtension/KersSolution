@@ -254,7 +254,7 @@ namespace Kers.Controllers
 
                 return new OkResult();
             }else{
-                this.Log( id ,"CountyEvent", "Not Found CountyEvent in a delete attempt.", "ExtensionEvent", "Error");
+                this.Log( id ,"CountyEvent", "Not Found CountyEvent in a delete attempt.", "CountyEvent", "Error");
                 return new StatusCodeResult(500);
             }
         }
