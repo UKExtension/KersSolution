@@ -114,6 +114,16 @@ export class ServicelogService {
                 catchError(this.handleError('sessiontypes', []))
             );
     }
+    sessionlengths():Observable<SnapDirectSessionLength[]>{
+        var url = this.baseUrl + 'sessionlengths';
+        return this.http.get<SnapDirectSessionLength[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('sessionlengths', []))
+            );
+    }
+
+
+    
 
     snapdirectages():Observable<SnapDirectAges[]>{
         var url = this.baseUrl + 'snapdirectages';
@@ -333,9 +343,17 @@ export interface SnapDirect{
     snapDirectDeliverySite: SnapDirectDeliverySite;
     snapDirectSessionTypeId:number;
     snapDirectSessionType:SnapDirectSessionType;
+    snapDirectSessionLengthId: number;
+    snapDirectSessionLength: SnapDirectSessionLength;
     snapDirectAgesAudienceValues: SnapDirectAgesAudienceValue[];
 }
 
+export interface SnapDirectSessionLength{
+    id:number;
+    name:string;
+    order:number;
+    active: boolean;
+}
 
 export interface SnapDirectAges{
     id:number;

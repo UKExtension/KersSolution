@@ -142,6 +142,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<SnapDirectAgesAudienceValue> SnapDirectAgesAudienceValue {get;set;}
         public virtual DbSet<SnapDirectDeliverySite> SnapDirectDeliverySite {get;set;}
         public virtual DbSet<SnapDirectSessionType> SnapDirectSessionType {get;set;}
+        public virtual DbSet<SnapDirectSessionLength> SnapDirectSessionLength {get;set;}
         public virtual DbSet<SnapIndirectMethod> SnapIndirectMethod {get;set;}
         public virtual DbSet<SnapIndirectMethodSelection> SnapIndirectMethodSelection {get;set;}
         public virtual DbSet<SnapIndirectReached> SnapIndirectReached {get;set;}
@@ -221,6 +222,14 @@ namespace Kers.Models.Contexts
 
 
         /***************************************/
+        //  Tax Exempt/Volunteer Entities
+        /***************************************/
+        public virtual DbSet<TaxExempt> TaxExempt {get;set;}
+        public virtual DbSet<TaxExemptFundsHandled> TaxExemptFundsHandled {get;set;}
+        public virtual DbSet<TaxExemptFinancialYear> TaxExemptFinancialYear {get;set;}
+
+
+        /***************************************/
         //  Career Ladder
         /***************************************/
         public virtual DbSet<LadderApplication> LadderApplication {get;set;}
@@ -228,7 +237,6 @@ namespace Kers.Models.Contexts
         public virtual DbSet<LadderImage> LadderImage {get;set;}
         public virtual DbSet<LadderEducationLevel> LadderEducationLevel {get;set;}
         public virtual DbSet<LadderStage> LadderStage {get;set;}
-
         public virtual DbSet<LadderKersUserLevel> LadderKersUserLevel {get;set;}
 
         /***************************************/
