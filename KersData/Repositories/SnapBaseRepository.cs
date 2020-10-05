@@ -273,7 +273,7 @@ namespace Kers.Models.Repositories
 
         protected string StripHTML(string htmlString){
 
-            string pattern = @"<[^>]*(>|$)|&nbsp;|&#39;|&raquo;|&laquo;";
+            string pattern = @"<[^>]*(>|$)|&nbsp;|&#39;|&raquo;|&laquo;|&quot;";
 
             return Regex.Replace(htmlString, pattern, string.Empty);
         }
