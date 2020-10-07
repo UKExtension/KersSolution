@@ -16,6 +16,8 @@ namespace Kers.Models.Entities.KERScore
         public DateTime ExpenseDate {get;set;}
         public int? VehicleType {get;set;}
         public List<ExpenseRevision> Revisions {get;set;}
+        public int LastRevisionId {get;set;}
+        public ExpenseRevision LastRevision {get;set;}
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
     }
