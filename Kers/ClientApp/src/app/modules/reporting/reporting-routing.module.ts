@@ -106,6 +106,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/ladder/ladder.module#LadderModule'
           },
           {
+            path:'mileage',
+            loadChildren: './modules/mileage/mileage.module#MileageModule'
+          },
+          {
             path: 'soildata', 
             loadChildren: './modules/soildata/soildata.module#SoildataModule'
           },

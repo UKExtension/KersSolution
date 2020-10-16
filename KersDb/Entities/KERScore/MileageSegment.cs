@@ -15,7 +15,7 @@ namespace Kers.Models.Entities.KERScore
         public ProgramCategory ProgramCategory {get;set;}
         public ExtensionEventLocation Location {get; set;}
         public String BusinessPurpose {get; set;}
-        public int FundingSource {get;set;}
+        public int FundingSourceId {get;set;}
         public ExpenseFundingSource FundingSource {get;set;}
         public float Mileage {get;set;}
         public int order {get;set;}
