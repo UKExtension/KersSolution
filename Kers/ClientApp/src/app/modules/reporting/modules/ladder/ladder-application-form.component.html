@@ -5,7 +5,7 @@
       <h2>Application for Professional Promotion<small> Due February 1</small></h2>
       <br><br>
       <div>
-        <reporting-display-help [symbol]="'fa-check-circle-o'" [label]="'Promotion Procedures for County Extension Agents'" id="13"></reporting-display-help>
+        <reporting-display-help [label]="'Promotion Procedures for County Extension Agents'" id="13"></reporting-display-help>
         Note:  Be sure to click on the link above and thoroughly review the <em>Professional Promotion Procedures for County Extension Agents</em> document prior to completing this application. 
       </div>
       <br><br>
@@ -20,7 +20,12 @@
           </select><div class="red"><br><br>Individuals applying for a Career Ladder Promotion MUST include all support documents for each area.<br>Incomplete applications will be rejected.<br><br></div>
         </div> 
       </div>
-      
+      <div class="form-group">
+        <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Position #:</label>           
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <input type="text" name="positionNumber" formControlName="positionNumber" id="positionNumber" class="form-control col-xs-12" />
+        </div>
+    </div>
 
     <div class="form-group">
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastPromotion">Date of last Career Ladder Promotion:</label>
@@ -32,7 +37,7 @@
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Historical Training Transcript:</label>
       <div class="col-md-9 col-sm-9 col-xs-12">
         InService Hours Earned from {{lastPromotionDate | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}: <strong>{{hoursAttended | async}}</strong><br><br>
-        <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a> <span *ngIf="!trainingDetails"><br>Clicking on <em>details</em> will show your training transcript for selected period.<br>It is going to be submit with your application.<br></span><br>
+        <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a> <span *ngIf="!trainingDetails"><br>By clicking on the <em>Details</em> button, you will see your training transcript for the selected period.<br>The list will automatically be submitted with the application.<br></span><br>
         <div *ngIf="trainingDetails">
           <div><a class="btn btn-info btn-xs" (click)="trainingDetails=false">close</a></div>
           <training-transcript [start]="lastPromotionDate" [end]="firstOfTheYear"></training-transcript>
@@ -54,6 +59,7 @@
         <div class="col-md-9 col-sm-9 col-xs-12">
             <input type="text" name="programOfStudy" formControlName="programOfStudy" id="subject" class="form-control col-xs-12" />
             <p>An official transcript is needed to verify completion of 12 hours or more of graduate education or for a newly completed Masters. The program of study in which an agent has been accepted should be evident on the transcript or otherwise documented. Only hours earned prior to January 1 of the current year will be considered and an overall GPA of 3.0 is required.
+            <br>A copy of the transcript and/or supporting documents can be uploaded by going to the "upload documents" section below.
             </p>
         </div>
     </div>

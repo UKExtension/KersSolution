@@ -105,7 +105,7 @@ export class LadderApplicationFormComponent implements OnInit {
                     month: 1,
                     day: 1}
                 }, Validators.required],
-          positionNumber: [""],
+          positionNumber: ["", Validators.required],
           ladderEducationLevelId:["", Validators.required],
           programOfStudy: [""],
           evidence: [""],

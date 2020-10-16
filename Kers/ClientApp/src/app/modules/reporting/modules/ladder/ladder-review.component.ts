@@ -87,7 +87,7 @@ export class LadderReviewComponent implements OnInit {
   }
 
   defaultTitle(){
-    this.reportingService.setTitle("Professional Promotion Applications");
+    this.reportingService.setTitle("Professional Career Ladder Promotion Application");
     this.reportingService.setSubtitle("Pending Review");
   }
 
