@@ -40,7 +40,7 @@ export class LadderApplicantComponent implements OnInit {
   }
 
   defaultTitle(){
-    this.reportingService.setTitle("Professional Promotion Application");
+    this.reportingService.setTitle("Professional Career Ladder Promotion Application");
     this.reportingService.setSubtitle("For Outstanding Job Performance and Experiences Gained Through Program Development");
   }
 
