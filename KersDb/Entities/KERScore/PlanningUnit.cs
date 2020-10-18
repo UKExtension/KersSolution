@@ -33,6 +33,9 @@ namespace Kers.Models.Entities.KERScore
         public ExtensionArea ExtensionArea {get;set;}
         public CongressionalDistrictUnit CongressionalDistrictUnit {get;set;}
         public ICollection<CountyVehicle> Vehicles {get;set;}
+        public int? LocationId {get;set;}
+        public ExtensionEventLocation Location {get;set;}
+        public PlanningUnitGeography Geography {get;set;}
         public int Population {get;set;}
         [Column(TypeName="text")]
         public string GeoFeature {get;set;}
