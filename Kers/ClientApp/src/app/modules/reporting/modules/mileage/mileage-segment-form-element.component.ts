@@ -1,7 +1,6 @@
 import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BaseControlValueAccessor } from '../../core/BaseControlValueAccessor';
-import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 import { MileageSegment } from './mileage';
 
 
@@ -30,7 +29,6 @@ import { MileageSegment } from './mileage';
     </div>
   </div>
 </div>
-
   `,
   providers:[  { 
                   provide: NG_VALUE_ACCESSOR,
@@ -55,34 +53,32 @@ export class MileageSegmentFormElementComponent extends BaseControlValueAccessor
     {
       super();
       this.sectionGroup = formBuilder.group({
-        
-        locationId: [''],
-        programCategoryId:[null, Validators.required],
-        businessPurpose: [null, Validators.required],
-        mileage:''
+        locationId: '',
+        programCategoryId:'',
+        businessPurpose: ['', Validators.required],
+        mileage:['', Validators.required]
       });
   
       this.sectionGroup.valueChanges.subscribe(val => {
         this.value = <MileageSegment>val;
+        console.log( this.value );
         this.onChange(this.value);
       });
     }
     onRemove(){
         this.removeMe.emit(this.value.order);
     } 
-
     ngOnInit(){
-    }
-
-
-    onDateChanged($event){
-      
     }
     writeValue(session: MileageSegment) {
       this.value = session;
       this.sectionGroup.patchValue(this.value);
     }
+
+
     validate(c: AbstractControl): ValidationErrors | null{
       return this.sectionGroup.valid ? null : { invalidForm: {valid: false, message: "Mileage segment fields are invalid"}};
     }
+
+
 }

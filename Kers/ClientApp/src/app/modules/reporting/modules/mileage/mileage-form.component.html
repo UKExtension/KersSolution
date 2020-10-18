@@ -69,16 +69,13 @@
             </div>
             
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">Destination(s):</label>
-            <div class="col-md-9 col-sm-9 col-xs-12" formArrayName="segments" >
+        <div class="form-group" formArrayName="segments">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Destination(s):</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
                 <div *ngFor="let segment of segments.controls; let i=index" class="segment-container">
-                    <mileage-segment [index]="i" (removeMe)="sectionRemoved($event)" [formGroupName]="i"></mileage-segment>
-                    
-                  </div>
-        
-                
-                  <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add segment</a>
+                    <mileage-segment [index]="i" (removeMe)="sectionRemoved($event)" [formControlName]="i"></mileage-segment>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add segment</a>
             </div>
         </div>
 
@@ -98,3 +95,4 @@
       
   </form>
 </div>
+{{mileageForm.value | json}}

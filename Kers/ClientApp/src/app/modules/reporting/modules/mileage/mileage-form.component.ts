@@ -81,7 +81,7 @@ export class MileageFormComponent implements OnInit {
           isOvernight: false,
           comment: "",
           startingLocation: {},
-          segments: new FormArray([])
+          segments: this.fb.array([])
         }, { validator: mileageValidator }
     );
     
@@ -121,13 +121,13 @@ export class MileageFormComponent implements OnInit {
 
 
   addSegment() {
-    const group = this.fb.group(
+    const group = this.fb.control(
         {
-          locationId: null,
-          programCategoryId: null,
+          locationId: '',
+          programCategoryId: '',
           businessPurpose: '',
-          fundingSourceId: null,
-          mileage: 0
+          fundingSourceId: '',
+          mileage: ''
         }
       );
     this.segments.push(group);
@@ -145,6 +145,10 @@ export class MileageFormComponent implements OnInit {
     this.startingLocaiton = event.extensionEventLocation;
     this.stLoc = event.extensionEventLocation;
     this.startingLocationBrowser = false;
+  }
+
+  onSubmit(){
+    console.log(this.mileageForm.value);
   }
 
 }
