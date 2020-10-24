@@ -107,6 +107,7 @@ namespace Kers.Controllers
                 lctn.ExtensionEventLocation.Address.State = location.ExtensionEventLocation.Address.State;
                 lctn.ExtensionEventLocation.Address.Street = location.ExtensionEventLocation.Address.Street;
                 lctn.ExtensionEventLocation.LocationUri = location.ExtensionEventLocation.LocationUri;
+                lctn.ExtensionEventLocation.DisplayName = location.ExtensionEventLocation.DisplayName;
                 context.SaveChanges();
                 this.Log(location,"ExtensionEventLocation", "ExtensionEventLocation Updated.");
                 return new OkObjectResult(location);
@@ -116,9 +117,9 @@ namespace Kers.Controllers
             }
         }
 
-        [HttpGet("countylocations/{id?}/{skip?}/{take?}/{order?}/{search?}")]
+        [HttpGet("countylocations/{id?}/{skip?}/{take?}/{includeCountyOffice?}/{order?}/{search?}")]
         [Authorize]
-        public IActionResult CountyLocations(int id = 0, int skip = 0, int take = 10, string order = "", string search = ""){
+        public IActionResult CountyLocations(int id = 0, int skip = 0, int take = 10, bool includeCountyOffice = false, string order = "", string search = ""){
             if( id == 0){
                 var user = CurrentUser();
                 id = user.RprtngProfile.PlanningUnitId;
@@ -140,6 +141,73 @@ namespace Kers.Controllers
             
             res.Count = res.Results.Count();
             res.Results = res.Results.Skip(skip).Take(take).ToList();
+            if(includeCountyOffice){
+                var county = this._context.PlanningUnit.Where( u => u.Id == id)
+                                .Include( u => u.Location ).ThenInclude( l => l.Address )
+                                .FirstOrDefault();
+                if( county != null){
+                    if( county.Location != null){
+                        var loc = new ExtensionEventLocationConnection();
+                        loc.ExtensionEventLocation = county.Location;
+                        loc.PlanningUnit = county;
+                        res.Results.Insert( 0, loc);
+                        res.Count++;
+                    }
+                }
+                    
+                        
+
+            }
+            return new OkObjectResult(res);
+        }
+
+        [HttpGet("userlocations/{id?}/{skip?}/{take?}/{includeCountyOffice?}/{order?}/{search?}")]
+        [Authorize]
+        public IActionResult UserLocations(int id = 0, int skip = 0, int take = 10, bool includeCountyOffice = false, string order = "", string search = ""){
+            KersUser user = null;
+            if( id == 0){
+                user = CurrentUser();
+                id = user.Id;
+            }
+            var locations = this._context
+                            .ExtensionEventLocationConnection
+                            .Where( e => e.KersUserId == id);
+            if(search != ""){
+                locations = locations.Where( l => l.ExtensionEventLocation.Address.Building.Contains(search));
+            }
+            if(order=="often"){
+                locations = locations.OrderByDescending( l => l.SelectedCount);
+            }else{
+                locations = locations.OrderBy(l => l.ExtensionEventLocation.Address.Building);
+            }
+            var res = new ExtensionEventLocationConnectionSearchResult();
+            res.Results = locations.Include( e => e.ExtensionEventLocation)
+                                .ThenInclude( l => l.Address).ToList();
+            
+            res.Count = res.Results.Count();
+            res.Results = res.Results.Skip(skip).Take(take).ToList();
+            if(includeCountyOffice){
+                if( user == null){
+                    user = this._context.KersUser.Where( u => u.Id == id)
+                                .Include( u => u.RprtngProfile)
+                                .FirstOrDefault();
+                }
+                var county = this._context.PlanningUnit.Where( u => u.Id == user.RprtngProfile.PlanningUnitId )
+                                .Include( u => u.Location ).ThenInclude( l => l.Address )
+                                .FirstOrDefault();
+                if( county != null){
+                    if( county.Location != null){
+                        var loc = new ExtensionEventLocationConnection();
+                        loc.ExtensionEventLocation = county.Location;
+                        loc.PlanningUnit = county;
+                        res.Results.Insert( 0, loc);
+                        res.Count++;
+                    }
+                }
+                    
+                        
+
+            }
             return new OkObjectResult(res);
         }
 

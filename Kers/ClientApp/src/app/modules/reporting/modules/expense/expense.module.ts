@@ -91,6 +91,7 @@ import { VehicleListDetailComponent } from './vehicle/vehicle-list-detail.compon
                     VehicleService
                 ],
   exports:      [
+                  ExpenseListComponent,
                   ExpenseReportsHomeComponent,
                   ExpenseFormComponent
                 ]

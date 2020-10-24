@@ -54,6 +54,18 @@ namespace Kers.Controllers
                                 .FirstOrDefault();
             return new OkObjectResult(county);
         }
+        [HttpGet("location/{id?}")]
+        public IActionResult Location(int id = 0){
+            if(id == 0){
+                var unit = CurrentPlanningUnit();
+                id = unit.Id;
+            }
+            var county = this.context.PlanningUnit
+                                .Where(c=>c.Id == id)
+                                .Include( c => c.Location).ThenInclude( l => l.Address)
+                                .FirstOrDefault();
+            return new OkObjectResult(county.Location);
+        }
 
         [HttpGet("countylist/{DistrictId?}")]
         public async Task<IActionResult> Countylist(int? DistrictId = null){

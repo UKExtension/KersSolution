@@ -8,10 +8,14 @@ import { MileageHomeComponent } from './mileage-home.component';
 import { MileageFormComponent } from './mileage-form.component';
 import { LocationModule } from '../events/location/location.module';
 import { MileageSegmentFormElementComponent } from './mileage-segment-form-element.component';
+import { ExpenseModule } from '../expense/expense.module';
+import { MileageMonthComponent } from './mileage-month.component';
+import { MileageDetailComponent } from './mileage-detail.component';
+import { ExpenseCompatabilityFormComponent } from './expense-compatability-form.component';
 
 
 @NgModule({
-  declarations: [MileageHomeComponent, MileageFormComponent, MileageSegmentFormElementComponent],
+  declarations: [ExpenseCompatabilityFormComponent, MileageHomeComponent, MileageFormComponent, MileageSegmentFormElementComponent, MileageMonthComponent, MileageDetailComponent],
   imports: [
     CommonModule,
     MyDatePickerModule,

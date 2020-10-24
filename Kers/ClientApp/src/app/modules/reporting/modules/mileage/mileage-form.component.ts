@@ -1,12 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { resetComponentState } from '@angular/core/src/render3/state';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {IMyDpOptions} from 'mydatepicker';
+import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
 import { ExtensionEventLocation } from '../events/extension-event';
 import { ExtensionEventLocationConnection } from '../events/location/location.service';
+import { Expense, ExpenseFundingSource, ExpenseService } from '../expense/expense.service';
 import { Vehicle } from '../expense/vehicle/vehicle.service';
 import { PlanningunitService } from '../planningunit/planningunit.service';
 import { PlanningUnit, User, UserService } from '../user/user.service';
-import { Mileage } from './mileage';
+import { Mileage, MileageSegment } from './mileage';
 import { MileageService } from './mileage.service';
 
 @Component({
@@ -26,7 +29,7 @@ import { MileageService } from './mileage.service';
 export class MileageFormComponent implements OnInit {
 
 
-  @Input() mileage:Mileage = null;
+  @Input() mileage:Mileage;
   @Input() mileageDate:Date;
   @Input() isNewCountyVehicle = false;
 
@@ -39,8 +42,10 @@ export class MileageFormComponent implements OnInit {
   enabledVehicles: Vehicle[];
   currentUser:User;
   currentPlanningUnit:PlanningUnit;
-  startingLocationBrowser:boolean = true;
-  startingLocaiton:ExtensionEventLocation;
+  startingLocationBrowser:boolean = false;
+
+  programCategories: ProgramCategory[];
+  fundingSources:ExpenseFundingSource[];
 
   get stLoc(){
     return this.mileageForm.get('startingLocation').value as ExtensionEventLocation;
@@ -60,10 +65,12 @@ export class MileageFormComponent implements OnInit {
   }
 
   constructor(
+    private expenseService:ExpenseService,
     private userService: UserService,
     private fb: FormBuilder,
     private service:MileageService,
-    private planningUnitService: PlanningunitService
+    private planningUnitService: PlanningunitService,
+    private programsService: ProgramsService
   ) { 
 
     let date = new Date();
@@ -80,7 +87,7 @@ export class MileageFormComponent implements OnInit {
           countyVehicleId: [''],
           isOvernight: false,
           comment: "",
-          startingLocation: {},
+          startingLocation: null,
           segments: this.fb.array([])
         }, { validator: mileageValidator }
     );
@@ -89,14 +96,13 @@ export class MileageFormComponent implements OnInit {
     this.myDatePickerOptions.disableUntil = {year: 2017, month: 6, day: 30};
     this.myDatePickerOptions.editableDateField = false;
     this.myDatePickerOptions.showClearDateBtn = false;
-
-
-
-
+  
 
   }
-  sectionRemoved(event){
-
+  sectionRemoved(event:number){
+    if( this.segments.controls.length > 1){
+      this.segments.removeAt(event);
+    }
   }
 
   ngOnInit() {
@@ -113,15 +119,52 @@ export class MileageFormComponent implements OnInit {
               }
           )
       }
-    )
+    );
     if(this.mileage == null){
       this.addSegment();
+      this.planningUnitService.planningUnitLocation().subscribe(
+        res => {
+          if(res != null){
+            this.stLoc = res;
+            
+          }else{
+            this.startingLocationBrowser = true;
+          }
+        }
+      )
+    }else{
+      this.mileageForm.patchValue(this.mileage);
+      for( let segment of this.mileage.segments){
+        this.addSegment(segment);
+      }
+
+      let date = new Date(this.mileage.expenseDate);
+      this.mileage.expenseDate = date;
+      this.isOvernight(this.mileage.isOvernight);
+      this.mileageForm.patchValue({expenseDate: {
+        date: {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate()}
+        }});
+
+
+
     }
+    this.programsService.categories().subscribe(
+      res => this.programCategories = res
+    );
+    this.expenseService.fundingSources().subscribe(
+      res => this.fundingSources = res
+    );
   }
 
 
-  addSegment() {
-    const group = this.fb.control(
+  addSegment(segment:MileageSegment = null) {
+    var group:FormControl; 
+
+    if(segment == null){
+      group = this.fb.control(
         {
           locationId: '',
           programCategoryId: '',
@@ -130,6 +173,19 @@ export class MileageFormComponent implements OnInit {
           mileage: ''
         }
       );
+    }else{
+      group = this.fb.control(
+        {
+          locationId: segment.locationId,
+          location: segment.location,
+          programCategoryId: segment.programCategoryId,
+          businessPurpose: segment.businessPurpose,
+          fundingSourceId: segment.fundingSourceId,
+          mileage: segment.mileage
+        }
+      );
+    }
+    
     this.segments.push(group);
   }
   isOvernight(val:boolean){
@@ -142,13 +198,32 @@ export class MileageFormComponent implements OnInit {
   }
 
   locationSelected(event:ExtensionEventLocationConnection){
-    this.startingLocaiton = event.extensionEventLocation;
     this.stLoc = event.extensionEventLocation;
     this.startingLocationBrowser = false;
   }
 
   onSubmit(){
-    console.log(this.mileageForm.value);
+    var dateValue = this.mileageForm.value.expenseDate.date;
+    var d = new Date(Date.UTC(dateValue.year, dateValue.month - 1, dateValue.day, 8, 5, 12));
+    var ml = this.mileageForm.value as Mileage;
+    ml.expenseDate = d;
+    var i = 0;
+    for( let s of ml.segments){
+      s.order = i++;
+    }
+    if( !this.mileage ){
+      this.service.add(ml).subscribe(
+        res => this.onFormSubmit.emit( res )
+      )
+    }else{
+      this.service.update(this.mileage.id, ml).subscribe(
+          res => this.onFormSubmit.emit( res )
+        )
+    }
+  }
+
+  onCancel(){
+    this.onFormCancel.emit();
   }
 
 }

@@ -6,6 +6,19 @@ export interface Mileage{
     id:number,
     expenseDate:Date,
     expenseId:number,
+    startingLocationType:number,
+    expenseLocation:string,
+    programCategoryId: number,
+    businessPurpose: string,
+    fundingSourceNonMileageId:number,
+    fundingSourceMileageId:number
+    mileage:number,
+    registration:number,
+    lodging:number,
+    otherExpenseCost:number,
+    otherExpenseExplanation:string,
+    departTime?:Date,
+    returnTime?:Date,
     isOvernight: boolean,
     comment: string,
     vehicleType?:number,
@@ -26,4 +39,11 @@ export interface MileageSegment{
     fundingSource: ExpenseFundingSource
     mileage:number,
     order:number
+}
+
+export interface MileageMonth{
+    month:number;
+    year:number;
+    date:Date;
+    expenses:Mileage[];
 }

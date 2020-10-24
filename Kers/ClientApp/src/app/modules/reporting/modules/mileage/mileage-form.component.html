@@ -2,97 +2,88 @@
 <div class="row" *ngIf="!loading">
   <div><reporting-display-help id="5"></reporting-display-help></div>
   <div class="col-sm-offset-3 col-sm-9">
-      <h2 *ngIf="!expense">New Mileage Record</h2>
-      <h2 *ngIf="expense">Edit Mileage Record</h2><br>
+      <h2 *ngIf="!mileage">New Mileage Record</h2>
+      <h2 *ngIf="mileage">Edit Mileage Record</h2><br>
   </div>
   <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="mileageForm">
-      <div class="form-group">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isOvernight">TRIP Type:</label>
-          <div class="col-md-5 col-sm-7 col-xs-8">
-                  <div class="btn-group" data-toggle="buttons">
-                      <label class="btn btn-default" (click)="isOvernight(false)" [class.active]="!itIsOvernight">
-                      <input type="radio" name="isOvernight" formControlName="isOvernight" [value]="false"> Day Trip
-                      </label>
-                      <label class="btn btn-default" [class.active]="itIsOvernight" (click)="isOvernight(true)">
-                      <input type="radio" name="isOvernight" formControlName="isOvernight" [value]="true"> Overnight Trip
-                      </label>
-                  </div>
-          </div>
-      </div>
-      <div class="form-group">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="rDT">Expense Date:</label>
-          <div class="col-md-5 col-sm-7 col-xs-8">
-              <my-date-picker [options]="myDatePickerOptions" formControlName="expenseDate"></my-date-picker>
-          </div>
-      </div>
-      <div class="form-group" [hidden]="!(enabledVehicles && enabledVehicles.length > 0)">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="vehcileType">Vehicle Type:</label>
-          <div class="col-md-5 col-sm-7 col-xs-8">
-                  <div class="btn-group" data-toggle="buttons">
-                      <label class="btn btn-default" (click)="isPersonal(true)" [class.active]="itIsPersonalVehicle">
-                      <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'1'"> Personal Vehicle
-                      </label>
-                      <label class="btn btn-default" [class.active]="!itIsPersonalVehicle" (click)="isPersonal(false)">
-                      <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'2'"> County Vehicle
-                      </label>
-                  </div>
-          </div>
-      </div>
-      <div class="form-group" *ngIf="(enabledVehicles && !itIsPersonalVehicle)">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">County Vehicle:</label>
-          <div class="col-md-6 col-sm-6 col-xs-12">
-              <select [style.border]="mileageForm.hasError('noVehicleSelected')?'1px solid #CE5454':'1px solid #ccc'" name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
-                  <option *ngIf="enabledVehicles.length > 1" value="">-- select --</option>
-                  <option *ngFor="let vehicle of enabledVehicles" [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}} {{ vehicle.name != undefined && vehicle.name != '' ? '(' + vehicle.name + ')' : ''}}</option>
-              </select>
-          </div>
-      </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Comments:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <textarea name="comment" id="comment" formControlName="comment" class="form-control"></textarea>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isOvernight">TRIP Type:</label>
+        <div class="col-md-5 col-sm-7 col-xs-8">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default" (click)="isOvernight(false)" [class.active]="!itIsOvernight">
+                <input type="radio" name="isOvernight" formControlName="isOvernight" [value]="false"> Day Trip
+                </label>
+                <label class="btn btn-default" [class.active]="itIsOvernight" (click)="isOvernight(true)">
+                <input type="radio" name="isOvernight" formControlName="isOvernight" [value]="true"> Overnight Trip
+                </label>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Starting Location:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <div *ngIf="startingLocationBrowser" style="padding: 10px;">
-                    <location-browser *ngIf="currentPlanningUnit" [county]="currentPlanningUnit" (onSelected)="locationSelected($event)"></location-browser>
-                </div>
-                <div *ngIf="!startingLocationBrowser" style="padding: 10px;">
-                    <h4>{{stLoc.address.building}}</h4>
-                    <h5>{{stLoc.address.street}}</h5>
-                    <h5>{{stLoc.address.city}} {{stLoc.address.state != ""?", "+stLoc.address.state:""}} {{stLoc.address.postalCode}}</h5>
-                    <a (click)="startingLocationBrowser = true" class="btn btn-info btn-xs">change</a>
-                </div>
-                
-            </div>
-            
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="rDT">Expense Date:</label>
+        <div class="col-md-5 col-sm-7 col-xs-8">
+            <my-date-picker [options]="myDatePickerOptions" formControlName="expenseDate"></my-date-picker>
         </div>
-        <div class="form-group" formArrayName="segments">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12">Destination(s):</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <div *ngFor="let segment of segments.controls; let i=index" class="segment-container">
-                    <mileage-segment [index]="i" (removeMe)="sectionRemoved($event)" [formControlName]="i"></mileage-segment>
+    </div>
+    <div class="form-group" [hidden]="!(enabledVehicles && enabledVehicles.length > 0)">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="vehcileType">Vehicle Type:</label>
+        <div class="col-md-5 col-sm-7 col-xs-8">
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default" (click)="isPersonal(true)" [class.active]="itIsPersonalVehicle">
+                    <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'1'"> Personal Vehicle
+                    </label>
+                    <label class="btn btn-default" [class.active]="!itIsPersonalVehicle" (click)="isPersonal(false)">
+                    <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'2'"> County Vehicle
+                    </label>
                 </div>
-                <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add segment</a>
+        </div>
+    </div>
+    <div class="form-group" *ngIf="(enabledVehicles && !itIsPersonalVehicle)">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">County Vehicle:</label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <select [style.border]="mileageForm.hasError('noVehicleSelected')?'1px solid #CE5454':'1px solid #ccc'" name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
+                <option *ngIf="enabledVehicles.length > 1" value="">-- select --</option>
+                <option *ngFor="let vehicle of enabledVehicles" [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}} {{ vehicle.name != undefined && vehicle.name != '' ? '(' + vehicle.name + ')' : ''}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Comments:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+                <textarea name="comment" id="comment" formControlName="comment" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Starting Location:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <div *ngIf="startingLocationBrowser" style="padding: 10px;">
+                <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
+            </div>
+            <div *ngIf="!startingLocationBrowser && stLoc!=null" style="padding: 10px;">
+                <h4>{{stLoc.displayName}}</h4>
+                <h5>{{stLoc.address.building}}</h5>
+                <h5>{{stLoc.address.street}}</h5>
+                <h5>{{stLoc.address.city}} {{stLoc.address.state != ""?", "+stLoc.address.state:""}} {{stLoc.address.postalCode}}</h5>
+                <a (click)="startingLocationBrowser = true" class="btn btn-info btn-xs">change</a>
+                <span *ngIf="stLoc.displayName != 'County Extension Office'" class="red"><br>Note: Home address must be shorter distance than leaving from office address</span>
             </div>
         </div>
-
-
-
-          
-
-
-
-      <div class="ln_solid"></div>
-      <div class="form-group">
-          <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-              <button type="submit" [disabled]="mileageForm.invalid"  class="btn btn-success">Submit</button>
-          </div>
-      </div>
-      
+    </div>
+    <div class="form-group" formArrayName="segments">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Destination(s):</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+        <div *ngFor="let segment of segments.controls; let i=index" class="segment-container">
+            <mileage-segment [index]="i" [fundingSources]="fundingSources" [programCategories]="programCategories" [currentUser]="currentUser" (removeMe)="sectionRemoved($event)" [formControlName]="i"></mileage-segment>
+        </div>
+        <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add destination</a>
+    </div>
+    </div>
+    <div class="ln_solid"></div>
+    <div class="form-group">
+        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+            <button type="submit" [disabled]="mileageForm.invalid"  class="btn btn-success">Submit</button>
+        </div>
+    </div> 
   </form>
 </div>
-{{mileageForm.value | json}}

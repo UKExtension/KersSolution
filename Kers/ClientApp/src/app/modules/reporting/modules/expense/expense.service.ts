@@ -4,9 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
+import { ExtensionEventLocation } from '../events/extension-event';
+import { MileageSegment } from '../mileage/mileage';
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+  })
 export class ExpenseService {
 
     private baseUrl = '/api/expense/';
@@ -189,6 +193,8 @@ export interface Expense{
     returnTime?:Date,
     vehicleType?:number,
     countyVehicleId?:number,
+    startingLocation:ExtensionEventLocation,
+    segments:MileageSegment[]
 }
 
 export interface ExpenseFundingSource{

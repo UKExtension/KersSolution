@@ -5,6 +5,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { PlanningUnit } from '../user/user.service';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
+import { ExtensionEventLocationConnection } from '../events/location/location.service';
+import { ExtensionEventLocation } from '../events/extension-event';
 
 
 @Injectable()
@@ -57,6 +59,14 @@ export class PlanningunitService {
                     catchError(this.handleError('id', <PlanningUnit>{}))
                 );
         }
+    }
+
+    planningUnitLocation( id:number = 0 ):Observable<ExtensionEventLocation | null>{
+        var url = this.baseUrl + 'location/' + id;
+        return this.http.get<ExtensionEventLocation | null>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('timezones', null))
+            );
     }
 
     /*****************************/

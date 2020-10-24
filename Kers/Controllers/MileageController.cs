@@ -43,6 +43,109 @@ namespace Kers.Controllers
            this.fiscalYearRepo = fiscalYearRepo;
         }
 
+        [HttpGet("numb")]
+        [Authorize]
+        public IActionResult GetNumb(){
+            
+            var lastExpenses = context.Expense.
+                                Where(e=>e.KersUser == this.CurrentUser());
+            
+            return new OkObjectResult(lastExpenses.Count());
+        }
+
+        [HttpGet("latest/{skip?}/{amount?}/{userId?}")]
+        [Authorize]
+        public IActionResult Get(int skip = 0, int amount = 10, int userId = 0){
+            if(userId == 0){
+                var user = this.CurrentUser();
+                userId = user.Id;
+            }
+            var lastExpenses = context.Expense.
+                                Where(e=>e.KersUser.Id == userId).
+                                Include(e=>e.Revisions).
+                                OrderByDescending(e=>e.ExpenseDate).
+                                Skip(skip).
+                                Take(amount);
+            var revs = new List<ExpenseRevision>();
+            if( lastExpenses != null){
+                foreach(var expense in lastExpenses){
+                    if(expense.Revisions.Count != 0){
+                        var lastRev = expense.Revisions.OrderBy(r=>r.Created).Last();
+                        var revFull = this.context.ExpenseRevision
+                                            .Where( r => r.Id == lastRev.Id)
+                                            .Include( r => r.Segments ).ThenInclude( s => s.Location).ThenInclude( l => l.Address)
+                                            .Include( r => r.StartingLocation).ThenInclude( s => s.Address)
+                                            .FirstOrDefault();
+                        revs.Add( revFull );
+                    }
+                }
+            }
+            return new OkObjectResult(revs);
+        }
+
+
+        [HttpPost()]
+        [Authorize]
+        public IActionResult AddExpense( [FromBody] ExpenseRevision expense){
+            if(expense != null){
+                var user = this.CurrentUser();
+                var exp = new Expense();
+                exp.KersUser = user;
+                exp.Created = DateTime.Now;
+                exp.Updated = DateTime.Now;
+                exp.ExpenseDate = expense.ExpenseDate;
+                exp.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
+                expense.Created = DateTime.Now;
+                exp.Revisions = new List<ExpenseRevision>();
+                exp.Revisions.Add(expense);
+                context.Add(exp);  
+                this.Log(expense,"MileageReveision", "Mileage Added.", "MileageReveision", "Created Mileage Record");
+                context.SaveChanges();
+                return new OkObjectResult(expense);
+            }else{
+                this.Log( expense ,"MileageReveision", "Error in adding expense attempt.", "Expense", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateExpense( int id, [FromBody] ExpenseRevision expense){
+            var entity = context.ExpenseRevision.Find(id);
+            var exEntity = context.Expense.Find(entity.ExpenseId);
+            if(expense != null && exEntity != null){
+                expense.Created = DateTime.Now;
+                exEntity.Revisions.Add(expense);
+                exEntity.ExpenseDate = expense.ExpenseDate;
+                context.SaveChanges();
+                this.Log(expense,"ExpenseRevision", "Expense Updated.");
+                return new OkObjectResult(expense);
+            }else{
+                this.Log( expense ,"ExpenseRevision", "Not Found Expense in update attempt.", "Expense", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteExpense( int id ){
+            var entity = context.ExpenseRevision.Find(id);
+            var exEntity = context.Expense.Find(entity.ExpenseId);
+            
+            if(exEntity != null){
+                
+                context.Expense.Remove(exEntity);
+                context.SaveChanges();
+                
+                this.Log(entity,"ExpenseRevision", "Expense Removed.");
+
+                return new OkResult();
+            }else{
+                this.Log( id ,"ExpenseRevision", "Not Found Expense in delete attempt.", "Expense", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
 
 
 

@@ -18,19 +18,20 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
   <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="locationForm">
     <div formGroupName="address">
       <div class="form-group">
-          <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12">Building:</label>           
+          <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12" *ngIf="isItBuilding">Building:</label>  
+          <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12" *ngIf="!isItBuilding">Name:</label>         
           <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="text" name="building" formControlName="building" id="building" class="form-control col-xs-12" />
           </div>
       </div>
       <div class="form-group">
-          <label for="street" class="control-label col-md-3 col-sm-3 col-xs-12">Address:</label>           
+          <label for="street" class="control-label col-md-3 col-sm-3 col-xs-12">Street Address:</label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="text" name="street" formControlName="street" id="street" class="form-control col-xs-12" />
           </div>
       </div>
       <div class="form-group">
-          <label for="city" class="control-label col-md-3 col-sm-3 col-xs-12">City:</label>           
+          <label for="city" class="control-label col-md-3 col-sm-3 col-xs-12">City/County:</label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="text" name="city" formControlName="city" id="city" class="form-control col-xs-12" />
           </div>
@@ -41,7 +42,7 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
               <input type="text" name="state" formControlName="state" id="state" class="form-control col-xs-12" />
           </div>
       </div> 
-      <div class="form-group">
+      <div class="form-group" *ngIf="showZip">
           <label for="postalCode" class="control-label col-md-3 col-sm-3 col-xs-12">Postal Code:</label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="text" name="postalCode" formControlName="postalCode" id="postalCode" class="form-control col-xs-12" />
@@ -52,6 +53,12 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
           <label for="locationUri" class="control-label col-md-3 col-sm-3 col-xs-12">URL:<br><small>A web address for more information (optional).</small></label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="text" name="locationUri" formControlName="locationUri" id="locationUri" class="form-control col-xs-12" />
+          </div>
+    </div>
+    <div class="form-group" *ngIf="showDisplayName">
+          <label for="locationUri" class="control-label col-md-3 col-sm-3 col-xs-12">Display Name:<br><small>(e.g. Work, Home)</small></label>           
+          <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text" name="displayName" formControlName="displayName" id="displayName" class="form-control col-xs-12" />
           </div>
     </div>
     <div class="ln_solid"></div>
@@ -71,7 +78,17 @@ export class LocationFormComponent implements OnInit {
   @Input() county:PlanningUnit;
   @Input() user:User;
   @Input() showState:boolean = false;
+  @Input() showZip:boolean = true;
   @Input() showUrl:boolean = false;
+  @Input() showDisplayName:boolean = false;
+
+
+
+  @Input() isItBuilding:boolean = true;
+  
+  @Input() isNameRequired:boolean = false;
+  @Input() isCityRequired:boolean = false;
+  @Input() isStateRequired:boolean = false;
   
   @Input() location:ExtensionEventLocationConnection;
   locationForm:any;
@@ -93,10 +110,11 @@ export class LocationFormComponent implements OnInit {
               building: [""],
               street: [""],
               city: [""],
-              state: [""],
+              state: ["Kentucky"],
               postalCode: ""
           }
-        )
+        ),
+        displayName: ""
       }
     );
     
@@ -106,6 +124,16 @@ export class LocationFormComponent implements OnInit {
     if(this.location){
       this.locationForm.patchValue(this.location.extensionEventLocation);
     }
+    if(this.isNameRequired){
+      this.locationForm.get('address.building').setValidators([Validators.required]);
+    }
+    if(this.isCityRequired){
+      this.locationForm.get('address.city').setValidators([Validators.required]);
+    }
+    if(this.isStateRequired){
+      this.locationForm.get('address.state').setValidators([Validators.required]);
+    }
+    
   }
   
 

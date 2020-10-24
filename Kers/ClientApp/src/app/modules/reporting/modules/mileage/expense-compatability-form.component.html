@@ -1,0 +1,210 @@
+<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Error: </strong> {{errorMessage}}
+</div>
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
+    <div><reporting-display-help id="5"></reporting-display-help></div>
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!expense">New Mileage Record</h2>
+        <h2 *ngIf="expense">Edit Mileage Record</h2><br>
+    </div>
+    <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="expenseForm">
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isOvernight">TRIP Type:</label>
+            <div class="col-md-5 col-sm-7 col-xs-8">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default" (click)="isOvernight(false)" [class.active]="!itIsOvernight">
+                        <input type="radio" name="isOvernight" formControlName="isOvernight" [value]="false"> Day Trip
+                        </label>
+                        <label class="btn btn-default" [class.active]="itIsOvernight" (click)="isOvernight(true)">
+                        <input type="radio" name="isOvernight" formControlName="isOvernight" [value]="true"> Overnight Trip
+                        </label>
+                    </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="rDT">Expense Date:</label>
+            <div class="col-md-5 col-sm-7 col-xs-8">
+                <my-date-picker [options]="myDatePickerOptions" formControlName="expenseDate"></my-date-picker>
+            </div>
+        </div>
+        <div class="form-group" [hidden]="!(enabledVehicles && enabledVehicles.length > 0)">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="vehcileType">Vehicle Type:</label>
+            <div class="col-md-5 col-sm-7 col-xs-8">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default" (click)="isPersonal(true)" [class.active]="itIsPersonalVehicle">
+                        <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'1'"> Personal Vehicle
+                        </label>
+                        <label class="btn btn-default" [class.active]="!itIsPersonalVehicle" (click)="isPersonal(false)">
+                        <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'2'"> County Vehicle
+                        </label>
+                    </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="(enabledVehicles && !itIsPersonalVehicle)">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">County Vehicle:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <select [style.border]="expenseForm.hasError('noVehicleSelected')?'1px solid #CE5454':'1px solid #ccc'" name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
+                    <option *ngIf="enabledVehicles.length > 1" value="">-- select --</option>
+                    <option *ngFor="let vehicle of enabledVehicles" [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}} {{ vehicle.name != undefined && vehicle.name != '' ? '(' + vehicle.name + ')' : ''}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="startingLocationType">Starting Location:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <select name="startingLocationType" formControlName="startingLocationType" class="form-control col-md-7 col-xs-12">
+                    <option value="1">Workplace</option>
+                    <option value="2">Home</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="expenseLocation">Destination(s):</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="expenseLocation" id="expenseLocation" formControlName="expenseLocation" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="programCategory">Program Category:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <select name="programCategoryId" formControlName="programCategoryId" class="form-control col-md-7 col-xs-12">
+                    <option value="">--- select ---</option>
+                    <option *ngFor="let category of programCategories | async" [value]="category.id">{{category.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="businessPurpose">Business Purpose:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="businessPurpose" id="businessPurpose" formControlName="businessPurpose" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        
+        <div class="form-group" *ngIf="itIsPersonalVehicle">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fundingSourceMileageId">Mileage Funding Source: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <select [class.ng-invalid]="expenseForm.hasError('noMileageSource')" name="fundingSourceMileageId" id="fundingSourceMileageId" formControlName="fundingSourceMileageId" class="form-control col-md-7 col-xs-12" >
+                    <option value="">--- select ---</option>
+                    <option *ngFor="let source of fundingSources | async" [value]="source.id">{{source.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mileage">Mileage (miles):</label>
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                    <input type="text" name="mileage" id="mileage" formControlName="mileage" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div><!--
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fundingSourceNonMileageId">Expense Funding Source: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <select [class.ng-invalid]="expenseForm.hasError('noExpenseSource')" name="fundingSourceNonMileageId" id="fundingSourceNonMileageId" formControlName="fundingSourceNonMileageId" class="form-control col-md-7 col-xs-12" >
+                    <option value="">--- select ---</option>
+                    <option *ngFor="let source of fundingSources | async" [value]="source.id">{{source.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="registration">Registration ($):</label>
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                    <input type="text" name="registration" id="registration" formControlName="registration" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group" *ngIf="itIsOvernight">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lodging">Lodging ($):</label>
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                    <input type="text" name="lodging" id="lodging" formControlName="lodging" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group" *ngIf="itIsOvernight">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mealRateBreakfastId">Breakfast: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <select name="mealRateBreakfastId" id="mealRateBreakfastId" formControlName="mealRateBreakfastId" class="form-control col-md-7 col-xs-12" (change)="breakfastChange($event)">
+                    <option value="">None</option>
+                    <option *ngFor="let mealRate of mealRates | async" [value]="mealRate.id">(${{mealRate.breakfastRate | number:'1.2-2'}}) {{mealRate.description}}</option>
+                    <option value="custom">Custom Amount</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="customBrakefastRate && itIsOvernight">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mealRateBreakfastCustom">Custom Breakfast Rate:</label>
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                    <input type="text" name="mealRateBreakfastCustom" id="mealRateBreakfastCustom" formControlName="mealRateBreakfastCustom" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group" *ngIf="itIsOvernight">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mealRateLunchId">Lunch: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <select name="mealRateLunchId" id="mealRateLunchId" formControlName="mealRateLunchId" class="form-control col-md-7 col-xs-12" (change)="lunchChange($event)">
+                    <option value="">None</option>
+                    <option *ngFor="let mealRate of mealRates | async" [value]="mealRate.id">(${{mealRate.lunchRate | number:'1.2-2'}}) {{mealRate.description}}</option>
+                    <option value="custom">Custom Amount</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="customLunchRate && itIsOvernight">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mealRateLunchCustom">Custom Lunch Rate:</label>
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                    <input type="text" name="mealRateLunchCustom" id="mealRateLunchCustom" formControlName="mealRateLunchCustom" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group" *ngIf="itIsOvernight">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mealRateDinnerId">Dinner: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <select name="mealRateDinnerId" id="mealRateDinnerId" formControlName="mealRateDinnerId" class="form-control col-md-7 col-xs-12" (change)="dinnerChange($event)">
+                    <option value="">None</option>
+                    <option *ngFor="let mealRate of mealRates | async" [value]="mealRate.id">(${{mealRate.dinnerRate | number:'1.2-2'}}) {{mealRate.description}}</option>
+                    <option value="custom">Custom Amount</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="customDinnerRate && itIsOvernight">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mealRateDinnerCustom">Custom Dinner Rate:</label>
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                    <input type="text" name="mealRateDinnerCustom" id="mealRateDinnerCustom" formControlName="mealRateDinnerCustom" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="otherExpenseCost">Other Expense Amount ($):</label>
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                    <input type="text" name="otherExpenseCost" id="otherExpenseCost" formControlName="otherExpenseCost" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="otherExpenseExplanation">Explanation for other expense(s):</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="otherExpenseExplanation" id="otherExpenseExplanation" formControlName="otherExpenseExplanation" class="form-control col-md-7 col-xs-12">
+            </div>
+        </div> 
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Depart: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <timepicker empty="-- Select Departing Time --" formControlName="departTime"></timepicker>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="returnTime">Return: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <timepicker empty="-- Select Return Time --" formControlName="returnTime"></timepicker>
+            </div>
+        </div>-->
+        <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Comments:</label>
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                        <textarea name="comment" id="comment" formControlName="comment" class="form-control"></textarea>
+                </div>
+            </div>
+        
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                <button type="submit" [disabled]="expenseForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+        
+    </form>
+</div>
