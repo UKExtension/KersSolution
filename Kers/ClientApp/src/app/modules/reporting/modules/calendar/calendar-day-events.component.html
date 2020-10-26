@@ -1,6 +1,6 @@
 <div class="text-right" *ngIf="viewDate <= today && !logOpened && !expenseOpened">
     <a class="btn btn-info btn-xs" *ngIf="displayServiceLogEdits" (click)="logOpened=true">+ new service log record</a> 
-    <a class="btn btn-info btn-xs" (click)="expenseOpened=true">+ new mileage record</a>
+    <a class="btn btn-info btn-xs" *ngIf="displayNewMileage" (click)="expenseOpened=true">+ new mileage record</a>
 </div>
 <div>
   <servicelog-form [activityDate]="viewDate" *ngIf="logOpened" (onFormCancel)="logOpened=false" (onFormSubmit)="logSubmit($event)"></servicelog-form>

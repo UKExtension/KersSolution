@@ -56,14 +56,18 @@ export class ExpenseFormComponent {
     )   
     {
         let date = new Date();
+        var novFirst = new Date(2020,8, 30);
+        if( date.getTime() < novFirst.getTime()){
+            novFirst = date;
+        }
         this.expenseForm = fb.group(
             {
               
               expenseDate: [{
                                 date: {
-                                    year: date.getFullYear(),
-                                    month: date.getMonth() + 1,
-                                    day: date.getDate()}
+                                    year: novFirst.getFullYear(),
+                                    month: novFirst.getMonth() + 1,
+                                    day: novFirst.getDate()}
                                 }, Validators.required],
               vehicleType:[''],
               countyVehicleId: [''],
@@ -90,8 +94,10 @@ export class ExpenseFormComponent {
               comment: ""
             }, { validator: expenseValidator }
         );
+
         
-        this.myDatePickerOptions.disableSince = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() + 1};
+        
+        this.myDatePickerOptions.disableSince = {year: novFirst.getFullYear(), month: novFirst.getMonth() + 1, day: novFirst.getDate() + 1};
         this.myDatePickerOptions.disableUntil = {year: 2017, month: 6, day: 30};
         this.myDatePickerOptions.editableDateField = false;
         this.myDatePickerOptions.showClearDateBtn = false;

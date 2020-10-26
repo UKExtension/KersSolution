@@ -14,6 +14,7 @@ export class CalendarDayEventsComponent implements OnInit {
   private _viewDate:Date;
   private displayServiceLogEdits = false;
   currentFiscalYear:FiscalYear | null = null;
+  displayNewMileage = false;
 
   get viewDate(){
     return this._viewDate;
@@ -40,10 +41,15 @@ export class CalendarDayEventsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    var viewDate = new Date(this._viewDate);
+    var novFirst = new Date(2020,9, 31);
+    if( viewDate < novFirst ){
+        this.displayNewMileage = true;
+    }
     this.fiscalYearService.current('serviceLog', true).subscribe(
       res =>{
           this.currentFiscalYear = res;
-          var viewDate = new Date(this._viewDate);
+          
           var start = new Date(this.currentFiscalYear.start);
           var end = new Date(this.currentFiscalYear.end);
           var extendedTo = new Date(this.currentFiscalYear.extendedTo);
