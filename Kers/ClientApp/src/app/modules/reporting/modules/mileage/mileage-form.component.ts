@@ -43,6 +43,7 @@ export class MileageFormComponent implements OnInit {
   currentUser:User;
   currentPlanningUnit:PlanningUnit;
   startingLocationBrowser:boolean = false;
+  loading = true;
 
   programCategories: ProgramCategory[];
   fundingSources:ExpenseFundingSource[];
@@ -111,6 +112,7 @@ export class MileageFormComponent implements OnInit {
           this.currentUser = res;
           this.planningUnitService.id(this.currentUser.rprtngProfile.planningUnitId).subscribe(
               res => {
+                this.loading = false;
                  this.currentPlanningUnit = res;
                  this.enabledVehicles = this.currentPlanningUnit.vehicles.filter( v => v.enabled);
                  if(this.enabledVehicles.length == 1){
@@ -203,6 +205,7 @@ export class MileageFormComponent implements OnInit {
   }
 
   onSubmit(){
+    this.loading = true;
     var dateValue = this.mileageForm.value.expenseDate.date;
     var d = new Date(Date.UTC(dateValue.year, dateValue.month - 1, dateValue.day, 8, 5, 12));
     var ml = this.mileageForm.value as Mileage;
@@ -213,11 +216,17 @@ export class MileageFormComponent implements OnInit {
     }
     if( !this.mileage ){
       this.service.add(ml).subscribe(
-        res => this.onFormSubmit.emit( res )
+        res =>{
+          this.loading = false;
+          this.onFormSubmit.emit( res );
+        }
       )
     }else{
       this.service.update(this.mileage.id, ml).subscribe(
-          res => this.onFormSubmit.emit( res )
+          res =>{
+            this.loading = false;
+            this.onFormSubmit.emit( res );
+          } 
         )
     }
   }
