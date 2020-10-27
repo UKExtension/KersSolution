@@ -15,7 +15,7 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
       <h2 *ngIf="location">Update Location</h2>
       <br><br>
   </div>
-  <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="locationForm">
+  <ng-form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="locationForm">
     <div formGroupName="address">
       <div class="form-group">
           <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12" *ngIf="isItBuilding">Building:</label>  
@@ -65,11 +65,11 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
     <div class="form-group">
         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
             <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-            <button type="submit" [disabled]="locationForm.invalid"  class="btn btn-success">Submit</button>
+            <input type="button" [disabled]="locationForm.invalid"  (click)="onSubmit()" class="btn btn-success" value="Submit">
         </div>
     </div>
       
-  </form>
+  </ng-form>
 </div>
   `,
   styles: []
