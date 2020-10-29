@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { TrainingService } from '../training/training.service';
 import { UserService, User } from '../user/user.service';
 import { Router } from '@angular/router';
+import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   selector: 'ladder-application-form',
@@ -83,6 +84,7 @@ export class LadderApplicationFormComponent implements OnInit {
     private userService: UserService,
     private service:LadderService,
     private trainingService:TrainingService,
+    private fiscalYearService:FiscalyearService,
     private location: Location,
     private router: Router
   ) {
@@ -116,7 +118,7 @@ export class LadderApplicationFormComponent implements OnInit {
     
     this.myDatePickerOptions.disableSince = {year: this.today.getFullYear(), month: this.today.getMonth() + 1, day: this.today.getDate()};
     this.lastPromotionDate = new Date(this.today.getFullYear() -3, 6, 1);
-    this.firstOfTheYear = new Date(this.today.getFullYear(), 0, 1)
+    //this.firstOfTheYear = new Date(this.today.getFullYear(), 0, 1);
    }
 
   ngOnInit() {
@@ -151,11 +153,26 @@ export class LadderApplicationFormComponent implements OnInit {
       for( let img of this.application.images){
         this.addImage( img.uploadImageId, img.uploadImage.name, img.description);
       }
+      this.fiscalYearService.forDate(new Date(this.application.created)).subscribe(
+        res => {
+          var end = new Date(res.end);
+          this.firstOfTheYear = new Date(end.getFullYear(), 0, 1);
+          this.updateHours();
+          this.loading = false;
+        }
+      );
     }else{
       this.addRating();
+      this.fiscalYearService.current().subscribe(
+        res => {
+          var end = new Date(res.end);
+          this.firstOfTheYear = new Date(end.getFullYear(), 0, 1);
+          this.updateHours();
+          this.loading = false;
+        }
+      );
     }
-    this.loading = false;
-    this.updateHours();
+    
   }
   updateHours(){
     this.hoursAttended = this.trainingService.hoursByUser(0,this.lastPromotionDate, this.firstOfTheYear);

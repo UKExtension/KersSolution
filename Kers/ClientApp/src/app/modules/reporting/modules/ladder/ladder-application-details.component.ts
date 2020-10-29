@@ -3,6 +3,7 @@ import { LadderApplication } from './ladder';
 import { LadderService } from './ladder.service';
 import { TrainingService } from '../training/training.service';
 import { Observable } from 'rxjs';
+import { FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   selector: 'ladder-application-details',
@@ -20,6 +21,7 @@ export class LadderApplicationDetailsComponent implements OnInit {
 
   constructor(
     private service:LadderService,
+    private fiscalYearService:FiscalyearService,
     private trainingService:TrainingService
   ) { 
   }
@@ -27,17 +29,27 @@ export class LadderApplicationDetailsComponent implements OnInit {
   ngOnInit() {
     if(this.application != null){
       this.loading = false;
-      this.firstOfTheYear = new Date(new Date(this.application.created).getFullYear(), 0, 1);
       this.lastPromotionDate = new Date(this.application.lastPromotion);
-      this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.lastPromotionDate, this.firstOfTheYear);
+      this.fiscalYearService.forDate(new Date(this.application.created)).subscribe(
+        res => {
+          var end = new Date(res.end);
+          this.firstOfTheYear = new Date(end.getFullYear(), 0, 1);
+          this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.lastPromotionDate, this.firstOfTheYear);
+        }
+      );
     }else if( this.applicationId != null){
       this.service.getApplication( this.applicationId).subscribe(
         res => {
           this.application = res;
           this.loading = false;
-          this.firstOfTheYear = new Date(new Date(this.application.created).getFullYear(), 0, 1);
           this.lastPromotionDate = new Date(this.application.lastPromotion);
-          this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.lastPromotionDate, this.firstOfTheYear);
+          this.fiscalYearService.forDate(new Date(this.application.created)).subscribe(
+            res => {
+              var end = new Date(res.end);
+              this.firstOfTheYear = new Date(end.getFullYear(), 0, 1);
+              this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.lastPromotionDate, this.firstOfTheYear);
+            }
+          );
         }
       )
     }
