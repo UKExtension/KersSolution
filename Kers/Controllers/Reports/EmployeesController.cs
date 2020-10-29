@@ -110,12 +110,33 @@ namespace Kers.Controllers.Reports
 
  */
 
+            //UnitAddress();
 
             //var table = await contactRepo.DataByMajorProgram(fiscalYear, 2,0,true);
             //table = await contactRepo.DataByMajorProgram(fiscalYear, 3,0,true);
             //var table = await contactRepo.DataByEmployee(fiscalYear, 2, 0, true);
             //table = await contactRepo.DataByEmployee(fiscalYear, 3, 0, true);
             return View();
+        }
+
+        private void UnitAddress(){
+            var cnts = context.PlanningUnit.Where( u => u.City != null);
+            foreach( var cnt in cnts){
+                var location = new ExtensionEventLocation();
+                location.DisplayName = "County Extension Office";
+                location.Address = new PhysicalAddress();
+                location.Address.Building = cnt.FullName;
+                location.Address.Street = cnt.Address;
+                location.Address.City = cnt.City;
+                location.Address.PostalCode = cnt.Zip;
+                location.Address.State = "Kentucky";
+                cnt.Location = location;
+                var Geography = new PlanningUnitGeography();
+                Geography.GeoFeature = cnt.GeoFeature;
+                Geography.FIPSCode = cnt.FIPSCode;
+                cnt.Geography = Geography;
+            }
+            this.context.SaveChanges();
         }
 
         private void ImportAreas(){
