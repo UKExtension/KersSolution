@@ -56,7 +56,7 @@ export class ExpenseFormComponent {
     )   
     {
         let date = new Date();
-        var novFirst = new Date(2020,8, 30);
+        var novFirst = new Date(2020,9, 31);
         if( date.getTime() < novFirst.getTime()){
             novFirst = date;
         }
