@@ -180,8 +180,10 @@ export class LadderApplicationFormComponent implements OnInit {
 
   addRating(year:string = '', rating:string = '') {
     const group = new FormGroup({
-      year: new FormControl(year),
-      ratting: new FormControl(rating)
+      year: new FormControl(year, [Validators.required, 
+        Validators.pattern('^\\d*$')]),
+      ratting: new FormControl(rating, [Validators.required, 
+        Validators.pattern('^\\d*$')])
     });
     this.ratings.push(group);
   }
