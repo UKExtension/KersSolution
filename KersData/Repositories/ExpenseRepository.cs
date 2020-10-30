@@ -68,6 +68,46 @@ namespace Kers.Models.Repositories
             return revs;
         }
 
+        public List<ExpenseRevision> MileagePerMonth(KersUser user, int year, int month, string order = "desc"){
+            
+            IOrderedQueryable<Expense> lastExpenses;
+            if(order == "desc"){
+                lastExpenses = coreContext.Expense.
+                                Where(e=>e.KersUser == user && e.ExpenseDate.Month == month && e.ExpenseDate.Year == year).
+                                Include( e => e.Revisions ).ThenInclude( r => r.CountyVehicle).
+                                OrderByDescending(e=>e.ExpenseDate);
+            }else{
+                lastExpenses = coreContext.Expense.
+                                Where(e=>e.KersUser == user && e.ExpenseDate.Month == month && e.ExpenseDate.Year == year).
+                                Include(e=>e.Revisions).ThenInclude( r => r.FundingSourceNonMileage).
+                                Include(e=>e.Revisions).ThenInclude( r => r.FundingSourceMileage).
+                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
+                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
+                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
+                                Include( e => e.Revisions ).ThenInclude( r => r.CountyVehicle).
+                                OrderBy(e=>e.ExpenseDate);
+            }
+                                
+            var revs = new List<ExpenseRevision>();
+            if( lastExpenses != null){
+                foreach(var expense in lastExpenses){
+                    if(expense.Revisions.Count != 0){
+                        var lastRevision = expense.Revisions.OrderBy(r=>r.Created).Last();
+                        if( lastRevision.ProgramCategoryId != 0){
+                            var category = coreContext.ProgramCategory.Find(lastRevision.ProgramCategoryId);
+                            if(category != null){
+                                lastRevision.ProgramCategory = category;
+                            }
+                        }
+                        revs.Add( lastRevision );
+                    }
+                }
+            }
+            return revs;
+        }
+
+
+
 
         public List<ExpenseRevision> PerPeriod(KersUser user, DateTime start, DateTime end){
             

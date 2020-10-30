@@ -98,8 +98,10 @@ namespace Kers.Controllers
                 expense.Created = DateTime.Now;
                 exp.Revisions = new List<ExpenseRevision>();
                 exp.Revisions.Add(expense);
-                context.Add(exp);  
+                context.Add(exp); 
+                context.SaveChanges(); 
                 this.Log(expense,"MileageReveision", "Mileage Added.", "MileageReveision", "Created Mileage Record");
+                exp.LastRevisionId = expense.Id;
                 context.SaveChanges();
                 return new OkObjectResult(expense);
             }else{
@@ -119,6 +121,7 @@ namespace Kers.Controllers
                 exEntity.Revisions.Add(expense);
                 exEntity.ExpenseDate = expense.ExpenseDate;
                 context.SaveChanges();
+                exEntity.LastRevisionId = expense.Id;
                 this.Log(expense,"ExpenseRevision", "Expense Updated.");
                 return new OkObjectResult(expense);
             }else{
@@ -133,7 +136,8 @@ namespace Kers.Controllers
             var exEntity = context.Expense.Find(entity.ExpenseId);
             
             if(exEntity != null){
-                
+                exEntity.LastRevisionId = 0;
+                context.SaveChanges();
                 context.Expense.Remove(exEntity);
                 context.SaveChanges();
                 
