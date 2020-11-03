@@ -68,42 +68,17 @@ namespace Kers.Models.Repositories
             return revs;
         }
 
-        public List<ExpenseRevision> MileagePerMonth(KersUser user, int year, int month, string order = "desc"){
+        public IQueryable<Expense> MileagePerMonth(KersUser user, int year, int month){
             
-            IOrderedQueryable<Expense> lastExpenses;
-            if(order == "desc"){
-                lastExpenses = coreContext.Expense.
+            IQueryable<Expense> lastExpenses = coreContext.Expense.
                                 Where(e=>e.KersUser == user && e.ExpenseDate.Month == month && e.ExpenseDate.Year == year).
-                                Include( e => e.Revisions ).ThenInclude( r => r.CountyVehicle).
-                                OrderByDescending(e=>e.ExpenseDate);
-            }else{
-                lastExpenses = coreContext.Expense.
-                                Where(e=>e.KersUser == user && e.ExpenseDate.Month == month && e.ExpenseDate.Year == year).
-                                Include(e=>e.Revisions).ThenInclude( r => r.FundingSourceNonMileage).
-                                Include(e=>e.Revisions).ThenInclude( r => r.FundingSourceMileage).
-                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateBreakfast).
-                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateLunch).
-                                Include(e=>e.Revisions).ThenInclude( r => r.MealRateDinner).
-                                Include( e => e.Revisions ).ThenInclude( r => r.CountyVehicle).
-                                OrderBy(e=>e.ExpenseDate);
-            }
+                                Include( e => e.LastRevision ).ThenInclude( r => r.CountyVehicle).
+                                Include( e => e.LastRevision).ThenInclude( r => r.Segments).ThenInclude( s => s.Location).ThenInclude( l => l.Address).
+                                Include( e => e.LastRevision).ThenInclude( r => r.Segments).ThenInclude( s => s.FundingSource)
+                                .Include( e => e.LastRevision).ThenInclude( r => r.Segments).ThenInclude( s => s.ProgramCategory);
+            
                                 
-            var revs = new List<ExpenseRevision>();
-            if( lastExpenses != null){
-                foreach(var expense in lastExpenses){
-                    if(expense.Revisions.Count != 0){
-                        var lastRevision = expense.Revisions.OrderBy(r=>r.Created).Last();
-                        if( lastRevision.ProgramCategoryId != 0){
-                            var category = coreContext.ProgramCategory.Find(lastRevision.ProgramCategoryId);
-                            if(category != null){
-                                lastRevision.ProgramCategory = category;
-                            }
-                        }
-                        revs.Add( lastRevision );
-                    }
-                }
-            }
-            return revs;
+            return lastExpenses;
         }
 
 
