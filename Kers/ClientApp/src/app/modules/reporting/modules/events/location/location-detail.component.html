@@ -4,9 +4,9 @@
     <div class="text-right">
         <a  *ngIf="!(location.id == 0)"><i style="cursor: pointer;" class="fa fa-pencil-square-o" (click)="edit()"></i></a>&nbsp;<a *ngIf="!(location.id == 0)"><i  style="cursor: pointer;" class="fa fa-trash-o" (click)="delete()"></i></a>
     </div>
-    <h4 *ngIf="purpose=='Mileage' && location.extensionEventLocation.displayName != '' ">{{location.extensionEventLocation.displayName}}</h4>
+    
     <h4 *ngIf="purpose=='CountyEvents'">{{location.extensionEventLocation.address.building}}</h4>
-    <h5 *ngIf="purpose=='Mileage'">{{location.extensionEventLocation.address.building}}</h5>
+    <h5 *ngIf="purpose=='Mileage'">{{location.extensionEventLocation.address.building}}<strong *ngIf="purpose=='Mileage' && location.extensionEventLocation.displayName != null && location.extensionEventLocation.displayName != '' "> ({{location.extensionEventLocation.displayName}})</strong></h5>
     <h5>{{location.extensionEventLocation.address.street}}</h5>
     <h5 *ngIf="location.extensionEventLocation.address.city != null && location.extensionEventLocation.address.city != '' && location.extensionEventLocation.address.city != 'NULL'">{{location.extensionEventLocation.address.city}}{{location.extensionEventLocation.address.state != "" ? ", "+location.extensionEventLocation.address.state:""}} {{purpose=='CountyEvents'?location.extensionEventLocation.address.postalCode:''}}</h5>
     <a class="btn btn-info btn-xs" (click)="selection()">select</a>

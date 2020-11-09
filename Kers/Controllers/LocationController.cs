@@ -173,7 +173,7 @@ namespace Kers.Controllers
                             .ExtensionEventLocationConnection
                             .Where( e => e.KersUserId == id);
             if(search != ""){
-                locations = locations.Where( l => l.ExtensionEventLocation.Address.Building.Contains(search));
+                locations = locations.Where( l => (l.ExtensionEventLocation.Address.Building.Contains(search) || l.ExtensionEventLocation.Address.Street.Contains(search)));
             }
             if(order=="often"){
                 locations = locations.OrderByDescending( l => l.SelectedCount);
@@ -186,7 +186,7 @@ namespace Kers.Controllers
             
             res.Count = res.Results.Count();
             res.Results = res.Results.Skip(skip).Take(take).ToList();
-            if(includeCountyOffice){
+            if(includeCountyOffice && search == ""){
                 if( user == null){
                     user = this._context.KersUser.Where( u => u.Id == id)
                                 .Include( u => u.RprtngProfile)

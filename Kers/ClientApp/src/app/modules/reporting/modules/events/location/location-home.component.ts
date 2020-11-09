@@ -33,7 +33,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
       <br><br>
       <div class="row">
           <div class="col-sm-6 col-xs-12">
-            <input type="text" [(ngModel)]="search" placeholder="search by building name" (keyup)="onSearch($event)" class="form-control" name="Search" />
+            <input type="text" [(ngModel)]="search" placeholder="search" (keyup)="onSearch($event)" class="form-control" name="Search" />
           </div>
           <div class="col-sm-6 col-xs-12 text-right">
 
@@ -146,7 +146,8 @@ export class LocationHomeComponent implements OnInit {
   }
 
   deleted(_:ExtensionEventLocation){
-    this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
+    //this.countyLocations$ = this.service.locationsByCounty(( this.county ? this.county.id : 0));
+    this.onRefresh();
   }
 
 }

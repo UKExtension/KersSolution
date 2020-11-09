@@ -24,8 +24,7 @@ import { MileageSegment } from './mileage';
                     <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
                 </div>
                 <div  class="col-md-9 col-sm-9 col-xs-12" *ngIf="!locationBrowser" style="padding: 10px;">
-                    <h4>{{loc.displayName}}</h4>
-                    <h5>{{loc.address.building}}</h5>
+                    <h5>{{loc.address.building}}<strong *ngIf="loc.displayName != null && loc.displayName != '' "> ({{loc.displayName}})</strong></h5>
                     <h5>{{loc.address.street}}</h5>
                     <h5>{{loc.address.city}}{{loc.address.state != ""?", "+loc.address.state:""}}</h5>
                     <a (click)="locationBrowser = true" class="btn btn-info btn-xs">change</a>

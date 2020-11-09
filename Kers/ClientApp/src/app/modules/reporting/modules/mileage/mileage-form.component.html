@@ -7,7 +7,7 @@
   </div>
   <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="mileageForm">
     <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isOvernight">TRIP Type:</label>
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isOvernight">Trip Type:</label>
         <div class="col-md-5 col-sm-7 col-xs-8">
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn btn-default" (click)="isOvernight(false)" [class.active]="!itIsOvernight">
@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="rDT">Expense Date:</label>
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="rDT">Date of Travel:</label>
         <div class="col-md-5 col-sm-7 col-xs-8">
             <my-date-picker [options]="myDatePickerOptions" formControlName="expenseDate"></my-date-picker>
         </div>
@@ -54,23 +54,22 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Starting Location:</label>
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Starting Location:<span *ngIf="!startingLocationBrowser && stLoc.displayName != null && stLoc.displayName != 'County Extension Office'" class="red"><br>Note: Mileage is reinbursed from the traveler's workstation to the destination, unless driving from the traveler's residence is closer</span></label>
         <div class="col-md-9 col-sm-9 col-xs-12">
             <div *ngIf="startingLocationBrowser" style="padding: 10px;">
                 <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
             </div>
             <div *ngIf="!startingLocationBrowser && stLoc!=null" style="padding: 10px;">
-                <h4>{{stLoc.displayName}}</h4>
-                <h5>{{stLoc.address.building}}</h5>
+                <h5>{{stLoc.address.building}}<strong *ngIf="stLoc.displayName != null && stLoc.displayName != ''"> ({{stLoc.displayName}})</strong></h5>
                 <h5>{{stLoc.address.street}}</h5>
                 <h5>{{stLoc.address.city}} {{stLoc.address.state != ""?", "+stLoc.address.state:""}} {{stLoc.address.postalCode}}</h5>
                 <a (click)="startingLocationBrowser = true" class="btn btn-info btn-xs">change</a>
-                <span *ngIf="stLoc.displayName != 'County Extension Office'" class="red"><br>Note: Home address must be shorter distance than leaving from office address</span>
+                
             </div>
         </div>
     </div>
     <div class="form-group" formArrayName="segments">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Destination(s):</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Destination(s):<br><small>Note: Each destination visited during the day must be listed individually and in the specific order visited. Additional destinations may be added using "+ add destination" button below</small></label>
     <div class="col-md-9 col-sm-9 col-xs-12">
         <div *ngFor="let segment of segments.controls; let i=index" class="segment-container">
             <mileage-segment [index]="i" [fundingSources]="fundingSources" [programCategories]="programCategories" [currentUser]="currentUser" (removeMe)="sectionRemoved($event)" [formControlName]="i"></mileage-segment>
