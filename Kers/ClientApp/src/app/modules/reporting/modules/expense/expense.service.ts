@@ -109,14 +109,14 @@ export class ExpenseService {
                 catchError(this.handleError('pdf', <Blob>{}))
             );
     }
-
+//  /api/PdfMileage/mileagelog/
     pdfTrip(year:number, month:number, id:number = 0, isOvernight:boolean = false, isPersonal:boolean = true):Observable<Blob>{
-        return this.http.get(this.location.prepareExternalUrl('/api/PdfMileage/mileagelog/' + year + '/' + month + '/' + id + '/' + isOvernight + '/' + isPersonal ), {responseType: 'blob'})
+        return this.http.get(this.location.prepareExternalUrl('/api/PdfTripExpenses/tripexpenses/' + year + '/' + month + '/' + id + '/' + isOvernight + '/' + isPersonal ), {responseType: 'blob'})
             .pipe(
                 catchError(this.handleError('pdfTrip', <Blob>{}))
             );
     }
-
+    
     yearsWithExpenses(id:number = 0):Observable<string[]>{
         var url = this.baseUrl + 'years/' + id;
         return this.http.get<string[]>(this.location.prepareExternalUrl(url))
