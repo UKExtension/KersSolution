@@ -173,7 +173,11 @@ namespace Kers.Controllers
                             .ExtensionEventLocationConnection
                             .Where( e => e.KersUserId == id);
             if(search != ""){
-                locations = locations.Where( l => (l.ExtensionEventLocation.Address.Building.Contains(search) || l.ExtensionEventLocation.Address.Street.Contains(search)));
+                locations = locations.Where( l => (l.ExtensionEventLocation.Address.Building.Contains(search) 
+                                                    || l.ExtensionEventLocation.Address.Street.Contains(search) 
+                                                    || l.ExtensionEventLocation.DisplayName.Contains(search)
+                                                   )
+                                            );
             }
             if(order=="often"){
                 locations = locations.OrderByDescending( l => l.SelectedCount);
