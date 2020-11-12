@@ -77,7 +77,6 @@ namespace Kers.Controllers
 					var dataObjext = new MileageData(expenses);
 					dataObjext.SetIsItPersonalVehicle(personal);
 					var dt = dataObjext.getData();
-					var verticalLinesX = dataObjext.getVerticalLinesX();
 					var currentPageNumber = 1;
 					foreach( var pg in dt){
 						var pdfCanvas = document.BeginPage(width, height);
@@ -93,7 +92,7 @@ namespace Kers.Controllers
 						}
 						
 						if( pg.segments.Count() > 0 ){
-							table(pdfCanvas, pg.segments, 25, runningY, verticalLinesX);
+							table(pdfCanvas, pg.segments, 25, runningY, dataObjext);
 						}
 						
 						//runningY += pg.Sum( e => e.lines) * dataObjext.GetLineHeight();
@@ -116,66 +115,131 @@ namespace Kers.Controllers
 			}			
 		}
 
-		private int table(SKCanvas pdfCanvas, List<MileageNumLines> segments, int x, int y, int[] verticalLinesX){
+		private int table(SKCanvas pdfCanvas, List<MileageNumLines> segments, int x, int y, MileageData dataObject){
             var rowHeight = 15;
             var beginningY = y;
+			var runningXIndex = 0;
 			var padding = 2;
+
+			int[] verticalLinesX = dataObject.getVerticalLinesX();
             SKPaint thinLinePaint = new SKPaint
 											{
 												Style = SKPaintStyle.Stroke,
 												Color = SKColors.Black,
 												StrokeWidth = 0.5f
 											};
+			SKPaint mediumLinePaint = new SKPaint
+											{
+												Style = SKPaintStyle.Stroke,
+												Color = SKColors.Black,
+												StrokeWidth = 1.0f
+											};
 
 			pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
 			pdfCanvas.DrawLine(x, y + rowHeight, x + 746, y + rowHeight, thinLinePaint);
 			pdfCanvas.DrawLine(x, y + rowHeight - 0.5f, x + 746, y + rowHeight - 0.5f, thinLinePaint);
-			pdfCanvas.DrawText("Date", x + 4, y + 11, getPaint(9.5f, 1));
 
-			pdfCanvas.DrawText("Vehicle Name", x + 76, y + 11, getPaint(9.35f, 1));
-			pdfCanvas.DrawText("Starting Location", x + 156, y + 11, getPaint(9.35f, 1));
-			pdfCanvas.DrawText("Destination(s)", x + 236, y + 11, getPaint(9.5f, 1));
-			pdfCanvas.DrawText("Business Purpose", x + 437, y + 11, getPaint(9.5f, 1));
 
-			pdfCanvas.DrawText("Program", x + 655, y + 11, getPaint(9.5f, 1));
-			pdfCanvas.DrawText("Mileage", x + 708, y + 11, getPaint(9.5f, 1));
+
+			pdfCanvas.DrawText("Date", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.5f, 1));
+
+			//pdfCanvas.DrawText("Vehicle Name", x + 76, y + 11, getPaint(9.35f, 1));
+
+
+			runningXIndex++;
+
+			pdfCanvas.DrawText("Start", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.35f, 1));
+
+			runningXIndex++;
+
+			pdfCanvas.DrawText("Location", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.35f, 1));
+
+			runningXIndex++;
+
+			pdfCanvas.DrawText("Business Purpose", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.5f, 1));
+
+
+			runningXIndex++;
+
+			pdfCanvas.DrawText("Program", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.5f, 1));
+
+			runningXIndex++;
+
+			pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.5f, 1));
+
 			DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, y, 15);
 			y += rowHeight;
             var i = 0;
-            foreach( var expense in segments){
+			int LastExpenseRevisionId = 0;
+
+			var comments = dataObject.GetComments();
+
+            foreach( var segment in segments){
+				
+
+				if(LastExpenseRevisionId != segment.segment.segment.ExpenseRevisionId){
+
+					var comment = comments.Where( c => c.ExpenseRevisionId == LastExpenseRevisionId).FirstOrDefault();
+					if(comment != null){
+						foreach( var line in comment.commentLines){
+							pdfCanvas.DrawText(line, x + verticalLinesX[0] + padding, y + 11, getPaint(10.0f));
+							y += rowHeight;
+						}
+					}
+
+					pdfCanvas.DrawLine(x, y, x + 746, y, mediumLinePaint);
+
+
+				}else{
+					pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
+				}
+
+
                 var thisRowHeight = 0;
                 var initialY = y;
-                pdfCanvas.DrawText(expense.segment.MileageDate.ToString("MM/dd/yyyy") + "(" + expense.segment.MileageDate.ToString("ddd").Substring(0,2) + ")", x + 2, y + 11, getPaint(10.0f));
+                pdfCanvas.DrawText(segment.segment.MileageDate.ToString("MM/dd/yyyy") + "(" + segment.segment.MileageDate.ToString("ddd").Substring(0,2) + ")", x + 2, y + 11, getPaint(10.0f));
 
                 var runningY = initialY;
-				if( expense.segment.segment.ProgramCategory != null ){
-					pdfCanvas.DrawText(expense.segment.segment.ProgramCategory.ShortName, x + verticalLinesX[4] + padding, runningY + 11, getPaint(10.0f));
+				if( segment.segment.segment.ProgramCategory != null ){
+					pdfCanvas.DrawText(segment.segment.segment.ProgramCategory.ShortName, x + verticalLinesX[4] + padding, runningY + 11, getPaint(10.0f));
 				}
  
-                foreach( var line in expense.startLocationLines){
+                foreach( var line in segment.startLocationLines){
                     pdfCanvas.DrawText(line, x + verticalLinesX[1] + padding, runningY + 11, getPaint(10.0f));
                     runningY += rowHeight;
                 }
 				runningY = initialY;
-				foreach( var line in expense.endLocationLines){
+				foreach( var line in segment.endLocationLines){
                     pdfCanvas.DrawText(line, x + verticalLinesX[2] + padding, runningY + 11, getPaint(10.0f));
                     runningY += rowHeight;
                 }
 				runningY = initialY;
-				foreach( var line in expense.purposeLines){
+				foreach( var line in segment.purposeLines){
                     pdfCanvas.DrawText(line, x + verticalLinesX[3] + padding, runningY + 11, getPaint(10.0f));
                     runningY += rowHeight;
                 }
                 
-                thisRowHeight =  expense.lines * rowHeight;
+				
+
+
+                thisRowHeight =  segment.lines * rowHeight;
 				y += thisRowHeight;
-                pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
+                
+				
 
 
                 DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, initialY, thisRowHeight);
                 i++;
+				LastExpenseRevisionId = segment.segment.segment.ExpenseRevisionId;
                 
             }
+			var cmnt = comments.Where( c => c.ExpenseRevisionId == LastExpenseRevisionId).FirstOrDefault();
+			if(cmnt != null){
+				foreach( var line in cmnt.commentLines){
+					pdfCanvas.DrawText(line, x + verticalLinesX[0] + padding, y + 11, getPaint(10.0f));
+					y += rowHeight;
+				}
+			}
             return i;
         }
 
@@ -219,6 +283,7 @@ namespace Kers.Controllers
 
 		IQueryable<Expense> _expenses;
 		List<MileageSegmentWithDate> _segments = new List<MileageSegmentWithDate>();
+		List<MileageComment> _comments = new List<MileageComment>();
 		public int mileageColumnsCount = 3;
 
 
@@ -238,6 +303,7 @@ namespace Kers.Controllers
 		public int endLocationCharacterLength = 34;
 		public int businessPurposeCharacterLength = 30;
 		public int mileageColumnCharacterLength = 15;
+		public int totalCharacterLength = 160;
 
 
 		int datePixelLength = 74;
@@ -284,6 +350,23 @@ namespace Kers.Controllers
 					};
 					StartingLocation = segment.Location;
 					_segments.Add(SegmentWithDate);
+				}
+			}
+		}
+		private void ExtractComments(){
+			foreach( var expns in this._expenses){
+				if( expns.LastRevision.Comment != null && expns.LastRevision.Comment != ""){
+
+					var lines = PdfBaseController.SplitLineToMultiline(expns.LastRevision.Comment, this.totalCharacterLength);
+
+
+					var cmnt = new MileageComment(){
+						ExpenseRevisionId = expns.LastRevisionId,
+						comment = expns.LastRevision.Comment,
+						commentLines = lines,
+						lines = lines.Count()
+					};
+					this._comments.Add(cmnt);
 				}
 			}
 		}
@@ -407,6 +490,9 @@ namespace Kers.Controllers
 		public int GetSignaturesHeight(){
 			return signaturesHeight;
 		}
+		public List<MileageComment> GetComments(){
+			return _comments;
+		}
 
 		public int[] getVerticalLinesX(){
 			List<int> lines = new List<int>();
@@ -426,6 +512,7 @@ namespace Kers.Controllers
 
 
 		public List<MileageLogTableData> getData(){
+			ExtractComments();
 			ExtractSegments();
 			AdjustCharacterLengths();
 			getLines();
@@ -442,6 +529,13 @@ namespace Kers.Controllers
 		public MileageSegment segment;
 		public ExtensionEventLocation StartigngLocation;
 		public ExtensionEventLocation EndingLocation;
+	}
+
+	public class MileageComment{
+		public int ExpenseRevisionId;
+		public string comment;
+		public List<string> commentLines;
+		public int lines;
 	}
 
 	public class MileageLogPageData{

@@ -10,6 +10,7 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public int ExpenseRevisionId {get;set;}
         public int LocationId {get; set;}
         public int ProgramCategoryId {get;set;}
         public ProgramCategory ProgramCategory {get;set;}
