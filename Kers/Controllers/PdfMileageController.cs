@@ -146,55 +146,32 @@ namespace Kers.Controllers
                 var thisRowHeight = 0;
                 var initialY = y;
                 pdfCanvas.DrawText(expense.segment.MileageDate.ToString("MM/dd/yyyy") + "(" + expense.segment.MileageDate.ToString("ddd").Substring(0,2) + ")", x + 2, y + 11, getPaint(10.0f));
-				/* 
-				if(!personalVehicle && expense.expense.CountyVehicle != null && expense.expense.CountyVehicle.Name != null ){
-					pdfCanvas.DrawText(expense.expense.CountyVehicle.Name, x + 76, y + 11, getPaint(10.0f));
+
+                var runningY = initialY;
+				if( expense.segment.segment.ProgramCategory != null ){
+					pdfCanvas.DrawText(expense.segment.segment.ProgramCategory.ShortName, x + verticalLinesX[4] + padding, runningY + 11, getPaint(10.0f));
 				}
-				
-				if(expense.expense.ProgramCategory != null){
-					pdfCanvas.DrawText(expense.expense.ProgramCategory.ShortName, x + 655, y + 11, getPaint(10.0f));
-				}
-				pdfCanvas.DrawText(Math.Round(expense.expense.Mileage, 2).ToString(), x + 742, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
-				var startingLocation = "Workplace";
-				if( expense.expense.StartingLocationType == 2 ){
-					startingLocation = "Home";
-				}
-
-
-				pdfCanvas.DrawText(startingLocation, x + (personalVehicle ? 77 : 156 ), y + 11, getPaint(10.0f));
-
- */
-
-                //var locationLines = SplitLineToMultiline(expense.expense.ExpenseLocation, personalVehicle ? locationLinesCharacterLength_personal : locationLinesCharacterLength_county);
-                var locationLinesY = y;
-                var locationLinesHight = 0;
-				/* 
-                foreach( var line in locationLines){
-                    pdfCanvas.DrawText(line, x + (personalVehicle ? 158 : 237 ), locationLinesY + 11, getPaint(10.0f));
-                    locationLinesY += rowHeight;
-                    locationLinesHight += rowHeight;
-                } */
-
-                //var businessPurposeLines = SplitLineToMultiline(expense.expense.BusinessPurpose, personalVehicle ? businessPurposeLinesCharacterLength_personal : businessPurposeLinesCharacterLength_county);
-                var purposeLinesY = y;
-				var startLinesY = y;
-				var endLineY = y;
-                var purposeLineHight = 0;
  
                 foreach( var line in expense.startLocationLines){
-                    pdfCanvas.DrawText(line, x + verticalLinesX[1] + padding, startLinesY + 11, getPaint(10.0f));
-                    purposeLinesY += rowHeight;
-                    startLinesY += rowHeight;
+                    pdfCanvas.DrawText(line, x + verticalLinesX[1] + padding, runningY + 11, getPaint(10.0f));
+                    runningY += rowHeight;
                 }
+				runningY = initialY;
 				foreach( var line in expense.endLocationLines){
-                    pdfCanvas.DrawText(line, x + verticalLinesX[2] + padding, endLineY + 11, getPaint(10.0f));
-                    endLineY += rowHeight;
-                    purposeLineHight += rowHeight;
+                    pdfCanvas.DrawText(line, x + verticalLinesX[2] + padding, runningY + 11, getPaint(10.0f));
+                    runningY += rowHeight;
                 }
-                y = Math.Max(locationLinesY, purposeLinesY);
-                thisRowHeight = Math.Max( locationLinesHight, purposeLineHight);
-
+				runningY = initialY;
+				foreach( var line in expense.purposeLines){
+                    pdfCanvas.DrawText(line, x + verticalLinesX[3] + padding, runningY + 11, getPaint(10.0f));
+                    runningY += rowHeight;
+                }
+                
+                thisRowHeight =  expense.lines * rowHeight;
+				y += thisRowHeight;
                 pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
+
+
                 DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, initialY, thisRowHeight);
                 i++;
                 

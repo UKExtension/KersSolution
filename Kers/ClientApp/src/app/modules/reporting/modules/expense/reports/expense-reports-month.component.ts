@@ -54,11 +54,15 @@ import { ɵangular_packages_platform_browser_dynamic_testing_testing_b } from '@
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a (click)="printTrip()" *ngIf="!pdfTripLoading" >Mileage Log - Personal Vehicle</a>
-                        <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
+                        <li>
+                            <a *ngIf="!isMileage && !pdfTripLoading" (click)="printTrip()" >Mileage Log - Personal Vehicle</a>
+                            <a *ngIf="isMileage && !pdfTripLoading" (click)="printMileage()" >Mileage Log - Personal Vehicle</a>
+                            <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
                         </li>
-                        <li *ngIf="enabledVehicles.length > 0"><a (click)="printTrip(false, false)" *ngIf="!pdfTripLoadingOvernight">Mileage Log - County Vehicle</a>
-                        <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
+                        <li *ngIf="enabledVehicles.length > 0">
+                            <a *ngIf="!isMileage && !pdfTripLoadingOvernight" (click)="printTrip(false, false)">Mileage Log - County Vehicle</a>
+                            <a *ngIf="isMileage && !pdfTripLoadingOvernight" (click)="printMileage(false, false)">Mileage Log - County Vehicle</a>
+                            <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
                         </li>
                         <li class="divider"></li>
                         <li><a (click)="print()" *ngIf="rowDefault && !pdfLoading">Detailed Monthly Report</a>
@@ -110,6 +114,8 @@ export class ExpenseReportsMonthComponent {
     loading = false;
     pdfLoading = false;
 
+    isMileage = false;
+
 
     constructor( 
         private service:ExpenseService,
@@ -122,6 +128,7 @@ export class ExpenseReportsMonthComponent {
         this.date = new Date();
         this.date.setDate(15);
         this.date.setMonth(this.month.month - 1);
+        if( this.month.month >= 10 && this.year.year > 2019 ) this.isMileage = true;
         if(this.user != null){
             this.planningUnitService.id(this.user.rprtngProfile.planningUnitId).subscribe(
                 res => {
@@ -195,6 +202,30 @@ export class ExpenseReportsMonthComponent {
             userid = this.user.id;
         }
         this.service.pdfTrip(this.year.year, this.month.month, userid, isOvernight, isPersonal).subscribe(
+            data => {
+                var blob = new Blob([data], {type: 'application/pdf'});
+                saveAs(blob, "MileageReport_" + this.year.year + "_" + this.month.month + ".pdf");
+                this.pdfTripLoading = false;
+                this.pdfTripLoadingOvernight = false;
+                this.pdfMenuOpen = false;
+            },
+            err => console.error(err)
+        )
+    }
+
+    printMileage(isOvernight:boolean = false, isPersonal = true){
+        if( isPersonal )
+        {
+            this.pdfTripLoadingOvernight = true;
+        }else{
+            this.pdfTripLoading = true;
+        }
+        
+        var userid = 0;
+        if(this.user != null){
+            userid = this.user.id;
+        }
+        this.service.pdfMileage(this.year.year, this.month.month, userid, isOvernight, isPersonal).subscribe(
             data => {
                 var blob = new Blob([data], {type: 'application/pdf'});
                 saveAs(blob, "MileageReport_" + this.year.year + "_" + this.month.month + ".pdf");
