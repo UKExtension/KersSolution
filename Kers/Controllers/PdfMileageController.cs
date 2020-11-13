@@ -74,7 +74,7 @@ namespace Kers.Controllers
 						expenses = expenses.Where( e => e.LastRevision.VehicleType == 2);
 					}
 
-					var dataObjext = new MileageData(expenses);
+					var dataObjext = new MileageData(expenses.OrderBy(o => o.LastRevision.ExpenseDate));
 					dataObjext.SetIsItPersonalVehicle(personal);
 					var dt = dataObjext.getData();
 					var currentPageNumber = 1;
@@ -161,11 +161,26 @@ namespace Kers.Controllers
 
 			runningXIndex++;
 
-			pdfCanvas.DrawText("Program", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.5f, 1));
+			pdfCanvas.DrawText("Program", x + verticalLinesX[runningXIndex] + padding - 2, y + 11, getPaint(9.5f, 1));
 
 			runningXIndex++;
 
-			pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.5f, 1));
+			pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + padding, y + 11 - rowHeight, getPaint(9.5f, 1));
+
+			if( dataObject.CountyColumnPresent){
+				pdfCanvas.DrawText("County", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
+				runningXIndex++;
+			}
+
+			if( dataObject.ProfImprvmntColumnPresent){
+				pdfCanvas.DrawText("Prf Imprv", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
+				runningXIndex++;
+			}
+
+			if( dataObject.UKColumnPresent){
+				pdfCanvas.DrawText("UK Fnded", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
+				runningXIndex++;
+			}
 
 			DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, y, 15);
 			y += rowHeight;
@@ -176,11 +191,13 @@ namespace Kers.Controllers
 
             foreach( var segment in segments){
 				
-
+				
 				if(LastExpenseRevisionId != segment.segment.segment.ExpenseRevisionId){
-
+					pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
 					var comment = comments.Where( c => c.ExpenseRevisionId == LastExpenseRevisionId).FirstOrDefault();
 					if(comment != null){
+						pdfCanvas.DrawLine(x + verticalLinesX[0], y, x + verticalLinesX[0], y + rowHeight * comment.commentLines.Count(), thinLinePaint);
+						pdfCanvas.DrawLine(x + verticalLinesX[verticalLinesX.Length - 1], y, x + verticalLinesX[verticalLinesX.Length - 1], y + rowHeight * comment.commentLines.Count(), thinLinePaint);
 						foreach( var line in comment.commentLines){
 							pdfCanvas.DrawText(line, x + verticalLinesX[0] + padding, y + 11, getPaint(10.0f));
 							y += rowHeight;
@@ -193,31 +210,57 @@ namespace Kers.Controllers
 				}else{
 					pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
 				}
-
-
+				var initialY = y;
+				var runningY = initialY;
+				runningXIndex = 0;
                 var thisRowHeight = 0;
-                var initialY = y;
-                pdfCanvas.DrawText(segment.segment.MileageDate.ToString("MM/dd/yyyy") + "(" + segment.segment.MileageDate.ToString("ddd").Substring(0,2) + ")", x + 2, y + 11, getPaint(10.0f));
-
-                var runningY = initialY;
-				if( segment.segment.segment.ProgramCategory != null ){
-					pdfCanvas.DrawText(segment.segment.segment.ProgramCategory.ShortName, x + verticalLinesX[4] + padding, runningY + 11, getPaint(10.0f));
-				}
+                
+                pdfCanvas.DrawText(segment.segment.MileageDate.ToString("MM/dd/yyyy") + "(" + segment.segment.MileageDate.ToString("ddd").Substring(0,2) + ")", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(10.0f));
+				runningXIndex++;
+                
+				
  
                 foreach( var line in segment.startLocationLines){
-                    pdfCanvas.DrawText(line, x + verticalLinesX[1] + padding, runningY + 11, getPaint(10.0f));
+                    pdfCanvas.DrawText(line, x + verticalLinesX[runningXIndex] + padding, runningY + 11, getPaint(10.0f));
                     runningY += rowHeight;
                 }
+				runningXIndex++;
 				runningY = initialY;
 				foreach( var line in segment.endLocationLines){
-                    pdfCanvas.DrawText(line, x + verticalLinesX[2] + padding, runningY + 11, getPaint(10.0f));
+                    pdfCanvas.DrawText(line, x + verticalLinesX[runningXIndex] + padding, runningY + 11, getPaint(10.0f));
                     runningY += rowHeight;
                 }
+				runningXIndex++;
 				runningY = initialY;
 				foreach( var line in segment.purposeLines){
-                    pdfCanvas.DrawText(line, x + verticalLinesX[3] + padding, runningY + 11, getPaint(10.0f));
+                    pdfCanvas.DrawText(line, x + verticalLinesX[runningXIndex] + padding, runningY + 11, getPaint(10.0f));
                     runningY += rowHeight;
                 }
+				runningXIndex++;
+				if( segment.segment.segment.ProgramCategory != null ){
+					pdfCanvas.DrawText(segment.segment.segment.ProgramCategory.ShortName, x + verticalLinesX[runningXIndex] + padding, initialY + 11, getPaint(10.0f));
+				}
+				runningXIndex++;
+				if( dataObject.CountyColumnPresent){
+					if( dataObject.countySourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+					}
+					runningXIndex++;
+				}
+				if( dataObject.ProfImprvmntColumnPresent){
+					if( dataObject.professionalDevelopmentNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+					}
+					runningXIndex++;
+				}
+				if( dataObject.UKColumnPresent){
+					if( dataObject.UKSourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+					}
+					runningXIndex++;
+				}
+				
+
                 
 				
 
@@ -235,10 +278,14 @@ namespace Kers.Controllers
             }
 			var cmnt = comments.Where( c => c.ExpenseRevisionId == LastExpenseRevisionId).FirstOrDefault();
 			if(cmnt != null){
+				pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
+				pdfCanvas.DrawLine(x + verticalLinesX[0], y, x + verticalLinesX[0], y + rowHeight * cmnt.commentLines.Count(), thinLinePaint);
+				pdfCanvas.DrawLine(x + verticalLinesX[verticalLinesX.Length - 1], y, x + verticalLinesX[verticalLinesX.Length - 1], y + rowHeight * cmnt.commentLines.Count(), thinLinePaint);
 				foreach( var line in cmnt.commentLines){
 					pdfCanvas.DrawText(line, x + verticalLinesX[0] + padding, y + 11, getPaint(10.0f));
 					y += rowHeight;
 				}
+				pdfCanvas.DrawLine(x, y, x + 746, y, mediumLinePaint);
 			}
             return i;
         }
@@ -292,9 +339,9 @@ namespace Kers.Controllers
 		bool isItPersonalVehicle = true;
 		List<MileageLogTableData> pages = new List<MileageLogTableData>();
 	
-		string[] UKSourceNames = new string[]{"State", "Federal"};
-		string[] countySourceNames = new string[]{"County Travel (Reimbursed to Employee)"};
-		string[] professionalDevelopmentNames = new string[]{"Professional Improvement (Reimbursed to Employee)"};
+		public string[] UKSourceNames = new string[]{"State", "Federal"};
+		public string[] countySourceNames = new string[]{"County Travel (Reimbursed to Employee)"};
+		public string[] professionalDevelopmentNames = new string[]{"Professional Improvement (Reimbursed to Employee)"};
 
 
 
@@ -310,8 +357,8 @@ namespace Kers.Controllers
 		int startingLocationPixelLength = 184;
 		int endLocationPixelLength = 184;
 		int purposePixelLength = 170;
-		int programsPixelLength = 44;
-		int mileageColumnPixelLength = 30;
+		int programsPixelLength = 41;
+		public int mileageColumnPixelLength = 31;
 
 		
 		public bool CountyColumnPresent = true;
@@ -451,6 +498,7 @@ namespace Kers.Controllers
 			int processedSegmentsCount = 0;
 			bool signaturesAdded = false;
 			do{
+				int LastExpenseRevisionId = 0;
 				var spaceRemaining = pageSpace;
 				var pg = new MileageLogTableData();
 				if(processedSegmentsCount == 0){
@@ -459,6 +507,12 @@ namespace Kers.Controllers
 				}
 				var remaining = _sectionLines.Skip(processedSegmentsCount);
 				foreach( var sgmnt in remaining ){
+					if( LastExpenseRevisionId != sgmnt.segment.segment.ExpenseRevisionId ){
+						var cmnt = this._comments.Where( c => c.ExpenseRevisionId == sgmnt.segment.segment.ExpenseRevisionId).FirstOrDefault();
+						if( cmnt != null ){
+							spaceRemaining -= cmnt.lines * lineHeight;
+						}
+					}
 					if( sgmnt.lines * lineHeight < spaceRemaining ){
 						processedSegmentsCount++;
 						spaceRemaining -= sgmnt.lines * lineHeight;
@@ -466,6 +520,7 @@ namespace Kers.Controllers
 					}else{
 						break;
 					}
+					LastExpenseRevisionId = sgmnt.segment.segment.ExpenseRevisionId;
 				}
 				if(processedSegmentsCount == _sectionLines.Count()){
 					if(spaceRemaining > signaturesHeight){
