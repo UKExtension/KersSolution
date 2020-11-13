@@ -92,7 +92,7 @@ namespace Kers.Controllers
 						}
 						
 						if( pg.segments.Count() > 0 ){
-							table(pdfCanvas, pg.segments, 25, runningY, dataObjext);
+							runningY = table(pdfCanvas, pg.segments, 25, runningY, dataObjext);
 						}
 						
 						//runningY += pg.Sum( e => e.lines) * dataObjext.GetLineHeight();
@@ -101,12 +101,53 @@ namespace Kers.Controllers
 
 						if(pg.signatures){
 							Signatures(pdfCanvas, 30, 490);
+							
 						}
+
+
+						if(
+
+							// this is the last page and there is table here
+							
+							(pg.signatures && pg.segments.Count() > 0)
+
+
+							||
+
+							// this is the last page with a table
+							
+							(currentPageNumber < dt.Count() &&   dt.ElementAt( currentPageNumber ).segments.Count() == 0)
+
+
+							
+
+						){
+
+							pdfCanvas.DrawText("Totals: ", 28, runningY + 15, getPaint(10.5f, 1));
+							var verticalLines = dataObjext.getVerticalLinesX();
+							var numMileages = dataObjext.mileageColumnsCount;
+							var runningX = verticalLines[ verticalLines.Length - numMileages];
+							if(dataObjext.CountyColumnPresent){
+								pdfCanvas.DrawText(dataObjext.countyMileage.ToString(), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
+								runningX += dataObjext.mileageColumnPixelLength;
+							}
+							if(dataObjext.ProfImprvmntColumnPresent){
+								pdfCanvas.DrawText(dataObjext.profImprvMileage.ToString(), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
+								runningX += dataObjext.mileageColumnPixelLength;
+							}
+							if(dataObjext.UKColumnPresent){
+								pdfCanvas.DrawText(dataObjext.UKMileage.ToString(), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
+							}
+
+
+						}
+
 
 						 
 						document.EndPage();
 						currentPageNumber++;
 					}
+
 					
 					
 					document.Close();
@@ -165,7 +206,12 @@ namespace Kers.Controllers
 
 			runningXIndex++;
 
-			pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + padding, y + 11 - rowHeight, getPaint(9.5f, 1));
+			
+			pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + (verticalLinesX[verticalLinesX.Count() - 1] - verticalLinesX[runningXIndex])/2, y + 11 - rowHeight, getPaint(8.0f, 1, 0xFF000000, SKTextAlign.Center));
+			pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[runningXIndex], y, thinLinePaint);
+			pdfCanvas.DrawLine(x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y, thinLinePaint);
+			pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, mediumLinePaint);
+
 
 			if( dataObject.CountyColumnPresent){
 				pdfCanvas.DrawText("County", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
@@ -178,13 +224,12 @@ namespace Kers.Controllers
 			}
 
 			if( dataObject.UKColumnPresent){
-				pdfCanvas.DrawText("UK Fnded", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
+				pdfCanvas.DrawText("UK Fnded", x + verticalLinesX[runningXIndex] + padding - 2, y + 11, getPaint(6.5f, 1));
 				runningXIndex++;
 			}
 
 			DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, y, 15);
 			y += rowHeight;
-            var i = 0;
 			int LastExpenseRevisionId = 0;
 
 			var comments = dataObject.GetComments();
@@ -272,7 +317,6 @@ namespace Kers.Controllers
 
 
                 DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, initialY, thisRowHeight);
-                i++;
 				LastExpenseRevisionId = segment.segment.segment.ExpenseRevisionId;
                 
             }
@@ -287,7 +331,7 @@ namespace Kers.Controllers
 				}
 				pdfCanvas.DrawLine(x, y, x + 746, y, mediumLinePaint);
 			}
-            return i;
+            return y;
         }
 
 		private void DrawTableVerticalLines(SKCanvas pdfCanvas, int[] PosiitionsX, int x, int y, int length){
@@ -365,6 +409,10 @@ namespace Kers.Controllers
 		public bool ProfImprvmntColumnPresent = true;
 		public bool UKColumnPresent = true;
 
+		public float countyMileage = 0;
+		public float profImprvMileage = 0;
+		public float UKMileage = 0;
+
 		
 		//********************************/
 		// Dimensions definition         //
@@ -418,9 +466,9 @@ namespace Kers.Controllers
 			}
 		}
 		private void AdjustCharacterLengths(){
-			var countyMileage = _segments.Where( e => countySourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
-			var profImprvMileage = _segments.Where( e => this.professionalDevelopmentNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
-			var UKMileage = _segments.Where( e => this.UKSourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+			countyMileage = _segments.Where( e => countySourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+			profImprvMileage = _segments.Where( e => this.professionalDevelopmentNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+			UKMileage = _segments.Where( e => this.UKSourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
 			if( countyMileage == 0 ){
 				this.CountyColumnPresent = false;
 				this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
