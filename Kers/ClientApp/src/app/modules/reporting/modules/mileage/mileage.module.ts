@@ -22,6 +22,9 @@ import { ExpenseCompatabilityFormComponent } from './expense-compatability-form.
     SharedModule,
     MileageRoutingModule, 
     LocationModule
+  ],
+  exports: [
+    MileageFormComponent
   ]
 })
 export class MileageModule { }

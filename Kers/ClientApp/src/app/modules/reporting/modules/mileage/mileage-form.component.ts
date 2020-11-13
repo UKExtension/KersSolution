@@ -94,7 +94,7 @@ export class MileageFormComponent implements OnInit {
     );
     
     this.myDatePickerOptions.disableSince = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() + 1};
-    this.myDatePickerOptions.disableUntil = {year: 2017, month: 6, day: 30};
+    this.myDatePickerOptions.disableUntil = {year: 2020, month: 10, day: 31};
     this.myDatePickerOptions.editableDateField = false;
     this.myDatePickerOptions.showClearDateBtn = false;
   

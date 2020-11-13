@@ -35,10 +35,6 @@ import { VehicleListDetailComponent } from './vehicle/vehicle-list-detail.compon
                           component: ExpenseComponent,
                           children: [
                                 {
-                                    path: '',
-                                    component: ExpenseHomeComponent,
-                                },  
-                                {
                                     path: 'reports',
                                     component: ExpenseReportsHomeComponent,
                                 },  
@@ -59,9 +55,14 @@ import { VehicleListDetailComponent } from './vehicle/vehicle-list-detail.compon
                                     component: VehicleDistrictComponent,
                                 },
                                 {
+                                    path: '',
+                                    redirectTo: '/reporting/mileage',
+                                    //component: ExpenseHomeComponent,
+                                },
+                                {
                                     path: 'bytype/:type',
                                     component: ExpenseHomeComponent,
-                                } 
+                                }
                               ]
 
                       

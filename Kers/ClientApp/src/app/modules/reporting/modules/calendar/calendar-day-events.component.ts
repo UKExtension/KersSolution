@@ -43,7 +43,7 @@ export class CalendarDayEventsComponent implements OnInit {
   ngOnInit() {
     var viewDate = new Date(this._viewDate);
     var novFirst = new Date(2020,9, 31);
-    if( viewDate < novFirst ){
+    if( viewDate > novFirst ){
         this.displayNewMileage = true;
     }
     this.fiscalYearService.current('serviceLog', true).subscribe(

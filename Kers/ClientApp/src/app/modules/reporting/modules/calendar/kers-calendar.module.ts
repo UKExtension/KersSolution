@@ -12,6 +12,7 @@ import { ServicelogFormComponent } from '../servicelog/servicelog-form.component
 import { CalendarDayEventsComponent } from './calendar-day-events.component';
 import { CalendarHeaderComponent } from './calendar-header.component';
 import { ExpenseModule } from '../expense/expense.module';
+import { MileageModule } from '../mileage/mileage.module';
 import { CalendarEventDetailComponent } from './calendar-event-detail.component';
 import { CalendarHomeComponent } from './calendar-home.component';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
@@ -25,6 +26,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
     CalendarRoutingModule,
     ServicelogModule,
     ExpenseModule,
+    MileageModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory

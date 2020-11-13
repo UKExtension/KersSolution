@@ -54,7 +54,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Starting Location:<span *ngIf="!startingLocationBrowser && stLoc.displayName != null && stLoc.displayName != 'County Extension Office'" class="red"><br>Note: Mileage is reinbursed from the traveler's workstation to the destination, unless driving from the traveler's residence is closer</span></label>
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Starting Location:<span *ngIf="!startingLocationBrowser && stLoc != null && stLoc.displayName != null && stLoc.displayName != 'County Extension Office'" class="red"><br>Note: Mileage is reinbursed from the traveler's workstation to the destination, unless driving from the traveler's residence is closer</span></label>
         <div class="col-md-9 col-sm-9 col-xs-12">
             <div *ngIf="startingLocationBrowser" style="padding: 10px;">
                 <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
