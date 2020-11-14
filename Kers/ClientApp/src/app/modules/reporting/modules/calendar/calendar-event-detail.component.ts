@@ -3,6 +3,8 @@ import { CalendarEvent } from 'angular-calendar';
 import { Expense, ExpenseService } from '../expense/expense.service';
 import { ServicelogService, Servicelog } from '../servicelog/servicelog.service';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
+import { MileageService } from '../mileage/mileage.service';
+import { Mileage } from '../mileage/mileage';
 
 @Component({
   selector: 'calendar-event-detail',
@@ -19,7 +21,10 @@ export class CalendarEventDetailComponent implements OnInit {
   activityDelete = false;
   allowActivityEdits = false;
 
+  displayNewMileage = false;
+
   expense:Expense;
+  mileage:Mileage;
   activity:Servicelog;
 
   loading=false;
@@ -30,11 +35,17 @@ export class CalendarEventDetailComponent implements OnInit {
 
   constructor(
     private expenseService:ExpenseService,
+    private mileageService:MileageService,
     private activityService:ServicelogService,
     private fiscalYearService:FiscalyearService
   ) { }
 
   ngOnInit() {
+    var viewDate = new Date(this.event.start);
+    var novFirst = new Date(2020,9, 31);
+    if( viewDate > novFirst ){
+        this.displayNewMileage = true;
+    }
     if(this.event.meta.type == "expense"){
       this.allowActivityEdits = true;
     }else{
@@ -63,14 +74,25 @@ export class CalendarEventDetailComponent implements OnInit {
   edit(){
     this.loading = true;
     if(this.event.meta.type == "expense"){
-      this.expenseService.byRevId(this.event.meta.id).subscribe(
-        res => {
-          this.expense = <Expense> res;
-          this.expenseEdit = true;
-          this.loading = false;
-        },
-        err => this.errorMessage = <any> err
-      );
+      if( this.displayNewMileage ){
+        this.mileageService.byRevId(this.event.meta.id).subscribe(
+          res => {
+            this.mileage = <Mileage> res;
+            this.expenseEdit = true;
+            this.loading = false;
+          },
+          err => this.errorMessage = <any> err
+        );
+      }else{
+        this.expenseService.byRevId(this.event.meta.id).subscribe(
+          res => {
+            this.expense = <Expense> res;
+            this.expenseEdit = true;
+            this.loading = false;
+          },
+          err => this.errorMessage = <any> err
+        );
+      }
     }else if( this.event.meta.type == "activity"){
       this.activityService.byId(this.event.meta.id).subscribe(
         res => {
@@ -107,11 +129,20 @@ export class CalendarEventDetailComponent implements OnInit {
   }
   confirmDelete(){
     if(this.event.meta.type == "expense"){
-      this.expenseService.delete(this.event.meta.id).subscribe(
-        res => {
-          this.changed.emit();
-        }
-      );
+      if( this.displayNewMileage){
+        this.mileageService.delete(this.event.meta.id).subscribe(
+          res => {
+            this.changed.emit();
+          }
+        );
+      }else{
+        this.expenseService.delete(this.event.meta.id).subscribe(
+          res => {
+            this.changed.emit();
+          }
+        );
+      }
+      
     }else if (this.event.meta.type == "activity"){
       this.activityService.deleteByActivityId(this.event.meta.id).subscribe(
         res => {

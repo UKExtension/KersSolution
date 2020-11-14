@@ -53,6 +53,24 @@ namespace Kers.Controllers
             return new OkObjectResult(lastExpenses.Count());
         }
 
+
+
+
+        
+
+        [HttpGet("byrevid/{Id}")]
+        [Authorize]
+        public IActionResult ByRevId(int Id){
+            var revFull = this.context.ExpenseRevision
+                                .Where( r => r.Id == Id)
+                                .Include( r => r.Segments ).ThenInclude( s => s.Location).ThenInclude( l => l.Address)
+                                .Include( r => r.StartingLocation).ThenInclude( s => s.Address)
+                                .FirstOrDefault();
+            return new OkObjectResult(revFull);
+        }
+
+
+
         [HttpGet("latest/{skip?}/{amount?}/{userId?}")]
         [Authorize]
         public IActionResult Get(int skip = 0, int amount = 10, int userId = 0){

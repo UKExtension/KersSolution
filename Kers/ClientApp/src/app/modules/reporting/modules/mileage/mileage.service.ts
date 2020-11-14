@@ -24,6 +24,14 @@ export class MileageService {
         this.httpClient = new HttpClient(handler);
     }
 
+    byRevId(id:number):Observable<Mileage>{
+        var url = this.baseUrl + 'byrevid/' + id;
+        return this.http.get<Mileage>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('byRevId', <Mileage>{}))
+            );
+    }
+
     latest(skip:number = 0, take:number = 6):Observable<Mileage[]>{
       var url = this.baseUrl + 'latest/' + skip + '/' + take;
       return this.http.get<Mileage[]>(this.location.prepareExternalUrl(url))
