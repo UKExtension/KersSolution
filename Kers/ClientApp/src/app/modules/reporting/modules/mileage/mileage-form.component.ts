@@ -133,7 +133,12 @@ export class MileageFormComponent implements OnInit {
             this.startingLocationBrowser = true;
           }
         }
-      )
+      );
+    
+      if(this.isNewCountyVehicle){
+         this.mileageForm.patchValue({vehicleType: 2});
+         this.isPersonal(false);
+      }
     }else{
       this.mileageForm.patchValue(this.mileage);
       for( let segment of this.mileage.segments){

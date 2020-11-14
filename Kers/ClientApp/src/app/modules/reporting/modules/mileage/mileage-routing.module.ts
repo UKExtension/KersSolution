@@ -3,11 +3,11 @@ import { Routes, RouterModule } from '@angular/router';
 import { MileageHomeComponent } from './mileage-home.component';
 const routes: Routes = [{
   path: '',
-  component: MileageHomeComponent,
-  children: 
-      [
-
-      ]
+  component: MileageHomeComponent
+  },
+  {
+      path: 'bytype/:type',
+      component: MileageHomeComponent,
   }
   
 ];

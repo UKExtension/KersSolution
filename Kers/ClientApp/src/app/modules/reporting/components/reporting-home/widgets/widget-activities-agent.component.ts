@@ -15,9 +15,9 @@ import { Vehicle } from '../../../modules/expense/vehicle/vehicle.service';
           </div>
           <div class="x_content" *ngIf="enabledVehicles">
             <a routerLink="/reporting/servicelog" class="btn btn-dark btn-lg btn-block">Service Log</a>
-            <a routerLink="/reporting/expense" *ngIf="!(enabledVehicles.length > 0)" class="btn btn-dark btn-lg btn-block">Mileage Records</a>
-            <a routerLink="/reporting/expense/bytype/new" *ngIf="enabledVehicles.length > 0" class="btn btn-dark btn-lg btn-block">Mileage Records Personal Vehicle</a>
-            <a routerLink="/reporting/expense/bytype/newcountyvehicle" *ngIf="enabledVehicles.length > 0" class="btn btn-dark btn-lg btn-block">Mileage Records County Vehicle</a>
+            <a routerLink="/reporting/mileage" *ngIf="!(enabledVehicles.length > 0)" class="btn btn-dark btn-lg btn-block">Mileage Records</a>
+            <a routerLink="/reporting/mileage/bytype/new" *ngIf="enabledVehicles.length > 0" class="btn btn-dark btn-lg btn-block">Mileage Records Personal Vehicle</a>
+            <a routerLink="/reporting/mileage/bytype/newcountyvehicle" *ngIf="enabledVehicles.length > 0" class="btn btn-dark btn-lg btn-block">Mileage Records County Vehicle</a>
             <a routerLink="/reporting/story" class="btn btn-dark btn-lg btn-block">Success Stories</a>
           </div>
         </div>
