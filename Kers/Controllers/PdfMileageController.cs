@@ -95,32 +95,18 @@ namespace Kers.Controllers
 							runningY = table(pdfCanvas, pg.segments, 25, runningY, dataObjext);
 						}
 						
-						//runningY += pg.Sum( e => e.lines) * dataObjext.GetLineHeight();
-
-						
 
 						if(pg.signatures){
 							Signatures(pdfCanvas, 30, 490);
-							
 						}
 
-
+						// Check to see if totals should be added on the bottom of the table
 						if(
-
 							// this is the last page and there is table here
-							
 							(pg.signatures && pg.segments.Count() > 0)
-
-
 							||
-
-							// this is the last page with a table
-							
+							// there is no table on the next page and this is the last page with a table
 							(currentPageNumber < dt.Count() &&   dt.ElementAt( currentPageNumber ).segments.Count() == 0)
-
-
-							
-
 						){
 
 							pdfCanvas.DrawText("Totals: ", 28, runningY + 15, getPaint(10.5f, 1));
@@ -329,8 +315,8 @@ namespace Kers.Controllers
 					pdfCanvas.DrawText(line, x + verticalLinesX[0] + padding, y + 11, getPaint(10.0f));
 					y += rowHeight;
 				}
-				pdfCanvas.DrawLine(x, y, x + 746, y, mediumLinePaint);
 			}
+			pdfCanvas.DrawLine(x, y, x + 746, y, mediumLinePaint);
             return y;
         }
 

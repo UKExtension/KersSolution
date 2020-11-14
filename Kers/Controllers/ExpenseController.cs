@@ -135,7 +135,12 @@ namespace Kers.Controllers
                               
             var revs = new List<ExpenseRevision>();
             foreach( var last in lastExpenses){
-                revs.Add(context.ExpenseRevision.Where(e => e.ExpenseId == last.Id).OrderBy(r => r.Created).Last());
+                revs.Add(context.ExpenseRevision
+                                        .Where(e => e.ExpenseId == last.Id)
+                                        .Include( e => e.Segments).ThenInclude( s => s.Location).ThenInclude( l => l.Address)
+                                        .OrderBy(r => r.Created).Last()
+                                        
+                        );
             }
             return new OkObjectResult(revs);
         }
