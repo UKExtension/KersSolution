@@ -53,11 +53,6 @@ import { VehicleListDetailComponent } from './vehicle/vehicle-list-detail.compon
                                 {
                                     path: 'vehicle/district/:id',
                                     component: VehicleDistrictComponent,
-                                },
-                                {
-                                    path: '',
-                                    redirectTo: '../mileage',
-                                    //component: ExpenseHomeComponent,
                                 }
                               ]
 
