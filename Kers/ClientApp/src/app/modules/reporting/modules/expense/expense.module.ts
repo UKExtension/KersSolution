@@ -56,12 +56,8 @@ import { VehicleListDetailComponent } from './vehicle/vehicle-list-detail.compon
                                 },
                                 {
                                     path: '',
-                                    redirectTo: '/reporting/mileage',
+                                    redirectTo: '../mileage',
                                     //component: ExpenseHomeComponent,
-                                },
-                                {
-                                    path: 'bytype/:type',
-                                    component: ExpenseHomeComponent,
                                 }
                               ]
 
