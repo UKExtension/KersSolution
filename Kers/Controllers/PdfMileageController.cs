@@ -376,8 +376,8 @@ namespace Kers.Controllers
 
 
 		public int dateCharacterLength = 24;
-		public int startLocationCharacterLength = 34;
-		public int endLocationCharacterLength = 34;
+		public int startLocationCharacterLength = 32;
+		public int endLocationCharacterLength = 32;
 		public int businessPurposeCharacterLength = 30;
 		public int mileageColumnCharacterLength = 15;
 		public int totalCharacterLength = 160;
