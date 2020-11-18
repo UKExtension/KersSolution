@@ -128,13 +128,19 @@ export class MileageFormComponent implements OnInit {
         res => {
           if(res != null){
             this.stLoc = res;
-            
           }else{
             this.startingLocationBrowser = true;
           }
         }
       );
-    
+      if(this.mileageDate != null){
+        this.mileageForm.patchValue({expenseDate: {
+            date: {
+                year: this.mileageDate.getFullYear(),
+                month: this.mileageDate.getMonth() + 1,
+                day: this.mileageDate.getDate()}
+            }});
+      }
       if(this.isNewCountyVehicle){
          this.mileageForm.patchValue({vehicleType: 2});
          this.isPersonal(false);

@@ -131,13 +131,6 @@ namespace Kers.Controllers
                         }else{
 
 
-
-
-                        
-
-
-
-
                                     if( trnng.End == null || trnng.Start.ToString("ddMMyyyy") == trnng.End?.ToString("ddMMyyyy") ){
                                         var times = ProcessTime(trnng.day1);
                                         if( times != null ){
@@ -200,21 +193,9 @@ namespace Kers.Controllers
 
 
                                 }
-
-
-
-
-
-
-
-
-
-
-
-
                         
                     }
-                }else{
+                }else if(e.DiscriminatorValue == "Meeting"){
                     list.Add(new {
                         title = (e.IsCancelled == true ? "(Canceled) " : "" ) + e.Subject,
                         start = e.Start,
