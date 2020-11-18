@@ -1098,8 +1098,7 @@ namespace Kers.Models.Repositories
                     }
                     row += spclt + ",";
                     row +=  string.Concat("\"", lastRevision.Title, "\"")  + ",";
-                    string pattern = @"<(.|\n)*?>";
-                    row +=  string.Concat("\"", Regex.Replace(lastRevision.Description, pattern, string.Empty), "\"")  + ",";
+                    row +=  string.Concat("\"", StripHTML(lastRevision.Description), "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Male, "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Female, "\"")  + ",";
                     if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
