@@ -60,7 +60,7 @@ export class CalendarService {
               var dt = new Date(expense.expenseDate);
               event.start = dt;
               event.allDay = true;
-              event.title = expense.segments == null ? expense.expenseLocation : expense.segments[0].location.address.building + ", " + expense.segments[0].location.address.street + ", " + expense.segments[0].location.address.city;
+              event.title = (expense.segments.length == 0 ? expense.expenseLocation : expense.segments[0].location.address.building + ", " + expense.segments[0].location.address.street + ", " + expense.segments[0].location.address.city);
               event.color = calendarColors.expense;
               event.meta = {id:expense.id, type: 'expense'}
               events.push(event);
