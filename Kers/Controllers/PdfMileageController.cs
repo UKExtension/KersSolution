@@ -170,7 +170,11 @@ namespace Kers.Controllers
 
 			pdfCanvas.DrawText("Date", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.5f, 1));
 
-			//pdfCanvas.DrawText("Vehicle Name", x + 76, y + 11, getPaint(9.35f, 1));
+			if(!dataObject.GetIsItPersonalVehicle()){
+				runningXIndex++;
+				pdfCanvas.DrawText("Vehicle Name", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(9.35f, 1));
+
+			}
 
 
 			runningXIndex++;
@@ -376,6 +380,8 @@ namespace Kers.Controllers
 
 
 		public int dateCharacterLength = 24;
+
+		public int vehicleCharacterLength = 24;
 		public int startLocationCharacterLength = 32;
 		public int endLocationCharacterLength = 32;
 		public int businessPurposeCharacterLength = 30;
@@ -384,6 +390,8 @@ namespace Kers.Controllers
 
 
 		int datePixelLength = 74;
+
+		int vehiclePixelLength = 150;
 		int startingLocationPixelLength = 184;
 		int endLocationPixelLength = 184;
 		int purposePixelLength = 170;
@@ -416,6 +424,18 @@ namespace Kers.Controllers
 		}
 		public void SetIsItPersonalVehicle( bool personal ){
 			this.isItPersonalVehicle = personal;
+			if( !personal ){
+				this.startLocationCharacterLength -= this.vehicleCharacterLength/3;
+				this.endLocationCharacterLength -= this.vehicleCharacterLength/3;
+				this.businessPurposeCharacterLength -= this.vehicleCharacterLength/3;
+
+				this.startingLocationPixelLength -= this.vehiclePixelLength/3;
+				this.endLocationPixelLength -= this.vehiclePixelLength/3;
+				this.purposePixelLength -= this.vehiclePixelLength/3;
+			}
+		}
+		public bool GetIsItPersonalVehicle(  ){
+			return this.isItPersonalVehicle;
 		}
 
 		private void ExtractSegments(){
@@ -585,14 +605,24 @@ namespace Kers.Controllers
 
 		public int[] getVerticalLinesX(){
 			List<int> lines = new List<int>();
-			lines.Add(0);
-			lines.Add(datePixelLength);
-			lines.Add(datePixelLength+startingLocationPixelLength);
-			lines.Add(datePixelLength+startingLocationPixelLength + this.endLocationPixelLength);
-			lines.Add(datePixelLength+startingLocationPixelLength + this.endLocationPixelLength + this.purposePixelLength);
-			lines.Add(datePixelLength+startingLocationPixelLength + this.endLocationPixelLength + this.purposePixelLength + this.programsPixelLength);
+			var runningLenth = 0;
+			lines.Add(runningLenth);
+			runningLenth += datePixelLength;
+			lines.Add(runningLenth);
+			if(!this.isItPersonalVehicle){
+				runningLenth += vehiclePixelLength;
+				lines.Add(runningLenth);
+			}
+			runningLenth += startingLocationPixelLength;
+			lines.Add(runningLenth);
+			runningLenth += endLocationPixelLength;
+			lines.Add(runningLenth);
+			runningLenth += purposePixelLength;
+			lines.Add(runningLenth);
+			runningLenth += programsPixelLength;
+			lines.Add(runningLenth);
 			for( var i = 1; i<= this.mileageColumnsCount; i++){
-				lines.Add(datePixelLength+startingLocationPixelLength + this.endLocationPixelLength + this.purposePixelLength + this.programsPixelLength + i * this.mileageColumnPixelLength);
+				lines.Add(runningLenth + i * this.mileageColumnPixelLength);
 			}
 			return lines.ToArray();
 		}
@@ -646,6 +676,7 @@ namespace Kers.Controllers
 		public List<string> startLocationLines;
 		public List<string> endLocationLines;
 		public List<string> purposeLines;
+		public List<string> vehicleLines;
 	}
 
 
