@@ -253,6 +253,14 @@ namespace Kers.Controllers
                 pdfCanvas.DrawText(segment.segment.MileageDate.ToString("MM/dd/yyyy") + "(" + segment.segment.MileageDate.ToString("ddd").Substring(0,2) + ")", x + verticalLinesX[runningXIndex] + padding, y + 11, getPaint(10.0f));
 				runningXIndex++;
                 
+				if(!dataObject.GetIsItPersonalVehicle()){
+					foreach( var line in segment.vehicleLines){
+						pdfCanvas.DrawText(line, x + verticalLinesX[runningXIndex] + padding, runningY + 11, getPaint(10.0f));
+						runningY += rowHeight;
+					}
+					runningXIndex++;
+					runningY = initialY;
+				}
 				
  
                 foreach( var line in segment.startLocationLines){
@@ -391,7 +399,7 @@ namespace Kers.Controllers
 
 		int datePixelLength = 74;
 
-		int vehiclePixelLength = 150;
+		int vehiclePixelLength = 120;
 		int startingLocationPixelLength = 184;
 		int endLocationPixelLength = 184;
 		int purposePixelLength = 170;
@@ -526,7 +534,15 @@ namespace Kers.Controllers
 				var EndingLocation = this.formatLocation(segment.EndingLocation.Address);
 				ln.endLocationLines = PdfBaseController.SplitLineToMultiline(EndingLocation, this.endLocationCharacterLength);
 				ln.purposeLines = PdfBaseController.SplitLineToMultiline(segment.segment.BusinessPurpose, this.businessPurposeCharacterLength);
-				ln.lines = Math.Max(ln.startLocationLines.Count(), ln.endLocationLines.Count());
+				if( !this.isItPersonalVehicle ){
+					var revId = segment.segment.ExpenseRevisionId;
+					var expns = this._expenses.Where( e => e.LastRevisionId == revId).FirstOrDefault();
+					var vehicle = expns.LastRevision.CountyVehicle;
+					ln.vehicleLines = PdfBaseController.SplitLineToMultiline(vehicle.Name, this.vehicleCharacterLength);
+					ln.lines = ln.vehicleLines.Count();
+				}
+				ln.lines = Math.Max( ln.lines, ln.startLocationLines.Count());
+				ln.lines = Math.Max(ln.lines, ln.endLocationLines.Count());
 				ln.lines = Math.Max(ln.lines, ln.purposeLines.Count());
 				_sectionLines.Add(ln);
 			}
