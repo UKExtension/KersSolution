@@ -162,9 +162,9 @@ namespace Kers.Controllers
 												StrokeWidth = 1.0f
 											};
 
-			pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
-			pdfCanvas.DrawLine(x, y + rowHeight, x + 746, y + rowHeight, thinLinePaint);
-			pdfCanvas.DrawLine(x, y + rowHeight - 0.5f, x + 746, y + rowHeight - 0.5f, thinLinePaint);
+			pdfCanvas.DrawLine(x, y, x + 744, y, thinLinePaint);
+			pdfCanvas.DrawLine(x, y + rowHeight, x + 744, y + rowHeight, thinLinePaint);
+			pdfCanvas.DrawLine(x, y + rowHeight - 0.5f, x + 744, y + rowHeight - 0.5f, thinLinePaint);
 
 
 
@@ -228,7 +228,7 @@ namespace Kers.Controllers
 				
 				
 				if(LastExpenseRevisionId != segment.segment.segment.ExpenseRevisionId){
-					pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
+					pdfCanvas.DrawLine(x, y, x + 744, y, thinLinePaint);
 					var comment = comments.Where( c => c.ExpenseRevisionId == LastExpenseRevisionId).FirstOrDefault();
 					if(comment != null){
 						pdfCanvas.DrawLine(x + verticalLinesX[0], y, x + verticalLinesX[0], y + rowHeight * comment.commentLines.Count(), thinLinePaint);
@@ -239,11 +239,11 @@ namespace Kers.Controllers
 						}
 					}
 
-					pdfCanvas.DrawLine(x, y, x + 746, y, mediumLinePaint);
+					pdfCanvas.DrawLine(x, y, x + 744, y, mediumLinePaint);
 
 
 				}else{
-					pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
+					pdfCanvas.DrawLine(x, y, x + 744, y, thinLinePaint);
 				}
 				var initialY = y;
 				var runningY = initialY;
@@ -320,7 +320,7 @@ namespace Kers.Controllers
             }
 			var cmnt = comments.Where( c => c.ExpenseRevisionId == LastExpenseRevisionId).FirstOrDefault();
 			if(cmnt != null){
-				pdfCanvas.DrawLine(x, y, x + 746, y, thinLinePaint);
+				pdfCanvas.DrawLine(x, y, x + 744, y, thinLinePaint);
 				pdfCanvas.DrawLine(x + verticalLinesX[0], y, x + verticalLinesX[0], y + rowHeight * cmnt.commentLines.Count(), thinLinePaint);
 				pdfCanvas.DrawLine(x + verticalLinesX[verticalLinesX.Length - 1], y, x + verticalLinesX[verticalLinesX.Length - 1], y + rowHeight * cmnt.commentLines.Count(), thinLinePaint);
 				foreach( var line in cmnt.commentLines){
@@ -328,7 +328,7 @@ namespace Kers.Controllers
 					y += rowHeight;
 				}
 			}
-			pdfCanvas.DrawLine(x, y, x + 746, y, mediumLinePaint);
+			pdfCanvas.DrawLine(x, y, x + 745, y, mediumLinePaint);
             return y;
         }
 
@@ -390,8 +390,8 @@ namespace Kers.Controllers
 		public int dateCharacterLength = 24;
 
 		public int vehicleCharacterLength = 24;
-		public int startLocationCharacterLength = 32;
-		public int endLocationCharacterLength = 32;
+		public int startLocationCharacterLength = 33;
+		public int endLocationCharacterLength = 33;
 		public int businessPurposeCharacterLength = 30;
 		public int mileageColumnCharacterLength = 15;
 		public int totalCharacterLength = 160;
