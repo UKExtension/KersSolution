@@ -138,6 +138,19 @@ namespace Kers.Controllers
                 entity.Population = unit.Population;
                 entity.FIPSCode = unit.FIPSCode;
 
+                var location = context.ExtensionEventLocation.Where( l => l.Id == entity.LocationId ).Include( l => l.Address).FirstOrDefault();
+                if(location == null){
+                    location = new ExtensionEventLocation();
+                    location.Address = new PhysicalAddress();
+                    location.Address.State = "Kentucky";
+                    location.Address.CountryOrRegion = "USA";
+                    location.DisplayName = "County Extension Office";
+                    entity.Location = location;
+                }
+                location.Address.City = unit.City;
+                location.Address.Street = unit.Address;
+                location.Address.PostalCode = unit.Zip;
+                location.Address.Building = unit.Name;
 
                 context.SaveChanges();
                 _cache.Remove(CacheKeys.CountiesList);
