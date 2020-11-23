@@ -213,6 +213,7 @@ export class TrainingFormSessionsComponent implements OnInit {
           //console.log(this.trainingForm);
           //this.trainingForm.reset();
           this.initialiseForm();
+          this.addSession();
         }
       );
     }else{
