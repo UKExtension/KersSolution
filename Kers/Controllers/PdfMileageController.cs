@@ -66,7 +66,7 @@ namespace Kers.Controllers
 					}
                 
 
-					var expenses = this.expenseRepo.MileagePerMonth(user, year, month);
+					var expenses = this.expenseRepo.MileagePerMonth(user, year, month, false);
 	
 					if(personal){
 						expenses = expenses.Where( e => e.LastRevision.VehicleType != 2 && e.LastRevision.isOvernight == overnight);
@@ -196,26 +196,30 @@ namespace Kers.Controllers
 
 			runningXIndex++;
 
+			if(dataObject.GetIsItPersonalVehicle()){
 			
-			pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + (verticalLinesX[verticalLinesX.Count() - 1] - verticalLinesX[runningXIndex])/2, y + 11 - rowHeight, getPaint(8.0f, 1, 0xFF000000, SKTextAlign.Center));
-			pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[runningXIndex], y, thinLinePaint);
-			pdfCanvas.DrawLine(x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y, thinLinePaint);
-			pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, mediumLinePaint);
+				pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + (verticalLinesX[verticalLinesX.Count() - 1] - verticalLinesX[runningXIndex])/2, y + 11 - rowHeight, getPaint(8.0f, 1, 0xFF000000, SKTextAlign.Center));
+				pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[runningXIndex], y, thinLinePaint);
+				pdfCanvas.DrawLine(x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y, thinLinePaint);
+				pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, mediumLinePaint);
+			
+			
+				if( dataObject.CountyColumnPresent){
+					pdfCanvas.DrawText("County", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
+					runningXIndex++;
+				}
 
+				if( dataObject.ProfImprvmntColumnPresent){
+					pdfCanvas.DrawText("Prf Imprv", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
+					runningXIndex++;
+				}
 
-			if( dataObject.CountyColumnPresent){
-				pdfCanvas.DrawText("County", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
-				runningXIndex++;
-			}
-
-			if( dataObject.ProfImprvmntColumnPresent){
-				pdfCanvas.DrawText("Prf Imprv", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
-				runningXIndex++;
-			}
-
-			if( dataObject.UKColumnPresent){
-				pdfCanvas.DrawText("UK Fnded", x + verticalLinesX[runningXIndex] + padding - 2, y + 11, getPaint(6.5f, 1));
-				runningXIndex++;
+				if( dataObject.UKColumnPresent){
+					pdfCanvas.DrawText("UK Fnded", x + verticalLinesX[runningXIndex] + padding - 2, y + 11, getPaint(6.5f, 1));
+					runningXIndex++;
+				}
+			}else{
+				pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + (verticalLinesX[verticalLinesX.Count() - 1] - verticalLinesX[runningXIndex])/2, y + 11, getPaint(8.0f, 1, 0xFF000000, SKTextAlign.Center));
 			}
 
 			DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, y, 15);
@@ -284,23 +288,33 @@ namespace Kers.Controllers
 					pdfCanvas.DrawText(segment.segment.segment.ProgramCategory.ShortName, x + verticalLinesX[runningXIndex] + padding, initialY + 11, getPaint(10.0f));
 				}
 				runningXIndex++;
-				if( dataObject.CountyColumnPresent){
-					if( dataObject.countySourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
-						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+
+				if(dataObject.GetIsItPersonalVehicle()){
+
+					if( dataObject.CountyColumnPresent){
+						if( dataObject.countySourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+							pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+						}
+						runningXIndex++;
 					}
-					runningXIndex++;
-				}
-				if( dataObject.ProfImprvmntColumnPresent){
-					if( dataObject.professionalDevelopmentNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
-						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+					if( dataObject.ProfImprvmntColumnPresent){
+						if( dataObject.professionalDevelopmentNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+							pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+						}
+						runningXIndex++;
 					}
-					runningXIndex++;
-				}
-				if( dataObject.UKColumnPresent){
-					if( dataObject.UKSourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
-						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+					if( dataObject.UKColumnPresent){
+						if( dataObject.UKSourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+							pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+						}
+						runningXIndex++;
 					}
+				}else{
+					// County vehicle mileage
+					pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
 					runningXIndex++;
+
+
 				}
 				
 
@@ -480,47 +494,63 @@ namespace Kers.Controllers
 			}
 		}
 		private void AdjustCharacterLengths(){
-			countyMileage = _segments.Where( e => countySourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
-			profImprvMileage = _segments.Where( e => this.professionalDevelopmentNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
-			UKMileage = _segments.Where( e => this.UKSourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
-			if( countyMileage == 0 ){
+			if( isItPersonalVehicle ){
+				countyMileage = _segments.Where( e => countySourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+				profImprvMileage = _segments.Where( e => this.professionalDevelopmentNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+				UKMileage = _segments.Where( e => this.UKSourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+				if( countyMileage == 0 ){
+					this.CountyColumnPresent = false;
+					this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
+
+					this.startingLocationPixelLength += (mileageColumnPixelLength/3);
+					this.endLocationPixelLength += (mileageColumnPixelLength/3);
+					this.programsPixelLength += (mileageColumnPixelLength/3);
+
+					this.mileageColumnsCount--;
+				}
+				if( profImprvMileage == 0 ){
+					this.ProfImprvmntColumnPresent = false;
+					this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
+
+					this.startingLocationPixelLength += (mileageColumnPixelLength/3);
+					this.endLocationPixelLength += (mileageColumnPixelLength/3);
+					this.programsPixelLength += (mileageColumnPixelLength/3);
+
+
+					this.mileageColumnsCount--;
+				}
+				if( UKMileage == 0 ){
+					this.UKColumnPresent = false;
+
+					this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
+
+
+					this.startingLocationPixelLength += (mileageColumnPixelLength/3);
+					this.endLocationPixelLength += (mileageColumnPixelLength/3);
+					this.programsPixelLength += (mileageColumnPixelLength/3);
+
+					this.mileageColumnsCount--;
+				}
+			}else{
 				this.CountyColumnPresent = false;
-				this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
-
-				this.startingLocationPixelLength += (mileageColumnPixelLength/3);
-				this.endLocationPixelLength += (mileageColumnPixelLength/3);
-				this.programsPixelLength += (mileageColumnPixelLength/3);
-
-				this.mileageColumnsCount--;
-			}
-			if( profImprvMileage == 0 ){
-				this.ProfImprvmntColumnPresent = false;
-				this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
-
-				this.startingLocationPixelLength += (mileageColumnPixelLength/3);
-				this.endLocationPixelLength += (mileageColumnPixelLength/3);
-				this.programsPixelLength += (mileageColumnPixelLength/3);
-
-
-				this.mileageColumnsCount--;
-			}
-			if( UKMileage == 0 ){
 				this.UKColumnPresent = false;
+				this.mileageColumnsCount = 1;
+				this.startLocationCharacterLength += (mileageColumnCharacterLength/3*2);
+				this.endLocationCharacterLength += (mileageColumnCharacterLength/3*2);
+				this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3*2);
 
-				this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
 
+				this.startingLocationPixelLength += (mileageColumnPixelLength/3*2);
+				this.endLocationPixelLength += (mileageColumnPixelLength/3*2);
+				this.programsPixelLength += (mileageColumnPixelLength/3*2);
 
-				this.startingLocationPixelLength += (mileageColumnPixelLength/3);
-				this.endLocationPixelLength += (mileageColumnPixelLength/3);
-				this.programsPixelLength += (mileageColumnPixelLength/3);
-
-				this.mileageColumnsCount--;
+				this.mileageColumnPixelLength += 2;
 			}
 		}
 
