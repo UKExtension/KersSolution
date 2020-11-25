@@ -90,7 +90,7 @@ export class MileageFormComponent implements OnInit {
           comment: "",
           startingLocation: null,
           segments: this.fb.array([])
-        }, { validator: mileageValidator }
+        }
     );
     
     this.myDatePickerOptions.disableSince = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() + 1};
@@ -154,6 +154,7 @@ export class MileageFormComponent implements OnInit {
       let date = new Date(this.mileage.expenseDate);
       this.mileage.expenseDate = date;
       this.isOvernight(this.mileage.isOvernight);
+      this.isPersonal(this.mileage.vehicleType != 2);
       this.mileageForm.patchValue({expenseDate: {
         date: {
             year: date.getFullYear(),
@@ -208,6 +209,12 @@ export class MileageFormComponent implements OnInit {
   isPersonal(val:boolean){
       this.itIsPersonalVehicle = val;
       this.mileageForm.patchValue({'vehicleType':val?1:2});
+      if(!val){
+        this.mileageForm.get("countyVehicleId").setValidators([Validators.required]);
+      }else{
+        this.mileageForm.get("countyVehicleId").clearValidators();
+      }
+      this.mileageForm.get("countyVehicleId").updateValueAndValidity();
   }
 
   locationSelected(event:ExtensionEventLocationConnection){
@@ -248,67 +255,3 @@ export class MileageFormComponent implements OnInit {
 
 }
 
-
-export const mileageValidator = (control: AbstractControl): {[key: string]: boolean} => {
-/* 
-  var error = {};
-  var hasError = false;
-
-  
-
-  var isExpenseValid = true;
-
-  let expenseFundingSource = control.get('fundingSourceNonMileageId');
-  
-  let registration = control.get('registration');
-  let lodging = control.get('lodging');
-  let mealRateBreakfast = control.get('mealRateBreakfastId');
-  let mealRateLunch = control.get('mealRateLunchId');
-  let mealRateDinner = control.get('mealRateDinnerId');
-  let otherExpenseCost = control.get('otherExpenseCost');
-  let vehicleTypeControl = control.get('vehicleType');
-  let vehicleIdControl = control.get('countyVehicleId');
-
-  let mileageAmount = control.get('mileage');
-  let mileageFundingSource = control.get('fundingSourceMileageId');
-  
-  
-  if(             !( mileageAmount.value == "" ||  mileageAmount.value == 0) 
-              && 
-                  mileageFundingSource.value == ""
-              && 
-              vehicleTypeControl.value != 2
-              
-              ){
-      error["noMileageSource"] = true;
-      hasError = true;
-  }
-
-  if( 
-     ( !(registration.value == "" || registration.value == 0)
-      || !(lodging.value == "" || lodging.value == 0)
-      || !(otherExpenseCost.value == "" || otherExpenseCost.value == 0)
-      || mealRateBreakfast.value != ""
-      || mealRateLunch.value != ""
-      || mealRateDinner.value != "" )
-      && expenseFundingSource.value == ""   
-  
-  ){
-      isExpenseValid = false;
-  }
-  
-  if(vehicleTypeControl.value == 2 && vehicleIdControl.value == ""){
-      error["noVehicleSelected"] = true;
-      hasError = true;
-  }
-
-  if(!isExpenseValid){
-      error["noExpenseSource"] = true;
-      hasError = true;
-  }
-  if(hasError){
-      return error;
-  }
- */
-  return null;
-};

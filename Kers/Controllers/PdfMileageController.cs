@@ -66,7 +66,7 @@ namespace Kers.Controllers
 					}
                 
 
-					var expenses = this.expenseRepo.MileagePerMonth(user, year, month);
+					var expenses = this.expenseRepo.MileagePerMonth(user, year, month, false);
 	
 					if(personal){
 						expenses = expenses.Where( e => e.LastRevision.VehicleType != 2 && e.LastRevision.isOvernight == overnight);
@@ -196,26 +196,30 @@ namespace Kers.Controllers
 
 			runningXIndex++;
 
+			if(dataObject.GetIsItPersonalVehicle()){
 			
-			pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + (verticalLinesX[verticalLinesX.Count() - 1] - verticalLinesX[runningXIndex])/2, y + 11 - rowHeight, getPaint(8.0f, 1, 0xFF000000, SKTextAlign.Center));
-			pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[runningXIndex], y, thinLinePaint);
-			pdfCanvas.DrawLine(x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y, thinLinePaint);
-			pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, mediumLinePaint);
+				pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + (verticalLinesX[verticalLinesX.Count() - 1] - verticalLinesX[runningXIndex])/2, y + 11 - rowHeight, getPaint(8.0f, 1, 0xFF000000, SKTextAlign.Center));
+				pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[runningXIndex], y, thinLinePaint);
+				pdfCanvas.DrawLine(x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y, thinLinePaint);
+				pdfCanvas.DrawLine(x + verticalLinesX[runningXIndex], y - rowHeight, x + verticalLinesX[verticalLinesX.Count() - 1], y - rowHeight, mediumLinePaint);
+			
+			
+				if( dataObject.CountyColumnPresent){
+					pdfCanvas.DrawText("County", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
+					runningXIndex++;
+				}
 
+				if( dataObject.ProfImprvmntColumnPresent){
+					pdfCanvas.DrawText("Prf Imprv", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
+					runningXIndex++;
+				}
 
-			if( dataObject.CountyColumnPresent){
-				pdfCanvas.DrawText("County", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
-				runningXIndex++;
-			}
-
-			if( dataObject.ProfImprvmntColumnPresent){
-				pdfCanvas.DrawText("Prf Imprv", x + verticalLinesX[runningXIndex] + padding - 1, y + 11, getPaint(6.5f, 1));
-				runningXIndex++;
-			}
-
-			if( dataObject.UKColumnPresent){
-				pdfCanvas.DrawText("UK Fnded", x + verticalLinesX[runningXIndex] + padding - 2, y + 11, getPaint(6.5f, 1));
-				runningXIndex++;
+				if( dataObject.UKColumnPresent){
+					pdfCanvas.DrawText("UK Fnded", x + verticalLinesX[runningXIndex] + padding - 2, y + 11, getPaint(6.5f, 1));
+					runningXIndex++;
+				}
+			}else{
+				pdfCanvas.DrawText("Mileage", x + verticalLinesX[runningXIndex] + (verticalLinesX[verticalLinesX.Count() - 1] - verticalLinesX[runningXIndex])/2, y + 11, getPaint(8.0f, 1, 0xFF000000, SKTextAlign.Center));
 			}
 
 			DrawTableVerticalLines(pdfCanvas, verticalLinesX, x, y, 15);
@@ -407,9 +411,9 @@ namespace Kers.Controllers
 		public int mileageColumnPixelLength = 31;
 
 		
-		public bool CountyColumnPresent = true;
-		public bool ProfImprvmntColumnPresent = true;
-		public bool UKColumnPresent = true;
+		public bool CountyColumnPresent = false;
+		public bool ProfImprvmntColumnPresent = false;
+		public bool UKColumnPresent = false;
 
 		public float countyMileage = 0;
 		public float profImprvMileage = 0;
@@ -494,6 +498,8 @@ namespace Kers.Controllers
 				this.programsPixelLength += (mileageColumnPixelLength/3);
 
 				this.mileageColumnsCount--;
+			}else{
+				this.CountyColumnPresent = true;
 			}
 			if( profImprvMileage == 0 ){
 				this.ProfImprvmntColumnPresent = false;
@@ -507,6 +513,8 @@ namespace Kers.Controllers
 
 
 				this.mileageColumnsCount--;
+			}else{
+				this.ProfImprvmntColumnPresent = true;
 			}
 			if( UKMileage == 0 ){
 				this.UKColumnPresent = false;
@@ -521,6 +529,8 @@ namespace Kers.Controllers
 				this.programsPixelLength += (mileageColumnPixelLength/3);
 
 				this.mileageColumnsCount--;
+			}else{
+				this.UKColumnPresent = true;
 			}
 		}
 
@@ -649,7 +659,7 @@ namespace Kers.Controllers
 		public List<MileageLogTableData> getData(){
 			ExtractComments();
 			ExtractSegments();
-			AdjustCharacterLengths();
+			if( this.isItPersonalVehicle ) AdjustCharacterLengths();
 			getLines();
 			CalculatePageData();
 			return pages;

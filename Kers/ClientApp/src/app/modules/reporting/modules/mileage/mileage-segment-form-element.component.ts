@@ -48,7 +48,7 @@ import { MileageSegment } from './mileage';
                 <input type="text" name="businessPurpose" id="businessPurpose" formControlName="businessPurpose" class="form-control">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="itIsPersonalVehicle">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fundingSourceMileageId">Mileage Funding Source: </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <select name="fundingSourceId" id="fundingSourceId" formControlName="fundingSourceId" class="form-control col-md-7 col-xs-12" >
@@ -62,6 +62,7 @@ import { MileageSegment } from './mileage';
             <div class="col-md-5 col-sm-5 col-xs-10">
                     <input type="number" name="mileage" id="mileage" formControlName="mileage" class="form-control">
         </div>
+        {{itIsPersonalVehicle|json}}
     </div>
   </div>
 </div>
@@ -80,10 +81,28 @@ import { MileageSegment } from './mileage';
 })
 export class MileageSegmentFormElementComponent extends BaseControlValueAccessor<MileageSegment> implements ControlValueAccessor, OnInit { 
     sectionGroup: FormGroup;
+    private _itIsPersonalVehicle;
     @Input() programCategories: ProgramCategory[];
     @Input() fundingSources:ExpenseFundingSource[];
     @Input() currentUser:User;
     @Input() index:number;
+
+    public get itIsPersonalVehicle(): boolean {
+      return this._itIsPersonalVehicle;
+    }
+
+    @Input()
+    public set itIsPersonalVehicle(personal: boolean) {
+        this._itIsPersonalVehicle = personal;
+        if(personal){
+          this.sectionGroup.get("fundingSourceId").setValidators([Validators.required]);
+        }else{
+          this.sectionGroup.get("fundingSourceId").clearValidators();
+        }
+        this.sectionGroup.get("fundingSourceId").updateValueAndValidity();
+    }
+
+
 
     @Output() removeMe = new EventEmitter<number>();
 
@@ -133,7 +152,5 @@ export class MileageSegmentFormElementComponent extends BaseControlValueAccessor
     validate(c: AbstractControl): ValidationErrors | null{
       return this.sectionGroup.valid ? null : { invalidForm: {valid: false, message: "Mileage segment fields are invalid"}};
     }
-    //[class.ng-invalid]="expenseForm.hasError('noMileageSource')"
-
 
 }
