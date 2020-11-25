@@ -550,7 +550,9 @@ namespace Kers.Controllers
 				this.endLocationPixelLength += (mileageColumnPixelLength/3*2);
 				this.programsPixelLength += (mileageColumnPixelLength/3*2);
 
-				this.mileageColumnPixelLength += 2;
+				this.mileageColumnPixelLength += 1;
+
+				profImprvMileage = _segments.Sum( e => e.segment.Mileage );
 			}
 		}
 
