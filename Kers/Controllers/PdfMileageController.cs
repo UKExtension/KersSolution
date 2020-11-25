@@ -288,23 +288,33 @@ namespace Kers.Controllers
 					pdfCanvas.DrawText(segment.segment.segment.ProgramCategory.ShortName, x + verticalLinesX[runningXIndex] + padding, initialY + 11, getPaint(10.0f));
 				}
 				runningXIndex++;
-				if( dataObject.CountyColumnPresent){
-					if( dataObject.countySourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
-						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+
+				if(dataObject.GetIsItPersonalVehicle()){
+
+					if( dataObject.CountyColumnPresent){
+						if( dataObject.countySourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+							pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+						}
+						runningXIndex++;
 					}
-					runningXIndex++;
-				}
-				if( dataObject.ProfImprvmntColumnPresent){
-					if( dataObject.professionalDevelopmentNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
-						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+					if( dataObject.ProfImprvmntColumnPresent){
+						if( dataObject.professionalDevelopmentNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+							pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+						}
+						runningXIndex++;
 					}
-					runningXIndex++;
-				}
-				if( dataObject.UKColumnPresent){
-					if( dataObject.UKSourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
-						pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+					if( dataObject.UKColumnPresent){
+						if( dataObject.UKSourceNames.Contains(  segment.segment.segment.FundingSource.Name ) ){
+							pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
+						}
+						runningXIndex++;
 					}
+				}else{
+					// County vehicle mileage
+					pdfCanvas.DrawText(segment.segment.segment.Mileage.ToString(), x + verticalLinesX[runningXIndex] - padding + dataObject.mileageColumnPixelLength, y + 11, getPaint(10.0f, 0, 0xFF000000, SKTextAlign.Right));
 					runningXIndex++;
+
+
 				}
 				
 
@@ -411,9 +421,9 @@ namespace Kers.Controllers
 		public int mileageColumnPixelLength = 31;
 
 		
-		public bool CountyColumnPresent = false;
-		public bool ProfImprvmntColumnPresent = false;
-		public bool UKColumnPresent = false;
+		public bool CountyColumnPresent = true;
+		public bool ProfImprvmntColumnPresent = true;
+		public bool UKColumnPresent = true;
 
 		public float countyMileage = 0;
 		public float profImprvMileage = 0;
@@ -484,53 +494,63 @@ namespace Kers.Controllers
 			}
 		}
 		private void AdjustCharacterLengths(){
-			countyMileage = _segments.Where( e => countySourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
-			profImprvMileage = _segments.Where( e => this.professionalDevelopmentNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
-			UKMileage = _segments.Where( e => this.UKSourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
-			if( countyMileage == 0 ){
+			if( isItPersonalVehicle ){
+				countyMileage = _segments.Where( e => countySourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+				profImprvMileage = _segments.Where( e => this.professionalDevelopmentNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+				UKMileage = _segments.Where( e => this.UKSourceNames.Contains( e.segment.FundingSource.Name) ).Sum( e => e.segment.Mileage );
+				if( countyMileage == 0 ){
+					this.CountyColumnPresent = false;
+					this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
+
+					this.startingLocationPixelLength += (mileageColumnPixelLength/3);
+					this.endLocationPixelLength += (mileageColumnPixelLength/3);
+					this.programsPixelLength += (mileageColumnPixelLength/3);
+
+					this.mileageColumnsCount--;
+				}
+				if( profImprvMileage == 0 ){
+					this.ProfImprvmntColumnPresent = false;
+					this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
+
+					this.startingLocationPixelLength += (mileageColumnPixelLength/3);
+					this.endLocationPixelLength += (mileageColumnPixelLength/3);
+					this.programsPixelLength += (mileageColumnPixelLength/3);
+
+
+					this.mileageColumnsCount--;
+				}
+				if( UKMileage == 0 ){
+					this.UKColumnPresent = false;
+
+					this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
+					this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
+
+
+					this.startingLocationPixelLength += (mileageColumnPixelLength/3);
+					this.endLocationPixelLength += (mileageColumnPixelLength/3);
+					this.programsPixelLength += (mileageColumnPixelLength/3);
+
+					this.mileageColumnsCount--;
+				}
+			}else{
 				this.CountyColumnPresent = false;
-				this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
-
-				this.startingLocationPixelLength += (mileageColumnPixelLength/3);
-				this.endLocationPixelLength += (mileageColumnPixelLength/3);
-				this.programsPixelLength += (mileageColumnPixelLength/3);
-
-				this.mileageColumnsCount--;
-			}else{
-				this.CountyColumnPresent = true;
-			}
-			if( profImprvMileage == 0 ){
-				this.ProfImprvmntColumnPresent = false;
-				this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
-
-				this.startingLocationPixelLength += (mileageColumnPixelLength/3);
-				this.endLocationPixelLength += (mileageColumnPixelLength/3);
-				this.programsPixelLength += (mileageColumnPixelLength/3);
-
-
-				this.mileageColumnsCount--;
-			}else{
-				this.ProfImprvmntColumnPresent = true;
-			}
-			if( UKMileage == 0 ){
 				this.UKColumnPresent = false;
+				this.mileageColumnsCount = 1;
+				this.startLocationCharacterLength += (mileageColumnCharacterLength/3*2);
+				this.endLocationCharacterLength += (mileageColumnCharacterLength/3*2);
+				this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3*2);
 
-				this.startLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.endLocationCharacterLength += (mileageColumnCharacterLength/3);
-				this.businessPurposeCharacterLength += (mileageColumnCharacterLength/3);
 
+				this.startingLocationPixelLength += (mileageColumnPixelLength/3*2);
+				this.endLocationPixelLength += (mileageColumnPixelLength/3*2);
+				this.programsPixelLength += (mileageColumnPixelLength/3*2);
 
-				this.startingLocationPixelLength += (mileageColumnPixelLength/3);
-				this.endLocationPixelLength += (mileageColumnPixelLength/3);
-				this.programsPixelLength += (mileageColumnPixelLength/3);
-
-				this.mileageColumnsCount--;
-			}else{
-				this.UKColumnPresent = true;
+				this.mileageColumnPixelLength += 2;
 			}
 		}
 
@@ -659,7 +679,7 @@ namespace Kers.Controllers
 		public List<MileageLogTableData> getData(){
 			ExtractComments();
 			ExtractSegments();
-			if( this.isItPersonalVehicle ) AdjustCharacterLengths();
+			AdjustCharacterLengths();
 			getLines();
 			CalculatePageData();
 			return pages;
