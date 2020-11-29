@@ -56,38 +56,7 @@ import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
                     </tbody>
                 </table>
             </div>
-            <!--
-            <div>Hours reported on Supplemental Nutrition Assistance Program (SNAP): {{snapHours}}</div>
-            -->
-            <br><br><br>
-                            <table width="80%" style="margin-top: 60px;">
-                            <tbody><tr>
-                            <td><hr></td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td><hr></td>
-                            </tr>
-                            <tr>
-                            <td>Signature</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>Date</td>
-                            </tr>
-                            </tbody></table>
-                            <br><br><br><br>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="print()" *ngIf="!pdfLoading" ><i class="fa fa-download"></i> Detailed Monthly Report</button><br><br>
-                                    <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
-                                </div>
-                                <div class="col-md-4">
-                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip()" *ngIf="!pdfTripLoading" ><i class="fa fa-download"></i> Mileage Log - Day Trips</button><br><br>
-                                    <loading [type]="'bars'" *ngIf="pdfTripLoading"></loading>
-                                </div>
-                                <div class="col-md-4">
-                                    <button class="btn btn-primary" style="margin-bottom: 15px;" (click)="printTrip(true)" *ngIf="!pdfTripLoadingOvernight" ><i class="fa fa-download"></i> Mileage Log - Overnight Trips</button><br><br>
-                                    <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
-                                </div>
-                            </div>
-                         </div>
+        </div>
 
 
 
