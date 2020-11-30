@@ -61,10 +61,13 @@ import { MileageService } from '../../mileage/mileage.service';
         <div class="col-md-12 col-sm-12 col-xs-12" *ngFor="let expense of monthMileage">
             <div class="ln_solid"></div>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <h3 style="margin-bottom:0;">{{expense.expenseDate| date:'mediumDate'}}</h3>
                         <p *ngIf="expense.isOvernight">Overnight Trip</p>
                         <p *ngIf="!expense.isOvernight">Day Trip</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p *ngIf="expense.lastRevision.comment != null && expense.lastRevision.comment!=''"><strong>Comment: </strong>{{expense.lastRevision.comment}}</p>
                     </div>
                 </div>
             

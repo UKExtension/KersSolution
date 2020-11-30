@@ -62,7 +62,6 @@ import { MileageSegment } from './mileage';
             <div class="col-md-5 col-sm-5 col-xs-10">
                     <input type="number" name="mileage" id="mileage" formControlName="mileage" class="form-control">
         </div>
-        {{itIsPersonalVehicle|json}}
     </div>
   </div>
 </div>
