@@ -3,78 +3,18 @@ import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseM
 import { User } from "../../user/user.service";
 import { Mileage, MileageSegment } from '../../mileage/mileage';
 import { MileageService } from '../../mileage/mileage.service';
+import { ProgramCategory } from '../../admin/programs/programs.service';
 
 @Component({
     selector: 'expense-reports-details',
     template: `
-  <loading *ngIf="loading"></loading>
-  <div *ngIf="!loading && !isMileage">
-        <div class="col-md-12 col-sm-12 col-xs-12" *ngFor="let expense of monthExpenses">
-            <div class="ln_solid"></div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h3 style="margin-bottom:0;">{{expense.expenseDate| date:'mediumDate'}}</h3>
-                        <p *ngIf="expense.isOvernight">Overnight Trip</p>
-                        <p *ngIf="!expense.isOvernight">Day Trip</p>
-                    </div>
-                    <div class="col-sm-6">
-                        <div><strong>Starting Location: </strong>{{expense.startingLocationType == 2 ? "Home" : "Workplace"}}</div>
-                        <div><strong>Destination(s): </strong>{{expense.expenseLocation}}</div>
-                        <div><strong>Business Purpose: </strong>{{expense.businessPurpose}}</div>
-                        <div *ngIf="expense.comment != ''"><strong>Comment: </strong>{{expense.comment}}</div>
-                    </div>
-                </div>
-                
-
-                <div class="row invoice-info">
-                    <div class="col-sm-6 invoice-col">
-                        <p *ngIf="expense.fundingSourceMileage">
-                            <strong>Mileage Funding: </strong><br>{{expense.fundingSourceMileage.name}}
-                        </p>
-                        <div *ngIf="expense.fundingSourceMileage"><strong>Miles: </strong>{{expense.mileage}}</div>
-                        <div *ngIf="expense.departTime"><strong>Time Departed: </strong>{{expense.departTime | date:'shortTime'}}</div>
-                        <div *ngIf="expense.returnTime"><strong>Time Returned: </strong>{{expense.returnTime | date:'shortTime'}}</div>
-                    </div>
-
-                    <div class="col-sm-6 invoice-col">
-                        <p *ngIf="expense.fundingSourceNonMileage">
-                            <strong>Expense Funding: </strong><br>{{expense.fundingSourceNonMileage.name}}
-                        </p>
-                        <div class="row" *ngIf="expense.isOvernight && expense.fundingSourceNonMileage">
-                            <div class="col-md-4"><strong>Breakfast: </strong>{{ breakfast(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
-                            <div class="col-md-4"><strong>Lunch: </strong>{{ lunch(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
-                            <div class="col-md-4"><strong>Dinner: </strong>{{ dinner(expense)| currency:'USD':'symbol':'1.2-2'}}</div>
-                        </div>
-                        <div class="row" *ngIf="expense.fundingSourceNonMileage">
-                            <div class="col-md-4"><strong>Lodging: </strong>{{ expense.lodging | currency:'USD':'symbol':'1.2-2'}}</div>
-                            <div class="col-md-4"><strong>Registration: </strong>{{ expense.registration | currency:'USD':'symbol':'1.2-2'}}</div>
-                            <div class="col-md-4"><strong>Other: </strong>{{ expense.otherExpenseCost| currency:'USD':'symbol':'1.2-2'}}</div>
-                        </div>
-                        <div *ngIf="expense.otherExpenseCost != 0">{{expense.otherExpenseExplanation}}</div>
-                    </div>
-
-                </div>
-
-        </div>
-    </div>
-    <div *ngIf="!loading && isMileage">
-        <div class="col-md-12 col-sm-12 col-xs-12" *ngFor="let expense of monthMileage">
-            <div class="ln_solid"></div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <h3 style="margin-bottom:0;">{{expense.expenseDate| date:'mediumDate'}}</h3>
-                        <p *ngIf="expense.isOvernight">Overnight Trip</p>
-                        <p *ngIf="!expense.isOvernight">Day Trip</p>
-                    </div>
-                    <div class="col-sm-8">
-                        <p *ngIf="expense.lastRevision.comment != null && expense.lastRevision.comment!=''"><strong>Comment: </strong>{{expense.lastRevision.comment}}</p>
-                    </div>
-                </div>
-            
-        </div>
-
-
-    </div>
+<loading *ngIf="loading"></loading>
+<div *ngIf="!loading && !isMileage">
+    <expense-reports-details-item [expense]="expense" *ngFor="let expense of monthExpenses"></expense-reports-details-item>
+</div>
+<div *ngIf="!loading && isMileage">
+    <mileage-reports-details-item [sources]="sources" [categories]="categories" [expense]="expense" *ngFor="let expense of monthMileage"></mileage-reports-details-item>
+</div>
         `
 })
 export class ExpenseReportsDetailsComponent { 
@@ -86,6 +26,9 @@ export class ExpenseReportsDetailsComponent {
     @Input() user:User;
     monthExpenses: Expense[];
     monthMileage: Mileage[];
+
+    categories:ProgramCategory[];
+    sources:ExpenseFundingSource[];
 
 
     isMileage:boolean = false;
@@ -115,6 +58,12 @@ export class ExpenseReportsDetailsComponent {
                 },
                 err => this.errorMessage = <any>err
             );
+            this.mileageService.categories().subscribe(
+                res => this.categories = res
+            );
+            this.mileageService.sources().subscribe(
+                res => this.sources = res
+            )
         }else{
             this.service.expensesPerMonth(this.month.month, this.year.year, userid, 'asc').subscribe(
                 res=> {

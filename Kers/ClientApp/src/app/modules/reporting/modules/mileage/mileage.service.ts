@@ -5,6 +5,8 @@ import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Mileage } from './mileage';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { ExpenseFundingSource } from '../expense/expense.service';
+import { ProgramCategory } from '../admin/programs/programs.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,34 @@ export class MileageService {
         return this.http.get<Mileage>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('byRevId', <Mileage>{}))
+            );
+    }
+    source(id:number):Observable<ExpenseFundingSource>{
+        var url = this.baseUrl + 'source/' + id;
+        return this.http.get<ExpenseFundingSource>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('source', <ExpenseFundingSource>{}))
+            );
+    }
+    sources():Observable<ExpenseFundingSource[]>{
+        var url = this.baseUrl + 'sources/';
+        return this.http.get<ExpenseFundingSource[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('source', []))
+            );
+    }
+    category(id:number):Observable<ProgramCategory>{
+        var url = this.baseUrl + 'category/' + id;
+        return this.http.get<ProgramCategory>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('category', <ProgramCategory>{}))
+            );
+    }
+    categories():Observable<ProgramCategory[]>{
+        var url = this.baseUrl + 'categories/';
+        return this.http.get<ProgramCategory[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('category', []))
             );
     }
 

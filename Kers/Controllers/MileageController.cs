@@ -115,8 +115,38 @@ namespace Kers.Controllers
             }else{
                 user = this.context.KersUser.Where(u => u.Id == userId).FirstOrDefault();
             }
-            return new OkObjectResult(expenseRepo.MileagePerMonth(user, year, month).OrderBy( r => r.ExpenseDate));
+            var mileages = expenseRepo.MileagePerMonth(user, year, month).OrderBy( r => r.ExpenseDate);
+            var revs = mileages.Select( m => m.LastRevision);
+            return new OkObjectResult(revs);
         }
+
+        [HttpGet("source/{id}")]
+        [Authorize]
+        public IActionResult SourceById(int id){
+            var srce = this.context.ExpenseFundingSource.Find(id);
+            return new OkObjectResult(srce);
+        }
+        [HttpGet("sources")]
+        [Authorize]
+        public IActionResult Sources(){
+            var srce = this.context.ExpenseFundingSource.Where( s => s.MileageAvailable);
+            return new OkObjectResult(srce);
+        }
+        
+        [HttpGet("category/{id}")]
+        [Authorize]
+        public IActionResult CategoryById(int id){
+            var srce = this.context.ProgramCategory.Find(id);
+            return new OkObjectResult(srce);
+        }
+        [HttpGet("categories")]
+        [Authorize]
+        public IActionResult Categories(){
+            var srce = this.context.ProgramCategory;
+            return new OkObjectResult(srce);
+        }
+
+
 
         [HttpPost()]
         [Authorize]
