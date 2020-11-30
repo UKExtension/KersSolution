@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from '../expense.service';
 import { User } from "../../user/user.service";
+import { Mileage, MileageSegment } from '../../mileage/mileage';
+import { MileageService } from '../../mileage/mileage.service';
 
 @Component({
     selector: 'expense-reports-details',
     template: `
   <loading *ngIf="loading"></loading>
-  <div *ngIf="!loading">
+  <div *ngIf="!loading && !isMileage">
         <div class="col-md-12 col-sm-12 col-xs-12" *ngFor="let expense of monthExpenses">
             <div class="ln_solid"></div>
                 <div class="row">
@@ -55,6 +57,21 @@ import { User } from "../../user/user.service";
 
         </div>
     </div>
+    <div *ngIf="!loading && isMileage">
+        <div class="col-md-12 col-sm-12 col-xs-12" *ngFor="let expense of monthMileage">
+            <div class="ln_solid"></div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 style="margin-bottom:0;">{{expense.expenseDate| date:'mediumDate'}}</h3>
+                        <p *ngIf="expense.isOvernight">Overnight Trip</p>
+                        <p *ngIf="!expense.isOvernight">Day Trip</p>
+                    </div>
+                </div>
+            
+        </div>
+
+
+    </div>
         `
 })
 export class ExpenseReportsDetailsComponent { 
@@ -65,10 +82,16 @@ export class ExpenseReportsDetailsComponent {
     @Input() year;
     @Input() user:User;
     monthExpenses: Expense[];
+    monthMileage: Mileage[];
+
+
+    isMileage:boolean = false;
+
     loading = false;
 
     constructor( 
-        private service:ExpenseService
+        private service:ExpenseService,
+        private mileageService:MileageService
     )   
     {}
 
@@ -77,14 +100,28 @@ export class ExpenseReportsDetailsComponent {
         if(this.user != null){
             userid = this.user.id;
         }
+        if( this.year.year > 2019 && this.month.month > 10 ) this.isMileage = true;
+
         this.loading = true;
-        this.service.expensesPerMonth(this.month.month, this.year.year, userid, 'asc').subscribe(
-            res=> {
-                this.monthExpenses = <Expense[]>res;
-                this.loading = false;
-            },
-            err => this.errorMessage = <any>err
-        );
+
+        if( this.isMileage ){
+            this.mileageService.mileagePerMonth(this.month.month, this.year.year, userid, 'asc').subscribe(
+                res=> {
+                    this.monthMileage = <Mileage[]>res;
+                    this.loading = false;
+                },
+                err => this.errorMessage = <any>err
+            );
+        }else{
+            this.service.expensesPerMonth(this.month.month, this.year.year, userid, 'asc').subscribe(
+                res=> {
+                    this.monthExpenses = <Expense[]>res;
+                    this.loading = false;
+                },
+                err => this.errorMessage = <any>err
+            );
+        }
+        
     }
 
     breakfast(expense:Expense){

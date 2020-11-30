@@ -47,6 +47,14 @@ export class MileageService {
             );
     }
 
+    mileagePerMonth(month:number, year:number = 2017, userid:number = 0, orderBy:string = 'desc') : Observable<Mileage[]>{
+        var url = this.baseUrl + 'permonth/' + year + '/' + month + '/' + userid + '/' + orderBy;
+        return this.http.get<Mileage[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('expensesPerMonth', []))
+            );
+    }
+
     add( expense:Mileage ):Observable<Mileage>{
       return this.http.post<Mileage>(this.location.prepareExternalUrl(this.baseUrl), expense)
           .pipe(

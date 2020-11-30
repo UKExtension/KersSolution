@@ -27,13 +27,16 @@ namespace Kers.Controllers
     public class MileageController : BaseController
     {
 
+
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
+        IExpenseRepository expenseRepo;
         public MileageController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
+                    IExpenseRepository expenseRepo,
                     IFiscalYearRepository fiscalYearRepo
             ):base(mainContext, context, userRepo){
            this.context = context;
@@ -41,6 +44,7 @@ namespace Kers.Controllers
            this.userRepo = userRepo;
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
+           this.expenseRepo = expenseRepo;
         }
 
         [HttpGet("numb")]
@@ -101,6 +105,18 @@ namespace Kers.Controllers
             return new OkObjectResult(revs);
         }
 
+	
+        [HttpGet("permonth/{year}/{month}/{userId?}/{orderBy?}")]
+        [Authorize]
+        public IActionResult PerMonth(int year, int month, int userId=0, string orderBy = "desc"){
+            KersUser user;
+            if(userId == 0){
+                user = this.CurrentUser();
+            }else{
+                user = this.context.KersUser.Where(u => u.Id == userId).FirstOrDefault();
+            }
+            return new OkObjectResult(expenseRepo.MileagePerMonth(user, year, month).OrderBy( r => r.ExpenseDate));
+        }
 
         [HttpPost()]
         [Authorize]
