@@ -561,7 +561,7 @@ namespace Kers.Controllers
 			foreach( var segment in _segments){
 				var ln = new MileageNumLines();
 				ln.segment = segment;
-				var StartingLocation = this.formatLocation(segment.StartigngLocation.Address);
+				var StartingLocation =segment.StartigngLocation == null ? "No location provided" : this.formatLocation(segment.StartigngLocation.Address);
 				ln.startLocationLines = PdfBaseController.SplitLineToMultiline(StartingLocation, this.startLocationCharacterLength);
 				var EndingLocation = this.formatLocation(segment.EndingLocation.Address);
 				ln.endLocationLines = PdfBaseController.SplitLineToMultiline(EndingLocation, this.endLocationCharacterLength);
