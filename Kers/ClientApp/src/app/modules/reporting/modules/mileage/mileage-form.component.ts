@@ -88,7 +88,7 @@ export class MileageFormComponent implements OnInit {
           countyVehicleId: [''],
           isOvernight: false,
           comment: "",
-          startingLocation: null,
+          startingLocation: [null, Validators.required],
           segments: this.fb.array([])
         }
     );
