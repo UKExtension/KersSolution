@@ -182,7 +182,9 @@ export interface Expense{
     businessPurpose: string,
     comment: string,
     fundingSourceNonMileageId:number,
-    fundingSourceMileageId:number
+    undingSourceNonMileage: ExpenseFundingSource,
+    fundingSourceMileageId:number,
+    fundingSourceMileage: ExpenseFundingSource,
     mileage:number,
     registration:number,
     lodging:number,
