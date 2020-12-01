@@ -145,6 +145,12 @@ namespace Kers.Controllers
             var srce = this.context.ProgramCategory;
             return new OkObjectResult(srce);
         }
+        [HttpGet("vehicle/{id}")]
+        [Authorize]
+        public IActionResult VehicleById(int id){
+            var vhcl = this.context.CountyVehicle.Find(id);
+            return new OkObjectResult(vhcl);
+        }
 
 
 

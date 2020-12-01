@@ -20,8 +20,8 @@ import { ExpenseFundingSource } from '../expense.service';
                 <p *ngIf="!expense.isOvernight">Day Trip</p>
             </div>
             <div class="col-sm-8">
+                <p *ngIf="expense.vehicleType == 2">{{countyVehicle}}</p>
                 <p *ngIf="expense.comment != null && expense.comment!=''"><strong>Comment: </strong>{{expense.comment}}</p>
-                <p *ngIf="expense.vehicleType == 2"></p>
             </div>
           </div>
           <div class="row">
@@ -46,8 +46,8 @@ import { ExpenseFundingSource } from '../expense.service';
                 <h5>{{segment.location.address.street}}</h5>
                 <h5>{{segment.location.address.city}} {{segment.location.address.state != ""?", "+segment.location.address.state:""}} {{segment.location.address.postalCode}}</h5>
                 <br>
-                <p><strong>Funding Source:</strong> {{segment.businessPurpose}}</p>
-                <p><strong>Business Purpose:</strong> {{source(segment.fundingSourceId)}}</p>
+                <p><strong>Business Purpose:</strong> {{segment.businessPurpose}}</p>
+                <p><strong>Funding Source:</strong> {{source(segment.fundingSourceId)}}</p>
                 <p><strong>Program Category:</strong> {{category(segment.programCategoryId)}}</p>
                 <p><strong>Miles:</strong> {{segment.mileage}}</p>
                 <div class="ln_solid"></div>
@@ -62,6 +62,7 @@ export class MileageReportsDetailsItemComponent implements OnInit {
   @Input() categories:ProgramCategory[];
   @Input() sources:ExpenseFundingSource[];
   loading = true;
+  countyVehicle:string = "";
 
   constructor(
     private mileageService:MileageService
@@ -72,6 +73,11 @@ export class MileageReportsDetailsItemComponent implements OnInit {
       res => {
         this.expense = res;
         this.loading = false;
+        if(this.expense.vehicleType == 2){
+          this.mileageService.vehicle(this.expense.countyVehicleId).subscribe(
+            res => this.countyVehicle = res.name + ", " + res.make + " " + res.model
+          )
+        }
       }
     )
   }

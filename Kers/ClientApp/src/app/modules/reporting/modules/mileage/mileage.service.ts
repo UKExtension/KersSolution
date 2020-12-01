@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { ExpenseFundingSource } from '../expense/expense.service';
 import { ProgramCategory } from '../admin/programs/programs.service';
+import { Vehicle } from '../expense/vehicle/vehicle.service';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +60,13 @@ export class MileageService {
         return this.http.get<ProgramCategory[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('category', []))
+            );
+    }
+    vehicle(id:number):Observable<Vehicle>{
+        var url = this.baseUrl + 'vehicle/' + id;
+        return this.http.get<Vehicle>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('category', <Vehicle>{}))
             );
     }
 
