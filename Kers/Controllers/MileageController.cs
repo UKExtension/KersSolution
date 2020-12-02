@@ -120,6 +120,48 @@ namespace Kers.Controllers
             return new OkObjectResult(revs);
         }
 
+
+        [HttpGet("summarypermonth/{year}/{month}/{userId?}")]
+        [Authorize]
+        public IActionResult SummaryPerMonth(int year, int month, int userId=0){
+            KersUser user;
+            if(userId == 0){
+                user = this.CurrentUser();
+            }else{
+                user = this.context.KersUser.Where(u => u.Id == userId)
+                                .Include( u => u.RprtngProfile)
+                                .FirstOrDefault();
+            }
+            var mileages = expenseRepo.MileagePerMonth(user, year, month);
+
+            var segments = new List<MileageSegment>();
+
+            foreach( var mileage in mileages){
+                segments.AddRange( mileage.LastRevision.Segments);
+            }
+
+            List<ExpenseSummary> summaries = new List<ExpenseSummary>();
+
+
+            var sources = this.context.ExpenseFundingSource.Where( s => s.MileageAvailable);
+            foreach( var source in sources){
+                var sourceSegments = segments.Where( s => s.FundingSourceId == source.Id);
+                if(sourceSegments.Count() > 0){
+                    var summary = new ExpenseSummary();
+                    summary.miles = sourceSegments.Sum( s => s.Mileage );
+                    summary.fundingSource = source;
+                    summary.mileageCost = expenseRepo.MileageRate(user, year, month);
+                    summary.total = summary.miles * summary.mileageCost;
+                    summaries.Add(summary);
+                }
+            }
+
+
+            return new OkObjectResult(summaries);
+        }
+
+
+
         [HttpGet("source/{id}")]
         [Authorize]
         public IActionResult SourceById(int id){

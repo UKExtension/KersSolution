@@ -5,7 +5,7 @@ import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Mileage } from './mileage';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { ExpenseFundingSource } from '../expense/expense.service';
+import { ExpenseFundingSource, ExpenseSummary } from '../expense/expense.service';
 import { ProgramCategory } from '../admin/programs/programs.service';
 import { Vehicle } from '../expense/vehicle/vehicle.service';
 
@@ -92,6 +92,16 @@ export class MileageService {
                 catchError(this.handleError('expensesPerMonth', []))
             );
     }
+
+    summaryPerMonth(month:number, year:number = 2017, userid:number = 0) : Observable<ExpenseSummary[]>{
+        var url = this.baseUrl + 'summarypermonth/' + year + '/' + month + '/' + userid ;
+        return this.http.get<ExpenseSummary[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('expensesPerMonth', []))
+            );
+    }
+
+
 
     add( expense:Mileage ):Observable<Mileage>{
       return this.http.post<Mileage>(this.location.prepareExternalUrl(this.baseUrl), expense)

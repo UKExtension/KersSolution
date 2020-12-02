@@ -3,6 +3,8 @@ import { ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, Expense
 import { saveAs } from 'file-saver';
 import { User } from "../../user/user.service";
 import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
+import { MileageService } from '../../mileage/mileage.service';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'expense-reports-summary',
@@ -14,7 +16,7 @@ import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
 
      <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="!loading">
 
-            <div class="table-responsive">
+            <div class="table-responsive" *ngIf="!isMileage">
                 <table class="table table-striped" style="background-color: white">
                     <thead>
                         <tr>
@@ -56,9 +58,29 @@ import { FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
                     </tbody>
                 </table>
             </div>
+        </div><br>
+        <div class="table-responsive" *ngIf="isMileage"><br>
+                <table class="table table-striped" style="background-color: white">
+                    <thead>
+                        <tr>
+                            <th>FUNDING SOURCE</th>
+                            <th class="text-right">MILES</th>
+                            <th class="text-right">MILEAGE COST</th>
+                            <th class="text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let summary of mileageSummary | async">
+                            <td>{{summary.fundingSource.name}}</td>
+                            <td class="text-right">{{summary.miles}}</td>
+                            <td class="text-right">{{summary.mileageCost | currency:'USD':'symbol':'1.2-2'}}</td>
+                            <td class="text-right">{{summary.total | currency:'USD':'symbol':'1.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+<br><br>
+
         </div>
-
-
 
 
         `
@@ -85,68 +107,77 @@ export class ExpenseReportsSummaryComponent {
     fiscalYearSummaries: ExpenseSummary[];
     blankRows: ExpenseSummary[];
 
+
+    mileageSummary:Observable<ExpenseSummary[]>;
+    isMileage:boolean = false;
+
     constructor( 
         private service:ExpenseService,
+        private mileageService: MileageService,
         private fiscalYearService: FiscalyearService
     )   
     {}
 
     ngOnInit(){
-        this.loading = true;
+        
         if(this.user != null){
             this.userid = this.user.id;
         }
-
-        this.fiscalYearService.forDate( new Date(this.year.year, this.month.month - 1, 15) )
-            .subscribe(
-                res => {
-                    var fiscalYear = res;
-                    
-                    this.service.SummariesPerPeriod( fiscalYear.start, new Date(this.year.year, this.month.month, 0,23, 59, 59), this.userid)
-                        .subscribe(
-                            res =>
-                            {
-                                this.fiscalYearSummaries = res;
-                                if(this.loading == true ){
-                                    this.getBlankRows();
-                                    this.loading = false;
-                                }
-                            }
-                        )
-                
-                }
-            )
-
-
-
-/*
-        this.service.snapHours(this.month.month, this.userid).subscribe(
-            res => {
-                if(res != null){
-                    this.snapHours = res.totalHours;
-                }
-            },
-            err => this.errorMessage = <any> err
-        );
-        
-*/
-        
-        this.service.fundingSources().subscribe(
-            res => {
-                this.fundingSources = <ExpenseFundingSource[]>res;
-                this.service.mileageRate(this.month.month, this.year.year, this.userid).subscribe(
+        if( this.year.year > 2019 && this.month.month > 10 ) this.isMileage = true;
+        if(this.isMileage){
+            this.mileageSummary = this.mileageService.summaryPerMonth(this.month.month, this.year.year, this.userid);
+        }else{
+            this.loading = true;
+            this.fiscalYearService.forDate( new Date(this.year.year, this.month.month - 1, 15) )
+                .subscribe(
                     res => {
-                        this.mileageRate = res;
-                        this.processExpenses();
-                    },
-                    err => this.errorMessage = <any> err
-
+                        var fiscalYear = res;
+                        
+                        this.service.SummariesPerPeriod( fiscalYear.start, new Date(this.year.year, this.month.month, 0,23, 59, 59), this.userid)
+                            .subscribe(
+                                res =>
+                                {
+                                    this.fiscalYearSummaries = res;
+                                    if(this.loading == true ){
+                                        this.getBlankRows();
+                                        this.loading = false;
+                                    }
+                                }
+                            )
+                    
+                    }
                 )
-                
-            },
-            err => this.errorMessage = <any> err
-        );
-        
+
+
+
+    /*
+            this.service.snapHours(this.month.month, this.userid).subscribe(
+                res => {
+                    if(res != null){
+                        this.snapHours = res.totalHours;
+                    }
+                },
+                err => this.errorMessage = <any> err
+            );
+            
+    */
+            
+            this.service.fundingSources().subscribe(
+                res => {
+                    this.fundingSources = <ExpenseFundingSource[]>res;
+                    this.service.mileageRate(this.month.month, this.year.year, this.userid).subscribe(
+                        res => {
+                            this.mileageRate = res;
+                            this.processExpenses();
+                        },
+                        err => this.errorMessage = <any> err
+
+                    )
+                    
+                },
+                err => this.errorMessage = <any> err
+            );
+        }
     }
 
     processExpenses(){

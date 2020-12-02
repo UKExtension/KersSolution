@@ -64,8 +64,8 @@ import { ɵangular_packages_platform_browser_dynamic_testing_testing_b } from '@
                             <a *ngIf="isMileage && !pdfTripLoadingOvernight" (click)="printMileage(false, false)">Mileage Log - County Vehicle</a>
                             <loading [type]="'bars'" *ngIf="pdfTripLoadingOvernight"></loading>
                         </li>
-                        <li class="divider"></li>
-                        <li><a (click)="print()" *ngIf="rowDefault && !pdfLoading">Detailed Monthly Report</a>
+                        <li class="divider" *ngIf="!isMileage"></li>
+                        <li><a (click)="print()" *ngIf="!isMileage && rowDefault && !pdfLoading">Detailed Monthly Report</a>
                         <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
                         </li>
                     </ul>
