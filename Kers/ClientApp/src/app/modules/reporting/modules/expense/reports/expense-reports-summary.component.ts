@@ -65,7 +65,7 @@ import { Observable } from 'rxjs';
                         <tr>
                             <th>FUNDING SOURCE</th>
                             <th class="text-right">MILES</th>
-                            <th class="text-right">MILEAGE COST</th>
+                            <th class="text-right">COST PER MILE</th>
                             <th class="text-right">TOTAL</th>
                         </tr>
                     </thead>
