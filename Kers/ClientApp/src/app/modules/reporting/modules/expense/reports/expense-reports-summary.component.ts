@@ -60,7 +60,7 @@ import { Observable } from 'rxjs';
             </div>
         </div><br>
         <div class="table-responsive" *ngIf="isMileage"><br>
-                <table class="table table-striped" style="background-color: white">
+                <table class="table table-striped" style="background-color: white" *ngIf="(mileageSummary$ | async) as mileageSummary">
                     <thead>
                         <tr>
                             <th>FUNDING SOURCE</th>
@@ -70,13 +70,21 @@ import { Observable } from 'rxjs';
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let summary of mileageSummary | async">
+                        <tr *ngFor="let summary of mileageSummary">
                             <td>{{summary.fundingSource.name}}</td>
                             <td class="text-right">{{summary.miles}}</td>
                             <td class="text-right">{{summary.mileageCost | currency:'USD':'symbol':'1.2-2'}}</td>
                             <td class="text-right">{{summary.total | currency:'USD':'symbol':'1.2-2'}}</td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Total:</strong></td>
+                            <td class="text-right">{{mileageToatl(mileageSummary)}}</td>
+                            <td>&nbsp;</td>
+                            <td class="text-right">{{total(mileageSummary) | currency:'USD':'symbol':'1.2-2'}}</td>
+                        </tr>
+                    </tfoot>
                 </table>
 <br><br>
 
@@ -108,7 +116,7 @@ export class ExpenseReportsSummaryComponent {
     blankRows: ExpenseSummary[];
 
 
-    mileageSummary:Observable<ExpenseSummary[]>;
+    mileageSummary$:Observable<ExpenseSummary[]>;
     isMileage:boolean = false;
 
     constructor( 
@@ -125,7 +133,7 @@ export class ExpenseReportsSummaryComponent {
         }
         if( this.year.year > 2019 && this.month.month > 10 ) this.isMileage = true;
         if(this.isMileage){
-            this.mileageSummary = this.mileageService.summaryPerMonth(this.month.month, this.year.year, this.userid);
+            this.mileageSummary$ = this.mileageService.summaryPerMonth(this.month.month, this.year.year, this.userid);
         }else{
             this.loading = true;
             this.fiscalYearService.forDate( new Date(this.year.year, this.month.month - 1, 15) )
@@ -251,6 +259,21 @@ export class ExpenseReportsSummaryComponent {
             },
             err => console.error(err)
         )
+    }
+
+    mileageToatl(summary:ExpenseSummary[]):number{
+        var ttl = 0;
+        for( let smr of summary){
+            ttl += smr.miles;
+        }
+        return ttl;
+    }
+    total(summary:ExpenseSummary[]):number{
+        var ttl = 0;
+        for( let smr of summary){
+            ttl += smr.total;
+        }
+        return ttl;
     }
 
 
