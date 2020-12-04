@@ -120,9 +120,9 @@ namespace Kers.Controllers.Reports
         }
 
         private void UnitAddress(){
-            var cnts = context.PlanningUnit.Where( u => u.City != null);
+            var cnts = context.PlanningUnit.Where( u => u.GeoFeature != null);
             foreach( var cnt in cnts){
-                var location = new ExtensionEventLocation();
+               /*  var location = new ExtensionEventLocation();
                 location.DisplayName = "County Extension Office";
                 location.Address = new PhysicalAddress();
                 location.Address.Building = cnt.FullName;
@@ -130,7 +130,7 @@ namespace Kers.Controllers.Reports
                 location.Address.City = cnt.City;
                 location.Address.PostalCode = cnt.Zip;
                 location.Address.State = "Kentucky";
-                cnt.Location = location;
+                cnt.Location = location; */
                 var Geography = new PlanningUnitGeography();
                 Geography.GeoFeature = cnt.GeoFeature;
                 Geography.FIPSCode = cnt.FIPSCode;
