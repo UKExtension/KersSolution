@@ -7,6 +7,7 @@ import { HttpErrorHandler, HandleError } from '../../core/services/http-error-ha
 import { Vehicle } from '../expense/vehicle/vehicle.service';
 import {TrainingEnrollment} from '../training/training';
 import { District } from '../district/district.service';
+import { ExtensionEventLocation } from '../events/extension-event';
 
 
 @Injectable()
@@ -399,11 +400,22 @@ export class PlanningUnit{
         public timeZoneId:string,
         public reportsExtension:boolean,
         public vehicles:Vehicle[],
+        public location:ExtensionEventLocation,
+        public geography:PlanningUnitGeography,
         public district:District,
+        public locationId?:number,
         public fipsCode?:number,
         public districtId?:number,
         public geoFeature?:string,
         public population?:number
+    ){}
+}
+
+export class PlanningUnitGeography{
+    constructor(
+        public id:number,
+        public geoFeature,
+        public fIPSCode
     ){}
 }
 

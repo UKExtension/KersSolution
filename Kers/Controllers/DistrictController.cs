@@ -64,6 +64,7 @@ namespace Kers.Controllers
         public IActionResult GetCounties(int id){
             var counties = this.context.PlanningUnit.
                                 Where(c=>c.District.Id == id && c.Code.StartsWith("21")).
+                                Include( d => d.Geography).
                                 OrderBy(d => d.Name);
             return new OkObjectResult(counties);
         }

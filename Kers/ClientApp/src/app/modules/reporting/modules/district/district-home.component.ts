@@ -219,11 +219,6 @@ export class DistrictHomeComponent {
             .subscribe(
                 district => {
                     this.district = <District>district;
-
-
-
-
-
                     var ftrs = [];
                     this.service.counties(this.district.id).subscribe(
                         res => {
@@ -239,9 +234,9 @@ export class DistrictHomeComponent {
                                         }
                                     );
                                     
-                                    if(cnt.geoFeature != undefined){
-                                        var go = JSON.parse(cnt.geoFeature);
-                                        ftrs.push(cnt.geoFeature);
+                                    if(cnt.geography != undefined && cnt.geography.geoFeature != undefined){
+                                        var go = JSON.parse(cnt.geography.geoFeature);
+                                        ftrs.push(cnt.geography.geoFeature);
                                         var center = this.countyService.geoCenter(go.geometry.coordinates[0][0]);
                                         this.geoCoordMap[countyName] = center;
                                     }else{
