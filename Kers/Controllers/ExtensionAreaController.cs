@@ -52,36 +52,38 @@ namespace Kers.Controllers
         }
 
 
-        [HttpGet("countiesbyareaid/{id}/{includePairings?}")]
+        [HttpGet("countiesbyareaid/{id}/{includePairings}")]
         public async Task<IActionResult> CountiesByAreaId(int id, bool includePairings = false){
-            IQueryable<int> counties = null;
+            var cnts = await this.counties(id, includePairings);
+            return new OkObjectResult( cnts );
+        }
+
+        private async Task<List<PlanningUnit>> counties( int ArreaId, bool includePairings){
+            IQueryable<PlanningUnit> counties = null;
             if( includePairings ){
-                var area = await this.context.ExtensionArea.FindAsync( id );
+                var area = await this.context.ExtensionArea.FindAsync( ArreaId );
                 var pairing = FindContainingPair(area.Name);
-                counties = this.context.PlanningUnit.Where( u => pairing.Contains( u.ExtensionArea.Name )).Select( u => u.Id);
+                counties = this.context.PlanningUnit.Where( u => pairing.Contains( u.ExtensionArea.Name ));
             }else{
-                counties = this.context.PlanningUnit.Where( u => u.ExtensionAreaId == id ).Select( u => u.Id);
+                counties = this.context.PlanningUnit.Where( u => u.ExtensionAreaId == ArreaId );
             }
-            return new OkObjectResult( await counties.ToListAsync());
+            return await counties.ToListAsync();
         }
 
         [HttpGet("countiesbycountyid/{Id?}/{includePairings?}/{userId?}")]
         [Authorize]
         public async Task<IActionResult> CountiesByCountyId(int Id=0, bool includePairings = false){
-
-            // This is totaly irrelevant
-
-
             if(Id == 0){
                 var user = this.CurrentUser();
                 Id = user.RprtngProfile.PlanningUnitId;
             }
-            var counties = this.context.PlanningUnit.Where( u => u.ExtensionAreaId == Id ).Select( u => u.Id);
-            return new OkObjectResult(await counties.ToListAsync());
+            var unit = await context.PlanningUnit.Where( u => u.Id == Id).FirstOrDefaultAsync();
+            return new OkObjectResult(await this.counties(unit.ExtensionAreaId??0, includePairings));
         }
 
         private string[] FindContainingPair( string Area ){
-            return this.pairings.Where( r => r.Contains(Area)).FirstOrDefault();;
+            var pairing = this.pairings.Where( r => r.Contains(Area)).FirstOrDefault();
+            return pairing;
         }
 
 

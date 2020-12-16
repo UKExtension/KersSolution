@@ -47,7 +47,8 @@ import { DistrictEmployeeBriefComponent } from './district-employee-brief.compon
                     AssignmentPlansOfWorkComponent,
                     AssignmentAffirmativeReportComponent,
                     AssignmentAffirmativePlanComponent,
-                    AssignmentProgramIndicatorsComponent
+                    AssignmentProgramIndicatorsComponent,
+                    CountyListComponent
   ]
 })
 export class DistrictModule { }
