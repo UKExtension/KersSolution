@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'area-home',
   template: `
-  <county-list [type]="'area'" [areaId]="127"></county-list> 
+  <county-list [type]="'area'" [areaId]="0"></county-list> 
   
   <p>
 
@@ -13,6 +13,8 @@ import { Component, OnInit } from '@angular/core';
   styles: []
 })
 export class AreaHomeComponent implements OnInit {
+
+  @Input() areaId:number;
 
   constructor() { }
 

@@ -38,7 +38,6 @@ export class AreaService {
 
     counties(areaId:number, includePairings:boolean = true):Observable<PlanningUnit[]>{
         var url = this.baseUrl + "countiesbyareaid/" + areaId + "/" + includePairings;
-        console.log(url);
         return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('counties', []))

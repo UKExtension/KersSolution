@@ -53,7 +53,15 @@ namespace Kers.Controllers
 
 
         [HttpGet("countiesbyareaid/{id}/{includePairings}")]
+        [Authorize]
         public async Task<IActionResult> CountiesByAreaId(int id, bool includePairings = false){
+            if( id == 0 ){
+                var user = this.CurrentUser();
+                id = (await this.context.PlanningUnit
+                            .Where( u => u.Id == user.RprtngProfile.PlanningUnitId)
+                            .Select( u => u.ExtensionAreaId)
+                            .FirstOrDefaultAsync()) ?? 0;
+            }
             var cnts = await this.counties(id, includePairings);
             return new OkObjectResult( cnts );
         }
@@ -62,7 +70,7 @@ namespace Kers.Controllers
             IQueryable<PlanningUnit> counties = null;
             if( includePairings ){
                 var area = await this.context.ExtensionArea.FindAsync( ArreaId );
-                var pairing = FindContainingPair(area.Name);
+                string[] pairing = FindContainingPair(area.Name);
                 counties = this.context.PlanningUnit.Where( u => pairing.Contains( u.ExtensionArea.Name ));
             }else{
                 counties = this.context.PlanningUnit.Where( u => u.ExtensionAreaId == ArreaId );
@@ -82,7 +90,8 @@ namespace Kers.Controllers
         }
 
         private string[] FindContainingPair( string Area ){
-            var pairing = this.pairings.Where( r => r.Contains(Area)).FirstOrDefault();
+            string[] pairing = this.pairings.Where( r => r.Contains(Area)).FirstOrDefault();
+            if( pairing == null) pairing =  new string[] {Area}; 
             return pairing;
         }
 

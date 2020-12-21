@@ -93,7 +93,6 @@ export class CountyListComponent {
     {}
 
     ngOnInit(){
-        console.log(this.type);
         if(this.type == 'area'){
             this.counties = this.areaService.counties(this.areaId);
         }else{
