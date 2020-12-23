@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
   selector: 'area-home',
@@ -15,6 +16,16 @@ import { Component, Input, OnInit } from '@angular/core';
 export class AreaHomeComponent implements OnInit {
 
   @Input() areaId:number;
+
+  assignmentPlansOfWorkOpen = false;
+  assignmentAffirmativeReportOpen = false;
+  assignmentAffirmativePlanOpen = false;
+  assignmentProgramIndicatorsOpen = false;
+
+  lastFiscalYear:FiscalYear;
+  currentFiscalYear:FiscalYear;
+
+
 
   constructor() { }
 
