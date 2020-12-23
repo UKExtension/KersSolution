@@ -77,7 +77,7 @@ export class CountyListComponent {
 
     @Input() district:District | null = null;
     @Input() type:string = 'district';
-    @Input() areaId:number;
+    @Input() areaId:number = 0;
     counties:Observable<PlanningUnit[]>;
     countiesNoAa:County[];
     countiesNoPl:County[];
