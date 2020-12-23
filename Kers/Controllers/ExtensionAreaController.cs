@@ -102,7 +102,7 @@ namespace Kers.Controllers
             return new OkObjectResult(await this.counties(unit.ExtensionAreaId??0, includePairings));
         }
 
-        private string[] FindContainingPair( string Area ){
+        public string[] FindContainingPair( string Area ){
             string[] pairing = this.pairings.Where( r => r.Contains(Area)).FirstOrDefault();
             if( pairing == null) pairing =  new string[] {Area}; 
             return pairing;

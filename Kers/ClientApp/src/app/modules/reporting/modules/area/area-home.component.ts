@@ -10,10 +10,17 @@ import { AreaService } from './area.service';
   template: `
   <county-list [type]="'area'" [areaId]="0"></county-list> 
   
-  <p>
-
-      area-home works!
-    </p>
+  <div class="col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Number of Submitted Activities per Agent</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <district-employees *ngIf="area" [area]="area"></district-employees>
+            </div>
+        </div>
+    </div>
   `,
   styles: []
 })

@@ -70,11 +70,16 @@ namespace Kers.Controllers
         }
 
 
-        [HttpGet("employeeactivity/{districtid}/{month}/{year}/{order?}/{type?}/{skip?}/{take?}")]
-        public async Task<IActionResult> EployeeActivity(int districtid, int month, int year, string order = "asc", string type = "activity", int skip = 0, int take = 20){
-
-            var districtEmployees = await context.KersUser
-                                            .Where( u => u.RprtngProfile.PlanningUnit.DistrictId == districtid
+        [HttpGet("employeeactivity/{id}/{month}/{year}/{order?}/{type?}/{skip?}/{take?}/{isItArea?}/{includePairings?}")]
+        public async Task<IActionResult> EployeeActivity(int id, int month, int year, string order = "asc", string type = "activity", int skip = 0, int take = 20, bool isItArea = false, bool includePairings = true){
+            List<KersUser> districtEmployees;
+            if( isItArea ){
+                if( includePairings){
+                    var areaController = new ExtensionAreaController(mainContext,context, userRepo);
+                    var area = this.context.ExtensionArea.Find(id);
+                    var pairings = areaController.FindContainingPair(area.Name);
+                    districtEmployees = await context.KersUser
+                                            .Where( u => pairings.Contains(u.RprtngProfile.PlanningUnit.ExtensionArea.Name)
                                                             &&
                                                             u.ExtensionPosition.Title == "Extension Agent"
                                                             &&
@@ -84,6 +89,34 @@ namespace Kers.Controllers
                                             .Include( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
                                             .Include( u => u.PersonalProfile).ThenInclude( r => r.UploadImage)
                                             .ToListAsync();
+
+                }else{
+                    districtEmployees = await context.KersUser
+                                            .Where( u => u.RprtngProfile.PlanningUnit.ExtensionAreaId == id
+                                                            &&
+                                                            u.ExtensionPosition.Title == "Extension Agent"
+                                                            &&
+                                                            u.RprtngProfile.PlanningUnit.Name != "Wildcat County CES (demo only)"
+                                                            && 
+                                                            u.RprtngProfile.enabled)
+                                            .Include( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                            .Include( u => u.PersonalProfile).ThenInclude( r => r.UploadImage)
+                                            .ToListAsync();
+                } 
+            }else{
+                districtEmployees = await context.KersUser
+                                            .Where( u => u.RprtngProfile.PlanningUnit.DistrictId == id
+                                                            &&
+                                                            u.ExtensionPosition.Title == "Extension Agent"
+                                                            &&
+                                                            u.RprtngProfile.PlanningUnit.Name != "Wildcat County CES (demo only)"
+                                                            && 
+                                                            u.RprtngProfile.enabled)
+                                            .Include( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                            .Include( u => u.PersonalProfile).ThenInclude( r => r.UploadImage)
+                                            .ToListAsync();
+            }
+            
 
             var numActivities = new List<EmployeeNumActivities>();
 

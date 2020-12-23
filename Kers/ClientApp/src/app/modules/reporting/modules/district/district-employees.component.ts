@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DistrictService, District, EmployeeNumActivities } from './district.service';
 import { Observable } from 'rxjs';
+import { ExtensionArea } from '../state/state.service';
 
 @Component({
   selector: 'district-employees',
@@ -10,6 +11,7 @@ import { Observable } from 'rxjs';
 export class DistrictEmployeesComponent implements OnInit {
 
   @Input() district:District;
+  @Input() area:ExtensionArea;
 
   activities:Observable<EmployeeNumActivities[]>;
   month:number;
@@ -49,7 +51,12 @@ export class DistrictEmployeesComponent implements OnInit {
   }
 
   resetActivites(){
-    this.activities = this.service.employeeactivity(this.district.id, this.month, this.year, this.order, this.type, this.skip, this.take);
+    if( this.area != null ){
+      this.activities = this.service.employeeactivity(this.area.id, this.month, this.year, this.order, this.type, this.skip, this.take, true, true);
+    }else{
+      this.activities = this.service.employeeactivity(this.district.id, this.month, this.year, this.order, this.type, this.skip, this.take);
+    }
+    
   }
 
 }
