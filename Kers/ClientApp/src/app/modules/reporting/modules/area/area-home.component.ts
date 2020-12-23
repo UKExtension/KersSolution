@@ -67,8 +67,8 @@ export class AreaHomeComponent implements OnInit {
   }
 
   defaultTitle(){
-      this.reportingService.setTitle(this.area.areaName );
-      this.reportingService.setSubtitle(this.area.name);
+      this.reportingService.setTitle("Extension Area " + this.area.name );
+      //this.reportingService.setSubtitle(this.area.name);
   }
 
 }
