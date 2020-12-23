@@ -51,6 +51,19 @@ namespace Kers.Controllers
                 _context = context;
         }
 
+        [HttpGet("{id?}")]
+        [Authorize]
+        public IActionResult Get(int id = 0){
+            if(id == 0){
+                var unit = CurrentPlanningUnit();
+                id = unit.ExtensionAreaId ?? 0;
+            }
+            var area = this.context.ExtensionArea.
+                                Where(c=>c.Id == id).
+                                FirstOrDefault();
+            return new OkObjectResult(area);
+        }
+
 
         [HttpGet("countiesbyareaid/{id}/{includePairings}")]
         [Authorize]
@@ -93,6 +106,14 @@ namespace Kers.Controllers
             string[] pairing = this.pairings.Where( r => r.Contains(Area)).FirstOrDefault();
             if( pairing == null) pairing =  new string[] {Area}; 
             return pairing;
+        }
+
+
+        private PlanningUnit CurrentPlanningUnit(){
+            var u = this.CurrentUser();
+            return  this.context.PlanningUnit.
+                    Where( p=>p.Id == u.RprtngProfile.PlanningUnitId).
+                    FirstOrDefault();
         }
 
 

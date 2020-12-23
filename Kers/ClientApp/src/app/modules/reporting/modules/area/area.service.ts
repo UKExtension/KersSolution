@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { User, PlanningUnit } from "../user/user.service";
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
+import { ExtensionArea } from '../state/state.service';
 
 
 @Injectable({
@@ -25,14 +26,14 @@ export class AreaService {
         }
 
     /**********************************/
-    // DISTRICT CONTENT
+    // Area CONTENT
     /**********************************/
 
-    get(district:number):Observable<District>{
-        var url = this.baseUrl + district;
-        return this.http.get<District>(this.location.prepareExternalUrl(url))
+    get(areaId:number):Observable<ExtensionArea>{
+        var url = this.baseUrl + areaId;
+        return this.http.get<ExtensionArea>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('get', <District>{}))
+                catchError(this.handleError('get', <ExtensionArea>{}))
             );
     }
 
