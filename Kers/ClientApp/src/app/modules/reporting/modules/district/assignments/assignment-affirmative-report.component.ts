@@ -11,6 +11,9 @@ import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 export class AssignmentAffirmativeReportComponent implements OnInit {
 
   @Input() districtId = 0;
+  @Input() areaId = 0;
+  @Input() regionId = 0;
+  @Input() type = 'district';
   @Input() fiscalYearId = "0";
   counties:Observable<PlanningUnit[]>;
 

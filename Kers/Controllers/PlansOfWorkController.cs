@@ -69,9 +69,9 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet("noplanscounties/{dstrId?}/{fy?}")]
+        [HttpGet("noplanscounties/{Id?}/{fy?}/{type?}")]
         [Authorize]
-        public IActionResult CountiesWithoutPlans(int dstrId = 0, string fy = "0"){
+        public IActionResult CountiesWithoutPlans(int Id = 0, string fy = "0", string type = "district"){
             FiscalYear fiscalYear;
             if(fy != "0"){
                 fiscalYear = fiscalYearRepo.byName(fy, FiscalYearType.ServiceLog);
@@ -80,8 +80,14 @@ namespace Kers.Controllers
             }
 
             var plansOfWorkPerFiscalYear = this.context.PlanOfWork.Where(p => p.FiscalYear == fiscalYear);
-            if( dstrId != 0 ){
-                plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => p.PlanningUnit.DistrictId == dstrId);
+            if( Id != 0 ){
+                if(type == "area"){
+                    plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => p.PlanningUnit.ExtensionAreaId == Id);
+                }else if(type == "region"){
+                    plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => p.PlanningUnit.ExtensionArea.ExtensionRegionId == Id);
+                }else{
+                    plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => p.PlanningUnit.DistrictId == Id);
+                }
             }
 
             var plansPerCounty = plansOfWorkPerFiscalYear.GroupBy( p => p.PlanningUnit )

@@ -52,8 +52,8 @@ export class PlansofworkService {
                 );
     }
 
-    countiesWithoutPlans(districtId:number = 0, fy:string = "0"):Observable<PlanningUnit[]>{
-        var url = this.baseUrl + "noplanscounties/" + districtId + "/" + fy;
+    countiesWithoutPlans(id:number = 0, fy:string = "0", type:string = "district"):Observable<PlanningUnit[]>{
+        var url = this.baseUrl + "noplanscounties/" + id + "/" + fy + "/" + type;
             return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
                 .pipe(
                     catchError(this.handleError('countiesWithoutPlans', []))
