@@ -26,16 +26,16 @@ export class AffirmativeService {
 
 
 
-    countiesWithoutPlan(districtId:number = 0, fy:string = "0"):Observable<PlanningUnit[]>{
-        var url = this.baseUrl + 'countieswithoutplan/' + districtId + '/' + fy;
+    countiesWithoutPlan(districtId:number = 0, fy:string = "0", type:string = "district"):Observable<PlanningUnit[]>{
+        var url = this.baseUrl + 'countieswithoutplan/' + districtId + '/' + fy + '/' + type;
         return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('countiesWithoutPlan', []))
             );
     }
 
-    countiesWithoutReport(districtId:number = 0, fy:string = "0"):Observable<PlanningUnit[]>{
-        var url = this.baseUrl + 'countieswithoutreport/' + districtId + '/' + fy;
+    countiesWithoutReport(districtId:number = 0, fy:string = "0", type:string = "district"):Observable<PlanningUnit[]>{
+        var url = this.baseUrl + 'countieswithoutreport/' + districtId + '/' + fy + '/' + type;
         return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('countiesWithoutReport', []))

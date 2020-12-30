@@ -87,9 +87,9 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet("countieswithoutreport/{district?}/{fy?}")]
+        [HttpGet("countieswithoutreport/{id?}/{fy?}/{type?}")]
         [Authorize]
-        public IActionResult CountiesWithoutReport(int district = 0, string fy = "0"){
+        public IActionResult CountiesWithoutReport(int id = 0, string fy = "0", string type = "district"){
             FiscalYear FiscalYear;
             if(fy == "0"){
                 FiscalYear = fiscalYearRepo.currentFiscalYear( FiscalYearType.ServiceLog );
@@ -100,12 +100,20 @@ namespace Kers.Controllers
 
 
             var plansPerFiscalYear = this.context.AffirmativeActionPlan
-                                            .Where(p => p.FiscalYearId == FiscalYear.Id)
+                                            .Where(p => p.FiscalYearId == FiscalYear.Id && p.PlanningUnit.Name.Substring(p.PlanningUnit.Name.Count() - 3) == "CES")
                                             .Include( a => a.PlanningUnit)
                                             .Include( a => a.Revisions ).ToList();
-            if(district != 0){
-                plansPerFiscalYear = plansPerFiscalYear
-                                            .Where( p => p.PlanningUnit.DistrictId == district).ToList();
+            if(id != 0){
+                if(type == "area"){
+                    plansPerFiscalYear = plansPerFiscalYear
+                                            .Where( p => p.PlanningUnit.ExtensionAreaId == id).ToList();
+                }else if( type == "region"){
+                    plansPerFiscalYear = plansPerFiscalYear
+                                            .Where( p => p.PlanningUnit.ExtensionArea.ExtensionRegionId == id).ToList();
+                }else{
+                    plansPerFiscalYear = plansPerFiscalYear
+                                            .Where( p => p.PlanningUnit.DistrictId == id).ToList();
+                }
             }
             
 
@@ -134,9 +142,9 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet("countieswithoutplan/{district?}/{fy?}")]
+        [HttpGet("countieswithoutplan/{district?}/{fy?}/{type?}")]
         [Authorize]
-        public IActionResult CountiesWithoutPlan(int district = 0, string fy = "0"){
+        public IActionResult CountiesWithoutPlan(int district = 0, string fy = "0", string type = "district"){
             FiscalYear FiscalYear;
             if(fy == "0"){
                 FiscalYear = fiscalYearRepo.nextFiscalYear( FiscalYearType.ServiceLog );
