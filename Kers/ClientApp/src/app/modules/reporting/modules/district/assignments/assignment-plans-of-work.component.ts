@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 export class AssignmentPlansOfWorkComponent implements OnInit {
 
 
-  @Input() districtId = 0;
+  @Input() districtId:number = 0;
   @Input() areaId = 0;
   @Input() regionId = 0;
   @Input() type = 'district';
@@ -23,7 +23,15 @@ export class AssignmentPlansOfWorkComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.counties = this.service.countiesWithoutPlans(this.districtId, this.fiscalYearId, this.type);
+    var id:number;
+    if(this.type == "district"){
+      id = this.districtId;
+    }else if( this.type == "area"){
+      id = this.areaId;
+    }else{
+      id = this.regionId;
+    }
+    this.counties = this.service.countiesWithoutPlans(id, this.fiscalYearId, this.type);
   }
 
 }

@@ -22,7 +22,15 @@ export class AssignmentAffirmativeReportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.counties = this.service.countiesWithoutReport(this.districtId, this.fiscalYearId);
+    var id:number;
+    if(this.type == "district"){
+      id = this.districtId;
+    }else if( this.type == "area"){
+      id = this.areaId;
+    }else{
+      id = this.regionId;
+    }
+    this.counties = this.service.countiesWithoutReport(id, this.fiscalYearId, this.type);
   }
 
 }

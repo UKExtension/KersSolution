@@ -47,7 +47,7 @@ import { AreaService } from './area.service';
               <div class="col-xs-12 text-right" *ngIf="assignmentPlansOfWorkOpen">
                   <a class="btn btn-info btn-xs" (click)="assignmentPlansOfWorkOpen=false">close</a>                
               </div>
-              <assignment-plans-of-work [areaId]="area.id" [type]="area" [fiscalYearId]="lastFiscalYear.name" *ngIf="assignmentPlansOfWorkOpen"></assignment-plans-of-work>  
+              <assignment-plans-of-work [areaId]="area.id" [type]="'area'" [fiscalYearId]="lastFiscalYear.name" *ngIf="assignmentPlansOfWorkOpen"></assignment-plans-of-work>  
           </div>
           <div class="row">
               <div class="ln_solid"></div>
@@ -65,7 +65,7 @@ import { AreaService } from './area.service';
               <div class="col-xs-12 text-right" *ngIf="assignmentAffirmativeReportOpen">
                   <a class="btn btn-info btn-xs" (click)="assignmentAffirmativeReportOpen=false">close</a>                
               </div>
-              <assignment-affirmative-report [areaId]="area.id" [type]="area" [fiscalYearId]="currentFiscalYear.name"  *ngIf="assignmentAffirmativeReportOpen"></assignment-affirmative-report>
+              <assignment-affirmative-report [areaId]="area.id" [type]="'area'" [fiscalYearId]="currentFiscalYear.name"  *ngIf="assignmentAffirmativeReportOpen"></assignment-affirmative-report>
           </div>
           <div class="row">
               <div class="ln_solid"></div>
@@ -83,7 +83,7 @@ import { AreaService } from './area.service';
               <div class="col-xs-12 text-right" *ngIf="assignmentAffirmativePlanOpen">
                   <a class="btn btn-info btn-xs" (click)="assignmentAffirmativePlanOpen=false">close</a>                
               </div>
-              <assignment-affirmative-plan [areaId]="area.id" [type]="area" [fiscalYearId]="lastFiscalYear.name" *ngIf="assignmentAffirmativePlanOpen"></assignment-affirmative-plan>  
+              <assignment-affirmative-plan [areaId]="area.id" [type]="'area'" [fiscalYearId]="lastFiscalYear.name" *ngIf="assignmentAffirmativePlanOpen"></assignment-affirmative-plan>  
           </div>
           <div class="row">
               <div class="ln_solid"></div>
@@ -101,7 +101,7 @@ import { AreaService } from './area.service';
               <div class="col-xs-12 text-right" *ngIf="assignmentProgramIndicatorsOpen">
                   <a class="btn btn-info btn-xs" (click)="assignmentProgramIndicatorsOpen=false">close</a>                
               </div>
-              <assignment-program-indicators [areaId]="area.id" [type]="area" [fiscalYearId]="currentFiscalYear.name" *ngIf="assignmentProgramIndicatorsOpen"></assignment-program-indicators>  
+              <assignment-program-indicators [areaId]="area.id" [type]="'area'" [fiscalYearId]="currentFiscalYear.name" *ngIf="assignmentProgramIndicatorsOpen"></assignment-program-indicators>  
           </div>
         </div>
       </div>

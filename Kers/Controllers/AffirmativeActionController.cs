@@ -142,9 +142,9 @@ namespace Kers.Controllers
 
 
 
-        [HttpGet("countieswithoutplan/{district?}/{fy?}/{type?}")]
+        [HttpGet("countieswithoutplan/{id?}/{fy?}/{type?}")]
         [Authorize]
-        public IActionResult CountiesWithoutPlan(int district = 0, string fy = "0", string type = "district"){
+        public IActionResult CountiesWithoutPlan(int id = 0, string fy = "0", string type = "district"){
             FiscalYear FiscalYear;
             if(fy == "0"){
                 FiscalYear = fiscalYearRepo.nextFiscalYear( FiscalYearType.ServiceLog );
@@ -153,9 +153,14 @@ namespace Kers.Controllers
             }
 
             List<PlanningUnit> counties;
-
-            if(district != 0){
-                counties = context.PlanningUnit.Where( c => c.DistrictId == district && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+            if(id != 0){
+                if(type == "area"){
+                    counties = context.PlanningUnit.Where( c => c.ExtensionAreaId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                }else if( type == "region"){
+                    counties = context.PlanningUnit.Where( c => c.ExtensionArea.ExtensionRegionId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                }else{
+                    counties = context.PlanningUnit.Where( c => c.DistrictId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                }
             }else{
                 counties = context.PlanningUnit.Where( u => u.District != null && u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
             }

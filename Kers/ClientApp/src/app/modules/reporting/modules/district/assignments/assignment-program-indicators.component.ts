@@ -23,7 +23,15 @@ export class AssignmentProgramIndicatorsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.counties = this.service.countiesWithoutIndicators(this.districtId, this.fiscalYearId);
+    var id:number;
+    if(this.type == "district"){
+      id = this.districtId;
+    }else if( this.type == "area"){
+      id = this.areaId;
+    }else{
+      id = this.regionId;
+    }
+    this.counties = this.service.countiesWithoutIndicators(id, this.fiscalYearId, this.type);
   }
 
 }

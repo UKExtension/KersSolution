@@ -24,8 +24,8 @@ export class IndicatorsService {
         }
 
 
-    countiesWithoutIndicators(districtId:number = 0, fy:string = "0"):Observable<PlanningUnit[]>{
-        var url = this.baseUrl + 'noindicatorscounties/' + districtId + '/' + fy;
+    countiesWithoutIndicators(districtId:number = 0, fy:string = "0", type:string = "district"):Observable<PlanningUnit[]>{
+        var url = this.baseUrl + 'noindicatorscounties/' + districtId + '/' + fy + '/' + type;
         return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('countiesWithoutIndicators', []))
