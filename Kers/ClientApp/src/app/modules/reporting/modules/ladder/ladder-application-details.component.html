@@ -4,8 +4,8 @@
     <div class="col-sm-4 text-right">
       Employee:
     </div>
-    <div class="col-sm-4 font-weight-bold">
-    <strong>{{application.kersUser.rprtngProfile.name}}</strong>
+    <div class="col-sm-4 font-weight-bold" style="font-size: 1.5em;">
+      <strong>{{application.kersUser.rprtngProfile.name}}</strong>
     </div>
   </div>
   <div class="row">
@@ -38,10 +38,10 @@
   </div>
   <div class="row">
     <div class="col-sm-4 text-right">
-      District:
+      Extension Area:
     </div>
     <div class="col-sm-4 font-weight-bold">
-      <strong>{{application.kersUser.rprtngProfile.planningUnit.district.name}}</strong>
+      <strong>{{application.kersUser.rprtngProfile.planningUnit.extensionArea.name}}</strong>
     </div>
   </div>
   <div class="row">
@@ -135,7 +135,7 @@
     </div>
   </div>
   <div class="col-xs-12" style="border-top: 1px solid #ccc; margin-top: 20px; padding: 20px 0;" *ngIf="!application.draft">
-    <h2>Status:</h2>
+    <h2>Current Review Stage:</h2>
     <span *ngIf="application.lastStage != null">{{application.lastStage.name}} Review</span>
     <span *ngIf="application.approved">Approved</span>
     

@@ -14,35 +14,39 @@
   <div class="col-xs-12" style="margin-bottom: 10px;">
     <ladder-application-details [applicationId]="application.id"></ladder-application-details>
   </div>
-  <div class="ln_solid clear" ></div>
-  <div class="col-sm-4 col-xs-12 text-right">
-    Review Notes:
+  <div class="clear" ></div>
+  <div  style=" background-color:blanchedalmond">
+    <div class="ln_solid clear" ></div>
+  
+    <div class="col-sm-4 col-xs-12 text-right">
+      Review Notes:
 
-  </div>
-  <div class="col-sm-8 col-xs-12 text-right" style="padding-bottom: 15px;">
-   <textarea class="form-control" [(ngModel)]="notes"></textarea>
-
-  </div>
-  <div class="ln_solid clear" ></div>
-  <div>
-    <div class="col-xs-6">
-      <a class="btn btn-success" (click)="submit(false)">Return Back</a>
-      
-      <ng-container *ngIf="previousStage$ | async as previousStage; else loading">
-        to {{previousStage.name}}
-       </ng-container>
-       <ng-template #loading> to Employee</ng-template>
-      
-      
-      <div></div>
     </div>
-    <div class="col-xs-6 text-right">
-      <ng-container *ngIf="nextStage$ | async as nextStage; else final">
-       Advance to {{nextStage.name}}
-       </ng-container>
-       <ng-template #final>Final Decision&nbsp;</ng-template>
-      <a class="btn btn-success" (click)="submit(true)">Approve</a>
-      
+    <div class="col-sm-8 col-xs-12 text-right" style="padding-bottom: 15px;">
+      <textarea class="form-control" [(ngModel)]="notes"></textarea>
     </div>
+    <div class="ln_solid clear" ></div>
+    <div>
+      <div class="col-xs-6">
+        <a class="btn btn-success" (click)="submit(false)">Return Back</a>
+        
+        <ng-container *ngIf="previousStage$ | async as previousStage; else loading">
+          to {{previousStage.name}}
+        </ng-container>
+        <ng-template #loading> to Employee</ng-template>
+        
+        
+        <div></div>
+      </div>
+      <div class="col-xs-6 text-right">
+        <ng-container *ngIf="nextStage$ | async as nextStage; else final">
+        Advance to {{nextStage.name}}
+        </ng-container>
+        <ng-template #final>Final Decision&nbsp;</ng-template>
+        <a class="btn btn-success" (click)="submit(true)">Approve</a>
+        
+      </div>
+    </div><br><br><br>
+    <div class="clear" ></div>
   </div>
 </div>

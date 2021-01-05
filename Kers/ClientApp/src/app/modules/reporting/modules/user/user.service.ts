@@ -8,6 +8,7 @@ import { Vehicle } from '../expense/vehicle/vehicle.service';
 import {TrainingEnrollment} from '../training/training';
 import { District } from '../district/district.service';
 import { ExtensionEventLocation } from '../events/extension-event';
+import { ExtensionArea } from '../state/state.service';
 
 
 @Injectable()
@@ -403,6 +404,8 @@ export class PlanningUnit{
         public location:ExtensionEventLocation,
         public geography:PlanningUnitGeography,
         public district:District,
+        public extensionArea:ExtensionArea,
+        public extensionAreaId?:number,
         public locationId?:number,
         public fipsCode?:number,
         public districtId?:number,

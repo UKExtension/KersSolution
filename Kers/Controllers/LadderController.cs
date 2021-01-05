@@ -100,9 +100,14 @@ namespace Kers.Controllers
                         }
                     }else if( stage.Restriction == LadderStageRestrictionKeys.Area ){
                         if( area != null ){
-                            apps = context.LadderApplication.Where(a => a.LastStageId == StageId && a.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId == area.Id )
+
+                            var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                            var pairing = AreaController.FindContainingPair( area.Name );
+
+                            apps = context.LadderApplication.Where(a => a.LastStageId == StageId &&  pairing.Contains( a.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.Name ) )
                                 .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                 .ToListAsync();
+
                         }
                     }else if( stage.Restriction == LadderStageRestrictionKeys.District ){
                         if( district != null ){
@@ -230,7 +235,7 @@ namespace Kers.Controllers
            
             var appilcation = await  context.LadderApplication
                                             .Where( a => a.Id == Id)
-                                            .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit).ThenInclude( u => u.District)
+                                            .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit).ThenInclude( u => u.ExtensionArea)
                                             .Include( a => a.KersUser).ThenInclude( u => u.Specialties).ThenInclude( s => s.Specialty)
                                             .Include( a => a.LadderEducationLevel)
                                             .Include( a => a.LadderLevel)
