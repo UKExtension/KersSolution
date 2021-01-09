@@ -6,6 +6,7 @@ import { ActivatedRoute, Params } from "@angular/router";
 import { StateService } from '../state/state.service';
 import { PlanningUnit } from '../user/user.service';
 import { AreaService } from '../area/area.service';
+import { RegionService } from '../region/region.service';
 
 @Component({
     selector: 'county-list',
@@ -78,6 +79,7 @@ export class CountyListComponent {
     @Input() district:District | null = null;
     @Input() type:string = 'district';
     @Input() areaId:number = 0;
+    @Input() regionId:number = 0;
     counties:Observable<PlanningUnit[]>;
     countiesNoAa:County[];
     countiesNoPl:County[];
@@ -88,6 +90,7 @@ export class CountyListComponent {
         private service:DistrictService,
         private stateService:StateService,
         private areaService:AreaService,
+        private regionService:RegionService,
         private route: ActivatedRoute,
     )   
     {}
@@ -95,6 +98,8 @@ export class CountyListComponent {
     ngOnInit(){
         if(this.type == 'area'){
             this.counties = this.areaService.counties(this.areaId);
+        }else if(this.type == 'region'){
+            this.counties = this.regionService.counties(this.regionId);
         }else{
             if( this.district == null){
                 this.counties = this.stateService.notCounties();

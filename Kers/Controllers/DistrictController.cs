@@ -70,10 +70,10 @@ namespace Kers.Controllers
         }
 
 
-        [HttpGet("employeeactivity/{id}/{month}/{year}/{order?}/{type?}/{skip?}/{take?}/{isItArea?}/{includePairings?}")]
-        public async Task<IActionResult> EployeeActivity(int id, int month, int year, string order = "asc", string type = "activity", int skip = 0, int take = 20, bool isItArea = false, bool includePairings = true){
+        [HttpGet("employeeactivity/{id}/{month}/{year}/{order?}/{type?}/{skip?}/{take?}/{filter?}/{includePairings?}")]
+        public async Task<IActionResult> EployeeActivity(int id, int month, int year, string order = "asc", string type = "activity", int skip = 0, int take = 20, string filter = "district", bool includePairings = true){
             List<KersUser> districtEmployees;
-            if( isItArea ){
+            if( filter == "area" ){
                 if( includePairings){
                     var areaController = new ExtensionAreaController(mainContext,context, userRepo);
                     var area = this.context.ExtensionArea.Find(id);
@@ -103,6 +103,20 @@ namespace Kers.Controllers
                                             .Include( u => u.PersonalProfile).ThenInclude( r => r.UploadImage)
                                             .ToListAsync();
                 } 
+            }else if( filter == "region" ){
+                districtEmployees = await context.KersUser
+                                            .Where( u => u.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegionId == id
+                                                            &&
+                                                            u.ExtensionPosition.Title == "Extension Agent"
+                                                            &&
+                                                            u.RprtngProfile.PlanningUnit.Name != "Wildcat County CES (demo only)"
+                                                            && 
+                                                            u.RprtngProfile.enabled)
+                                            .Include( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                            .Include( u => u.PersonalProfile).ThenInclude( r => r.UploadImage)
+                                            .ToListAsync();
+
+            
             }else{
                 districtEmployees = await context.KersUser
                                             .Where( u => u.RprtngProfile.PlanningUnit.DistrictId == id

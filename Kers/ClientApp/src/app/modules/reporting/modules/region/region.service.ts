@@ -5,15 +5,15 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { User, PlanningUnit } from "../user/user.service";
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import { ExtensionArea } from '../state/state.service';
+import { ExtensionArea, ExtensionRegion } from '../state/state.service';
 
 
 @Injectable({
     providedIn: 'root'
   })
-export class AreaService {
+export class RegionService {
 
-    private baseUrl = '/api/ExtensionArea/';
+    private baseUrl = '/api/ExtensionRegion/';
     private handleError: HandleError;
 
 
@@ -29,24 +29,24 @@ export class AreaService {
     // Area CONTENT
     /**********************************/
 
-    get(areaId:number):Observable<ExtensionArea>{
-        var url = this.baseUrl + areaId;
-        return this.http.get<ExtensionArea>(this.location.prepareExternalUrl(url))
+    get(regionId:number):Observable<ExtensionRegion>{
+        var url = this.baseUrl + regionId;
+        return this.http.get<ExtensionRegion>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('get', <ExtensionArea>{}))
+                catchError(this.handleError('get', <ExtensionRegion>{}))
             );
     }
 
-    counties(areaId:number, includePairings:boolean = true):Observable<PlanningUnit[]>{
-        var url = this.baseUrl + "countiesbyareaid/" + areaId + "/" + includePairings;
+    counties(regionId:number, includePairings:boolean = true):Observable<PlanningUnit[]>{
+        var url = this.baseUrl + "countiesbyareaid/" + regionId + "/" + includePairings;
         return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('counties', []))
             );
     }
 
-    employeeactivity(areaid:number, month:number, year:number, order:string = "asc", type:string = "activity", skip:number=0, take:number=21):Observable<EmployeeNumActivities[]>{
-        var url = this.baseUrl + "employeeactivity/" + areaid + '/' + month + '/' + year + '/' + order + '/' + type + '/' + skip + '/' + take + "/area/true";
+    employeeactivity(districtid:number, month:number, year:number, order:string = "asc", type:string = "activity", skip:number=0, take:number=21):Observable<EmployeeNumActivities[]>{
+        var url = this.baseUrl + "employeeactivity/" + districtid + '/' + month + '/' + year + '/' + order + '/' + type + '/' + skip + '/' + take;
         return this.http.get<EmployeeNumActivities[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('employeeactivity', []))

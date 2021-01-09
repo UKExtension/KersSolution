@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DistrictService, District, EmployeeNumActivities } from './district.service';
 import { Observable } from 'rxjs';
-import { ExtensionArea } from '../state/state.service';
+import { ExtensionArea, ExtensionRegion } from '../state/state.service';
 
 @Component({
   selector: 'district-employees',
@@ -12,6 +12,7 @@ export class DistrictEmployeesComponent implements OnInit {
 
   @Input() district:District;
   @Input() area:ExtensionArea;
+  @Input() region:ExtensionRegion;
 
   activities:Observable<EmployeeNumActivities[]>;
   month:number;

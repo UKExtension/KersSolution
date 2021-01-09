@@ -42,8 +42,8 @@ export class DistrictService {
             );
     }
 
-    employeeactivity(districtid:number, month:number, year:number, order:string = "asc", type:string = "activity", skip:number=0, take:number=21, isItArea:boolean = false, includePairings:boolean = true):Observable<EmployeeNumActivities[]>{
-        var url = this.baseUrl + "employeeactivity/" + districtid + '/' + month + '/' + year + '/' + order + '/' + type + '/' + skip + '/' + take + '/' + isItArea + '/' + includePairings;
+    employeeactivity(districtid:number, month:number, year:number, order:string = "asc", type:string = "activity", skip:number=0, take:number=21, filter:string = "district", includePairings:boolean = true):Observable<EmployeeNumActivities[]>{
+        var url = this.baseUrl + "employeeactivity/" + districtid + '/' + month + '/' + year + '/' + order + '/' + type + '/' + skip + '/' + take + '/' + filter + '/' + includePairings;
         return this.http.get<EmployeeNumActivities[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('employeeactivity', []))

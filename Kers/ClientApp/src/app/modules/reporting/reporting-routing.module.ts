@@ -114,6 +114,10 @@ const reportingRoutes: Routes = [
             loadChildren: './modules/area/area.module#AreaModule'
           },
           {
+            path:'extensionregion',
+            loadChildren: './modules/region/region.module#RegionModule'
+          },
+          {
             path: 'soildata', 
             loadChildren: './modules/soildata/soildata.module#SoildataModule'
           },
