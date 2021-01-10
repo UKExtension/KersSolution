@@ -76,7 +76,7 @@ namespace Kers.Controllers
                             .FirstOrDefaultAsync()) ?? 0;
             }
             var cnts = await this.counties(id, includePairings);
-            return new OkObjectResult( cnts );
+            return new OkObjectResult( cnts.OrderBy( u => u.Name ) );
         }
 
         private async Task<List<PlanningUnit>> counties( int ArreaId, bool includePairings){

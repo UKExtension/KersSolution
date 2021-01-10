@@ -21,8 +21,8 @@ import { RegionService } from '../region/region.service';
         <div class="x_content" *ngIf="counties">
 
                 <div class="col-lg-4 col-md-6 col-xs-12" *ngFor="let county of counties | async">
-                        <a *ngIf="district != null || type=='area'" [routerLink]="['/reporting/county', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name.substring(0, county.name.length - 11)}}</a>
-                        <a *ngIf="district == null && type!='area'" [routerLink]="['/reporting/county/unit', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name}}</a>
+                        <a *ngIf="district != null || type=='area' || type=='region'" [routerLink]="['/reporting/county', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name.substring(0, county.name.length - 11)}}</a>
+                        <a *ngIf="district == null && type!='area' && type!='region'" [routerLink]="['/reporting/county/unit', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name}}</a>
                 </div>
                 
             </div>

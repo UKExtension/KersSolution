@@ -41,9 +41,9 @@ namespace Kers.Controllers
         public IActionResult Get(int id = 0){
             if(id == 0){
                 var unit = CurrentPlanningUnit();
-                id = unit.ExtensionAreaId ?? 0;
+                id = unit.ExtensionArea.ExtensionRegionId;
             }
-            var area = this.context.ExtensionArea.
+            var area = this.context.ExtensionRegion.
                                 Where(c=>c.Id == id).
                                 FirstOrDefault();
             return new OkObjectResult(area);
@@ -57,17 +57,17 @@ namespace Kers.Controllers
                 var user = this.CurrentUser();
                 id = (await this.context.PlanningUnit
                             .Where( u => u.Id == user.RprtngProfile.PlanningUnitId)
-                            .Select( u => u.ExtensionAreaId)
-                            .FirstOrDefaultAsync()) ?? 0;
+                            .Select( u => u.ExtensionArea.ExtensionRegionId)
+                            .FirstOrDefaultAsync());
             }
             var cnts = await this.counties(id);
-            return new OkObjectResult( cnts );
+            return new OkObjectResult( cnts.OrderBy( u => u.Name ) );
         }
 
         private async Task<List<PlanningUnit>> counties( int RegionId){
             IQueryable<PlanningUnit> counties = null;
 
-                counties = this.context.PlanningUnit.Where( u => u.ExtensionArea.ExtensionRegionId == RegionId );
+            counties = this.context.PlanningUnit.Where( u => u.ExtensionArea.ExtensionRegionId == RegionId );
             
             return await counties.ToListAsync();
         }

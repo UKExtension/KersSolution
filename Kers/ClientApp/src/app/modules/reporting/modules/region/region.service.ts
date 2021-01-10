@@ -22,7 +22,7 @@ export class RegionService {
         private location:Location,
         httpErrorHandler: HttpErrorHandler
         ) {
-            this.handleError = httpErrorHandler.createHandleError('AreaService');
+            this.handleError = httpErrorHandler.createHandleError('RegionService');
         }
 
     /**********************************/
@@ -38,7 +38,7 @@ export class RegionService {
     }
 
     counties(regionId:number, includePairings:boolean = true):Observable<PlanningUnit[]>{
-        var url = this.baseUrl + "countiesbyareaid/" + regionId + "/" + includePairings;
+        var url = this.baseUrl + "countiesbyregionid/" + regionId;
         return this.http.get<PlanningUnit[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('counties', []))
