@@ -53,7 +53,7 @@ export class DistrictEmployeesComponent implements OnInit {
 
   resetActivites(){
     if( this.area != null ){
-      this.activities = this.service.employeeactivity(this.area.id, this.month, this.year, this.order, this.type, this.skip, this.take, true, true);
+      this.activities = this.service.employeeactivity(this.area.id, this.month, this.year, this.order, this.type, this.skip, this.take, "area", true);
     }else{
       this.activities = this.service.employeeactivity(this.district.id, this.month, this.year, this.order, this.type, this.skip, this.take);
     }
