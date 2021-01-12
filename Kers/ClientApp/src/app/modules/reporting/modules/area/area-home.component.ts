@@ -167,7 +167,7 @@ export class AreaHomeComponent implements OnInit {
                 this.service.pairing(this.areaId).subscribe(
                     res => {
                         this.pairing = res;
-                        console.log(this.pairing);
+                        this.defaultTitle();
                     }
                 )
                 return this.service.get(this.areaId ) 
@@ -176,7 +176,6 @@ export class AreaHomeComponent implements OnInit {
                           .subscribe(
                             res => {
                               this.area = res;
-                              this.defaultTitle();
                             }
                           );
   }
