@@ -90,5 +90,9 @@ export class LadderReviewComponent implements OnInit {
     this.reportingService.setTitle("Professional Career Ladder Promotion Application");
     this.reportingService.setSubtitle("Pending Review");
   }
+  ngOnDestroy(){
+    this.reportingService.setTitle( 'Kentucky Extension Reporting System' );
+    this.reportingService.setSubtitle('');
+  }
 
 }

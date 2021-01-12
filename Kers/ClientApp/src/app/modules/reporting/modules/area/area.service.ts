@@ -36,6 +36,13 @@ export class AreaService {
                 catchError(this.handleError('get', <ExtensionArea>{}))
             );
     }
+    pairing(areaId:number):Observable<string[]>{
+        var url = this.baseUrl + 'pairing/' + areaId;
+        return this.http.get<string[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('pairning', []))
+            );
+    }
 
     counties(areaId:number, includePairings:boolean = true):Observable<PlanningUnit[]>{
         var url = this.baseUrl + "countiesbyareaid/" + areaId + "/" + includePairings;

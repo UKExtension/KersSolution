@@ -127,6 +127,9 @@ export class AreaHomeComponent implements OnInit {
 
   @Input() areaId:number;
 
+  includePairings:boolean = true;
+  pairing:string[] = [];
+
 
   area:ExtensionArea;
 
@@ -161,6 +164,12 @@ export class AreaHomeComponent implements OnInit {
                 if(params['id'] != undefined){
                     this.areaId = params['id'];
                 }
+                this.service.pairing(this.areaId).subscribe(
+                    res => {
+                        this.pairing = res;
+                        console.log(this.pairing);
+                    }
+                )
                 return this.service.get(this.areaId ) 
             }
                         )
@@ -179,7 +188,7 @@ export class AreaHomeComponent implements OnInit {
   }
 
   defaultTitle(){
-      this.reportingService.setTitle("Extension Area " + this.area.name );
+      this.reportingService.setTitle("Extension Area " + this.pairing.join(' + ') );
       //this.reportingService.setSubtitle(this.area.name);
   }
 

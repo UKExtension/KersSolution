@@ -64,6 +64,20 @@ namespace Kers.Controllers
             return new OkObjectResult(area);
         }
 
+        [HttpGet("pairing/{id?}")]
+        [Authorize]
+        public IActionResult GetPairing(int id = 0){
+            if(id == 0){
+                var unit = CurrentPlanningUnit();
+                id = unit.ExtensionAreaId ?? 0;
+            }
+            var area = this.context.ExtensionArea.
+                                Where(c=>c.Id == id).
+                                FirstOrDefault();
+            string[] pairing = FindContainingPair(area.Name);
+            return new OkObjectResult(pairing);
+        }
+
 
         [HttpGet("countiesbyareaid/{id}/{includePairings}")]
         [Authorize]
