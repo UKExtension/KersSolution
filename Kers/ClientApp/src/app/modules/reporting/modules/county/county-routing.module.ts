@@ -30,6 +30,10 @@ import { KsuHomeComponent } from './ksu-home.component';
                 {
                   path: 'manager/dashboard',
                   component: CountyHomeComponent
+                },
+                {
+                  path: ':id/:returnto',
+                  component: UnitHomeComponent,
                 }
             ]
       }

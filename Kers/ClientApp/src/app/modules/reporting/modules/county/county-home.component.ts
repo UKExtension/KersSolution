@@ -52,7 +52,9 @@ import { Observable } from "rxjs/Observable";
 -->
 
   <div *ngIf="county">
-    <div class="text-right"><a class="btn btn-default btn-xs" routerLink="/reporting/state/district/{{county.districtId}}">District Admin Dashboard</a></div>
+    <div class="text-right" *ngIf="returnto == 'district'"><a class="btn btn-default btn-xs" routerLink="/reporting/state/district/{{county.districtId}}">District Admin Dashboard</a></div>
+    <div class="text-right" *ngIf="returnto == 'area'"><a class="btn btn-default btn-xs" routerLink="/reporting/extensionarea">Area Admin Dashboard</a></div>
+    <div class="text-right" *ngIf="returnto == 'region'"><a class="btn btn-default btn-xs" routerLink="/reporting/extensionregion">Region Admin Dashboard</a></div>
     <div class="row x_title">
         <div class="col-md-6">
         <h3>Employees</h3>
@@ -139,6 +141,7 @@ export class CountyHomeComponent {
     id:number = 0;
     county: PlanningUnit;
     onlyEnabled:boolean = true;
+    returnto:string = 'district';
 
     constructor( 
         private reportingService: ReportingService,
@@ -156,6 +159,9 @@ export class CountyHomeComponent {
                             {
                                 if(params['id'] != undefined){
                                     this.id = params['id'];
+                                }
+                                if(params['returnto'] != undefined){
+                                    this.returnto = params['returnto'];
                                 }
                                 return this.service.get(this.id);
                             } 
