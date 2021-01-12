@@ -101,7 +101,7 @@ namespace Kers.Controllers
 
             var plansPerFiscalYear = this.context.AffirmativeActionPlan
                                             .Where(p => p.FiscalYearId == FiscalYear.Id && p.PlanningUnit.Name.Substring(p.PlanningUnit.Name.Count() - 3) == "CES")
-                                            .Include( a => a.PlanningUnit)
+                                            .Include( a => a.PlanningUnit).ThenInclude( u => u.ExtensionArea)
                                             .Include( a => a.Revisions ).ToList();
             if(id != 0){
                 if(type == "area"){
