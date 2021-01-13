@@ -36,10 +36,24 @@ namespace Kers.Controllers
 		const int height = 792;
 
 		string[] typefaceNames = {	"HelveticaNeue", "HelveticaNeue-Bold", 
-									"HelveticaNeue-CondensedBold", "HelveticaNeue-Light"
+									"HelveticaNeue-CondensedBold", "HelveticaNeue-Light",
+									"BRUSHSCI"
 								};
 
 		SKTypeface[] typefaces;
+
+		protected SKPaint thinLinePaint = new SKPaint
+											{
+												Style = SKPaintStyle.Stroke,
+												Color = SKColors.Black,
+												StrokeWidth = 0.5f
+											};
+		protected SKPaint thickLinePaint = new SKPaint
+											{
+												Style = SKPaintStyle.Stroke,
+												Color = SKColors.Black,
+												StrokeWidth = 1.5f
+											};
 
 
 
@@ -211,6 +225,15 @@ namespace Kers.Controllers
 				canvas.DrawPicture(svg.Picture, ref matrix);
 		}
 
+		public void addBitmap(SKCanvas pdfCanvas, string fileName = "RegSign.png", int tl = 315, int tr = 17, int bl = 431, int br = 75){
+			var dbFile = _context.UploadFile.Where(f => f.Name == fileName).FirstOrDefault();
+			if( dbFile != null){
+				var PngStream = new MemoryStream(dbFile.Content);
+				var webBitmap = SKBitmap.Decode(PngStream);
+				SKRect rect = new SKRect(tl, tr, bl, br);
+				pdfCanvas.DrawBitmap(webBitmap, rect);
+			}
+		}
 		public SKDocumentPdfMetadata metadata(string Keywrds = "Kers, Expense Reporting, Expense", string Ttl = "Summary Expense Report", string Sbj = "Summary Expense Report" ){
 			return new SKDocumentPdfMetadata
 			{

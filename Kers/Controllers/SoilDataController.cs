@@ -50,14 +50,18 @@ namespace Kers.Controllers
 
         }
 
+        public class SoilReportSearchCriteria{
+            public DateTime Start;
+            public DateTime End;
+            public string Search;
+            public int[] status;
+            public string Order;
+            public int[] FormType;
+        }
 
-
-        [HttpGet("GetCustom/{allCounties?}/{countyId?}")]
+        [HttpPost("GetCustom/{allCounties?}/{countyId?}")]
         [Authorize]
-        public IActionResult GetCustom( [FromQuery] string search, 
-                                        [FromQuery] DateTime start,
-                                        [FromQuery] DateTime end,
-                                        [FromQuery] string status,
+        public IActionResult GetCustom( [FromBody] SoilReportSearchCriteria criteria, 
                                         Boolean allCounties = false,
                                         int countyId = 0
                                         ){
@@ -71,51 +75,218 @@ namespace Kers.Controllers
                 }
                 bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
             }
-            if(search != null && search != ""){
+            if(criteria.Search != null && criteria.Search != ""){
                 bundles = bundles.Where( i => i.FarmerForReport != null 
                                     && 
                                 (
-                                    i.FarmerForReport.First.Contains(search)
+                                    i.FarmerForReport.First.Contains(criteria.Search)
                                     ||
-                                    i.FarmerForReport.Last.Contains(search)
+                                    i.FarmerForReport.Last.Contains(criteria.Search)
                                 )            
                         );
-            } 
-            if(start != null){
-                bundles = bundles.Where( i => i.DataProcessed > start);
             }
-            if( end != null){
-                bundles = bundles.Where( i => i.DataProcessed < end);
+            bundles = bundles.Where( b => criteria.FormType.Contains(b.TypeForm.Id) && (b.LastStatus == null || criteria.status.Contains(b.LastStatus.SoilReportStatus.Id)) );
+            if(criteria.Start != null){
+                bundles = bundles.Where( i => i.DataProcessed > criteria.Start);
+            }
+            if( criteria.End != null){
+                bundles = bundles.Where( i => i.DataProcessed < criteria.End);
             }
             bundles = bundles
                         .Include( b => b.Reports)
                         .Include( b => b.FarmerForReport)
                         .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
                         .Include( b => b.TypeForm);
-            return new OkObjectResult(bundles.OrderBy(t => t.DataProcessed));
+            IOrderedQueryable orderedBundles;
+            if(criteria.Order == "smpl"){
+                orderedBundles = bundles.OrderByDescending( s => s.CoSamnum);
+            }else if( criteria.Order == "smplasc"){
+                orderedBundles = bundles.OrderBy( s => s.CoSamnum);
+            }else if( criteria.Order == "dsc"){
+                orderedBundles = bundles.OrderByDescending( s => s.LabTestsReady);
+            }else{
+                orderedBundles = bundles.OrderBy( s => s.LabTestsReady);
+            }
+            return new OkObjectResult(orderedBundles);
         }
 
-        private async void UpdateBundles(){
-            SoilReport OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
+        public class FarmerAddressSearchCriteria{
+            public string Search;
+            public string Order;
+            public int Amount;
+        }
+
+        [HttpPost("GetCustomFarmerAddress/{allCounties?}/{countyId?}")]
+        [Authorize]
+        public IActionResult GetCustomFarmerAddress( [FromBody] FarmerAddressSearchCriteria criteria, 
+                                        Boolean allCounties = false,
+                                        int countyId = 0
+                                        ){
+            var addresses = from i in _soilDataContext.FarmerAddress select i;
+            // Allow reports by all counties
+            if( !allCounties ){
+                if(countyId == 0){
+                    var user = this.CurrentUser();
+                    countyId = user.RprtngProfile.PlanningUnitId;
+                }
+                addresses = addresses.Where( b => b.CountyCode.PlanningUnitId == countyId);
+            }
+            if(criteria.Search != null && criteria.Search != ""){
+                addresses = addresses.Where( i => i.First != null 
+                                    && 
+                                (
+                                    i.First.Contains(criteria.Search)
+                                    ||
+                                    i.Last.Contains(criteria.Search)
+                                )            
+                        );
+            }
+            if(criteria.Order == "frq"){
+                addresses = addresses.OrderByDescending( s => s.Reports.Count());
+            }else{
+                addresses = addresses.OrderBy( s => s.Last).ThenBy( s => s.First);
+            }
+            return new OkObjectResult( new {count = addresses.Count(), data = addresses.Take(criteria.Amount)} );
+        }
+
+
+
+        private void UpdateBundles(){
+            SoilReport OrphanedReport =  _soilDataContext.SoilReport
+                                                .Where( r => r.SoilReportBundleId == null)
+                                                .FirstOrDefault();
             if( OrphanedReport != null ){
                 do{
-                    var SameSample = await _soilDataContext.SoilReport
+                    var SameSample = _soilDataContext.SoilReport
                                         .Where( r => r.CoId == OrphanedReport.CoId && r.CoSamnum == OrphanedReport.CoSamnum)
-                                        .ToListAsync();
+                                        .ToList();
                     var Bundle = new SoilReportBundle();
                     Bundle.Reports = SameSample;
-                    Bundle.StatusHistory = new List<SoilReportStatusChange>();
-                    Bundle.PlanningUnit = await _soilDataContext.CountyCodes.Where( c => c.CountyID == OrphanedReport.CoId).FirstOrDefaultAsync();
-                    Bundle.FarmerForReport = await _soilDataContext.FarmerForReport.Where(f => f.FarmerID == OrphanedReport.FarmerID).FirstOrDefaultAsync();
+                    //Bundle.StatusHistory = new List<SoilReportStatusChange>();
+                    Bundle.PlanningUnit = _soilDataContext.CountyCodes.Where( c => c.CountyID == OrphanedReport.CoId).FirstOrDefault();
+                    if(Bundle.FarmerForReport == null){
+                        Bundle.FarmerForReport = _soilDataContext.FarmerForReport
+                                                        .Where(f => f.FarmerID == OrphanedReport.FarmerID)
+                                                        .FirstOrDefault();
+                        if(Bundle.FarmerForReport != null){
+                            Bundle.FarmerAddress = _soilDataContext.FarmerAddress
+                                                        .Where(f => f.FarmerID == Bundle.FarmerForReport.FarmerID.Substring(0,11))
+                                                        .FirstOrDefault();
+                        }
+                        
+                    }
+                    Bundle.CoSamnum = OrphanedReport.CoSamnum;
                     Bundle.SampleLabelCreated = OrphanedReport.DateIn;
                     Bundle.LabTestsReady = OrphanedReport.DateOut;
                     Bundle.DataProcessed = OrphanedReport.DateSent;
-                    Bundle.TypeForm = await _soilDataContext.TypeForm.Where( f => f.Code == OrphanedReport.TypeForm).FirstOrDefaultAsync();
+                    Bundle.TypeForm = _soilDataContext.TypeForm
+                                                .Where( f => f.Code == OrphanedReport.TypeForm)
+                                                .FirstOrDefault();
+                    Bundle.LastStatus = new SoilReportStatusChange();
+                    Bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Received").FirstOrDefault();
+                    Bundle.LastStatus.Created = DateTime.Now;
                     Bundle.UniqueCode = Guid.NewGuid().ToString();
                     _soilDataContext.Add(Bundle);
-                    await _soilDataContext.SaveChangesAsync();
-                    OrphanedReport = await _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefaultAsync();
+                    _soilDataContext.SaveChanges();
+                    OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
                 }while( OrphanedReport != null);
+            }
+            // Add Unique Code to Farmer Addresses
+            var addresses = _soilDataContext.FarmerAddress.Where( a => a.UniqueCode == null);
+            if( addresses.Any()){
+                foreach( var address in addresses) address.UniqueCode = Guid.NewGuid().ToString();
+                _soilDataContext.SaveChanges();
+            }
+            
+        }
+
+        [HttpPut("updatebundleaddress/{bundleId}")]
+        [Authorize]
+        public IActionResult UpdateBundleAddress( int bundleId, [FromBody] FarmerAddress address){
+            var bundle = _soilDataContext.SoilReportBundle
+                            .Where( b => b.Id == bundleId)
+                            .Include( b => b.FarmerForReport)
+                            .FirstOrDefault();
+            if(address != null && bundle != null ){
+                FarmerForReport adr;
+                if(bundle.FarmerForReport != null){
+                    if(_soilDataContext.SoilReportBundle
+                            .Where(b => b.FarmerForReport == bundle.FarmerForReport)
+                            .Count() > 1){
+                        adr = new FarmerForReport();
+                    }else{
+                        adr = bundle.FarmerForReport;
+                    }
+                    
+                }else{
+                    adr = new FarmerForReport();
+                }
+                adr.First = address.First;
+                adr.Last = address.Last;
+                adr.Address = address.Address;
+                adr.City = address.City;
+                adr.St = address.St;
+                adr.Zip = address.Zip;
+                adr.HomeNumber = address.HomeNumber;
+                adr.EmailAddress = address.EmailAddress;
+                bundle.FarmerForReport = adr;
+                bundle.FarmerAddressId = address.Id;
+                _soilDataContext.SaveChanges();
+                this.Log(adr,"SoilReportBundle", "Bundle FarmerAddress Updated.");
+                return new OkObjectResult(bundle);
+            }else{
+                this.Log( address ,"SoilReportBundle", "Not Found SoilReportBundle or missing Farmer Address in an update bundle attempt.", "SoilReportBundle", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+        [HttpPut("updatebundlestatustoarchived/{bundleId}")]
+        [Authorize]
+        public IActionResult UpdateBundleStatus( int bundleId, [FromBody] SoilReportBundle sentBundle){
+            var bundle = _soilDataContext.SoilReportBundle
+                            .Where( b => b.Id == bundleId)
+                            .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                            .FirstOrDefault();
+            if(bundle != null ){
+                if(bundle.LastStatus.SoilReportStatus.Name != "Archived"){
+                    bundle.LastStatus = new SoilReportStatusChange();
+                    bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Archived").FirstOrDefault();
+                    bundle.LastStatus.Created = DateTime.Now;
+                    _soilDataContext.SaveChanges();
+                }
+                this.Log(bundle,"SoilReportBundle", "Bundle Status Updated.");
+                return new OkObjectResult(bundle);
+            }else{
+                this.Log( sentBundle ,"SoilReportBundle", "Not Found SoilReportBundle status update bundle attempt.", "SoilReportBundle", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+        [HttpPut("updatecropnote/{reportId}")]
+        [Authorize]
+        public IActionResult UpdateCropNote( int reportId, [FromBody] SoilReport note){
+            var crop = _soilDataContext.SoilReport
+                            .Where( b => b.Id == reportId)
+                            .Include( b => b.SoilReportBundle).ThenInclude( r => r.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                            .Include( b => b.SoilReportBundle).ThenInclude( r => r.Reports)
+                            .FirstOrDefault();
+            if(crop != null && note != null ){
+                crop.AgentNote = note.AgentNote;
+                var user = this.CurrentUser();
+                crop.NoteByKersUserId = user.Id;
+                if( crop.SoilReportBundle.LastStatus == null || crop.SoilReportBundle.LastStatus.SoilReportStatus.Name == "Received"){
+                    var otherReports = crop.SoilReportBundle.Reports.Where(r => r.Id != crop.Id && r.AgentNote == null);
+                    if( !otherReports.Any()){
+                        crop.SoilReportBundle.LastStatus = new SoilReportStatusChange();
+                        crop.SoilReportBundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where(s => s.Name == "Reviewed").FirstOrDefault();
+                        crop.SoilReportBundle.LastStatus.Created = DateTime.Now;
+                    }
+                }
+                _soilDataContext.SaveChanges();
+                this.Log(crop,"SoilReport", "SoilReport note Updated.");
+                return new OkObjectResult(crop);
+            }else{
+                this.Log( note ,"SoilReport", "Not Found SoilReport or missing note in an update report attempt.", "SoilReport", "Error");
+                return new StatusCodeResult(500);
             }
         }
 
@@ -127,6 +298,7 @@ namespace Kers.Controllers
                 var user = this.CurrentUser();
                 var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
                 address.CountyCode = countyCode;
+                address.UniqueCode = Guid.NewGuid().ToString();
                 _soilDataContext.Add(address); 
                 _soilDataContext.SaveChanges();
                 this.Log(address,"FarmerAddress", "Farmer Address added.");
@@ -239,6 +411,7 @@ namespace Kers.Controllers
             }
             var addresses = await _soilDataContext.FarmerAddress.
                                     Where(a => a.CountyCode.PlanningUnitId == countyid).
+                                    OrderBy( a => a.Last).
                                     ToListAsync();
             return new OkObjectResult(addresses);
         }
@@ -287,6 +460,18 @@ namespace Kers.Controllers
                 }
             }
             return new OkObjectResult(signeesPerCounty);
+        }
+
+        [HttpGet("formtypes")]
+        public async Task<IActionResult> FormTypes(){
+            var FormTypes = this._soilDataContext.TypeForm.OrderBy( t => t.Code).ToListAsync();
+            return new OkObjectResult(await FormTypes);
+        }
+
+        [HttpGet("reportstatus")]
+        public async Task<IActionResult> ReportStatus(){
+            var FormTypes = this._soilDataContext.SoilReportStatus.OrderBy( t => t.Id).ToListAsync();
+            return new OkObjectResult(await FormTypes);
         }
 
     }

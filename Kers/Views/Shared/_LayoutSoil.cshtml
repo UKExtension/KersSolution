@@ -1,9 +1,3 @@
-@{
-    var fy = ViewData["fy"] as string;
-    if( fy == "0"){
-      fy = "2018";
-    }
-}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -95,6 +89,13 @@
         </div>
 
 
+
+
+
+
+
+
+
 <div class="banner" style="position: relative; z-index: 0; background-image: none; background-position: initial initial; background-repeat: initial initial;">
 
     <div class="uk-global-subheader transparent-blue">
@@ -102,15 +103,15 @@
       <div class="row">
         <div class="col-xs-12">
           <div class="site-name-container">
-                        <span class="title site-name-primary site-name active"><a href="http://extension.ca.uky.edu/" rel="home" class="site-name site-name-primary active">Extension</a></span>
-            <span class="site-name site-name-suffix">It Starts With Us</span>          </div>
+                        <span class="title site-name-primary site-name active"><a href="http://ukrt.rs.uky.edu/" rel="home" class="site-name site-name-primary active">Division of Regulatory Services</a></span>
+                     </div>
         </div>
       </div>
     </div>
   </div>
   
-  <div class="backstretch" style="left: 0px; top: 0px; overflow: hidden; margin: 0px; padding: 0px; height: 110px; width: 1280px; z-index: -999998; position: absolute;"><img src="~/assets/reporting/banner_fence_closeup.jpg" style="position: absolute; margin: 0px; padding: 0px; border: none; width: 1280px; height: 117.33333333333334px; max-height: none; max-width: none; z-index: -999999; left: 0px; top: -3.6666666666666714px;"></div></div>
-
+  <div class="backstretch" style="left: 0px; top: 0px; overflow: hidden; margin: 0px; padding: 0px; height: 110px; width: 1280px; z-index: -999998; position: absolute;"><img src="~/assets/reporting/rsCollage.png" style="position: absolute; margin: 0px; padding: 0px; border: none; width: 1280px; height: 117.33333333333334px; max-height: none; max-width: none; z-index: -999999; left: 0px; top: -3.6666666666666714px;"></div></div>
+</div>
    <div class="uk-toolbar visible-xs">
             <div class="container">
                 <div class="row navbar">
@@ -127,30 +128,19 @@
       <div class="uk-global-menu-band">
         <div class="container">
             <div class="row">
-                <div id="navigation" class="navbar col-xs-12">
-                                    <nav id="main-menu" class="main-menu collapse navbar-collapse" role="navigation">
-
-
-
-
-                                    <ul class="nav navbar-nav">
-                        <li class="first leaf menu-link-county-offices"><a href="http://extension.ca.uky.edu/county" title="">County Offices</a></li>
-<li class="leaf menu-link-publications"><a href="http://www2.ca.uky.edu/agcomm/pubs.asp" title="">Publications</a></li>
-<li class="leaf menu-link-impacts"><a href="https://kers.ca.uky.edu/core/reports" title="">Impacts</a></li>
-<li class="leaf menu-link-about-extension"><a href="http://extension.ca.uky.edu/content/about-us" title="">About Extension</a></li>
-<li class="leaf menu-link-contact-us"><a href="http://directory.ca.uky.edu/" title="">Contact Us</a></li>
-<li class="last leaf menu-link-jobs"><a href="https://ukjobs.uky.edu/postings/search?utf8=%E2%9C%93&amp;query=&amp;query_v0_posted_at_date=&amp;225=&amp;985=5&amp;986=&amp;987=&amp;988=&amp;989=&amp;query_organizational_tier_3_id=any&amp;commit=Search" title="">Jobs</a></li>
+                <div id="navigation" class="navbar col-xs-12">             
+                    <nav id="main-menu" class="main-menu collapse navbar-collapse" role="navigation">
+                      <ul class="nav navbar-nav">
+                        <li class="first leaf"><a href="http://www.rs.uky.edu/regulatory/feed/">Feed</a></li>
+                        <li class="leaf"><a href="http://www.rs.uky.edu/regulatory/fertilizer/">Fertilizer</a></li>
+                        <li class="leaf"><a href="http://www.rs.uky.edu/regulatory/milk/">Milk</a></li>
+                        <li class="leaf "><a href="http://www.rs.uky.edu/regulatory/seed/" title="">Seed</a></li>
+                        <li class="leaf "><a href="http://www.rs.uky.edu/soil" title="">Soil</a></li>
+                        <li class="leaf "><a href="http://www.rs.uky.edu/soil/technical_info/" title="">Lime</a></li>
+                        <li class="leaf "><a href="http://www.rs.uky.edu/regulatory/hpt/" title="">Hemp PT</a></li>
+                        <li class="leaf "><a href="http://www.rs.uky.edu/consumer/" title="">Consumer</a></li>
                       </ul>
-
-
-
-                      </nav> <!-- /#main-menu -->
-                    
-
-                <div class="text-right fiscal-year-switcher">
-                  @await Component.InvokeAsync("FiscalYearSwitcher", new { selected = @ViewData["fy"], showNext = false, showDetails = true })
-                </div>
-
+                    </nav>
               </div>
             </div>
           </div>
@@ -166,27 +156,11 @@
             <h2>@ViewData["Title"]<small>@ViewData["Subtitle"]</small></h2>
             <ul class="nav navbar-right panel_toolbox">
                 
-                <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
-                    <a asp-controller="Reports" asp-action="Index" asp-route-fy="@fy">Home</a>
-                </li>
-                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "People" ? "active" : "")">
-                    <a asp-controller="People" asp-action="Index" asp-route-fy="@fy">People</a>
-                </li>
-                <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Counties" ? "active" : "")">
-                    <a asp-controller="Reports" asp-action="Counties" asp-route-fy="@fy">Counties</a>
-                </li>
-                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "MajorProgram" ? "active" : "")">
-                    <a asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy">Programs</a>
-                </li>
                 
-                <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
-                    <a asp-controller="Data" asp-action="Index" asp-route-fy="@fy">Data</a>
-                </li>
             </ul>
             
             <div class="clearfix"></div>
         </div>
-        
         @RenderBody()
     </div>
 
@@ -204,10 +178,10 @@
       <div class="col-xs-12 col-sm-4">
         <div class="department-block">
                       <div class="site-name-container clearfix">
-              <a href="http://extension.ca.uky.edu/" rel="home" class="site-name site-name-primary active">Extension</a><span class="site-name site-name-suffix">It Starts With Us</span>              <div class="clearfix">&nbsp;</div>
+              <a href="http://rs.uky.edu/" rel="home" class="site-name site-name-primary active">DIVISION OF REGULATORY SERVICES</a>             <div class="clearfix">&nbsp;</div>
             </div>
             <div class="section site-contact-info clearfix">
-              <p>Laura Stephenson, Ph.D.<br>Associate Dean for Extension<br>S-107 Ag Science Center North<br>Lexington, KY  40546-0091<br>(859) 257-4302<br><a href="mailto:laura.stephenson@uky.edu">laura.stephenson@uky.edu</a></p>
+              <p>Darrell Johnson, Executive Director<br>103 Regulatory Services Bldg.<br>Lexington, KY 40546-0275<br>859-257-2785<br></p>
             </div>
                   </div>
       </div>
@@ -277,7 +251,7 @@
                 <path class="headpath" d="M1214.9 88.9v.7l-9.1 2.3-.3-.1.1-5.1-.3-.1c-3.9 3.6-7.6 5.5-11.1 5.5-1.5 0-2.7-.2-3.7-.7-1-.5-1.8-1.2-2.5-2-.6-.8-1.1-1.8-1.4-2.9-.3-1.1-.4-2.2-.4-3.4v-17l-4.2-2.3v-.6l9.4-2.3.3.2V80c0 2.5.5 4.4 1.4 5.6.9 1.2 2.5 1.8 4.7 1.8 1.4 0 2.6-.2 3.7-.5s2.3-.9 3.6-1.6V65.8l-4.3-2.3v-.6l9.5-2.3.3.2v26.4l4.3 1.7zM1242.1 69.3c-.7.7-1.5 1.1-2.5 1.1-1.2 0-2.1-.4-2.7-1.2-.7-.8-1-1.7-1-2.7 0-.7.1-1.4.4-2.1.3-.7.6-1.2 1-1.7-.8-.2-1.7-.3-2.7-.3-1.4 0-2.7.2-4 .7-1.3.5-2.4 1.3-3.4 2.3s-1.8 2.4-2.4 4.1c-.6 1.6-.9 3.6-.9 6 0 1.7.2 3.3.7 4.8s1.1 2.8 2 3.9c.9 1.1 1.9 2 3.2 2.6 1.3.6 2.8.9 4.4.9 1.6 0 3.2-.2 4.6-.6 1.5-.4 3-1 4.5-1.8l.3.8c-1.5 1.6-3.3 3-5.3 4s-4 1.6-6.1 1.6-4-.4-5.8-1.1c-1.8-.7-3.3-1.7-4.5-3.1-1.3-1.3-2.3-2.9-3-4.8-.7-1.9-1-3.9-1-6.2 0-2.3.4-4.4 1.2-6.3.8-2 1.9-3.7 3.3-5.1 1.4-1.5 3.1-2.6 5-3.4 2-.8 4.1-1.2 6.4-1.2 2.7 0 4.9.6 6.5 1.7 1.6 1.1 2.4 2.5 2.4 4.2.4 1.2.1 2.2-.6 2.9zM1274.8 88.6l3.6 1.4v.8h-12.7V90l2.6-1.4-8.5-12h-2.6v12.2l3.6 1.2v.8h-13.7V90l4.6-1.2V48.6l-4.7-2.8v-.6l9.9-2.5.3.1v31.9h2.9l8.5-10.1-3.4-2.3v-.6h12v.8l-4.4 1.7-9.4 9.5 11.4 14.9zM1294.3 96.5c-2.1 5.3-5 7.9-8.5 7.9-1.5 0-2.6-.4-3.3-1.2-.7-.8-1-1.6-1-2.5 0-.9.3-1.6 1-2.2.6-.6 1.4-.9 2.3-.9 1 0 1.8.3 2.5.8.7.6 1.4 1.3 2 2.2 1.3-1.2 2.4-2.9 3.4-5.1l1.9-4.3-11.3-27.5-4-1.4v-.8h14.8v.8l-4.6 1.4 7.6 20.2h.3l7-19.7-4.1-1.9v-.8h11.1v.8l-4.4 2-12.7 32.2z"></path>
               </g>
             </symbol>
-            <image src="/profiles/coa/themes/cafe_radix_yeti/assets/images/college-lockup.png" xlink:href="">
+            <image src="https://kers.ca.uky.edu/core/assets/reporting/college-lockup.png" xlink:href="">
           </image></svg>
 
           <a href="http://www.uky.edu" target="_blank">

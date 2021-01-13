@@ -7,8 +7,9 @@ namespace Kers.Models.Entities.SoilData
 
     public partial class SoilReport : IEntityBase
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Column("Prime_Index")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public int Prime_Index {get;set;}
         [Column("DATE_IN")]
         public DateTime DateIn {get;set;}
         [Column("DATE_SENT")]
@@ -19,7 +20,7 @@ namespace Kers.Models.Entities.SoilData
         public string TypeForm {get;set;}
         [Column("LAB_NUM")]
         public string LabNum {get;set;}
-        [Column("CO_ID")]
+        [Column("CountyCodeId")]
         public int? CoId {get;set;}
         [Column("CO_SAMNUM")]
         public string CoSamnum {get;set;}
@@ -59,6 +60,7 @@ namespace Kers.Models.Entities.SoilData
         public string Comment7 {get;set;}
         public string LimeComment {get;set;}
         public string AgentNote {get;set;}
+        public int? NoteByKersUserId {get;set;}
         [Column("EXTRA1")]
         public string Extra1 {get;set;}
         [Column("EXTRA2")]

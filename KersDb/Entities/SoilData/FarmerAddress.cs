@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -30,7 +31,11 @@ namespace Kers.Models.Entities.SoilData
         public string Latitude {get;set;}
         public string Longitude {get;set;}
         public string Altitude {get;set;}
+        [Column("Historic_FarmerID")]
+        public string HistoricFarmerId {get; set;}
         public string FarmerData {get;set;}
+        public string UniqueCode {get;set;}
+        public List<SoilReportBundle> Reports {get;set;}
 
     }
 }

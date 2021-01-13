@@ -61,6 +61,16 @@ import { FormBuilder, Validators } from '@angular/forms';
                   <input type="text" name="emailAddress" formControlName="emailAddress" id="emailAddress" class="form-control col-xs-12" />
               </div>
           </div>
+          <div class="form-group" *ngIf="address">
+              <label for="emailAddress" class="control-label col-md-3 col-sm-3 col-xs-12">Reports Url:</label>           
+              <div class="col-md-9 col-sm-9 col-xs-12" style="padding-top: 5px;">
+                  https://kers.ca.uky.edu/core/reports/soil/customer/{{address.uniqueCode}} &nbsp;
+                    <button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reports/soil/customer/'+address.uniqueCode" (copied)="notify($event)">
+                        <i class="fa fa-clipboard"></i>&nbsp;
+                        <ng-container *ngIf="!coppied">Copy</ng-container> <ng-container *ngIf="coppied">Copied</ng-container>
+                    </button>
+              </div>
+          </div>
 
           <div class="ln_solid"></div>
           <div class="form-group">
@@ -79,7 +89,7 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
 
   @Input() address:FarmerAddress;
   addressForm:any;
-
+  coppied = false;
   loading = false;
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<FarmerAddress>();
@@ -133,6 +143,9 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
           )
       }
       
+  }
+  public notify(payload: string) {
+    this.coppied = true;
   }
 
 }

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import { FormTypeSignees, SoilReportBundle, TestResults } from './soildata.report';
+import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults, SoilReportSearchCriteria, TypeForm, SoilReportStatus, FarmerAddressSearchCriteria } from './soildata.report';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +61,31 @@ export class SoildataService {
                 );
       }
 
+      updateCropNote(id:number, note:SoilReport):Observable<SoilReport>{
+        var url = this.baseUrl + 'updatecropnote/' + id;
+        return this.http.put<SoilReport>(this.location.prepareExternalUrl(url), note)
+                .pipe(
+                    catchError(this.handleError('update', <SoilReport>{}))
+                );
+      }
+
+      updateBundleFarmer(id:number, address:FarmerAddress):Observable<SoilReportBundle>{
+        var url = this.baseUrl + 'updatebundleaddress/' + id;
+        return this.http.put<SoilReportBundle>(this.location.prepareExternalUrl(url), address)
+                .pipe(
+                    catchError(this.handleError('update', <SoilReportBundle>{}))
+                );
+      }
+
+      updateBundleStatusToArchived(id:number, bundle:SoilReportBundle):Observable<SoilReportBundle>{
+        var url = this.baseUrl + 'updatebundlestatustoarchived/' + id;
+        return this.http.put<SoilReportBundle>(this.location.prepareExternalUrl(url), bundle)
+                .pipe(
+                    catchError(this.handleError('update status', <SoilReportBundle>{}))
+                );
+      }
+
+
       deleteNote(id:number):Observable<{}>{
         var url = this.baseUrl + "deleteNote/" + id;
         return this.http.delete(this.location.prepareExternalUrl(url))
@@ -100,21 +125,56 @@ export class SoildataService {
             );
       }
 
-      getCustom(searchParams?:{}):Observable<SoilReportBundle[]>{
+      formTypes():Observable<TypeForm[]>{
+        var url = this.baseUrl + "formtypes";
+        return this.http.get<TypeForm[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('TypeForm', []))
+            );
+      }
+
+      reportStatuses():Observable<SoilReportStatus[]>{
+        var url = this.baseUrl + "reportstatus";
+        return this.http.get<SoilReportStatus[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('SoilReportStatus', []))
+            );
+      }
+
+      
+
+      getCustom(searchParams:SoilReportSearchCriteria):Observable<SoilReportBundle[]>{
         var url = this.baseUrl + "GetCustom/";
-        return this.http.get<SoilReportBundle[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+        return this.http.post<SoilReportBundle[]>(this.location.prepareExternalUrl(url), searchParams)
             .pipe(
                 catchError(this.handleError('getCustom', []))
             );
       }
-      private addParams(params:{}){
-        let searchParams = {};
-        for(let p in params){
-            searchParams[p] = params[p];
-        }
-        return  {params: searchParams};
+
+      getCustomAddresses(searchParams:FarmerAddressSearchCriteria):Observable<FarmerAddressSearchResult>{
+        var url = this.baseUrl + "GetCustomFarmerAddress/";
+        return this.http.post<FarmerAddressSearchResult>(this.location.prepareExternalUrl(url), searchParams)
+            .pipe(
+                catchError(this.handleError('getCustomAddress', <FarmerAddressSearchResult>{}))
+            );
+      }
+      pdf(id:string):Observable<Blob>{
+        return this.http.get(this.location.prepareExternalUrl('/api/PdfSoilData/report/' + id ), {responseType: 'blob'})
+            .pipe(
+                catchError(this.handleError('pdf', <Blob>{}))
+            );
+      }
+      consolidatedPdf(ids:string[]):Observable<Blob>{
+        return this.http.post(this.location.prepareExternalUrl('/api/PdfSoilData/reports/' ), {ids:ids}, {responseType: 'blob'})
+        .pipe(
+            catchError(this.handleError('pdf', <Blob>{}))
+        );
       }
 
+}
+export class FarmerAddressSearchResult{
+    data:FarmerAddress[];
+    count:number;
 }
 
 export interface CountyCode{
@@ -149,6 +209,7 @@ export class FarmerAddress{
     longitude:string;
     altitude:string;
     farmerData:string;
+    uniqueCode:string;
 }
 
 export interface CountyNote{

@@ -8,6 +8,7 @@ export class SoilReportBundle{
     labTestsReady:Date;
     dataProcessed:Date;
     agentReviewed:Date;
+    coSamnum:string;
     planningUnit:CountyCode;
     farmerForReport:FarmerForReport;
     typeForm:TypeForm;
@@ -31,6 +32,7 @@ export class SoilReportStatus{
 
 export class SoilReport{
     id:number;
+    prime_Index:number;
     dateIn:Date;
     dateSent:Date;
     dateOut:Date;
@@ -39,7 +41,7 @@ export class SoilReport{
     coId:string;
     coSamnum:string;
     farmerID:string;
-    osID:string;
+    osId:string;
     acres:string;
     cropInfo1:string;
     cropInfo2:string;
@@ -69,6 +71,7 @@ export class SoilReport{
     extInfo2:string;
     extInfo3:string;
     extInfo4:string;
+    soilReportBundle:SoilReportBundle;
 }
 
 export class TestResults{
@@ -110,7 +113,13 @@ export class SoilReportSearchCriteria{
     start: string;
     end: string;
     search: string = "";
-    status: string;
-    order: string = 'dsc';
-    admin: boolean = false;
+    status: number[];
+    order:string;
+    formType: number[];
+}
+
+export class FarmerAddressSearchCriteria{
+    search: string;
+    order: string;
+    amount:number;
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SoilReportBundle } from '../soildata.report';
+import { SoilReportBundle, SoilReport } from '../soildata.report';
+import { FarmerAddress, SoildataService } from '../soildata.service';
 
 @Component({
   selector: 'soildata-report-form',
@@ -8,11 +9,31 @@ import { SoilReportBundle } from '../soildata.report';
 })
 export class SoildataReportFormComponent implements OnInit {
   @Input() report: SoilReportBundle;
+  addressBrowserOpen = false;
+  loading = false;
   
-  constructor() { }
+  constructor(
+    private service:SoildataService
+  ) { }
 
   ngOnInit() {
-    console.log(this.report);
+  }
+
+  addressSelected(event:FarmerAddress){
+    this.loading = true;
+    this.service.updateBundleFarmer(this.report.id, event).subscribe(
+      res => {
+        this.report.farmerForReport = res.farmerForReport;
+        this.addressBrowserOpen = false;
+        this.loading = false;
+      }
+    );    
+  }
+  addressSelectionCanceled(){
+    this.addressBrowserOpen = false;
+  }
+  cropNoteUpdate(event:SoilReport){
+    this.report.lastStatus = event.soilReportBundle.lastStatus;
   }
 
 }

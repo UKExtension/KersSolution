@@ -1,7 +1,8 @@
 <h2><a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
-  <i class="fa fa-plus-square" *ngIf="!condition"></i> {{crop.cropInfo1}}
+  <i class="fa fa-plus-square" *ngIf="!condition"></i> {{crop.cropInfo1}} (Form {{crop.typeForm}})
 </a></h2>
-<div *ngIf="condition"><br>
+<loading *ngIf="loading"></loading>
+<div *ngIf="condition && !loading"><br>
 
   <h2>Crop Info</h2>
   <div *ngIf="crop.cropInfo1 != undefined && crop.cropInfo1 != ''" class="crop-comment">
@@ -48,7 +49,7 @@
         <th>Test Name</th>
         <th>Result</th>
         <th>Level</th>
-        <th>Recomendation</th>
+        <th>Recommendation</th>
         <th>Comment</th>
       </tr>
     </thead>
@@ -101,13 +102,16 @@
       
         <div class="form-group">           
           <div class="col-xs-12">
-              <textarea name="note" formControlName="note" id="note" class="form-control col-xs-12"></textarea>
+              <textarea name="note" formControlName="note" id="note" class="form-control col-xs-12" rows="12"></textarea>
           </div>
         </div>
         <div class="form-group">
-            <div class="col-xs-12">
+            <div class="col-xs-8">
                 <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
                 <button type="submit" [disabled]="noteForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+            <div class="col-xs-4 text-right"><a href="http://www.rs.uky.edu/soil/calculators/index.php" target="_blank">Soil Calculators</a>
+
             </div>
         </div>
         <div class="ln_solid"></div>
