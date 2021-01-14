@@ -46,10 +46,10 @@ export class ExpenseReportsDetailsComponent {
         if(this.user != null){
             userid = this.user.id;
         }
-        if( this.year.year > 2019 && this.month.month > 10 ) this.isMileage = true;
+        if( (this.year.year > 2019 && this.month.month > 10) || this.year.year > 2020 ) this.isMileage = true;
 
         this.loading = true;
-
+        
         if( this.isMileage ){
             this.mileageService.mileagePerMonth(this.month.month, this.year.year, userid, 'asc').subscribe(
                 res=> {

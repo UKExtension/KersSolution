@@ -131,7 +131,7 @@ export class ExpenseReportsSummaryComponent {
         if(this.user != null){
             this.userid = this.user.id;
         }
-        if( this.year.year > 2019 && this.month.month > 10 ) this.isMileage = true;
+        if( (this.year.year > 2019 && this.month.month > 10) || this.year.year > 2020 ) this.isMileage = true;
         if(this.isMileage){
             this.mileageSummary$ = this.mileageService.summaryPerMonth(this.month.month, this.year.year, this.userid);
         }else{

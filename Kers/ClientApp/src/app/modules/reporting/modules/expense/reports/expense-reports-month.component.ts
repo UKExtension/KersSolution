@@ -128,7 +128,7 @@ export class ExpenseReportsMonthComponent {
         this.date = new Date();
         this.date.setDate(15);
         this.date.setMonth(this.month.month - 1);
-        if( this.month.month > 10 && this.year.year > 2019 ) this.isMileage = true;
+        if( (this.month.month > 10 && this.year.year > 2019) || this.year.year > 2020 ) this.isMileage = true;
         if(this.user != null){
             this.planningUnitService.id(this.user.rprtngProfile.planningUnitId).subscribe(
                 res => {
