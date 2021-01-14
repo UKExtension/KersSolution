@@ -119,7 +119,7 @@ namespace Kers.Controllers
 		public void AddPageInfo(SKCanvas pdfCanvas, int page, int totalPages, KersUser user, DateTime dt, string Ttl = "Monthly Expenses Report", string PageOrientation = "portrait"){
 			
 			
-			var textTop = "Page " + page.ToString() + " of " + totalPages.ToString();
+			var textTop = "Page " + page.ToString() + (totalPages == 0 ? "" : " of " + totalPages.ToString());
 			var paint = getPaint(9.0f, 3, 0xFF000000, SKTextAlign.Right);
 			var text = user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName + ", " + dt.ToString("MMMM yyyy") + ", " + Ttl;
 			paint = getPaint(9.0f, 1, 0xFF000000, SKTextAlign.Right);
