@@ -62,7 +62,7 @@ export class LadderApplicationDetailsComponent implements OnInit {
     this.service.pdf(this.application.id).subscribe(
       data => {
           var blob = new Blob([data], {type: 'application/pdf'});
-          saveAs(blob, "LadderApplication_" + this.application.kersUser.rprtngProfile.name + "_" + this.application.created + ".pdf");
+          saveAs(blob, "CareerLadderApplication.pdf");
           this.pdfLoading = false;
       },
       err => console.error(err)

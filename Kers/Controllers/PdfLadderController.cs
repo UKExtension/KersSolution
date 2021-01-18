@@ -157,7 +157,7 @@ namespace Kers.Controllers
 						foreach( var trnng in trainings ){
 							
 							runningY += trainingsTableLineHight * TrainingRow(trnng, pdfCanvas, runningY, application.KersUser);
-							if( runningY > height - 2 * margin - 50 ){
+							if( runningY > height - 2 * margin ){
 								runningY = margin + 5;
 								document.EndPage();
 								pdfCanvas = document.BeginPage(height, width);
