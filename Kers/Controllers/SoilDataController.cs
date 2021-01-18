@@ -129,7 +129,11 @@ namespace Kers.Controllers
                     var user = this.CurrentUser();
                     countyId = user.RprtngProfile.PlanningUnitId;
                 }
-                addresses = addresses.Where( b => b.CountyCode.PlanningUnitId == countyId);
+
+                var countyCode = _soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == countyId).FirstOrDefault();
+
+
+                addresses = addresses.Where( b => b.CountyCodeId == countyCode.CountyID);
             }
             if(criteria.Search != null && criteria.Search != ""){
                 addresses = addresses.Where( i => i.First != null 
@@ -409,8 +413,12 @@ namespace Kers.Controllers
             if( countyid == 0 ){
                 countyid = this.CurrentUser().RprtngProfile.PlanningUnitId;
             }
+
+            var countyCode = await _soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == countyid).FirstOrDefaultAsync();
+
+
             var addresses = await _soilDataContext.FarmerAddress.
-                                    Where(a => a.CountyCode.PlanningUnitId == countyid).
+                                    Where(a => a.CountyCodeId == countyCode.CountyID).
                                     OrderBy( a => a.Last).
                                     ToListAsync();
             return new OkObjectResult(addresses);
