@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 using SkiaSharp;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.Distributed;
-
+using System.Text.RegularExpressions;
 
 namespace Kers.Controllers
 {
@@ -245,6 +245,8 @@ namespace Kers.Controllers
 				Producer = "SkiaSharp",
 				Subject = Sbj,
 				Title = Ttl,
+				RasterDpi = 300,
+				EncodingQuality = 95
 			};
 		}
 
@@ -270,6 +272,13 @@ namespace Kers.Controllers
 				_context.SaveChanges();
 			}
 		}
+
+		protected string StripHTML(string htmlString){
+
+            string pattern = @"<[^>]*(>|$)|&nbsp;|&#39;|&raquo;|&laquo;|&quot;";
+
+            return Regex.Replace(htmlString, pattern, string.Empty);
+        }
 
 
 		private static String ReverseString(String str)

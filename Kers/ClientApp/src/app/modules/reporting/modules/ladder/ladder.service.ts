@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Location} from '@angular/common';
+import {Location, NumberFormatStyle} from '@angular/common';
 import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
 import { HttpClient, HttpBackend } from '@angular/common/http';
 import { LadderApplication, LadderLevel, LadderEducationLevel, LadderStage, LadderApplicationStage } from './ladder';
@@ -137,6 +137,13 @@ export class LadderService {
         return this.http.post<LadderApplication>(this.location.prepareExternalUrl(url), stage)
             .pipe(
                 catchError(this.handleError('add', <LadderApplication>{}))
+            );
+    }
+
+    pdf(id:NumberFormatStyle):Observable<Blob>{
+        return this.http.get(this.location.prepareExternalUrl('/api/PdfLadder/application/' + id ), {responseType: 'blob'})
+            .pipe(
+                catchError(this.handleError('pdf', <Blob>{}))
             );
     }
 

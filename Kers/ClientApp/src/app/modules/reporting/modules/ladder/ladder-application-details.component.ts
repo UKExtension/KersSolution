@@ -4,6 +4,7 @@ import { LadderService } from './ladder.service';
 import { TrainingService } from '../training/training.service';
 import { Observable } from 'rxjs';
 import { FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'ladder-application-details',
@@ -18,6 +19,7 @@ export class LadderApplicationDetailsComponent implements OnInit {
   firstOfTheYear:Date;
   lastPromotionDate:Date;
   hoursAttended:Observable<number>;
+  pdfLoading = false;
 
   constructor(
     private service:LadderService,
@@ -53,6 +55,18 @@ export class LadderApplicationDetailsComponent implements OnInit {
         }
       )
     }
+  }
+
+  print(){
+    this.pdfLoading = true;
+    this.service.pdf(this.application.id).subscribe(
+      data => {
+          var blob = new Blob([data], {type: 'application/pdf'});
+          saveAs(blob, "LadderApplication_" + this.application.kersUser.rprtngProfile.name + "_" + this.application.created + ".pdf");
+          this.pdfLoading = false;
+      },
+      err => console.error(err)
+  )
   }
 
 }

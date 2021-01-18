@@ -158,6 +158,9 @@
         </div>
       </div>
     </ng-container>
-    
+    <div class="text-right">
+      <a *ngIf="!pdfLoading" (click)="print()" class="btn btn-info btn-xs">Generate Pdf</a>
+      <loading *ngIf="pdfLoading" [type]="'bars'"></loading>
+    </div>
   </div>
 </ng-container> 
