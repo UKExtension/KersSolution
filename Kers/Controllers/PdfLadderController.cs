@@ -29,9 +29,11 @@ namespace Kers.Controllers
 		const int width = 792;
 		const int height = 612;
 		const int margin = 42;
+		const int textLineHeight = 14;
 		int[] trainingsTableLines = new int[]{ 0, 100, 143, 454, 517};
 		int trainingsTableLineHight = 14;
 		int trainingsTableCellMargin = 2;
+		string pageTitle = "Professional Career Ladder Promotion Application";
 
 
         public PdfLadderController(
@@ -60,11 +62,6 @@ namespace Kers.Controllers
                 using (var document = SKDocument.CreatePdf (stream, 
 							this.metadata( "Kers, Career Ladder, Reporting", "Career Ladder Application", "Professional Career Ladder Promotion Application") )) {
 				
-					
-
-
-					
-
 
 					var application = _context.LadderApplication
 											.Where(a => a.Id == id)
@@ -74,11 +71,14 @@ namespace Kers.Controllers
 											.Include( a => a.LadderLevel)
 											.Include( a => a.LadderEducationLevel)
 											.Include( a => a.Images).ThenInclude( i => i.UploadImage)
+											.Include( a => a.Stages).ThenInclude( s => s.LadderStage)
+											.Include( a => a.Stages).ThenInclude( s => s.KersUser ).ThenInclude( u => u.RprtngProfile)
+											.Include( a => a.Ratings)
 											.FirstOrDefault();
 					if( application != null){
 						var pdfCanvas = document.BeginPage(height, width);
 						var pageNum = 1;
-						AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, "Professional Career Ladder Promotion Application");
+						AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, pageTitle);
 						var positionX = margin;
 						var runningY = 31;
 						AddUkLogo(pdfCanvas, 16, runningY);
@@ -93,39 +93,55 @@ namespace Kers.Controllers
 						if( textCounty.Count() > 15 ){
 							textCounty = textCounty.Substring(0, application.KersUser.RprtngProfile.PlanningUnit.Name.Count() - 11);
 						}
-						pdfCanvas.DrawText("County: " + textCounty, 300, runningY - 5, getPaint(10f));
+						pdfCanvas.DrawText("County: " + textCounty, 350, runningY - 5, getPaint(10f));
 						var textArea = "";
 						if( application.KersUser.RprtngProfile.PlanningUnit.ExtensionArea != null){
 							textArea = application.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.Name;
 						}
-						pdfCanvas.DrawText("Extension Area: " + textArea, 300, runningY + 10, getPaint(10f));
+						pdfCanvas.DrawText("Extension Area: " + textArea, 350, runningY + 10, getPaint(10f));
+
+						var rightColumnY = 191;
+
+						pdfCanvas.DrawText("Performance Ratings: ", 350, rightColumnY, getPaint(10.0f, 1));
+						foreach( var rtng in application.Ratings){
+							rightColumnY += textLineHeight;
+							pdfCanvas.DrawText(rtng.Year + ": " + rtng.Ratting, 350, rightColumnY, getPaint(10.0f));
+						}
+
+
 						runningY += 12;
 						pdfCanvas.DrawText("UK/person ID: " + application.KersUser.RprtngProfile.PersonId, positionX, runningY, getPaint(8.5f));
 						runningY += 32;
 						pdfCanvas.DrawText("Start Date: " + application.StartDate.ToString("MM/dd/yyyy"), positionX, runningY, getPaint(10.0f));
-						runningY += 14;
+						runningY += textLineHeight;
 						pdfCanvas.DrawText("Number of years of Extension service: " + application.NumberOfYears, positionX, runningY, getPaint(10.0f));
-						runningY += 14;
+						runningY += textLineHeight;
 						pdfCanvas.DrawText("Program Area/Responsibility: ", positionX, runningY, getPaint(10.0f));
 						foreach( var spclty in application.KersUser.Specialties){
-							runningY += 14;
+							runningY += textLineHeight;
 							pdfCanvas.DrawText(spclty.Specialty.Name, positionX, runningY, getPaint(10.0f, 3));
 						}
 
 						runningY += 28;
 						pdfCanvas.DrawText("Promotion to Level: " + application.LadderLevel.Name, positionX, runningY, getPaint(10.0f));
-						runningY += 14;
+						runningY += textLineHeight;
 						pdfCanvas.DrawText("Date of last Career Ladder Promotion: " + application.LastPromotion.ToString("MM/dd/yyyy"), positionX, runningY, getPaint(10.0f));
-						runningY += 28;
+						runningY += textLineHeight * 2;
 						pdfCanvas.DrawText("Highest level of education: " + application.LadderEducationLevel.Name, positionX, runningY, getPaint(10.0f));
-						runningY += 14;
+						runningY += textLineHeight;
 						pdfCanvas.DrawText("Program of Study: " + application.ProgramOfStudy, positionX, runningY, getPaint(10.0f));
-						runningY += 14;
+						runningY += textLineHeight;
 						pdfCanvas.DrawText("Evidence of Further Professioal or academic Training: " , positionX, runningY, getPaint(10.0f));
+
+
+
+
+
+
 
 						var evedenceLines = SplitLineToMultiline( StripHTML(application.Evidence), 120);
 						foreach( var evd in evedenceLines ){
-							runningY += 14;
+							runningY += textLineHeight;
 							pdfCanvas.DrawText(evd , positionX, runningY, getPaint(10.0f, 3));
 						}
 						document.EndPage();
@@ -144,7 +160,7 @@ namespace Kers.Controllers
 						pageNum++;
 
 						runningY = margin + 5;
-						AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, "Professional Career Ladder Promotion Application");
+						AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, pageTitle);
 						
 						pdfCanvas.DrawText("InService Hours Earned from " 
 													+ application.LastPromotion.ToString("MM/dd/yyyy") 
@@ -156,7 +172,7 @@ namespace Kers.Controllers
 						runningY += trainingsTableLineHight;
 						foreach( var trnng in trainings ){
 							
-							runningY += trainingsTableLineHight * TrainingRow(trnng, pdfCanvas, runningY, application.KersUser);
+							runningY += (trainingsTableLineHight * TrainingRow(trnng, pdfCanvas, runningY, application.KersUser));
 							if( runningY > height - 2 * margin ){
 								runningY = margin + 5;
 								document.EndPage();
@@ -164,7 +180,31 @@ namespace Kers.Controllers
 								TrainingsTableHeader(pdfCanvas, runningY);
 								runningY += trainingsTableLineHight;
 								pageNum++;
-								AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, "Professional Career Ladder Promotion Application");
+								AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, pageTitle);
+							}
+						}
+
+						if( application.Stages.Count() > 1 ){
+							runningY = margin + 5;
+							document.EndPage();
+							pdfCanvas = document.BeginPage(height, width);
+							pageNum++;
+							AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, pageTitle);
+							pdfCanvas.DrawText( "Reviews: " , margin, runningY, getPaint(12.0f, 1));
+							runningY += textLineHeight * 2;
+							var count = 1;
+							foreach( var review in application.Stages){
+								runningY += (TrainingReview( pdfCanvas, review, runningY) * textLineHeight);
+								count++;
+								// Skip the last review as it is by design empty
+								if( count > application.Stages.Count()) break;
+								if( runningY > height - margin ){
+									runningY = margin + 5;
+									document.EndPage();
+									pdfCanvas = document.BeginPage(height, width);
+									pageNum++;
+									AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, pageTitle);
+								}
 							}
 						}
 
@@ -173,67 +213,14 @@ namespace Kers.Controllers
 							document.EndPage();
 							pdfCanvas = document.BeginPage(height, width);
 							pageNum++;
-							AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, "Professional Career Ladder Promotion Application");
+							AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, pageTitle);
 							runningY = margin + 5;
 							var imageDescription = SplitLineToMultiline( im.Description, 120);
 							foreach( var dscr in imageDescription ){
 								pdfCanvas.DrawText(dscr, positionX, runningY, getPaint(10.0f));
-								runningY += 14;
+								runningY += textLineHeight;
 							}
-							
-
 							this.addBitmap(pdfCanvas,im.UploadImage.Name, margin, runningY, height - margin, width - margin);
-							/* 
-							Stream input = new MemoryStream(im.UploadImage.UploadFile.Content);
-
-            				//const int quality = 75;
-							
-							using (var inputStream = new SKManagedStream(input))
-								{
-								using (var original = SKBitmap.Decode(inputStream))
-									{
-
-							
-									int rectHeight = height;
-									int rectWidth = width; 
-									//calculate aspect ratio
-									float aspect = original.Width / (float)original.Height;
-									int newWidth, newHeight;
-
-									//calculate new dimensions based on aspect ratio
-									newWidth = (int)(rectWidth * aspect);
-									newHeight = (int)(newWidth / aspect);
-
-									//if one of the two dimensions exceed the box dimensions
-									if (newWidth > rectWidth || newHeight > rectHeight)
-									{
-										//depending on which of the two exceeds the box dimensions set it as the box dimension and calculate the other one based on the aspect ratio
-										if (newWidth > newHeight)
-										{
-											newWidth = rectWidth;
-											newHeight = (int)(newWidth / aspect);
-										}
-										else
-										{
-											newHeight = rectHeight;
-											newWidth = (int)(newHeight * aspect);
-										}
-									}
-
-
-									using (var resized = original
-									.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.Medium))
-										{
-											using (var image = SKImage.FromBitmap(resized))
-											{
-												var paint = new SKPaint();
-												pdfCanvas.DrawImage(image, new SKPoint( margin, margin ), paint);
-											}
-										}
-								}
-							}
- */
-
 						}
 							
 					
@@ -244,24 +231,35 @@ namespace Kers.Controllers
 
 					
 					}else{
-						//Log(id,"LadderApplication", "Career Ladder Error", "int", "Error");
+						Log(id,"LadderApplication", "Career Ladder Error", "int", "Error");
 						return new StatusCodeResult(500);
 					}
 
-
-
-
-
-
-
-					
-					
-
 					document.Close();
-					//Log(application,"LadderApplication", "Career Ladder Pdf Created", "LadderApplication");
+					Log(application,"LadderApplication", "Career Ladder Pdf Created", "LadderApplication");
 					return File(stream.DetachAsData().AsStream(), "application/pdf", "CareerLadderApplication.pdf");	
 			}
 
+		}
+
+		private int TrainingReview( SKCanvas pdfCanvas, LadderApplicationStage review, int positionY ){
+			var numLines = 1;
+			var reviewLine = review.LadderStage.Name + " on " + review.Reviewed.ToString() + " by ";
+			if( review.KersUser != null ){
+				reviewLine += review.KersUser.RprtngProfile.Name;
+			}
+			pdfCanvas.DrawText( reviewLine , 
+							margin, 
+							positionY,
+							getPaint(10.0f, 1));
+			if( review.Note != null & review.Note != ""){
+				var note = SplitLineToMultiline( review.Note, 120);
+				foreach( var dscr in note ){
+					pdfCanvas.DrawText(dscr, margin, positionY + numLines * textLineHeight, getPaint(10.0f));
+					numLines++;
+				}
+			}
+			return numLines;
 		}
 
 
