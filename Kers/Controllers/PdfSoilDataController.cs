@@ -378,7 +378,7 @@ namespace Kers.Controllers
 		private SKCanvas LimeComment(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
 			var paint = getPaint(9.0f);
 			var lineHeight = 12;
-			if(report.LimeComment != null){
+			if(report.LimeComment != null & report.LimeComment != ""){
 				
 				var lines = this.SplitLines(report.LimeComment, paint, width - 2 * 29);
 				if( currentYPosition + lines.Count() * lineHeight + 20 > height - 2*29){
@@ -389,7 +389,7 @@ namespace Kers.Controllers
 					PrintPageInfo(pdfCanvas, report);
 					currentYPosition = 29;
 				}
-				pdfCanvas.DrawText("Lime Recommendation:", 29, currentYPosition + 19, getPaint(9.0f, 1));
+				pdfCanvas.DrawText("Soil pH Recommendation:", 29, currentYPosition + 19, getPaint(9.0f, 1));
 				currentYPosition += 20;
 				SKRect area = new SKRect(29,currentYPosition, width - 29, currentYPosition + lines.Count() * lineHeight);
 				
@@ -402,7 +402,7 @@ namespace Kers.Controllers
 		private SKCanvas AgentComment(SKCanvas pdfCanvas, SoilReport report, SKDocument document){
 			var paint = getPaint(9.0f);
 			var lineHeight = 12;
-			if(report.AgentNote != null){
+			if(report.AgentNote != null & report.AgentNote != ""){
 				
 				var lines = this.SplitLines(report.AgentNote, paint, width - 2 * 29);
 
