@@ -30,7 +30,7 @@ namespace Kers.Controllers
 		const int height = 612;
 		const int margin = 42;
 		const int textLineHeight = 14;
-		int[] trainingsTableLines = new int[]{ 0, 100, 143, 454, 517};
+		int[] trainingsTableLines = new int[]{ 0, 100, 143, 440, 500, 530};
 		int trainingsTableLineHight = 14;
 		int trainingsTableCellMargin = 2;
 		string pageTitle = "Professional Career Ladder Promotion Application";
@@ -153,7 +153,7 @@ namespace Kers.Controllers
 
 						var trainings = TrainingsByUser(application.KersUserId, application.LastPromotion, startOfTheYear);
 						var hours = HourssByUser(application.KersUserId, application.LastPromotion, startOfTheYear);
-
+						var coreHours = HourssByUser(application.KersUserId, application.LastPromotion, startOfTheYear, true);
 					
 
 						pdfCanvas = document.BeginPage(height, width);
@@ -166,6 +166,11 @@ namespace Kers.Controllers
 													+ application.LastPromotion.ToString("MM/dd/yyyy") 
 													+ " till " + startOfTheYear.ToString("MM/dd/yyyy") 
 													+ ": "  + hours.ToString() , positionX, runningY, getPaint(10.0f));
+
+						runningY += textLineHeight;
+						pdfCanvas.DrawText("Core Training Hours: " 
+													+ coreHours.ToString() , positionX, runningY, getPaint(10.0f));
+
 
 						runningY += 24;
 						TrainingsTableHeader(pdfCanvas, runningY);
@@ -282,6 +287,10 @@ namespace Kers.Controllers
 							margin + trainingsTableLines[3] + trainingsTableCellMargin, 
 							positionY + trainingsTableLineHight - trainingsTableCellMargin, 
 							getPaint(10.0f));
+			pdfCanvas.DrawText("Core" , 
+							margin + trainingsTableLines[4] + trainingsTableCellMargin, 
+							positionY + trainingsTableLineHight - trainingsTableCellMargin, 
+							getPaint(10.0f));
 			TrainingsTableHorizontalLine( pdfCanvas, positionY + trainingsTableLineHight);
 		}
 
@@ -305,8 +314,12 @@ namespace Kers.Controllers
 			pdfCanvas.DrawText(attended , margin + trainingsTableLines[3] + trainingsTableCellMargin, 
 							positionY + trainingsTableLineHight - trainingsTableCellMargin, 
 							getPaint(8.5f));
-
-			var SubjectLines = SplitLineToMultiline(Training.Subject, 60);
+			var core = "NO";
+			if( Training.IsCore == true ) core = "YES";
+			pdfCanvas.DrawText(core , margin + trainingsTableLines[4] + trainingsTableCellMargin, 
+							positionY + trainingsTableLineHight - trainingsTableCellMargin, 
+							getPaint(8.5f));
+			var SubjectLines = SplitLineToMultiline(Training.Subject, 57);
 			foreach( var ln in SubjectLines){
 				numRows++;
 				DrawTrainingTableLines(pdfCanvas, positionY);
@@ -319,7 +332,7 @@ namespace Kers.Controllers
 			return numRows;
 		}
 		private void TrainingsTableHorizontalLine( SKCanvas pdfCanvas, int positionY){
-			pdfCanvas.DrawLine(margin + trainingsTableLines[0], positionY, margin + trainingsTableLines[4], positionY, thinLinePaint);
+			pdfCanvas.DrawLine(margin + trainingsTableLines[0], positionY, margin + trainingsTableLines[5], positionY, thinLinePaint);
 		}
 
 		private void DrawTrainingTableLines(SKCanvas pdfCanvas, int positionY){
@@ -346,17 +359,16 @@ namespace Kers.Controllers
 
 		}
 
-		private int HourssByUser( int id, DateTime start, DateTime end){
-            
-            var trainings = from training in _context.Training
+		private int HourssByUser( int id, DateTime start, DateTime end, bool onlyCore = false){
+            IQueryable<Training> trainings = from training in _context.Training
             from enfolment in training.Enrollment
             where enfolment.AttendieId == id && enfolment.attended == true
             select training;
         
-
             trainings = trainings.Where( t => t.Start > start && t.Start < end);
-            
 
+			if( onlyCore ) trainings = trainings.Where( t => t.IsCore == true );
+            
             trainings = trainings.Include(t => t.iHour);
             var hours = trainings.Sum( t => t.iHour == null ? 0 : t.iHour.iHourValue );
 			return hours;
