@@ -159,13 +159,16 @@ namespace Kers.Controllers
 				pdfCanvas.DrawText(bundle.LabTestsReady.ToString("d"), 490, 60, getPaint(10.0f, 1));
 			}
 			//County Office Address
-			var unit =  _context.PlanningUnit.Where( u => u.Id == bundle.PlanningUnit.PlanningUnitId).FirstOrDefault();   
-			pdfCanvas.DrawText(unit.FullName, 29, 31, getPaint(12.0f, 1));
-			pdfCanvas.DrawText(unit.Address, 29, 44, getPaint(10.0f));
-			pdfCanvas.DrawText(unit.City + ", KY " + unit.Zip, 29, 56, getPaint(10.0f));
-			pdfCanvas.DrawText(unit.Phone, 29, 68, getPaint(10.0f));
-			//Horizontal Line
-			pdfCanvas.DrawLine(29, 80, width - 29, 80, thinLinePaint);
+			var unit =  _context.PlanningUnit.Where( u => u.Id == bundle.PlanningUnit.PlanningUnitId).FirstOrDefault();  
+			if( unit != null){
+				pdfCanvas.DrawText(unit.FullName??"", 29, 31, getPaint(12.0f, 1));
+				pdfCanvas.DrawText(unit.Address??"", 29, 44, getPaint(10.0f));
+				pdfCanvas.DrawText(unit.City??"" + ", KY " + unit.Zip, 29, 56, getPaint(10.0f));
+				pdfCanvas.DrawText(unit.Phone??"", 29, 68, getPaint(10.0f));
+				//Horizontal Line
+				pdfCanvas.DrawLine(29, 80, width - 29, 80, thinLinePaint);
+			}
+			
 		}
 
 		private void PrintPageInfo( SKCanvas pdfCanvas, SoilReport report ){

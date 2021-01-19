@@ -173,7 +173,7 @@ namespace Kers.Controllers
 						foreach( var trnng in trainings ){
 							
 							runningY += (trainingsTableLineHight * TrainingRow(trnng, pdfCanvas, runningY, application.KersUser));
-							if( runningY > height - 2 * margin ){
+							if( runningY > height ){
 								runningY = margin + 5;
 								document.EndPage();
 								pdfCanvas = document.BeginPage(height, width);
@@ -197,7 +197,7 @@ namespace Kers.Controllers
 								runningY += (TrainingReview( pdfCanvas, review, runningY) * textLineHeight);
 								count++;
 								// Skip the last review as it is by design empty
-								if( count > application.Stages.Count()) break;
+								if( count >= application.Stages.Count()) break;
 								if( runningY > height - margin ){
 									runningY = margin + 5;
 									document.EndPage();
