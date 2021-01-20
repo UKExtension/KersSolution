@@ -87,10 +87,10 @@ namespace Kers.Controllers
             }
             bundles = bundles.Where( b => criteria.FormType.Contains(b.TypeForm.Id) && (b.LastStatus == null || criteria.status.Contains(b.LastStatus.SoilReportStatus.Id)) );
             if(criteria.Start != null){
-                bundles = bundles.Where( i => i.DataProcessed > criteria.Start);
+                bundles = bundles.Where( i => i.LabTestsReady > criteria.Start);
             }
             if( criteria.End != null){
-                bundles = bundles.Where( i => i.DataProcessed < criteria.End);
+                bundles = bundles.Where( i => i.LabTestsReady < criteria.End);
             }
             bundles = bundles
                         .Include( b => b.Reports)

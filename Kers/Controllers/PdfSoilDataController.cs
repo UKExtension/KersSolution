@@ -354,7 +354,7 @@ namespace Kers.Controllers
 			pdfCanvas.DrawText("Result", tablePositionsX[1], currentYPosition, getPaint(9.0f, 1));
 			pdfCanvas.DrawText("Unit", tablePositionsX[2], currentYPosition, getPaint(9.0f, 1));
 			pdfCanvas.DrawText("Level", tablePositionsX[3], currentYPosition, getPaint(9.0f, 1));
-			pdfCanvas.DrawText("Recomendation", tablePositionsX[4], currentYPosition, getPaint(9.0f, 1));
+			pdfCanvas.DrawText("Recommendation", tablePositionsX[4], currentYPosition, getPaint(9.0f, 1));
 			pdfCanvas.DrawText("Test Method", tablePositionsX[5], currentYPosition, getPaint(9.0f, 1));
 			currentYPosition += 7;
 			pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);

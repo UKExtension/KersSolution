@@ -86,6 +86,9 @@
   <div *ngIf="crop.comment7 != undefined && crop.comment7 != ''" class="crop-comment">
     {{crop.comment7}}
   </div>
+  <div *ngIf="crop.LimeComment != undefined && crop.LimeComment != ''" class="crop-comment">
+    {{crop.LimeComment}}
+  </div>
   <div class="ln_solid"></div>
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
