@@ -27,6 +27,8 @@ import { VehicleDistrictComponent } from './vehicle/vehicle-district.component';
 import { VehicleListDetailComponent } from './vehicle/vehicle-list-detail.component';
 import { ExpenseReportsDetailsItemComponent } from './reports/expense-reports-details-item.component';
 import { MileageReportsDetailsItemComponent } from './reports/mileage-reports-details-item.component';
+import { VehicleAreaComponent } from './vehicle/vehicle-area.component';
+import { VehicleRegionComponent } from './vehicle/vehicle-region.component';
 
 @NgModule({
   imports:      [ SharedModule,
@@ -55,6 +57,14 @@ import { MileageReportsDetailsItemComponent } from './reports/mileage-reports-de
                                 {
                                     path: 'vehicle/district/:id',
                                     component: VehicleDistrictComponent,
+                                },  
+                                {
+                                    path: 'vehicle/area/:id',
+                                    component: VehicleAreaComponent,
+                                },  
+                                {
+                                    path: 'vehicle/region/:id',
+                                    component: VehicleRegionComponent,
                                 }
                               ]
 
@@ -80,7 +90,9 @@ import { MileageReportsDetailsItemComponent } from './reports/mileage-reports-de
                   VehicleFormComponent,
                   VehicleListDetailComponent,
                   ExpenseReportsDetailsItemComponent,
-                  MileageReportsDetailsItemComponent 
+                  MileageReportsDetailsItemComponent,
+                  VehicleAreaComponent,
+                  VehicleRegionComponent
                 ],
   providers:    [ 
                     ExpenseService,
