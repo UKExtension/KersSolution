@@ -73,7 +73,7 @@ namespace Kers.Controllers
                     var user = this.CurrentUser();
                     countyId = user.RprtngProfile.PlanningUnitId;
                 }
-                bundles = bundles.Where( b => b.PlanningUnitId == countyId);
+                bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
             }
             if(criteria.Search != null && criteria.Search != ""){
                 bundles = bundles.Where( i => i.FarmerForReport != null 
