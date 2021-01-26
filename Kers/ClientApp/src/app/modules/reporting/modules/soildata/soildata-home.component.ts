@@ -7,7 +7,7 @@ import { ReportingService } from '../../components/reporting/reporting.service';
     <div>
       <p>
         <a class="btn btn-default"[routerLink]="['/reporting/soildata/reports']" routerLinkActive="active">Reports</a> 
-        <a class="btn btn-default" [routerLink]="['/reporting/soildata/addresses']" routerLinkActive="active">Farmer Addresses</a> 
+        <a class="btn btn-default" [routerLink]="['/reporting/soildata/addresses']" routerLinkActive="active">Client Addresses</a> 
         <a class="btn btn-default"[routerLink]="['/reporting/soildata/notes']" routerLinkActive="active">Notes</a> 
       </p>
     </div>

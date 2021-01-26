@@ -434,6 +434,9 @@ namespace Kers.Controllers
 			pdfCanvas = DisplayComment(pdfCanvas, report.Comment2, document, report);
 			pdfCanvas = DisplayComment(pdfCanvas, report.Comment3, document, report);
 			pdfCanvas = DisplayComment(pdfCanvas, report.Comment4, document, report);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment5, document, report);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment6, document, report);
+			pdfCanvas = DisplayComment(pdfCanvas, report.Comment7, document, report);
 			return pdfCanvas;
 		}
 		private SKCanvas DisplayComment(SKCanvas pdfCanvas, string comment, SKDocument document, SoilReport report){

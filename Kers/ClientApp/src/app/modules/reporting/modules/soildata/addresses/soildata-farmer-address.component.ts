@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   selector: 'app-soildata-farmer-address',
   template: `
     <br>
-    <h3>Farmer Addresses</h3>
+    <h3>Client Addresses</h3>
     <br>
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newAddress" (click)="newAddress = true">+ new address</a>
