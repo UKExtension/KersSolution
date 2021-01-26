@@ -73,7 +73,7 @@ namespace Kers.Controllers
                     var user = this.CurrentUser();
                     countyId = user.RprtngProfile.PlanningUnitId;
                 }
-                bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
+                bundles = bundles.Where( b => b.PlanningUnitId == countyId);
             }
             if(criteria.Search != null && criteria.Search != ""){
                 bundles = bundles.Where( i => i.FarmerForReport != null 
@@ -85,7 +85,8 @@ namespace Kers.Controllers
                                 )            
                         );
             }
-            bundles = bundles.Where( b => criteria.FormType.Contains(b.TypeForm.Id) && (b.LastStatus == null || criteria.status.Contains(b.LastStatus.SoilReportStatus.Id)) );
+            bundles = bundles.Where( b => criteria.FormType.Count() == 0 || criteria.FormType.Contains(b.TypeForm.Id));
+            bundles = bundles.Where( b => b.LastStatus == null || criteria.status.Count() == 0 || criteria.status.Contains(b.LastStatus.SoilReportStatus.Id) );
             if(criteria.Start != null){
                 bundles = bundles.Where( i => i.LabTestsReady > criteria.Start);
             }
