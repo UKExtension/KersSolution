@@ -4,7 +4,7 @@
   <div class="col-xs-3">{{application.kersUser.rprtngProfile.planningUnit.name}}</div>
   <div class="col-xs-3">Submitted: {{application.lastUpdated | date:'shortDate'}}</div>
   <div class="col-xs-2 text-right">
-    <a class="btn btn-info btn-xs" (click)="review()" *ngIf="!reviewed">review</a><span *ngIf="reviewed && approved">Approved</span><span *ngIf="reviewed && !approved">Rejected</span>
+    <a class="btn btn-info btn-xs" (click)="review()" *ngIf="!reviewed">review</a><span *ngIf="reviewed && approved">Approved</span><span *ngIf="reviewed && !approved">Returned</span>
   </div>
 </div>
 <div class="row" *ngIf="rowReview && !reviewPending" style="padding-bottom: 20px;">
