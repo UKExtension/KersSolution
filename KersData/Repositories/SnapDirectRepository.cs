@@ -936,7 +936,7 @@ namespace Kers.Models.Repositories
                 result = cacheString;
             }else{
                 var keys = new List<string>();
-                keys.Add("District");
+                keys.Add("Area");
                 keys.Add("PlanningUnit");
                 keys.Add("PersonID");
                 keys.Add("Employed");
@@ -985,7 +985,7 @@ namespace Kers.Models.Repositories
                         var commtmntUser = context.KersUser.Where( u => u == userWithCommitment)
                                                 .Include( u => u.RprtngProfile)
                                                     .ThenInclude( p => p.PlanningUnit)
-                                                    .ThenInclude( n => n.District)
+                                                    .ThenInclude( n => n.ExtensionArea)
                                                 .Include( u => u.ExtensionPosition)
                                                 .Include( u => u.Specialties)
                                                     .ThenInclude( s => s.Specialty)
@@ -999,7 +999,7 @@ namespace Kers.Models.Repositories
                                 .ThenBy( d => d.User.RprtngProfile.Name).ToList();
 
                 foreach( var userData in byUser){
-                    var row = userData.User.RprtngProfile.PlanningUnit.DistrictId + ",";
+                    var row = ( userData.User.RprtngProfile.PlanningUnit.ExtensionArea != null ? userData.User.RprtngProfile.PlanningUnit.ExtensionArea.Name : "") + ",";
                     row += string.Concat( "\"", userData.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
                     row += userData.User.RprtngProfile.PersonId + ",";
                     row += userData.User.RprtngProfile.enabled.ToString() + ",";
@@ -1060,7 +1060,7 @@ namespace Kers.Models.Repositories
                 keys.Add("YearMonth");
                 keys.Add("YearMonthName");
                 keys.Add("PlanningUnit");
-                keys.Add("District");
+                keys.Add("Area");
                 keys.Add("PersonName");
                 keys.Add("Position");
                 keys.Add("Program");
@@ -1089,7 +1089,7 @@ namespace Kers.Models.Repositories
                     var row = rw.Revision.ActivityDate.Year.ToString() + rw.Revision.ActivityDate.Month.ToString() + ",";
                     row += rw.Revision.ActivityDate.ToString( "yyyy-MMM") + ",";
                     row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
-                    row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.District != null  ? rw.User.RprtngProfile.PlanningUnit.District.Name : "", "\"") + ",";
+                    row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.ExtensionArea != null  ? rw.User.RprtngProfile.PlanningUnit.ExtensionArea.Name : "", "\"") + ",";
                     row +=  string.Concat("\"", rw.User.RprtngProfile.Name, "\"")  + ",";
                     row += rw.User.ExtensionPosition.Code + ",";
                     var spclt = "";

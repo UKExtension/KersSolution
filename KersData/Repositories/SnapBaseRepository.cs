@@ -49,7 +49,7 @@ namespace Kers.Models.Repositories
                     }else{
                         data = new UserRevisionData();
                         var activity = context.Activity.Where( a => a.Id == rev.ActivityId )
-                                        .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
+                                        .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.ExtensionArea)
                                         .Include( a => a.KersUser ).ThenInclude( u => u.ExtensionPosition)
                                         .Include( a => a.KersUser ).ThenInclude( u => u.PersonalProfile)
                                         .Include( a => a.KersUser).ThenInclude( u => u.Specialties).ThenInclude( s => s.Specialty)
