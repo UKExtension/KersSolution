@@ -65,6 +65,7 @@ namespace Kers.Controllers
 											.Include( b => b.TypeForm)
 											.Include( b => b.FarmerForReport)
 											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+											.OrderBy( b => b.CoSamnum)
 											.ToList();
 					foreach( var sample in samples){
 						if( sample != null){
