@@ -1086,7 +1086,7 @@ namespace Kers.Models.Repositories
                                                 .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectAgesAudienceValues)
                                                 .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectDeliverySite)
                                                 .OrderBy( r => r.Created).LastOrDefault();
-                    var row = rw.Revision.ActivityDate.Year.ToString() + rw.Revision.ActivityDate.Month.ToString() + ",";
+                    var row = rw.Revision.ActivityDate.ToString("yyyyMM") + ",";
                     row += rw.Revision.ActivityDate.ToString( "yyyy-MMM") + ",";
                     row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.Name, "\"") + ",";
                     row += string.Concat("\"", rw.User.RprtngProfile.PlanningUnit.ExtensionArea != null  ? rw.User.RprtngProfile.PlanningUnit.ExtensionArea.Name : "", "\"") + ",";

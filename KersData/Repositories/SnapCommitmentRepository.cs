@@ -198,7 +198,7 @@ namespace Kers.Models.Repositories
             }else{
                 var keys = new List<string>();
                 keys.Add("FY");
-                keys.Add("District");
+                keys.Add("Area");
                 keys.Add("PlanningUnit");
                 keys.Add("Name");
                 keys.Add("Title");
@@ -233,14 +233,14 @@ namespace Kers.Models.Repositories
                                     .ToListAsync();
                 foreach( var usr in commitment){
                     var user = await context.KersUser.Where( u => u.Id == usr.User.Id)
-                                .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.District)
+                                .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.ExtensionArea)
                                 .Include( u => u.ExtensionPosition)
                                 .Include( u => u.Specialties).ThenInclude( s => s.Specialty)
                                 .FirstOrDefaultAsync();
                                 
                     var row = fiscalYear.Name + ",";
-                    if(user.RprtngProfile.PlanningUnit.District != null){
-                        row += user.RprtngProfile.PlanningUnit.District.Name + ",";
+                    if(user.RprtngProfile.PlanningUnit.ExtensionArea != null){
+                        row += user.RprtngProfile.PlanningUnit.ExtensionArea.Name + ",";
                     }else{
                         row +=  ",";
                     }
@@ -310,7 +310,7 @@ namespace Kers.Models.Repositories
             }else{
                 var keys = new List<string>();
 
-                keys.Add("District");
+                keys.Add("Area");
                 keys.Add("PlanningUnit");
                 keys.Add("Name");
                 keys.Add("Title");
@@ -328,7 +328,7 @@ namespace Kers.Models.Repositories
                                                                 &&
                                                                 context.SnapEd_Commitment.Where( c => c.FiscalYear == fiscalYear && c.KersUser == u).Count() == 0
                                                                 )
-                                                        .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.District)
+                                                        .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.ExtensionArea)
                                                         .Include( u => u.ExtensionPosition)
                                                         .Include( u => u.Specialties).ThenInclude( s => s.Specialty)
                                                         .ToListAsync();
@@ -337,8 +337,8 @@ namespace Kers.Models.Repositories
                                 
                     var row = "";
 
-                    if(user.RprtngProfile.PlanningUnit.District != null){
-                        row += user.RprtngProfile.PlanningUnit.District.Name + ",";
+                    if(user.RprtngProfile.PlanningUnit.ExtensionArea != null){
+                        row += user.RprtngProfile.PlanningUnit.ExtensionArea.Name + ",";
                     }else{
                         row +=  ",";
                     }
