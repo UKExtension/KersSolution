@@ -268,7 +268,7 @@ namespace Kers.Models.Repositories
                 keys.Add("PersonName");
                 keys.Add("Title");
                 keys.Add("PlanningUnit");
-                keys.Add("District");
+                keys.Add("Area");
                 keys.Add("Program(s)");
                 keys.Add("EventDate");
                 keys.Add("Hours");
@@ -296,6 +296,7 @@ namespace Kers.Models.Repositories
                                             Position = a.KersUser.ExtensionPosition.Code,
                                             PersonalProfile = a.KersUser.PersonalProfile,
                                             PlanningUnit = a.KersUser.RprtngProfile.PlanningUnit,
+                                            Area = a.KersUser.RprtngProfile.PlanningUnit.ExtensionArea,
                                             Hours = a.Hours,
                                             Programs = a.KersUser.Specialties,
                                             Revisions = a.Revisions
@@ -318,7 +319,7 @@ namespace Kers.Models.Repositories
                             row += string.Concat( "\"", meeting.Position, "\"") + ",";
                         }
                         row += meeting.PlanningUnit.Name + ",";
-                        row += meeting.PlanningUnit.DistrictId + ",";
+                        row += meeting.PlanningUnit.ExtensionArea == null ? "" : meeting.PlanningUnit.ExtensionArea.Name + ",";
                         var prgrms = "";
                         foreach( var program in meeting.Programs){
                             prgrms += specialties.Where( s => s.Id == program.SpecialtyId).FirstOrDefault() ?.Code + " "??"";
