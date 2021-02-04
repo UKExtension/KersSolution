@@ -259,6 +259,7 @@ namespace Kers.Controllers
 
 
         [HttpPost()]
+        [Authorize]
         public IActionResult AddUser([FromBody] KersUser user){
             if(user != null){
 
@@ -277,7 +278,13 @@ namespace Kers.Controllers
                 this.populatePersonalProfileName(user.PersonalProfile, user.RprtngProfile.Name);
                 if( user.RprtngProfile.PlanningUnit != null) user.PersonalProfile.TimeZoneId = user.RprtngProfile.PlanningUnit.TimeZoneId;
                 this._context.SaveChanges();
-                this.Log(user, user, "KersUser", "New User Created", "User Profile Created");
+                var currentUserId = CurrentUserId();
+                if( user.RprtngProfile.LinkBlueId != currentUserId ){
+                    var currentUser = this._context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == currentUserId).FirstOrDefault();
+                    this.Log( user, currentUser, "KersUser", "Admin New User Created", "User Profile Created");
+                }else{
+                    this.Log(user, user, "KersUser", "New User Created", "User Profile Created");
+                }
                 return new OkObjectResult(user);
             }else{
                 return new StatusCodeResult(500);
@@ -373,7 +380,14 @@ namespace Kers.Controllers
                 if(user.RprtngProfile != null){
                     _service.RefreshRptProfile(entity);
                 }
-                this.Log(entity, entity);
+                var currentUserId = CurrentUserId();
+                if( entity.RprtngProfile.LinkBlueId != currentUserId ){
+                    var currentUser = this._context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == currentUserId).FirstOrDefault();
+                    this.Log( entity, currentUser, "KersUser", "Admin Updated User Information");
+                }else{
+                    this.Log(entity, entity);
+                }
+                
                 return new OkObjectResult(entity);
             }else{
                 return new StatusCodeResult(500);
