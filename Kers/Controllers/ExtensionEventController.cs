@@ -111,8 +111,8 @@ namespace Kers.Controllers
                             foreach( var session in trnng.TrainingSession){
                                 list.Add(new {
                                                 title = "In-Service Training: " + e.Subject + " (Session "+i.ToString()+")",
-                                                start = session.Start,
-                                                end = session.End,
+                                                start = session.Start.UtcDateTime,
+                                                end = session.End.UtcDateTime,
                                                 description = e.Body,
                                                 tContact = e.tContact,
                                                 tLocation = e.tLocation,
