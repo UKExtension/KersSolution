@@ -259,7 +259,6 @@ namespace Kers.Controllers
 
 
         [HttpPost()]
-        [Authorize]
         public IActionResult AddUser([FromBody] KersUser user){
             if(user != null){
 
