@@ -277,13 +277,16 @@ namespace Kers.Controllers
                 this.populatePersonalProfileName(user.PersonalProfile, user.RprtngProfile.Name);
                 if( user.RprtngProfile.PlanningUnit != null) user.PersonalProfile.TimeZoneId = user.RprtngProfile.PlanningUnit.TimeZoneId;
                 this._context.SaveChanges();
+                /*
                 var currentUserId = CurrentUserId();
+                
                 if( user.RprtngProfile.LinkBlueId != currentUserId ){
                     var currentUser = this._context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == currentUserId).FirstOrDefault();
                     this.Log( user, currentUser, "KersUser", "Admin New User Created", "User Profile Created");
                 }else{
+                    */
                     this.Log(user, user, "KersUser", "New User Created", "User Profile Created");
-                }
+                //}
                 return new OkObjectResult(user);
             }else{
                 return new StatusCodeResult(500);
