@@ -971,7 +971,7 @@ namespace Kers.Controllers.Reports
 
                 foreach( var Initiative in Indicators ){
                     foreach( var Program in Initiative.MajorPrograms ){
-                        foreach( var Indicator in Program.ProgramIndicators ){
+                        foreach( var Indicator in Program.ProgramIndicators.OrderBy( i => i.order) ){
                             Row.Add( res.Indicators.Where( i => i.ProgramIndicatorId == Indicator.Id).Sum( s => s.Value).ToString());
                         }
                     }

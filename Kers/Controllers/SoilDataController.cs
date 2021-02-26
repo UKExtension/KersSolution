@@ -302,7 +302,7 @@ namespace Kers.Controllers
             if(address != null){
                 var user = this.CurrentUser();
                 var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
-                address.CountyCode = countyCode;
+                address.CountyCodeId = countyCode.CountyID;
                 address.UniqueCode = Guid.NewGuid().ToString();
                 _soilDataContext.Add(address); 
                 _soilDataContext.SaveChanges();
