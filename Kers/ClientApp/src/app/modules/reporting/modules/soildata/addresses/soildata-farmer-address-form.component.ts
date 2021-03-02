@@ -124,7 +124,6 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
 
         
           var newAddress:FarmerAddress = this.addressForm.value;
-          console.log( newAddress );
           this.service.addaddress( newAddress ).subscribe(
               res => {
                   this.onFormSubmit.emit(res);
@@ -134,7 +133,6 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
       }else{
 
           var updatedAddress:FarmerAddress = this.addressForm.value;
-          console.log( updatedAddress );
           this.service.updateaddress(this.address.id,  updatedAddress ).subscribe(
               res => {
                   this.address = res;
