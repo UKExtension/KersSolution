@@ -1,7 +1,7 @@
 <br><h3>Soil Test Results</h3><br>
 <div class="row">
   <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
-    <input type="text" [(ngModel)]="criteria.search" placeholder="search farmer name in selected dates and search criteria" (keyup)="onSearch($event)" class="form-control" name="Search" />
+    <input type="text" [(ngModel)]="criteria.search" placeholder="Search by client name (first OR last) in selected dates and search criteria" (keyup)="onSearch($event)" class="form-control" name="Search" />
   </div>
   <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
       <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>

@@ -19,7 +19,7 @@ import { flatMap, startWith, tap } from 'rxjs/operators';
     <div class="row" *ngIf="addresses$ | async as addresses">
       
       <div class="col-sm-6 col-xs-12">
-        <input type="text" [(ngModel)]="criteria.search" placeholder="search by farmer name" (keyup)="onSearch($event)" class="form-control" name="Search" />
+        <input type="text" [(ngModel)]="criteria.search" placeholder="Search by client name (first OR last)" (keyup)="onSearch($event)" class="form-control" name="Search" />
       </div>
       <div class="col-sm-6 col-xs-12 text-right">
 
