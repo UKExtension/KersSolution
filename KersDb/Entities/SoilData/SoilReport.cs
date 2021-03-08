@@ -42,7 +42,7 @@ namespace Kers.Models.Entities.SoilData
         [Column("Crop_Info6")]
         public string CropInfo6 {get;set;}
         [Column("Crop_Info7")]
-        public string CropInf7 {get;set;}
+        public string CropInfo7 {get;set;}
         [Column("Crop_Info8")]
         public string CropInfo8 {get;set;}
         [Column("Crop_Info9")]

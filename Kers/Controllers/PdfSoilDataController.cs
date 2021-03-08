@@ -185,6 +185,9 @@ namespace Kers.Controllers
 			pdfCanvas.DrawText("REPORT TYPE: " + report.TypeForm, 29, 95, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("LAB NUM: " + report.LabNum, 29, 112, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("CO NUM: " + bundle.CoSamnum, 29, 129, getPaint(10.0f, 1));
+			if(report.Acres != null && report.Acres != "0"){
+				pdfCanvas.DrawText("ACRES: " + report.Acres, 29, 146, getPaint(10.0f, 1));
+			}
 
 			// Farmer Address
 			if(bundle.FarmerForReport != null){
