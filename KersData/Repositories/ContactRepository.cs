@@ -255,7 +255,7 @@ namespace Kers.Models.Repositories
 
         /*****************************************************************/
         // Generate Contacts Reports Groupped by Employee or Major Program
-        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Area, 6 Region
         // grouppedBy: 0 Employee, 1 MajorProgram
         /*******************************************************************/
         public async Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
@@ -365,10 +365,10 @@ namespace Kers.Models.Repositories
 
 
 
-        /********************************************************/
+        /***************************************************************************/
         // Generate Contacts Reports Groupped by Employee
-        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
-        /********************************************************/
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Area, 6 Region
+        /***************************************************************************/
 
         public async Task<TableViewModel> DataByEmployee(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false, int cacheDaysSpan = 0 )
         {
@@ -512,7 +512,7 @@ namespace Kers.Models.Repositories
         }
 
 
-        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Area, 6 Region
         public async Task<TableViewModel> DataByMajorProgram(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false, int cacheDaysSpan = 0 )
         {
 
