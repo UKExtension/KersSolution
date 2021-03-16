@@ -8,6 +8,8 @@ namespace Kers.Models.Repositories
         public static int All = 4;
         public static int MajorProgram = 5;
         public static int Employee = 6;
+        public static int Area = 7;
+        public static int Region = 8
         
 
     }

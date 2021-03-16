@@ -255,7 +255,7 @@ namespace Kers.Models.Repositories
 
         /*****************************************************************/
         // Generate Contacts Reports Groupped by Employee or Major Program
-        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Area, 6 Region
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 7 Area, 8 Region
         // grouppedBy: 0 Employee, 1 MajorProgram
         /*******************************************************************/
         public async Task<List<PerGroupActivities>> GetActivitiesAndContactsAsync( DateTime start, DateTime end, int filter = 0, int grouppedBy = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
@@ -289,6 +289,10 @@ namespace Kers.Models.Repositories
                         activities = await KSUEmployeeGroupppedActivities(start, end);
                     }else if(filter == FilterKeys.UK){
                         activities = await UKEmployeeGroupppedActivities(start, end);
+                    }else if(filter == FilterKeys.Area){
+                        activities = await AreaEmployeeGroupppedActivities(id, start, end);
+                    }else if(filter == FilterKeys.Region){
+                        activities = await RegionEmployeeGroupppedActivities(id, start, end);
                     }else{
                         activities = await AllEmployeeGroupppedActivities(start, end);
                     }
@@ -297,6 +301,10 @@ namespace Kers.Models.Repositories
                         activities = await DistrictProgramGroupppedActivities(id, start, end);
                     }else if(filter == FilterKeys.PlanningUnit){
                         activities = await UnitProgramGroupppedActivities(id, start, end);
+                    }else if(filter == FilterKeys.Area){
+                        activities = await AreaProgramGroupppedActivities(id, start, end);
+                    }else if(filter == FilterKeys.Region){
+                        activities = await RegionProgramGroupppedActivities(id, start, end);
                     }else if(filter == FilterKeys.KSU){
                         activities = await KSUProgramGroupppedActivities(start, end);
                     }else if(filter == FilterKeys.UK){
@@ -330,6 +338,10 @@ namespace Kers.Models.Repositories
                         contacts = await DistrictEmployeeGroupppedContacts(id, start, end);
                     }else if(filter == FilterKeys.PlanningUnit){
                         contacts = await UnitEmployeeGroupppedContacts(id, start, end);
+                    }else if(filter == FilterKeys.Area){
+                        contacts = await AreaEmployeeGroupppedContacts(id, start, end);
+                    }else if(filter == FilterKeys.Region){
+                        contacts = await RegionEmployeeGroupppedContacts(id, start, end);
                     }else if( filter == FilterKeys.KSU){
                         contacts = await KSUEmployeeGroupppedContacts(start, end);
                     }else if( filter == FilterKeys.UK){
@@ -342,6 +354,10 @@ namespace Kers.Models.Repositories
                         contacts = await DistrictProgramGroupppedContacts(id, start, end);
                     }else if(filter == FilterKeys.PlanningUnit){
                         contacts = await UnitProgramGroupppedContacts(id, start, end);
+                    }else if(filter == FilterKeys.Area){
+                        contacts = await AreaProgramGroupppedContacts(id, start, end);
+                    }else if(filter == FilterKeys.Region){
+                        contacts = await RegionProgramGroupppedContacts(id, start, end);
                     }else if( filter == FilterKeys.KSU){
                         contacts = await KSUProgramGroupppedContacts(start, end);
                     }else if( filter == FilterKeys.UK){
@@ -367,7 +383,7 @@ namespace Kers.Models.Repositories
 
         /***************************************************************************/
         // Generate Contacts Reports Groupped by Employee
-        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Area, 6 Region
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 7 Area, 8 Region
         /***************************************************************************/
 
         public async Task<TableViewModel> DataByEmployee(FiscalYear fiscalYear, int filter = 0, int id = 0, bool refreshCache = false, int cacheDaysSpan = 0 )
@@ -706,6 +722,110 @@ namespace Kers.Models.Repositories
         }
 
 
+
+
+
+        private async Task<List<ActivityGrouppedResult>> AreaEmployeeGroupppedActivities(int id, DateTime start, DateTime end){
+            
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                        .Where( a => 
+                                                    a.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId == id
+                                                )
+                                        .GroupBy(e => new {
+                                            KersUser = e.KersUser
+                                        })
+                                        .Select(c => new ActivityGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            Hours = c.Sum(s => s.Hours),
+                                            Audience = c.Sum(s => s.Audience),
+                                            GroupId = c.Key.KersUser.Id,
+                                            Male = c.Sum( a => a.LastRevision.Male),
+                                            Female = c.Sum( a => a.LastRevision.Female)
+
+                                        })
+                                        .ToList();
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> AreaEmployeeGroupppedContacts(int id, DateTime start, DateTime end){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < end 
+                                                && 
+                                                c.ContactDate > start 
+                                                && 
+                                                c.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId == id
+                                        )
+                                        .GroupBy(e => new {
+                                            User = e.KersUser
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.User.Id
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+
+
+        private async Task<List<ActivityGrouppedResult>> RegionEmployeeGroupppedActivities(int id, DateTime start, DateTime end){
+            
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                        .Where( a => 
+                                                    a.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegionId == id
+                                                )
+                                        .GroupBy(e => new {
+                                            KersUser = e.KersUser
+                                        })
+                                        .Select(c => new ActivityGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            Hours = c.Sum(s => s.Hours),
+                                            Audience = c.Sum(s => s.Audience),
+                                            GroupId = c.Key.KersUser.Id,
+                                            Male = c.Sum( a => a.LastRevision.Male),
+                                            Female = c.Sum( a => a.LastRevision.Female)
+
+                                        })
+                                        .ToList();
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> RegionEmployeeGroupppedContacts(int id, DateTime start, DateTime end){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < end 
+                                                && 
+                                                c.ContactDate > start 
+                                                && 
+                                                c.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegionId == id
+                                        )
+                                        .GroupBy(e => new {
+                                            User = e.KersUser
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.User.Id
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+
+
+
         private async Task<List<ActivityGrouppedResult>> UnitEmployeeGroupppedActivities(int id, DateTime start, DateTime end){
             var AllActivities = await ActivitiesPerPeriod( start, end);
             var activities = AllActivities
@@ -726,20 +846,6 @@ namespace Kers.Models.Repositories
                                         Female = c.Sum( a => a.LastRevision.Female)
                                     })
                                     .ToList();
-            
-/*             
-            foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            }
- */
             return activities;
 
         }
@@ -788,19 +894,6 @@ namespace Kers.Models.Repositories
                                             })
                                             .ToList();
 
-    /*                                         
-            foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            }
- */
             return activities;
 
         }
@@ -847,18 +940,6 @@ namespace Kers.Models.Repositories
                                                 Female = c.Sum( a => a.LastRevision.Female)
                                             })
                                             .ToList();
-/* 
-            foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            } */
             return activities;
 
         }
@@ -902,18 +983,6 @@ namespace Kers.Models.Repositories
                                                 Female = c.Sum( a => a.LastRevision.Female)
                                             })
                                             .ToList();
-/* 
-            foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            } */
             return activities;
 
         }
@@ -964,20 +1033,6 @@ namespace Kers.Models.Repositories
                                                 Female = c.Sum( a => a.LastRevision.Female)
                                             })
                                             .ToList();
-/* 
-            foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            }
-            
-             */
             
             return activities;
 
@@ -1006,6 +1061,118 @@ namespace Kers.Models.Repositories
         }
 
 
+
+
+
+         private async Task<List<ActivityGrouppedResult>> AreaProgramGroupppedActivities(int id, DateTime start, DateTime end){
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                            .Where( a => 
+                                                        a.ActivityDate < end 
+                                                        && 
+                                                        a.ActivityDate > start
+                                                        &&
+                                                        a.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId == id
+                                                    )
+                                            .GroupBy(e => new {
+                                                ProgramId = e.MajorProgramId
+                                            })
+                                            .Select(c => new ActivityGrouppedResult{
+                                                Ids = c.Select(
+                                                    s => s.Id
+                                                ).ToList(),
+                                                Hours = c.Sum(s => s.Hours),
+                                                Audience = c.Sum(s => s.Audience),
+                                                GroupId = c.Key.ProgramId,
+                                                Male = c.Sum( a => a.LastRevision.Male),
+                                                Female = c.Sum( a => a.LastRevision.Female)
+                                            })
+                                            .ToList();
+            
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> AreaProgramGroupppedContacts(int id, DateTime start, DateTime end){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < end 
+                                                && 
+                                                c.ContactDate > start 
+                                                && 
+                                                c.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId == id
+                                        )
+                                        .GroupBy(e => new {
+                                            ProgramId = e.MajorProgramId
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.ProgramId
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+
+
+
+         private async Task<List<ActivityGrouppedResult>> RegionProgramGroupppedActivities(int id, DateTime start, DateTime end){
+            var AllActivities = await ActivitiesPerPeriod( start, end);
+            var activities = AllActivities
+                                            .Where( a => 
+                                                        a.ActivityDate < end 
+                                                        && 
+                                                        a.ActivityDate > start
+                                                        &&
+                                                        a.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegionId == id
+                                                    )
+                                            .GroupBy(e => new {
+                                                ProgramId = e.MajorProgramId
+                                            })
+                                            .Select(c => new ActivityGrouppedResult{
+                                                Ids = c.Select(
+                                                    s => s.Id
+                                                ).ToList(),
+                                                Hours = c.Sum(s => s.Hours),
+                                                Audience = c.Sum(s => s.Audience),
+                                                GroupId = c.Key.ProgramId,
+                                                Male = c.Sum( a => a.LastRevision.Male),
+                                                Female = c.Sum( a => a.LastRevision.Female)
+                                            })
+                                            .ToList();
+            
+            return activities;
+
+        }
+
+        private async Task<List<ContactGrouppedResult>> RegionProgramGroupppedContacts(int id, DateTime start, DateTime end){
+           var contacts = await this.coreContext.Contact.
+                                    Where( c => 
+                                                c.ContactDate < end 
+                                                && 
+                                                c.ContactDate > start 
+                                                && 
+                                                c.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegionId == id
+                                        )
+                                        .GroupBy(e => new {
+                                            ProgramId = e.MajorProgramId
+                                        })
+                                        .Select(c => new ContactGrouppedResult{
+                                            Ids = c.Select(
+                                                s => s.Id
+                                            ).ToList(),
+                                            GroupId = c.Key.ProgramId
+                                        })
+                                        .ToListAsync();
+            return contacts;
+        }
+
+
+
+
+
         private async Task<List<ActivityGrouppedResult>> UnitProgramGroupppedActivities(int id, DateTime start, DateTime end){
             var AllActivities = await ActivitiesPerPeriod( start, end);
             var activities = AllActivities
@@ -1030,17 +1197,6 @@ namespace Kers.Models.Repositories
                                                         Female = c.Sum( a => a.LastRevision.Female)
                                                     })
                                                     .ToList();
-        /*     foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            } */
 
             return activities;
 
@@ -1089,17 +1245,6 @@ namespace Kers.Models.Repositories
                                                         Female = c.Sum( a => a.LastRevision.Female)
                                                     })
                                                     .ToList();
-         /*    foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            } */
 
             return activities;
 
@@ -1148,17 +1293,6 @@ namespace Kers.Models.Repositories
                                                     })
                                                     .ToList();
 
-            /* foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            } */
             return activities;
 
         }
@@ -1207,18 +1341,6 @@ namespace Kers.Models.Repositories
                                                         Female = c.Sum( a => a.LastRevision.Female)
                                                     })
                                                     .ToList();
-/* 
-            foreach( var activity in activities){
-                var males = 0;
-                var females = 0;
-                foreach( var perUserId in activity.Ids ){
-                    var last = coreContext.ActivityRevision.Where( a => a.ActivityId == perUserId ).OrderBy( a => a.Created ).Last();
-                    males += last.Male;
-                    females += last.Female;
-                }
-                activity.Male = males;
-                activity.Female = females;
-            } */
             return activities;
 
         }
@@ -1380,15 +1502,7 @@ namespace Kers.Models.Repositories
                 }
 
                 ids = await activities.Select( a => a.LastRevisionId??0).ToListAsync();
-
-/* 
-                activities = activities.Include( r => r.Revisions);
-                foreach( var actvt in activities){
-                    var rev = actvt.Revisions.OrderBy( r => r.Created );
-                    var last = rev.Last();
-                    ids.Add(last.Id);
-                }
-    */                 
+                
                 var serialized = JsonConvert.SerializeObject(ids);
 
                 // If keep cache is not specified, figure it out depending on the past or current period
@@ -1407,7 +1521,7 @@ namespace Kers.Models.Repositories
             return ids;
         }
 
-        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Major Program, 6 Employee
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 5 Major Program, 6 Employee, 7 Area, 8 Region
         public async Task<List<int>> LastContactRevisionIds( DateTime start, DateTime end, int filter = 0, int id = 0, bool refreshCache = false, int keepCacheInDays = 0 ){
             var cacheKey = CacheKeys.ContactsLastRevisionIdsPerPeriod + filter.ToString() + "_" + id.ToString() + start.ToString("s") + end.ToString("s");
             var cacheString = await _cache.GetStringAsync(cacheKey);
@@ -1418,10 +1532,14 @@ namespace Kers.Models.Repositories
                 ids = new List<int>();
                 var contacts = coreContext.Contact.
                     Where(r => r.ContactDate > start && r.ContactDate < end);
-                if( filter ==  0 ){
+                if( filter ==  0 ){ 
                     contacts = contacts.Where( a => a.PlanningUnit.District != null && a.PlanningUnit.District.Id == id );
                 }else if( filter == 1 ){
                     contacts = contacts.Where( a => a.PlanningUnitId == id );
+                }else if( filter == 7 ){
+                    contacts = contacts.Where( a => a.PlanningUnit.ExtensionAreaId == id );
+                }else if( filter == 8 ){
+                    contacts = contacts.Where( a => a.PlanningUnit.ExtensionArea.ExtensionRegionId == id );
                 }else if( filter == 2 ){
                     contacts = contacts.Where( a => a.KersUser.RprtngProfile.Institution.Code == "21000-1890");
                 }else if( filter == 3 ){
@@ -1464,7 +1582,7 @@ namespace Kers.Models.Repositories
                 ActivityData = await this.coreContext.Activity
                                     .Where(a => a.ActivityDate < end && a.ActivityDate > start)
                                     .Include( a => a.LastRevision)
-                                    .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit )
+                                    .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.ExtensionArea)
                                     .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.Institution )
                                     .ToListAsync();
                 ActivityData = ActivityData.Select(x => { x.KersUser.RprtngProfile.PlanningUnit.GeoFeature = null; return x; }).ToList();
