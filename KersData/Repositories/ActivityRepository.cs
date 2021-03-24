@@ -1142,7 +1142,7 @@ snap copies
                                 }).FirstOrDefault();
             result.Add( lastRevision.ActivityDate.ToString("MM-dd-yy"));
             result.Add( lastRevision.Title);
-            string pattern = @"<[^>]*(>|$)|&nbsp;|&#39;|&raquo;|&laquo;|&quot;";
+            string pattern = @"<[^>]*(>|$)|&nbsp;|&#39;|&raquo;|&laquo;|&quot;|&amp;";
             result.Add(Regex.Replace(lastRevision.Description, pattern, string.Empty));
             result.Add( user.RprtngProfile.Name);
             result.Add( user.ExtensionPosition.Code);
