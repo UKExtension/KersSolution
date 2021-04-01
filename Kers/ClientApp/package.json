@@ -23,7 +23,7 @@
     "@angular/router": "7.1.4",
     "@types/knockout": "^3.4.67",
     "angular-calendar": "^0.26.4",
-    "angular-froala-wysiwyg": "^2.9.1",
+    "angular-froala-wysiwyg": "2.9.8",
     "bootstrap": "^3.4.1",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.4",
