@@ -149,7 +149,7 @@ namespace Kers.Models.Repositories
             var cacheKey = CacheKeys.FilteredContactSummaries + filter.ToString() + id.ToString() + "_" + start.ToString("s") + end.ToString("s");
             var cachedTypes = await _cache.GetStringAsync(cacheKey);
             List<float> result;
-            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache && false){
+            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
                 result = JsonConvert.DeserializeObject<List<float>>(cachedTypes);
             }else{
                 float TotalHours = 0;
