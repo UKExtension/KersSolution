@@ -11,6 +11,7 @@ namespace Kers.Models.Entities.KERScore
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public LadderLevel LadderLevel {get;set;}
+        public int Track {get;set;}
         public int LadderLevelId {get;set;}
         public string PositionNumber { get; set; }
         public string ProgramOfStudy {get;set;}
