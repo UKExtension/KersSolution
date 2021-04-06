@@ -149,7 +149,7 @@ namespace Kers.Models.Repositories
             var cacheKey = CacheKeys.FilteredContactSummaries + filter.ToString() + id.ToString() + "_" + start.ToString("s") + end.ToString("s");
             var cachedTypes = await _cache.GetStringAsync(cacheKey);
             List<float> result;
-            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
+            if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache && false){
                 result = JsonConvert.DeserializeObject<List<float>>(cachedTypes);
             }else{
                 float TotalHours = 0;
@@ -197,6 +197,7 @@ namespace Kers.Models.Repositories
                     TotalVoluntiers += contact.ContactOptionNumbers.Where( s => s.ActivityOptionNumber.Name == "Number of Adult Volunteers").Sum( d => d.Value );
                     TotalContacts += contact.Male + contact.Female;
                     TotalMultistate += contact.Multistate * 8;
+                    TotalHours += contact.Days * 8;
                 }
                 TotalNumActivities = revs.Count;
                 TotalNumActivities += contactRevs.Count();
