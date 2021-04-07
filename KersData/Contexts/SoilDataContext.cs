@@ -23,6 +23,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<SoilReportBundle> SoilReportBundle { get; set; }
         public virtual DbSet<FormTypeSignees> FormTypeSignees {get;set;}
         public virtual DbSet<SoilReportStatus> SoilReportStatus {get;set;}
+        public virtual DbSet<SoilReportStatusChange> SoilReportStatusChange {get; set;}
         public virtual DbSet<TypeForm> TypeForm {get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder){
             modelBuilder.Entity<CountyCode>().HasData(

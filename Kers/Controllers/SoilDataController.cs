@@ -157,6 +157,21 @@ namespace Kers.Controllers
 
 
         private void UpdateBundles(){
+
+/* 
+            var bundlesWithoutReports = _soilDataContext.SoilReportBundle.Where( b => b.Reports.Count() == 0);
+            var i = 0;
+            foreach(var bund in bundlesWithoutReports){
+                var reprt = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == bund.Id).FirstOrDefault();
+                if( reprt == null ){
+                    _soilDataContext.RemoveRange( _soilDataContext.SoilReportStatusChange.Where(c => c.SoilReportBundleId == bund.Id));
+                    _soilDataContext.Remove(bund);
+                    i++;
+                }
+            }
+            _soilDataContext.SaveChanges();
+
+ */
             SoilReport OrphanedReport =  _soilDataContext.SoilReport
                                                 .Where( r => r.SoilReportBundleId == null)
                                                 .FirstOrDefault();
@@ -191,8 +206,10 @@ namespace Kers.Controllers
                     Bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Received").FirstOrDefault();
                     Bundle.LastStatus.Created = DateTime.Now;
                     Bundle.UniqueCode = Guid.NewGuid().ToString();
-                    _soilDataContext.Add(Bundle);
-                    _soilDataContext.SaveChanges();
+                    if( Bundle.Reports.Count() > 0){
+                        _soilDataContext.Add(Bundle);
+                        _soilDataContext.SaveChanges();
+                    }
                     OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
                 }while( OrphanedReport != null);
             }
