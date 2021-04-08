@@ -12,6 +12,15 @@
   </div>
   <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="ladderForm">
     <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="track">Track:</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+          <select name="track" formControlName="track" class="form-control col-md-7 col-xs-12">
+              <option value="0">TRACK A</option>
+              <option value="1">TRACK B</option>
+          </select>
+      </div>
+    </div> 
+    <div class="form-group">
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="tStatus">Requesting Promotion to Level:</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
           <select name="registerCutoffDaysId" formControlName="ladderLevelId" class="form-control col-md-7 col-xs-12">

@@ -108,6 +108,7 @@ export class LadderApplicationFormComponent implements OnInit {
                     day: 1}
                 }, Validators.required],
           ladderEducationLevelId:["", Validators.required],
+          track:"0",
           programOfStudy: [""],
           evidence: [""],
           numberOfYears: [""],
@@ -171,7 +172,6 @@ export class LadderApplicationFormComponent implements OnInit {
         }
       );
     }
-    
   }
   updateHours(){
     this.hoursAttended = this.trainingService.hoursByUser(0,this.lastPromotionDate, this.firstOfTheYear);

@@ -320,6 +320,7 @@ namespace Kers.Controllers
                 entity.StartDate = LadderApplication.StartDate;
                 entity.LadderEducationLevelId = LadderApplication.LadderEducationLevelId;
                 entity.Draft = LadderApplication.Draft;
+                entity.Track = LadderApplication.Track;
                 if(!LadderApplication.Draft){
                     var FirstStage = context.LadderStage.OrderBy( s => s.Order).FirstOrDefault();
                     var FirstApplicationStage = new LadderApplicationStage();

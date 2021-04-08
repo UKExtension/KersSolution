@@ -4,6 +4,7 @@ export class LadderApplication{
     id:number;
     kersUser:User;
     kersUserId:number;
+    track:number;
     positionNumber:string;
     programOfStudy:string;
     evidence:string;
