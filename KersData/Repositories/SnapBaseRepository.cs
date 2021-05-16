@@ -96,6 +96,7 @@ namespace Kers.Models.Repositories
             if (!string.IsNullOrEmpty(cacheString)){
                 ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
             }else{
+                /* 
                 ids = new List<int>();
                 var activities = context.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End)
@@ -105,7 +106,10 @@ namespace Kers.Models.Repositories
                     var last = rev.Last();
                     ids.Add(last.Id);
                 }
-                    
+                   */  
+                ids = context.Activity.
+                    Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End).
+                    Select( a => a.LastRevisionId??0).ToList();                    
                 var serialized = JsonConvert.SerializeObject(ids);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
