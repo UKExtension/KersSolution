@@ -96,17 +96,12 @@ namespace Kers.Controllers
             }else{
                 FiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == FiscalYearType.ServiceLog ).FirstOrDefault();
             }
-
-
-
             var plansPerFiscalYear = this.context.AffirmativeActionPlan
                                             .Where(p => p.FiscalYearId == FiscalYear.Id && p.PlanningUnit.Name.Substring(p.PlanningUnit.Name.Count() - 3) == "CES")
                                             .Include( a => a.PlanningUnit).ThenInclude( u => u.ExtensionArea)
                                             .Include( a => a.Revisions ).ToList();
             if(id != 0){
                 if(type == "area"){
-
-
                     // Find the area
                     var area = this.context.ExtensionArea.Where( a => a.Id == id ).FirstOrDefault();
                     var AreaController = new ExtensionAreaController(mainContext,context,userRepo);

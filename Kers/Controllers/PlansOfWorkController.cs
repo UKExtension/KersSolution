@@ -82,7 +82,11 @@ namespace Kers.Controllers
             var plansOfWorkPerFiscalYear = this.context.PlanOfWork.Where(p => p.FiscalYear == fiscalYear);
             if( Id != 0 ){
                 if(type == "area"){
-                    plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => p.PlanningUnit.ExtensionAreaId == Id);
+                    // Find the area
+                    var area = this.context.ExtensionArea.Where( a => a.Id == Id ).FirstOrDefault();
+                    var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                    var pairing = AreaController.FindContainingPair( area.Name );
+                    plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => pairing.Contains(p.PlanningUnit.ExtensionArea.Name));
                 }else if(type == "region"){
                     plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => p.PlanningUnit.ExtensionArea.ExtensionRegionId == Id);
                 }else{

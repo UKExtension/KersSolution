@@ -65,7 +65,11 @@ namespace Kers.Controllers
 
             if(id != 0){
                 if(type == "area"){
-                    counties = context.PlanningUnit.Where( c => c.ExtensionAreaId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                    // Find the area
+                    var area = this.context.ExtensionArea.Where( a => a.Id == id ).FirstOrDefault();
+                    var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                    var pairing = AreaController.FindContainingPair( area.Name );
+                    counties = context.PlanningUnit.Where( c => pairing.Contains(c.ExtensionArea.Name) && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
                 }else if( type == "region"){
                     counties = context.PlanningUnit.Where( c => c.ExtensionArea.ExtensionRegionId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
                 }else{
