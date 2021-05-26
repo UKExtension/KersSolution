@@ -15,7 +15,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
     <vehicle-form *ngIf="newVehicle" [county]="county" (onFormCancel)="newVehicle=false" (onFormSubmit)="newVehicleSubmitted($event)"></vehicle-form>
   </div>
   <div *ngIf="county">
-    <vehicle-list-detail *ngFor="let vehicle of county.vehicles" [vehicle]="vehicle"></vehicle-list-detail>
+    <vehicle-list-detail *ngFor="let vehicle of county.vehicles" [vehicle]="vehicle" (onEdited)="vehicleEdited($event)"></vehicle-list-detail>
   </div>
     `,
   styles: []
@@ -35,7 +35,7 @@ export class VehicleCountyComponent implements OnInit {
 
   ngOnInit() {
     this.route.params
-        .switchMap( (params: Params) => this.planningUnitService.id(params['id']) )
+        .switchMap( (params: Params) => this.planningUnitService.id(params['id'], true) )
           .subscribe(
             res=>{
               this.county = res;
@@ -47,6 +47,15 @@ export class VehicleCountyComponent implements OnInit {
   newVehicleSubmitted(event:Vehicle){
     this.county.vehicles.unshift(event);
     this.newVehicle = false;
+  }
+  vehicleEdited(event:Vehicle){
+    this.planningUnitService.id(this.county.id, true) 
+          .subscribe(
+            res=>{
+              this.county = res;
+            },
+            err => this.errorMessage = <any>err
+          );
   }
   defaultTitle(){
     this.reportingService.setTitle(this.county.name + " Vehicles");

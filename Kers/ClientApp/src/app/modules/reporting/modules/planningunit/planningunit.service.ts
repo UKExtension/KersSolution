@@ -42,8 +42,8 @@ export class PlanningunitService {
             );
     }
 
-    id(id:number):Observable<PlanningUnit>{
-        if(this.planningUnits.has(id)){
+    id(id:number, refresh:boolean = false):Observable<PlanningUnit>{
+        if(this.planningUnits.has(id) && !refresh){
             return of( this.planningUnits.get(id));
         }else{
             var url = this.baseUrl + id;
