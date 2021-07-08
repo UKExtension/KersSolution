@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {Location} from '@angular/common';
 import { CountyEvent, CountyEventService, CountyEventProgramCategory, CountyEventPlanningUnit, CountyEventWithTime } from './county-event.service';
-import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { ProgramCategory, ProgramsService } from '../../admin/programs/programs.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { UserService, PlanningUnit } from '../../user/user.service';
@@ -15,7 +15,6 @@ import { ExtensionEventLocationConnection } from '../location/location.service';
   styleUrls: ['./county-event-form.component.scss']
 })
 export class CountyEventFormComponent implements OnInit {
-  
   @Input() countyEvent:CountyEventWithTime;
   county:PlanningUnit;
   countyId: number;
@@ -34,19 +33,15 @@ export class CountyEventFormComponent implements OnInit {
   options:object;
   
   loading = true;
-  public myDatePickerOptions: IMyDpOptions = {
+  public myDatePickerOptions: IAngularMyDpOptions = {
           dateFormat: 'mm/dd/yyyy',
-          showTodayBtn: false,
           satHighlight: true,
-          firstDayOfWeek: 'su',
-          showClearDateBtn: false
+          firstDayOfWeek: 'su'
       };
-  public myDatePickerOptionsEnd: IMyDpOptions = {
+  public myDatePickerOptionsEnd: IAngularMyDpOptions = {
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
             satHighlight: true,
-            firstDayOfWeek: 'su',
-            showClearDateBtn: true
+            firstDayOfWeek: 'su'
         };
     
   defaultTime = "12:34:56.1000000 -04:00";
@@ -67,10 +62,7 @@ export class CountyEventFormComponent implements OnInit {
     this.countyEventForm = this.fb.group(
         {
           start: [{
-            date: {
-                year: this.date.getFullYear(),
-                month: this.date.getMonth() + 1,
-                day: this.date.getDate()}
+              isRange: false, singleDate: {jsDate: this.date}
             }, Validators.required],
           starttime: [""],
           end: [null],
@@ -102,15 +94,12 @@ export class CountyEventFormComponent implements OnInit {
 
   ngOnInit() {
     if(this.countyEvent){
+      console.log( this.countyEvent);
       this.countyEventForm.patchValue(this.countyEvent);
       var start = new Date( this.countyEvent.start);
       this.countyEventForm.patchValue({
         start: {
-          date:{
-            year: start.getFullYear(),
-            month: start.getMonth() + 1,
-            day: start.getDate()
-          }
+          isRange: false, singleDate: {jsDate: start}
         },
         etimezone: this.countyEvent.etimezone,
         starttime: this.countyEvent.starttime
@@ -119,11 +108,7 @@ export class CountyEventFormComponent implements OnInit {
         var end = new Date(this.countyEvent.end);
         this.countyEventForm.patchValue({
           end:{
-            date:{
-              year: end.getFullYear(),
-              month: end.getMonth() + 1,
-              day: end.getDate()
-            }
+            isRange: false, singleDate: {jsDate: end}
           }
         })
       }
@@ -155,9 +140,6 @@ export class CountyEventFormComponent implements OnInit {
                                     }    
                                   }
         };
-
-
-
         this.county = res.rprtngProfile.planningUnit;
         if( !this.countyEvent && (this.county.timeZoneId == "Central Standard Time" ||this.county.timeZoneId == "America/Chicago") ){
           this.countyEventForm.patchValue({etimezone:false});
@@ -172,28 +154,27 @@ export class CountyEventFormComponent implements OnInit {
             this.planningUnits.forEach(function(element){
               if(element.id != cntId){
                 optns.push(
-                  {value: element.id, label: element.name}
+                  { value: element.id, label: element.name}
                 );
               }
               
             });
             this.planningUnitsOptions = optns;
-            if(this.countyEvent != null && this.countyEvent.units != undefined && this.countyEvent.units.length > 1 ){
-              this.multycounty = true;
+            if(this.countyEvent != null && this.countyEvent.units != undefined  ){
               var cnts = [];
               for( var cnt of this.countyEvent.units ){
                 if( cnt.planningUnitId != cntId){
                   cnts.push(
-                    cnt.planningUnitId
+                    {value: cnt.planningUnitId, label: this.planningUnits.filter(c => c.id == cnt.planningUnitId )[0].name}
                   );
                 }
               }
-              this.countyEventForm.patchValue({units:cnts, multycounty:true})
+              this.countyEventForm.patchValue({units:cnts})
+              if(this.countyEvent.units.length > 1){
+                this.multycounty = true;
+                this.countyEventForm.patchValue({multycounty:true});
+              }
             } 
-            
-
-
-
           }
         );
       } 
@@ -212,9 +193,7 @@ export class CountyEventFormComponent implements OnInit {
         if(this.countyEvent != null && this.countyEvent.programCategories != undefined && this.countyEvent.programCategories.length > 0 ){
           var ctgrs = [];
           for( var cnt of this.countyEvent.programCategories ){
-              ctgrs.push(
-                cnt.programCategoryId
-              );
+              ctgrs.push( {value: cnt.programCategoryId, label: this.programCategories.filter(c => c.id == cnt.programCategoryId )[0].name} );
           }
           this.countyEventForm.patchValue({programCategories:ctgrs})
         } 
@@ -246,15 +225,18 @@ export class CountyEventFormComponent implements OnInit {
     this.loading = true;
     var result = <CountyEventWithTime> this.countyEventForm.value;
 
-    result.start = new Date(this.countyEventForm.value.start.date.year, this.countyEventForm.value.start.date.month - 1, this.countyEventForm.value.start.date.day);
-    if( this.countyEventForm.value.end != null && this.countyEventForm.value.end.date != null ){
-      result.end = new Date(this.countyEventForm.value.end.date.year, this.countyEventForm.value.end.date.month - 1, this.countyEventForm.value.end.date.day);
+    //result.start = new Date(this.countyEventForm.value.start.date.year, this.countyEventForm.value.start.date.month - 1, this.countyEventForm.value.start.date.day);
+    
+    
+    result.start = this.countyEventForm.value.start.singleDate.jsDate;
+    if( this.countyEventForm.value.end != null && this.countyEventForm.value.end.singleDate != null ){
+      result.end = this.countyEventForm.value.end.singleDate.jsDate;
     }else{
       result.end = null;
     }
     if(result.programCategories.length > 0){
       var cats = <CountyEventProgramCategory[]>[];
-      for( let catId of this.countyEventForm.value.programCategories) cats.push( { programCategoryId: catId } as CountyEventProgramCategory);
+      for( let catId of this.countyEventForm.value.programCategories) cats.push( { programCategoryId: catId.value } as CountyEventProgramCategory);
       result.programCategories = cats;
     }
 
@@ -263,7 +245,7 @@ export class CountyEventFormComponent implements OnInit {
     unts.push({planningUnitId:this.countyId, isHost:true} as CountyEventPlanningUnit)
     if( this.countyEventForm.value.multycounty ){
       for( let unitId of this.countyEventForm.value.units){
-        unts.push( { planningUnitId: unitId, isHost:false } as CountyEventPlanningUnit);
+        unts.push( { planningUnitId: unitId.value, isHost:false } as CountyEventPlanningUnit);
       }
     }
     result.units = unts;
@@ -292,17 +274,13 @@ export class CountyEventFormComponent implements OnInit {
   onCancel(){
     this.onFormCancel.emit();
   }
-  
-
 }
 
 export const trainingValidator = (control: AbstractControl): {[key: string]: boolean} => {
-
   let start = control.get('start');
   let end = control.get('end');
   var errors = {};
   var hasErrors = false;
-
   if( end.value != null && end.value.date != null){
     if(start.value != null){
       let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
@@ -313,13 +291,9 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
       }
     }    
   }
-
-  
   if(hasErrors){
     return errors;
   }
-
-
   return null;
 }
 

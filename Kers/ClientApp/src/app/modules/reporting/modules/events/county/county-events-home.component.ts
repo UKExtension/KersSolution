@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { CountyEvent, CountyEventService, CountyEventWithTime, CountyEventSearchCriteria } from './county-event.service';
-import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { startWith, flatMap, tap } from 'rxjs/operators';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
@@ -22,12 +22,20 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
       <input type="text" [(ngModel)]="criteria.search" placeholder="search by title" (keyup)="onSearch($event)" class="form-control" name="Search" />
     </div>
     <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-        <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
+
+      <div class="input-group" style="width:250px; float:right;">
+            
+          <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+          angular-mydatepicker name="mydaterange" (click)="dp.toggleCalendar()" 
+          [(ngModel)]="model" [options]="myDateRangePickerOptions" 
+          #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
+          <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+        
+      </div>
+
     </div>
   
-  </div>
-  
-  
+  </div>  
   <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
     <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
   </a>
@@ -79,8 +87,18 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
 
 
   <div class="table-responsive">
-    <table class="table table-bordered table-striped" *ngIf="events$ | async as events" [hidden]="loading">
-      <tr [county-event-list-details]="ev" *ngFor="let ev of events" (onDeleted)="newEventSubmitted($event)"></tr>
+    <table class="table table-bordered table-striped table-hover" *ngIf="events$ | async as events" [hidden]="loading">
+      <thead>
+        <tr class="ng-star-inserted">
+          <th>Date(s)</th>
+          <th>Title</th>
+          <th>Location/Virtual Link</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr [county-event-list-details]="ev" *ngFor="let ev of events" (onDeleted)="newEventSubmitted($event)"></tr>
+      </tbody>
     </table>
     <loading *ngIf="loading"></loading>
   </div>
@@ -108,15 +126,12 @@ export class CountyEventsHomeComponent implements OnInit {
   condition = false;
 
 
-  myDateRangePickerOptions: IMyDrpOptions = {
-      // other options...
-      dateFormat: 'mmm dd, yyyy',
-      showClearBtn: false,
-      showApplyBtn: false,
-      showClearDateRangeBtn: false
+  myDateRangePickerOptions: IAngularMyDpOptions = {
+    dateRange: true,
+    dateFormat: 'mmm dd, yyyy',
+    alignSelectorRight: false
   };
-  model = {beginDate: {year: 2018, month: 10, day: 9},
-                             endDate: {year: 2018, month: 10, day: 19}};
+  model:IMyDateModel = null;
 
 
   constructor(
@@ -137,8 +152,22 @@ export class CountyEventsHomeComponent implements OnInit {
       order: 'dsc',
       countyId: 0
     }
-    this.model.beginDate = {year: this.startDate.getFullYear(), month: this.startDate.getMonth() + 1, day: this.startDate.getDate()};
-    this.model.endDate = {year: this.endDate.getFullYear(), month: this.endDate.getMonth() + 1, day: this.endDate.getDate()};
+
+
+    
+    this.model = {
+      isRange: true, 
+      singleDate: null, 
+      dateRange: {
+        beginDate: {
+          year: this.startDate.getFullYear(), month: this.startDate.getMonth() + 1, day: this.startDate.getDate()
+        },
+        endDate: {
+          year: this.endDate.getFullYear(), month: this.endDate.getMonth() + 1, day: this.endDate.getDate()
+        }
+      }
+    }
+
     this.refresh = new Subject();
 
     this.events$ = this.refresh.asObservable()
@@ -150,11 +179,11 @@ export class CountyEventsHomeComponent implements OnInit {
       this.defaultTitle();
   }
 
-  dateCnanged(event: IMyDateRangeModel){
-    this.startDate = event.beginJsDate;
-    this.endDate = event.endJsDate;
-    this.criteria["start"] = event.beginJsDate.toISOString();
-    this.criteria["end"] = event.endJsDate.toISOString();
+  dateCnanged(event: IMyDateModel){
+    this.startDate = event.dateRange.beginJsDate;
+    this.endDate = event.dateRange.endJsDate;
+    this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
+    this.criteria["end"] = event.dateRange.endJsDate.toISOString();
     this.onRefresh();
     //this.trainings$ = this.service.perPeriod(event.beginJsDate, event.endJsDate);
   }

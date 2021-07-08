@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import {StoryService, Story} from '../story.service';
-import { Observable } from "rxjs/Observable";
 import { User } from "../../user/user.service";
 
 @Component({

@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '../../shared/shared.module';
-import { MyDatePickerModule } from 'mydatepicker';
-import { MyDateRangePickerModule } from 'mydaterangepicker';
 import {ActivityRoutingModule} from './activity-routing.module';
 
 import {ActivityComponent} from './activity.component';
@@ -27,7 +25,6 @@ import {ActivityStatsMonthRow} from './stats/activity-stats-month-row.component'
 import {ActivityStatsProgramhRow} from './stats/activity-stats-program-row.component';
 
 import {ActivityService} from './activity.service';
-import {SnapClassicService} from './snap-classic.service';
 import { ServiceLogFullDetailsComponent } from './reports/fulldetails/service-log-full-details.component';
 import { ServiceLogSummaryRowComponent } from './reports/fulldetails/service-log-summary-row.component';
 import { ServiceLogSnapDirectDetailsComponent } from './reports/fulldetails/service-log-snap-direct-details.component';
@@ -39,8 +36,6 @@ import { ActivityReportsDetailComponent } from './reports/filter/activity-report
 
 @NgModule({
   imports:      [ SharedModule,
-                  MyDatePickerModule,
-                  MyDateRangePickerModule,
                   ActivityRoutingModule
                   
                 ],
@@ -73,7 +68,6 @@ import { ActivityReportsDetailComponent } from './reports/filter/activity-report
                 ],
   providers:    [  
                     ActivityService,
-                    SnapClassicService,
                     ServicelogService
                 ],
   exports:      [

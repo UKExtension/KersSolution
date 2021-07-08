@@ -11,7 +11,7 @@ import {
             MakeupValueForm
                                 } from './affirmative.service';
 import { FormBuilder, Validators, FormGroup,FormArray, FormControl }   from '@angular/forms';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 
 @Component({
     selector: 'affirmative-form',

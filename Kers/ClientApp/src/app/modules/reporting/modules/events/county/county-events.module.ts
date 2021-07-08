@@ -5,11 +5,12 @@ import { CountyEventsRoutingModule } from './county-events-routing.module';
 import { CountyEventsHomeComponent } from './county-events-home.component';
 import { LocationModule } from '../location/location.module';
 import { CountyEventFormComponent } from './county-event-form.component';
-import { MyDatePickerModule } from 'mydatepicker';
-import { MyDateRangePickerModule } from 'mydaterangepicker';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 import { CountyEventListDetailsComponent } from './county-event-list-details.component';
 import { CountyEventConvertItemComponent } from './county-events-convert-item.component';
 import { CountyEventConvertComponent } from './county-events-convert.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -17,10 +18,11 @@ import { CountyEventConvertComponent } from './county-events-convert.component';
 @NgModule({
   imports:      [   
                   SharedModule,
-                  MyDatePickerModule,
-                  MyDateRangePickerModule,
+                  AngularMyDatePickerModule,
                   CountyEventsRoutingModule,
-                  LocationModule
+                  LocationModule,
+                  NgSelectModule,
+                  FormsModule
                 ],
   declarations: [ 
                   CountyEventsHomeComponent,

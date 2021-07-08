@@ -82,7 +82,9 @@ namespace Kers.Controllers
             }else{
             
                 var countiesQuery = this.context.PlanningUnit.
-                                Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES");
+                                Where(c=>c.District != null 
+                                //&& c.Name.Substring(c.Name.Count() - 3) == "CES"
+                                );
                 
                 if(DistrictId != null){
                     if(DistrictId == 0){
@@ -98,7 +100,7 @@ namespace Kers.Controllers
                 } 
                 counties = await countiesQuery.OrderBy(c => c.Name).ToListAsync();
                 
-
+                counties = counties.Where( c => c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
                 var serializedCounties = JsonConvert.SerializeObject(counties);
                 _cache.SetString(cacheKey, serializedCounties, new DistributedCacheEntryOptions
                         {

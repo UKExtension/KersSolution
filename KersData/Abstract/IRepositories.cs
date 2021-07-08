@@ -14,6 +14,8 @@ using Kers.Models.Entities.UKCAReporting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 
+
+
 namespace Kers.Models.Abstract
 {
     public interface IzEmpRptProfileRepository : IEntityBaseRepository<zEmpRptProfile> { }
@@ -132,7 +134,7 @@ namespace Kers.Models.Abstract
     }
     public interface IHelpContentRepository: IEntityBaseRepository<HelpContent>{}
     public interface IMessageRepository: IEntityBaseRepository<Message>{
-        List<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment);
+        List<Message> ProcessMessageQueue(IConfiguration configuration, IWebHostEnvironment environment);
         bool ScheduleTrainingMessage(string type, Training training, KersUser To, DateTimeOffset? ScheduledFor = null);
     }
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{

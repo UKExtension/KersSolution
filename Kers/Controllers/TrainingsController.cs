@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Contexts;
 using Kers.Models.Entities.UKCAReporting;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Kers.Controllers
 {
@@ -25,7 +26,7 @@ namespace Kers.Controllers
         ITrainingRepository trainingRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
-        IHostingEnvironment environment;
+        IWebHostEnvironment environment;
         public TrainingsController( 
                     KERSmainContext mainContext,
                     KERSreportingContext _reportingContext,
@@ -35,7 +36,7 @@ namespace Kers.Controllers
                     ILogRepository logRepo,
                     ITrainingRepository trainingRepo,
                     IFiscalYearRepository fiscalYearRepo,
-                    IHostingEnvironment env
+                    IWebHostEnvironment env
             ):base(mainContext, context, userRepo){
            this._context = context;
            this._mainContext = mainContext;
@@ -523,10 +524,8 @@ namespace Kers.Controllers
                                 .Include( t => t.submittedBy)
                                     .ThenInclude( s => s.PersonalProfile)
                                 .Include( t => t.TrainingSession)
-                                .Include(t => t.TrainingSession)
-                                .OrderBy(t => t.Start);
-            
-            return new OkObjectResult( ToWithTimezone(proposals) );
+                                .Include(t => t.TrainingSession).ToList();            
+            return new OkObjectResult( ToWithTimezone(proposals.OrderBy(t => t.Start).ToList()) );
         }
 
         [HttpGet("trainingsbystatus/{year}/{status}")]
@@ -618,14 +617,7 @@ namespace Kers.Controllers
             if(contacts != null && contacts != ""){
                 trainings = trainings.Where( i => i.tContact.Contains(contacts));
             }
-            if(start != null){
-                start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
-                trainings = trainings.Where( i => i.Start >= start);
-            }
-            if( end != null){
-                end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
-                trainings = trainings.Where( i => i.Start <= end);
-            }
+            
             if(day != null){
                 trainings = trainings
                             .Where( i => 
@@ -663,24 +655,41 @@ namespace Kers.Controllers
             }else if( admin ){
                 trainings = trainings.Include(t => t.Enrollment);
             }
-                            
-            IOrderedQueryable<Training> result;
-            if(order == "asc"){
-                result = trainings.OrderByDescending(t => t.Start);
-            }else if( order == "alph"){
-                result = trainings.OrderBy(t => t.Subject);
+
+            List<Training> resultAsAList;
+
+
+            start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
+                
+
+            end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
+
+
+            if(environment.IsDevelopment()){
+                resultAsAList = trainings.ToList();
+                resultAsAList = resultAsAList.Where( i => i.Start >= start && i.Start <= end).ToList();
+            
             }else{
-                result = trainings.OrderBy(t => t.Start);
-            }
+                resultAsAList = trainings.Where( i => i.Start >= start && i.Start <= end).ToList();
+            }         
+            
+            if(order == "asc"){
+                resultAsAList = resultAsAList.OrderByDescending(t => t.Start).ToList();
+            }else if( order == "alph"){
+                resultAsAList = resultAsAList.OrderBy(t => t.Subject).ToList();
+            }else{
+                resultAsAList = resultAsAList.OrderBy(t => t.Start).ToList();
+            }         
+
 
             if(!attendance){
-                return new OkObjectResult(this.ToWithTimezone(result));
+                return new OkObjectResult(this.ToWithTimezone(resultAsAList));
             }
 
-            return new OkObjectResult(result);
+            return new OkObjectResult(resultAsAList);
         }
 
-        private List<TrainingWithTimezone> ToWithTimezone(IOrderedQueryable<Training>  trainings){
+        private List<TrainingWithTimezone> ToWithTimezone(List<Training>  trainings){
             var withTimezone = new List<TrainingWithTimezone>();
             
             foreach( var training in trainings){
@@ -738,20 +747,43 @@ namespace Kers.Controllers
                 where enfolment.AttendieId == id
                 //where training.Start.Year == year
                 select training;
-            
-            if(start == null){
+            trainings = trainings
+                            .Include( t => t.Enrollment)
+                            .Include(t => t.iHour)
+                            .Include( t => t.SurveyResults);
+
+            List<Training> tnngs;
+
+            if(environment.IsDevelopment()){
+
+                tnngs = await trainings.ToListAsync();
+
+                if(start == null){
+                    if( year == 0){
+                        year = DateTime.Now.Year;
+                    }
+                    tnngs = tnngs.Where( t => t.Start.Year == year).ToList();
+                }else{
+                    tnngs = tnngs.Where( t => t.Start > start && t.Start < end).ToList();
+                }
+                tnngs = trainings.OrderBy(t => t.Start).ToList();
+
+            }else{
+
+                if(start == null){
                 if( year == 0){
                     year = DateTime.Now.Year;
                 }
                 trainings = trainings.Where( t => t.Start.Year == year);
-            }else{
-                trainings = trainings.Where( t => t.Start > start && t.Start < end);
-            }
-            
+                }else{
+                    trainings = trainings.Where( t => t.Start > start && t.Start < end);
+                }
+                tnngs = await trainings.OrderBy(t => t.Start).ToListAsync();
 
-            trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour)
-            .Include( t => t.SurveyResults);
-            var tnngs = await trainings.OrderBy(t => t.Start).ToListAsync();
+            }
+
+
+            
             return new OkObjectResult(tnngs);
         }
 
@@ -767,13 +799,19 @@ namespace Kers.Controllers
             from enfolment in training.Enrollment
             where enfolment.AttendieId == id && enfolment.attended == true
             select training;
-        
-
-            trainings = trainings.Where( t => t.Start > start && t.Start < end);
-            
-
             trainings = trainings.Include(t => t.iHour);
-            var hours = await trainings.SumAsync( t => t.iHour == null ? 0 : t.iHour.iHourValue );
+            int hours;
+
+            if(environment.IsDevelopment()){
+                var trnngs = trainings.ToList();
+                trnngs = trnngs.Where( t => t.Start > start && t.Start < end).ToList();
+                hours = trnngs.Sum( t => t.iHour == null ? 0 : t.iHour.iHourValue );
+            }else{
+                trainings = trainings.Where( t => t.Start > start && t.Start < end);            
+                hours = await trainings.SumAsync( t => t.iHour == null ? 0 : t.iHour.iHourValue );
+            }
+            
+            
             return new OkObjectResult(hours);
         }
 

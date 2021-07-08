@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IMyDpOptions } from "mydatepicker";
 import { FormBuilder, Validators, FormControl } from "@angular/forms";
 import {    ContactService, Contact, 
             ContactOptionNumberValue,
@@ -7,9 +6,7 @@ import {    ContactService, Contact,
         } from './contact.service';
 import {ActivityOptionNumber, Race, Ethnicity} from '../activity/activity.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
-import { Observable } from "rxjs/Observable";
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
-import { ContactModule } from './contact.module';
 
 
 
@@ -94,15 +91,6 @@ export class ContactFormComponent implements OnInit{
         year.end = new Date(year.end);
 
         return year;
-
-/* 
-        let year = years.filter( y => new Date(y.start) < new Date(this.contact.contactDate) && new Date(y.end ) > new Date(this.contact.contactDate) );
-        if( year.length > 0 ){
-            return year[0];
-        }else{
-            this.errorMessage = "Fiscal Year not Found for this Contact.";
-        }
-         */
     }
 
 
@@ -126,12 +114,9 @@ export class ContactFormComponent implements OnInit{
     buildMonths(){
         this.months = [];
         var end = new Date(this.fiscalYear.end);
-        console.log( end );
         end.setDate( end.getDate() - 1);
-        console.log( end );
         var start = new Date(this.fiscalYear.start);
         start.setDate( start.getDate() + 1);
-
         for( var m = start; m < end; m.setMonth(m.getMonth() + 1, 15)){
             var mnth:ContactMonth = {
                 date: new Date(m.getTime()),

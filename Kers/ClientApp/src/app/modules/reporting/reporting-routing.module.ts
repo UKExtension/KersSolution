@@ -28,98 +28,101 @@ const reportingRoutes: Routes = [
         children: [
           {
             path: 'admin', 
-            loadChildren: './modules/admin/admin.module#AdminModule'},
+            loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule)
+            
+          },
           {
             path: 'plansofwork', 
-            loadChildren: './modules/plansofwork/plansofwork.module#PlansofworkModule'
+            loadChildren: () => import('./modules/plansofwork/plansofwork.module').then(m => m.PlansofworkModule)
           },
           {
             path: 'affirmative', 
-            loadChildren: './modules/affirmative/affirmative.module#AffirmativeModule'
+            loadChildren: () => import('./modules/affirmative/affirmative.module').then(m => m.AffirmativeModule)
           },
           {
             path: 'indicators', 
-            loadChildren: './modules/indicators/indicators.module#IndicatorsModule'
+            loadChildren: () => import('./modules/indicators/indicators.module').then(m => m.IndicatorsModule)
           },
           {
             path: 'expense', 
-            loadChildren: './modules/expense/expense.module#ExpenseModule'
+            loadChildren: () => import('./modules/expense/expense.module').then(m => m.ExpenseModule)
           },
           {
             path: 'state', 
-            loadChildren: './modules/state/state.module#StateModule'
+            loadChildren: () => import('./modules/state/state.module').then(m => m.StateModule)
           },
           {
             path: 'county', 
-            loadChildren: './modules/county/county.module#CountyModule'
+            loadChildren: () => import('./modules/county/county.module').then(m => m.CountyModule)
           },
           {
             path: 'planningunit', 
-            loadChildren: './modules/planningunit/planningunit.module#PlanningunitModule'
+            loadChildren: () => import('./modules/planningunit/planningunit.module').then(m => m.PlanningunitModule)
           },
           {
             path: 'calendar', 
-            loadChildren: './modules/calendar/kers-calendar.module#KersCalendarModule'
+            loadChildren: () => import('./modules/calendar/kers-calendar.module').then(m => m.KersCalendarModule)
           },
           {
             path: 'activity', 
-            loadChildren: './modules/activity/activity.module#ActivityModule'
-          },
+            loadChildren: () => import('./modules/activity/activity.module').then(m => m.ActivityModule)
+          }, 
           {
             path: 'servicelog', 
-            loadChildren: './modules/servicelog/servicelog.module#ServicelogModule'
-          },
+            loadChildren: () => import('./modules/servicelog/servicelog.module').then(m => m.ServicelogModule)
+            
+          }, 
           {
             path: 'contact', 
-            loadChildren: './modules/contact/contact.module#ContactModule'
+            loadChildren: () => import('./modules/contact/contact.module').then(m => m.ContactModule)
           },
           {
             path: 'snaped', 
-            loadChildren: './modules/snap-ed/snap-ed.module#SnapEdModule'
+            loadChildren: () => import('./modules/snap-ed/snap-ed.module').then(m => m.SnapEdModule)
           },
           {
             path: 'story', 
-            loadChildren: './modules/story/story.module#StoryModule'
+            loadChildren:  () => import('./modules/story/story.module').then(m => m.StoryModule)
           },
           {
             path: 'user', 
-            loadChildren: './modules/user/user.module#UserModule'
+            loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule)
           },
           {
             path: 'training', 
-            loadChildren: './modules/training/training.module#TrainingModule'
+            loadChildren: () => import('./modules/training/training.module').then(m => m.TrainingModule)
           },
           {
             path: 'meeting', 
-            loadChildren: './modules/meeting/meeting.module#MeetingModule'
+            loadChildren: () => import('./modules/meeting/meeting.module').then(m => m.MeetingModule)
           },
           {
             path: 'countyevents', 
-            loadChildren: './modules/events/county/county-events.module#CountyEventsModule'
-          },
+            loadChildren: () => import('./modules/events/county/county-events.module').then(m => m.CountyEventsModule)
+          },/* 
           {
             path: 'budget', 
             loadChildren: './modules/budget/budget.module#BudgetModule'
-          },
+          }, */
           {
             path:'ladder',
-            loadChildren: './modules/ladder/ladder.module#LadderModule'
+            loadChildren: () => import('./modules/ladder/ladder.module').then(m => m.LadderModule)
           },
           {
             path:'mileage',
-            loadChildren: './modules/mileage/mileage.module#MileageModule'
+            loadChildren: () => import('./modules/mileage/mileage.module').then(m => m.MileageModule)
           },
           {
             path:'extensionarea',
-            loadChildren: './modules/area/area.module#AreaModule'
+            loadChildren: () => import('./modules/area/area.module').then(m => m.AreaModule)
           },
           {
             path:'extensionregion',
-            loadChildren: './modules/region/region.module#RegionModule'
+            loadChildren: () => import('./modules/region/region.module').then(m => m.RegionModule)
           },
           {
             path: 'soildata', 
-            loadChildren: './modules/soildata/soildata.module#SoildataModule'
+            loadChildren: () => import('./modules/soildata/soildata.module').then(m => m.SoildataModule)
           },
           {
             path: 'activity/:id',

@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../../shared/shared.module';
 import { MileageRoutingModule } from './mileage-routing.module';
-import { MyDatePickerModule } from 'mydatepicker';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 import { MileageHomeComponent } from './mileage-home.component';
 import { MileageFormComponent } from './mileage-form.component';
 import { LocationModule } from '../events/location/location.module';
 import { MileageSegmentFormElementComponent } from './mileage-segment-form-element.component';
-import { ExpenseModule } from '../expense/expense.module';
 import { MileageMonthComponent } from './mileage-month.component';
 import { MileageDetailComponent } from './mileage-detail.component';
 import { ExpenseCompatabilityFormComponent } from './expense-compatability-form.component';
@@ -18,7 +17,7 @@ import { ExpenseCompatabilityFormComponent } from './expense-compatability-form.
   declarations: [ExpenseCompatabilityFormComponent, MileageHomeComponent, MileageFormComponent, MileageSegmentFormElementComponent, MileageMonthComponent, MileageDetailComponent],
   imports: [
     CommonModule,
-    MyDatePickerModule,
+    AngularMyDatePickerModule,
     SharedModule,
     MileageRoutingModule, 
     LocationModule

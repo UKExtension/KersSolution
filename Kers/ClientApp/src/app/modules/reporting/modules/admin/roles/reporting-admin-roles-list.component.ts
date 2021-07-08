@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { RolesService, Role } from './roles.service';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {Router} from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import {ReportingRoleFormComponent} from './reporting-role-form.component';
 
 @Component({

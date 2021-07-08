@@ -56,7 +56,9 @@ namespace Kers.Controllers
         [HttpGet("counties")]
         public IActionResult GetCounties(){
             var counties = this.context.PlanningUnit
-                                .Where(u => u.District != null && u.Name.Substring(u.Name.Count() - 3) == "CES" && u.Name != "Wildcat County CES (demo only)")
+                                .Where(u => u.District != null 
+                                            //&& u.Name.Substring(u.Name.Count() - 3) == "CES" 
+                                            && u.Name != "Wildcat County CES (demo only)")
                                 .OrderBy(d => d.Name);
             return new OkObjectResult(counties);
         }

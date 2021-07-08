@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { PlanningUnit } from '../../user/user.service';
 import { IndicatorsService } from '../../indicators/indicators.service';
 

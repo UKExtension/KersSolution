@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {UserService, User} from '../user.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import {Router} from '@angular/router';
 
 

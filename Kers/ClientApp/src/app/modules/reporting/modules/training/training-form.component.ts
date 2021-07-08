@@ -4,7 +4,6 @@ import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, Tai
 import { TrainingService } from './training.service';
 import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 import { Observable } from 'rxjs';
-import { triggerAsyncId } from 'async_hooks';
 
 
 @Component({

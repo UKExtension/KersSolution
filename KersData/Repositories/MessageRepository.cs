@@ -9,6 +9,7 @@ using Kers.Models.Entities.KERSmain;
 using Kers.Models.Entities.KERScore;
 using Kers.Models.Contexts;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 
 using MailKit.Net.Smtp;
@@ -31,7 +32,7 @@ namespace Kers.Models.Repositories
         }
 
 
-        public List<Message> ProcessMessageQueue(IConfiguration configuration, IHostingEnvironment environment){
+        public List<Message> ProcessMessageQueue(IConfiguration configuration, IWebHostEnvironment environment){
             
             var messages = this.context.Message
                 .Where( m => m.IsItSent == false && m.ScheduledFor <= DateTimeOffset.Now )
@@ -45,7 +46,7 @@ namespace Kers.Models.Repositories
             return messages;
         }
 
-        private void sendMessage(Message message, IConfiguration _configuration, IHostingEnvironment environment){
+        private void sendMessage(Message message, IConfiguration _configuration, IWebHostEnvironment environment){
             
 
 

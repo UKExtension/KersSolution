@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PlanningunitService } from '../planningunit.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { PlanningUnit } from '../../user/user.service';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SoilReportSearchCriteria, SoilReportBundle, TypeForm } from '../soildata.report';
 import { Subject, Observable } from 'rxjs';
-import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { SoildataService } from '../soildata.service';
 import { startWith, flatMap, tap } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
@@ -26,15 +26,12 @@ export class SoildataReportsCatalogComponent implements OnInit {
   condition = false;
 
 
-  myDateRangePickerOptions: IMyDrpOptions = {
-      // other options...
-      dateFormat: 'mmm dd, yyyy',
-      showClearBtn: false,
-      showApplyBtn: false,
-      showClearDateRangeBtn: false
+  myDateRangePickerOptions: IAngularMyDpOptions = {
+    dateRange: true,
+    dateFormat: 'mmm dd, yyyy',
+    alignSelectorRight: true
   };
-  model = {beginDate: {year: 2018, month: 10, day: 9},
-                             endDate: {year: 2018, month: 10, day: 19}};
+  model:IMyDateModel = null;
 
 
   typesCheckboxes = [];
@@ -94,9 +91,20 @@ export class SoildataReportsCatalogComponent implements OnInit {
       status: [],
       formType: []
     }
-    this.model.beginDate = {year: this.startDate.getFullYear(), month: this.startDate.getMonth() + 1, day: this.startDate.getDate()};
-    this.model.endDate = {year: this.endDate.getFullYear(), month: this.endDate.getMonth() + 1, day: this.endDate.getDate()};
-    
+
+
+    this.model = {
+      isRange: true, 
+      singleDate: null, 
+      dateRange: {
+        beginDate: {
+          year: this.startDate.getFullYear(), month: this.startDate.getMonth() + 1, day: this.startDate.getDate()
+        },
+        endDate: {
+          year: this.endDate.getFullYear(), month: this.endDate.getMonth() + 1, day: this.endDate.getDate()
+        }
+      }
+    }
     this.refresh = new Subject();
 
     this.reports$ = this.refresh.asObservable()
@@ -108,11 +116,11 @@ export class SoildataReportsCatalogComponent implements OnInit {
   }
 
 
-  dateCnanged(event: IMyDateRangeModel){
-    this.startDate = event.beginJsDate;
-    this.endDate = event.endJsDate;
-    this.criteria["start"] = event.beginJsDate.toISOString();
-    this.criteria["end"] = event.endJsDate.toISOString();
+  dateCnanged(event: IMyDateModel){
+    this.startDate = event.dateRange.beginJsDate;
+    this.endDate = event.dateRange.endJsDate;
+    this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
+    this.criteria["end"] = event.dateRange.endJsDate.toISOString();
     this.onRefresh();
   }
 

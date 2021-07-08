@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SnapDirect, ServicelogService, SnapDirectSessionType, SnapDirectDeliverySite, SnapDirectAges, SnapDirectAudience, SnapDirectAgesAudienceValue } from '../../../servicelog/servicelog.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'service-log-snap-direct-details',

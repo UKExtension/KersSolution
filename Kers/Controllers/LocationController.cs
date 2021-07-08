@@ -25,7 +25,7 @@ namespace Kers.Controllers
         ITrainingRepository trainingRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
-        IHostingEnvironment environment;
+        IWebHostEnvironment environment;
         public LocationController( 
                     KERSmainContext mainContext,
                     KERSreportingContext _reportingContext,
@@ -35,7 +35,7 @@ namespace Kers.Controllers
                     ILogRepository logRepo,
                     ITrainingRepository trainingRepo,
                     IFiscalYearRepository fiscalYearRepo,
-                    IHostingEnvironment env
+                    IWebHostEnvironment env
             ):base(mainContext, context, userRepo){
            this._context = context;
            this._mainContext = mainContext;

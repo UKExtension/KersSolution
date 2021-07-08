@@ -9,6 +9,7 @@ import * as echarts from 'echarts';
 import { CountyService } from '../county/county.service';
 import { PlanningUnit } from '../user/user.service';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
+import { switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -117,7 +118,7 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
         </div>
         </div>
     </div>
-
+<!-- 
     <div class="col-xs-12">
         <div class="x_panel">
         <div class="x_title">
@@ -130,7 +131,7 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
         </div>
         </div>
     </div>
-
+-->
 
 
     <router-outlet></router-outlet>
@@ -208,14 +209,15 @@ export class DistrictHomeComponent {
         this.fiscalYearService.current().subscribe(
             res => this.currentFiscalYear = res
         );
-        this.route.params
-            .switchMap(  (params: Params) => {
-                if(params['id'] != undefined){
-                    this.id = params['id'];
+        this.route.params.pipe(
+                switchMap(  (params: Params) => {
+                    if(params['id'] != undefined){
+                        this.id = params['id'];
+                    }
+                    return this.service.get(params['id']) 
                 }
-                return this.service.get(params['id']) 
-            }
-                            )
+                                )
+            )
             .subscribe(
                 district => {
                     this.district = <District>district;
@@ -257,7 +259,7 @@ export class DistrictHomeComponent {
                             this.stateService.kyMap().subscribe(
                                 res => {
 
-                                    echarts.registerMap('KY', this.districtMap);
+                                   // echarts.registerMap('KY', this.districtMap);
                                     
                                     this.option = {
                                         /*

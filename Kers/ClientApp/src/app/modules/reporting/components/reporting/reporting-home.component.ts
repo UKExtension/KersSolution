@@ -17,20 +17,21 @@ import {ReportingService} from './reporting.service';
   `
 })
 export class ReportingHomeComponent { 
-  public title;
-  public subtitle;
-  public stats;
+  public title:any;
+  public subtitle:any;
+  public stats:any;
 
   constructor( 
         private reportingService: ReportingService
         ) 
     {
-        this.title = this.reportingService.title;
-        this.subtitle = this.reportingService.subtitle;
+        
         
         
     }
     ngOnInit(){
       this.stats = this.reportingService.statsHtml;
+      this.title = this.reportingService.title;
+      this.subtitle = this.reportingService.subtitle;
     }
 }

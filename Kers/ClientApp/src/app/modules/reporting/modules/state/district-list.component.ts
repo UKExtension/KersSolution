@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {StateService} from './state.service';
 
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import { District } from "../district/district.service";
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 

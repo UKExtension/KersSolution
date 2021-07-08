@@ -1,5 +1,5 @@
 import { Component,OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { map, take, debounceTime } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import {    UserService,
             ExtensionPosition, 
             User,
@@ -13,7 +13,7 @@ import {    UserService,
         } from '../user.service';
 import { FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
 import {ReportingService} from '../../../components/reporting/reporting.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import {Router} from '@angular/router';
 import {Location} from '@angular/common';
 import { AuthHttp } from '../../../../authentication/auth.http';
@@ -142,7 +142,7 @@ export class UserReportingFormComponent implements OnInit {
                             this.user = <User>res;
                             var sp = [];
                             this.user.specialties.forEach(function(element){
-                                sp.push(element.specialty.id);
+                                sp.push({value: element.specialty.id, label:element.specialty.name});
                             });
                             this.reportingForm.patchValue(this.user);
                             this.reportingForm.patchValue({specialties:sp});
@@ -198,7 +198,7 @@ export class UserReportingFormComponent implements OnInit {
                 val.specialties = [];
             }else{
                 spcltys.forEach(function(element){
-                    var s = { specialtyId: element };
+                    var s = { specialtyId: element.value };
                     realSp.push(s);
                 });
                 val.specialties = realSp; 
@@ -218,7 +218,7 @@ export class UserReportingFormComponent implements OnInit {
         
                 
                 spcltys.forEach(function(element){
-                    var s = { kersUserId: usr.id, specialtyId: element};
+                    var s = { kersUserId: usr.id, specialtyId: element.value};
                     realSp.push(s);
                 });
                 

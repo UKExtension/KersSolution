@@ -8,17 +8,13 @@ using System.Threading.Tasks;
 using Kers.Models.Abstract;
 using Kers.Models.Contexts;
 using Kers.Models.Entities.KERScore;
-using Kers.Models.Entities.KERSmain;
 using Kers.Models.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SkiaSharp;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Caching.Distributed;
 
 
 namespace Kers.Controllers
@@ -46,7 +42,6 @@ namespace Kers.Controllers
 			KERSmainContext mainContext,
 			IExpenseRepository expenseRepo,
 			KERS_SNAPED2017Context snapContext,
-			IHostingEnvironment env,
 			IMemoryCache _cache,
 			IFiscalYearRepository fiscalYearRepo
         ):

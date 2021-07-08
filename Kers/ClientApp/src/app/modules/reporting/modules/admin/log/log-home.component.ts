@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Log, LogService } from './log.service';
 import {ReportingService} from '../../../components/reporting/reporting.service';
-import { Observable } from "rxjs/Observable";
-import { Subject } from "rxjs/Subject";
+import { Observable, Subject } from "rxjs";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { IMyDrpOptions } from "mydaterangepicker";
 import { tap, startWith, debounceTime, flatMap, delay } from 'rxjs/operators';

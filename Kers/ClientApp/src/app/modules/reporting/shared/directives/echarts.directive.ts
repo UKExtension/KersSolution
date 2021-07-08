@@ -6,7 +6,7 @@ import {Subject, Subscription} from "rxjs";
 
 import * as echarts from 'echarts';
 import ECharts = echarts.ECharts;
-import EChartOption = echarts.EChartOption;
+import EChartOption = echarts.EChartsOption;
 import { distinctUntilChanged } from 'rxjs/operators';
 
 

@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate} from './expense.service';
 import { FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import {IMyDpOptions} from 'mydatepicker';
 import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
 import { User, UserService, PlanningUnit } from '../user/user.service';

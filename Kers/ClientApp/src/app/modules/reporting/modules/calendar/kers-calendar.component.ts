@@ -19,7 +19,7 @@ import {
   isSameMonth,
   addHours
 } from 'date-fns';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import {
   CalendarEvent,
   CalendarEventAction,
@@ -68,8 +68,8 @@ export class KersCalendarComponent implements OnInit {
       week: endOfWeek,
       day: endOfDay
     }[this.view];
-    var start = format(getStart(this.viewDate), 'YYYY-MM-DD');
-    var end = format(getEnd(this.viewDate), 'YYYY-MM-DD');
+    var start = format(getStart(this.viewDate), 'yyyy-MM-dd');
+    var end = format(getEnd(this.viewDate), 'yyyy-MM-dd');
     this.events$ = this.service.eventsPerPeriod(getStart(this.viewDate), getEnd(this.viewDate));
 
   }

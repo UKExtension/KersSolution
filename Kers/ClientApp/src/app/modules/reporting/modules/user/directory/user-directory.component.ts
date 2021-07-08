@@ -1,11 +1,9 @@
 import { Component, Input } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
-import { ProfileService } from '../../../components/reporting-profile/profile.service';
 import { UserService, User } from '../user.service';
-import "rxjs/add/operator/debounceTime";
-import "rxjs/add/operator/switchMap";
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs';
+import { debounceTime, switchMap } from 'rxjs/operators';
 
 
 
@@ -38,11 +36,12 @@ export class UserDirectoryComponent {
                     private service: UserService, 
                     private reportingService: ReportingService
                 ){
-                    this.users = this.searchTermStream
-                        .debounceTime(300)
-                        .switchMap((term:string) => {
-                            return this.performSearch(term);
-                        });
+                    this.users = this.searchTermStream.pipe(
+                            debounceTime(300),
+                            switchMap((term:string) => {
+                                    return this.performSearch(term);
+                                })
+                    );
                 }
    
     ngOnInit(){

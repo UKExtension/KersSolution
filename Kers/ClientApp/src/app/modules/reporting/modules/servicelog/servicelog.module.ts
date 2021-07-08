@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '../../shared/shared.module';
-import { MyDatePickerModule } from 'mydatepicker';
-import { MyDateRangePickerModule } from 'mydaterangepicker';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 import {ServicelogRoutingModule} from './servicelog-routing.module';
 import { ServicelogService } from "./servicelog.service";
 import { ServicelogComponent } from "./servicelog.component";
@@ -11,7 +10,6 @@ import { ServocelogListComponent } from "./servicelog-list.component";
 import { ServicelogMonthComponent } from "./servicelog-month.component";
 import { ServicelogDetailComponent } from "./servicelog-detail.component";
 import { ServicelogFormComponent } from "./servicelog-form.component";
-import { SnapClassicService } from "../activity/snap-classic.service";
 import { SnapIndirectMethodsComponent } from "./form-component/snap-indirect-methods.component";
 import { SnapIndirectReachedComponent } from "./form-component/snap-indirect-reached.component";
 import { SnapDirectAudienceComponent } from "./form-component/snap-direct-audience.component";
@@ -32,8 +30,7 @@ import { SnapEdModule } from '../snap-ed/snap-ed.module';
 
 @NgModule({
   imports:      [ SharedModule,
-                  MyDatePickerModule,
-                  MyDateRangePickerModule,
+                  AngularMyDatePickerModule,
                   ServicelogRoutingModule,
                   ActivityModule,
                   SnapEdModule

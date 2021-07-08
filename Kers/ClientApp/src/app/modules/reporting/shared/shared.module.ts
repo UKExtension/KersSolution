@@ -3,7 +3,7 @@ import { CommonModule }        from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule }         from '@angular/forms';
 //https://github.com/basvandenberg/ng-select
-import { SelectModule } from 'ng-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { ReportingDisplayHelpComponent } from '../components/reporting-help/reporting-display-help.component';
 
@@ -20,7 +20,7 @@ import {SafeHtmlPipe} from "./pipes/safe-html-pipe.pipe";
 
 
 //https://github.com/Gbuomprisco/ng2-tag-input
-import { TagInputModule } from 'ngx-chips';
+import { TagInputModule } from '@vpetrusevici/ngx-chips';
 
 // Import the Froala Editor plugin.
 import "froala-editor/js/froala_editor.pkgd.min.js";
@@ -50,9 +50,10 @@ import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
                   TagInputModule,
                   FroalaEditorModule.forRoot(), 
                   FroalaViewModule.forRoot(),
-                  FormsModule,
                   ReactiveFormsModule,
-                  SelectModule
+                  TagInputModule,
+                  NgSelectModule,
+                  FormsModule
                   ],
                   
   declarations: [ 
@@ -73,7 +74,7 @@ import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
                 ],
   exports:      [ 
       CommonModule, 
-      FormsModule, 
+      FormsModule,
       ReactiveFormsModule,
       FroalaEditorModule,
       FroalaViewModule,
@@ -86,7 +87,7 @@ import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
       UserSocialPickerComponent,
       UserPersonalConnectionComponent,
       UserReportingFormComponent,
-      SelectModule,
+      //SelectModule,
       FiscalYearSwitcherComponent,
       MonthSwitcherComponent,
       ImageUploadComponent,

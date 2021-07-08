@@ -3,7 +3,7 @@ import { ActivityService, ActivityOptionNumber, Race } from '../../activity/acti
 import {Contact, ContactService} from '../contact.service';
 
 import { Router } from "@angular/router";
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 import { User } from '../../user/user.service';
 

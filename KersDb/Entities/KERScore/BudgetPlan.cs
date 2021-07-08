@@ -15,7 +15,7 @@ namespace Kers.Models.Entities.KERScore
         public PlanningUnit PlanningUnit {get;set;}
         public int PlanningUnitId {get;set;}
         public ICollection<BudgetPlanRevision> Revisions {get;set;}
-        public BudgetPlanRevision LastRevision {get;set;}
+        //public BudgetPlanRevision LastRevision {get;set;}
 
 
     }

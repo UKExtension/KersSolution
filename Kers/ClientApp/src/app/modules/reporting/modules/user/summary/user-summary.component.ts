@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import {Location} from '@angular/common';
 import { ActivatedRoute, Params } from "@angular/router";
 
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { User, UserService } from "../user.service";
 import { Activity } from "../../activity/activity.service";
 import { Story, StoryService } from "../../story/story.service";
@@ -10,6 +10,7 @@ import { ReportingService } from "../../../components/reporting/reporting.servic
 import { ExpenseService, ExpenseSummary } from "../../expense/expense.service";
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 import { TrainingEnrollment } from '../../training/training';
+import { switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -78,9 +79,9 @@ export class UserSummaryComponent {
     ngOnInit(){
         
 
-        this.route.params
-            .switchMap((params: Params) => this.service.byId(params['id']))
-            .subscribe((user: User) => 
+        this.route.params.pipe(
+                switchMap((params: Params) => this.service.byId(params['id']))
+            ).subscribe((user: User) => 
                 {
                     this.user = user;
                     

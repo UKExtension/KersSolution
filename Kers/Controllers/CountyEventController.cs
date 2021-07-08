@@ -1,24 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Kers.Models.Repositories;
 using Kers.Models.Entities.KERScore;
 using Kers.Models.Entities.UKCAReporting;
 using Kers.Models.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using Kers.Models.Entities;
 using Kers.Models.Contexts;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 
 namespace Kers.Controllers
@@ -29,15 +21,18 @@ namespace Kers.Controllers
 
         KERScoreContext _context;
         KERSreportingContext _reportingContext;
+        IWebHostEnvironment environment;
         private string DefaultTime = "12:34:56.1000000";
         public CountyEventController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
-                    KERSreportingContext reportingContext
+                    KERSreportingContext reportingContext,
+                    IWebHostEnvironment env
             ):base(mainContext, context, userRepo){
                 _context = context;
                 _reportingContext = reportingContext;
+                this.environment = env;
         }
 
         [HttpGet]
@@ -85,37 +80,76 @@ namespace Kers.Controllers
         )
         {
             
-            IQueryable<CountyEvent> query = _context.CountyEvent.Where( e => e.Start.Date >= start.Date && e.Start.Date <= end.Date);
-            if( countyId != null){
-                if(countyId == 0 ){
-                    var user = CurrentUser();
-                    countyId = user.RprtngProfile.PlanningUnitId;
-                }
-                query = query.Where( e => e.Units.Select( u => u.PlanningUnitId ).Contains(countyId??0));
-            }
-            if( day != null){
-                query = query.Where( e => (int) e.Start.DayOfWeek == (day??0) );
-            }
-            if( search != null && search != ""){
-                query = query.Where( e => e.Subject.Contains( search ));
-            }
-                        
-            query = query .Include( e => e.Location).ThenInclude( l => l.Address)
-                        .Include( e => e.Units)
-                        .Include( e => e.ProgramCategories);
-             
-            if(order == "dsc"){
-                query = query.OrderByDescending(t => t.Start);
-            }else if( order == "asc"){
-                query = query.OrderBy(t => t.CreatedDateTime);
-            }else{
-                query = query.OrderBy(t => t.Subject);
-            }
             var reslt = new List<CountyEventWithTime>();
-            foreach( var ce in query){
-                var e = new CountyEventWithTime(ce);
-                reslt.Add( e );
+            if(environment.IsDevelopment()){
+                List<CountyEvent> query;
+                query = _context.CountyEvent.Include( e => e.Location).ThenInclude( l => l.Address)
+                            .Include( e => e.Units)
+                            .Include( e => e.ProgramCategories).ToList();
+                query = query.Where( e => e.Start.Date >= start.Date && e.Start.Date <= end.Date).ToList();
+                if( countyId != null){
+                    if(countyId == 0 ){
+                        var user = CurrentUser();
+                        countyId = user.RprtngProfile.PlanningUnitId;
+                    }
+                    query = query.Where( e => e.Units.Select( u => u.PlanningUnitId ).Contains(countyId??0)).ToList();
+                }
+                if( day != null){
+                    query = query.Where( e => (int) e.Start.DayOfWeek == (day??0) ).ToList();
+                }
+                if( search != null && search != ""){
+                    query = query.Where( e => e.Subject.Contains( search )).ToList();
+                }                
+                if(order == "dsc"){
+                    query = query.OrderByDescending(t => t.Start).ToList();
+                }else if( order == "asc"){
+                    query = query.OrderBy(t => t.CreatedDateTime).ToList();
+                }else{
+                    query = query.OrderBy(t => t.Subject).ToList();
+                }
+                
+                foreach( var ce in query){
+                    var e = new CountyEventWithTime(ce);
+                    reslt.Add( e );
+                }
+            }else{
+                IQueryable<CountyEvent> query = _context.CountyEvent.Where( e => e.Start.Date >= start.Date && e.Start.Date <= end.Date);
+                if( countyId != null){
+                    if(countyId == 0 ){
+                        var user = CurrentUser();
+                        countyId = user.RprtngProfile.PlanningUnitId;
+                    }
+                    query = query.Where( e => e.Units.Select( u => u.PlanningUnitId ).Contains(countyId??0));
+                }
+                if( day != null){
+                    query = query.Where( e => (int) e.Start.DayOfWeek == (day??0) );
+                }
+                if( search != null && search != ""){
+                    query = query.Where( e => e.Subject.Contains( search ));
+                }
+                            
+                query = query .Include( e => e.Location).ThenInclude( l => l.Address)
+                            .Include( e => e.Units)
+                            .Include( e => e.ProgramCategories);
+                
+                if(order == "dsc"){
+                    query = query.OrderByDescending(t => t.Start);
+                }else if( order == "asc"){
+                    query = query.OrderBy(t => t.CreatedDateTime);
+                }else{
+                    query = query.OrderBy(t => t.Subject);
+                }
+                
+                foreach( var ce in query){
+                    var e = new CountyEventWithTime(ce);
+                    reslt.Add( e );
+                }
+
             }
+
+
+
+            
 
             return new OkObjectResult(reslt);
         }
@@ -158,7 +192,7 @@ namespace Kers.Controllers
                 this.context.Add(evnt);
                 this.context.SaveChanges();
                 this.Log(evnt,"CountyEvent", "County Event Added.", "CountyEvent");
-                return new OkObjectResult(evnt);
+                return new OkObjectResult(new CountyEventWithTime(evnt));
             }else{
                 this.Log( CntEvent,"CountyEvent", "Error in adding county event attempt.", "CountyEvent", "Error");
                 return new StatusCodeResult(500);
@@ -223,7 +257,7 @@ namespace Kers.Controllers
                 evnt.ProgramCategories = CntEvent.ProgramCategories;
                 this.Log(CntEvent,"CountyEvent", "County Event Updated.", "CountyEvent");
                 
-                return new OkObjectResult(evnt);
+                return new OkObjectResult(new CountyEventWithTime(evnt));
             }else{
                 this.Log( CntEvent ,"CountyEvent", "Not Found CountyEvent in an update attempt.", "CountyEvent", "Error");
                 return new StatusCodeResult(500);

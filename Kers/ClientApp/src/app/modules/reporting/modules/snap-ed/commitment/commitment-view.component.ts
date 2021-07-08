@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommitmentBundle, SnapEdCommitmentService, SnapEdActivityType, SnapEdProjectType, SnapEdReinforcementItem } from '../snap-ed-commitment.service';
 import { SnapedService } from '../../servicelog/snaped.service';
 import { FiscalYear, FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'commitment-view',

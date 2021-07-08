@@ -3,7 +3,7 @@ import {ReportingService} from '../../../components/reporting/reporting.service'
 import {ActivityService, Activity } from '../activity.service';
 
 import { Router } from "@angular/router";
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
 import { User } from "../../user/user.service";
 
 @Component({

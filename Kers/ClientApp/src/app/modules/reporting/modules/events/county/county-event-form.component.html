@@ -8,7 +8,13 @@
       <div class="form-group">
         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
         <div class="col-md-4 col-sm-6 col-xs-7">
-            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
+          <div class="input-group">
+            <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+                angular-mydatepicker name="startdate" (click)="dp.toggleCalendar()" 
+                formControlName="start" [options]="myDatePickerOptions" 
+                #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+            <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
+          </div>
         </div>
         <div class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3">
           <div [class.notvalid]="countyEventForm.hasError('startTime')" class="clearfix">
@@ -21,7 +27,17 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
             <div class="col-md-4 col-sm-6 col-xs-7">
               <div [class.notvalid]="countyEventForm.hasError('endDate')" >
+                <div class="input-group">
+                  <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+                    [class.ng-invalid]="countyEventForm.hasError('endDate')"
+                    angular-mydatepicker name="endDate" (click)="dp1.toggleCalendar()" 
+                    formControlName="end" [options]="myDatePickerOptionsEnd" 
+                    #dp1="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+                  <span class="input-group-addon" id="basic-addon1" (click)="dp1.toggleCalendar()"><i class="fa fa-calendar"></i></span>
+                </div>
+                <!--
                 <my-date-picker [class.ng-invalid]="countyEventForm.hasError('endDate')" [options]="myDatePickerOptionsEnd" (dateChanged)="onDateChanged($event)" formControlName="end"></my-date-picker>
+                  -->
               </div>
             </div>
             <div class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3" *ngIf="countyEventForm.get('end').value != null">
@@ -68,11 +84,13 @@
           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Program Category:</label>
           <div class="col-md-9 col-sm-9 col-xs-12">
               <ng-select
-                  id="programCategories"
-                  formControlName="programCategories"
-                  [options]="programCategoriesOptions"
-                  [multiple]="true"
-                  placeholder = "(select any/all that apply)">
+                id="programCategories"
+                formControlName="programCategories"
+                [items]="programCategoriesOptions"
+                [multiple]="true"
+                [hideSelected]="true"
+                placeholder = "(select any/all that apply)"
+              >
               </ng-select>
           </div>
       </div>
@@ -93,8 +111,9 @@
               <ng-select
                   id="units"
                   formControlName="units"
-                  [options]="planningUnitsOptions"
+                  [items]="planningUnitsOptions"
                   [multiple]="true"
+                  [hideSelected]="true"
                   placeholder = "(select any/all that apply)">
               </ng-select>
               <small>The rule for entering an event is that the event takes place in your county. If this is a multi-county event only the host county should enter the event. As the host county, select from the list above each county (in addition to your county) that is associated with this multi-county event.

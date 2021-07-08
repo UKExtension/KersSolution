@@ -1,10 +1,6 @@
 import { Component, Input } from '@angular/core';
-import {ReportingService} from '../../../components/reporting/reporting.service';
-import { ProfileService } from '../../../components/reporting-profile/profile.service';
 import { UserService, User, PlanningUnit } from '../user.service';
-import "rxjs/add/operator/debounceTime";
-import "rxjs/add/operator/switchMap";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 
 

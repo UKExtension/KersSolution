@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using System.Net.Http;
 using Kers.Models.Entities.UKCAReporting;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using System.Globalization;
 
 namespace Kers.Controllers
@@ -38,7 +39,7 @@ namespace Kers.Controllers
         ITrainingRepository trainingRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
-        IHostingEnvironment environment;
+        IWebHostEnvironment environment;
         private string DefaultTime = "12:34:56.1000000";
         public MeetingsController( 
                     KERSmainContext mainContext,
@@ -49,7 +50,7 @@ namespace Kers.Controllers
                     ILogRepository logRepo,
                     ITrainingRepository trainingRepo,
                     IFiscalYearRepository fiscalYearRepo,
-                    IHostingEnvironment env
+                    IWebHostEnvironment env
             ):base(mainContext, context, userRepo){
            this._context = context;
            this._mainContext = mainContext;
@@ -202,29 +203,31 @@ namespace Kers.Controllers
                                         [FromQuery] bool withseats,
                                         [FromQuery] bool attendance
                                         ){
+            start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
+            end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);;
+            List<Meeting> trainings;
+            if(environment.IsDevelopment()){
+                trainings = _context.Meeting.ToList();
+                trainings = trainings.Where( i => i.Start.UtcDateTime >= start && i.Start <= end ).ToList();
+            }else{
+                trainings = _context.Meeting.Where( i => i.Start.UtcDateTime >= start && i.Start <= end ).ToList();
+            }
             
-            var trainings = from i in _context.Meeting select i;
             if(search != null && search != ""){
-                if( environment.IsDevelopment()){
-                    trainings = trainings.Where( i => i.Subject.Contains(search));
+                if( this.environment.IsDevelopment()  ){
+                    trainings = trainings.Where( i => i.Subject.Contains(search)).ToList();
                 }else{
-                    trainings = trainings.Where( i => EF.Functions.FreeText(i.Subject, search));
+                    trainings = trainings.Where( i => EF.Functions.FreeText(i.Subject, search)).ToList();
                 }
                 
             }
             if(contacts != null && contacts != ""){
-                trainings = trainings.Where( i => i.tContact.Contains(contacts));
+                trainings = trainings.Where( i => i.tContact.Contains(contacts)).ToList();
             }
-            if(start != null){
-                start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
-                trainings = trainings.Where( i => i.Start >= start);
-            }
-            if( end != null){
-                end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
-                trainings = trainings.Where( i => i.Start <= end);
-            }
+            List<Meeting> result = trainings;
+            
             if(day != null){
-                trainings = trainings
+                result = result
                             .Where( i => 
                                         (i.End == null && (int)i.Start.DayOfWeek == day)
                                         ||
@@ -234,21 +237,21 @@ namespace Kers.Controllers
                                                 : 
                                                 (int)i.Start.DayOfWeek >= day && (int)i.End.Value.DayOfWeek <= day )
                                         )
-                                    );
+                                    ).ToList();
             }                            
-            IOrderedQueryable<Meeting> result;
+            
             if(order == "asc"){
-                result = trainings.OrderByDescending(t => t.Start);
+                result = result.OrderByDescending(t => t.Start).ToList();
             }else if( order == "alph"){
-                result = trainings.OrderBy(t => t.Subject);
+                result = result.OrderBy(t => t.Subject).ToList();
             }else{
-                result = trainings.OrderBy(t => t.Start);
+                result = result.OrderBy(t => t.Start).ToList();
             }
             var mtngs = new List<MeetingWithTime>();
             foreach( var mtng in result){
                 var m = new MeetingWithTime(mtng);
                 mtngs.Add(m);
-            }
+            } 
             return new OkObjectResult(mtngs);
         }
 

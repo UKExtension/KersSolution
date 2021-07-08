@@ -2,8 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { SoilReport, TestResults } from '../soildata.report';
 import { Observable } from 'rxjs';
 import { SoildataService, CountyNote } from '../soildata.service';
-import { FormBuilder, Validators } from '@angular/forms';
-import { load } from '@angular/core/src/render3';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'soildata-report-crop',

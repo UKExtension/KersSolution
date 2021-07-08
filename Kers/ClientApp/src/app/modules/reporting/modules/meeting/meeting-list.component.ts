@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
-import { IMyDrpOptions, IMyDateRangeModel } from "mydaterangepicker";
 import { startWith, flatMap, delay, map, tap } from 'rxjs/operators';
 import { TrainingSearchCriteria } from '../training/training';
 import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
@@ -18,8 +18,18 @@ import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
     <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
       <input type="text" [(ngModel)]="criteria.search" placeholder="search by title" (keyup)="onSearch($event)" class="form-control" name="Search" />
     </div>
-    <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-        <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
+    <div class="col-sm-4 col-xs-8 pull-right" style="margin-top: 3px;">
+        
+
+
+        <div class="input-group" style="width:260px; float:right;">
+          
+          <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+          angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
+          [(ngModel)]="model" [options]="myDpOptions" 
+          #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+          <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+        </div>
     </div>
   
   </div>
@@ -97,7 +107,17 @@ import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
     <loading *ngIf="loading"></loading>
   </div>
   `,
-  styles: []
+  styles: [`
+  .input-box-container {
+    position: relative;
+  }
+  .input-box {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+  `]
 })
 export class MeetingListComponent implements OnInit {
   refresh: Subject<string>; // For load/reload
@@ -112,16 +132,25 @@ export class MeetingListComponent implements OnInit {
 
   condition = false;
 
-
-  myDateRangePickerOptions: IMyDrpOptions = {
-      // other options...
-      dateFormat: 'mmm dd, yyyy',
-      showClearBtn: false,
-      showApplyBtn: false,
-      showClearDateRangeBtn: false
+  myDpOptions: IAngularMyDpOptions = {
+    dateRange: true,
+    dateFormat: 'mmm dd, yyyy',
+    alignSelectorRight: true
+    // other options are here...
   };
-  model = {beginDate: {year: 2018, month: 10, day: 9},
-                             endDate: {year: 2018, month: 10, day: 19}};
+
+
+
+  onDateChanged(event: IMyDateModel): void {
+    this.startDate = event.dateRange.beginJsDate;
+    this.endDate = event.dateRange.endJsDate;
+    this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
+    this.criteria["end"] = event.dateRange.endJsDate.toISOString();
+    this.onRefresh();
+  }
+
+  
+  model: IMyDateModel = null;
 
   constructor(
     private service:MeetingService
@@ -151,8 +180,29 @@ export class MeetingListComponent implements OnInit {
       core:false
     }
 
-    this.model.beginDate = {year: this.startDate.getFullYear(), month: this.startDate.getMonth() + 1, day: this.startDate.getDate()};
-    this.model.endDate = {year: this.endDate.getFullYear(), month: this.endDate.getMonth() + 1, day: this.endDate.getDate()};
+    //this.model.beginDate = {year: this.startDate.getFullYear(), month: this.startDate.getMonth() + 1, day: this.startDate.getDate()};
+    //this.model.endDate = {year: this.endDate.getFullYear(), month: this.endDate.getMonth() + 1, day: this.endDate.getDate()};
+
+
+    // Initialize to specific date range with IMyDate object. 
+        // Begin date = today. End date = today + 3.
+        let begin: Date = this.startDate;
+        let end: Date = this.endDate;
+        this.model = {
+                        isRange: true, 
+                        singleDate: null, 
+                        dateRange: {
+                          beginDate: {
+                            year: begin.getFullYear(), month: begin.getMonth() + 1, day: begin.getDate()
+                          },
+                          endDate: {
+                            year: end.getFullYear(), month: end.getMonth() + 1, day: end.getDate()
+                          }
+                        }
+                      };
+
+
+
 
     this.refresh = new Subject();
 
@@ -165,7 +215,7 @@ export class MeetingListComponent implements OnInit {
   }
 
 
-
+/* 
   dateCnanged(event: IMyDateRangeModel){
     this.startDate = event.beginJsDate;
     this.endDate = event.endJsDate;
@@ -173,7 +223,7 @@ export class MeetingListComponent implements OnInit {
     this.criteria["end"] = event.endJsDate.toISOString();
     this.onRefresh();
     //this.trainings$ = this.service.perPeriod(event.beginJsDate, event.endJsDate);
-  }
+  } */
 
   onSearch(event){
     this.criteria["search"] = event.target.value;

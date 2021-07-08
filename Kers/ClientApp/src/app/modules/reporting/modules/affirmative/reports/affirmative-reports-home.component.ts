@@ -13,7 +13,7 @@ import {UserService, User} from '../../user/user.service';
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 
 @Component({
     selector: 'affirmative-report',

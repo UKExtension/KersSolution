@@ -2,8 +2,9 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { ActivityService, Activity, ActivityOption, Race } from '../activity.service';
 
 import { Router } from "@angular/router";
-import { IMyDrpOptions, IMyDateRangeModel } from "mydaterangepicker";
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
+
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 
 
 @Component({
@@ -28,12 +29,9 @@ export class ActivityStatsAllComponent {
     model = {beginDate: {year: 2018, month: 10, day: 9},
                              endDate: {year: 2018, month: 10, day: 19}};
 
-    myDateRangePickerOptions: IMyDrpOptions = {
+    myDateRangePickerOptions: IAngularMyDpOptions = {
         // other options...
         dateFormat: 'mmm dd, yyyy',
-        showClearBtn: false,
-        showApplyBtn: false,
-        showClearDateRangeBtn: false,
         firstDayOfWeek: 'su'
     };
 
@@ -61,8 +59,8 @@ export class ActivityStatsAllComponent {
         
     }
 
-    dateCnanged(event: IMyDateRangeModel){
-        this.activities = this.service.perPeriod(event.beginJsDate, event.endJsDate);
+    dateCnanged(event: IMyDateModel){
+        this.activities = this.service.perPeriod(event.dateRange.beginJsDate, event.dateRange.endJsDate);
     }
 
 

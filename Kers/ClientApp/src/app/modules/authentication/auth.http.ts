@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers, URLSearchParams, RequestOptions} from '@angular/http';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable ()
 export class AuthHttp{
     http = null;
     authKey = "auth";
-    constructor (http: Http){
+    constructor (http: HttpClient){
         this.http = http;
     }
 
@@ -58,7 +58,7 @@ export class AuthHttp{
             opts.search.set('timestamp', (new Date()).getTime());
         }
     }
-
+/* 
     getRequestOptions(){
         return new RequestOptions(
             {
@@ -67,5 +67,5 @@ export class AuthHttp{
                 })
             }
         )
-    }
+    } */
 }

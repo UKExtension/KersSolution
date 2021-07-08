@@ -1,15 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
-import {    ActivityService, Activity, 
-            ActivityOption, ActivityOptionNumber, 
-            ActivityOptionNumberValue, ActivityOptionSelection,
-            Race, Ethnicity, RaceEthnicityValue, ActivityImage
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import {    ActivityOption, ActivityOptionNumber, 
+            Race, Ethnicity, ActivityImage
         } from '../activity/activity.service';
-import { SnapClassic, SnapClassicService, zzSnapEdDeliverySite, zzSnapEdSessionTypes} from '../activity/snap-classic.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
-import { Observable } from "rxjs/Observable";
-import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectAges, SnapDirectAudience, SnapDirectDeliverySite, SnapIndirectMethod, SnapIndirectReached, SnapPolicyAimed, SnapPolicyPartner, SnapDirectSessionLength } from "./servicelog.service";
+import { Observable } from 'rxjs';
+import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectDeliverySite, SnapIndirectReached, SnapDirectSessionLength } from "./servicelog.service";
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import {Location} from '@angular/common';
 import { UserService, User } from '../user/user.service';
@@ -84,10 +81,9 @@ export class ServicelogFormComponent implements OnInit{
     public cond = false;
     public condition = false;
 
-    private myDatePickerOptions: IMyDpOptions = {
+    private myDatePickerOptions: IAngularMyDpOptions = {
         // other options...
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
             satHighlight: true,
             firstDayOfWeek: 'su'
         };
@@ -209,14 +205,14 @@ export class ServicelogFormComponent implements OnInit{
 
     //Disable Snap Ed Checkbox for the previous fiscal year on date change
     onDateChanged(event: IMyDateModel) {
-        if(event.date.year <= this.previousFiscalYear && event.date.month < 10){
+        var date = event.singleDate.jsDate;
+        if(date.getFullYear() <= this.previousFiscalYear && date.getMonth() < 10){
             this.isPastSnapFiscalYear = true;
             this.activityForm.patchValue({isSnap:false});
             this.snapEligable = false;
         }else{
             this.isPastSnapFiscalYear = false;
         }
-        var date = event.jsdate;
         if(  this.fiscalYear.start > date || this.fiscalYear.end < date   ){
             this.getFiscalYear( date );
             if(this.activityForm != undefined) this.activityForm.patchValue({majorProgramId: "" });
@@ -369,10 +365,13 @@ export class ServicelogFormComponent implements OnInit{
             {
             
                 activityDate: [{
+                    isRange: false, singleDate: {jsDate: date}
+
+                    /* 
                                 date: {
                                     year: date.getFullYear(),
                                     month: date.getMonth() + 1,
-                                    day: date.getDate()}
+                                    day: date.getDate()} */
                                 }, Validators.required],
                 
                 title: ["", Validators.required],
@@ -411,8 +410,8 @@ export class ServicelogFormComponent implements OnInit{
         );
         this.myDatePickerOptions.disableSince = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() + 1};
         this.myDatePickerOptions.disableUntil = {year: 2020, month: 6, day: 30};
-        this.myDatePickerOptions.editableDateField = false;
-        this.myDatePickerOptions.showClearDateBtn = false;
+        //this.myDatePickerOptions.editableDateField = false;
+        //this.myDatePickerOptions.showClearDateBtn = false;
         
         
         if(this.isNewDirect || this.isNewIndirect){
@@ -438,10 +437,17 @@ export class ServicelogFormComponent implements OnInit{
 
             if(this.activityDate != null){
                 this.activityForm.patchValue({activityDate: {
-                    date: {
+                    
+                        isRange: false, singleDate: {jsDate: this.activityDate}
+
+/* 
+date: { 
                         year: this.activityDate.getFullYear(),
                         month: this.activityDate.getMonth() + 1,
                         day: this.activityDate.getDate()}
+ */
+
+
                     }});
             }
 
@@ -470,6 +476,22 @@ export class ServicelogFormComponent implements OnInit{
         let date = new Date(this.activity.activityDate);
         this.activity.activityDate = date;
         this.activityForm.get('female').markAsDirty();
+        let raceEthnArray = [];
+        for(let rc of this.races){
+            for(let et of this.ethnicities){
+                var vl = 0;
+                var filtered = this.activity.raceEthnicityValues.filter( a =>  a.raceId == rc.id && a.ethnicityId == et.id);
+                if(filtered.length > 0 ){
+                    vl = filtered[0].amount;
+                }
+                raceEthnArray.push({
+                    amount: vl,
+                    raceId: rc.id,
+                    ethnicityId: et.id
+                });                
+            }
+        }
+        this.activity.raceEthnicityValues = raceEthnArray;
         this.activityForm.patchValue(this.activity);
         let opArray = [];
         for( let option of this.optionArray){
@@ -480,11 +502,21 @@ export class ServicelogFormComponent implements OnInit{
         }
         
         this.activityForm.patchValue({activityOptionSelections:opArray});
-        this.activityForm.patchValue({activityDate: {
+        this.activityForm.patchValue({activityDate: 
+            
+            
+            {
+                isRange: false, singleDate: {jsDate: date}
+               
+               /* 
                 date: {
                     year: date.getFullYear(),
                     month: date.getMonth() + 1,
                     day: date.getDate()}
+
+
+ */
+
                 }});
         if(this.activity.isSnap){
             this.snapEligable = true;
@@ -506,8 +538,8 @@ export class ServicelogFormComponent implements OnInit{
 
     onSubmit(){
         this.logLoading = true;
-        var dateValue = this.activityForm.value.activityDate.date;
-        var d = new Date(Date.UTC(dateValue.year, dateValue.month - 1, dateValue.day, 8, 5, 12));
+        var dateValue = this.activityForm.value.activityDate.singleDate.jsDate;
+        var d = new Date(Date.UTC(dateValue.getFullYear(), dateValue.getMonth(), dateValue.getDate(), 8, 5, 12));
         /*
         d.setMonth(dateValue.month - 1);
         d.setDate(dateValue.day);

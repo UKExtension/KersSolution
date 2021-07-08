@@ -1,30 +1,36 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Kers.Models.Contexts;
-using Microsoft.EntityFrameworkCore;
+using Kers.Data;
+using Kers.Models;
 using Kers.Models.Abstract;
+using Kers.Models.Contexts;
 using Kers.Models.Repositories;
-using Kers.Services.Abstract;
 using Kers.Services;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.AspNetCore.Http;
+using Kers.Services.Abstract;
 using Kers.Tasks;
 using Kers.Tasks.Scheduling;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace Kers
 {
     public class Startup
     {
+
         private string secretKey;
-        private IHostingEnvironment CurrentEnvironment;
-        public Startup(IHostingEnvironment env)
+        private IWebHostEnvironment CurrentEnvironment;
+        public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -42,9 +48,19 @@ namespace Kers
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMemoryCache();
 
+           /*  var connString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite( connString   ));
+ */
+            services.AddDatabaseDeveloperPageExceptionFilter();
+/* 
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+ */
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwtBearerOptions =>
                 {
@@ -59,17 +75,26 @@ namespace Kers
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Secret:JWTKey"]))
                     };
                 });
-
+            services.AddHttpContextAccessor();
             services.AddMvc(
                 options =>
                     {
-                        options.OutputFormatters.Add(new CsvOutputFormatter());
+                        //options.OutputFormatters.Add(new CsvOutputFormatter());
                     }
-            ).AddJsonOptions(jsonOptions=>
-                {
-                    jsonOptions.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-                    jsonOptions.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                });
+            ).AddNewtonsoftJson( options => {
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            
+            services.AddControllersWithViews();
+            //services.AddRazorPages();
+
+
+
+
+
+
             if(CurrentEnvironment.IsDevelopment()){
                 // Development
                 services.AddDbContext<KERSmainContext>(options => 
@@ -77,7 +102,6 @@ namespace Kers
                 services.AddDbContext<KERScoreContext>(options => 
                     options.UseSqlite(Configuration["ConnectionStrings:connKersCoreLocal"], b => {
                         b.MigrationsAssembly("Kers");
-                        b.SuppressForeignKeyEnforcement();
                     }));
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 
                    options.UseSqlite(Configuration["ConnectionStrings:connKersSnapLocal"]));
@@ -91,6 +115,8 @@ namespace Kers
 
                 services.AddDistributedMemoryCache();
             }else if(CurrentEnvironment.IsStaging()){
+
+
                 // Staging
                 services.AddDbContext<KERSmainContext>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersMain"]));
@@ -119,10 +145,17 @@ namespace Kers
                         options.SchemaName = "dbo";
                         options.TableName = "Cache";
                     });
+
+
+                    
             }else if( CurrentEnvironment.IsProduction()){
+
+
+               
                 //Production
                 services.AddDbContext<KERSmainContext>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKersMain"]));
+                    
                 services.AddDbContext<KERScoreContext>(options => 
                     options.UseSqlServer(
                         Configuration["ConnectionStrings:connKersCore"], 
@@ -132,6 +165,7 @@ namespace Kers
                                 }
                         )
                     );
+                
                 services.AddDbContext<KERS2017Context>(options => 
                     options.UseSqlServer(Configuration["ConnectionStrings:connKERS2017"]));
                 services.AddDbContext<KERS_SNAPED2017Context>(options => 
@@ -179,11 +213,11 @@ namespace Kers
                 services.AddSingleton<IScheduledTask, MessageProcessingTask>();
                 services.AddSingleton<IScheduledTask,TrainingsRemindersTask>();
 
-            }
-            services.AddSingleton<IConfiguration>(Configuration);
+            } 
+            services.TryAddSingleton<IConfiguration>(Configuration);
             services.AddScoped<IzEmpRptProfileRepository, zEmpRptProfileRepository>();
             services.AddScoped<IzEmpRoleTypeRepository, zEmpRoleTypeRepository>();
-            services.AddScoped<IKersUserRepository, KersUserRepository>();
+            services.AddScoped<IKersUserRepository, KersUserRepository>(); 
             services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddScoped<INavSectionRepository, NavSectionRepository>();
             services.AddScoped<IInitiativeRepository, InitiativeRepository>();
@@ -209,37 +243,40 @@ namespace Kers
             {
                 args.SetObserved();
             });
-
-
-
-
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/dist/ClientApp";
+                configuration.RootPath = "ClientApp/dist";
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseAuthentication();
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}");
+                //endpoints.MapRazorPages();
             });
 
             app.UseSpa(spa =>
@@ -249,12 +286,11 @@ namespace Kers
 
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment() || env.IsStaging())
+                if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
-
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore

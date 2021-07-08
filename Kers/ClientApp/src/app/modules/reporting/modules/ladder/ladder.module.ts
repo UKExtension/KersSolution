@@ -5,7 +5,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { LadderRoutingModule } from './ladder-routing.module';
 import { LadderComponent } from './ladder.component';
 import { LadderApplicationFormComponent } from './ladder-application-form.component';
-import { MyDatePickerModule } from 'mydatepicker';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 import { TrainingModule } from '../training/training.module';
 import { LadderApplicantComponent } from './ladder-applicant.component';
 import { LadderApplicationsListComponent } from './ladder-applications-list.component';
@@ -21,7 +21,7 @@ import { LadderFilterDetailComponent } from './ladder-filter-detail.component';
   declarations: [LadderComponent, LadderApplicationFormComponent, LadderApplicantComponent, LadderApplicationsListComponent, LadderApplicantListDetailComponent, LadderReviewComponent, LadderApplicationDetailsComponent, LadderDetailImageComponent, LadderReviewApplicationDetailComponent, LadderFilterComponent, LadderFilterDetailComponent],
   imports: [
     CommonModule,
-    MyDatePickerModule,
+    AngularMyDatePickerModule,
     SharedModule,
     LadderRoutingModule,
     TrainingModule

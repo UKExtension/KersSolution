@@ -21,16 +21,17 @@ using System.Net;
 using System.Xml.Linq;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Kers.Tasks
 {
     public class TrainingsRemindersTask : TaskBase, IScheduledTask
     {
         IServiceProvider serviceProvider;
-        IHostingEnvironment environment;
+        IWebHostEnvironment environment;
         public TrainingsRemindersTask(
             IServiceProvider serviceProvider,
-            IHostingEnvironment environment
+            IWebHostEnvironment environment
         ){
             this.serviceProvider = serviceProvider;
             this.environment = environment;

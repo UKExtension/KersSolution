@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ServicelogService, SnapPolicy, SnapPolicyPartner, SnapPolicyPartnerValue } from '../../../servicelog/servicelog.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'service-log-snap-policy-details',

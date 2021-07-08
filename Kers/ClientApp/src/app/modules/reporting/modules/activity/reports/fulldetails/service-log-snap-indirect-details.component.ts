@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ServicelogService, SnapIndirect, SnapIndirectReached, SnapIndirectReachedValue } from '../../../servicelog/servicelog.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'service-log-snap-indirect-details',

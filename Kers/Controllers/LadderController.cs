@@ -29,14 +29,14 @@ namespace Kers.Controllers
     public class LadderController : BaseController
     {
 
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         KERScoreContext _context;
         IFiscalYearRepository fiscalYearRepo;
         public LadderController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
-                    IHostingEnvironment hostingEnvironment,
+                    IWebHostEnvironment hostingEnvironment,
                     IFiscalYearRepository fiscalYearRepo
             ):base(mainContext, context, userRepo){
                 _context = context;
@@ -320,7 +320,6 @@ namespace Kers.Controllers
                 entity.StartDate = LadderApplication.StartDate;
                 entity.LadderEducationLevelId = LadderApplication.LadderEducationLevelId;
                 entity.Draft = LadderApplication.Draft;
-                entity.Track = LadderApplication.Track;
                 if(!LadderApplication.Draft){
                     var FirstStage = context.LadderStage.OrderBy( s => s.Order).FirstOrDefault();
                     var FirstApplicationStage = new LadderApplicationStage();

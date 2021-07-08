@@ -1,7 +1,7 @@
 import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
 
 import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber } from '../../activity/activity.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
 
 @Component({
     selector: '[contactStatsMonthRow]',

@@ -1,13 +1,9 @@
 import { Component, Input } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
-import { ProfileService } from '../../../components/reporting-profile/profile.service';
-import "rxjs/add/operator/debounceTime";
-import "rxjs/add/operator/switchMap";
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable, Subject } from 'rxjs';
 import { Story, StoryService } from '../story.service';
 import { UserService } from '../../user/user.service';
-import { MajorProgram, ProgramsService, StrategicInitiative } from '../../admin/programs/programs.service';
+import { ProgramsService, StrategicInitiative } from '../../admin/programs/programs.service';
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 import { startWith, debounceTime, flatMap, tap } from 'rxjs/operators';
 
@@ -54,16 +50,6 @@ export class StoryDirectoryComponent {
                             flatMap(_ => this.performSearch("")),
                             tap(_ => this.loading = false)
                         );
-                    
-                    
-                    /* 
-                    this.searchTermStream
-                        .debounceTime(300)
-                        .switchMap((term:string) => {
-                            this.loading = true;
-                            return this.performSearch(term);
-                        });
-                         */
                 }
    
     ngOnInit(){

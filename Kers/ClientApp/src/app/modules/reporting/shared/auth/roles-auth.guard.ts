@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UserService } from '../../modules/user/user.service';
 import { tap } from 'rxjs/operators';
 
@@ -59,7 +59,7 @@ export class RolesAuthGuard implements CanActivate, CanActivateChild {
       if(prms.length > 0){
         return this.checkRole(prms[0].roles);
       }
-      return Observable.of(false);
+      return of(false);
   }
   canActivateChild(
     next: ActivatedRouteSnapshot,

@@ -63,7 +63,7 @@ export class StateHomeComponent {
             res => {
 
 
-                echarts.registerMap('KY', res);
+                //echarts.registerMap('KY', res);
             
                 this.service.counties().subscribe(
                     res => {

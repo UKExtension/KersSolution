@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 import { ExtensionRegion } from '../state/state.service';
@@ -156,15 +157,15 @@ export class RegionHomeComponent implements OnInit {
     this.fiscalYearService.current().subscribe(
         res => this.currentFiscalYear = res
     );
-    this.route.params
-            .switchMap(  (params: Params) => {
-                if(params['id'] != undefined){
-                    this.regionId = params['id'];
-                }
-                return this.service.get(this.regionId ) 
-            }
-                        )
-                          .subscribe(
+    this.route.params.pipe(
+                    switchMap(  (params: Params) => {
+                                        if(params['id'] != undefined){
+                                            this.regionId = params['id'];
+                                        }
+                                        return this.service.get(this.regionId ) 
+                                    }
+                                )
+                         ).subscribe(
                             res => {
                               this.region = res;
                               this.defaultTitle();

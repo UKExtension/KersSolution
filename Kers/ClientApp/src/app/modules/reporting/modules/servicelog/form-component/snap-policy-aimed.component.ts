@@ -1,7 +1,7 @@
 import { Component, Input, forwardRef, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder } from '@angular/forms';
 import { ServicelogService, SnapIndirectMethod, SnapPolicyAimed } from "../servicelog.service";
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'snap-policy-aimed',

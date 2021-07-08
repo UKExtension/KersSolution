@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { DistrictService, County, District } from './district.service';
 
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import { ActivatedRoute, Params } from "@angular/router";
 import { StateService } from '../state/state.service';
 import { PlanningUnit } from '../user/user.service';

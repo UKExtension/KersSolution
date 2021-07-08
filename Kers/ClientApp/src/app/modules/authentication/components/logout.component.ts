@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthenticationService} from '../authentication.service';
 import { UserService } from '../../reporting/modules/user/user.service';
 import { Router } from '@angular/router';

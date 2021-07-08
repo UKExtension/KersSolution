@@ -5,10 +5,11 @@ import { ActivityService, Activity } from '../activity/activity.service';
 import { StoryService, Story } from '../story/story.service';
 import { ActivatedRoute, Router, Params } from "@angular/router";
 import {Location} from '@angular/common';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
+import { switchMap } from 'rxjs/operators';
 
-var echarts = require('echarts');
-
+//var echarts = require('echarts');
+import * as echarts from 'echarts';
 
 @Component({
     selector: 'user-profile-details',
@@ -76,8 +77,9 @@ export class UserComponent {
     ngOnInit(){
         
 
-        this.route.params
-            .switchMap((params: Params) => this.service.byId(params['id']))
+        this.route.params.pipe(
+                switchMap((params: Params) => this.service.byId(params['id']))
+            )
             .subscribe((user: User) => 
                 {
                     this.user = user;

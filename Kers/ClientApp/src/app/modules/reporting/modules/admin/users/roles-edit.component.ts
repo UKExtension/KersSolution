@@ -4,7 +4,7 @@ import {UsersService, KersUser } from './users.service';
 import {UserService, User} from '../../user/user.service';
 import {RolesService, Role } from '../roles/roles.service';
 import { FormBuilder, Validators }   from '@angular/forms';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 
 @Component({
     selector: 'roles-edit-form',

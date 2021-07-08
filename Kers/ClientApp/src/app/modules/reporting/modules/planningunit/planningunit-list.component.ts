@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PlanningunitService } from './planningunit.service';
 import { PlanningUnit } from '../user/user.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { RegionService } from '../region/region.service';
 import { AreaService } from '../area/area.service';
 

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { PlansofworkService, PlanOfWork, Plan, PlanningUnit } from '../plansofwork/plansofwork.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
 import { DistrictService, County } from "./district.service";
 import {ReportingService} from '../../components/reporting/reporting.service';
 

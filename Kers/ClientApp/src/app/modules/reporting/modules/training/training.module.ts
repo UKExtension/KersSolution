@@ -5,9 +5,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { TrainingRoutingModule } from './training-routing.module';
 import { TrainingHomeComponent } from './training-home.component';
 import { TrainingFormComponent } from './training-form.component';
-import { MyDatePickerModule } from 'mydatepicker';
 import { TrainingCatalogComponent } from './training-catalog.component';
-import { MyDateRangePickerModule } from 'mydaterangepicker';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 import { TrainingDetailComponent } from './training-detail.component';
 import { TrainingInfoComponent } from './training-info.component';
 import { TrainingConvertComponent } from './training-convert.component';
@@ -59,8 +58,7 @@ import { TrainingSurveyRowComponent } from './survey/training-survey-row.compone
   ],
   imports: [
     SharedModule,
-    MyDatePickerModule,
-    MyDateRangePickerModule,
+    AngularMyDatePickerModule,
     CommonModule,
     TrainingRoutingModule
   ],

@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { PlanningUnit, User } from '../../user/user.service';
 import { SnapedService } from '../snaped.service';
-import { Observable } from 'rxjs/Observable';
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 

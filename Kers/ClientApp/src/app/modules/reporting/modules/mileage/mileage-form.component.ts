@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { resetComponentState } from '@angular/core/src/render3/state';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import {IMyDpOptions} from 'mydatepicker';
+import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
 import { ExtensionEventLocation } from '../events/extension-event';
 import { ExtensionEventLocationConnection } from '../events/location/location.service';
-import { Expense, ExpenseFundingSource, ExpenseService } from '../expense/expense.service';
+import { ExpenseFundingSource, ExpenseService } from '../expense/expense.service';
 import { Vehicle } from '../expense/vehicle/vehicle.service';
 import { PlanningunitService } from '../planningunit/planningunit.service';
 import { PlanningUnit, User, UserService } from '../user/user.service';
@@ -54,10 +53,9 @@ export class MileageFormComponent implements OnInit {
   set stLoc(lc: ExtensionEventLocation){
     this.mileageForm.patchValue({startingLocation:lc});
   }
-  private myDatePickerOptions: IMyDpOptions = {
+  private myDatePickerOptions: IAngularMyDpOptions = {
     // other options...
         dateFormat: 'mm/dd/yyyy',
-        showTodayBtn: false,
         satHighlight: true,
         firstDayOfWeek: 'su'
     };
@@ -79,10 +77,9 @@ export class MileageFormComponent implements OnInit {
         {
           
           expenseDate: [{
-                            date: {
-                                year: date.getFullYear(),
-                                month: date.getMonth() + 1,
-                                day: date.getDate()}
+
+                  isRange: false, singleDate: {jsDate: date}
+
                             }, Validators.required],
           vehicleType:[''],
           countyVehicleId: [''],
@@ -95,8 +92,6 @@ export class MileageFormComponent implements OnInit {
     
     this.myDatePickerOptions.disableSince = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() + 1};
     this.myDatePickerOptions.disableUntil = {year: 2020, month: 10, day: 31};
-    this.myDatePickerOptions.editableDateField = false;
-    this.myDatePickerOptions.showClearDateBtn = false;
   
 
   }
@@ -135,10 +130,12 @@ export class MileageFormComponent implements OnInit {
       );
       if(this.mileageDate != null){
         this.mileageForm.patchValue({expenseDate: {
-            date: {
+          isRange: false, singleDate: {jsDate: this.mileageDate}
+
+    /*         date: {
                 year: this.mileageDate.getFullYear(),
                 month: this.mileageDate.getMonth() + 1,
-                day: this.mileageDate.getDate()}
+                day: this.mileageDate.getDate()} */
             }});
       }
       if(this.isNewCountyVehicle){
@@ -156,14 +153,8 @@ export class MileageFormComponent implements OnInit {
       this.isOvernight(this.mileage.isOvernight);
       this.isPersonal(this.mileage.vehicleType != 2);
       this.mileageForm.patchValue({expenseDate: {
-        date: {
-            year: date.getFullYear(),
-            month: date.getMonth() + 1,
-            day: date.getDate()}
+            isRange: false, singleDate: {jsDate: date}
         }});
-
-
-
     }
     this.programsService.categories().subscribe(
       res => this.programCategories = res

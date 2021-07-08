@@ -87,7 +87,7 @@ namespace Kers.Controllers
                                 Include(e=>e.Revisions).
                                 OrderByDescending(e=>e.ExpenseDate).
                                 Skip(skip).
-                                Take(amount);
+                                Take(amount).ToList();
             var revs = new List<ExpenseRevision>();
             if( lastExpenses != null){
                 foreach(var expense in lastExpenses){

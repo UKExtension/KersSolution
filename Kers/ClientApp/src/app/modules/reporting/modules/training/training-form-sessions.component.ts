@@ -2,9 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow, TrainingSession } from './training';
 import { TrainingService } from './training.service';
-import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 import { Observable } from 'rxjs';
-import { isNgTemplate } from '@angular/compiler';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 
 
 @Component({
@@ -42,16 +41,13 @@ export class TrainingFormSessionsComponent implements OnInit {
         quickInsertButtons: ['ul', 'ol', 'hr'],    
       };
     loading = true;
-    public myDatePickerOptions: IMyDpOptions = {
+    public myDatePickerOptions: IAngularMyDpOptions = {
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
             satHighlight: true,
-            firstDayOfWeek: 'su',
-            showClearDateBtn: false
+            firstDayOfWeek: 'su'
         };
-    public myDatePickerOptionsEnd: IMyDpOptions = {
+    public myDatePickerOptionsEnd: IAngularMyDpOptions = {
               dateFormat: 'mm/dd/yyyy',
-              showTodayBtn: false,
               satHighlight: true,
               firstDayOfWeek: 'su'
           };
@@ -113,14 +109,8 @@ export class TrainingFormSessionsComponent implements OnInit {
   populateSession(session:TrainingSession):TrainingSession{
     
     var start = new Date(<Date>session.date);
-    session.date = {
-      date: {
-        year: start.getFullYear(),
-        month: start.getMonth() + 1,
-        day: start.getDate()
-      }
-    };
-        
+    let model: IMyDateModel = {isRange: false, singleDate: {jsDate: start}, dateRange: null};
+    session.date = model;
     return session;
   }
 
@@ -128,24 +118,25 @@ export class TrainingFormSessionsComponent implements OnInit {
     var nextDate = new Date();
     if(this.sessions.length > 0){
       var last = this.sessions.value[this.sessions.length - 1];
-      nextDate = new Date(last.date.date.year, last.date.date.month - 1, last.date.date.day + 1);
+      var dt = last.date.singleDate.jsDate;
+      nextDate = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() + 1);
     }else{
       nextDate.setMonth(nextDate.getMonth() + 2)
     }
     if(session == null){
+      let model: IMyDateModel = {isRange: false, singleDate: {jsDate: nextDate}, dateRange: null};
       var control = this.fb.control({
-        date: {
-          date: {
-              year: nextDate.getFullYear(),
-              month: nextDate.getMonth() + 1,
-              day: nextDate.getDate()}
-          },
+        date: model,
         note: "",
         starttime: "",
         endtime: "",
         index: this.sessionsIndex++
       });
-      this.sessions.push(control);
+      let t = this;
+      setTimeout(() => {
+        t.sessions.push(control);
+      }, 0);
+      
     }else{
       this.sessions.push(this.fb.control(session));
     }
@@ -189,7 +180,9 @@ export class TrainingFormSessionsComponent implements OnInit {
     var sessionIndex = 0;
     var sessionsWithTime = new Array<TrainingSession>();
     for( var sess of trning.trainingSession){
-      sess.date = new Date(this.trainingForm.value.trainingSession[sessionIndex].date.date.year, this.trainingForm.value.trainingSession[sessionIndex].date.date.month - 1, this.trainingForm.value.trainingSession[sessionIndex].date.date.day);
+      var dt = this.trainingForm.value.trainingSession[sessionIndex].date.singleDate.jsDate;
+      sess.date = dt;
+      //sess.date = new Date(this.trainingForm.value.trainingSession[sessionIndex].date.date.year, this.trainingForm.value.trainingSession[sessionIndex].date.date.month - 1, this.trainingForm.value.trainingSession[sessionIndex].date.date.day);
       sessionIndex++;
       sessionsWithTime.push(sess);
     }

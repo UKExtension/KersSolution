@@ -2,7 +2,7 @@ import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@ang
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TrainingSession } from '../training';
-import { IMyDpOptions, IMyDateModel } from "mydatepicker";
+import { IAngularMyDpOptions, IMyDateModel} from 'angular-mydatepicker';
 
 
 
@@ -12,7 +12,18 @@ import { IMyDpOptions, IMyDateModel } from "mydatepicker";
 <div class="form-group" [formGroup]="sessionGroup">
     <div class="row">
         <div class="col-sm-4">
-            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="date"></my-date-picker>
+            
+            <div class="input-group">
+            
+              <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+              angular-mydatepicker name="date" (click)="dp.toggleCalendar()" 
+              formControlName="date" [options]="myDatePickerOptions" 
+              #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+
+
+              <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
+          </div>
+            
             <small>(Date)</small>
         </div>
         <div class="col-sm-3">
@@ -54,12 +65,10 @@ export class SessionFormElementComponent extends BaseControlValueAccessor<Traini
     sessionGroup: FormGroup;
     @Input('index') index:number;
     @Output() removeMe = new EventEmitter<number>();
-    public myDatePickerOptions: IMyDpOptions = {
+    public myDatePickerOptions: IAngularMyDpOptions = {
         dateFormat: 'mm/dd/yyyy',
-        showTodayBtn: false,
         satHighlight: true,
         firstDayOfWeek: 'su',
-        showClearDateBtn: false
     };
     date = new Date();
     constructor( 
@@ -67,13 +76,9 @@ export class SessionFormElementComponent extends BaseControlValueAccessor<Traini
     )   
     {
       super();
+      let model: IMyDateModel = {isRange: false, singleDate: {jsDate: this.date}, dateRange: null};
       this.sessionGroup = formBuilder.group({
-        date: [{
-            date: {
-                year: this.date.getFullYear(),
-                month: this.date.getMonth() + 1,
-                day: this.date.getDate()}
-            }, Validators.required],
+        date: [model, Validators.required],
         note: [''],
         starttime:[null, Validators.required],
         endtime: [null, Validators.required],

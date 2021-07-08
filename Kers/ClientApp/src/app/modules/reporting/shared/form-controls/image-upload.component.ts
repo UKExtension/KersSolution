@@ -1,7 +1,7 @@
 import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {Location} from '@angular/common';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'image-picker',
@@ -45,7 +45,7 @@ export class ImageUploadComponent implements ControlValueAccessor, OnInit {
 
   constructor(
         private location: Location,
-        private http:Http  
+        private http:HttpClient  
 
   ){
     
@@ -86,8 +86,8 @@ export class ImageUploadComponent implements ControlValueAccessor, OnInit {
             this.http.get(this.location.prepareExternalUrl('/Image/id/'+value))
             .subscribe(
                 res => {
-                    var respns = res.json();
-                    this.imageName = respns.filename;
+                    var respns = res;
+                    this.imageName = (respns as any).filename;
                     this.imgObj = {
                         src: this.location.prepareExternalUrl("/image/" + this.imageName)
                     };

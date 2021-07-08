@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Meeting, MeetingService, MeetingWithTime } from './meeting.service';
-import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
@@ -18,7 +18,17 @@ import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
     <div class="form-group">
         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
         <div class="col-md-4 col-sm-6 col-xs-7">
-            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
+
+          <div class="input-group">
+            
+              <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+              angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
+              formControlName="start" [options]="myDatePickerOptions" 
+              #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+
+
+              <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
+          </div>
         </div>
         <label><input type="checkbox" formControlName="isAllDay" /> All Day Event</label>
     </div>
@@ -31,8 +41,22 @@ import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
       <div class="form-group">
           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
           <div class="col-md-4 col-sm-6 col-xs-7">
-              <my-date-picker [class.ng-invalid]="meetingForm.hasError('endDate')" [options]="myDatePickerOptionsEnd" (dateChanged)="onDateChanged($event)" formControlName="end"></my-date-picker>
+
+
+          <div class="input-group">
+            
+              <input type="text" class="form-control input-box" 
+              [class.ng-invalid]="meetingForm.hasError('endDate')"
+              
+              placeholder="Click to select a date" 
+              angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
+              formControlName="end" [options]="myDatePickerOptionsEnd" 
+              #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+
+
+              <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
           </div>
+      </div>
       </div>
     </div>
     <div class="form-group" *ngIf="!meetingForm.value.isAllDay">
@@ -114,16 +138,13 @@ export class MeetingFormComponent implements OnInit {
     quickInsertButtons: ['ul', 'ol', 'hr'],    
   };
   loading = true;
-  public myDatePickerOptions: IMyDpOptions = {
+  public myDatePickerOptions: IAngularMyDpOptions = {
           dateFormat: 'mm/dd/yyyy',
-          showTodayBtn: false,
           satHighlight: true,
-          firstDayOfWeek: 'su',
-          showClearDateBtn: false
+          firstDayOfWeek: 'su'
       };
-  public myDatePickerOptionsEnd: IMyDpOptions = {
+  public myDatePickerOptionsEnd: IAngularMyDpOptions = {
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
             satHighlight: true,
             firstDayOfWeek: 'su'
         };
@@ -140,10 +161,16 @@ export class MeetingFormComponent implements OnInit {
     this.meetingForm = this.fb.group(
       {
           start: [{
+
+            isRange: false, singleDate: {jsDate: this.date}
+/* 
               date: {
                   year: this.date.getFullYear(),
                   month: this.date.getMonth() + 1,
                   day: this.date.getDate()}
+
+ */
+
               }, Validators.required],
           starttime: "",
           end: [{}],
@@ -166,25 +193,22 @@ export class MeetingFormComponent implements OnInit {
     if(this.meeting){
       this.meetingForm.patchValue(this.meeting);
       var start = new Date( this.meeting.start);
+
+      let model: IMyDateModel = {isRange: false, singleDate: {jsDate: start}, dateRange: null};
       this.meetingForm.patchValue({
-        start: {
-          date:{
-            year: start.getFullYear(),
-            month: start.getMonth() + 1,
-            day: start.getDate()
-          }
-        },
+        start: model,
         etimezone: this.meeting.isAllDay ? true : this.meeting.etimezone
       })
       if( this.meeting.end ){
         var end = new Date(this.meeting.end);
         this.meetingForm.patchValue({
           end:{
-            date:{
+            isRange: false, singleDate: {jsDate: end}
+            /* date:{
               year: end.getFullYear(),
               month: end.getMonth() + 1,
               day: end.getDate()
-            }
+            } */
           }
         })
       }
@@ -198,9 +222,9 @@ export class MeetingFormComponent implements OnInit {
 
   onSubmit(){
     var trning:MeetingWithTime = <MeetingWithTime> this.meetingForm.value;
-    trning.start = new Date(this.meetingForm.value.start.date.year, this.meetingForm.value.start.date.month - 1, this.meetingForm.value.start.date.day);
-    if( this.meetingForm.value.end != null && this.meetingForm.value.end.date != null ){
-      trning.end = new Date(this.meetingForm.value.end.date.year, this.meetingForm.value.end.date.month - 1, this.meetingForm.value.end.date.day);
+    trning.start = this.meetingForm.value.start.singleDate.jsDate;
+    if( this.meetingForm.value.end != null && this.meetingForm.value.end.singleDate != null ){
+      trning.end = this.meetingForm.value.end.singleDate.jsDate;
     }else{
       trning.end = null;
     }
@@ -245,9 +269,9 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
   let start = control.get('start');
   let end = control.get('end');
 
-  if( end.value != null && end.value.date != null){
-    let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
-    let endDate = new Date(end.value.date.year, end.value.date.month - 1, end.value.date.day);
+  if( end.value != null && end.value.singleDate != null){
+    let startDate = start.value.singleDate.jsDate;
+    let endDate = end.value.singleDate.jsDate;
     if( startDate.getTime() > endDate.getTime()){
       return {"endDate":true};
     }

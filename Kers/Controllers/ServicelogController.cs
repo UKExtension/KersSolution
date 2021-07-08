@@ -1,23 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Kers.Models.Repositories;
 using Kers.Models.Entities.KERScore;
-using Kers.Models.Entities.KERSmain;
 using Kers.Models.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Kers.Models.Entities;
 using Kers.Models.Contexts;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
@@ -100,23 +91,23 @@ namespace Kers.Controllers
             var lastActivities = context.Activity.
                                 Where(e=>e.KersUser.Id == userId).
                                 OrderByDescending(e=>e.ActivityDate).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAges).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAges).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner).
                                 Skip(skip).
                                 Take(amount);
             
             var revs = new List<ActivityRevision>();
-            if(lastActivities != null){
+            //if(lastActivities != null){
                 foreach(var activity in lastActivities){
-                    revs.Add( activity.Revisions.OrderBy(r=>r.Created).Last() );
+                    revs.Add( activity.LastRevision );
                 }
                 foreach( var a in revs){
                     a.RaceEthnicityValues = a.RaceEthnicityValues.
@@ -135,7 +126,7 @@ namespace Kers.Controllers
                                                 ToList();
                     }
                 }
-            }
+            //}
             return new OkObjectResult(revs);
         }
 

@@ -6,7 +6,7 @@ import {    FormBuilder, ControlValueAccessor, AbstractControl,
             Validator
         } from '@angular/forms';
 import { ServicelogService, SnapIndirectMethod, SnapIndirectReached, SnapIndirectReachedValue, SnapPolicyPartnerValue, SnapPolicyPartner } from "../servicelog.service";
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'snap-policy-partners',

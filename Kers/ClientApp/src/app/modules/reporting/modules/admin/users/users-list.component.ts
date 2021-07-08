@@ -3,7 +3,7 @@ import { ProfileService, Profile } from '../../../components/reporting-profile/p
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/switchMap";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 
 @Component({

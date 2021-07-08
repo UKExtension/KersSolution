@@ -112,10 +112,10 @@ namespace Kers.Models.Repositories
 
                 // Exclude Administrative Functions and PSD programs
 
-                activities = activities.Where( a => a.MajorProgram.Name != "Administrative Functions" && a.MajorProgram.Name != "Staff Development");
+                var activitiesList = await activities.Where( a => a.MajorProgram.Name != "Administrative Functions" && a.MajorProgram.Name != "Staff Development").Include(a => a.MajorProgram).ToListAsync();
 
 
-                data = await activities.GroupBy( a => a.MajorProgram )
+                data = activitiesList.GroupBy( a => a.MajorProgram )
                                     .Select( g => new ProgramDataViewModel {
                                         Program = g.Key,
                                         DirectContacts = g.Sum( a => a.Audience ),
@@ -123,7 +123,7 @@ namespace Kers.Models.Repositories
                                     })
                                     .OrderByDescending( g => g.DirectContacts )
                                     .Take( amount )
-                                    .ToListAsync();
+                                    .ToList();
                 var serialized = JsonConvert.SerializeObject(data);
 
                 var keepCacheInDays = 3;
@@ -150,7 +150,7 @@ namespace Kers.Models.Repositories
                 ids = new List<int>();
                 ids = coreContext.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End).
-                    Select( r => r.LastRevisionId??0).ToList();
+                    Select( r => r.LastRevisionId).ToList();
                 /* 
                 var activities = coreContext.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End)

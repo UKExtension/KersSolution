@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from "@angular/forms";
 import {Location} from '@angular/common';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import {UserService, User} from '../user/user.service';
 import {StoryService, Story, StoryImage, StoryOutcome} from './story.service';
 import {PlansofworkService, PlanOfWork} from '../plansofwork/plansofwork.service';

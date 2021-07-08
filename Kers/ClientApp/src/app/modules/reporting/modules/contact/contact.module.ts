@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '../../shared/shared.module';
-import { MyDatePickerModule } from 'mydatepicker';
-import { MyDateRangePickerModule } from 'mydaterangepicker';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 import {ContactRoutingModule} from './contact-routing.module';
 import {ActivityService} from '../activity/activity.service';
 
@@ -28,8 +27,7 @@ import {ContactService} from './contact.service';
 
 @NgModule({
   imports:      [ SharedModule,
-                  MyDatePickerModule,
-                  MyDateRangePickerModule,
+                  AngularMyDatePickerModule,
                   ContactRoutingModule
                   
                 ],

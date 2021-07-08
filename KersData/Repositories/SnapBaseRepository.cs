@@ -109,7 +109,7 @@ namespace Kers.Models.Repositories
                    */  
                 ids = context.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End).
-                    Select( a => a.LastRevisionId??0).ToList();                    
+                    Select( a => a.LastRevisionId).ToList();                    
                 var serialized = JsonConvert.SerializeObject(ids);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {

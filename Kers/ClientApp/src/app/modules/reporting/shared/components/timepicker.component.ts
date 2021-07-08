@@ -295,7 +295,7 @@ export class TiimepickerComponent implements OnInit{
       return this._value;
     }
     set timeValue(val) {
-        this._value = val;     
+        this._value = val; 
         this.propagateChange(val);
     }
 
@@ -308,7 +308,11 @@ export class TiimepickerComponent implements OnInit{
 
 
     writeValue(value: any) {
-        this.timeValue = value;
+        var t = this;
+        setTimeout(()=>{
+            t.timeValue = value;
+        }, 0);
+        
     }
 
 

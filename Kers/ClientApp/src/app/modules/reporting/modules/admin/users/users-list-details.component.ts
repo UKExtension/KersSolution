@@ -2,7 +2,7 @@ import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/co
 import { ProfileService, Profile } from '../../../components/reporting-profile/profile.service';
 import { UsersService, KersUser, PersonalProfile } from './users.service';
 import {UserService, User} from '../../user/user.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
 
 
 @Component({

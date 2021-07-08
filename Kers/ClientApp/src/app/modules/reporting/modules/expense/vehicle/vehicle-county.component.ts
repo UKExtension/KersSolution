@@ -4,6 +4,7 @@ import { VehicleService, Vehicle } from './vehicle.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { PlanningUnit } from '../../user/user.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vehicle-county',
@@ -34,9 +35,9 @@ export class VehicleCountyComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.params
-        .switchMap( (params: Params) => this.planningUnitService.id(params['id'], true) )
-          .subscribe(
+    this.route.params.pipe(
+            switchMap( (params: Params) => this.planningUnitService.id(params['id'], true) )
+          ).subscribe(
             res=>{
               this.county = res;
               this.defaultTitle();

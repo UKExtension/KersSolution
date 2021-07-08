@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import {InitiativeFormComponent} from './initiative-form.component';
 import {ProgramsService, StrategicInitiative, MajorProgram} from './programs.service';
 import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';

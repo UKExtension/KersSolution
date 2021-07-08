@@ -1,13 +1,13 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import {    Component, Input, OnInit  } from '@angular/core';
 
 import { ActivityService, Race, ActivityOptionNumber } from '../../activity/activity.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
 import {Contact} from '../contact.service';
 
 @Component({
     selector: '[contactStatsRow]',
     template: `
-        <td>{{activity.contactDate | date:'MMM, y'}}</td>
+        <td>{{activity.contactDate | date:'MMM, y' }}</td>
         <td>{{activity.majorProgram.name}}</td>
         <td>{{activity.days}}</td>
         <td>{{activity.multistate}}</td>

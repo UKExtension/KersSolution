@@ -43,13 +43,13 @@ namespace Kers.Models.Repositories
            
             date = new DateTime( date.Year, date.Month, date.Day, 8, 0, 0);
             
-            var year = this.coreContext.FiscalYear.Where(y => y.Type == type);
+            var year = this.coreContext.FiscalYear.Where(y => y.Type == type).ToList();
 
             if(includeExtendedTo){
                 year = year.Where( y => 
 
                                 (
-                                        y.ExtendedTo == null || y.ExtendedTo < y.End 
+                                        y.ExtendedTo < y.End 
                                     ? 
                                         new DateTime( y.End.Year, y.End.Month, y.End.Day, 8, 0, 0) 
                                     :
@@ -61,15 +61,15 @@ namespace Kers.Models.Repositories
                                 
                                 date 
 
-                            );
+                            ).ToList();
             }else{
-                year = year.Where( y => new DateTime( y.End.Year, y.End.Month, y.End.Day, 8, 0, 0) >= date );
+                year = year.Where( y => new DateTime( y.End.Year, y.End.Month, y.End.Day, 8, 0, 0) >= date ).ToList();
             }
             if(afterAvailableAt){
                 year = year.Where( y => 
 
                                 (
-                                        y.AvailableAt == null || y.AvailableAt < y.Start 
+                                        y.AvailableAt < y.Start 
                                     ? 
                                         new DateTime( y.Start.Year, y.Start.Month, y.Start.Day, 8, 0, 0) 
                                     :
@@ -81,9 +81,9 @@ namespace Kers.Models.Repositories
                                 
                                 date 
 
-                            );
+                            ).ToList();
             }else{
-                year = year.Where( y => new DateTime( y.Start.Year, y.Start.Month, y.Start.Day, 8, 0, 0) <= date );
+                year = year.Where( y => new DateTime( y.Start.Year, y.Start.Month, y.Start.Day, 8, 0, 0) <= date ).ToList();
             }
 
             var theYear = year.OrderBy( y => y.Start).FirstOrDefault();

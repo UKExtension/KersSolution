@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Kers.Models.Entities;
 using Kers.Models.Contexts;
+using Microsoft.AspNetCore.Http;
 
 namespace Kers.Controllers.Admin
 {
@@ -26,17 +27,20 @@ namespace Kers.Controllers.Admin
         INavSectionRepository repo;
         IKersUserRepository userRepo;
         KersUser user;
+
+        IHttpContextAccessor _httpContextAccessor;
         public NavController( 
               INavSectionRepository repo ,
               IKersUserRepository userRepo,
               KERSmainContext mainContext,
-              KERScoreContext context
-              
+              KERScoreContext context,
+              IHttpContextAccessor _httpContextAccessor
             ){
            this.repo = repo;
            this.userRepo = userRepo;
            this.mainContext = mainContext;
            this.context = context;
+           this._httpContextAccessor = _httpContextAccessor;
         }
 
         [HttpGet()]
@@ -66,10 +70,10 @@ namespace Kers.Controllers.Admin
             List<NavSection> result = new List<NavSection>();
 
 
-            IEnumerable<NavSection> all = this.repo
+            List<NavSection> all = this.repo
                 .AllIncludingQuery(s => s.groups)
                 .Include(g=> g.groups).ThenInclude(s => s.items)
-                .OrderBy(s=>s.order);
+                .OrderBy(s=>s.order).ToList();
             foreach(NavSection section in all){
                 if(this.isCurrentUserAuthorized(section)){
                     List<NavGroup> resultGroups = new List<NavGroup>();
@@ -305,6 +309,9 @@ namespace Kers.Controllers.Admin
 
 
         private string CurrentUserId(){
+            //var usr = _httpContextAccessor.HttpContext.User;
+            //var nm = usr.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             return User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 

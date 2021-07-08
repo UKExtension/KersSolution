@@ -221,7 +221,7 @@ namespace Kers.Controllers
 				var svg = new SkiaSharp.Extended.Svg.SKSvg();
 				
 				svg.Load(new MemoryStream(dbFile.Content));
-				var matrix = SKMatrix.MakeTranslation(x, y);
+				var matrix = SKMatrix.CreateTranslation(x, y);
 				canvas.DrawPicture(svg.Picture, ref matrix);
 		}
 

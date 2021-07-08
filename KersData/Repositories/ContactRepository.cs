@@ -1502,7 +1502,7 @@ namespace Kers.Models.Repositories
                     activities = activities.Where( a => a.KersUserId == id);
                 }
 
-                ids = await activities.Select( a => a.LastRevisionId??0).ToListAsync();
+                ids = await activities.Select( a => a.LastRevisionId).ToListAsync();
                 
                 var serialized = JsonConvert.SerializeObject(ids);
 

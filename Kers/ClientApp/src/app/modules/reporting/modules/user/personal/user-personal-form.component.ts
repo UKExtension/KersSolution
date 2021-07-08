@@ -1,5 +1,4 @@
 import { Component,OnInit, Input, EventEmitter, Output } from '@angular/core';
-import {Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import {    UserService,
             ExtensionPosition, 
             User,
@@ -15,9 +14,10 @@ import {    UserService,
             SocialConnection 
         } from '../user.service';
 import { FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import {Location} from '@angular/common';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'user-personal-form',
@@ -51,7 +51,7 @@ export class UserPersonalFormComponent implements OnInit {
         private unitService: PlanningunitService,
         private fb: FormBuilder,
         private location: Location,
-        private http: Http  
+        private http: HttpClient 
     )   
     {
          this.personalForm = this.fb.group({
@@ -127,7 +127,7 @@ export class UserPersonalFormComponent implements OnInit {
        this.timezones = this.unitService.timezones();
     }
 
-    public requestAutocompleteItems = (text: string):Observable<Response> => {
+    public requestAutocompleteItems = (text: string):Observable<Object> => {
         const url = '/api/User/tags?q=' + text;
         return this.http
             .get(this.location.prepareExternalUrl(url));

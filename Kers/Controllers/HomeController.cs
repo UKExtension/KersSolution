@@ -27,7 +27,7 @@ namespace Kers.Controllers
     {
 
         private IConfiguration _configuration;
-        private IHostingEnvironment _hostingEnv;
+        private IWebHostEnvironment _hostingEnv;
         private readonly KERSmainContext mContext;
         private readonly IKersUserRepository userRepo;
         private readonly KERScoreContext coreContext;
@@ -35,7 +35,7 @@ namespace Kers.Controllers
         private readonly IHttpContextAccessor httpContext;
         public HomeController(
             IConfiguration _configuration,
-            IHostingEnvironment _hostingEnv,
+            IWebHostEnvironment _hostingEnv,
             KERSmainContext mContext,
             KERScoreContext coreContext,
             IKersUserRepository userRepo,
@@ -261,5 +261,6 @@ namespace Kers.Controllers
     public class LoginViewModel{
         public string Username;
         public string Password;
+
     }
 }

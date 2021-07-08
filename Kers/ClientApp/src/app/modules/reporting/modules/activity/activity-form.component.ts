@@ -6,9 +6,8 @@ import {    ActivityService, Activity,
             ActivityOptionNumberValue, ActivityOptionSelection,
             Race, Ethnicity, RaceEthnicityValue
         } from './activity.service';
-import { SnapClassic, SnapClassicService, zzSnapEdDeliverySite, zzSnapEdSessionTypes} from './snap-classic.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 
 
 
@@ -32,8 +31,6 @@ export class ActivityFormComponent implements OnInit{
     ethnicities:Ethnicity[];
     optionNumbers:ActivityOptionNumber[];
 
-    snapSessions: Observable<zzSnapEdSessionTypes[]>;
-    snapSite: Observable<zzSnapEdDeliverySite[]>;
     snapEligable = false;
     hasIndirect = false;
     hasDirect = false;
@@ -61,8 +58,7 @@ export class ActivityFormComponent implements OnInit{
     constructor( 
         private fb: FormBuilder,
         private service: ActivityService,
-        private programsService:ProgramsService,
-        private snapService:SnapClassicService
+        private programsService:ProgramsService
     )   
     {
           
@@ -74,8 +70,6 @@ export class ActivityFormComponent implements OnInit{
             toolbarButtonsXS: ['undo', 'redo', 'bold', 'italic'],
             quickInsertButtons: ['ul', 'ol', 'hr'],    
         }
-        this.snapSessions = this.snapService.session();
-        this.snapSite = this.snapService.site();
 
 
     }
@@ -363,25 +357,10 @@ export class ActivityFormComponent implements OnInit{
 
         if(this.activity.isSnap){
             if(this.activity.classicSnapId != null && this.activity.classicSnapId != 0){
-                this.snapService.get(this.activity.classicSnapId).subscribe(
-                    res=>{
-                        var snp = <SnapClassic> res;
-                        this.activityForm.patchValue({snapClassic:{direct:snp}});
-                        if(snp.snapCopies != null && parseInt(snp.snapCopies) > 0){
-                            this.activityForm.patchValue({snapClassic:{snapCopies:snp.snapCopies}});
-                        }
-                    },
-                    err => this.errorMessage = <any>err
-                );
+                
             }
             if(this.activity.classicIndirectSnapId != null && this.activity.classicIndirectSnapId != 0){
-                this.snapService.get(this.activity.classicIndirectSnapId).subscribe(
-                    res=>{
-                        var snp = <SnapClassic> res;
-                        this.activityForm.patchValue({snapClassic:{indirect:snp, snapCopies:snp.snapCopies}});
-                    },
-                    err => this.errorMessage = <any>err
-                );
+                
             }
         }
 
@@ -412,44 +391,7 @@ export class ActivityFormComponent implements OnInit{
         val.snapClassic.indirect.snapDate = val.snapClassic.direct.snapDate = '' + dateValue.year + (m<=9 ? '0' + m : m) + (y<=9 ? '0' + y : y);
         val.snapClassic.indirect.snapHours = val.snapClassic.direct.snapHours = val.hours + '.0';
         
-        let snap = this.snapService.process(val, this.activity);
 
-        
-        snap.classicIndirectSnapId.subscribe(
-            res => {
-                if(res != null){
-                    val.classicIndirectSnapId = res.rID;
-                }
-                snap.classicSnapId.subscribe(
-                    res => {
-                        if(res != null){
-                            val.classicSnapId = res.rID;
-                        }
-                        if(this.activity != null){
-                            this.service.update(this.activity.id, val).subscribe(
-                                res => {
-                                    this.loading = false;
-                                    this.onFormSubmit.emit(<Activity>res);
-                                },
-                                err => this.errorMessage = <any>err
-                            );
-                        }else{
-                            this.service.add(val).subscribe(
-                                res => {
-                                    var actvt = <Activity>res;
-                                    this.loading = false;
-                                    this.onFormSubmit.emit(actvt);
-                                    return actvt;
-                                },
-                                err => this.errorMessage = <any> err
-                            );
-                        }
-
-                    }
-                );
-            },
-            err => this.errorMessage = <any> err
-        )
        
     }
 

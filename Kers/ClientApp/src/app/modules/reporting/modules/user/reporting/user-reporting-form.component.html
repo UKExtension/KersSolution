@@ -27,8 +27,9 @@
                 <ng-select
                     id="specialties"
                     formControlName="specialties"
-                    [options]="specialtiesOptions"
+                    [items]="specialtiesOptions"
                     [multiple]="true"
+                    [hideSelected]="true"
                     placeholder = "(select any/all that apply)">
                 </ng-select>
             </div>

@@ -1,10 +1,6 @@
 import { Component, Input } from '@angular/core';
-import {ReportingService} from '../../../components/reporting/reporting.service';
-import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from '../expense.service';
-import { saveAs } from 'file-saver';
-
-import { Router } from "@angular/router";
-import { Observable } from "rxjs/Observable";
+import {ExpenseService} from '../expense.service';
+import { Observable } from "rxjs";
 import { User } from "../../user/user.service";
 
 @Component({

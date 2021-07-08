@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Activity, ActivityOption, Race, Ethnicity, ActivityOptionNumber, ActivityService } from '../../activity.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ServicelogService } from '../../../servicelog/servicelog.service';
 
 @Component({

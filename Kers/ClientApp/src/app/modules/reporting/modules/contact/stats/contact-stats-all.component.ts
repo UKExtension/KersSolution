@@ -3,8 +3,8 @@ import { ActivityService, ActivityOption, Race, ActivityOptionNumber } from '../
 import { ContactService, Contact} from '../contact.service';
 
 import { Router } from "@angular/router";
-import { IMyDrpOptions, IMyDateRangeModel } from "mydaterangepicker";
-import { Observable } from "rxjs/Observable";
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -30,12 +30,9 @@ export class ContactStatsAllComponent {
     model = {beginDate: {year: 2018, month: 10, day: 9},
                              endDate: {year: 2018, month: 10, day: 19}};
 
-    myDateRangePickerOptions: IMyDrpOptions = {
+    myDateRangePickerOptions: IAngularMyDpOptions = {
         // other options...
-        dateFormat: 'mmm dd, yyyy',
-        showClearBtn: false,
-        showApplyBtn: false,
-        showClearDateRangeBtn: false
+        dateFormat: 'mmm dd, yyyy'
     };
 
     constructor( 
@@ -57,8 +54,8 @@ export class ContactStatsAllComponent {
         this.optionNumbers = this.activityService.optionnumbers();
     }
 
-    dateCnanged(event: IMyDateRangeModel){
-        this.activities = this.service.perPeriod(event.beginJsDate, event.endJsDate);
+    dateCnanged(event: IMyDateModel){
+        this.activities = this.service.perPeriod(event.dateRange.beginJsDate, event.dateRange.endJsDate);
     }
 
 

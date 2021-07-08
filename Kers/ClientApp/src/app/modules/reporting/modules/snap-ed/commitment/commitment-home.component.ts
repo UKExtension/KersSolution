@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SnapEdCommitmentService, CommitmentBundle } from '../snap-ed-commitment.service';
-import { Observable } from 'rxjs/Observable';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({

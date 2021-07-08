@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { ActivatedRoute, Router, Params } from "@angular/router";
 import {StoryService, Story} from '../story.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   template: `
@@ -23,9 +24,9 @@ export class StoryReportsDetailComponent {
     {}
 
     ngOnInit(){ 
-        this.route.params
-            .switchMap((params: Params) => this.service.byId(params['id']))
-            .subscribe((story: Story) => 
+        this.route.params.pipe(
+            switchMap((params: Params) => this.service.byId(params['id']))
+                ).subscribe((story: Story) => 
                 {
                     this.story = story;
                 },

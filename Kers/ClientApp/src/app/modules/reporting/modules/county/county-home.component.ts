@@ -5,7 +5,8 @@ import { ActivatedRoute, Params } from "@angular/router";
 import { CountyService } from "./county.service";
 import { PlanningUnit } from "../user/user.service";
 import { Plan, PlansofworkService, PlanOfWork } from "../plansofwork/plansofwork.service";
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   template: `
@@ -154,17 +155,18 @@ export class CountyHomeComponent {
     ngOnInit(){
         
         
-        this.route.params
-            .switchMap(  (params: Params) =>
-                            {
-                                if(params['id'] != undefined){
-                                    this.id = params['id'];
-                                }
-                                if(params['returnto'] != undefined){
-                                    this.returnto = params['returnto'];
-                                }
-                                return this.service.get(this.id);
-                            } 
+        this.route.params.pipe(
+                    switchMap(  (params: Params) =>
+                                    {
+                                        if(params['id'] != undefined){
+                                            this.id = params['id'];
+                                        }
+                                        if(params['returnto'] != undefined){
+                                            this.returnto = params['returnto'];
+                                        }
+                                        return this.service.get(this.id);
+                                    } 
+                            )
                     )
                     .subscribe(
                         county => {

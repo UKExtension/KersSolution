@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
+
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
 import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } from '../../../state/state.service';
@@ -43,12 +44,9 @@ export class ActivityFilterComponent implements OnInit {
   type="direct";
   order = "dsc";
 
-  myDateRangePickerOptions: IMyDrpOptions = {
+  myDateRangePickerOptions: IAngularMyDpOptions = {
     // other options...
-    dateFormat: 'mmm dd, yyyy',
-    showClearBtn: false,
-    showApplyBtn: false,
-    showClearDateRangeBtn: false
+    dateFormat: 'mmm dd, yyyy'
   };
   model = {beginDate: {year: 2018, month: 10, day: 9},
                            endDate: {year: 2018, month: 10, day: 19}};
@@ -132,9 +130,9 @@ export class ActivityFilterComponent implements OnInit {
     this.onRefresh();
   }
 
-  dateCnanged(event: IMyDateRangeModel){
-    this.criteria["start"] = event.beginJsDate.toISOString();
-    this.criteria["end"] = event.endJsDate.toISOString();
+  dateCnanged(event: IMyDateModel){
+    this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
+    this.criteria["end"] = event.dateRange.endJsDate.toISOString();
     this.onRefresh();
   }
   onCongressionalChange(event){

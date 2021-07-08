@@ -27,10 +27,10 @@ namespace Kers.Tasks
     public class MessageProcessingTask : TaskBase, IScheduledTask
     {
         IServiceProvider serviceProvider;
-        IHostingEnvironment environment;
+        IWebHostEnvironment environment;
         public MessageProcessingTask(
             IServiceProvider serviceProvider,
-            IHostingEnvironment environment
+            IWebHostEnvironment environment
         ){
             this.serviceProvider = serviceProvider;
             this.environment = environment;

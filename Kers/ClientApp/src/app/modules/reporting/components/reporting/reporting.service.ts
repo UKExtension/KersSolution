@@ -22,7 +22,9 @@ export class ReportingService{
     }
     
     setTitle(title:string){
-        this.title.name = title;
+        setTimeout(()=>{
+            this.title.name = title;
+        },0);
         this.titleService.setTitle( title + ' - Kentucky Extension Reporting System' );
     }
 

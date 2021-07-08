@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ActivityService, Activity, ActivityOption, ActivityOptionNumber, Race } from '../activity.service';
 
 import { Router } from "@angular/router";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { User } from "../../user/user.service";
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
