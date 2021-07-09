@@ -1,5 +1,4 @@
 using System.Text;
-using Kers.Data;
 using Kers.Models;
 using Kers.Models.Abstract;
 using Kers.Models.Contexts;

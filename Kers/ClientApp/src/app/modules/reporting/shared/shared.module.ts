@@ -23,7 +23,7 @@ import {SafeHtmlPipe} from "./pipes/safe-html-pipe.pipe";
 import { TagInputModule } from '@vpetrusevici/ngx-chips';
 
 // Import the Froala Editor plugin.
-import "froala-editor/js/froala_editor.pkgd.min.js";
+//import "froala-editor/js/froala_editor.pkgd.min.js";
 
 // Import Angular plugin.
 import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
