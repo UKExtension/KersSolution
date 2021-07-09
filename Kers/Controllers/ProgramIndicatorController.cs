@@ -69,14 +69,18 @@ namespace Kers.Controllers
                     var area = this.context.ExtensionArea.Where( a => a.Id == id ).FirstOrDefault();
                     var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
                     var pairing = AreaController.FindContainingPair( area.Name );
-                    counties = context.PlanningUnit.Where( c => pairing.Contains(c.ExtensionArea.Name) && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                    counties = context.PlanningUnit.Where( c => pairing.Contains(c.ExtensionArea.Name) ).ToList();
+                    counties = counties.Where( u => u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
                 }else if( type == "region"){
-                    counties = context.PlanningUnit.Where( c => c.ExtensionArea.ExtensionRegionId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                    counties = context.PlanningUnit.Where( c => c.ExtensionArea.ExtensionRegionId == id ).ToList();
+                    counties = counties.Where( u => u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
                 }else{
-                    counties = context.PlanningUnit.Where( c => c.DistrictId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                    counties = context.PlanningUnit.Where( c => c.DistrictId == id).ToList();
+                    counties = counties.Where( u => u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
                 }
             }else{
-                counties = context.PlanningUnit.Where( u => u.District != null && u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
+                counties = context.PlanningUnit.Where( u => u.District != null ).ToList();
+                counties = counties.Where( u => u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
             }
 
             var countiesWithoutIndicators = new List<PlanningUnit>();
