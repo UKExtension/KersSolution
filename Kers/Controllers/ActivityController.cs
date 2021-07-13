@@ -499,8 +499,8 @@ namespace Kers.Controllers
                                             a.ActivityDate > fiscalYear.Start
                                             &&
                                             a.ActivityDate < fiscalYear.End
-                                ).
-                                GroupBy(e => new {
+                                ).ToList();
+            var groupedPetMonth = numPerMonth.GroupBy(e => new {
                                     Month = e.ActivityDate.Month,
                                     Year = e.ActivityDate.Year
                                 }).
@@ -513,7 +513,7 @@ namespace Kers.Controllers
                                 }).
                                 OrderByDescending(e => e.Year).ThenByDescending(e => e.Month).ToList();
             var result = new List<PerMonthContacts>();
-            foreach(var mnth in numPerMonth){
+            foreach(var mnth in groupedPetMonth){
                 var contactsThisMonth = new PerMonthContacts();
                 contactsThisMonth.Month = mnth.Month;
                 contactsThisMonth.Year = mnth.Year;
@@ -564,8 +564,8 @@ namespace Kers.Controllers
                                             a.ContactDate > fiscalYear.Start
                                             &&
                                             a.ContactDate < fiscalYear.End
-                                ).
-                                GroupBy(e => new {
+                                ).ToList();
+            var groupedContactsPerMonth =  contactsPerMonth.GroupBy(e => new {
                                     Month = e.ContactDate.Month,
                                     Year = e.ContactDate.Year
                                 }).
@@ -577,7 +577,7 @@ namespace Kers.Controllers
                                     Year = c.Key.Year
                                 }).
                                 OrderByDescending(e => e.Year).ThenByDescending(e => e.Month).ToList();
-            foreach(var mnth in contactsPerMonth){
+            foreach(var mnth in groupedContactsPerMonth){
                 var contactsThisMonth = new PerMonthContacts();
                 contactsThisMonth.Month = mnth.Month;
                 contactsThisMonth.Year = mnth.Year;
@@ -760,7 +760,7 @@ namespace Kers.Controllers
             if(fiscalYear == null){
                 return new StatusCodeResult(500);
             }
-            List<PerProgramContacts> result;
+            List<PerProgramContacts> result = new List<PerProgramContacts>();
             
             /* var cacheKey = CacheKeys.ActivitiesPerFyPerUserPerMajorProgram + fiscalYear.Name + userid.ToString();
             var cacheString = _distributedCache.GetString(cacheKey);
@@ -777,8 +777,8 @@ namespace Kers.Controllers
                                                 a.ActivityDate >= fiscalYear.Start
                                                 &&
                                                 a.ActivityDate <= fiscalYear.End
-                                            ).
-                                    GroupBy(e => new {
+                                            ).ToList();
+                var groupedPerMonth = numPerMonth.GroupBy(e => new {
                                         MajorProgram = e.MajorProgram
                                     }).
                                     Select(c => new {
@@ -789,7 +789,7 @@ namespace Kers.Controllers
                                     });
                 result = new List<PerProgramContacts>();
 
-                foreach(var mnth in numPerMonth){
+                foreach(var mnth in groupedPerMonth){
                     var perProgramContacts = new PerProgramContacts();
                     perProgramContacts.MajorProgram = mnth.MajorProgram;
                     perProgramContacts.Males = 0;
@@ -837,15 +837,15 @@ namespace Kers.Controllers
                 //    CONTACTS
                 /****************************************/
 
-                numPerMonth = context.Contact.
+                var contactsNumPerMonth = context.Contact.
                                     AsNoTracking().
                                     Where( a => a.KersUser.Id == userid 
                                                 &&
                                                 a.ContactDate >= fiscalYear.Start
                                                 &&
                                                 a.ContactDate <= fiscalYear.End
-                                            ).
-                                    GroupBy(e => new {
+                                            ).ToList();
+                groupedPerMonth = contactsNumPerMonth.GroupBy(e => new {
                                         MajorProgram = e.MajorProgram
                                     }).
                                     Select(c => new {
@@ -856,7 +856,7 @@ namespace Kers.Controllers
                                     });
                 //result = new List<PerProgramContacts>();
 
-                foreach(var mnth in numPerMonth){
+                foreach(var mnth in groupedPerMonth){
                     var perProgramContacts = new PerProgramContacts();
                     perProgramContacts.MajorProgram = mnth.MajorProgram;
                     perProgramContacts.Males = 0;
@@ -925,8 +925,7 @@ namespace Kers.Controllers
             
             }
  */
-
-            result = result.OrderBy( r => r.MajorProgram.Name).ToList();
+            if(result.Count() > 0) result = result.OrderBy( r => r.MajorProgram.Name).ToList();
             return new OkObjectResult(result);
         }
 
