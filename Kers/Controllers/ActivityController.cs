@@ -777,7 +777,9 @@ namespace Kers.Controllers
                                                 a.ActivityDate >= fiscalYear.Start
                                                 &&
                                                 a.ActivityDate <= fiscalYear.End
-                                            ).ToList();
+                                            )
+                                            .Include( a => a.MajorProgram)
+                                            .ToList();
                 var groupedPerMonth = numPerMonth.GroupBy(e => new {
                                         MajorProgram = e.MajorProgram
                                     }).
@@ -844,7 +846,9 @@ namespace Kers.Controllers
                                                 a.ContactDate >= fiscalYear.Start
                                                 &&
                                                 a.ContactDate <= fiscalYear.End
-                                            ).ToList();
+                                            )
+                                    .Include( c => c.MajorProgram)
+                                    .ToList();
                 groupedPerMonth = contactsNumPerMonth.GroupBy(e => new {
                                         MajorProgram = e.MajorProgram
                                     }).
