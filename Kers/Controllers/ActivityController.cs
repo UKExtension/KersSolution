@@ -310,24 +310,19 @@ namespace Kers.Controllers
             var lastActivities = context.Activity.
                                 Where(e=>e.KersUser.Id == userId).
                                 OrderByDescending(e=>e.ActivityDate).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
                                 Skip(skip).
                                 Take(amount);
             
-            var revs = new List<ActivityRevision>();
-            if(lastActivities != null){
-                foreach(var activity in lastActivities){
-                    revs.Add( activity.Revisions.OrderBy(r=>r.Created).Last() );
-                }
-                foreach( var a in revs){
-                    a.RaceEthnicityValues = a.RaceEthnicityValues.
-                                                OrderBy(r => r.Race.Order).
-                                                ThenBy(e => e.Ethnicity.Order).
-                                                ToList();
-                }
+            var revs = lastActivities.Select( a => a.LastRevision );
+            foreach( var a in revs){
+                a.RaceEthnicityValues = a.RaceEthnicityValues.
+                                            OrderBy(r => r.Race.Order).
+                                            ThenBy(e => e.Ethnicity.Order).
+                                            ToList();
             }
             return new OkObjectResult(revs);
         }
@@ -945,19 +940,19 @@ namespace Kers.Controllers
             end = end.AddDays(1);
             var lastActivities = context.Activity.
                                 Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end).
-                                Include(e=>e.Revisions).ThenInclude(r => r.MajorProgram).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.MajorProgram).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).
                                 OrderByDescending(a => a.ActivityDate);
-            var revs = new List<ActivityRevision>();
-            if( lastActivities != null){
+            var revs = lastActivities.Select(a => a.LastRevision);
+            /* if( lastActivities != null){
                 foreach(var activity in lastActivities){
                     if(activity.Revisions.Count != 0){
                         revs.Add( activity.Revisions.OrderBy(r=>r.Created).Last() );
                     }
                 }
-            }
+            } */
 
             return new OkObjectResult(revs);
         }
@@ -983,20 +978,20 @@ namespace Kers.Controllers
             
             var lastActivities = context.Activity.
                                 Where(e=>e.KersUser.Id == userid).
-                                Include(e=>e.Revisions).ThenInclude(r => r.MajorProgram).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.MajorProgram).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).
                                 OrderByDescending(e=>e.ActivityDate).
                                 Take(amount);
-            var revs = new List<ActivityRevision>();
-            if( lastActivities != null){
+            var revs = lastActivities.Select( a => a.LastRevision);
+           /*  if( lastActivities != null){
                 foreach(var activity in lastActivities){
                     if(activity.Revisions.Count != 0){
                         revs.Add( activity.Revisions.OrderBy(r=>r.Created).Last() );
                     }
                 }
-            }
+            } */
 
             return new OkObjectResult(revs);
         }
