@@ -773,22 +773,21 @@ namespace Kers.Controllers
                                                 &&
                                                 a.ActivityDate <= fiscalYear.End
                                             )
-                                            .Include( a => a.MajorProgram)
                                             .ToList();
                 var groupedPerMonth = numPerMonth.GroupBy(e => new {
-                                        MajorProgram = e.MajorProgram
+                                        MajorProgram = e.MajorProgramId
                                     }).
                                     Select(c => new {
                                         Ids = c.Select(
                                             s => s.Id
                                         ),
-                                        MajorProgram = c.Key.MajorProgram
+                                        MajorProgram = c.Key
                                     });
                 result = new List<PerProgramContacts>();
 
                 foreach(var mnth in groupedPerMonth){
                     var perProgramContacts = new PerProgramContacts();
-                    perProgramContacts.MajorProgram = mnth.MajorProgram;
+                    perProgramContacts.MajorProgram = context.MajorProgram.Find(mnth.MajorProgram.MajorProgram);
                     perProgramContacts.Males = 0;
                     perProgramContacts.Females = 0;
                     perProgramContacts.Multistate = 0;
@@ -842,22 +841,21 @@ namespace Kers.Controllers
                                                 &&
                                                 a.ContactDate <= fiscalYear.End
                                             )
-                                    .Include( c => c.MajorProgram)
                                     .ToList();
                 groupedPerMonth = contactsNumPerMonth.GroupBy(e => new {
-                                        MajorProgram = e.MajorProgram
+                                        MajorProgram = e.MajorProgramId
                                     }).
                                     Select(c => new {
                                         Ids = c.Select(
                                             s => s.Id
                                         ),
-                                        MajorProgram = c.Key.MajorProgram
+                                        MajorProgram = c.Key
                                     });
                 //result = new List<PerProgramContacts>();
 
                 foreach(var mnth in groupedPerMonth){
                     var perProgramContacts = new PerProgramContacts();
-                    perProgramContacts.MajorProgram = mnth.MajorProgram;
+                    perProgramContacts.MajorProgram = context.MajorProgram.Find(mnth.MajorProgram.MajorProgram);
                     perProgramContacts.Males = 0;
                     perProgramContacts.Females = 0;
                     perProgramContacts.Multistate = 0;
@@ -894,7 +892,7 @@ namespace Kers.Controllers
                     }
 
 
-                    var thisProgram = result.Where( r => r.MajorProgram.Id == mnth.MajorProgram.Id ).FirstOrDefault();
+                    var thisProgram = result.Where( r => r.MajorProgram.Id == mnth.MajorProgram.MajorProgram ).FirstOrDefault();
                     if( thisProgram == null){
                         result.Add(perProgramContacts);
                     }else{
