@@ -101,6 +101,7 @@ namespace Kers.Controllers
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner).
+                                AsSplitQuery().
                                 Skip(skip).
                                 Take(amount);
             

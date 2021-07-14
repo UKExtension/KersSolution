@@ -177,24 +177,26 @@ namespace Kers.Models.Repositories
                 lastActivities = coreContext.Activity.
                                 Where(e=>e.KersUser == user && e.ActivityDate.Month == month && e.ActivityDate.Year == year).
                                 Include( e => e.ActivityImages).
-                                Include(e=>e.Revisions).ThenInclude(r => r.MajorProgram).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.MajorProgram).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).
+                                AsSplitQuery().
                                 OrderByDescending(e=>e.ActivityDate);
             }else{
                 lastActivities = coreContext.Activity.
                                 Where(e=>e.KersUser == user && e.ActivityDate.Month == month && e.ActivityDate.Year == year).
                                 Include( e => e.ActivityImages).
-                                Include(e=>e.Revisions).ThenInclude(r => r.MajorProgram).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.MajorProgram).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).
+                                AsSplitQuery().
                                 OrderBy(e=>e.ActivityDate);
             }
-            
-            var revs = new List<ActivityRevision>();
-            if( lastActivities != null){
+            foreach( var act in lastActivities) act.LastRevision.ActivityImages = act.ActivityImages;
+            var revs = lastActivities.Select( a => a.LastRevision);
+           /* if( lastActivities != null){
                 foreach(var activity in lastActivities){
                     if(activity.Revisions.Count != 0){
                         var last = activity.Revisions.OrderBy(r=>r.Created).Last();
@@ -202,8 +204,8 @@ namespace Kers.Models.Repositories
                         revs.Add(last);
                     }
                 }
-            }
-            return revs;
+            }*/
+            return revs.ToList();
         }
 
 
