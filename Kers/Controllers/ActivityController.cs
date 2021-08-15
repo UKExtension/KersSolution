@@ -314,6 +314,7 @@ namespace Kers.Controllers
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
+                                AsSplitQuery().
                                 Skip(skip).
                                 Take(amount);
             
@@ -980,6 +981,7 @@ namespace Kers.Controllers
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).
+                                AsSplitQuery().
                                 OrderByDescending(e=>e.ActivityDate).
                                 Take(amount);
             var revs = lastActivities.Select( a => a.LastRevision);
