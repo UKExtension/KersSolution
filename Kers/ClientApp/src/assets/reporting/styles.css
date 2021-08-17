@@ -738,11 +738,11 @@ svg.uk-lockup--white{
   .fiscal-year-switcher{
     margin-top: -47px;
     float: right;
-    width: 280px;
+    width: 300px;
   }
 }
 .fiscal-year-switcher{
-  padding-right: 20px;
+  padding-right: 18px;
 }
 .transparent-blue {
   background-color: rgba(23, 65, 157, 0.6); 
