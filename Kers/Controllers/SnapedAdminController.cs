@@ -472,6 +472,7 @@ namespace Kers.Controllers
             var budget = this.context.SnapCountyBudget.Where( b => b.PlanningUnitId == countyId && b.FiscalYear == fiscalYear).FirstOrDefault();
             if(budget == null){
                 var defaultBudget = this.context.SnapBudgetAllowance.Where( b => b.FiscalYear == fiscalYear && b.BudgetDescription == "SNAP Ed County Budget (separate from NEP Assistant Budget)").FirstOrDefault();
+                if( defaultBudget == null) return new OkObjectResult(0);
                 bg = defaultBudget.AnnualBudget;
             }else{
                 bg = budget.AnnualBudget;
@@ -487,6 +488,7 @@ namespace Kers.Controllers
                 fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "snapEd").FirstOrDefault();
             }
             var defaultBudget = this.context.SnapBudgetAllowance.Where( b => b.FiscalYear == fiscalYear && b.BudgetDescription == "SNAP Ed NEP Assistant Budget").FirstOrDefault();
+            if( defaultBudget == null) return new OkObjectResult(0);
             return new OkObjectResult(defaultBudget.AnnualBudget);
         }
 

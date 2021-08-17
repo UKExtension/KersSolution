@@ -1347,12 +1347,17 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ContactGrouppedResult>> AllProgramGroupppedContacts(DateTime start, DateTime end){
-           var contacts = await this.coreContext.Contact.
+           
+           var filteredContacts = await this.coreContext.Contact.
                                     Where( c => 
                                                 c.ContactDate < end 
                                                 && 
                                                 c.ContactDate > start 
-                                        )
+                                        ).ToListAsync();
+           
+           
+           
+           var contacts = filteredContacts
                                         .GroupBy(e => new {
                                             ProgramId = e.MajorProgramId
                                         })
@@ -1362,7 +1367,7 @@ namespace Kers.Models.Repositories
                                             ).ToList(),
                                             GroupId = c.Key.ProgramId
                                         })
-                                        .ToListAsync();
+                                        .ToList();
             return contacts;
         }
 
@@ -1387,6 +1392,7 @@ namespace Kers.Models.Repositories
                             Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                             Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                             Include(a => a.RaceEthnicityValues).
+                            AsSplitQuery().
                             OrderBy(a => a.Created).LastOrDefault();
                         var serialized = JsonConvert.SerializeObject(lstrvsn);
                         _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions

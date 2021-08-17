@@ -204,7 +204,10 @@ namespace Kers.Controllers
         public IActionResult Userstats(int userId, string fy="0"){
 
             var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
-            var numPerMonth = context.Activity.
+
+
+
+            var filteredActivities = context.Activity.
                                 Where( e=>
                                         e.KersUser.Id == userId 
                                         //&&  e.Revisions.OrderBy(r => r.Created).Last().isSnap 
@@ -212,7 +215,11 @@ namespace Kers.Controllers
                                         e.ActivityDate < fiscalYear.End
                                         &&
                                         e.ActivityDate > fiscalYear.Start
-                                ).
+                                ).ToList();
+
+
+
+            var numPerMonth = filteredActivities.
                                 GroupBy(e => new {
                                     Month = e.ActivityDate.Month,
                                     Year = e.ActivityDate.Year

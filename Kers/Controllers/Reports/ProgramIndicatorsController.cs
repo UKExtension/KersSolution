@@ -101,12 +101,14 @@ namespace Kers.Controllers.Reports
                                         .Include( s => s.MajorPrograms)
                                         .OrderBy( s => s.order)
                                         .ToListAsync();
-                var indicatorsPerProgram = await context.ProgramIndicator
+                var indicatorsThisFiscalYear = await context.ProgramIndicator.Where( i => i.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear).ToListAsync();
+                
+                var indicatorsPerProgram = indicatorsThisFiscalYear
                                                     .GroupBy( p => p.MajorProgramId )
                                                     .Select( g => new {
                                                         MajorProgramId = g.Key,
-                                                        Indicators = g.Select( d => d ).OrderBy( d => d.order)
-                                                    }).ToListAsync();
+                                                        Indicators = g.Select( d => d )
+                                                    }).ToList();
 
                 ReportingCountiesPerProgram = new List<ReportingCountiesPerProgram>();
 
@@ -142,7 +144,7 @@ namespace Kers.Controllers.Reports
                         var indicatorsPerThisProgram = indicatorsPerProgram.Where( n => n.MajorProgramId == program.Id).FirstOrDefault();
                         if( indicatorsPerThisProgram != null ){
                             var i = 1;
-                            foreach( var indctr in indicatorsPerThisProgram.Indicators){
+                            foreach( var indctr in indicatorsPerThisProgram.Indicators.OrderBy( d => d.order)){
                                 var ind = new IndicatorViewModel();
                                 ind.Description = indctr.Question;
                                 ind.Code = i;
