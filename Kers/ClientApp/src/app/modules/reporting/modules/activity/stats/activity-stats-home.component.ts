@@ -12,7 +12,6 @@ import { User } from "../../user/user.service";
 true}">All Statistical Contact Records</a> | 
         <a [routerLink]="['/reporting/activity/stats/month']" routerLinkActive="active">Summary By Month</a> | 
         <a [routerLink]="['/reporting/activity/stats/program']" routerLinkActive="active">Summary By Major Program</a> | 
-        <a href="https://kers.ca.uky.edu/kers_mobile/ReportAgentStatsMain.aspx">Statistical Contacts Archive</a>
         <div>
         <router-outlet></router-outlet>
         </div>

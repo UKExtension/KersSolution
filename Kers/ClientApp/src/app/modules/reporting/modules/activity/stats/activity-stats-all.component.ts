@@ -26,13 +26,12 @@ export class ActivityStatsAllComponent {
     activities:Observable<Activity[]>;
     races:Observable<Race[]>;
 
-    model = {beginDate: {year: 2018, month: 10, day: 9},
-                             endDate: {year: 2018, month: 10, day: 19}};
+    model: IMyDateModel = null;
 
-    myDateRangePickerOptions: IAngularMyDpOptions = {
-        // other options...
+    myDpOptions: IAngularMyDpOptions = {
+        dateRange: true,
         dateFormat: 'mmm dd, yyyy',
-        firstDayOfWeek: 'su'
+        alignSelectorRight: true
     };
 
     constructor( 
@@ -44,9 +43,21 @@ export class ActivityStatsAllComponent {
     ngOnInit(){
         var end = new Date();
         var start = new Date();
-        start.setMonth(end.getMonth()-1)
-        this.model.beginDate = {year: start.getFullYear(), month: start.getMonth(), day: start.getDate()};
-        this.model.endDate = {year: end.getFullYear(), month: end.getMonth() + 1, day: end.getDate()};
+        start.setMonth(end.getMonth()-1);
+
+
+        this.model = {
+            isRange: true, 
+            singleDate: null, 
+            dateRange: {
+              beginDate: {
+                year: start.getFullYear(), month: start.getMonth(), day: start.getDate()
+              },
+              endDate: {
+                year: end.getFullYear(), month: end.getMonth() + 1, day: end.getDate()
+              }
+            }
+          };
 
         this.activities = this.service.perPeriod(start, end);
         this.activities.subscribe(
@@ -59,7 +70,7 @@ export class ActivityStatsAllComponent {
         
     }
 
-    dateCnanged(event: IMyDateModel){
+    onDateChanged(event: IMyDateModel){
         this.activities = this.service.perPeriod(event.dateRange.beginJsDate, event.dateRange.endJsDate);
     }
 

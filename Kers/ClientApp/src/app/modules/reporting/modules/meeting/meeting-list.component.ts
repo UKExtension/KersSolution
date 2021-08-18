@@ -25,9 +25,9 @@ import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
         <div class="input-group" style="width:260px; float:right;">
           
           <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-          angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
-          [(ngModel)]="model" [options]="myDpOptions" 
-          #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+            angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
+            [(ngModel)]="model" [options]="myDpOptions" 
+            #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
           <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
         </div>
     </div>

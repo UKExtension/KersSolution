@@ -33,9 +33,11 @@ import { ServicelogService } from '../servicelog/servicelog.service';
 import { ServiceLogSnapPolicyDetailsComponent } from './reports/fulldetails/service-log-snap-policy-details.component';
 import { ActivityFilterComponent } from './reports/filter/activity-filter.component';
 import { ActivityReportsDetailComponent } from './reports/filter/activity-reports-detail.component';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 
 @NgModule({
   imports:      [ SharedModule,
+                  AngularMyDatePickerModule,
                   ActivityRoutingModule
                   
                 ],
