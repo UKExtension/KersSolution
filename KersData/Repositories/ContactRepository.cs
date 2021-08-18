@@ -1040,14 +1040,17 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ContactGrouppedResult>> DistrictProgramGroupppedContacts(int id, DateTime start, DateTime end){
-           var contacts = await this.coreContext.Contact.
+           
+           var filteredContacts = await this.coreContext.Contact.
                                     Where( c => 
                                                 c.ContactDate < end 
                                                 && 
                                                 c.ContactDate > start 
                                                 && 
                                                 c.KersUser.RprtngProfile.PlanningUnit.DistrictId == id
-                                        )
+                                        ).ToListAsync();
+           
+           var contacts = filteredContacts
                                         .GroupBy(e => new {
                                             ProgramId = e.MajorProgramId
                                         })
@@ -1057,7 +1060,7 @@ namespace Kers.Models.Repositories
                                             ).ToList(),
                                             GroupId = c.Key.ProgramId
                                         })
-                                        .ToListAsync();
+                                        .ToList();
             return contacts;
         }
 
