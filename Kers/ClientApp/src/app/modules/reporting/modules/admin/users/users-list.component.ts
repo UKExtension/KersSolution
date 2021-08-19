@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProfileService, Profile } from '../../../components/reporting-profile/profile.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
-import "rxjs/add/operator/debounceTime";
-import "rxjs/add/operator/switchMap";
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'users-list',
@@ -33,10 +31,13 @@ export class UsersListComponent implements OnInit{
                     private reportingService: ReportingService
                 ){
                     this.profiles = this.searchTermStream
-                        .debounceTime(300)
-                        .switchMap((term:string) => {
-                            return this.performSearch(term);
-                        });
+                        .asObservable()
+                        .pipe(
+                            debounceTime(300),
+                            switchMap((term:string) => {
+                                return this.performSearch(term);
+                            }),
+                        );
                 }
    
     ngOnInit(){

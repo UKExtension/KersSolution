@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SnapedSearchCriteria, SnapedAdminService, SnapSearchResult, SnapSeearchResultsWithCount } from './snaped-admin.service';
-import { IMyDrpOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
 import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } from '../../state/state.service';
 import { PlanningUnit } from "../../user/user.service";
 import { saveAs } from 'file-saver';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 
 @Component({
   selector: 'snaped-reports',
@@ -38,16 +38,11 @@ export class SnapedReportsComponent implements OnInit {
   type="direct";
   order = "dsc";
 
-  myDateRangePickerOptions: IMyDrpOptions = {
-    // other options...
-    dateFormat: 'mmm dd, yyyy',
-    showClearBtn: false,
-    showApplyBtn: false,
-    showClearDateRangeBtn: false
+  myDateRangePickerOptions: IAngularMyDpOptions = {
+    dateRange: true,
+    dateFormat: 'mmm dd, yyyy'
   };
-  model = {beginDate: {year: 2018, month: 10, day: 9},
-                           endDate: {year: 2018, month: 10, day: 19}};
-
+  model: IMyDateModel = null;
 
   csvData = [];
   csvCriteria:SnapedSearchCriteria;
@@ -72,9 +67,20 @@ export class SnapedReportsComponent implements OnInit {
     startDate.setMonth( startDate.getMonth() - 1);
     var endDate = new Date();
 
-    this.model.beginDate = {year: startDate.getFullYear(), month: startDate.getMonth() + 1, day: startDate.getDate()};
-    this.model.endDate = {year: endDate.getFullYear(), month: endDate.getMonth() + 1, day: endDate.getDate()};
-    
+
+    this.model = {
+      isRange: true, 
+      singleDate: null, 
+      dateRange: {
+        beginDate: {
+          year: startDate.getFullYear(), month: startDate.getMonth() + 1, day: startDate.getDate()
+        },
+        endDate: {
+          year: endDate.getFullYear(), month: endDate.getMonth() + 1, day: endDate.getDate()
+        }
+      }
+    };
+
 
     this.criteria = {
       start: startDate.toISOString(),
@@ -108,9 +114,9 @@ export class SnapedReportsComponent implements OnInit {
     this.onRefresh();
   }
 
-  dateCnanged(event: IMyDateRangeModel){
-    this.criteria["start"] = event.beginJsDate.toISOString();
-    this.criteria["end"] = event.endJsDate.toISOString();
+  dateCnanged(event: IMyDateModel){
+    this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
+    this.criteria["end"] = event.dateRange.endJsDate.toISOString();
     this.onRefresh();
   }
   onCongressionalChange(event){

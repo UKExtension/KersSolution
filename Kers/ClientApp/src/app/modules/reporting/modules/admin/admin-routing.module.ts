@@ -18,7 +18,7 @@ import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
       {
           path: 'users', 
           canActivate: [RolesAuthGuard],
-          loadChildren: './users/users.module#UsersModule'      
+          loadChildren: () => import('./users/users.module').then(m => m.UsersModule)    
       },
       {
           path: 'navigation', 
@@ -32,7 +32,7 @@ import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
       },
       {
           path: 'snaped',
-          loadChildren: './snaped/snaped.module#SnapedModule'
+          loadChildren: () => import('./snaped/snaped.module').then(m => m.SnapedModule)
       },
       {
           path: 'programs', 

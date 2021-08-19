@@ -4,9 +4,8 @@ import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service'
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { PlanningUnit, User, UserService } from '../../user/user.service';
-import { PlanningunitService } from '../../planningunit/planningunit.service';
-import { Observable } from 'rxjs/Observable';
 import { SnapedService } from '../../servicelog/snaped.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'snaped-user.component.html'
@@ -48,8 +47,9 @@ export class SnapedUserComponent {
           this.fiscalYear = res;
         }
       ); */
-      this.route.params
-            .switchMap( (params: Params) => this.userService.byId(params['id'])).
+      this.route.params.pipe(
+                  switchMap( (params: Params) => this.userService.byId(params['id']))
+            ).
             subscribe(
               res=>{
                 this.assistant = <User>res;

@@ -34,7 +34,14 @@
     </div>
   </div>
   <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-      <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
+    <div class="input-group" style="width:250px; float:right;">
+            
+      <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+      angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
+      [(ngModel)]="model" [options]="myDateRangePickerOptions" 
+      #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
+      <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+    </div>
   </div>
 
 </div>

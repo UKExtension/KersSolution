@@ -6,6 +6,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { PlanningUnit, User } from '../../user/user.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'snaped-county.component.html',
@@ -66,8 +67,9 @@ export class SnapedCountyComponent {
 
     ngOnInit(){
 
-      this.route.params
-        .switchMap( (params: Params) => this.planningUnitService.id(params['id']) ).
+      this.route.params.pipe(
+            switchMap( (params: Params) => this.planningUnitService.id(params['id']) )
+          ).
           subscribe(
             res=>{
               var countyRes = res;

@@ -5,7 +5,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
 import { ActivatedRoute, Params } from '@angular/router';
 import { PlanningUnit, User } from '../../user/user.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'snaped-assistants-list',

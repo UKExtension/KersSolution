@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 
 
-import { MyDatePickerModule } from 'mydatepicker';
-import { MyDateRangePickerModule } from 'mydaterangepicker';
+
 import { SharedModule } from "../../../shared/shared.module";
 import { ServicelogService } from "../../servicelog/servicelog.service";
 import { SnapedService } from "../../servicelog/snaped.service";
@@ -25,15 +24,15 @@ import { SnapedDownloadButtonComponent } from './snaped-download-button.componen
 import { SnapedReportsComponent } from './snaped-reports.component';
 import { SnapedReportsDetailComponent } from './snaped-reports-detail.component';
 import { ActivityModule } from '../../activity/activity.module';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 
 
 
 
 @NgModule({
   imports:      [ SharedModule,
-                  MyDatePickerModule,
-                  MyDateRangePickerModule,
                   SnapedRoutingModule,
+                  AngularMyDatePickerModule,
                   PlanningunitModule,
                   UserModule,
                   ServicelogModule,
