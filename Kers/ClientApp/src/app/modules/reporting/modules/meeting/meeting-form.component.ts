@@ -161,17 +161,8 @@ export class MeetingFormComponent implements OnInit {
     this.meetingForm = this.fb.group(
       {
           start: [{
-
-            isRange: false, singleDate: {jsDate: this.date}
-/* 
-              date: {
-                  year: this.date.getFullYear(),
-                  month: this.date.getMonth() + 1,
-                  day: this.date.getDate()}
-
- */
-
-              }, Validators.required],
+                isRange: false, singleDate: {jsDate: this.date}
+            }, Validators.required],
           starttime: "",
           end: [{}],
           endtime: "",

@@ -23,9 +23,9 @@ export class FiscalyearService {
             this.handleError = httpErrorHandler.createHandleError('FiscalyearService');
         }
 
-    listFiscalYears():Observable<FiscalYear[]>{
+    listFiscalYears(upd:boolean = false):Observable<FiscalYear[]>{
             var url = this.baseUrl + "All";
-            if(this.years == null){
+            if(this.years == null || upd){
                 return this.http.get<FiscalYear[]>(this.location.prepareExternalUrl(url))
                     .pipe(
                         tap(yrs => this.years = yrs),

@@ -10,13 +10,13 @@ import {FiscalyearDetailComponent} from './fiscalyear-detail.component';
 import {FiscalyearFormComponent} from './fiscalyear-form.component';
 
 import {FiscalyearService} from './fiscalyear.service';
-import { MyDatePickerModule } from 'mydatepicker';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 
 
 @NgModule({
   imports:      [ SharedModule, 
                   FiscalyearRoutingModule ,
-                  MyDatePickerModule,
+                  AngularMyDatePickerModule,
                 ],
   declarations: [ FiscalyearHomeComponent, 
                   FiscalyearListComponent,

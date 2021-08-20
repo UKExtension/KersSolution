@@ -3,7 +3,7 @@ import { FiscalyearService, FiscalYear } from './fiscalyear.service';
 import {Location} from '@angular/common';
 import { FormBuilder, Validators }   from '@angular/forms';
 import {Router} from '@angular/router';
-import { IMyDpOptions } from 'mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 
 @Component({
     selector: 'fiscalyear-form',
@@ -15,12 +15,11 @@ export class FiscalyearFormComponent implements OnInit{
     @Input() fiscalyear:FiscalYear = null;
     errorMessage: string;
     public options: Object;
-    myDatePickerOptions: IMyDpOptions = {
-        // other options...
-            dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
-            satHighlight: true
-        };
+    public myDatePickerOptions: IAngularMyDpOptions = {
+        dateFormat: 'mm/dd/yyyy',
+        satHighlight: true,
+        firstDayOfWeek: 'su'
+    };
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<void>();
@@ -79,58 +78,45 @@ export class FiscalyearFormComponent implements OnInit{
             var extendedTo = new Date(+extendedToParts[0], +extendedToParts[1] -1, +extendedToParts[2]);
             this.fiscalyearForm.patchValue({
                 start: {
-                    date: {
-                        year: start.getFullYear(),
-                        month: start.getMonth() + 1,
-                        day: start.getDate()}
-                    },
+                    isRange: false, singleDate: {jsDate: start}
+                },
                 end: {
-                        date: {
-                            year: end.getFullYear(),
-                            month: end.getMonth() + 1,
-                            day: end.getDate()}
-                        },
+                    isRange: false, singleDate: {jsDate: end}
+                },
                 availableAt: {
-                        date: {
-                            year: availableAt.getFullYear(),
-                            month: availableAt.getMonth() + 1,
-                            day: availableAt.getDate()}
-                        },
+                    isRange: false, singleDate: {jsDate: availableAt}
+                },
                 extendedTo: {
-                        date: {
-                            year: extendedTo.getFullYear(),
-                            month: extendedTo.getMonth() + 1,
-                            day: extendedTo.getDate()}
-                        }
+                    isRange: false, singleDate: {jsDate: extendedTo}    
+                }
             
             });
         }
-        this.myDatePickerOptions.editableDateField = false;
-        this.myDatePickerOptions.showClearDateBtn = false;
+        
 
     }
 
 
     onSubmit(){
         var val = this.fiscalyearForm.value;
-        if(val.start.date.year != undefined){
-            var startValue = val.start;
-            var dStart = new Date(Date.UTC(startValue.date.year, startValue.date.month - 1, startValue.date.day, 8, 5, 12));  
+        if(val.start.singleDate != undefined){
+            var startValue:Date = val.start.singleDate.jsDate;
+            var dStart = new Date(Date.UTC(startValue.getFullYear(), startValue.getMonth(), startValue.getDate(), 8, 5, 12));  
             val.start = dStart; 
         }
-        if(val.end.date.year != undefined){
-            var endValue = val.end;
-            var dEnd = new Date(Date.UTC(endValue.date.year, endValue.date.month - 1, endValue.date.day, 8, 5, 12));   
+        if(val.end.singleDate != undefined){
+            var endValue:Date = val.end.singleDate.jsDate;
+            var dEnd = new Date(Date.UTC(endValue.getFullYear(), endValue.getMonth(), endValue.getDate(), 8, 5, 12));   
             val.end = dEnd;
         }
-        if(val.availableAt.date.year != undefined){
-            var availableAtValue = val.availableAt;
-            var dAvailable = new Date(Date.UTC(availableAtValue.date.year, availableAtValue.date.month - 1, availableAtValue.date.day, 8, 5, 12)); 
+        if(val.availableAt.singleDate != undefined){
+            var availableAtValue:Date = val.availableAt.singleDate.jsDate;
+            var dAvailable = new Date(Date.UTC(availableAtValue.getFullYear(), availableAtValue.getMonth(), availableAtValue.getDate(), 8, 5, 12)); 
             val.availableAt = dAvailable;   
         }
-        if(val.extendedTo.date.year != undefined){
-            var extendedToValue = val.extendedTo;
-            var dExtendedTo = new Date(Date.UTC(extendedToValue.date.year, extendedToValue.date.month - 1, extendedToValue.date.day, 8, 5, 12));       
+        if(val.extendedTo.singleDate != undefined){
+            var extendedToValue:Date = val.extendedTo.singleDate.jsDate;
+            var dExtendedTo = new Date(Date.UTC(extendedToValue.getFullYear(), extendedToValue.getMonth(), extendedToValue.getDate(), 8, 5, 12));       
             val.extendedTo = dExtendedTo;
         }
         if(this.fiscalyear){

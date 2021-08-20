@@ -48,8 +48,11 @@ export class FiscalyearListComponent implements OnInit{
     }
 
     getList(){
-        this.service.listFiscalYears().subscribe(
-            fiscal => this.fiscalyears = fiscal,
+        this.service.listFiscalYears(true).subscribe(
+            fiscal => {
+                this.fiscalyears = null;
+                this.fiscalyears = fiscal;
+            },
             error =>  this.errorMessage = <any>error
         );
     }

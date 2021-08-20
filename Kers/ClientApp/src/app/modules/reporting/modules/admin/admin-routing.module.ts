@@ -13,7 +13,7 @@ import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
      {
           path: 'roles', 
           canActivate: [RolesAuthGuard],
-          loadChildren: './roles/roles.module#RolesModule'      
+          loadChildren: () => import('./roles/roles.module').then(m => m.RolesModule)     
       },
       {
           path: 'users', 
@@ -23,12 +23,12 @@ import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
       {
           path: 'navigation', 
           canActivate: [RolesAuthGuard],
-          loadChildren: './navigation/navigation.module#NavigationModule'      
+          loadChildren: () => import('./navigation/navigation.module').then(m => m.NavigationModule)  
       },
       {
           path: 'fiscalyear', 
           canActivate: [RolesAuthGuard],
-          loadChildren: './fiscalyear/fiscalyear.module#FiscalyearModule'      
+          loadChildren: () => import('./fiscalyear/fiscalyear.module').then(m => m.FiscalyearModule)
       },
       {
           path: 'snaped',
