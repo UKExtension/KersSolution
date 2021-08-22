@@ -1,7 +1,5 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {Router} from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { ProgramsService, StrategicInitiative, MajorProgram} from '../programs/programs.service';
+import {Component, OnInit, Input} from '@angular/core';
+import { MajorProgram} from '../programs/programs.service';
 
 
 
