@@ -247,7 +247,7 @@ namespace Kers.Models.Repositories
                     }
                     RevsPerProgram = RevsPerProgram.Take( amount * 5 );
 
-                    var GrouppedByStory = RevsPerProgram
+                    var GrouppedByStory = RevsPerProgram.ToList()
                                                 .GroupBy( r => r.StoryId )
                                                 .Select( r => r );
 

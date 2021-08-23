@@ -90,9 +90,12 @@ namespace Kers.Controllers.Reports
             }
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
-            var counties = this.context.PlanningUnit.
-                                Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
-                                Include( c => c.District).
+            var filteredCounties = this.context.PlanningUnit.
+                                Where(c=>c.District != null)
+                                .Include( c => c.District)
+                                .ToList();
+            filteredCounties = filteredCounties.Where( c =>  c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+            var counties =  filteredCounties.
                                 GroupBy( c => c.District )
                                 .Select( g => new DistrictViewModel{
                                                 District = g.Key,

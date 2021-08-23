@@ -852,24 +852,26 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ContactGrouppedResult>> UnitEmployeeGroupppedContacts(int id, DateTime start, DateTime end){
-           var contacts = await this.coreContext.Contact.
+           var filteredContacts = await this.coreContext.Contact.
                                     Where( c => 
                                                 c.ContactDate < end 
                                                 && 
                                                 c.ContactDate > start 
                                                 && 
                                                 c.KersUser.RprtngProfile.PlanningUnitId == id
-                                        )
+                                        ).ToListAsync();
+           
+           var contacts = filteredContacts
                                         .GroupBy(e => new {
-                                            User = e.KersUser
+                                            User = e.KersUserId
                                         })
                                         .Select(c => new ContactGrouppedResult{
                                             Ids = c.Select(
                                                 s => s.Id
                                             ).ToList(),
-                                            GroupId = c.Key.User.Id
+                                            GroupId = c.Key.User
                                         })
-                                        .ToListAsync();
+                                        .ToList();
             return contacts;
         }
 

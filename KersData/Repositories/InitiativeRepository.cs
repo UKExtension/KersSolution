@@ -27,14 +27,16 @@ namespace Kers.Models.Repositories
         public async Task<List<ProgramIndicatorSumViewModel>> IndicatorSumPerMajorProgram(int MajorProgramId ){
             var r = new List<ProgramIndicatorSumViewModel>();
 
-            var ProgramIndicatorsPerProgram = this.context.ProgramIndicatorValue
-                                                        .Where( i => i.ProgramIndicator.MajorProgramId == MajorProgramId);
-            var Groupped = await ProgramIndicatorsPerProgram.GroupBy( i => i.ProgramIndicator )
+            var ProgramIndicatorsPerProgram = await this.context.ProgramIndicatorValue
+                                                        .Where( i => i.ProgramIndicator.MajorProgramId == MajorProgramId)
+                                                        .Include( v => v.ProgramIndicator)
+                                                        .ToListAsync();
+            var Groupped =  ProgramIndicatorsPerProgram.GroupBy( i => i.ProgramIndicator )
                                 .Select( g => new ProgramIndicatorSumViewModel {
                                     ProgramIndicator = g.Key,
                                     Sum = g.Sum( s => s.Value )
                                 })
-                                .ToListAsync();
+                                .ToList();
             return Groupped;
         }
     }

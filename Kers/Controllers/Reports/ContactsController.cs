@@ -344,9 +344,9 @@ namespace Kers.Controllers.Reports
                 FilteredStories = FilteredStories.Where( s => s.KersUser.RprtngProfile.Institution.Code != "21000-1890" );
             }
 
-            var EmployeeActivities = FilteredActivities.GroupBy( a => 
+            var EmployeeActivities = FilteredActivities.ToList().GroupBy( a => 
                                                     new {
-                                                        User = a.KersUser
+                                                        User = a.KersUserId
                                                     }
                                                 )
                                                 .Select( s => new {
@@ -354,12 +354,12 @@ namespace Kers.Controllers.Reports
                                                         Activities = s.Select(a => a)
                                                     }   
                                                 ).OrderByDescending( s => s.Activities.Count())
-                                                .Take(10);
+                                                .Take(10).ToList();
 
             var EmployeeDataForTheGraph = new List<string>();
 
             foreach( var EmployeeData in EmployeeActivities ){
-                var name = context.KersUser.Where( u => u.Id == EmployeeData.User.User.Id).Include( u => u.RprtngProfile).First();
+                var name = context.KersUser.Where( u => u.Id == EmployeeData.User.User).Include( u => u.RprtngProfile).First();
                 EmployeeDataForTheGraph.Add(
                                 "\n{ \"name\": \"" + System.Net.WebUtility.HtmlEncode(name.RprtngProfile.Name) + "\","
                                 + " \"category\": \"Employees\","
@@ -371,8 +371,8 @@ namespace Kers.Controllers.Reports
                 );
             }
 
-            var MajorProgramActivities = FilteredActivities.GroupBy( a => new {
-                                                        MajorProgram = a.MajorProgram
+            var MajorProgramActivities = FilteredActivities.ToList().GroupBy( a => new {
+                                                        MajorProgram = a.MajorProgramId
                                                     }
                                                 )
                                                 .Select( s => new {
@@ -381,8 +381,8 @@ namespace Kers.Controllers.Reports
                                                     }   
                                                 ).OrderByDescending( s => s.Activities.Count())
                                                 .Take(14);
-            var MajorProgramStories = FilteredStories.GroupBy( a => new {
-                                                        MajorProgram = a.MajorProgram
+            var MajorProgramStories = FilteredStories.ToList().GroupBy( a => new {
+                                                        MajorProgram = a.MajorProgramId
                                                     }
                                                 )
                                                 .Select( s => new {
@@ -398,7 +398,8 @@ namespace Kers.Controllers.Reports
             int LabelLength = 20;
 
             foreach( var ProgramData in MajorProgramActivities ){
-                var shortenedProgramName = System.Net.WebUtility.HtmlEncode(ProgramData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? ProgramData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : ProgramData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", ""));
+                var program = context.MajorProgram.Where( m => m.Id == ProgramData.MajorProgram.MajorProgram).FirstOrDefault();
+                var shortenedProgramName = System.Net.WebUtility.HtmlEncode(program.Name.Count() > LabelLength ? program.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : program.Name.Replace("'", "").Replace("&", ""));
                 ProgramDataForTheGraph.Add(
                                             "\n{ \"name\": \"" + shortenedProgramName + "\", "
                                             + "\"label\":{\"normal\":{\"show\":"
@@ -421,7 +422,8 @@ namespace Kers.Controllers.Reports
 
 
             foreach( var StoryData in MajorProgramStories ){
-                var shortenedProgramName = System.Net.WebUtility.HtmlEncode(StoryData.MajorProgram.MajorProgram.Name.Count() > LabelLength ? StoryData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : StoryData.MajorProgram.MajorProgram.Name.Replace("'", "").Replace("&", ""));
+                var program = context.MajorProgram.Where( m => m.Id == (int)StoryData.MajorProgram.MajorProgram).FirstOrDefault();
+                var shortenedProgramName = System.Net.WebUtility.HtmlEncode(program.Name.Count() > LabelLength ? program.Name.Replace("'", "").Replace("&", "").Substring( 0, LabelLength ) + "..." : program.Name.Replace("'", "").Replace("&", ""));
                 /* if( !MajorProgramActivities.Where( a => a.MajorProgram == StoryData.MajorProgram).Any()){
                     ProgramDataForTheGraph.Add(
                                             "\n{ \"name\": \"" + shortenedProgramName + "\", "
