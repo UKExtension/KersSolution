@@ -3,7 +3,7 @@ import { Log, LogService } from './log.service';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { Observable, Subject } from "rxjs";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import { IMyDrpOptions } from "mydaterangepicker";
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { tap, startWith, debounceTime, flatMap, delay } from 'rxjs/operators';
 
 
@@ -18,6 +18,11 @@ export class LogHomeComponent implements OnInit {
     pageSize = 10;
     errorMessage:string;
     condition = false;
+    myDateRangePickerOptions: IAngularMyDpOptions = {
+        dateRange: true,
+        dateFormat: 'mmm dd, yyyy'
+    };
+    model: IMyDateModel = null;
 
     types:Observable<string[]>;
 
@@ -34,12 +39,7 @@ export class LogHomeComponent implements OnInit {
 
 
     private searchForm: FormGroup;
-    private myDateRangePickerOptions: IMyDrpOptions = {
-        // other options...
-        dateFormat: 'dd.mm.yyyy',
-        showClearBtn: false,
-        showApplyBtn: false,
-    };
+    
 
 
     constructor( 
@@ -112,12 +112,12 @@ export class LogHomeComponent implements OnInit {
         this.criteria.type = event.target.value;
         this.searchTermStream.next(this.criteria.search);
     }
-    dateCnanged(event){
+    dateCnanged(event:IMyDateModel){
         // {beginDate: {year: 2018, month: 10, day: 9}, endDate: {year: 2018, month: 10, day: 19}}
         this.loading = true;
-        var b = event.beginDate;
+        var b = event.dateRange.beginDate;
         this.criteria.rangeStart = b.month + '/'+ b.day +'/'+ b.year +' 00:00:00';
-        var e = event.endDate;
+        var e = event.dateRange.endDate;
         this.criteria.rangeEnd = e.month + '/'+ e.day +'/'+ e.year +' 00:00:00';
         this.criteria.amount = 10;
         this.searchTermStream.next(this.criteria.search);

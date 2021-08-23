@@ -36,25 +36,25 @@ import { RolesAuthGuard } from '../../shared/auth/roles-auth.guard';
       },
       {
           path: 'programs', 
-          loadChildren: './programs/programs.module#ProgramsModule'      
+          loadChildren: () => import('./programs/programs.module').then(m => m.ProgramsModule)   
       },
       {
           path: 'indicators', 
-          loadChildren: './programindicators/programindicators.module#ProgramindicatorsModule'      
+          loadChildren: () => import('./programindicators/programindicators.module').then(m => m.ProgramindicatorsModule)     
       },
       {
-          path: 'help', 
-          loadChildren: './help/help.module#HelpModule'      
+          path: 'help',
+          loadChildren: () => import('./help/help.module').then(m => m.HelpModule)    
       },
       {
           path: 'log', 
           canActivate: [RolesAuthGuard],
-          loadChildren: './log/log.module#LogModule'      
+          loadChildren: () => import('./log/log.module').then(m => m.LogModule)   
       }
       ,
       {
-          path: 'email', 
-          loadChildren: './email/email.module#EmailModule'      
+          path: 'email',
+          loadChildren: () => import('./email/email.module').then(m => m.EmailModule)
       }
               
               
