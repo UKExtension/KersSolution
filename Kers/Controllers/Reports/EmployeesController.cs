@@ -53,7 +53,7 @@ namespace Kers.Controllers.Reports
 "lyuan3", "pzh227", "szh295", "zyu232", "xnzh222", "hzhu4", "jzimm"
                         };
 
-        string[] types = new string[]{ "District Reports", "Planning Unit Report", "KSU" };
+        string[] types = new string[]{ "District Reports", "Planning Unit Report", "KSU", "UK", "All","","","Extension Area Reports", "Extension Region Report" };
         public EmployeesController( 
                     KERScoreContext context,
                     KERSreportingContext reportingContext ,
@@ -419,7 +419,7 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("[action]/{type}/{id?}/{fy?}")]
-        // type: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All
+        // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 7 Area, 8 Region
         public async Task<IActionResult> Data(int type, int id = 0, string fy="0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
@@ -429,7 +429,7 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             
-
+            // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 7 Area, 8 Region
             var table = await contactRepo.DataByEmployee(fiscalYear, type, id);
 
             ViewData["Type"] = type;

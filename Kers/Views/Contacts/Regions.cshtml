@@ -1,0 +1,52 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = "State Statistical Contact Reports";
+    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var fy = ViewData["fy"] as string;
+    if( fy == "0"){
+      fy = "2018";
+    }
+}
+@model List<Kers.Models.Entities.KERScore.ExtensionRegion>
+
+
+<div class="bs-glyphicons">
+    <ul class="bs-glyphicons-list">
+      <li>
+        <a asp-controller="Contacts"  asp-action="Index">
+          <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+          <span class="glyphicon-class">Back to State Reports</span>
+        </a>
+      </li>
+        @if(Model != null){
+            @foreach( var dstr in Model){
+                <li>
+                    <a asp-controller="Employees"  asp-action="Data" asp-route-type="8" asp-route-fy="@fy" asp-route-id=@dstr.Id>
+                    <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    <span class="glyphicon-class">@dstr.Name</span>
+                    </a>
+                </li>
+            }
+        }
+      
+      
+    </ul>
+<div class="clearfix"></div><br>
+    <h2>FTEs by Major Program</h2>
+    <ul class="bs-glyphicons-list">
+        @if(Model != null){
+            @foreach( var dstr in Model){
+                <li>
+                    <a asp-controller="ByProgram"  asp-action="Index" asp-route-type="8" asp-route-fy="@fy" asp-route-id=@dstr.Id>
+                    <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    <span class="glyphicon-class">@dstr.Name</span>
+                    </a>
+                </li>
+            }
+        }
+      
+      
+    </ul>
+  </div>
+
+

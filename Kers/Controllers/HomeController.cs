@@ -84,7 +84,7 @@ namespace Kers.Controllers
                 SAP_HR_ACTIVE noProfileUser = null;
                 if(loginViewModel.Username == "random"){
                     //var cntx = new KERSmainContext();
-                    usr =  this.mContext.zEmpRptProfiles.OrderBy( i => Guid.NewGuid() ).FirstOrDefault();
+                    usr =  this.mContext.zEmpRptProfiles.AsEnumerable().OrderBy( i => Guid.NewGuid() ).FirstOrDefault();
                     loginViewModel.Username = usr.linkBlueID;
                 }else{
                     var length = loginViewModel.Username.Length;

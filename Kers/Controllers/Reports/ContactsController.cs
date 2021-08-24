@@ -705,6 +705,36 @@ namespace Kers.Controllers.Reports
             ViewData["fy"] = fy;
             return View(counties);
         }
+
+
+
+
+        [HttpGet]
+        [Route("[action]/{fy?}")]
+        public IActionResult  Regions(string fy = "0")
+        {
+
+            var districts =  this.context.ExtensionRegion.OrderBy( r => r.Name).ToList();
+            ViewData["fy"] = fy;
+            return View(districts);
+        }
+        
+
+        [HttpGet]
+        [Route("[action]/{fy?}")]
+        public IActionResult  Areas(string fy = "0")
+        {
+
+            var districts =  this.context.ExtensionArea.OrderBy( r => r.Name).ToList();
+            ViewData["fy"] = fy;
+            return View(districts);
+        }
+
+
+
+
+
+
         [HttpGet]
         [Route("[action]/{fy?}")]
         public async Task<IActionResult> Units(string fy = "0")

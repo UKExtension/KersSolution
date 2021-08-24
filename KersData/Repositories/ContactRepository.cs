@@ -753,7 +753,7 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ContactGrouppedResult>> AreaEmployeeGroupppedContacts(int id, DateTime start, DateTime end){
-           var contacts = await this.coreContext.Contact.
+           var filteredContacts = await this.coreContext.Contact.
                                     Where( c => 
                                                 c.ContactDate < end 
                                                 && 
@@ -761,6 +761,10 @@ namespace Kers.Models.Repositories
                                                 && 
                                                 c.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId == id
                                         )
+                                        .Include( c => c.KersUser)
+                                        .ToListAsync();
+           
+           var contacts = filteredContacts
                                         .GroupBy(e => new {
                                             User = e.KersUser
                                         })
@@ -770,7 +774,7 @@ namespace Kers.Models.Repositories
                                             ).ToList(),
                                             GroupId = c.Key.User.Id
                                         })
-                                        .ToListAsync();
+                                        .ToList();
             return contacts;
         }
 
@@ -991,12 +995,18 @@ namespace Kers.Models.Repositories
         }
 
         private async Task<List<ContactGrouppedResult>> AllEmployeeGroupppedContacts(DateTime start, DateTime end){
-           var contacts = await this.coreContext.Contact.
+           
+           var filteredContacts = await this.coreContext.Contact.
                                     Where( c => 
                                                 c.ContactDate < end 
                                                 && 
                                                 c.ContactDate > start 
                                         )
+                                        .Include( c => c.KersUser)
+                                        .ToListAsync();
+           
+           
+           var contacts = filteredContacts
                                         .GroupBy(e => new {
                                             User = e.KersUser
                                         })
@@ -1006,7 +1016,7 @@ namespace Kers.Models.Repositories
                                             ).ToList(),
                                             GroupId = c.Key.User.Id
                                         })
-                                        .ToListAsync();
+                                        .ToList();
             return contacts;
         }
 

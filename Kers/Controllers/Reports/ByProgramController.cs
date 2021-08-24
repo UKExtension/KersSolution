@@ -72,6 +72,10 @@ namespace Kers.Controllers.Reports
                 ViewData["Title"] = "KSU";
             }else if ( type == 3){
                 ViewData["Title"] = "UK";
+            }else if( type == 5 ){
+                ViewData["Title"] = this.context.ExtensionArea.Find( id ).Name;
+            }else if( type == 6 ){
+                ViewData["Title"] = this.context.ExtensionRegion.Find( id ).Name;
             }
 
             ViewData["FiscalYear"] = fiscalYear;
