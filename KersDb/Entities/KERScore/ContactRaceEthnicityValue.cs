@@ -16,5 +16,6 @@ namespace Kers.Models.Entities.KERScore
         public int EthnicityId { get; set; }
         public Ethnicity Ethnicity {get;set;}
         public int Amount {get;set;}
+        public ContactRevision ContactRevision {get;set;}
     }
 }

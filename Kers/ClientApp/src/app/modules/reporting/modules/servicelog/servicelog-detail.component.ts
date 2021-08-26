@@ -12,6 +12,7 @@ export class ServicelogDetailComponent {
     rowDelete = false;
     currentFiscalYear:FiscalYear | null = null;
     displayEdit = false;
+    loading = false;
 
     
     @Input() activity:Servicelog;
@@ -72,10 +73,11 @@ export class ServicelogDetailComponent {
     }
 
     confirmDelete(){
-        
+        this.loading = true;
         this.service.delete(this.activity.id).subscribe(
             res=>{
                 this.onDeleted.emit(this.activity);
+                this.loading = false;
             },
             err => this.errorMessage = <any> err
         );

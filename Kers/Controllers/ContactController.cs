@@ -284,15 +284,20 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult DeleteContact( int id ){
             var entity = context.ContactRevision.Find(id);
+
+            /* 
             var acEntity = context.Contact.Where(a => a.Id == entity.ContactId).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactOptionNumbers).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ContactRaceEthnicityValues).
                                 FirstOrDefault();
-            
-            if(acEntity != null){
-                acEntity.LastRevision = null;
+             */
+            if(entity != null){
+                var contactId = entity.ContactId;
+                context.RemoveRange(
+                    context.ContactRevision.Where( c => c.ContactId == contactId)
+                );
                 context.SaveChanges();
-                context.Contact.Remove(acEntity);
+                context.Contact.Remove(context.Contact.Find( contactId));
                 context.SaveChanges();
                 
                 this.Log(entity,"ContactRevision", "Contact Removed.");

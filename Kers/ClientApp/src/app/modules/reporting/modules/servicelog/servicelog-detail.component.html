@@ -1,5 +1,6 @@
 <div class="ln_solid"></div>
-<div class="row">
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
     <div class="col-xs-10">
         
         <article class="media event" *ngIf="rowDefault">

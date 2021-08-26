@@ -271,6 +271,12 @@ namespace Kers.Models.Contexts
             modelBuilder.Entity<CountyEventProgramCategory>()
                 .HasKey(t => new { t.CountyEventId, t.ProgramCategoryId });
              */
+
+            modelBuilder.Entity<ContactRevision>()
+                .HasMany( c => c.ContactRaceEthnicityValues )
+                .WithOne( c => c.ContactRevision)
+                .OnDelete(DeleteBehavior.ClientCascade); 
+
             modelBuilder.Entity<Story>()
                 .Property(b => b.HasImages)
                 .HasDefaultValue(false);
