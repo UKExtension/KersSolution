@@ -440,6 +440,10 @@ namespace Kers.Controllers.Reports
                 ViewData["Title"] = this.context.District.Find(id).Name;
             }else if(type == 1){
                 ViewData["Title"] = this.context.PlanningUnit.Find(id).Name;
+            }else if(type == 7){
+                ViewData["Title"] = this.context.ExtensionArea.Find(id).Name;
+            }else if(type == 8){
+                ViewData["Title"] = this.context.ExtensionRegion.Find(id).Name;
             }
             
 
