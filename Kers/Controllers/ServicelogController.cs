@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Kers.Models.Contexts;
 using Microsoft.Extensions.Caching.Memory;
+using System.Transactions;
 
 namespace Kers.Controllers
 {
@@ -294,18 +295,36 @@ namespace Kers.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteActivity( int id ){
             var entity = context.ActivityRevision.Find(id);
+            
+/* 
             var acEntity = context.Activity.Where(a => a.Id == entity.ActivityId).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
-                                FirstOrDefault();
+                                FirstOrDefault(); */
             
-            if(acEntity != null){
-                acEntity.LastRevision = null;
-                context.SaveChanges();
-                context.Activity.Remove(acEntity);
-                context.SaveChanges();
+            if(entity != null){
+
+                    var activityId = entity.ActivityId;
+                    context.RemoveRange(context.ActivityRevision
+                                            .Where(r => r.ActivityId == activityId)
+                                            .Include(r => r.ActivityOptionSelections)
+                                            .Include(r => r.ActivityOptionNumbers)
+                                            .Include(r => r.RaceEthnicityValues)
+                                            );
+                    context.SaveChanges();
+                    context.Remove( context.Activity.Find(activityId));
+                    context.SaveChanges();
+                        //acEntity.LastRevision = null;
+                        //context.SaveChanges();
+                        //context.Activity.Remove(acEntity);
+                        //context.SaveChanges();
+
+
+
+
+                
                 
                 this.Log(entity,"ActivityRevision", "Activity Removed.");
 
