@@ -215,8 +215,10 @@ export class MileageFormComponent implements OnInit {
 
   onSubmit(){
     this.loading = true;
-    var dateValue = this.mileageForm.value.expenseDate.date;
-    var d = new Date(Date.UTC(dateValue.year, dateValue.month - 1, dateValue.day, 8, 5, 12));
+    
+    var dateValue = this.mileageForm.value.expenseDate.singleDate.jsDate;
+    var d = new Date(Date.UTC(dateValue.getFullYear(), dateValue.getMonth(), dateValue.getDate(), 8, 5, 12));
+    
     var ml = this.mileageForm.value as Mileage;
     ml.expenseDate = d;
     var i = 0;
