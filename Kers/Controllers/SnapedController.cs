@@ -355,8 +355,7 @@ namespace Kers.Controllers
         [HttpGet("reportedcounty/{id}")]
         public IActionResult ReportedCounty(int id){
             var fiscalYear = this.fiscalYearRepo.currentFiscalYear("snapEd");
-            
-            var numPerMonth = context.Activity.
+            var filteredActivities = context.Activity.
                                 Where( e=>
                                         e.KersUser.RprtngProfile.PlanningUnitId == id 
                                         //&&  e.Revisions.OrderBy(r => r.Created).Last().isSnap 
@@ -364,8 +363,8 @@ namespace Kers.Controllers
                                         e.ActivityDate < fiscalYear.End
                                         &&
                                         e.ActivityDate > fiscalYear.Start
-                                ).
-                                GroupBy(e => new {
+                                ).ToList();
+            var numPerMonth = filteredActivities.GroupBy(e => new {
                                     Month = e.ActivityDate.Month,
                                     Year = e.ActivityDate.Year
                                 }).
