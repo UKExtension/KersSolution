@@ -293,9 +293,13 @@ namespace Kers.Controllers
              */
             if(entity != null){
                 var contactId = entity.ContactId;
-                context.RemoveRange(
-                    context.ContactRevision.Where( c => c.ContactId == contactId)
-                );
+                var revs = context.ContactRevision.Where( c => c.ContactId == contactId);
+                foreach( var rev in revs ){
+                    context.RemoveRange( context.ContactRaceEthnicityValue.Where( r => r.ContactRevision == rev));
+                    context.RemoveRange( context.ContactOptionNumberValue.Where( r => r.ContactRevision == rev));
+                } 
+                context.SaveChanges();
+                context.RemoveRange( revs );
                 context.SaveChanges();
                 context.Contact.Remove(context.Contact.Find( contactId));
                 context.SaveChanges();

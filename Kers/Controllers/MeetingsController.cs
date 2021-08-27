@@ -210,7 +210,7 @@ namespace Kers.Controllers
                 trainings = _context.Meeting.ToList();
                 trainings = trainings.Where( i => i.Start.UtcDateTime >= start && i.Start <= end ).ToList();
             }else{
-                trainings = _context.Meeting.Where( i => i.Start.UtcDateTime >= start && i.Start <= end ).ToList();
+                trainings = _context.Meeting.Where( i => i.Start >= start && i.Start <= end ).ToList();
             }
             
             if(search != null && search != ""){

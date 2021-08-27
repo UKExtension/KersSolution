@@ -13,5 +13,6 @@ namespace Kers.Models.Entities.KERScore
         public int ActivityOptionNumberId {get;set;}
         public ActivityOptionNumber ActivityOptionNumber {get;set;}
         public int Value {get;set;}
+        public ContactRevision ContactRevision {get;set;}
     }
 }
