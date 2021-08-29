@@ -107,8 +107,8 @@ namespace Kers.Controllers.Reports
                     id = 0;
                 }
             }
-            
-            var evnt = await this.context.CountyEvent
+
+            var filteredEvents = await this.context.CountyEvent
                                 .Where( e => 
                                                 (id != 0 
                                                         ?
@@ -125,14 +125,16 @@ namespace Kers.Controllers.Reports
                                                 
                                                 )
                                     .Include( e => e.Location ).ThenInclude( l => l.Address)
-                                .OrderBy( e => e.Start)
+                                .OrderBy( e => e.Start).ToListAsync();
+            
+            var evnt = filteredEvents
                                 .GroupBy( e => e.Start.Date)
                                 .Select( d => new GroupedCountyEvents {
                                     events = d.ToList(),
                                     date = d.First().Start
                                 })
                                 .Take( 100 )
-                                .ToListAsync();
+                                .ToList();
             return View(evnt);
         }
 

@@ -18,9 +18,9 @@
 @model Kers.Models.ViewModels.TableViewModel
 <div class="text-right">
     @if( @type == 0){
-        <a asp-controller="Contacts"  asp-action="Districts" class="btn btn-default btn-xs">Back to Districts</a><br>
+        <a asp-controller="Contacts"  asp-action="Districts" asp-route-fy="@FiscalYear.Name" class="btn btn-default btn-xs">Back to Districts</a><br>
     }else{
-        <a asp-controller="Contacts"  asp-action="Index" class="btn btn-default btn-xs">Back to State Reports</a><br>
+        <a asp-controller="Contacts"  asp-action="Index" asp-route-fy="@FiscalYear.Name" class="btn btn-default btn-xs">Back to State Reports</a><br>
     }
     
 </div>

@@ -6,6 +6,6 @@
 }
 @model Kers.Models.ViewModels.TableViewModel
 <div class="text-right">
-    <a asp-controller="Contacts"  asp-action="State" class="btn btn-default btn-xs">Back to State Reports</a><br>
+    <a asp-controller="Contacts"  asp-action="State"  asp-route-fy="@FiscalYear.Name" class="btn btn-default btn-xs">Back to State Reports</a><br>
 </div>
 @await Html.PartialAsync("TablePartial")
