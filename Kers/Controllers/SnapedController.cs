@@ -171,7 +171,8 @@ namespace Kers.Controllers
                                 Skip(skip).
                                 Take(amount); */
             var revs = lstAct.Select( a => a.LastRevision);
-            if(lst != null){/* 
+            //if(lst != null){
+                /* 
                 foreach(var activity in lst){
                     revs.Add( activity.Revisions.OrderBy(r=>r.Created).Last() );
                 } */
@@ -192,7 +193,7 @@ namespace Kers.Controllers
                                                 ToList();
                     }
                 }
-            }
+            //}
             return new OkObjectResult(revs);
         }
 
