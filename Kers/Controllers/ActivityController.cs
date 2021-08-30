@@ -532,6 +532,7 @@ namespace Kers.Controllers
                             Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                             Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                             Include(a => a.RaceEthnicityValues).
+                            AsSplitQuery().
                             OrderBy(a => a.Created).Last();
                             var revSerialized = JsonConvert.SerializeObject(lstrvsn);
                             _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
@@ -595,6 +596,7 @@ namespace Kers.Controllers
                             Where(r => r.ContactId == rev).
                             Include(a => a.ContactOptionNumbers).
                             Include(a => a.ContactRaceEthnicityValues).
+                            AsSplitQuery().
                             OrderBy(a => a.Created).Last();;
                             var revSerialized = JsonConvert.SerializeObject(lstrvsn);
                             _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
