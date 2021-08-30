@@ -138,7 +138,7 @@ namespace Kers.Controllers
             }
 
             var lstAct = context.Activity.
-                                Where(e=>e.KersUser.Id == userId && e.ActivityDate > new DateTime(2017, 10, 1) ).
+                                Where(e=>e.KersUser.Id == userId && e.LastRevision.isSnap ).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
@@ -149,6 +149,7 @@ namespace Kers.Controllers
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner).
+                                OrderByDescending( e => e.ActivityDate).
                                 Skip(skip).
                                 Take(amount);
 
@@ -206,10 +207,9 @@ namespace Kers.Controllers
                 userId = user.Id;
             }
             var lastActivities = context.Activity.
-                                Where(e=>e.KersUser.Id == userId && e.ActivityDate > new DateTime(2017, 10, 1) )
-                                .ToList();
+                                Where(e=>e.KersUser.Id == userId && e.LastRevision.isSnap );
             
-            var withSnap = lastActivities.Where(e => e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().isSnap);
+            //var withSnap = lastActivities.Where(e => e.Revisions.OrderBy(r => r.Created.ToString("s")).Last().isSnap);
             return new OkObjectResult(lastActivities.Count());
         }
 
