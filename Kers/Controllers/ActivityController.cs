@@ -652,15 +652,15 @@ namespace Kers.Controllers
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
                 result = JsonConvert.DeserializeObject<List<PerProgramActivities>>(cacheString);
             }else{
-
-                var numPerMonth = context.Activity.
+                var filteredActivities = context.Activity.
                                     AsNoTracking().
                                     Where( a => a.KersUser.Id == userid 
                                                 &&
                                                 a.ActivityDate >= fiscalYear.Start
                                                 &&
                                                 a.ActivityDate <= fiscalYear.End
-                                            ).
+                                            ).ToList();
+                var numPerMonth = filteredActivities.
                                     GroupBy(e => new {
                                         MajorProgram = e.MajorProgram
                                     }).
