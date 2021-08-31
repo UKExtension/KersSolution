@@ -43,8 +43,8 @@ export class ActivityStatsAllComponent {
     ngOnInit(){
         var end = new Date();
         var start = new Date();
-        start.setMonth(end.getMonth()-1);
-
+        start.setMonth(end.getMonth()-2);
+/* 
 
         this.model = {
             isRange: true, 
@@ -57,7 +57,27 @@ export class ActivityStatsAllComponent {
                 year: end.getFullYear(), month: end.getMonth() + 1, day: end.getDate()
               }
             }
+          }; */
+        
+          this.model = {
+            isRange: true, 
+            singleDate: null, 
+            dateRange: {
+              beginDate: {
+                year: start.getFullYear(), month: start.getMonth() + 1, day: start.getDate()
+              },
+              endDate: {
+                year: end.getFullYear(), month: end.getMonth() + 1, day: end.getDate()
+              }
+            }
           };
+
+
+
+
+
+
+
 
         this.activities = this.service.perPeriod(start, end);
         this.activities.subscribe(
