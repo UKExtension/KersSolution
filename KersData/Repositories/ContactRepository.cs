@@ -112,6 +112,7 @@ namespace Kers.Models.Repositories
                     var rev = await coreContext.ContactRevision
                                     .Where( c => c.ContactId == contact.Id )
                                     .Include( r => r.ContactOptionNumbers ).ThenInclude( n => n.ActivityOptionNumber)
+                                    .OrderBy( c => c.Created)
                                     .LastAsync();
                     lastContactRevs.Add( rev );
                     OptionNumbers.AddRange( rev.ContactOptionNumbers );
