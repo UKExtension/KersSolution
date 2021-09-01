@@ -167,8 +167,9 @@ namespace Kers.Controllers
         public IActionResult PerDay(int userid, DateTime start, DateTime end ){
             
             end = end.AddDays(1);
-            var numPerDay = context.Story.
-                                Where(a=>a.KersUser.Id == userid & a.Updated > start & a.Updated < end).
+            var filteredStories = context.Story.
+                                Where(a=>a.KersUser.Id == userid & a.Updated > start & a.Updated < end).ToList();
+            var numPerDay = filteredStories.
                                 GroupBy(e => new {
                                     Date = e.Updated.Day
                                 }).

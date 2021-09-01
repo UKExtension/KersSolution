@@ -374,7 +374,7 @@ namespace Kers.Controllers
             
             end = end.AddDays(1);
             var filtered = context.Activity.
-                                Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end);
+                                Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end).ToList();
             var numPerDay = filtered.
                                 GroupBy(e => new {
                                     Date = e.ActivityDate.DayOfYear

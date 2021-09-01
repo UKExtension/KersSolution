@@ -42,7 +42,8 @@
             "progress": false,
             "allowedCommonJsDependencies": [
               "froala-editor/js/froala_editor.pkgd.min.js",
-              "file-saver"
+              "file-saver",
+              "ua-parser-js"
            ]
           },
           "configurations": {

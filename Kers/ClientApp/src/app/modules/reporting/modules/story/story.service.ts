@@ -20,7 +20,7 @@ export class StoryService {
         private location:Location,
         httpErrorHandler: HttpErrorHandler
         ) {
-            this.handleError = httpErrorHandler.createHandleError('HelpService');
+            this.handleError = httpErrorHandler.createHandleError('SuccessStoryService');
         }
 
     byId(id:number):Observable<Story>{
