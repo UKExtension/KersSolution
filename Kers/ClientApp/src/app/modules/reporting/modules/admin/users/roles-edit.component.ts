@@ -35,29 +35,32 @@ export class RolesEditComponent {
 
     ngOnInit(){
         this.rolesService.listRoles().subscribe(
-            roles =>  this.roles = roles,
-            error =>  this.errorMessage = <any>error
-        );
-        this.user.subscribe(
-            usr =>  {
-                this.u = <User>usr
-                var group = {};
-                if(this.u.roles != null){
-                    for(var i = 0; i < this.roles.length; i++){
-                        var ifRole = this.u.roles.filter(l=>l.zEmpRoleTypeId == this.roles[i].id)[0];
-                        if(ifRole != null){
-                            group[this.roles[i].id] = [ true ];
-                        }else{
-                            group[this.roles[i].id] = [ false ];
+            roles =>  {
+                this.roles = roles;
+                this.user.subscribe(
+                    usr =>  {
+                        this.u = <User>usr
+                        var group = {};
+                        if(this.u.roles != null){
+                            for(var i = 0; i < this.roles.length; i++){
+                                var ifRole = this.u.roles.filter(l=>l.zEmpRoleTypeId == this.roles[i].id)[0];
+                                if(ifRole != null){
+                                    group[this.roles[i].id] = [ true ];
+                                }else{
+                                    group[this.roles[i].id] = [ false ];
+                                }
+                            }
                         }
-                    }
-                }
-                this.editFormRoles = this.fb.group(
-                        group )
-        
+                        this.editFormRoles = this.fb.group(
+                                group )
+                
+                    },
+                    error =>  this.errorMessage = <any>error
+                );
             },
             error =>  this.errorMessage = <any>error
         );
+        
     }
 /*
     ngOnChanges(changes: SimpleChanges) {
