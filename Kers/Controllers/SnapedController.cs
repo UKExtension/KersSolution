@@ -126,9 +126,6 @@ namespace Kers.Controllers
 
 
 
-
-
-
         [HttpGet("latest/{skip?}/{amount?}/{userId?}")]
         [Authorize]
         public IActionResult Get(int skip = 0, int amount = 10, int userId = 0){
@@ -153,48 +150,25 @@ namespace Kers.Controllers
                                 Skip(skip).
                                 Take(amount);
 
-/* 
-            var lastActivities = context.Activity.
-                                Where(e=>e.KersUser.Id == userId && e.ActivityDate > new DateTime(2017, 10, 1) ).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
-                                Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAges).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
-                                Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner)
-                                .ToList();
-            var lst = lastActivities.Where( e => e.Revisions.OrderBy(r => r.Created).Last().isSnap).
-                                OrderByDescending(e=>e.Revisions.OrderBy( a => a.Created.ToString("s")).Last().ActivityDate).
-                                Skip(skip).
-                                Take(amount); */
             var revs = lstAct.Select( a => a.LastRevision);
-            //if(lst != null){
-                /* 
-                foreach(var activity in lst){
-                    revs.Add( activity.Revisions.OrderBy(r=>r.Created).Last() );
-                } */
-                foreach( var a in revs){
-                    a.RaceEthnicityValues = a.RaceEthnicityValues.
-                                                OrderBy(r => r.Race.Order).
-                                                ThenBy(e => e.Ethnicity.Order).
-                                                ToList();
-                    if(a.SnapDirect != null){
-                        a.SnapDirect.SnapDirectAgesAudienceValues = a.SnapDirect.SnapDirectAgesAudienceValues.
-                                                OrderBy(r => r.SnapDirectAudience.order).
-                                                ThenBy( r => r.SnapDirectAges.order).
-                                                ToList();
-                    }
-                    if(a.SnapPolicy != null){
-                        a.SnapPolicy.SnapPolicyPartnerValue = a.SnapPolicy.SnapPolicyPartnerValue.
-                                                OrderBy(r => r.SnapPolicyPartner.order).
-                                                ToList();
-                    }
+
+            foreach( var a in revs){
+                a.RaceEthnicityValues = a.RaceEthnicityValues.
+                                            OrderBy(r => r.Race.Order).
+                                            ThenBy(e => e.Ethnicity.Order).
+                                            ToList();
+                if(a.SnapDirect != null){
+                    a.SnapDirect.SnapDirectAgesAudienceValues = a.SnapDirect.SnapDirectAgesAudienceValues.
+                                            OrderBy(r => r.SnapDirectAudience.order).
+                                            ThenBy( r => r.SnapDirectAges.order).
+                                            ToList();
                 }
-            //}
+                if(a.SnapPolicy != null){
+                    a.SnapPolicy.SnapPolicyPartnerValue = a.SnapPolicy.SnapPolicyPartnerValue.
+                                            OrderBy(r => r.SnapPolicyPartner.order).
+                                            ToList();
+                }
+            }
             return new OkObjectResult(revs);
         }
 
