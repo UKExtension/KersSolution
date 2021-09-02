@@ -63,33 +63,7 @@
       </tr>
     </tbody>
   </table>
-<br>
-  <h2>Comments</h2>
-  <div *ngIf="crop.comment1 != undefined && crop.comment1 != ''" class="crop-comment">
-    {{crop.comment1}}
-  </div>
-  <div *ngIf="crop.comment2 != undefined && crop.comment2 != ''" class="crop-comment">
-    {{crop.comment2}}
-  </div>
-  <div *ngIf="crop.comment3 != undefined && crop.comment3 != ''" class="crop-comment">
-    {{crop.comment3}}
-  </div>
-  <div *ngIf="crop.comment4 != undefined && crop.comment4 != ''" class="crop-comment">
-    {{crop.comment4}}
-  </div>
-  <div *ngIf="crop.comment5 != undefined && crop.comment5 != ''" class="crop-comment">
-    {{crop.comment5}}
-  </div>
-  <div *ngIf="crop.comment6 != undefined && crop.comment6 != ''" class="crop-comment">
-    {{crop.comment6}}
-  </div>
-  <div *ngIf="crop.comment7 != undefined && crop.comment7 != ''" class="crop-comment">
-    {{crop.comment7}}
-  </div>
-  <div *ngIf="crop.limeComment != undefined && crop.limeComment != ''" class="crop-comment">
-    <h2>Soil pH Recommendation</h2>
-    {{crop.limeComment}}
-  </div>
+
   <div class="ln_solid"></div>
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
@@ -109,20 +83,54 @@
               <textarea name="note" formControlName="note" id="note" class="form-control col-xs-12" rows="12"></textarea>
           </div>
         </div>
+        <div class="col-xs-12 text-right"><a href="http://www.rs.uky.edu/soil/calculators/index.php" target="_blank">Soil Calculators</a>
+
+        </div>
+        <br>
+        <div class="col-xs-12">
+
+          <h2>Comments</h2>
+          <div *ngIf="crop.comment1 != undefined && crop.comment1 != ''" class="crop-comment">
+            {{crop.comment1}}
+          </div>
+          <div *ngIf="crop.comment2 != undefined && crop.comment2 != ''" class="crop-comment">
+            {{crop.comment2}}
+          </div>
+          <div *ngIf="crop.comment3 != undefined && crop.comment3 != ''" class="crop-comment">
+            {{crop.comment3}}
+          </div>
+          <div *ngIf="crop.comment4 != undefined && crop.comment4 != ''" class="crop-comment">
+            {{crop.comment4}}
+          </div>
+          <div *ngIf="crop.comment5 != undefined && crop.comment5 != ''" class="crop-comment">
+            {{crop.comment5}}
+          </div>
+          <div *ngIf="crop.comment6 != undefined && crop.comment6 != ''" class="crop-comment">
+            {{crop.comment6}}
+          </div>
+          <div *ngIf="crop.comment7 != undefined && crop.comment7 != ''" class="crop-comment">
+            {{crop.comment7}}
+          </div>
+          <div *ngIf="crop.limeComment != undefined && crop.limeComment != ''" class="crop-comment">
+            <h2>Soil pH Recommendation</h2>
+            {{crop.limeComment}}
+          </div><br>
+
+
+        </div>
+  
         <div class="form-group">
             <div class="col-xs-8">
                 <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
                 <button type="submit" [disabled]="noteForm.invalid"  class="btn btn-success">Submit</button>
             </div>
-            <div class="col-xs-4 text-right"><a href="http://www.rs.uky.edu/soil/calculators/index.php" target="_blank">Soil Calculators</a>
-
-            </div>
+            
         </div>
         <div class="ln_solid"></div>
       </form>
   </div>
 
-
+  
 
 
 </div>
