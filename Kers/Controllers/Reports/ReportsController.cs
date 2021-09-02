@@ -152,6 +152,7 @@ namespace Kers.Controllers.Reports
             
             FiscalYear fiscalYear = GetFYByName(fy);
             var units = this.context.PlanningUnit.OrderBy(l => l.order).ToListAsync();
+            ViewData["Units"] = await units;
             if(fiscalYear == null){
                 return new StatusCodeResult(500);
             }
@@ -172,21 +173,24 @@ namespace Kers.Controllers.Reports
                                                         .Where( g => true )
                                                         .Include( g => g.Types)
                                                         .OrderBy( g => g.Order ).ToListAsync();
+                    ViewData["MakeupDiversityGroups"] = await MakeupDiversityGroups;
                     var AdvisoryGroups = this.context.AffirmativeAdvisoryGroupType.Where( t => true ).OrderBy( t => t.Order ).ToListAsync();
+                    ViewData["AdvisoryGroups"] = await AdvisoryGroups;
                     var SummaryDiversityType = this.context.AffirmativeSummaryDiversityType.Where( t => true ).OrderBy( t => t.Order ).ToListAsync();
+                    ViewData["SummaryDiversityType"] = await SummaryDiversityType;
                     model = await context.AffirmativeActionPlanRevision
                                     .Where( r => r.AffirmativeActionPlan == plan )
                                     .Include( r => r.MakeupValues)
                                     .Include( r => r.SummaryValues)
                                     .OrderBy( r => r.Created )
                                     .LastOrDefaultAsync();
-                    ViewData["MakeupDiversityGroups"] = await MakeupDiversityGroups;
-                    ViewData["AdvisoryGroups"] = await AdvisoryGroups;
-                    ViewData["SummaryDiversityType"] = await SummaryDiversityType;
+                    
+                    
+                    
                 }
             }
 
-            ViewData["Units"] = await units;
+            
             
             return View( model);
 
