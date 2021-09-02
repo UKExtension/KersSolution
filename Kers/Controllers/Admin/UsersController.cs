@@ -110,7 +110,7 @@ namespace Kers.Controllers.Admin
                     newRoles.Add(conn);
                 }
                  
-                entity.Roles = roles;
+                entity.Roles = newRoles;
                 this.userRepo.Commit();
                 return new OkObjectResult(entity.Roles);
             }else{
