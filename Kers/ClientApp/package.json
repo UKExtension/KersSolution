@@ -24,7 +24,7 @@
     "@types/knockout": "^3.4.70",
     "@vpetrusevici/ngx-chips": "^2.2.5",
     "angular-calendar": "^0.28.22",
-    "angular-froala-wysiwyg": "~2.9.8",
+    "angular-froala-wysiwyg": "^2.9.8",
     "angular-mydatepicker": "^0.11.3",
     "bootstrap": "^3.3.7",
     "date-fns": "^2.21.1",
