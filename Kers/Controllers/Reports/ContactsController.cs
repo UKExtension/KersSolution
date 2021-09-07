@@ -697,11 +697,11 @@ namespace Kers.Controllers.Reports
             var counties = await this.context.PlanningUnit
                                     .Where( u => 
                                                 u.District != null
-                                                &&
-                                                u.Name.Substring( u.Name.Length - 3) == "CES"
+                                                
                                            )
                                     .OrderBy( u => u.Name)
                                     .ToListAsync();
+            counties = counties.Where( u => u.Name.Substring( u.Name.Length - 3) == "CES").ToList();
             ViewData["fy"] = fy;
             return View(counties);
         }
@@ -742,11 +742,10 @@ namespace Kers.Controllers.Reports
             var units = await this.context.PlanningUnit
                                     .Where( u => 
                                                 u.District == null
-                                                &&
-                                                u.Name.Substring( u.Name.Length - 3) != "CES"
                                            )
                                     .OrderBy( u => u.Name)
                                     .ToListAsync();
+            units = units.Where( u => u.Name.Substring( u.Name.Length - 3) != "CES").ToList();
             ViewData["fy"] = fy;
             return View(units);
         }

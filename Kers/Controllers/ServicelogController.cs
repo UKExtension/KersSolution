@@ -337,19 +337,26 @@ namespace Kers.Controllers
 
         [HttpDelete("byactivityid/{id}")]
         public IActionResult DeleteByActivityId( int id ){
-            var acEntity = context.Activity.Where(a => a.Id == id).
+            var entity = context.ActivityRevision.Find(id);
+            /* var acEntity = context.Activity.Where(a => a.Id == id).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionSelections).
                                 Include(e=>e.Revisions).ThenInclude(r => r.ActivityOptionNumbers).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).
                                 FirstOrDefault();
-            
-            if(acEntity != null){
-                acEntity.LastRevision = null;
-                context.SaveChanges();
-                context.Activity.Remove(acEntity);
-                context.SaveChanges();
-                
+             */
+            if(entity != null){
+
+                    var activityId = entity.ActivityId;
+                    context.RemoveRange(context.ActivityRevision
+                                            .Where(r => r.ActivityId == activityId)
+                                            .Include(r => r.ActivityOptionSelections)
+                                            .Include(r => r.ActivityOptionNumbers)
+                                            .Include(r => r.RaceEthnicityValues)
+                                            );
+                    context.SaveChanges();
+                    context.Remove( context.Activity.Find(activityId));
+                    context.SaveChanges();
                 this.Log(acEntity,"ActivityRevision", "Activity Removed.");
 
                 return new OkResult();

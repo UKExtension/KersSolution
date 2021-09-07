@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SoilReportBundle } from '../soildata.report';
+import { SoilReportBundle, SoilReportStatus } from '../soildata.report';
 import { saveAs } from 'file-saver';
 import { SoildataService } from '../soildata.service';
 import { UserService, User } from '../../user/user.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: '[soildata-reports-catalog-details]',
@@ -11,7 +12,18 @@ import { UserService, User } from '../../user/user.service';
     <td *ngIf="default">{{report.typeForm.code}}</td>
     <td *ngIf="default">{{report.coSamnum}}</td>
     <td *ngIf="default">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
-    <td *ngIf="default" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">{{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }}</td>
+    <td *ngIf="default" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
+      <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
+        {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-chevron-down"></i>
+      </a>
+      <div *ngIf="statusChangeClicked" style="position:absolute;">
+        <table class="table">
+          <tbody>
+            <tr *ngFor="let st of $statuses | async">{{st.name}}</tr>
+          </tbody>
+        </table>
+      </div>
+    </td>
     <td *ngIf="default" class="text-right">
       <a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil"></i> review</a>
       <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a>
@@ -47,6 +59,8 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   edit = false;
   pdfLoading = false;
   user:User;
+  statusChangeClicked = false;
+  $statuses:Observable<SoilReportStatus[]>;
 
   constructor(
     private service:SoildataService,
@@ -56,7 +70,8 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   ngOnInit() {
     this.userService.current().subscribe(
       res => this.user = res
-    )
+    );
+    this.$statuses = this.service.reportStatuses();
   }
 
   defaultView(){

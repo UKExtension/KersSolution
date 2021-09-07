@@ -91,13 +91,11 @@ namespace Kers.Controllers.Reports
             if (!string.IsNullOrEmpty(cached)){
                 counties = JsonConvert.DeserializeObject<List<PlanningUnit>>(cached);
             }else{
-            
-            
                 counties = await this.context.PlanningUnit.
-                                Where(c=>c.District != null && c.Name.Substring(c.Name.Count() - 3) == "CES").
+                                Where(c=>c.District != null).
                                 OrderBy(c => c.Name).ToListAsync();
                 
-
+                counties = counties.Where( c => c.Name.Substring(c.Name.Count() - 3) == "CES" ).ToList();
                 var serializedCounties = JsonConvert.SerializeObject(counties);
                 _cache.SetString(cacheKey, serializedCounties, new DistributedCacheEntryOptions
                         {
