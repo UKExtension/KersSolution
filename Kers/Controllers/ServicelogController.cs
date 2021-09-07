@@ -357,7 +357,7 @@ namespace Kers.Controllers
                     context.SaveChanges();
                     context.Remove( context.Activity.Find(activityId));
                     context.SaveChanges();
-                this.Log(acEntity,"ActivityRevision", "Activity Removed.");
+                this.Log(entity,"ActivityRevision", "Activity Removed.");
 
                 return new OkResult();
             }else{

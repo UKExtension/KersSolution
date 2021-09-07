@@ -81,8 +81,8 @@ namespace Kers.Controllers.Reports
         [Route("redirect/{code}", Name="RedirectCountyEvents")]
         public ActionResult RedirectCountyEvents(string code)
         {
-            var unit = this.context.PlanningUnit.ToList();
-            unit = unit.Where( u => u.Code.Substring(2) == code).FirstOrDefault();
+            var units = this.context.PlanningUnit.ToList();
+            var unit = units.Where( u => u.Code.Substring(2) == code).FirstOrDefault();
             if( unit == null ) return RedirectToAction("CountyEvents", "Events");
             return RedirectToAction("CountyEvents", "Events", new {id = unit.Id});
         }
