@@ -137,7 +137,15 @@ export class SoildataService {
         var url = this.baseUrl + "reportstatus";
         return this.http.get<SoilReportStatus[]>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('SoilReportStatus', []))
+                catchError(this.handleError('SoilReportStatuses', []))
+            );
+      }
+
+      changestatus(statusId:number, bundleId:number):Observable<SoilReportStatus>{
+          var url = this.baseUrl + 'changestatus/'+ bundleId + '/' + statusId;
+          return this.http.get<SoilReportStatus>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('SoilReportStatusUpdate', <SoilReportStatus>{}))
             );
       }
 

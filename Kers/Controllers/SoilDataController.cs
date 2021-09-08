@@ -296,6 +296,29 @@ namespace Kers.Controllers
         }
 
 
+        [HttpGet("changestatus/{bundleId}/{statusId}")]
+        [Authorize]
+        public IActionResult ChangeStatus( int bundleId, int statusId){
+            var report = _soilDataContext.SoilReportBundle
+                            .Where( b => b.Id == bundleId)
+                                .Include( b => b.LastStatus)
+                            .FirstOrDefault();
+            var status = _soilDataContext.SoilReportStatus.Where( s => s.Id == statusId).FirstOrDefault();
+            if(report != null && status != null ){
+
+                report.LastStatus.SoilReportStatus = status;
+                _soilDataContext.SaveChanges();
+                this.Log(report,"SoilReport", "SoilReport status Updated.");
+                return new OkObjectResult(status);
+            }else{
+                this.Log( bundleId ,"SoilReport", "Not Found SoilReport or missing note in an update report status attempt.", "SoilReport", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+
         [HttpPost("addaddress")]
         [Authorize]
         public IActionResult AddAddress( [FromBody] FarmerAddress address){
