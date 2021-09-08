@@ -124,6 +124,10 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.onRefresh();
   }
 
+  statusChanged(){
+    this.onRefresh();
+  }
+
   onSearch(event){
     this.criteria["search"] = event.target.value;
     this.onRefresh();

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SoilReportBundle, SoilReportStatus } from '../soildata.report';
 import { saveAs } from 'file-saver';
 import { SoildataService } from '../soildata.service';
@@ -13,16 +13,21 @@ import { Observable } from 'rxjs';
     <td *ngIf="default">{{report.coSamnum}}</td>
     <td *ngIf="default">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
     <td *ngIf="default" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
-      <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
-        {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-chevron-down"></i>
-      </a>
-      <div *ngIf="statusChangeClicked" style="position:absolute;">
-        <table class="table">
-          <tbody>
-            <tr *ngFor="let st of $statuses | async">{{st.name}}</tr>
-          </tbody>
-        </table>
+      <div *ngIf="!statusLoading">
+        <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
+          {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-chevron-down"></i>
+        </a>
+        <div *ngIf="statusChangeClicked" style="position:absolute;">
+          <table class="table status-choice">
+            <tbody>
+              <tr *ngFor="let st of $statuses | async">
+                <td><a style="cursor:pointer;" (click)="changeStatusTo(st.id)">{{st.name}}</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+      <loading *ngIf="statusLoading" [type]="bars"></loading>
     </td>
     <td *ngIf="default" class="text-right">
       <a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil"></i> review</a>
@@ -49,15 +54,24 @@ import { Observable } from 'rxjs';
   .soil-report-status-archived{
     background-color: #e5e5e5;
   }
-
+  .status-choice{
+    background-color: #eee;
+    border: 1px solid #ccc;
+  }
+  .status-choice td{
+    padding: 5px 10px;
+  }
   `]
 })
 export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Input('soildata-reports-catalog-details') report: SoilReportBundle;
 
+  @Output() onStatusChange = new EventEmitter<SoilReportStatus>();
+
   default = true;
   edit = false;
   pdfLoading = false;
+  statusLoading = false;
   user:User;
   statusChangeClicked = false;
   $statuses:Observable<SoilReportStatus[]>;
@@ -93,6 +107,14 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
             this.pdfLoading = false;
         },
         err => console.error(err)
+    )
+  }
+  changeStatusTo(id:number){
+    this.service.changestatus(id, this.report.id).subscribe(
+      res => {
+        this.report.lastStatus.soilReportStatus = res;
+        this.onStatusChange.emit(res);
+      }
     )
   }
 
