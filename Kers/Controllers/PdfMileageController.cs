@@ -114,15 +114,15 @@ namespace Kers.Controllers
 							var numMileages = dataObjext.mileageColumnsCount;
 							var runningX = verticalLines[ verticalLines.Length - numMileages];
 							if(dataObjext.CountyColumnPresent){
-								pdfCanvas.DrawText(dataObjext.countyMileage.ToString(), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
+								pdfCanvas.DrawText(dataObjext.countyMileage.ToString("0.00"), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(9.0f, 1, 0xFF000000, SKTextAlign.Right));
 								runningX += dataObjext.mileageColumnPixelLength;
 							}
 							if(dataObjext.ProfImprvmntColumnPresent){
-								pdfCanvas.DrawText(dataObjext.profImprvMileage.ToString(), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
+								pdfCanvas.DrawText(dataObjext.profImprvMileage.ToString("0.00"), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(9.0f, 1, 0xFF000000, SKTextAlign.Right));
 								runningX += dataObjext.mileageColumnPixelLength;
 							}
 							if(dataObjext.UKColumnPresent){
-								pdfCanvas.DrawText(dataObjext.UKMileage.ToString(), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
+								pdfCanvas.DrawText(dataObjext.UKMileage.ToString("0.00"), runningX + dataObjext.mileageColumnPixelLength - 8, runningY + 15, getPaint(9.0f, 1, 0xFF000000, SKTextAlign.Right));
 							}
 
 
