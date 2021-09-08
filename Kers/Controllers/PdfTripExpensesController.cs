@@ -213,7 +213,7 @@ namespace Kers.Controllers
             }
 			if(total != 0){
 				pdfCanvas.DrawText( totalText + " ", x + 4, y + 13, getPaint(10.0f, 1));
-				pdfCanvas.DrawText(Math.Round(total, 2).ToString(), x + 742, y + 13, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
+				pdfCanvas.DrawText(Math.Round(total, 2).ToString("0.00"), x + 742, y + 13, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Right));
 			}
             return i;
         }
