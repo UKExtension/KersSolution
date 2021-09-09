@@ -307,12 +307,14 @@ namespace Kers.Controllers
             if(entity != null){
 
                     var activityId = entity.ActivityId;
-                    context.RemoveRange(context.ActivityRevision
+                    var toRemove = context.ActivityRevision
                                             .Where(r => r.ActivityId == activityId)
                                             .Include(r => r.ActivityOptionSelections)
                                             .Include(r => r.ActivityOptionNumbers)
                                             .Include(r => r.RaceEthnicityValues)
-                                            );
+                                            .AsSplitQuery()
+                                            .ToList();
+                    context.RemoveRange(  toRemove  );
                     context.SaveChanges();
                     context.Remove( context.Activity.Find(activityId));
                     context.SaveChanges();
@@ -348,12 +350,17 @@ namespace Kers.Controllers
             if(entity != null){
 
                     var activityId = entity.ActivityId;
-                    context.RemoveRange(context.ActivityRevision
+
+
+                    var toRemove = context.ActivityRevision
                                             .Where(r => r.ActivityId == activityId)
                                             .Include(r => r.ActivityOptionSelections)
                                             .Include(r => r.ActivityOptionNumbers)
                                             .Include(r => r.RaceEthnicityValues)
-                                            );
+                                            .AsSplitQuery()
+                                            .ToList();
+
+                    context.RemoveRange(  toRemove );
                     context.SaveChanges();
                     context.Remove( context.Activity.Find(activityId));
                     context.SaveChanges();
