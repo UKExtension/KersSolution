@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
     <td *ngIf="default" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
       <div *ngIf="!statusLoading">
         <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
-          {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-chevron-down"></i>
+          {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-angle-down"></i>
         </a>
         <div *ngIf="statusChangeClicked" style="position:absolute;">
           <table class="table status-choice">
@@ -55,11 +55,15 @@ import { Observable } from 'rxjs';
     background-color: #e5e5e5;
   }
   .status-choice{
-    background-color: #eee;
-    border: 1px solid #ccc;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    margin-top: 5px;
   }
   .status-choice td{
-    padding: 5px 10px;
+    padding: 10px 15px;
+    border: 0;
   }
   `]
 })
