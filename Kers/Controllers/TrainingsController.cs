@@ -557,18 +557,22 @@ namespace Kers.Controllers
 
         [HttpGet("userswithtrainings/{year}")]
         public async Task<IActionResult> UsersWithTrainings(int year){
-            var users = await context
+            
+            var filteredEnfollment = await context
                                 .TrainingEnrollment
                                 .Where( t => t.Training.Start.Year == year && t.Training.tStatus=="A")
-                                .GroupBy( e => e.Attendie)
-                                .Select( s => s.Key)
                                 .ToListAsync();
+            
+            var users = filteredEnfollment
+                                .GroupBy( e => e.AttendieId)
+                                .Select( s => s.Key)
+                                .ToList();
             var fullUsers = new List<KersUser>();
             foreach( var user in users){
                 var fullUser = await context.KersUser
-                                    .Where( u => u.Id == user.Id)
-                                    .Include( u => u.PersonalProfile)
-                                    .FirstOrDefaultAsync();
+                                .Where( u => u.Id == user)
+                                .Include( u => u.PersonalProfile)
+                                .FirstOrDefaultAsync();
                 if( fullUser != null ) fullUsers.Add(fullUser);
             }
             return new OkObjectResult(fullUsers.OrderBy( u => u.PersonalProfile.FirstName));

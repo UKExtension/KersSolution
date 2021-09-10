@@ -30,7 +30,9 @@
             <th>Evaluation</th>
         </tr>
     </thead>
-    <tr *ngFor="let training of trainings" [user]="user" [training-transcript-detail]="training"></tr>
+    <tbody>
+      <tr *ngFor="let training of trainings" [user]="user" [training-transcript-detail]="training"></tr>
+    </tbody>
     <tfoot *ngIf="totalHours != null">
       <tr>
         <td>
