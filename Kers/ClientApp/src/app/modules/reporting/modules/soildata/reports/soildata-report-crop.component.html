@@ -68,6 +68,10 @@
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="noteForm">
+        <div *ngIf="crop.limeComment != undefined && crop.limeComment != ''" class="crop-comment col-xs-12">
+          <h2>Soil pH Recommendation</h2>
+          {{crop.limeComment}}<br><br><br>
+        </div>
         <div class="col-sm-8 col-md-9">
             <h2>Agent Note</h2>
         </div>
@@ -111,10 +115,7 @@
           <div *ngIf="crop.comment7 != undefined && crop.comment7 != ''" class="crop-comment">
             {{crop.comment7}}
           </div>
-          <div *ngIf="crop.limeComment != undefined && crop.limeComment != ''" class="crop-comment">
-            <h2>Soil pH Recommendation</h2>
-            {{crop.limeComment}}
-          </div><br>
+          <br>
 
 
         </div>
