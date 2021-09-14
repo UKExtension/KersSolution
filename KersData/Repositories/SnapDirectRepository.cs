@@ -974,9 +974,9 @@ namespace Kers.Models.Repositories
                                             }
                                         ).ToList();
                                         
-
-                var commitmentst = context.SnapEd_Commitment
-                                        .Where( c => c.FiscalYear == fiscalYear)
+                var filteredCommitments = context.SnapEd_Commitment
+                                        .Where( c => c.FiscalYear == fiscalYear).ToList();
+                var commitmentst = filteredCommitments
                                         .GroupBy( c => c.KersUser)
                                         .Select( c => c.Key);
                 
@@ -994,7 +994,7 @@ namespace Kers.Models.Repositories
                     }
                 }
 
-                byUser = byUser.OrderBy(d => d.User.RprtngProfile.PlanningUnit.DistrictId)
+                byUser = byUser.OrderBy(d => d.User.RprtngProfile.PlanningUnit.DistrictId??0)
                                 .ThenBy( d => d.User.RprtngProfile.PlanningUnit.Name)
                                 .ThenBy( d => d.User.RprtngProfile.Name).ToList();
 
