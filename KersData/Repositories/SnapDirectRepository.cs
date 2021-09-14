@@ -975,7 +975,9 @@ namespace Kers.Models.Repositories
                                         ).ToList();
                                         
                 var filteredCommitments = context.SnapEd_Commitment
-                                        .Where( c => c.FiscalYear == fiscalYear).ToList();
+                                        .Where( c => c.FiscalYear == fiscalYear)
+                                        .Include( c => c.KersUser)
+                                        .ToList();
                 var commitmentst = filteredCommitments
                                         .GroupBy( c => c.KersUser)
                                         .Select( c => c.Key);
