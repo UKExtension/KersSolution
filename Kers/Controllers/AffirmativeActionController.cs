@@ -97,9 +97,10 @@ namespace Kers.Controllers
                 FiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == FiscalYearType.ServiceLog ).FirstOrDefault();
             }
             var plansPerFiscalYear = this.context.AffirmativeActionPlan
-                                            .Where(p => p.FiscalYearId == FiscalYear.Id && p.PlanningUnit.Name.Substring(p.PlanningUnit.Name.Count() - 3) == "CES")
+                                            .Where(p => p.FiscalYearId == FiscalYear.Id)
                                             .Include( a => a.PlanningUnit).ThenInclude( u => u.ExtensionArea)
                                             .Include( a => a.Revisions ).ToList();
+            plansPerFiscalYear = plansPerFiscalYear.Where( p => p.PlanningUnit.Name.Substring(p.PlanningUnit.Name.Count() - 3) == "CES").ToList();
             if(id != 0){
                 if(type == "area"){
                     // Find the area
@@ -161,18 +162,19 @@ namespace Kers.Controllers
                     if( area != null ){
                         var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
                         var pairing = AreaController.FindContainingPair( area.Name );
-                        counties = context.PlanningUnit.Where( c => pairing.Contains(c.ExtensionArea.Name) && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                        counties = context.PlanningUnit.Where( c => pairing.Contains(c.ExtensionArea.Name) ).ToList();
                     }
                     
 
                 }else if( type == "region"){
-                    counties = context.PlanningUnit.Where( c => c.ExtensionArea.ExtensionRegionId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                    counties = context.PlanningUnit.Where( c => c.ExtensionArea.ExtensionRegionId == id ).ToList();
                 }else{
-                    counties = context.PlanningUnit.Where( c => c.DistrictId == id && c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                    counties = context.PlanningUnit.Where( c => c.DistrictId == id ).ToList();
                 }
             }else{
-                counties = context.PlanningUnit.Where( u => u.District != null && u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
+                counties = context.PlanningUnit.Where( u => u.District != null ).ToList();
             }
+            counties = counties.Where(u => u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
 
             var countiesWithoutPlan = new List<PlanningUnit>();
 
