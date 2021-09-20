@@ -1628,6 +1628,7 @@ namespace Kers.Models.Repositories
                                     .Include( a => a.LastRevision)
                                     .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.ExtensionArea)
                                     .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( r => r.Institution )
+                                    .AsSplitQuery()
                                     .ToListAsync();
                 ActivityData = ActivityData.Select(x => { x.KersUser.RprtngProfile.PlanningUnit.GeoFeature = null; return x; }).ToList();
                 var cacheEntryOptions = new MemoryCacheEntryOptions()

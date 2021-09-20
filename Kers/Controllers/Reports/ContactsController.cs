@@ -793,7 +793,7 @@ namespace Kers.Controllers.Reports
         [Route("[action]")]
         public async Task<IActionResult> Person()
         {
-            FiscalYear fiscalYear = GetFYByName("2020");
+            FiscalYear fiscalYear = GetFYByName("2021");
             ViewData["fy"] = fiscalYear.Name;
             //Get All Data for the fy by employee
             var result = contactRepo.GetActivitiesAndContactsAsync(fiscalYear.Start, fiscalYear.End,4);
@@ -819,6 +819,7 @@ namespace Kers.Controllers.Reports
                                                     .Include( u => u.Specialties )
                                                     .Include( u => u.PersonalProfile)
                                                     .Include( u => u.ExtensionPosition)
+                                                    .AsSplitQuery()
                                                     .FirstOrDefaultAsync();
                     userResult.Add(personGroup);
                 }
