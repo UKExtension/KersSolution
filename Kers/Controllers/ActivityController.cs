@@ -945,6 +945,7 @@ namespace Kers.Controllers
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).
+                                AsSplitQuery().
                                 OrderByDescending(a => a.ActivityDate);
             var revs = lastActivities.Select(a => a.LastRevision);
             /* if( lastActivities != null){
