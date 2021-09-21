@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 
 import { SharedModule } from '../../shared/shared.module';
 
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+
 import {ExpenseHomeComponent} from './expense-home.component';
 import {ExpenseFormComponent} from './expense-form.component';
 import {ExpenseListComponent} from './expense-list.component';
@@ -31,6 +33,7 @@ import { VehicleRegionComponent } from './vehicle/vehicle-region.component';
 
 @NgModule({
   imports:      [ SharedModule,
+                  AngularMyDatePickerModule,
                   PlanningunitModule,
                   RouterModule.forChild([
                       {   path: '', 

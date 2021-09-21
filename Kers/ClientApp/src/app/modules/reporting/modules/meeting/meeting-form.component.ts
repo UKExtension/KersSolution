@@ -195,11 +195,6 @@ export class MeetingFormComponent implements OnInit {
         this.meetingForm.patchValue({
           end:{
             isRange: false, singleDate: {jsDate: end}
-            /* date:{
-              year: end.getFullYear(),
-              month: end.getMonth() + 1,
-              day: end.getDate()
-            } */
           }
         })
       }

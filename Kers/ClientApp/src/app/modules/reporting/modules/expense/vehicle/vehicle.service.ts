@@ -25,7 +25,7 @@ export class VehicleService {
   add(vehicle:Vehicle):Observable<Vehicle>{
     return this.http.post<Vehicle>(this.location.prepareExternalUrl(this.baseUrl), vehicle)
       .pipe(
-        catchError(this.handleError('byRevId', <Vehicle>{}))
+        catchError(this.handleError('add', <Vehicle>{}))
     );
   }
 
@@ -33,7 +33,7 @@ export class VehicleService {
     var url = this.baseUrl + id;
     return this.http.put<Vehicle>(this.location.prepareExternalUrl(url), vehicle)
       .pipe(
-        catchError(this.handleError('byRevId', vehicle))
+        catchError(this.handleError('update', vehicle))
     );
   }
 
