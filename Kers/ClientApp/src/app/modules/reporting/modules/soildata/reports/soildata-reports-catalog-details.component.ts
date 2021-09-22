@@ -37,7 +37,15 @@ import { Observable } from 'rxjs';
     </td>
     <td *ngIf="edit" colspan="6">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-6">
+        <loading [type]="'bars'" *ngIf="deleteLoading"></loading>
+          <a (click)="openDelete=!openDelete" *ngIf="!openDelete" style="cursor: pointer;"><i class="fa fa-ellipsis-v"></i></a>
+          <div *ngIf="openDelete&&!openConfirmDelete"><a (click)="openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Delete</a> | <a (click)="openDelete=!openDelete" style="cursor: pointer;">Cancel</a><br><br></div>
+          <div *ngIf="openConfirmDelete&&!deleteLoading">
+            <span class="blue">Do you really want to permanently delete this soil sample record?</span><br>
+            <a (click)="onDelete()" style="cursor: pointer;">Confirm Delete</a> | <a (click)="openDelete=!openDelete;openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Cancel</a><br><br> </div>
+        </div>
+        <div class="col-xs-6">
           <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
         </div>
       </div>
@@ -70,12 +78,15 @@ import { Observable } from 'rxjs';
 export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Input('soildata-reports-catalog-details') report: SoilReportBundle;
 
-  @Output() onStatusChange = new EventEmitter<SoilReportStatus>();
+  @Output() onStatusChange = new EventEmitter<SoilReportStatus | null>();
 
   default = true;
   edit = false;
   pdfLoading = false;
+  deleteLoading = false;
   statusLoading = false;
+  openDelete = false;
+  openConfirmDelete = false;
   user:User;
   statusChangeClicked = false;
   $statuses:Observable<SoilReportStatus[]>;
@@ -120,6 +131,9 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
         this.onStatusChange.emit(res);
       }
     )
+  }
+  onDelete(){
+    this.onStatusChange.emit(null);
   }
 
   email(){

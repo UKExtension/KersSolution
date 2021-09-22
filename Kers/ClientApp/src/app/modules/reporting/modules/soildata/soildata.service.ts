@@ -148,6 +148,13 @@ export class SoildataService {
                 catchError(this.handleError('SoilReportStatusUpdate', <SoilReportStatus>{}))
             );
       }
+      deleteReport( id:number ):Observable<{}>{
+        var url = this.baseUrl + "deletesample/" + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
+      }
 
       
 

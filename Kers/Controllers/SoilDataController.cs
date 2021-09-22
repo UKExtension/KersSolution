@@ -409,6 +409,22 @@ namespace Kers.Controllers
             }
         }
 
+       
+        [HttpDelete(" deletesample/{id}")]
+        public IActionResult DeleteSample( int id){
+            var bndle = _soilDataContext.SoilReportBundle.Find(id);
+
+            if(bndle != null){
+                
+                this._soilDataContext.Remove(bndle);
+                //_soilDataContext.SaveChanges();
+                
+                return new OkResult();
+            }else{
+                return new StatusCodeResult(500);
+            }
+        }
+
         [HttpPost("updateSignees/{countyId}")]
         [Authorize]
         public async Task<IActionResult> UpdateSignees( [FromBody] SigneesObject signees, int countyId = 0){
