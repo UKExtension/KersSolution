@@ -14,16 +14,18 @@ namespace Kers.Controllers
         KERScoreContext _context;
         KERSmainContext _mainContext;
         IKersUserRepository _userRepo;
-    
+        IWebHostEnvironment env;
 
         public FroalaApiController(
             KERScoreContext _context,
             KERSmainContext _mainContext,
-            IKersUserRepository _userRepo
+            IKersUserRepository _userRepo,
+            IWebHostEnvironment env
         ){
             this._context = _context;
             this._mainContext = _mainContext;
             this._userRepo = _userRepo;
+            this.env = env;
         }
 
 
@@ -39,7 +41,11 @@ namespace Kers.Controllers
                 var profile = hContext.Request.Form["profileId"];
                 var user = _context.KersUser.Find(Int32.Parse(profile));
                 var im = Kers.Services.FroalaWisiwyg.DatabaseImage.Upload(HttpContext, _context, user);
-                return Json(new { link = "fileuploads/" + im.UploadFile.Name, imageId = im.Id } );
+                var lnk = "fileuploads/";
+                if( env.IsProduction()){
+                    lnk = "/core/fileuploads/";
+                }
+                return Json(new { link = lnk + im.UploadFile.Name, imageId = im.Id } );
             }
             catch (Exception e)
             {
