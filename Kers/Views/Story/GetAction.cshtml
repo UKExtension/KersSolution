@@ -25,7 +25,7 @@
             <div class="fr-view">@Html.Raw(@Model.Story)</div>
         </environment>
         <environment names="Staging,Production">
-            <div class="fr-view">@Html.Raw(@Model.Story.Replace("fileuploads", "/core/fileuploads"))</div>
+            <div class="fr-view">@Html.Raw(@Model.Story.Replace("\"fileuploads", "\"/core/fileuploads"))</div>
         </environment>
         <br><br>
 <hr>

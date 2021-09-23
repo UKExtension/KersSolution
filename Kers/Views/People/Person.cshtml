@@ -136,7 +136,7 @@
         <div class="fr-view">
             @if(@Model.PersonalProfile.Bio != null )
             {
-                <p>@Html.Raw(@Model.PersonalProfile.Bio.Replace("fileuploads", "/core/fileuploads"))</p>
+                <p>@Html.Raw(@Model.PersonalProfile.Bio.Replace("\"fileuploads", "\"/core/fileuploads"))</p>
             }
         </div>
         @if(stories.Count > 0)

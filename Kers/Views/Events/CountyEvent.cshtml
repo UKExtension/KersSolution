@@ -78,7 +78,7 @@
             <div class="fr-view">@Html.Raw(@Model.Body)</div>
             </environment>
             <environment names="Staging,Production">
-                <div class="fr-view">@Html.Raw(@Model.Body.Replace("fileuploads", "/core/fileuploads"))</div>
+                <div class="fr-view">@Html.Raw(@Model.Body.Replace("\"fileuploads", "\"/core/fileuploads"))</div>
             </environment>
             @Html.Raw(
               Model.WebLink != null && Model.WebLink != ""
