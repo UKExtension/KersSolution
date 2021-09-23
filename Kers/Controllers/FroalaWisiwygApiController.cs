@@ -5,6 +5,8 @@ using System.Security.Claims;
 using Kers.Models.Entities.KERScore;
 using Kers.Models.Repositories;
 using Kers.Models.Abstract;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Kers.Controllers
 {
