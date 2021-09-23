@@ -133,7 +133,14 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     )
   }
   onDelete(){
-    this.onStatusChange.emit(null);
+    this.deleteLoading = true;
+    this.service.deleteReport(this.report.id).subscribe(
+      res => {
+        this.deleteLoading = false;
+        this.onStatusChange.emit(null);
+      }
+    )
+    
   }
 
   email(){

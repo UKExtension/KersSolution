@@ -410,14 +410,20 @@ namespace Kers.Controllers
         }
 
        
-        [HttpDelete(" deletesample/{id}")]
+        [HttpDelete("deletesample/{id}")]
         public IActionResult DeleteSample( int id){
             var bndle = _soilDataContext.SoilReportBundle.Find(id);
 
             if(bndle != null){
-                
+
+                var statusChange = this._soilDataContext.SoilReportStatusChange.Where( f => f.SoilReportBundleId == id).ToList();
+                this._soilDataContext.RemoveRange(statusChange);
+                _soilDataContext.SaveChanges();
+                var reports = this._soilDataContext.SoilReport.Where( r =>r.SoilReportBundleId == id).ToList();
+                this._soilDataContext.RemoveRange(reports);
+                _soilDataContext.SaveChanges();
                 this._soilDataContext.Remove(bndle);
-                //_soilDataContext.SaveChanges();
+                _soilDataContext.SaveChanges();
                 
                 return new OkResult();
             }else{
