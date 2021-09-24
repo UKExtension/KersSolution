@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import {Location} from '@angular/common';
 import {StoryService, Story} from '../story.service';
 import { User } from "../../user/user.service";
 
@@ -13,7 +14,7 @@ import { User } from "../../user/user.service";
                 <br><strong>Planning Unit:</strong> {{author.rprtngProfile.planningUnit.name}}
                 </p>
                 <p><strong>Major Program: </strong> {{story.majorProgram.name}}</p><br><br>
-                <div [innerHtml]="story.story | safeHtml" class="fr-view"></div>
+                <div [innerHtml]="story.story.replace('fileuploads', imagesPath) | safeHtml" class="fr-view"></div>
             </div>
         </div>
 
@@ -25,13 +26,16 @@ export class StoryDisplayComponent {
     @Input() story: Story;
     author:User;
     errorMessage: string;
+    imagesPath = "";
 
     constructor(  
+        private location:Location,
         private service: StoryService
     )   
     {}
 
     ngOnInit(){ 
+        this.imagesPath = this.location.prepareExternalUrl('fileuploads');
          this.service.author(this.story.id).subscribe(
              res => {
                 this.author = res;
