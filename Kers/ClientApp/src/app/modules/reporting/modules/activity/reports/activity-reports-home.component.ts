@@ -14,8 +14,7 @@ import { User } from "../../user/user.service";
             <activity-reports-year *ngFor="let year of years | async; let i = index" [year]="year" [index]="i" [user]="user"></activity-reports-year>
         
         </div><loading *ngIf="!(years | async)"></loading><br><br>
-        <div class="text-right" *ngIf="!user"><a class="btn btn-default btn-xs" href="https://kers.ca.uky.edu/kers_mobile/ReportActivityMain.aspx">Meetings/Activities Reports Archive</a></div>
-        `
+         `
 })
 export class ActivityReportsHomeComponent { 
 

@@ -18,7 +18,9 @@ import {AdminNavigationService} from './admin-navigation.service';
  </div>
     <div *ngIf="groups">
         <table class="table table-striped">
-            <tr *ngFor="let group of groups" [navigationGroupDetail]="group" (onGroupDeleted)="groupDeleted($event)" (onGroupUpdated)="groupUpdated($event)" ></tr>
+            <tbody>
+                <tr *ngFor="let group of groups" [navigationGroupDetail]="group" (onGroupDeleted)="groupDeleted($event)" (onGroupUpdated)="groupUpdated($event)" ></tr>
+            </tbody>
         </table>
     </div>
 

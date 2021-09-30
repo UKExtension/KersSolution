@@ -16,7 +16,9 @@ import {AdminNavigationService} from './admin-navigation.service';
  </div>
     <div *ngIf="sections">
         <table class="table table-striped">
-            <tr *ngFor="let section of sections" [navigationSectionDetail]="section" (onSectionDeleted)="sectionUpdated()" (onSectionUpdated)="sectionUpdated()" ></tr>
+            <tbody>
+                <tr *ngFor="let section of sections" [navigationSectionDetail]="section" (onSectionDeleted)="sectionUpdated()" (onSectionUpdated)="sectionUpdated()" ></tr>
+            </tbody>
         </table>
     </div>
 

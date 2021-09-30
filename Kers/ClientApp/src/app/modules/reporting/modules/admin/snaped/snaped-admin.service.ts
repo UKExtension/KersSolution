@@ -159,6 +159,17 @@ export class SnapedAdminService {
                 catchError(this.handleError('getCustom',<SnapSeearchResultsWithCount>{}))
             );
     }
+
+    getTimeTeaching(criteria:SnapedSearchCriteria):Observable<number[][]>{
+        var url = this.baseUrl + 'GetTimeTeaching/';
+        return this.http.post<number[][]>(this.location.prepareExternalUrl(url), criteria)
+            .pipe(
+                catchError(this.handleError('getCustom',<number[][]>{}))
+            );
+    }
+
+
+
     GetCustomDataHeader():Observable<string[]>{
         var url = this.baseUrl + 'GetCustomDataHeader/';
         return this.http.get<string[]>(this.location.prepareExternalUrl(url))

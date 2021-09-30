@@ -25,6 +25,8 @@ import { SnapedReportsComponent } from './snaped-reports.component';
 import { SnapedReportsDetailComponent } from './snaped-reports-detail.component';
 import { ActivityModule } from '../../activity/activity.module';
 import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { CustomReportsComponent } from './custom-reports.component';
+import { TimeTeachingComponent } from './time-teaching.component';
 
 
 
@@ -50,7 +52,9 @@ import { AngularMyDatePickerModule } from 'angular-mydatepicker';
                   SnapedBudgetHomeComponent,
                   SnapedDownloadButtonComponent,
                   SnapedReportsComponent,
-                  SnapedReportsDetailComponent
+                  SnapedReportsDetailComponent,
+                  CustomReportsComponent,
+                  TimeTeachingComponent
 
                 ],
   providers:    [  

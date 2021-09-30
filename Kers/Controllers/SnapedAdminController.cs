@@ -79,6 +79,52 @@ namespace Kers.Controllers
             return new OkObjectResult( activityRepo.ReportHeaderRow() );
         }
 
+
+
+        [HttpPost("GetTimeTeaching")]
+        [Authorize]
+        public async Task<IActionResult> GetTimeTeaching( [FromBody] SnapedSearchCriteria criteria
+                                        ){
+            
+            var result = this.context.Activity.AsNoTracking()
+                                .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End && a.LastRevision.SnapDirectId != null);
+            if( criteria.CongressionalDistrictId != null && criteria.CongressionalDistrictId != 0){
+                result = result.Where( a => a.PlanningUnit.CongressionalDistrictUnit.CongressionalDistrictId == criteria.CongressionalDistrictId);
+            }
+            if(criteria.RegionId != null && criteria.RegionId != 0){
+                result = result.Where( a => a.PlanningUnit.ExtensionArea.ExtensionRegionId == criteria.RegionId);
+            }
+            if(criteria.AreaId != null && criteria.AreaId != 0){
+                result = result.Where( a => a.PlanningUnit.ExtensionAreaId == criteria.AreaId);
+            }
+            if( criteria.UnitId != null && criteria.UnitId != 0){
+                result = result.Where( a => a.PlanningUnitId == criteria.UnitId);
+            }
+
+            var sessionTypes = await this.context.SnapDirectSessionType.Where( t => t.Active ).OrderBy(t => t.order).ToListAsync();
+            var sessionLengths = await this.context.SnapDirectSessionLength.Where( t => t.Active ).OrderBy(t => t.order).ToListAsync();
+
+
+            var tableData = new List<List<int>>();
+            foreach( var type in sessionTypes){
+                var row = new List<int>();
+                row.Add( await result.Where( a => a.LastRevision.SnapDirect.SnapDirectSessionTypeId == type.Id ).CountAsync() );
+                foreach( var length in sessionLengths){
+                    row.Add( await result.Where( a => a.LastRevision.SnapDirect.SnapDirectSessionTypeId == type.Id && a.LastRevision.SnapDirect.SnapDirectSessionLengthId == length.Id ).CountAsync() );
+                }
+                tableData.Add( row );
+            }
+
+            if( criteria.Skip == 0 ){
+                this.Log( criteria ,"SnapedSearchCriteria", "Time Teaching Snap-Ed Report Initiated", "SnapedSearchCriteria", "Info");
+                this.context.SaveChanges();
+            }
+            
+            return new OkObjectResult(tableData);
+        }
+
+
+
         [HttpPost("GetCustom")]
         [Authorize]
         public async Task<IActionResult> GetCustom( [FromBody] SnapedSearchCriteria criteria
