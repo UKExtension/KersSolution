@@ -14,7 +14,7 @@ import { User } from "../../user/user.service";
                 <br><strong>Planning Unit:</strong> {{author.rprtngProfile.planningUnit.name}}
                 </p>
                 <p><strong>Major Program: </strong> {{story.majorProgram.name}}</p><br><br>
-                <div [innerHtml]="story.story.replace('fileuploads', imagesPath) | safeHtml" class="fr-view"></div>
+                <div [innerHtml]="storyBody | safeHtml" class="fr-view"></div>
             </div>
         </div>
 
@@ -27,6 +27,7 @@ export class StoryDisplayComponent {
     author:User;
     errorMessage: string;
     imagesPath = "";
+    storyBody = "";
 
     constructor(  
         private location:Location,
@@ -36,6 +37,7 @@ export class StoryDisplayComponent {
 
     ngOnInit(){ 
         this.imagesPath = this.location.prepareExternalUrl('fileuploads');
+        this.storyBody = this.story.story.replace( '"fileuploads', '"'+this.imagesPath);
          this.service.author(this.story.id).subscribe(
              res => {
                 this.author = res;

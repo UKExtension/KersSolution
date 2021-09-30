@@ -103,7 +103,7 @@ import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount }
 
   <div class="table-responsive" *ngIf="revisions$ | async as revisions">
 
-    <table class="table">
+    <table class="table" *ngIf="!loading">
       <thead>
         <tr>
           <th>SNAP-Ed Sessions</th>
