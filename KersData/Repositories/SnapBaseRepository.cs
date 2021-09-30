@@ -33,10 +33,10 @@ namespace Kers.Models.Repositories
             this._memoryCache = _memoryCache;
         }
 
-        protected List<UserRevisionData> SnapData( FiscalYear fiscalYear){
+        protected List<UserRevisionData> SnapData( FiscalYear fiscalYear, bool refreshCache = false){
             List<UserRevisionData> SnapData;
             var cacheKeyData = CacheKeys.SnapData + fiscalYear.Name + fiscalYear.Type;
-            if (!_memoryCache.TryGetValue(cacheKeyData, out SnapData)){
+            if (!_memoryCache.TryGetValue(cacheKeyData, out SnapData) && refreshCache){
                 var today = DateTime.Now;            
                 var snapEligible = RevisionsWithSnapData(fiscalYear);
                 SnapData = new List<UserRevisionData>();
@@ -44,7 +44,7 @@ namespace Kers.Models.Repositories
                     var cacheKey = CacheKeys.UserRevisionWithSnapData + rev.Id.ToString();
                     var cacheString = _cache.GetString(cacheKey);
                     UserRevisionData data;
-                    if (!string.IsNullOrEmpty(cacheString)){
+                    if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
                         data = JsonConvert.DeserializeObject<UserRevisionData>(cacheString);
                     }else{
                         data = new UserRevisionData();

@@ -964,7 +964,7 @@ namespace Kers.Models.Repositories
 
                 result = string.Join(",", keys.ToArray()) + "\n";
 
-                var SnapData = this.SnapData( fiscalYear);
+                var SnapData = this.SnapData( fiscalYear, refreshCache);
 
 
                 var byUser = SnapData.GroupBy( s => s.User.Id).Select( 
