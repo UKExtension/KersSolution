@@ -38,7 +38,7 @@ namespace Kers.Models.Repositories
             var cacheKeyData = CacheKeys.SnapData + fiscalYear.Name + fiscalYear.Type;
             if (!_memoryCache.TryGetValue(cacheKeyData, out SnapData) && refreshCache){
                 var today = DateTime.Now;            
-                var snapEligible = RevisionsWithSnapData(fiscalYear);
+                var snapEligible = RevisionsWithSnapData(fiscalYear, refreshCache);
                 SnapData = new List<UserRevisionData>();
                 foreach( var rev in snapEligible ){
                     var cacheKey = CacheKeys.UserRevisionWithSnapData + rev.Id.ToString();
@@ -89,11 +89,11 @@ namespace Kers.Models.Repositories
             return SnapData;
         }
 
-        protected List<int> LastActivityRevisionIds( FiscalYear fiscalYear ){
+        protected List<int> LastActivityRevisionIds( FiscalYear fiscalYear, bool refreshCache = false ){
             var cacheKey = CacheKeys.ActivityLastRevisionIdsPerFiscalYear + fiscalYear.Name + fiscalYear.Type;
             var cacheString = _cache.GetString(cacheKey);
             List<int> ids;
-            if (!string.IsNullOrEmpty(cacheString)){
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
                 ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
             }else{
                 /* 
@@ -107,6 +107,8 @@ namespace Kers.Models.Repositories
                     ids.Add(last.Id);
                 }
                    */  
+                TimeSpan ts = new TimeSpan(23, 59, 59);
+                fiscalYear.End = fiscalYear.End.Date + ts;
                 ids = context.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End).
                     Select( a => a.LastRevisionId).ToList();                    
@@ -119,8 +121,8 @@ namespace Kers.Models.Repositories
             return ids;
         }
 
-        protected IEnumerable<ActivityRevision> RevisionsWithSnapData(FiscalYear fiscalYear){
-            var revs = LastActivityRevisionIds(fiscalYear);
+        protected IEnumerable<ActivityRevision> RevisionsWithSnapData(FiscalYear fiscalYear, bool refreshCache = false){
+            var revs = LastActivityRevisionIds(fiscalYear, refreshCache);
             // Divide revs into batches as SQL server is having trouble to process more then several thousands at once
             var fyactivities = new List<ActivityRevision>();
             var batchCount = 10000;
