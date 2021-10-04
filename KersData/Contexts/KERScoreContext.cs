@@ -130,6 +130,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<ActivityOptionNumberValue> ActivityOptionNumberValue {get;set;}
         public virtual DbSet<Activity> Activity {get;set;}
         public virtual DbSet<ActivityRevision> ActivityRevision {get;set;}
+        public virtual DbSet<ActivitySignUpEntry> ActivitySignUpEntry {get;set;}
 
         /***************************************/
         //  Snap Ed
