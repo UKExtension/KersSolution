@@ -38,12 +38,6 @@ import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount }
         <h2>Refine Search</h2>
       </div>
       <div class="form-group" >
-          <label class="control-label col-md-3 col-sm-3 col-xs-12">Name</label>
-          <div class="col-md-6 col-sm-6 col-xs-12">
-              <input class="form-control" name="contact" (keyup)="onSearch($event)" />
-          </div>
-      </div>
-      <div class="form-group" >
         <label class="control-label col-md-3 col-sm-3 col-xs-12">Congressional District</label>
         <div class="col-md-6 col-sm-6 col-xs-12">
           <select class="form-control" (change)="onCongressionalChange($event)" name="CongressionalDistrict">
@@ -79,22 +73,6 @@ import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount }
           </select>
         </div>
       </div>
-      <div class="form-group" >
-          <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-default" [class.active]="order=='dsc'">
-                  <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
-                  </label>
-                  <label class="btn btn-default" [class.active]="order=='asc'">
-                    <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
-                  </label>
-                  <label class="btn btn-default" [class.active]="order=='alph'">
-                      <input type="radio" name="type" id="option4" (click)="switchOrder('alph')"> Alphabetically
-                    </label>
-              </div>
-          </div>
-      </div>  
       
       
       
@@ -103,7 +81,7 @@ import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount }
 
   <div class="table-responsive" *ngIf="revisions$ | async as revisions">
 
-    <table class="table">
+    <table class="table" *ngIf="!loading">
       <thead>
         <tr>
           <th>SNAP-Ed Sessions</th>

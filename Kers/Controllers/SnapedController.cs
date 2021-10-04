@@ -196,17 +196,17 @@ namespace Kers.Controllers
         public IActionResult Userstats(int userId, string fy="0"){
 
             var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
-
-
+            TimeSpan ts = new TimeSpan(23, 59, 59);
+            fiscalYear.End = fiscalYear.End.Date + ts;
 
             var filteredActivities = context.Activity.
                                 Where( e=>
                                         e.KersUser.Id == userId 
                                         //&&  e.Revisions.OrderBy(r => r.Created).Last().isSnap 
                                         &&
-                                        e.ActivityDate < fiscalYear.End
+                                        e.ActivityDate <= fiscalYear.End
                                         &&
-                                        e.ActivityDate > fiscalYear.Start
+                                        e.ActivityDate >= fiscalYear.Start
                                 ).ToList();
 
 

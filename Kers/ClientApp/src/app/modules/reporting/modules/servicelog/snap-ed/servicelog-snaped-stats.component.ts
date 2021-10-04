@@ -54,6 +54,7 @@ export class ServicelogSnapedStatsComponent {
     }
 
     processStats(){
+      console.log( this.stats);
       for(let stat of this.stats){
         var direct = 0;
         var indirect = 0;
