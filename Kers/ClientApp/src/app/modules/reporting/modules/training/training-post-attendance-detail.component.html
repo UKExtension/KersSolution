@@ -73,13 +73,15 @@
               <th>Attended</th>
             </tr>
           </thead>
-          <tr *ngFor="let enrolled of enrolledFolks">
-            <td>{{enrolled.attendie.rprtngProfile.name}}</td>
-            <td>{{enrolled.attendie.rprtngProfile.planningUnit.name}}</td>
-            <td>{{enrolled.enrolledDate | date:'mediumDate'}}</td>
-            <td>{{enrolled.attendie.rprtngProfile.email}}</td>
-            <td><input type="checkbox" (change)="checked($event, enrolled)" [checked]="enrolled.attended"></td>
-          </tr>
+          <tbody>
+            <tr *ngFor="let enrolled of enrolledFolks">
+              <td>{{enrolled.attendie.rprtngProfile.name}}</td>
+              <td>{{enrolled.attendie.rprtngProfile.planningUnit.name}}</td>
+              <td>{{enrolled.enrolledDate | date:'mediumDate'}}</td>
+              <td>{{enrolled.attendie.rprtngProfile.email}}</td>
+              <td><input type="checkbox" (change)="checked($event, enrolled)" [checked]="enrolled.attended"></td>
+            </tr>
+          </tbody>
         </table>
         <a class="btn btn-info" (click)="submit()">Submit</a>
     </div>
