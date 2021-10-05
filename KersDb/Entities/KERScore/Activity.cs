@@ -26,5 +26,6 @@ namespace Kers.Models.Entities.KERScore
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
         public List<ActivityImage> ActivityImages {get;set;}
+        public List<ActivitySignUpEntry> ActivitySignUpEntrys {get;set;}
     }
 }
