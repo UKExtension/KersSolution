@@ -3,18 +3,13 @@
 
     ViewData["Title"] = "Sample";
 
-    var trainings = ViewData["trainings"] as List<Kers.Models.Entities.UKCAReporting.zInServiceTrainingCatalog>;
+    //var trainings = ViewData["trainings"] as List<Kers.Models.Entities.UKCAReporting.zInServiceTrainingCatalog>;
 
 }
 
 
 <table class="table table-striped">
                     <tbody>
-                        @foreach( var training in trainings)
-                        {
-                        <tr>
-                            <td>@training.tTitle</td>
-                        </tr>
-                        }
+                       
                     </tbody>
                   </table>
