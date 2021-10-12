@@ -939,16 +939,30 @@ namespace Kers.Controllers
                 userid = this.CurrentUser().Id;
             }
             end = end.AddDays(1);
-            var lastActivities = context.Activity.
-                                Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.MajorProgram).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).
-                                AsSplitQuery().
+            var lastActivities = context.Activity
+                                .Where(a=>a.KersUser.Id == userid & a.ActivityDate > start & a.ActivityDate < end)
+                                .Select( a => a.LastRevisionId).ToList();
+            var revs = new List<ActivityRevision>();
+            foreach( var RevId in lastActivities){
+                var rev = context.ActivityRevision.Where( r => r.Id == RevId).
+                                Include(r => r.MajorProgram).
+                                Include(r => r.ActivityOptionSelections).ThenInclude(s => s.ActivityOption).
+                                Include(r => r.ActivityOptionNumbers).ThenInclude(s => s.ActivityOptionNumber).
+                                Include(r => r.RaceEthnicityValues).
+                                AsSplitQuery()
+                                .FirstOrDefault();
+                if( rev != null ) revs.Add(rev);
+
+            }
+            
+                                
+                                
+                                
+             /*                   
+                                .
                                 OrderByDescending(a => a.ActivityDate);
             var revs = lastActivities.Select(a => a.LastRevision);
-            /* if( lastActivities != null){
+             if( lastActivities != null){
                 foreach(var activity in lastActivities){
                     if(activity.Revisions.Count != 0){
                         revs.Add( activity.Revisions.OrderBy(r=>r.Created).Last() );

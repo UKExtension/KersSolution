@@ -534,7 +534,7 @@ namespace Kers.Models.Repositories
                 }
                 keys.Add("IndirectContacts");
                 result = string.Join(", ", keys.ToArray()) + "\n";
-                var SnapData = this.SnapData( fiscalYear);
+                var SnapData = this.SnapData( fiscalYear, refreshCache);
                 var byMonth = SnapData.GroupBy( s => new {
                                             Year = s.Revision.ActivityDate.Year,
                                             Month = s.Revision.ActivityDate.Month
