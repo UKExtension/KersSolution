@@ -10,6 +10,7 @@ import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectDeliver
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import {Location} from '@angular/common';
 import { UserService, User } from '../user/user.service';
+import { SignupService } from '../signup/signup.service';
 
 
 @Component({
@@ -34,7 +35,8 @@ export class ServicelogFormComponent implements OnInit{
 
     logLoading = true;
     activityForm = null;
-
+    hasAttendance:Observable<boolean>;
+    attendiesOpen = false;
     optionArray:ActivityOption[];
     races:Race[];
     ethnicities:Ethnicity[];
@@ -75,11 +77,20 @@ export class ServicelogFormComponent implements OnInit{
     isPastSnapFiscalYear = false;
     previousFiscalYear = 2019;
 
+    signupOpen = false;
+
     options:object;
     errorMessage:string;
 
     public cond = false;
     public condition = false;
+
+    isToday = (someDate:Date) => {
+        const today = new Date()
+        return someDate.getDate() == today.getDate() &&
+          someDate.getMonth() == today.getMonth() &&
+          someDate.getFullYear() == today.getFullYear()
+      }
 
     private myDatePickerOptions: IAngularMyDpOptions = {
         // other options...
@@ -95,6 +106,7 @@ export class ServicelogFormComponent implements OnInit{
         private fiscalYearService: FiscalyearService,
         private location: Location,
         private userService:UserService,
+        private signupService:SignupService
     )   
     {
           
@@ -108,6 +120,7 @@ export class ServicelogFormComponent implements OnInit{
         // Snap Indirect
 
         this.snapindirectreached = this.service.snapindirectreached();
+        
 
 
     }
@@ -144,6 +157,7 @@ export class ServicelogFormComponent implements OnInit{
         );
         if( this.activity != null){
             this.getFiscalYear(new Date(this.activity.activityDate));
+            this.hasAttendance = this.signupService.hasAttendance(this.activity.id);
         }else if( this.activityDate != null ){
             this.getFiscalYear( this.activityDate );
         }else{
@@ -687,6 +701,14 @@ date: {
                 this.hasIndirect = false;
             }
         }
+     }
+
+     displayAttendiesButton(){
+         var display = false;
+         if( this.activity != null){
+            display = this.isToday(this.activity.activityDate);
+         }
+         return display;
      }
 
 

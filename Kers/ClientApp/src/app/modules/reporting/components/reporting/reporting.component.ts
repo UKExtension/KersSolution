@@ -19,8 +19,8 @@ if (typeof window != 'undefined') {
 })
 export class ReportingComponent implements OnInit { 
     public navigation;
-    public ukLogoSrc;
-    public profilePicSrc;
+    public ukLogoSrc:string;
+    public profilePicSrc:string;
     profile:Profile;
     errorMessage: string;
     title: string;

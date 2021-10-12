@@ -25,6 +25,7 @@ import { SnapedAdminService } from '../admin/snaped/snaped-admin.service';
 import { ServicelogSnapedStatsRowComponent } from './snap-ed/servicelog-snaped-stats-row.component';
 import { ActivityModule } from '../activity/activity.module';
 import { SnapEdModule } from '../snap-ed/snap-ed.module';
+import { SignupModule } from '../signup/signup.module';
 
 
 
@@ -33,7 +34,8 @@ import { SnapEdModule } from '../snap-ed/snap-ed.module';
                   AngularMyDatePickerModule,
                   ServicelogRoutingModule,
                   ActivityModule,
-                  SnapEdModule
+                  SnapEdModule,
+                  SignupModule
                 ],
   declarations: [ 
                     ServicelogHomeComponent,
