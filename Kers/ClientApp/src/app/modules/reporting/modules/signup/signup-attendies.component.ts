@@ -18,11 +18,11 @@ import { saveAs } from 'file-saver';
     </div>
   </div>
   <div *ngIf="displayNewEntry">
-    <signup-form [activity]="activity" [dalayConfirm]="false" (Submit)="newEntry();"></signup-form>
+    <signup-form [activity]="activity" [dalayConfirm]="false" (Submit)="newEntry();" (Cancel)="displayNewEntry = false"></signup-form>
   </div>
   <table class="table">
     <tbody>
-      <tr *ngFor="let attendie of attendies$ | async" [signup-list-row]="attendie"></tr>
+      <tr *ngFor="let attendie of attendies$ | async" [signup-list-row]="attendie" (deleted)="newEntry()"></tr>
     </tbody>
   </table>
   `,

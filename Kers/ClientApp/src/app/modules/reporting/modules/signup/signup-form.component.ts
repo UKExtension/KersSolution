@@ -10,11 +10,11 @@ import { ActivitySignUpEntry, SignupService } from './signup.service';
   template: `
     
 <br><br>
-  <div *ngIf="confirmMessage" class="red text-center" style="width:100%;font-weight:bold;">
-   <br><br><br>
+  <div *ngIf="confirmMessage" class="green text-center" style="width:100%;font-weight:bold;">
+   <br><br><br><br><br>
    Your information is recorded. <br>
    Thanks for your submission.
-   <br><br>
+   <br><br><br><br><br><br>
   </div>
   <loading *ngIf="loading && !confirmMessage"></loading>
   <div class="row" *ngIf="!loading && !confirmMessage">
@@ -59,19 +59,20 @@ import { ActivitySignUpEntry, SignupService } from './signup.service';
               <label class="control-label col-md-2 col-sm-2 col-xs-12" for="gender">Gender: </label>
               <div class="col-md-9 col-sm-9 col-xs-12">
                 <label class="radio-inline">
-                  <input type="radio" name="gender" id="inlineRadio1" value="1" formControlName="gender"> Male
+                  <input type="radio" name="gender" id="gender-male" [value]="1" formControlName="gender"> Male
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="gender" id="inlineRadio2" value="2" formControlName="gender"> Female
+                  <input type="radio" name="gender" id="gender-female" [value]="2" formControlName="gender"> Female
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="gender" id="inlineRadio3" value="0" formControlName="gender"> Choose not to Identify
+                  <input type="radio" name="gender" id="gender-no" [value]="0" formControlName="gender"> Choose not to Identify
                 </label>
               </div>
           </div>
           <div class="ln_solid"></div>
           <div class="form-group">
               <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-2">
+                  <a class="btn btn-primary" *ngIf="!dalayConfirm" (click)="onCancel()">Cancel</a>
                   <button type="submit" [disabled]="signupForm.invalid"  class="btn btn-success">Submit</button>
               </div>
           </div>
@@ -86,8 +87,10 @@ import { ActivitySignUpEntry, SignupService } from './signup.service';
 export class SignupFormComponent implements OnInit {
 
   @Input() activity:Activity;
+  @Input() entry:ActivitySignUpEntry;
   @Input() dalayConfirm:boolean = true;
   @Output() Submit = new EventEmitter<ActivitySignUpEntry>();
+  @Output() Cancel = new EventEmitter<void>();
   races:Observable<Race[]>;
   ethnicities: Observable<Ethnicity[]>;
   loading = false;
@@ -115,33 +118,47 @@ export class SignupFormComponent implements OnInit {
   ngOnInit(): void {
     this.races = this.service.races();
     this.ethnicities = this.service.ethnicities();
+    if(this.entry != null){
+      this.signupForm.patchValue(this.entry);
+    }
   }
 
   onSubmit(){
     var val = <ActivitySignUpEntry>this.signupForm.value;
-    val.activityId = this.activity.id;
     this.loading = true;
-    this.signupservice.add( val ).subscribe(
-      res => {
-        this.signupForm.reset();
-        this.Submit.emit( res );
-        var thisClass = this;
-        this.confirmMessage = true;
-        if(this.dalayConfirm){
-          setTimeout(() => {
-            this.confirmMessage = false;
+    if(this.entry == undefined){
+      val.activityId = this.activity.id;
+      this.signupservice.add( val ).subscribe(
+        res => {
+          this.signupForm.reset();
+          this.Submit.emit( res );
+          this.confirmMessage = true;
+          if(this.dalayConfirm){
+            setTimeout(() => {
+              this.confirmMessage = false;
+              this.loading=false;
+            }, 2000);
+          }else{
             this.loading=false;
-          }, 2000);
-        }else{
+          }
+        }
+      )
+
+    }else{
+      this.signupservice.update( this.entry.id, val ).subscribe(
+        res => {
+          this.signupForm.reset();
+          this.Submit.emit( res );
           this.loading=false;
         }
-        
-        
-        
-        
-      }
-    )
+      );
+
+    }
     
+    
+  }
+  onCancel(){
+    this.Cancel.emit();
   }
 
 }

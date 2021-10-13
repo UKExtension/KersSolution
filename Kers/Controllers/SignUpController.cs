@@ -58,51 +58,12 @@ namespace Kers.Controllers
         public IActionResult Update( int id, [FromBody] ActivitySignUpEntry SignUp ){
             var entry = context.ActivitySignUpEntry.Find(id);
             if(entry != null && SignUp != null){
-
-/*
-                evnt.LastModifiedDateTime = DateTimeOffset.Now;
-                var starttime = this.DefaultTime;
-                evnt.IsAllDay = true;
-                var timezone = CntEvent.Etimezone ? " -04:00":" -05:00";
-                if(CntEvent.Starttime != null && CntEvent.Starttime != ""){
-                    starttime = CntEvent.Starttime+":00.1000000";
-                    evnt.IsAllDay = false;
-                    evnt.HasStartTime = true;
-                }else{
-                    evnt.HasEndTime = false;
-                }
-                evnt.Start = DateTimeOffset.Parse(CntEvent.Start.ToString("yyyy-MM-dd ") + starttime + timezone);
-                
-                if(CntEvent.End != null ){
-                    var endtime = this.DefaultTime;
-                    if(CntEvent.Endtime != ""){
-                        endtime = CntEvent.Endtime+":00.1000000";
-                        evnt.HasEndTime = true;
-                    }else{
-                        evnt.HasEndTime = false;
-                    }
-                    evnt.End = DateTimeOffset.Parse(CntEvent.End?.ToString("yyyy-MM-dd ") + endtime + timezone);
-                }else{
-                    evnt.End = null;
-                }
-                evnt.BodyPreview = evnt.Body = CntEvent.Body;
-                evnt.WebLink = CntEvent.WebLink;
-                evnt.Subject = CntEvent.Subject;
-                context.RemoveRange( evnt.ProgramCategories );
-                if(evnt.Location != null) context.Remove( evnt.Location );
-                evnt.Location = CntEvent.Location;
-                CntEvent.ExtensionEventImages.ForEach(s => s.Created = DateTime.Now);
-                if( evnt.ExtensionEventImages == null){
-                    evnt.ExtensionEventImages = CntEvent.ExtensionEventImages;
-                }else{
-                    evnt.ExtensionEventImages.AddRange(CntEvent.ExtensionEventImages);
-                }
-                evnt.Units = CntEvent.Units;
-                evnt.ProgramCategories = CntEvent.ProgramCategories;
-
-
-
-                */
+                entry.Name = SignUp.Name;
+                entry.Address = SignUp.Address;
+                entry.RaceId = SignUp.RaceId;
+                entry.Email = SignUp.Email;
+                entry.EthnicityId = SignUp.EthnicityId;
+                entry.Updated = DateTime.Now;
                 this.Log(entry,"ActivitySignUpEntry", "Activity Sign Up Entry Updated.", "ActivitySignUpEntry");
                 
                 return new OkObjectResult(entry);
@@ -112,33 +73,22 @@ namespace Kers.Controllers
             }     
         }
 
-        [HttpDelete("deletecountyevent/{id}")]
+        [HttpDelete("delete/{id}")]
         [Authorize]
         public IActionResult DeleteExtensionEvent( int id ){
             
             
-            var entity = context.CountyEvent.Where(c => c.Id == id)
-                            .Include( c => c.Units )
-                            .Include( c => c.Location)
-                            .Include( c => c.ExtensionEventImages)
-                            .FirstOrDefault();
-            if(entity != null){
-                this.context.RemoveRange( this.context.CountyEventProgramCategory.Where(c => c.CountyEventId == id));
-                foreach( var im in entity.ExtensionEventImages ){
-                    var imgs = this.context.UploadImage.Where( i => i.Id == im.UploadImageId).First();
-                    this.context.Remove( this.context.UploadFile.Where( f => f.Id == imgs.UploadFileId).First());
-                    this.context.Remove( imgs );
-                } 
-                this.context.RemoveRange( entity.ExtensionEventImages);
-                if( entity.Location != null ) context.Remove(entity.Location);
-                context.CountyEvent.Remove(entity);
-                context.SaveChanges();
+            var entry = context.ActivitySignUpEntry.Find(id);
+            if(entry != null){
+
+                context.ActivitySignUpEntry.Remove(entry);
+                //context.SaveChanges();
                 
-                this.Log(entity,"CountyEvent", "CountyEvent Removed.", "CountyEvent");
+                this.Log(entry,"ActivitySignUpEntry", "ActivitySignUpEntry Removed.", "ActivitySignUpEntry");
 
                 return new OkResult();
             }else{
-                this.Log( id ,"CountyEvent", "Not Found CountyEvent in a delete attempt.", "CountyEvent", "Error");
+                this.Log( id ,"ActivitySignUpEntry", "Not Found ActivitySignUpEntry in a delete attempt.", "ActivitySignUpEntry", "Error");
                 return new StatusCodeResult(500);
             }
         }

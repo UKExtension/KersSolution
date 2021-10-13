@@ -547,7 +547,7 @@ namespace Kers.Controllers
 		private void BottomNote(SKCanvas pdfCanvas){
 
 			SKRect bottomArrea = new SKRect(29,height - 45 , width - 29, height - 18);
-			var text = "Education programs of the Kentucky Cooperative Extension Service serve all people regardless of race, color, age, sex, religion, disability,\n or national origin. UNIVERSITY OF KENTUCKY, KENTUCKY STAE UNIVERSITY, U.S. DEPARTMENT\n OF AGRICULTURE AND KENTUCKY COUNTIES COOPERATING";
+			var text = "Education programs of the Kentucky Cooperative Extension Service serve all people regardless of race, color, age, sex, religion, disability,\n or national origin. UNIVERSITY OF KENTUCKY, KENTUCKY STATE UNIVERSITY, U.S. DEPARTMENT\n OF AGRICULTURE AND KENTUCKY COUNTIES COOPERATING";
 			this.DrawText(pdfCanvas, text, bottomArrea, getPaint(7.0f), "center");
 			
 		}
