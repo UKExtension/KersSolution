@@ -55,19 +55,11 @@ namespace Kers.Controllers
 
         [HttpPut("update/{id}")]
         [Authorize]
-        public IActionResult UpdateCountyEvent( int id, [FromBody] ActivitySignUpEntry SignUp ){
-           /* 
-            var evnt = context.CountyEvent.Where(a => a.Id == id)
-            
-                        .Include(a => a.Location)
-                        .Include( a => a.ProgramCategories)
-                        .Include( a => a.Units)
-                        .Include( a => a.ExtensionEventImages)
-                        .FirstOrDefault();
+        public IActionResult Update( int id, [FromBody] ActivitySignUpEntry SignUp ){
+            var entry = context.ActivitySignUpEntry.Find(id);
+            if(entry != null && SignUp != null){
 
-            if(CntEvent != null && evnt != null ){
-
-
+/*
                 evnt.LastModifiedDateTime = DateTimeOffset.Now;
                 var starttime = this.DefaultTime;
                 evnt.IsAllDay = true;
@@ -107,17 +99,17 @@ namespace Kers.Controllers
                 }
                 evnt.Units = CntEvent.Units;
                 evnt.ProgramCategories = CntEvent.ProgramCategories;
-                this.Log(CntEvent,"CountyEvent", "County Event Updated.", "CountyEvent");
+
+
+
+                */
+                this.Log(entry,"ActivitySignUpEntry", "Activity Sign Up Entry Updated.", "ActivitySignUpEntry");
                 
-                return new OkObjectResult(new CountyEventWithTime(evnt));
+                return new OkObjectResult(entry);
             }else{
-                this.Log( CntEvent ,"CountyEvent", "Not Found CountyEvent in an update attempt.", "CountyEvent", "Error");
+                this.Log( entry ,"ActivitySignUpEntry", "Not Found ActivitySignUpEntry in an update attempt.", "ActivitySignUpEntry", "Error");
                 return new StatusCodeResult(500);
-            }
-
-
-             */
-             return new OkObjectResult(null);
+            }     
         }
 
         [HttpDelete("deletecountyevent/{id}")]
