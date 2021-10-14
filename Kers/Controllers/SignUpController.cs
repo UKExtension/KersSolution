@@ -63,6 +63,7 @@ namespace Kers.Controllers
                 entry.RaceId = SignUp.RaceId;
                 entry.Email = SignUp.Email;
                 entry.EthnicityId = SignUp.EthnicityId;
+                entry.Gender = SignUp.Gender;
                 entry.Updated = DateTime.Now;
                 this.Log(entry,"ActivitySignUpEntry", "Activity Sign Up Entry Updated.", "ActivitySignUpEntry");
                 
