@@ -69,7 +69,7 @@ export class SignupAttendiesComponent implements OnInit {
 
   csvDownload(){
     this.loading = true;
-    this.service.csv( this.activity.id ).subscribe(
+    this.service.csv( this.activity.activityId ).subscribe(
         data => {
             if(data["size"] == undefined){
               var blob = new Blob(["An Error Occured"], {type: 'text/csv'});
