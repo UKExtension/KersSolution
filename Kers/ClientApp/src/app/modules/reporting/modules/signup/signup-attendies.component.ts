@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { Servicelog } from '../servicelog/servicelog.service';
 import { ActivitySignUpEntry, SignupService } from './signup.service';
 import { saveAs } from 'file-saver';
+import { FormGroup } from '@angular/forms';
+import { Activity } from '../activity/activity.service';
 
 @Component({
   selector: 'signup-attendies',
@@ -18,7 +20,7 @@ import { saveAs } from 'file-saver';
     </div>
   </div>
   <div *ngIf="displayNewEntry">
-    <signup-form [activity]="activity" [dalayConfirm]="false" (Submit)="newEntry();" (Cancel)="displayNewEntry = false"></signup-form>
+    <signup-form [activity]="activity" [dalayConfirm]="false" (Submit)="newEntry($event);" (Cancel)="displayNewEntry = false"></signup-form>
   </div>
   <table class="table">
     <tbody>
@@ -32,6 +34,7 @@ import { saveAs } from 'file-saver';
 export class SignupAttendiesComponent implements OnInit {
   attendies$:Observable<ActivitySignUpEntry[]>;
   @Input() activity:Servicelog = null;
+  @Input() activityForm:FormGroup;
   @Output() removed = new EventEmitter<ActivitySignUpEntry>();
   @Output() added = new EventEmitter<ActivitySignUpEntry>();
   @Output() edited = new EventEmitter<ActivitySignUpEntry>();
@@ -48,15 +51,20 @@ export class SignupAttendiesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.attendies$=this.service.attendedBy(this.activity.id);
+    this.attendies$=this.service.attendedBy(this.activity.activityId);
   }
   print(){
 
   }
 
-  newEntry(){
+  newEntry(event:ActivitySignUpEntry){
+    if(this.activityForm != undefined ){
+      if(event.ethnicityId != undefined && event.raceId != undefined && event.gender != undefined && event.gender != 0){
+        this.service.updateServiceLogForm(event,this.activityForm);
+      }
+    }
     this.displayNewEntry = false;
-    this.attendies$=this.service.attendedBy(this.activity.id);
+    this.attendies$=this.service.attendedBy(this.activity.activityId);
   }
 
   csvDownload(){

@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {Location} from '@angular/common';
 import { Servicelog } from '../servicelog/servicelog.service';
-import  { SignupService } from './signup.service'
+import  { ActivitySignUpEntry, SignupService } from './signup.service'
+import { FormArray, FormGroup } from '@angular/forms';
+import { RaceEthnicityValue } from '../activity/activity.service';
 
 @Component({
   selector: 'signup',
@@ -19,7 +21,13 @@ import  { SignupService } from './signup.service'
         <img src="{{logo}}" width="100%" style="margin: 5px"/>
       </div>
       <div class="col-lg-8 col-md-7 hidden-xs" style="padding: 2px 25px 25px;">
-      The purpose of this questionnaire/form is to gather race, ethnicity, and gender information about persons who apply and participate in this Extension/USDA program. The information you provide will not be used when reviewing any application or when determining whether you are eligible to participate in this program. This is a voluntary questionnaire. You are not required to give this information, but we hope you will because the information you give will be used to improve the operation of this program, to help Extension/USDA design additional opportunities for program participation, and to monitor enforcement of laws that require equal access to this program for eligible persons. If you have previously provided your contact information, you only need to note your race, gender and ethnicity on the form. Your information will be kept private to the extent permitted by law. Thank you for your response.
+      The purpose of this questionnaire/form is to gather race, ethnicity, and gender information about persons who apply and participate in this Extension/USDA program. 
+      The information you provide will not be used when reviewing any application or when determining whether you are eligible to participate in this program. 
+      This is a voluntary questionnaire. You are not required to give this information, 
+      but we hope you will because the information you give will be used to improve the operation of this program, 
+      to help Extension/USDA design additional opportunities for program participation, and to monitor enforcement of laws that require equal access to this program for eligible persons. 
+      If you have previously provided your contact information, you only need to note your race, gender and ethnicity on the form. 
+      Your information will be kept private to the extent permitted by law. Thank you for your response.
       </div>
     </div>
     <div class="row">
@@ -39,42 +47,22 @@ import  { SignupService } from './signup.service'
     </div>
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1">
-        <signup-form [activity]="activity"></signup-form>
+        <signup-form [activity]="activity" (Submit)="submitted($event)"></signup-form>
       </div>
     </div>
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1">
-      
       <br><br>
-      
-      
-      (Disclosure of address, email, race, gender And/or ethnicity is voluntary)
-        
-        
-        
+      (Disclosure of address, email, race, gender And/or ethnicity is voluntary)       
         <br><br>
-
-Educational programs of Kentucky Cooperative Extension serve all people regardless of economic or social starus and will not discriminate on the bases of race, color, ethnic origin, national origin, creed, religion, political belier, sex, sexual orientation, gender identity, gender expression, pregnancy, mrital status, genetic information, age, veteran status, or phisical or mental disability. University of Kentcucky, Kentucky State University, U.S. Department of Agriculture, and Kencucky Counties, Cooperating.
-
-
-
-
-
+Educational programs of Kentucky Cooperative Extension serve all people regardless of economic or social starus and will not discriminate on the bases of race, 
+color, ethnic origin, national origin, creed, religion, political belier, sex, sexual orientation, gender identity, gender expression, pregnancy, mrital status, 
+genetic information, age, veteran status, or phisical or mental disability. University of Kentcucky, Kentucky State University, 
+U.S. Department of Agriculture, and Kencucky Counties, Cooperating.
       </div>
     </div>
-
-
-    
-
-
-
-  
   </div>
-  
-
 </div>
-  
-  
   `,
   styles: [`
   .signup-form-overlay{
@@ -102,7 +90,7 @@ Educational programs of Kentucky Cooperative Extension serve all people regardle
 })
 export class SignupComponent implements OnInit {
   @Input() activity:Servicelog;
-  @Input() activityForm:any;
+  @Input() activityForm:FormGroup;
   @Output() onCancel = new EventEmitter<void>();
 
   logo:string;
@@ -115,10 +103,20 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
 
   closeOverlay(){
     this.onCancel.emit();
   }
+  submitted(event:ActivitySignUpEntry){
+    if(this.activityForm != undefined ){
+      if(event.ethnicityId != undefined && event.raceId != undefined && event.gender != undefined && event.gender != 0){
+        this.service.updateServiceLogForm(event,this.activityForm);
+      }
+    }
+  }
+
+  
 
 }

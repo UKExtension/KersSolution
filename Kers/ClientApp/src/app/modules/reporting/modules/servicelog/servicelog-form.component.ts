@@ -157,7 +157,7 @@ export class ServicelogFormComponent implements OnInit{
         );
         if( this.activity != null){
             this.getFiscalYear(new Date(this.activity.activityDate));
-            this.hasAttendance = this.signupService.hasAttendance(this.activity.id);
+            this.hasAttendance = this.signupService.hasAttendance(this.activity.activityId);
         }else if( this.activityDate != null ){
             this.getFiscalYear( this.activityDate );
         }else{

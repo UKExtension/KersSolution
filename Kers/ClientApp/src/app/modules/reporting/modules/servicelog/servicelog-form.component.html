@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>           
+            <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Description:<br><small style="font-weight: normal;">(Include Details, Location, etc.)</small></label>           
             <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!activityForm.controls.description.valid">
                 <textarea [froalaEditor]="options" name="description" formControlName="description" id="description" class="form-control col-xs-12"></textarea>
             </div>
@@ -317,7 +317,7 @@
             <div class="text-right">
                 <button class="btn btn-info btn-xs" (click)="attendiesOpen=!attendiesOpen;"><i class="fa fa-remove"></i></button>
             </div>
-            <signup-attendies [activity]="activity"></signup-attendies>
+            <signup-attendies [activity]="activity" [activityForm]="activityForm"></signup-attendies>
         </div>
             
         <div class="ln_solid"></div>

@@ -127,7 +127,7 @@ export class SignupFormComponent implements OnInit {
     var val = <ActivitySignUpEntry>this.signupForm.value;
     this.loading = true;
     if(this.entry == undefined){
-      val.activityId = this.activity.id;
+      val.activityId = this.activity.activityId;
       this.signupservice.add( val ).subscribe(
         res => {
           this.signupForm.reset();

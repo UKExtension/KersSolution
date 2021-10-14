@@ -4,7 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
-import { Ethnicity, Race } from '../activity/activity.service';
+import { Ethnicity, Race, RaceEthnicityValue } from '../activity/activity.service';
+import { FormArray, FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -74,6 +75,25 @@ export class SignupService {
             catchError(this.handleError('assistantReimbursments', <Blob>{}))
         );
     }
+
+    updateServiceLogForm(entry:ActivitySignUpEntry, form:FormGroup){
+    
+        var vals:RaceEthnicityValue[] = form.value.raceEthnicityValues;
+        var females = form.value.female + 0;
+        var theOne = vals.findIndex( v => v.raceId == entry.raceId && v.ethnicityId == entry.ethnicityId);
+        vals[theOne].amount++;
+        (<FormArray>form.get('raceEthnicityValues')).at(theOne).patchValue(vals[theOne]);
+    
+        if(entry.gender == 1){
+          if(females != form.get('female').value){
+            form.get(females).patchValue(females);
+          }
+        }else{
+          if(females == form.get('female').value){
+            form.get('female').patchValue(females+1);
+          }
+        }
+      }
 
 }
 
