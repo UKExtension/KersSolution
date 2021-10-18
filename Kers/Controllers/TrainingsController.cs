@@ -321,8 +321,10 @@ namespace Kers.Controllers
         }
         private async void CheckTheWaitingList(Training training){
             if(training.Enrollment.Where( a => a.eStatus == "W").Any()){
-                if( training.Enrollment.Count < training.seatLimit){
-                    var first = training.Enrollment.Where( a => a.eStatus == "W").OrderBy( a => a.enrolledDate).FirstOrDefault();
+                while( training.Enrollment.Where( a => a.eStatus == "W").Any() 
+                            && training.Enrollment.Where( a => a.eStatus == "E").Count() < training.seatLimit){
+                    var first = training.Enrollment.Where( a => a.eStatus == "W")
+                                .OrderBy( a => a.enrolledDate).FirstOrDefault();
                     first.eStatus = "E";
                     await context.SaveChangesAsync();
                     messageRepo.ScheduleTrainingMessage("TOENROLLED", training, first.Attendie);
@@ -394,7 +396,7 @@ namespace Kers.Controllers
         public IActionResult UpdateTraining( int id, [FromBody] TrainingWithTimezone training){
             var trn = context.Training.Where( t => t.Id == id)
                             .Include(t => t.submittedBy)
-                            .Include( t => t.Enrollment)
+                            .Include( t => t.Enrollment).ThenInclude( a => a.Attendie)
                             .Include( t => t.TrainingSession)
                             .FirstOrDefault();
             if(training != null && trn != null ){
@@ -434,6 +436,7 @@ namespace Kers.Controllers
                 if(isMovedToCatalog){
                     messageRepo.ScheduleTrainingMessage("PROPOSALCOMFIRMED",trn,trn.submittedBy);
                 }
+                CheckTheWaitingList(trn);
                 this.Log(trn,"Training", "Training Updated.");
                 return new OkObjectResult(this.ToTimezone(trn));
             }else{
