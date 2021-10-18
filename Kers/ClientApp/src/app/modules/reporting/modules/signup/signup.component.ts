@@ -34,7 +34,7 @@ import { RaceEthnicityValue } from '../activity/activity.service';
       <div class="col-xs-offset-1">
         <div class="row">
           <div class="col-sm-4 col-xs-11 col-xs-offset-1 col-sm-offset-0">
-            <strong>Meething:</strong><br>{{activity.title}}
+            <strong>Meeting:</strong><br>{{activity.title}}
           </div>
           <div class="col-sm-4 col-xs-11 col-xs-offset-1 col-sm-offset-0">
             <strong>Date:</strong><br>{{activity.activityDate | date:'fullDate'}}
@@ -53,12 +53,9 @@ import { RaceEthnicityValue } from '../activity/activity.service';
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1">
       <br><br>
-      (Disclosure of address, email, race, gender And/or ethnicity is voluntary)       
+      (Disclosure of address, email, race, gender and/or ethnicity is voluntary)       
         <br><br>
-Educational programs of Kentucky Cooperative Extension serve all people regardless of economic or social starus and will not discriminate on the bases of race, 
-color, ethnic origin, national origin, creed, religion, political belier, sex, sexual orientation, gender identity, gender expression, pregnancy, mrital status, 
-genetic information, age, veteran status, or phisical or mental disability. University of Kentcucky, Kentucky State University, 
-U.S. Department of Agriculture, and Kencucky Counties, Cooperating.
+        Educational programs of Kentucky Cooperative Extension serve all people regardless of economic or social status and will not discriminate on the basis of race, color, ethnic origin, national origin, creed, religion, political belief, sex, sexual orientation, gender identity, gender expression, pregnancy, marital status, genetic information, age, veteran status, or physical or mental disability. University of Kentucky, Kentucky State University, U.S. Department of Agriculture, and Kentucky Counties, Cooperating.
       </div>
     </div>
   </div>

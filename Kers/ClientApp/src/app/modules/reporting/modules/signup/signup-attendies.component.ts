@@ -4,7 +4,6 @@ import { Servicelog } from '../servicelog/servicelog.service';
 import { ActivitySignUpEntry, SignupService } from './signup.service';
 import { saveAs } from 'file-saver';
 import { FormGroup } from '@angular/forms';
-import { Activity } from '../activity/activity.service';
 
 @Component({
   selector: 'signup-attendies',
