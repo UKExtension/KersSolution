@@ -327,8 +327,8 @@
                 <button type="submit" [disabled]="activityForm.invalid"  class="btn btn-success">Submit</button>
             </div>
             <div class="col-md-5 col-sm-6 col-xs-12 text-right" *ngIf="activity != null">
-                <a class="btn btn-default" (click)="attendiesOpen=!attendiesOpen;" *ngIf="hasAttendance | async">Atendies</a>
-                <a class="btn btn-info" (click)="signupOpen=!signupOpen;" *ngIf="displayAttendiesButton()">Atendies Sign Up</a>
+                <a class="btn btn-default" (click)="attendiesOpen=!attendiesOpen;" *ngIf="hasAttendance | async">Attendees</a>
+                <a class="btn btn-info" (click)="signupOpen=!signupOpen;" *ngIf="displayAttendiesButton()">Attendees Sign Up</a>
             </div>
         </div>
     </form>
