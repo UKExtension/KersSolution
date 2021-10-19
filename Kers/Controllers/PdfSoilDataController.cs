@@ -502,12 +502,22 @@ namespace Kers.Controllers
 					PrintPageInfo(pdfCanvas, report);
 					currentYPosition = 29;
 				}
-				pdfCanvas.DrawText("Extension Agent Note:", 29, currentYPosition + 19, getPaint(9.0f, 1));
+				SKPaint agentLinePaint = new SKPaint
+											{
+												Style = SKPaintStyle.Stroke,
+												Color = SKColors.CadetBlue,
+												StrokeWidth = 3.5f
+											};
+				pdfCanvas.DrawLine(29,currentYPosition + 8, width - 29, currentYPosition + 8 , agentLinePaint);
+				currentYPosition += 5;
+				pdfCanvas.DrawText("Extension Agent Recommendation:", 29, currentYPosition + 19, getPaint(9.0f, 1));
 				currentYPosition += 20;
 				SKRect area = new SKRect(29,currentYPosition, width - 29, currentYPosition + lines.Count() * lineHeight);
 				
 				this.DrawText(pdfCanvas, report.AgentNote, area, paint);
 				currentYPosition += (lines.Count() * lineHeight);
+				pdfCanvas.DrawLine(29,currentYPosition + 8, width - 29, currentYPosition + 8 , agentLinePaint);
+				currentYPosition += 5;
 			}
 			return pdfCanvas;
 		}
