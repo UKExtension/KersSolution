@@ -336,8 +336,8 @@ namespace Kers.Controllers
 			var results = _soilContext.TestResults
 								.Where( r => r.PrimeIndex == report.Prime_Index)
 								.OrderBy( r => r.Order);
-			int[] tablePositionsX = {36, 126, 216, 316, 416, 516};
-			int[] verticalLinesX = {29, 121, 211, 311, 411, 511, width - 29};
+			int[] tablePositionsX = {36, 126, 186, 316, 416, 489};
+			int[] verticalLinesX = {29, 121, 181, 486, width - 29};
 			using (var paint = new SKPaint()
 					{
 						Color = SKColors.LightGray,
@@ -356,10 +356,11 @@ namespace Kers.Controllers
 			
 			pdfCanvas.DrawText("Determination", tablePositionsX[0], currentYPosition, getPaint(9.0f, 1));
 			pdfCanvas.DrawText("Result", tablePositionsX[1], currentYPosition, getPaint(9.0f, 1));
-			pdfCanvas.DrawText("Unit", tablePositionsX[2], currentYPosition, getPaint(9.0f, 1));
-			pdfCanvas.DrawText("Level", tablePositionsX[3], currentYPosition, getPaint(9.0f, 1));
-			pdfCanvas.DrawText("Recommendation", tablePositionsX[4], currentYPosition, getPaint(9.0f, 1));
-			pdfCanvas.DrawText("Test Method", tablePositionsX[5], currentYPosition, getPaint(9.0f, 1));
+			//pdfCanvas.DrawText("Unit", tablePositionsX[2], currentYPosition, getPaint(9.0f, 1));
+			pdfCanvas.DrawText(" V Low                 Low                  Med                  High                V High", 
+									tablePositionsX[2], currentYPosition, getPaint(9.0f, 1));
+			pdfCanvas.DrawText("Recommendation", tablePositionsX[5], currentYPosition, getPaint(9.0f, 1));
+			//pdfCanvas.DrawText("Test Method", tablePositionsX[5], currentYPosition, getPaint(9.0f, 1));
 			currentYPosition += 7;
 			pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
 			foreach( var result in results){
@@ -374,11 +375,91 @@ namespace Kers.Controllers
 			}
 			currentYPosition += 12;	
 			pdfCanvas.DrawText(result.TestName??"", tablePositionsX[0], currentYPosition, getPaint(8.0f, 2));
-			pdfCanvas.DrawText(result.Result??"", tablePositionsX[1], currentYPosition, getPaint(8.0f, 2));
-			pdfCanvas.DrawText(result.Unit??"", tablePositionsX[2], currentYPosition, getPaint(8.0f, 2));
-			pdfCanvas.DrawText(result.Level??"", tablePositionsX[3], currentYPosition, getPaint(8.0f, 2));
-			pdfCanvas.DrawText(result.Recommmendation??"", tablePositionsX[4], currentYPosition, getPaint(8.0f, 2));
-			pdfCanvas.DrawText(result.SuppInfo1??"", tablePositionsX[5], currentYPosition, getPaint(8.0f, 2));
+			pdfCanvas.DrawText((result.Result??"") + " " + (result.Unit??""), tablePositionsX[1], currentYPosition, getPaint(8.0f, 2));
+			//pdfCanvas.DrawText(result.Unit??"", tablePositionsX[2], currentYPosition, getPaint(8.0f, 2));
+			var lvl = (result.Level??"").ToLower();
+
+
+			if(lvl == "medium"){
+				SKPaint skPaint = new SKPaint()
+				{
+					Style = SKPaintStyle.Fill,
+					Color = SKColors.Orange,
+					StrokeWidth = 10,
+					IsAntialias = true,
+				};
+
+				SKRect skRectangle = new SKRect();
+				skRectangle.Size = new SKSize(148, rowHeight - 6);
+				skRectangle.Location = new SKPoint(tablePositionsX[2], currentYPosition - rowHeight/2);
+
+				pdfCanvas.DrawRect(skRectangle, skPaint);
+
+			}else if(lvl == "low"){
+				SKPaint skPaint = new SKPaint()
+				{
+					Style = SKPaintStyle.Fill,
+					Color = SKColors.Red,
+					StrokeWidth = 10,
+					IsAntialias = true,
+				};
+
+				SKRect skRectangle = new SKRect();
+				skRectangle.Size = new SKSize(79, rowHeight - 6);
+				skRectangle.Location = new SKPoint(tablePositionsX[2], currentYPosition - rowHeight/2);
+
+				pdfCanvas.DrawRect(skRectangle, skPaint);
+
+			}else if(lvl == "very low"){
+				SKPaint skPaint = new SKPaint()
+				{
+					Style = SKPaintStyle.Fill,
+					Color = SKColors.Brown,
+					StrokeWidth = 10,
+					IsAntialias = true,
+				};
+
+				SKRect skRectangle = new SKRect();
+				skRectangle.Size = new SKSize(23, rowHeight - 6);
+				skRectangle.Location = new SKPoint(tablePositionsX[2], currentYPosition - rowHeight/2);
+
+				pdfCanvas.DrawRect(skRectangle, skPaint);
+
+			}else if(lvl == "very high"){
+				SKPaint skPaint = new SKPaint()
+				{
+					Style = SKPaintStyle.Fill,
+					Color = SKColors.Green,
+					StrokeWidth = 10,
+					IsAntialias = true,
+				};
+
+				SKRect skRectangle = new SKRect();
+				skRectangle.Size = new SKSize(292, rowHeight - 6);
+				skRectangle.Location = new SKPoint(tablePositionsX[2], currentYPosition - rowHeight/2);
+
+				pdfCanvas.DrawRect(skRectangle, skPaint);
+
+			}else if(lvl == "high"){
+				SKPaint skPaint = new SKPaint()
+				{
+					Style = SKPaintStyle.Fill,
+					Color = SKColors.LightGreen,
+					StrokeWidth = 10,
+					IsAntialias = true,
+				};
+
+				SKRect skRectangle = new SKRect();
+				skRectangle.Size = new SKSize(212, rowHeight - 6);
+				skRectangle.Location = new SKPoint(tablePositionsX[2], currentYPosition - rowHeight/2);
+
+				pdfCanvas.DrawRect(skRectangle, skPaint);
+
+			}else{
+				pdfCanvas.DrawText(result.Level??"", tablePositionsX[2], currentYPosition, getPaint(8.0f, 2));
+			}
+			pdfCanvas.DrawText(result.Recommmendation??"", tablePositionsX[5], currentYPosition, getPaint(8.0f, 2));
+			//pdfCanvas.DrawText(result.SuppInfo1??"", tablePositionsX[5], currentYPosition, getPaint(8.0f, 2));
 			currentYPosition += (rowHeight - 12);
 			pdfCanvas.DrawLine(29,currentYPosition, width - 29, currentYPosition, thinLinePaint);
 		}
