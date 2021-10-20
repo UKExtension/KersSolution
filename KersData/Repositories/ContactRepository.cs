@@ -713,13 +713,13 @@ namespace Kers.Models.Repositories
            
            var contacts = filteredContacts
                                         .GroupBy(e => new {
-                                            User = e.KersUser
+                                            User = e.KersUserId
                                         })
                                         .Select(c => new ContactGrouppedResult{
                                             Ids = c.Select(
                                                 s => s.Id
                                             ).ToList(),
-                                            GroupId = c.Key.User.Id
+                                            GroupId = c.Key.User
                                         })
                                         .ToList();
             return contacts;
