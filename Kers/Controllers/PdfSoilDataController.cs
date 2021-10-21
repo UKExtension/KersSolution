@@ -510,7 +510,9 @@ namespace Kers.Controllers
 											};
 				pdfCanvas.DrawLine(29,currentYPosition + 8, width - 29, currentYPosition + 8 , agentLinePaint);
 				currentYPosition += 5;
-				pdfCanvas.DrawText("Extension Agent Recommendation:", 29, currentYPosition + 19, getPaint(9.0f, 1));
+				pdfCanvas.DrawText("Extension Agent Recommendation:", 190, currentYPosition + 19, getPaint(11.0f, 1));
+				currentYPosition += 18;
+				pdfCanvas.DrawLine(29,currentYPosition + 11, width - 29, currentYPosition + 8 , agentLinePaint);
 				currentYPosition += 20;
 				SKRect area = new SKRect(29,currentYPosition, width - 29, currentYPosition + lines.Count() * lineHeight);
 				
@@ -590,7 +592,7 @@ namespace Kers.Controllers
 			// Agent Notes
 			if(report.AgentNote != null){
 				var lines = this.SplitLines(report.AgentNote, paint, pageWidth);
-				if( runningHeight + lines.Count() * lineHeight + 20 > pageHeight){
+				if( runningHeight + lines.Count() * lineHeight + 30 > pageHeight){
 					numPages++;
 					runningHeight = 29;
 				}
