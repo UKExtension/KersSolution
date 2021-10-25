@@ -40,7 +40,8 @@ namespace Kers.Tasks
                     var repo = new ActivityRepository(cache, context);
                     var contactRepo = new ContactRepository(cache, context, memoryCache);
                     
-                    var counties = context.PlanningUnit.Where( c => c.Name.Substring(c.Name.Count() - 3) == "CES");
+                    var counties = context.PlanningUnit.ToList().Where( c => c.Name.Substring(c.Name.Count() - 3) == "CES");
+
                     var currnetfiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
                     var startTime = DateTime.Now;
 
