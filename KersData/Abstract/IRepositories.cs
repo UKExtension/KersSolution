@@ -55,7 +55,7 @@ namespace Kers.Models.Abstract
     public interface IExpenseRepository: IEntityBaseRepository<Expense>{
         List<ExpenseSummary> Summaries(KersUser user, int year, int month);
         List<ExpenseRevision> PerMonth(KersUser user, int year, int month, string order);
-        IQueryable<Expense> MileagePerMonth(KersUser user, int year, int month, bool withFundingSource = true);
+        IQueryable<Expense> MileagePerMonth(KersUser user, int year, int month, bool withFundingSource = true, bool ForCurrentCounty = false);
         List<ExpenseSummary> SummariesPerFiscalYear(KersUser user, FiscalYear fiscalYear);
         List<ExpenseSummary> SummariesPerPeriod(KersUser user, DateTime start, DateTime end);
         float Breakfast(ExpenseRevision expense);

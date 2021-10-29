@@ -66,7 +66,7 @@ namespace Kers.Controllers
 					}
                 
 
-					var expenses = this.expenseRepo.MileagePerMonth(user, year, month, personal ? true : false );
+					var expenses = this.expenseRepo.MileagePerMonth(user, year, month, personal ? true : false, true );
 	
 					if(personal){
 						expenses = expenses.Where( e => e.LastRevision.VehicleType != 2 && e.LastRevision.isOvernight == overnight);

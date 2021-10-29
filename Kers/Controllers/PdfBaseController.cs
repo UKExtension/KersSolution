@@ -170,7 +170,7 @@ namespace Kers.Controllers
 			text = user.RprtngProfile.PlanningUnit.Name;
 			pdfCanvas.DrawText(text, 400, 102, getPaint(10.0f));
 			if(user.PersonalProfile.OfficeAddress != null && user.PersonalProfile.OfficeAddress != "" ){
-				text = user.RprtngProfile.PlanningUnit.FullName;
+				text = user.RprtngProfile.PlanningUnit.Name;
 				pdfCanvas.DrawText(text, 554, 75, getPaint(10.0f, 1));
 				var addressLines = user.PersonalProfile.OfficeAddress.Split("\n");
 				int initialY = 90;

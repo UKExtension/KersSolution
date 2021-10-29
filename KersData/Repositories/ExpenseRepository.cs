@@ -68,7 +68,7 @@ namespace Kers.Models.Repositories
             return revs;
         }
 
-        public IQueryable<Expense> MileagePerMonth(KersUser user, int year, int month, bool withFundingSource = true){
+        public IQueryable<Expense> MileagePerMonth(KersUser user, int year, int month, bool withFundingSource = true, bool ForCurrentCounty = false){
             
             IQueryable<Expense> lastExpenses = coreContext.Expense.
                                 Where(e=>e.KersUser == user && e.ExpenseDate.Month == month && e.ExpenseDate.Year == year).
@@ -79,6 +79,9 @@ namespace Kers.Models.Repositories
             
             if( withFundingSource ){
                 lastExpenses = lastExpenses.Include( e => e.LastRevision).ThenInclude( r => r.Segments).ThenInclude( s => s.FundingSource);
+            }
+            if(ForCurrentCounty){
+                lastExpenses = lastExpenses.Where( e => e.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
             }
                                 
             return lastExpenses;
