@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import {Location} from '@angular/common';
-import {UserService, User, PersonalProfile} from '../../modules/user/user.service';
+import {UserService, User, PersonalProfile, PlanningUnit} from '../../modules/user/user.service';
 import {AuthenticationService} from '../../../authentication/authentication.service';
 import {Router} from "@angular/router";
+import { PlanningunitService } from '../../modules/planningunit/planningunit.service';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'top-nav-menu',
@@ -28,10 +30,14 @@ export class TopNavComponent implements OnInit{
     errorMessage: string;
     user:User = null;
     isOpen = false;
+    isCountyChangeOpen = false;
+    counties:Observable<PlanningUnit[]>;
+    isShared:Observable<boolean>;
 
     constructor( 
                     private auth: AuthenticationService,
                     private userService: UserService,
+                    private countyService: PlanningunitService,
                     public router: Router,
                     private location:Location
                      ){
@@ -46,11 +52,11 @@ export class TopNavComponent implements OnInit{
             error => this.errorMessage = <any> error
         )
  */
-
+        this.counties = this.countyService.counties();
+        this.isShared = this.userService.currentUserHasAnyOfTheRoles(['SHAGNT']);
         this.userService.current().subscribe(
             res=> {
                 this.user = <User>res;
-                this.user;
                 if(this.user.personalProfile.uploadImage){
                     this.profilePicSrc = this.location.prepareExternalUrl('/image/crop/60/60/' + this.user.personalProfile.uploadImage.uploadFile.name);
                 }
@@ -67,5 +73,16 @@ export class TopNavComponent implements OnInit{
     logout(){
         this.auth.logout();
         this.router.navigate(["/"]);
+    }
+
+    changeCounty(id:number){
+        this.isCountyChangeOpen = false;
+        this.userService.changePlanningUnitTo(id).subscribe(
+            res => {
+                var newUser = <User>res;
+                this.user.rprtngProfile = newUser.rprtngProfile;
+            }
+
+        )
     }
 }

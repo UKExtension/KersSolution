@@ -397,6 +397,46 @@ namespace Kers.Controllers
             }
         }
 
+
+
+
+
+        [HttpGet("changePlanningUnitTo/{unitId}/{userId?}")]
+        [Authorize]
+        public IActionResult changePlanningUnitTo(int unitId,  int userId = 0){
+            var currentUserId = CurrentUserId();
+            var currentUser = this._context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == currentUserId).FirstOrDefault();
+            if(userId == 0){
+                userId = currentUser.Id;
+            }
+            var user = _context.KersUser.Where( u => u.Id == userId)
+                            .Include( u => u.RprtngProfile)
+                            .FirstOrDefault();
+            if(user != null){
+
+                user.RprtngProfile.PlanningUnitId = unitId;
+                user.Updated = DateTime.Now;
+                this._context.SaveChanges();
+                
+                
+                this.Log( user, currentUser, "KersUser", "User Changed Planning Unit");
+                
+                user.RprtngProfile.PlanningUnit = _context.PlanningUnit.Find(unitId);
+                return new OkObjectResult(user);
+            }else{
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
         [HttpGet("connections")]
         public IActionResult Connections(){
             var conn = _context.SocialConnectionType.ToList();

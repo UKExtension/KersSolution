@@ -149,8 +149,14 @@ export class UserService {
                 tap( _ => this.usr = null),
                 catchError(this.handleError('update', <User>{}))
             );  
-        
-        
+    }
+    changePlanningUnitTo(unitId:number, userId:number = 0):Observable<User>{
+        var url = this.baseUrl + 'changePlanningUnitTo/' + unitId + '/' + userId;
+        return this.http.get<User>(this.location.prepareExternalUrl(url))
+            .pipe(
+                tap( _ => this.usr = null),
+                catchError(this.handleError('changePlanningUnitTo', <User>{}))
+            );  
     }
 
     tagsAutocomplete(text: string){

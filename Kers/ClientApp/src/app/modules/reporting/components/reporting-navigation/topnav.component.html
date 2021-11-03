@@ -6,10 +6,10 @@
                 <a id="menu_toggle" (click)="toggle_left()"><i class="fa fa-bars"></i></a>
               </div>
 
-
+<div style="float: right;">
               <ul class="nav navbar-nav navbar-right">
                 <li *ngIf="!user" style="margin: 10px;"><loading type="bars"></loading></li>
-                <li [class.open]="isOpen" *ngIf="user">
+                <li [class.open]="isOpen" *ngIf="user" style="white-space:nowrap">
                   <a (click)="isOpen=!isOpen" class="user-profile dropdown-toggle" style="cursor: pointer;">
                     <img src="{{profilePicSrc}}" alt="Profile Picture">{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}
                     <span class=" fa fa-angle-down"></span>
@@ -23,6 +23,22 @@
                   </ul>
                 </li>
               </ul>
+</div>
+<div style="text-align: right; float: right;" *ngIf="isShared | async">
+  <ul class="nav navbar-nav navbar-right">
+    <li *ngIf="!user" style="margin: 10px;"><loading type="bars"></loading></li>
+    <li [class.open]="isCountyChangeOpen" *ngIf="user" style="white-space:nowrap">
+      <a (click)="isCountyChangeOpen=!isCountyChangeOpen" class="user-profile dropdown-toggle" style="cursor: pointer;">
+        {{user.rprtngProfile.planningUnit.name}}
+        <span class=" fa fa-angle-down"></span>
+      </a>
+      <ul class="dropdown-menu dropdown-usermenu pull-right" style="max-height: 500px; overflow: scroll;">
+        <li *ngFor="let county of counties | async"><a (click)="changeCounty(county.id)">{{county.name}}</a></li>
+      </ul>
+    </li>
+  </ul>
+  
+</div>
             </nav>
           </div>
         </div>
