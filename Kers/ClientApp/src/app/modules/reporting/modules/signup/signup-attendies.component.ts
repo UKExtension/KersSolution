@@ -77,8 +77,8 @@ export class SignupAttendiesComponent implements OnInit {
             }else{
               var blob = new Blob([data], {type: 'text/csv'});
               this.loading = false;
-              var filename = "Attendies_retrieved_"+new Date().toJSON().slice(0,15)+".csv"
-              saveAs(blob, "Attendies.csv");
+              var filename = "Attendies_"+ (new Date()).toJSON().slice(0,20)+".csv"
+              saveAs(blob, filename);
             }
         },
         err => console.error(err)
