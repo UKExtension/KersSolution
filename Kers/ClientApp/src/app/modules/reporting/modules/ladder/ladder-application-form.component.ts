@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import {Location} from '@angular/common';
-import { IMyDpOptions, IMyDateModel } from 'mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { FormBuilder, Validators, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { LadderService, FileUploadResult } from './ladder.service';
 import { LadderLevel, LadderEducationLevel, LadderPerformanceRating, LadderApplication, LadderImage, UploadImage } from './ladder';
@@ -26,7 +26,7 @@ export class LadderApplicationFormComponent implements OnInit {
 
     isItaDraft:boolean = false;
     loading:boolean = true;
-
+    today:Date;
 
     get ratings() {
       return this.ladderForm.get('ratings') as FormArray;
@@ -47,7 +47,6 @@ export class LadderApplicationFormComponent implements OnInit {
     lastPromotionDate:Date;
     hoursAttended:Observable<number>;
 
-    today:Date;
     firstOfTheYear:Date;
 
     fileToUpload: File = null;
@@ -60,16 +59,13 @@ export class LadderApplicationFormComponent implements OnInit {
         toolbarButtonsXS: ['undo', 'redo', 'bold', 'italic'],
         quickInsertButtons: ['ul', 'ol', 'hr'],    
       };
-    public myDatePickerOptions: IMyDpOptions = {
+    public myDatePickerOptions: IAngularMyDpOptions = {
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
             satHighlight: true,
-            firstDayOfWeek: 'su',
-            showClearDateBtn: false
+            firstDayOfWeek: 'su'
         };
-    public myDatePickerOptionsEnd: IMyDpOptions = {
+    public myDatePickerOptionsEnd: IAngularMyDpOptions = {
               dateFormat: 'mm/dd/yyyy',
-              showTodayBtn: false,
               satHighlight: true,
               firstDayOfWeek: 'su'
           };
@@ -91,21 +87,18 @@ export class LadderApplicationFormComponent implements OnInit {
         this.userService.current().subscribe(
           res => this.currentUser = res
         );
-        this.today = new Date();
+
+        
+        var threeYEarsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 3));
+        var fiveYearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 5));
         this.ladderForm = this.fb.group(
         {
           ladderLevelId: ["", Validators.required],
           lastPromotion: [{
-              date: {
-                  year: this.today.getFullYear() - 3,
-                  month: 7,
-                  day: 1}
+                      isRange: false, singleDate: {jsDate: threeYEarsAgo}
               }, Validators.required],
           startDate: [{
-                date: {
-                    year: this.today.getFullYear() - 5,
-                    month: 1,
-                    day: 1}
+                      isRange: false, singleDate: {jsDate: fiveYearsAgo}
                 }, Validators.required],
           ladderEducationLevelId:["", Validators.required],
           track:"0",
@@ -115,7 +108,7 @@ export class LadderApplicationFormComponent implements OnInit {
           ratings: this.fb.array([]),
           images: this.fb.array([])
     },);
-    
+    this.today = new Date();
     this.myDatePickerOptions.disableSince = {year: this.today.getFullYear(), month: this.today.getMonth() + 1, day: this.today.getDate()};
     this.lastPromotionDate = new Date(this.today.getFullYear() -3, 6, 1);
     //this.firstOfTheYear = new Date(this.today.getFullYear(), 0, 1);
@@ -131,21 +124,13 @@ export class LadderApplicationFormComponent implements OnInit {
       var startDate = new Date(this.application.startDate);
       this.ladderForm.patchValue({
         lastPromotion: {
-            date:{
-              year: lastPromotion.getFullYear(),
-              month: lastPromotion.getMonth() + 1,
-              day: lastPromotion.getDate()
-            }
+          isRange: false, singleDate: {jsDate: lastPromotion}
           },
           startDate: {
-            date:{
-              year: startDate.getFullYear(),
-              month: startDate.getMonth() + 1,
-              day: startDate.getDate()
-            }
+            isRange: false, singleDate: {jsDate: startDate}
           }
         
-      });
+      }); 
       this.lastPromotionDate = new Date(this.application.lastPromotion);
       for( let rating of this.application.ratings){
         this.addRating( rating.year, rating.ratting );
@@ -262,7 +247,7 @@ export class LadderApplicationFormComponent implements OnInit {
   }
 
   onDateChanged(event: IMyDateModel) {
-    this.lastPromotionDate = event.jsdate;
+    this.lastPromotionDate = event.singleDate.jsDate;
     this.updateHours();
     this.trainingDetails = false;
   }
@@ -275,8 +260,8 @@ export class LadderApplicationFormComponent implements OnInit {
     this.loading = true;
     var formValue = this.ladderForm.value;
     var application = <LadderApplication> Object.assign(formValue);
-    application.lastPromotion = new Date(formValue.lastPromotion.date.year,formValue.lastPromotion.date.month-1, formValue.lastPromotion.date.day);
-    application.startDate = new Date(formValue.startDate.date.year,formValue.startDate.date.month-1, formValue.startDate.date.day);
+    application.lastPromotion = this.ladderForm.value.lastPromotion.singleDate.jsDate;
+    application.startDate = this.ladderForm.value.startDate.singleDate.jsDate;
     var ratingsSubmitted:LadderPerformanceRating[] = [];
     var i = 1;
     for( var rating of formValue.ratings){
@@ -328,7 +313,6 @@ export class LadderApplicationFormComponent implements OnInit {
         }
       )   
     }
-    
   }
   onCancel(){
     if( this.application == null && this.images.length > 0){
