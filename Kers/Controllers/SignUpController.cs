@@ -117,8 +117,9 @@ namespace Kers.Controllers
                                     .Include( a => a.LastRevision)
                                     .FirstOrDefault();
             if( activity != null ){
-                string result = activity.LastRevision.Title + "\n";
-                result += activity.LastRevision.ActivityDate.ToShortDateString() + "\n\n";
+                string result = "Title: ," + string.Concat( "\"", activity.LastRevision.Title, "\"") + "\n";
+                result += "Date: ," +activity.LastRevision.ActivityDate.ToShortDateString() + "\n\n";
+                result+= "Attendies: \n\n";
                 var keys = new List<string>();
                 keys.Add("Name");
                 keys.Add("Address");

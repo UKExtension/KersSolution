@@ -296,7 +296,7 @@ namespace Kers.Models.Repositories
                 foreach( var met in types){
                     keys.Add(string.Concat( "\"", met.Name, " Number Delivered\""));
                     keys.Add(string.Concat( "\"", met.Name, " Min Minutes\""));
-                    keys.Add(string.Concat( "\"", met.Name, " Miax Minutes\""));
+                    keys.Add(string.Concat( "\"", met.Name, " Max Minutes\""));
                 }
                 keys.Add("MonthlyTotal");
                 result = string.Join(",", keys.ToArray()) + "\n";
