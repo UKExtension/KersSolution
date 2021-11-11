@@ -80,6 +80,7 @@ namespace Kers.Controllers
         public async Task<IActionResult> GetApplicationsForReview(int StageId){
             var stage = context.LadderStage.Find(StageId);
             Task<List<LadderApplication>> apps = null;
+            var fiscalYear = this.fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
             if( stage != null ){
                 if( stage.Restriction != null && stage.Restriction != ""){
 
@@ -94,7 +95,15 @@ namespace Kers.Controllers
                                             .Where( a => a.ExtensionRegionId == area.ExtensionRegionId)
                                             .Select( a => a.Id )
                                             .ToList();
-                            apps = context.LadderApplication.Where(a => a.LastStageId == StageId && areaIds.Contains( a.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId ?? 0 ) )
+                            apps = context.LadderApplication
+                                .Where(a => a.LastStageId == StageId 
+                                                    && 
+                                            areaIds.Contains( a.KersUser.RprtngProfile.PlanningUnit.ExtensionAreaId ?? 0 ) 
+                                                    &&
+                                            a.Created > fiscalYear.Start
+                                                    &&
+                                            a.Created < fiscalYear.End
+                                        )
                                 .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                 .ToListAsync();
                         }
@@ -104,7 +113,15 @@ namespace Kers.Controllers
                             var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
                             var pairing = AreaController.FindContainingPair( area.Name );
 
-                            apps = context.LadderApplication.Where(a => a.LastStageId == StageId &&  pairing.Contains( a.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.Name ) )
+                            apps = context.LadderApplication
+                                .Where(a => a.LastStageId == StageId 
+                                                &&  
+                                            pairing.Contains( a.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.Name ) 
+                                                &&
+                                            a.Created > fiscalYear.Start
+                                                &&
+                                            a.Created < fiscalYear.End
+                                            )
                                 .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                 .ToListAsync();
 
