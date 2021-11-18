@@ -119,7 +119,7 @@ namespace Kers.Controllers
             if( activity != null ){
                 string result = "Title: ," + string.Concat( "\"", activity.LastRevision.Title, "\"") + "\n";
                 result += "Date: ," +activity.LastRevision.ActivityDate.ToShortDateString() + "\n\n";
-                result+= "Attendies: \n\n";
+                result+= "Attendees: \n\n";
                 var keys = new List<string>();
                 keys.Add("Name");
                 keys.Add("Address");
