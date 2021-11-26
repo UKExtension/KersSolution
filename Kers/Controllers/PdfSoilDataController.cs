@@ -97,8 +97,8 @@ namespace Kers.Controllers
 			var index = 0;
 			for( var i = 0; i <= numPages; i++ ){
 				var pdfCanvas = document.BeginPage(width, height);
-				for( int Xpos = 25; Xpos < usableWidth ; Xpos = Xpos + (usableWidth / 3) ){
-					for( int Ypos = 25; Ypos < usableHeight ; Ypos = Ypos + usableHeight /10 ){
+				for( int Xpos = 35; Xpos < usableWidth ; Xpos = Xpos + (usableWidth / 3) ){
+					for( int Ypos = 35; Ypos < usableHeight ; Ypos = Ypos + usableHeight /10 ){
 						if( index < samples.Count()){
 							var sample = samples.ElementAt(index);
 							if( sample.FarmerForReport != null ){
