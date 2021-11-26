@@ -91,12 +91,14 @@ namespace Kers.Controllers
 		}
 
 		private void AddressesPage(List<SoilReportBundle> samples, SKDocument document){
+			var usableWidth = width - 30;
+			var usableHeight = height - 30;
 			var numPages = Math.Ceiling( (decimal) (samples.Count() / 30));
 			var index = 0;
 			for( var i = 0; i <= numPages; i++ ){
 				var pdfCanvas = document.BeginPage(width, height);
-				for( int Xpos = 10; Xpos < width ; Xpos = Xpos + (width / 3) ){
-					for( int Ypos = 10; Ypos < height ; Ypos = Ypos + width /10 ){
+				for( int Xpos = 15; Xpos < usableWidth ; Xpos = Xpos + (usableWidth / 3) ){
+					for( int Ypos = 10; Ypos < usableHeight ; Ypos = Ypos + usableHeight /10 ){
 						if( index < samples.Count()){
 							var sample = samples.ElementAt(index);
 							if( sample.FarmerForReport != null ){
@@ -107,14 +109,14 @@ namespace Kers.Controllers
 												(sample.FarmerForReport.Mi != null ? sample.FarmerForReport.Mi + " ": "")
 														+
 												(sample.FarmerForReport.Last != null ? sample.FarmerForReport.Last + " ": "");
-								pdfCanvas.DrawText(farmerName , Xpos + 20 , Ypos + 10 , getPaint(12.0f, 1));
-								pdfCanvas.DrawText(sample.FarmerForReport.Address , Xpos + 20 , Ypos + 25 , getPaint(12.0f));
+								pdfCanvas.DrawText(farmerName , Xpos , Ypos  , getPaint(11.0f, 1));
+								pdfCanvas.DrawText(sample.FarmerForReport.Address , Xpos , Ypos + 15 , getPaint(11.0f));
 								var farmerCity = (sample.FarmerForReport.City != null ? sample.FarmerForReport.City + ", ": "")
 													+
 												(sample.FarmerForReport.St != null ? sample.FarmerForReport.St + " ": "")
 													+
 												(sample.FarmerForReport.Zip != null ? sample.FarmerForReport.Zip + " ": "");
-								pdfCanvas.DrawText(farmerCity , Xpos + 20 , Ypos + 40 , getPaint(12.0f));
+								pdfCanvas.DrawText(farmerCity , Xpos , Ypos + 30 , getPaint(11.0f));
 							}
 							
 						}
