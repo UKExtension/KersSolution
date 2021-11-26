@@ -56,8 +56,6 @@ namespace Kers.Controllers
         {
 			using (var stream = new SKDynamicMemoryWStream ())
                 using (var document = SKDocument.CreatePdf (stream, this.metadata("Kers, Soil Testing, Consolidated Report", "Soil Test Reports", "Summary Soil Test Report"))) {
-					
-
 					var samples = this._soilContext.SoilReportBundle
 											.Where( b => unigueIds.ids.Contains(b.UniqueCode) && b.Reports.Count() > 0)
 											.Include( b => b.Reports)
@@ -83,6 +81,7 @@ namespace Kers.Controllers
 							return new StatusCodeResult(500);
 						}
 					}
+					this.AddressesPage(samples, document);
 				document.Close();
 				return File(stream.DetachAsData().AsStream(), "application/pdf", "SoilTestResults.pdf");
 			}
@@ -91,6 +90,42 @@ namespace Kers.Controllers
 			public List<string> ids;
 		}
 
+		private void AddressesPage(List<SoilReportBundle> samples, SKDocument document){
+			var numPages = Math.Ceiling( (decimal) (samples.Count() / 30));
+			var index = 0;
+			for( var i = 0; i <= numPages; i++ ){
+				var pdfCanvas = document.BeginPage(width, height);
+				for( int Xpos = 10; Xpos < width ; Xpos = Xpos + (width / 3) ){
+					for( int Ypos = 10; Ypos < height ; Ypos = Ypos + width /10 ){
+						if( index < samples.Count()){
+							var sample = samples.ElementAt(index);
+							if( sample.FarmerForReport != null ){
+								var farmerName = (sample.FarmerForReport.Title != null ? sample.FarmerForReport.Title + " ": "")
+														+
+												(sample.FarmerForReport.First != null ? sample.FarmerForReport.First + " ": "")
+														+
+												(sample.FarmerForReport.Mi != null ? sample.FarmerForReport.Mi + " ": "")
+														+
+												(sample.FarmerForReport.Last != null ? sample.FarmerForReport.Last + " ": "");
+								pdfCanvas.DrawText(farmerName , Xpos + 20 , Ypos + 10 , getPaint(12.0f, 1));
+								pdfCanvas.DrawText(sample.FarmerForReport.Address , Xpos + 20 , Ypos + 25 , getPaint(12.0f));
+								var farmerCity = (sample.FarmerForReport.City != null ? sample.FarmerForReport.City + ", ": "")
+													+
+												(sample.FarmerForReport.St != null ? sample.FarmerForReport.St + " ": "")
+													+
+												(sample.FarmerForReport.Zip != null ? sample.FarmerForReport.Zip + " ": "");
+								pdfCanvas.DrawText(farmerCity , Xpos + 20 , Ypos + 40 , getPaint(12.0f));
+							}
+							
+						}
+						
+						index++;
+					}
+				}
+				document.EndPage();
+			}
+
+		}
 
 
         [HttpGet("report/{uniqueId}")]
