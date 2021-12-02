@@ -95,6 +95,12 @@ namespace Kers.Controllers
 			var usableHeight = height - 30;
 			var numPages = Math.Ceiling( (decimal) (samples.Count() / 30));
 			var index = 0;
+
+			var grouppedBundles = samples.Where( s => s.FarmerAddressId != null)
+											.GroupBy( s => s.FarmerAddressId )
+											.Select( s => s.Select( a => a.FarmerAddress));
+
+
 			for( var i = 0; i <= numPages; i++ ){
 				var pdfCanvas = document.BeginPage(width, height);
 				for( int Xpos = 35; Xpos < usableWidth ; Xpos = Xpos + (usableWidth / 3) ){
