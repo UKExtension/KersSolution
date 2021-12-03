@@ -92,7 +92,7 @@ else if( district != null)
     </li>
     <li role="presentation" class="active"><a asp-controller="Contacts"  asp-action="DataByMonthByMajorProgram" asp-route-fy="@FiscalYear.Name" asp-route-id=@unit.Id>Data by Major Program</a>
     </li>
-    <li role="presentation" class=""><a asp-controller="Contacts"  asp-action="DataByMonthByEmployee" asp-route-fy="@FiscalYear.Name" asp-route-id=@unit.Id>Employee Contribution Data</a>
+    <li role="presentation" class=""><a asp-controller="Contacts"  asp-action="DataByMonthByEmployee" asp-route-fy="@FiscalYear.Name" asp-route-filter="1" asp-route-id=@unit.Id>Employee Contribution Data</a>
     </li>
 </ul>
 
