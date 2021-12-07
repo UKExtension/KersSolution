@@ -135,11 +135,13 @@ namespace Kers.Controllers
                     }
                     
                 }else{
-                    
-                    if( stage.Restriction == LadderStageRestrictionKeys.Area){
-
-                    }
-                    apps = context.LadderApplication.Where(a => a.LastStageId == StageId)
+                    apps = context.LadderApplication.Where(a => a.LastStageId == StageId
+                                                                     &&
+                                                            a.Created > fiscalYear.Start
+                                                                &&
+                                                            a.Created < fiscalYear.End
+                                    
+                                    )
                                 .Include( a => a.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.District)
                                 .ToListAsync();
                 }

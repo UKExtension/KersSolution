@@ -93,35 +93,38 @@ namespace Kers.Controllers
 		private void AddressesPage(List<SoilReportBundle> samples, SKDocument document){
 			var usableWidth = width - 30;
 			var usableHeight = height - 30;
-			var numPages = Math.Ceiling( (decimal) (samples.Count() / 30));
+			
 			var index = 0;
 
 			var grouppedBundles = samples.Where( s => s.FarmerAddressId != null)
 											.GroupBy( s => s.FarmerAddressId )
-											.Select( s => s.Select( a => a.FarmerAddress));
+											.Select( s => s.Key);
 
+			var addresses = new List<FarmerAddress>();
+			foreach( var FarmerId in grouppedBundles ) addresses.Add( this._soilContext.FarmerAddress.Find(FarmerId));
+			var numPages = Math.Ceiling( (decimal) (addresses.Count() / 30));
 
 			for( var i = 0; i <= numPages; i++ ){
 				var pdfCanvas = document.BeginPage(width, height);
 				for( int Xpos = 35; Xpos < usableWidth ; Xpos = Xpos + (usableWidth / 3) ){
 					for( int Ypos = 35; Ypos < usableHeight ; Ypos = Ypos + usableHeight /10 ){
-						if( index < samples.Count()){
-							var sample = samples.ElementAt(index);
-							if( sample.FarmerForReport != null ){
-								var farmerName = (sample.FarmerForReport.Title != null ? sample.FarmerForReport.Title + " ": "")
+						if( index < addresses.Count()){
+							var sample = addresses.ElementAt(index);
+							if( sample != null ){
+								var farmerName = (sample.Title != null && sample.Title != "" && sample.Title != " " ? sample.Title + " ": "")
 														+
-												(sample.FarmerForReport.First != null ? sample.FarmerForReport.First + " ": "")
+												(sample.First != null && sample.First != "" && sample.First != " " ? sample.First + " ": "")
 														+
-												(sample.FarmerForReport.Mi != null ? sample.FarmerForReport.Mi + " ": "")
+												(sample.Mi != null && sample.Mi != "" && sample.Mi != " " ? sample.Mi + " ": "")
 														+
-												(sample.FarmerForReport.Last != null ? sample.FarmerForReport.Last + " ": "");
+												(sample.Last != null ? sample.Last: "");
 								pdfCanvas.DrawText(farmerName , Xpos , Ypos  , getPaint(11.0f, 1));
-								pdfCanvas.DrawText(sample.FarmerForReport.Address , Xpos , Ypos + 15 , getPaint(11.0f));
-								var farmerCity = (sample.FarmerForReport.City != null ? sample.FarmerForReport.City + ", ": "")
+								pdfCanvas.DrawText(sample.Address , Xpos , Ypos + 15 , getPaint(11.0f));
+								var farmerCity = (sample.City != null ? sample.City + ", ": "")
 													+
-												(sample.FarmerForReport.St != null ? sample.FarmerForReport.St + " ": "")
+												(sample.St != null ? sample.St + " ": "")
 													+
-												(sample.FarmerForReport.Zip != null ? sample.FarmerForReport.Zip + " ": "");
+												(sample.Zip != null ? sample.Zip + " ": "");
 								pdfCanvas.DrawText(farmerCity , Xpos , Ypos + 30 , getPaint(11.0f));
 							}
 							
