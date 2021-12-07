@@ -9,6 +9,7 @@ import { ReportingService } from '../../components/reporting/reporting.service';
         <a class="btn btn-default"[routerLink]="['/reporting/soildata/reports']" routerLinkActive="active">Reports</a> 
         <a class="btn btn-default" [routerLink]="['/reporting/soildata/addresses']" routerLinkActive="active">Client Addresses</a> 
         <a class="btn btn-default"[routerLink]="['/reporting/soildata/notes']" routerLinkActive="active">Notes</a> 
+        <a class="btn btn-default"[routerLink]="['/reporting/soildata/signees']" routerLinkActive="active">Signees</a> 
       </p>
     </div>
     <router-outlet></router-outlet>
