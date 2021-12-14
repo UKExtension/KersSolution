@@ -47,6 +47,30 @@ export class MileageFormComponent implements OnInit {
   programCategories: ProgramCategory[];
   fundingSources:ExpenseFundingSource[];
 
+  get isBackButtonAvailable():boolean{
+    var formValue = this.mileageForm.value;
+    if(formValue.startingLocation != undefined && formValue.segments.length == 1){
+      var firstSegment = formValue.segments[0];
+      if( firstSegment.locationId != ""
+            &&
+          firstSegment.programCategoryId != ""
+            &&
+          firstSegment.businessPurpose != ""
+            &&
+          firstSegment.fundingSourceId != ""
+            &&
+          firstSegment.mileage != ""
+          &&
+          firstSegment.mileage != null
+        ){
+          return true;
+      }
+    } 
+    return false;
+  }
+
+
+
   get stLoc(){
     return this.mileageForm.get('startingLocation').value as ExtensionEventLocation;
   }
@@ -132,10 +156,6 @@ export class MileageFormComponent implements OnInit {
         this.mileageForm.patchValue({expenseDate: {
           isRange: false, singleDate: {jsDate: this.mileageDate}
 
-    /*         date: {
-                year: this.mileageDate.getFullYear(),
-                month: this.mileageDate.getMonth() + 1,
-                day: this.mileageDate.getDate()} */
             }});
       }
       if(this.isNewCountyVehicle){
@@ -162,6 +182,24 @@ export class MileageFormComponent implements OnInit {
     this.expenseService.fundingSources().subscribe(
       res => this.fundingSources = res
     );
+  }
+
+  getBack(){
+    var formValue = this.mileageForm.value;
+    if( formValue.startingLocation != undefined && formValue.segments.length == 1){
+      console.log(this.stLoc);
+      var firstSegment = formValue.segments[0];
+      var group:FormControl = this.fb.control(
+        {
+          locationId: '',
+          programCategoryId: firstSegment.programCategoryId,
+          businessPurpose:  firstSegment.businessPurpose,
+          fundingSourceId:  firstSegment.fundingSourceId,
+          mileage:  firstSegment.mileage
+        }
+      );
+      this.segments.push(group);
+    }
   }
 
 
