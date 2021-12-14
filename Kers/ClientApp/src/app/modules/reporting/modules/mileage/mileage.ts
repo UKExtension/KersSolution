@@ -24,6 +24,7 @@ export interface Mileage{
     vehicleType?:number,
     countyVehicleId?:number,
     startingLocation:ExtensionEventLocation,
+    startingLocationId:number,
     segments:MileageSegment[]
 
 
