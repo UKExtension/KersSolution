@@ -10,6 +10,8 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
   selector: 'soildata-signees',
   template: `<br>
   <h3>Agent Information</h3><br>
+  <p>When reviewing reports in KERS and selecting the "Submit" button, the signee signature, name, and profession title in the KERS personal profile will appear on printed reports.
+  <br>When reports are printed without review in KERS, the signee name and professional title entered below will appear on printed reports</p>
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
       <form novalidate class="form-horizontal form-label-left" (ngSubmit)="onSubmit()" [formGroup]="signeesForm">

@@ -250,7 +250,8 @@ namespace Kers.Controllers
 					.FirstOrDefault();
 				if(user != null){
 					pdfCanvas.DrawText(user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName, 370, 125, getPaint(18.0f, 4));
-					pdfCanvas.DrawText("Extension Agent", 370, 146, getPaint(11.0f, 1));
+					pdfCanvas.DrawText(user.PersonalProfile.FirstName + " " + user.PersonalProfile.LastName, 370, 146, getPaint(10.0f, 1));
+					if(user.PersonalProfile.Title != null ) pdfCanvas.DrawText(user.PersonalProfile.Title, 370, 163, getPaint(10.0f, 1));
 				}
 			}else{
 				var signee = _soilContext.FormTypeSignees
