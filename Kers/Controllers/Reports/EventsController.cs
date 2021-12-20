@@ -50,7 +50,7 @@ namespace Kers.Controllers.Reports
                         }
                     }
 
-                }else{
+                }else if( e.DiscriminatorValue == "Meeting"){
                     result.Add(e);
                 }
             }
