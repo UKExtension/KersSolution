@@ -9,6 +9,15 @@ import { RegionService } from './region.service';
 @Component({
   selector: 'region-home',
   template: `
+
+<div *ngIf="noRegion" class="orange"><br>The region cannot be determined.<br><br>
+    In your <a routerLink="/reporting/user/reporting">reporting profile</a> should be selected a county that is part of the region.
+
+</div>
+<div *ngIf="!noRegion">
+
+
+
   <county-list [type]="'region'" [regionId]="0"></county-list> 
   
   <div class="col-xs-12">
@@ -106,6 +115,7 @@ import { RegionService } from './region.service';
           </div>
         </div>
       </div>
+    </div>
   </div>
 
 
@@ -139,6 +149,7 @@ export class RegionHomeComponent implements OnInit {
   lastFiscalYear:FiscalYear;
   currentFiscalYear:FiscalYear;
 
+  noRegion = false;
 
 
   constructor(
@@ -167,8 +178,12 @@ export class RegionHomeComponent implements OnInit {
                                 )
                          ).subscribe(
                             res => {
-                              this.region = res;
-                              this.defaultTitle();
+                                if( res == null){
+                                    this.noRegion = true;
+                                }else{
+                                    this.region = res;
+                                    this.defaultTitle();
+                                }
                             }
                           );
   }

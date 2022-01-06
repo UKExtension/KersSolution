@@ -41,6 +41,7 @@ namespace Kers.Controllers
         public IActionResult Get(int id = 0){
             if(id == 0){
                 var unit = CurrentPlanningUnit();
+                if( unit.ExtensionArea == null ) return new OkObjectResult( null );
                 id = unit.ExtensionArea.ExtensionRegionId;
             }
             var area = this.context.ExtensionRegion.
@@ -60,6 +61,7 @@ namespace Kers.Controllers
                             .Select( u => u.ExtensionArea.ExtensionRegionId)
                             .FirstOrDefaultAsync());
             }
+            if( id == 0 ) return new OkObjectResult( null );
             var cnts = await this.counties(id);
             return new OkObjectResult( cnts.OrderBy( u => u.Name ) );
         }
@@ -80,6 +82,7 @@ namespace Kers.Controllers
                 Id = user.RprtngProfile.PlanningUnitId;
             }
             var unit = await context.PlanningUnit.Where( u => u.Id == Id).Include( p => p.ExtensionArea).FirstOrDefaultAsync();
+            if(unit.ExtensionArea == null || unit.ExtensionArea.ExtensionRegionId == 0 )new OkObjectResult(null);
             return new OkObjectResult(await this.counties(unit.ExtensionArea.ExtensionRegionId));
         }
 

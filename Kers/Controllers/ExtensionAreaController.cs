@@ -71,6 +71,7 @@ namespace Kers.Controllers
                 var unit = CurrentPlanningUnit();
                 id = unit.ExtensionAreaId ?? 0;
             }
+            if(id == 0 ) return new OkObjectResult(null);
             var area = this.context.ExtensionArea.
                                 Where(c=>c.Id == id).
                                 FirstOrDefault();
@@ -89,6 +90,7 @@ namespace Kers.Controllers
                             .Select( u => u.ExtensionAreaId)
                             .FirstOrDefaultAsync()) ?? 0;
             }
+            if(id == 0) return new OkObjectResult(null);
             var cnts = await this.counties(id, includePairings);
             return new OkObjectResult( cnts.OrderBy( u => u.Name ) );
         }
