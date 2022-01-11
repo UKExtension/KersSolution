@@ -213,7 +213,7 @@ namespace Kers.Controllers
 							}
 						}
 
-						foreach( var im in application.Images){
+						foreach( var im in application.Images.OrderBy( i => i.Created)){
 							runningY = margin + 5;
 							document.EndPage();
 							pdfCanvas = document.BeginPage(height, width);
