@@ -264,7 +264,7 @@ namespace Kers.Controllers
                                             .Include( a => a.Stages).ThenInclude( s => s.KersUser).ThenInclude( u => u.RprtngProfile)
                                             .FirstOrDefaultAsync();
             appilcation.KersUser.RprtngProfile.PlanningUnit.GeoFeature = "";
-            application.Images = application.Images.OrderBy(i => i.UploadImageId);
+            appilcation.Images = appilcation.Images.OrderBy(i => i.UploadImageId);
             return new OkObjectResult(appilcation);
         }
 
