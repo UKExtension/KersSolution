@@ -287,7 +287,7 @@ namespace Kers.Controllers
                             .Include( a => a.Images).ThenInclude( i => i.UploadImage)
                             .OrderBy( o => o.Created);
             var appl = await appilcations.FirstOrDefaultAsync();
-            appl.Images = appl.Images.OrderBy(i => i.UploadImageId).ToList();
+            if(appl != null)  appl.Images = appl.Images.OrderBy(i => i.UploadImageId).ToList();
             return new OkObjectResult(appl);
         }
 
