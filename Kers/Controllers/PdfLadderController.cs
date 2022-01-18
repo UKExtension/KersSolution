@@ -34,15 +34,18 @@ namespace Kers.Controllers
 		int trainingsTableLineHight = 14;
 		int trainingsTableCellMargin = 2;
 		string pageTitle = "Professional Career Ladder Promotion Application";
+		FiscalYearRepository _fiscalYearRepo;
 
 
         public PdfLadderController(
             KERScoreContext _context,
 			IKersUserRepository userRepo,
 			KERSmainContext mainContext,
-			IMemoryCache _cache
+			IMemoryCache _cache,
+			FiscalYearRepository _fiscalYearRepo
         ):
 			base(_context, userRepo, mainContext, _cache){
+				this._fiscalYearRepo = _fiscalYearRepo;
 				
 
 
@@ -149,7 +152,10 @@ namespace Kers.Controllers
 
 
 						// !!!!!!!!!!!!!!!!!!!   Refine actual start of the year   !!!!!!!!!!!!!!!!!!
-						var startOfTheYear = new DateTime( application.Created.Year, 1, 1);
+
+						var fiscalYear = this._fiscalYearRepo.byDate(application.Created, FiscalYearType.ServiceLog);
+
+						var startOfTheYear = new DateTime( fiscalYear.End.Year, 1, 1);
 
 						var trainings = TrainingsByUser(application.KersUserId, application.LastPromotion, startOfTheYear);
 						var hours = HourssByUser(application.KersUserId, application.LastPromotion, startOfTheYear);
