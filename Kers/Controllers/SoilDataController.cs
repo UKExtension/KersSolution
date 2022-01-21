@@ -163,7 +163,7 @@ namespace Kers.Controllers
             if( OrphanedReport != null ){
                 do{
                     var SameSample = _soilDataContext.SoilReport
-                                        .Where( r => r.CoId == OrphanedReport.CoId && r.CoSamnum == OrphanedReport.CoSamnum)
+                                        .Where( r => r.CoId == OrphanedReport.CoId && r.CoSamnum == OrphanedReport.CoSamnum && r.SoilReportBundleId == null)
                                         .ToList();
                     var Bundle = new SoilReportBundle();
                     Bundle.Reports = SameSample;

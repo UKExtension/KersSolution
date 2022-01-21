@@ -34,7 +34,7 @@ namespace Kers.Controllers
 		int trainingsTableLineHight = 14;
 		int trainingsTableCellMargin = 2;
 		string pageTitle = "Professional Career Ladder Promotion Application";
-		FiscalYearRepository _fiscalYearRepo;
+		IFiscalYearRepository _fiscalYearRepo;
 
 
         public PdfLadderController(
@@ -42,7 +42,7 @@ namespace Kers.Controllers
 			IKersUserRepository userRepo,
 			KERSmainContext mainContext,
 			IMemoryCache _cache,
-			FiscalYearRepository _fiscalYearRepo
+			IFiscalYearRepository _fiscalYearRepo
         ):
 			base(_context, userRepo, mainContext, _cache){
 				this._fiscalYearRepo = _fiscalYearRepo;
