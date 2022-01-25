@@ -45,13 +45,14 @@ export class ActivityFilterComponent implements OnInit {
   order = "dsc";
 
   myDateRangePickerOptions: IAngularMyDpOptions = {
-    // other options...
-    dateFormat: 'mmm dd, yyyy'
+      dateRange: true,
+      dateFormat: 'mmm dd, yyyy',
+      alignSelectorRight: true
   };
-  model = {beginDate: {year: 2018, month: 10, day: 9},
-                           endDate: {year: 2018, month: 10, day: 19}};
 
 
+
+   model: IMyDateModel = null;
   
   optionsCheckboxes = [];
   get selectedOptions() { 
@@ -89,18 +90,28 @@ export class ActivityFilterComponent implements OnInit {
         }
       }
     );
-    var startDate = new Date();
-    startDate.setMonth( startDate.getMonth() - 1);
-    var endDate = new Date();
-    
 
-    this.model.beginDate = {year: startDate.getFullYear(), month: startDate.getMonth() + 1, day: startDate.getDate()};
-    this.model.endDate = {year: endDate.getFullYear(), month: endDate.getMonth() + 1, day: endDate.getDate()};
-    
+    var end = new Date();
+    var start = new Date();
+    start.setMonth(end.getMonth()-1);
+
+    this.model = {
+      isRange: true, 
+      singleDate: null, 
+      dateRange: {
+        beginDate: {
+          year: start.getFullYear(), month: start.getMonth() + 1, day: start.getDate()
+        },
+        endDate: {
+          year: end.getFullYear(), month: end.getMonth() + 1, day: end.getDate()
+        }
+      }
+    };
+
 
     this.criteria = {
-      start: startDate.toISOString(),
-      end: endDate.toISOString(),
+      start: start.toISOString(),
+      end: end.toISOString(),
       search: "",
       order: 'dsc',
       congressionalDistrictId: null,
@@ -130,7 +141,7 @@ export class ActivityFilterComponent implements OnInit {
     this.onRefresh();
   }
 
-  dateCnanged(event: IMyDateModel){
+  onDateChanged(event: IMyDateModel){
     this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
     this.criteria["end"] = event.dateRange.endJsDate.toISOString();
     this.onRefresh();
