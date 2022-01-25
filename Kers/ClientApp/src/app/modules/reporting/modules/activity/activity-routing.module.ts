@@ -8,6 +8,7 @@ import {ActivityStatsAllComponent} from './stats/activity-stats-all.component';
 import {ActivityStatsProgramComponent} from './stats/activity-stats-program.component';
 import {ActivityStatsMonthComponent} from './stats/activity-stats-month.component';
 import { ActivityFilterComponent } from './reports/filter/activity-filter.component';
+import { ActivityStatsFilterComponent } from './stats/activity-stats-filter.component';
 
 @NgModule({
   imports: [ RouterModule.forChild([
@@ -45,6 +46,10 @@ import { ActivityFilterComponent } from './reports/filter/activity-filter.compon
                         {
                           path: 'program',
                           component: ActivityStatsProgramComponent
+                        },
+                        {
+                          path: 'statsfilter',
+                          component: ActivityStatsFilterComponent
                         },
                     
                   ]

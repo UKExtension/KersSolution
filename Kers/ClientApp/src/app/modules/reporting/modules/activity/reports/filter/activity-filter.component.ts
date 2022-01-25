@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
-import { startWith, flatMap, tap } from 'rxjs/operators';
+import { startWith, tap, mergeMap } from 'rxjs/operators';
 import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } from '../../../state/state.service';
 import { PlanningUnit } from "../../../user/user.service";
 import { saveAs } from 'file-saver';
@@ -28,10 +28,10 @@ import { ActivityOption } from '../../../servicelog/servicelog.service';
 })
 export class ActivityFilterComponent implements OnInit {
 
-  
-  condition = false;
-
+  @Input() userId:number | null = null;
   @Input() criteria:ActivitySearchCriteria;
+  condition = false;
+  isUser = false;
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
   revisions$:Observable<ActivitySeearchResultsWithCount>;
@@ -78,6 +78,7 @@ export class ActivityFilterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isUser = (this.userId != null);
     this.congressional$ = this.stateService.congressional();
     this.regions$ = this.stateService.regions();
     this.counties$ = this.stateService.counties();
@@ -131,7 +132,7 @@ export class ActivityFilterComponent implements OnInit {
     this.revisions$ = this.refresh.asObservable()
           .pipe(
             startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-            flatMap(_ => this.service.getCustom(this.criteria)), // Get some items
+            mergeMap(_ => this.service.getCustom(this.criteria, this.userId)), // Get some items
             tap(_ => this.loading = false) // Turn off the spinner
           );
   }

@@ -11,10 +11,10 @@
   </div>
 
 </div>
-<h3>Service Log Records</h3><br>
+<h3 *ngIf="!isUser">Service Log Records</h3><br>
 <div class="row">
   <div class="col-md-6 col-sm-6 col-xs-12">
-    <input class="form-control" name="contact" (keyup)="onSearch($event)" placeholder="Employee Name"/>
+    <input *ngIf="!isUser" class="form-control" name="contact" (keyup)="onSearch($event)" placeholder="Employee Name"/>
   </div>
   <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
 
@@ -26,14 +26,9 @@
         #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
       <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
     </div>
-<!-- 
-      <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
-  -->
-    </div>
+  </div>
 
 </div>
-
-
 <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
   <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
 </a>
@@ -42,7 +37,7 @@
     <div class="col-sm-offset-3 col-sm-9">
       <h2>Refine Search</h2>
     </div>
-    <div class="form-group" >
+    <div  *ngIf="!isUser" class="form-group" >
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Congressional District</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
         <select class="form-control" (change)="onCongressionalChange($event)" name="CongressionalDistrict">
@@ -51,7 +46,7 @@
         </select>
       </div>
     </div>
-    <div class="form-group" >
+    <div *ngIf="!isUser" class="form-group" >
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Region</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
         <select class="form-control" (change)="onRegionChange($event)" name="Region">
@@ -60,7 +55,7 @@
         </select>
       </div>
     </div>
-    <div class="form-group" *ngIf="criteria.regionId != null && criteria.regionId != 0">
+    <div class="form-group" *ngIf="isUser && criteria.regionId != null && criteria.regionId != 0">
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Area</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
         <select class="form-control" (change)="onAreaChange($event)" name="Region">
@@ -69,7 +64,7 @@
         </select>
       </div>
     </div>
-    <div class="form-group" >
+    <div *ngIf="!isUser" class="form-group" >
       <label class="control-label col-md-3 col-sm-3 col-xs-12">County</label>
       <div class="col-md-6 col-sm-6 col-xs-12">
         <select class="form-control" (change)="onCountyChange($event)" name="Region">

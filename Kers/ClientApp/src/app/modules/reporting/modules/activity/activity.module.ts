@@ -34,6 +34,7 @@ import { ServiceLogSnapPolicyDetailsComponent } from './reports/fulldetails/serv
 import { ActivityFilterComponent } from './reports/filter/activity-filter.component';
 import { ActivityReportsDetailComponent } from './reports/filter/activity-reports-detail.component';
 import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import {ActivityStatsFilterComponent} from './stats/activity-stats-filter.component';
 
 @NgModule({
   imports:      [ SharedModule,
@@ -66,7 +67,8 @@ import { AngularMyDatePickerModule } from 'angular-mydatepicker';
                     ServiceLogSnapIndirectDetailsComponent,
                     ServiceLogSnapPolicyDetailsComponent,
                     ActivityFilterComponent,
-                    ActivityReportsDetailComponent
+                    ActivityReportsDetailComponent,
+                    ActivityStatsFilterComponent
                 ],
   providers:    [  
                     ActivityService,
@@ -78,7 +80,8 @@ import { AngularMyDatePickerModule } from 'angular-mydatepicker';
                     ActivityStatsMonthComponent,
                     ActivityStatsProgramComponent,
                     ActivityReportsSummaryComponent,
-                    ServiceLogFullDetailsComponent
+                    ServiceLogFullDetailsComponent,
+                    ActivityFilterComponent
                 ]
 })
 export class ActivityModule { }

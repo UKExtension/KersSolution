@@ -203,8 +203,9 @@ export class ActivityService {
                 catchError(this.handleError('delete'))
             );
     }
-    getCustom(criteria:ActivitySearchCriteria):Observable<ActivitySeearchResultsWithCount>{
+    getCustom(criteria:ActivitySearchCriteria, userId:number | null = null):Observable<ActivitySeearchResultsWithCount>{
         var url = this.baseUrl + 'getCustom/';
+        if( userId != null ) url += userId;
         return this.http.post<ActivitySeearchResultsWithCount>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
                 catchError(this.handleError('getCustom',<ActivitySeearchResultsWithCount>{}))
@@ -217,8 +218,9 @@ export class ActivityService {
                 catchError(this.handleError('GetCustomDataHeader', []))
             );
     }
-    getCustomData(criteria:ActivitySearchCriteria):Observable<string[]>{
+    getCustomData(criteria:ActivitySearchCriteria, userId:number | null = null):Observable<string[]>{
         var url = this.baseUrl + 'getCustomData/';
+        if( userId != null ) url += userId;
         return this.http.post<string[]>(this.location.prepareExternalUrl(url), criteria)
             .pipe(
                 retry(3),

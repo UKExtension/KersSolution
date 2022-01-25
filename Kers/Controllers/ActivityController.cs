@@ -158,11 +158,11 @@ namespace Kers.Controllers
  */
 
 
-        [HttpPost("GetCustomData")]
+        [HttpPost("GetCustomData/{userID?}")]
         [Authorize]
-        public async Task<IActionResult> GetCustomData( [FromBody] ActivitySearchCriteria criteria ){
+        public async Task<IActionResult> GetCustomData([FromBody] ActivitySearchCriteria criteria, int? userID = null ){
             var ret = new List<List<string>>();
-            var result = await SeearchResults(criteria);
+            var result = await SeearchResults(criteria, userID);
             var races = context.Race.OrderBy( r => r.Order).ToList();
             var ethnicities = context.Ethnicity.OrderBy( r => r.Order).ToList();
             var options = context.ActivityOption.OrderBy( o => o.Order).ToList();
@@ -191,11 +191,11 @@ namespace Kers.Controllers
             return new OkObjectResult( activityRepo.ReportHeaderRow() );
         }
 
-        [HttpPost("GetCustom")]
+        [HttpPost("GetCustom/{userID?}")]
         [Authorize]
-        public async Task<IActionResult> GetCustom( [FromBody] ActivitySearchCriteria criteria
+        public async Task<IActionResult> GetCustom( [FromBody] ActivitySearchCriteria criteria, int? userID = null
                                         ){
-            var ret = await SeearchResults(criteria);
+            var ret = await SeearchResults(criteria, userID);
             if( criteria.Skip == 0 ){
                 this.Log( criteria ,"SnapedSearchCriteria", "Custom Snap-Ed Report Initiated", "SnapedSearchCriteria", "Info");
                 this.context.SaveChanges();
@@ -203,9 +203,16 @@ namespace Kers.Controllers
             
             return new OkObjectResult(ret);
         }
-        private async Task<ActivitySeearchResultsWithCount> SeearchResults(ActivitySearchCriteria criteria){
+        private async Task<ActivitySeearchResultsWithCount> SeearchResults(ActivitySearchCriteria criteria, int? userID = null){
             var result = this.context.Activity.AsNoTracking()
                                 .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End);
+            if( userID != null ){
+                if(userID == 0 ){
+                    KersUser user = this.CurrentUser();
+                    userID = user.Id;
+                }
+                result = result.Where( a => a.KersUserId == userID );
+            }
             if( criteria.Search != ""){
                 result = result.Where( a => a.KersUser.RprtngProfile.Name.Contains(criteria.Search));
             }
