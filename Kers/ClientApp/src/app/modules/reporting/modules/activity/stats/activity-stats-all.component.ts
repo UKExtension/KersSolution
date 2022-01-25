@@ -41,6 +41,7 @@ export class ActivityStatsAllComponent {
     {}
 
     ngOnInit(){
+        this.router.navigate(['/reporting/activity/stats/statsfilter'])
         var end = new Date();
         var start = new Date();
         start.setMonth(end.getMonth()-2);
