@@ -8,7 +8,7 @@ import { User } from "../../user/user.service";
 
 @Component({
   template: `
-        <a [routerLink]="['/reporting/activity/stats/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact:
+        <a [routerLink]="['/reporting/activity/stats/statsfilter']" routerLinkActive="active" [routerLinkActiveOptions]="{exact:
 true}">All Statistical Contact Records</a> | 
         <a [routerLink]="['/reporting/activity/stats/month']" routerLinkActive="active">Summary By Month</a> | 
         <a [routerLink]="['/reporting/activity/stats/program']" routerLinkActive="active">Summary By Major Program</a> | 
