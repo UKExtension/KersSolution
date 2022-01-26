@@ -197,7 +197,7 @@ namespace Kers.Controllers
                                         ){
             var ret = await SeearchResults(criteria, userID);
             if( criteria.Skip == 0 ){
-                this.Log( criteria ,"SnapedSearchCriteria", "Custom Snap-Ed Report Initiated", "SnapedSearchCriteria", "Info");
+                this.Log( criteria ,"ActivitySearchCriteria", "Custom Activities Report Initiated" + (userID == null ? " by an Admin" : " by User"), "ActivitySearchCriteria", "Info");
                 this.context.SaveChanges();
             }
             
