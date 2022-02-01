@@ -49,7 +49,10 @@ namespace Kers.Models.Entities.KERScore
         public string otherExpenseExplanation {get;set;}
         public DateTime? departTime {get;set;}
         public DateTime? returnTime {get;set;}
+        public int StartingLocationId {get;set;}
+        [ForeignKey("StartingLocationId")]
         public ExtensionEventLocation StartingLocation {get;set;}
+
         public List<MileageSegment> Segments {get;set;}
 
     }

@@ -167,7 +167,6 @@ export class MileageFormComponent implements OnInit {
       for( let segment of this.mileage.segments){
         this.addSegment(segment);
       }
-
       let date = new Date(this.mileage.expenseDate);
       this.mileage.expenseDate = date;
       this.isOvernight(this.mileage.isOvernight);
