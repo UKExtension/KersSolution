@@ -69,7 +69,7 @@ export class MileageFormComponent implements OnInit {
     return false;
   }
 
-
+  stLocId:number;
 
   get stLoc(){
     return this.mileageForm.get('startingLocation').value as ExtensionEventLocation;
@@ -147,6 +147,7 @@ export class MileageFormComponent implements OnInit {
         res => {
           if(res != null){
             this.stLoc = res;
+            this.stLocId = res.id;
           }else{
             this.startingLocationBrowser = true;
           }
@@ -186,11 +187,11 @@ export class MileageFormComponent implements OnInit {
   getBack(){
     var formValue = this.mileageForm.value;
     if( formValue.startingLocation != undefined && formValue.segments.length == 1){
-      console.log(this.stLoc);
       var firstSegment = formValue.segments[0];
       var group:FormControl = this.fb.control(
         {
-          locationId: '',
+          locationId: this.stLocId,
+          location: this.stLoc,
           programCategoryId: firstSegment.programCategoryId,
           businessPurpose:  firstSegment.businessPurpose,
           fundingSourceId:  firstSegment.fundingSourceId,
@@ -246,6 +247,7 @@ export class MileageFormComponent implements OnInit {
   }
 
   locationSelected(event:ExtensionEventLocationConnection){
+    this.stLocId = event.extensionEventLocationId;
     this.stLoc = event.extensionEventLocation;
     this.startingLocationBrowser = false;
   }

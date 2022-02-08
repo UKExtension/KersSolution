@@ -83,7 +83,7 @@
             <mileage-segment [itIsPersonalVehicle]="itIsPersonalVehicle" [index]="i" [fundingSources]="fundingSources" [programCategories]="programCategories" [currentUser]="currentUser" (removeMe)="sectionRemoved($event)" [formControlName]="i"></mileage-segment>
         </div>
         <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add destination</a> 
-       <!--  <span *ngIf="isBackButtonAvailable"> or <a class="btn btn-info btn-xs" (click)="getBack()" style="margin-top: 8px;"> + starting location</a></span> -->
+       <span *ngIf="isBackButtonAvailable"> or <a class="btn btn-info btn-xs" (click)="getBack()" style="margin-top: 8px;"> + get back</a></span>
     </div>
     </div>
     <div class="ln_solid"></div>
