@@ -82,8 +82,8 @@
         <div *ngFor="let segment of segments.controls; let i=index" class="segment-container">
             <mileage-segment [itIsPersonalVehicle]="itIsPersonalVehicle" [index]="i" [fundingSources]="fundingSources" [programCategories]="programCategories" [currentUser]="currentUser" (removeMe)="sectionRemoved($event)" [formControlName]="i"></mileage-segment>
         </div>
-        <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add destination</a> 
-       <span *ngIf="isBackButtonAvailable"> or <a class="btn btn-info btn-xs" (click)="getBack()" style="margin-top: 8px;"> + get back</a></span>
+        <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add destination</a>
+        <span *ngIf="isBackButtonAvailable"> or <a class="btn btn-info btn-xs" (click)="getBack()" style="margin-top: 8px; margin-left: 5px;">round trip</a></span>
     </div>
     </div>
     <div class="ln_solid"></div>
