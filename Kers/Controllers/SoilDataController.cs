@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Kers.Models.Contexts;
 using Kers.Models.Entities.SoilData;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 
 namespace Kers.Controllers
@@ -19,17 +20,20 @@ namespace Kers.Controllers
         SoilDataContext _soilDataContext;
         IKersUserRepository _userRepo;
         ILogRepository logRepo;
+        IMemoryCache _memoryCache;
         public SoilDataController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     SoilDataContext soilDataContext,
                     IKersUserRepository userRepo,
-                    ILogRepository logRepo
+                    ILogRepository logRepo,
+                    IMemoryCache _memoryCache
             ):base(mainContext, context, userRepo){
            this._context = context;
            this._userRepo = userRepo;
            this.logRepo = logRepo;
            this._soilDataContext = soilDataContext;
+           this._memoryCache = _memoryCache;
             
             //Associate County Codes with Planning Units if not done yet
             if(!soilDataContext.CountyCodes.Where( c => c.PlanningUnitId != 0).Any()){
@@ -154,55 +158,86 @@ namespace Kers.Controllers
             return new OkObjectResult( new {count = addresses.Count(), data = addresses.Take(criteria.Amount)} );
         }
 
+        public bool isUpdateRunning(){
+            bool result;
 
+            // Look for cache key.
+            if (!_memoryCache.TryGetValue("updateisrunning", out result))
+            {
+                // Key not in cache, so get data.
+                result = false;
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    // Keep in cache for this time, reset time if accessed.
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(60));
+
+                // Save data in cache.
+                _memoryCache.Set("updateisrunning", result, cacheEntryOptions);
+            }
+
+            return result;
+        }
+
+        public void setUpdatingTo(bool isRunning){
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    // Keep in cache for this time, reset time if accessed.
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(60));
+
+            // Save data in cache.
+            _memoryCache.Set("updateisrunning", isRunning, cacheEntryOptions);
+        }
 
         private void UpdateBundles(){
-            SoilReport OrphanedReport =  _soilDataContext.SoilReport
+
+            if( !isUpdateRunning() ){
+                setUpdatingTo(true);
+                SoilReport OrphanedReport =  _soilDataContext.SoilReport
                                                 .Where( r => r.SoilReportBundleId == null)
                                                 .FirstOrDefault();
-            if( OrphanedReport != null ){
-                do{
-                    var SameSample = _soilDataContext.SoilReport
-                                        .Where( r => r.CoId == OrphanedReport.CoId && r.CoSamnum == OrphanedReport.CoSamnum && r.SoilReportBundleId == null)
-                                        .ToList();
-                    var Bundle = new SoilReportBundle();
-                    Bundle.Reports = SameSample;
-                    //Bundle.StatusHistory = new List<SoilReportStatusChange>();
-                    Bundle.PlanningUnit = _soilDataContext.CountyCodes.Where( c => c.CountyID == OrphanedReport.CoId).FirstOrDefault();
-                    if(Bundle.FarmerForReport == null){
-                        Bundle.FarmerForReport = _soilDataContext.FarmerForReport
-                                                        .Where(f => f.FarmerID == OrphanedReport.FarmerID)
-                                                        .FirstOrDefault();
-                        if(Bundle.FarmerForReport != null){
-                            Bundle.FarmerAddress = _soilDataContext.FarmerAddress
-                                                        .Where(f => f.FarmerID == Bundle.FarmerForReport.FarmerID.Substring(0,11))
-                                                        .FirstOrDefault();
+                if( OrphanedReport != null ){
+                    do{
+                        var SameSample = _soilDataContext.SoilReport
+                                            .Where( r => r.CoId == OrphanedReport.CoId && r.CoSamnum == OrphanedReport.CoSamnum && r.SoilReportBundleId == null)
+                                            .ToList();
+                        var Bundle = new SoilReportBundle();
+                        Bundle.Reports = SameSample;
+                        //Bundle.StatusHistory = new List<SoilReportStatusChange>();
+                        Bundle.PlanningUnit = _soilDataContext.CountyCodes.Where( c => c.CountyID == OrphanedReport.CoId).FirstOrDefault();
+                        if(Bundle.FarmerForReport == null){
+                            Bundle.FarmerForReport = _soilDataContext.FarmerForReport
+                                                            .Where(f => f.FarmerID == OrphanedReport.FarmerID)
+                                                            .FirstOrDefault();
+                            if(Bundle.FarmerForReport != null){
+                                Bundle.FarmerAddress = _soilDataContext.FarmerAddress
+                                                            .Where(f => f.FarmerID == Bundle.FarmerForReport.FarmerID.Substring(0,11))
+                                                            .FirstOrDefault();
+                            }
+                            
                         }
-                        
-                    }
-                    Bundle.CoSamnum = OrphanedReport.CoSamnum;
-                    Bundle.SampleLabelCreated = OrphanedReport.DateIn;
-                    Bundle.LabTestsReady = OrphanedReport.DateOut;
-                    Bundle.DataProcessed = OrphanedReport.DateSent;
-                    Bundle.TypeForm = _soilDataContext.TypeForm
-                                                .Where( f => f.Code == OrphanedReport.TypeForm)
-                                                .FirstOrDefault();
-                    Bundle.LastStatus = new SoilReportStatusChange();
-                    Bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Received").FirstOrDefault();
-                    Bundle.LastStatus.Created = DateTime.Now;
-                    Bundle.UniqueCode = Guid.NewGuid().ToString();
-                    _soilDataContext.Add(Bundle);
+                        Bundle.CoSamnum = OrphanedReport.CoSamnum;
+                        Bundle.SampleLabelCreated = OrphanedReport.DateIn;
+                        Bundle.LabTestsReady = OrphanedReport.DateOut;
+                        Bundle.DataProcessed = OrphanedReport.DateSent;
+                        Bundle.TypeForm = _soilDataContext.TypeForm
+                                                    .Where( f => f.Code == OrphanedReport.TypeForm)
+                                                    .FirstOrDefault();
+                        Bundle.LastStatus = new SoilReportStatusChange();
+                        Bundle.LastStatus.SoilReportStatus = _soilDataContext.SoilReportStatus.Where( s => s.Name == "Received").FirstOrDefault();
+                        Bundle.LastStatus.Created = DateTime.Now;
+                        Bundle.UniqueCode = Guid.NewGuid().ToString();
+                        _soilDataContext.Add(Bundle);
+                        _soilDataContext.SaveChanges();
+                        OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
+                    }while( OrphanedReport != null);
+                }
+                // Add Unique Code to Farmer Addresses
+                var addresses = _soilDataContext.FarmerAddress.Where( a => a.UniqueCode == null);
+                if( addresses.Any()){
+                    foreach( var address in addresses) address.UniqueCode = Guid.NewGuid().ToString();
                     _soilDataContext.SaveChanges();
-                    OrphanedReport = _soilDataContext.SoilReport.Where( r => r.SoilReportBundleId == null).FirstOrDefault();
-                }while( OrphanedReport != null);
-            }
-            // Add Unique Code to Farmer Addresses
-            var addresses = _soilDataContext.FarmerAddress.Where( a => a.UniqueCode == null);
-            if( addresses.Any()){
-                foreach( var address in addresses) address.UniqueCode = Guid.NewGuid().ToString();
-                _soilDataContext.SaveChanges();
-            }
-            
+                }
+                setUpdatingTo(false);
+            } 
         }
 
         [HttpPut("updatebundleaddress/{bundleId}")]
