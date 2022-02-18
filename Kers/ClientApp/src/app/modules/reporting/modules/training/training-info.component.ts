@@ -102,9 +102,10 @@ export class TrainingInfoComponent implements OnInit {
     if(training.cancelCutoffDays){
       var cutof = new Date(training.start);
       cutof.setHours(3, 0, 0);
-      cutof.setDate(cutof.getDate() - training.cancelCutoffDays.cancelDaysVal);
+      cutof.setDate(cutof.getDate() - training.cancelCutoffDays.cancelDaysVal + 1);
       var today = new Date();
-      today.setHours(3, 0, 0)
+      today.setHours(3, 0, 0);
+
       if( cutof <= today ) return true;
     }
     return false;
