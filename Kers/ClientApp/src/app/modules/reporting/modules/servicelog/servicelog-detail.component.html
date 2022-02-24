@@ -15,7 +15,8 @@
                 <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapDirect != null">Snap-Ed Direct</span>
                 <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapAdmin">Snap-Ed Admin/Staff Dev</span>
                 <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapPolicy != null">Snap-Ed Community/PSE</span>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapIndirect != null">Snap-Ed Indirect</span></p>
+                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapIndirect != null">Snap-Ed Indirect</span>
+                <span style="background-color: #73879C;" class="label label-default" *ngIf="blankSnap">Snap-Ed</span></p>
             </div>
         </article>
         <div class="col-xs-12" *ngIf="rowEdit">

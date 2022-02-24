@@ -13,6 +13,7 @@ export class ServicelogDetailComponent {
     currentFiscalYear:FiscalYear | null = null;
     displayEdit = false;
     loading = false;
+    blankSnap = false;
 
     
     @Input() activity:Servicelog;
@@ -47,6 +48,19 @@ export class ServicelogDetailComponent {
                 }
             } 
        );
+       if( this.activity.isSnap ){
+           if(
+               !this.activity.snapAdmin
+               &&
+               this.activity.snapDirect == null
+               &&
+               this.activity.snapPolicy == null
+               &&
+               this.activity.snapIndirect == null
+           ){
+            this.blankSnap = true;
+           }
+       }
        
        
     }

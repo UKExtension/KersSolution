@@ -282,8 +282,11 @@ export interface Servicelog{
     classicSnapId?: number;
     classicIndirectSnapId?:number;
     snapDirect:SnapDirect;
+    snapDirectId?:number;
     snapIndirect:SnapIndirect;
+    snapIndirectId?:number;
     snapPolicy:SnapPolicy;
+    snapPolicyId?:number;
     snapCopies:number;
     snapCopiesBW:number;
     snapAdmin:boolean;
