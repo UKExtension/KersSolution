@@ -31,6 +31,7 @@ namespace Kers.Controllers
 
 		const int width = 612;
 		const int height = 792;
+		bool isSharedAgent = false;
 
 		IActivityRepository activityRepo;
 
@@ -64,8 +65,11 @@ namespace Kers.Controllers
 									Include(u => u.PersonalProfile). 
 									Include(u => u.RprtngProfile).ThenInclude(p => p.PlanningUnit).
 									Include(u => u.ExtensionPosition).
+									Include( u => u.Roles).ThenInclude( r => r.zEmpRoleType).
 									FirstOrDefault();
 				}
+				this.isSharedAgent = user.Roles.Where( r => r.zEmpRoleType.shortTitle == "SHAGNT").Any();
+
 				var activities = activityRepo.PerMonth(user,year, month, "asc");
 				float count = (float)activities.Count();
 				float ratio = count/5 ;
@@ -200,6 +204,11 @@ namespace Kers.Controllers
 
 			pdfCanvas.DrawText("Major Program:", 250, startingY + 18, getPaint(10.0f));
 			pdfCanvas.DrawText(activity.MajorProgram.Name, 250, startingY + 30, getPaint(10.0f, 2));
+
+			if( isSharedAgent ){
+				var county = this._context.Activity.Where( a => a.Id == activity.ActivityId).Select( a => a.PlanningUnit.Name).FirstOrDefault();
+				pdfCanvas.DrawText(county, 450, startingY + 18, getPaint(10.0f));
+			}
 
 			var attendance = activity.Male + activity.Female;
 			pdfCanvas.DrawText("Attendance:", 43, startingY + 65, getPaint(10.0f));
