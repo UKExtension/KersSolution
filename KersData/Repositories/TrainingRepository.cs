@@ -102,7 +102,7 @@ namespace Kers.Models.Repositories
 
                         var valArray = this.valsToArray(training);
                         var message = new Message();
-                        message.Subject = template.Subject;
+                        message.Subject = string.Format(template.Subject, valArray);
                         message.BodyHtml = string.Format(template.BodyHtml, valArray);
                         message.BodyText = string.Format(template.BodyText, valArray);
                         message.FromEmail = "agpsd@lsv.uky.edu";
@@ -131,7 +131,7 @@ namespace Kers.Models.Repositories
             if( template != null && trainings.Count() > 0 ){
                 foreach( var enr in trainings){
                     var message = new Message();
-                    message.Subject = template.Subject;
+                    message.Subject = string.Format(template.Subject, valArray);
                     message.BodyHtml = string.Format(template.BodyHtml, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.Id);
                     message.BodyText = string.Format(template.BodyText, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.Id);
                     message.FromId = enr.Training.submittedById;
