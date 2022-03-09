@@ -131,7 +131,7 @@ namespace Kers.Models.Repositories
             if( template != null && trainings.Count() > 0 ){
                 foreach( var enr in trainings){
                     var message = new Message();
-                    message.Subject = string.Format(template.Subject, valArray);
+                    message.Subject = string.Format(template.Subject, enr.Training.Subject);
                     message.BodyHtml = string.Format(template.BodyHtml, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.Id);
                     message.BodyText = string.Format(template.BodyText, enr.Training.Subject, enr.Training.Start.ToString( "MM/dd/yyyy" ), enr.Training.Id);
                     message.FromId = enr.Training.submittedById;
