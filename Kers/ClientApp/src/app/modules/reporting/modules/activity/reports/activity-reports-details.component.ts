@@ -110,6 +110,7 @@ export class ActivityReportsDetailsComponent {
         
         this.service.csv(this.year.year, this.month.month, userid).subscribe(
             data => {
+                //console.log(data);
                 var blob = new Blob([data], {type: 'text/csv'});
                 saveAs(blob, "ActivitiesReport_" + this.year.year + "_" + this.month.month + ".csv");
                 this.csvLoading = false;

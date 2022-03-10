@@ -21,6 +21,10 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.Data;
+using CsvHelper.Configuration;
+using System.IO;
+using System.Text;
+using CsvHelper;
 
 namespace Kers.Controllers
 {
@@ -1041,7 +1045,7 @@ namespace Kers.Controllers
 
         [HttpGet]
         [Route("{year}/{month}/{userId}/data.csv")]
-        [Produces("text/csv")]
+        //[Produces("text/csv")]
         [Authorize]
         public IActionResult GetDataAsCsv(int year, int month, int userId){
 
@@ -1065,7 +1069,18 @@ namespace Kers.Controllers
                                         MajorProgram = a.MajorProgram.Name
                                     }
                                 
-                                );
+                                ).ToList();
+                                /* 
+            var cc = new CsvConfiguration(new System.Globalization.CultureInfo("en-US"));
+            using (var ms = new MemoryStream()) {
+                using (var sw = new StreamWriter(stream: ms, encoding: new UTF8Encoding(true))) {
+                    using (var cw = new CsvWriter(sw, cc)) {
+                        cw.WriteRecords(lastActivities);
+                    }// The stream gets flushed here.
+                    return File(ms.ToArray(), "text/csv", $"export_{DateTime.UtcNow.Ticks}.csv");
+                }
+            } */
+            //return File(lastActivities, "text/csv", $"export_{DateTime.UtcNow.Ticks}.csv");
             return Ok( lastActivities );
         }
 
