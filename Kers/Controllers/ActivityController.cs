@@ -1070,7 +1070,7 @@ namespace Kers.Controllers
                                     }
                                 
                                 ).ToList();
-                                /* 
+                                
             var cc = new CsvConfiguration(new System.Globalization.CultureInfo("en-US"));
             using (var ms = new MemoryStream()) {
                 using (var sw = new StreamWriter(stream: ms, encoding: new UTF8Encoding(true))) {
@@ -1079,9 +1079,9 @@ namespace Kers.Controllers
                     }// The stream gets flushed here.
                     return File(ms.ToArray(), "text/csv", $"export_{DateTime.UtcNow.Ticks}.csv");
                 }
-            } */
+            }
             //return File(lastActivities, "text/csv", $"export_{DateTime.UtcNow.Ticks}.csv");
-            return Ok( lastActivities );
+            //return Ok( lastActivities );
         }
 
 
