@@ -174,8 +174,8 @@ export class ActivityService {
                 .catch(this.handleError); */
     }
 
-    csv(year:number, month:number, id:number = 0): Observable<Blob>{
-        return this.http.get(this.location.prepareExternalUrl('/api/Activity/' + year + '/' + month + '/' + id + '/data.csv'), {responseType: 'blob'})
+    csv(year:number, month:number, id:number = 0): Observable<string[]>{
+        return this.http.get<string[]>(this.location.prepareExternalUrl('/api/Activity/' + year + '/' + month + '/' + id + '/data.csv'))
         
         /* 
         

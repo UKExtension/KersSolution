@@ -110,9 +110,26 @@ export class ActivityReportsDetailsComponent {
         
         this.service.csv(this.year.year, this.month.month, userid).subscribe(
             data => {
+
+
+
+                const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
+                const header = Object.keys(data[0]);
+                let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+                //csv.unshift(header.join(','));
+                let csvArray = csv.join('\r\n');
+
+                var blob = new Blob([csvArray], {type: 'text/csv' })
+                saveAs(blob, "KERS_ServiceLogData.csv");
+
+
+
+
                 //console.log(data);
-                var blob = new Blob([data], {type: 'text/csv'});
-                saveAs(blob, "ActivitiesReport_" + this.year.year + "_" + this.month.month + ".csv");
+                //var blob = new Blob([data], {type: 'text/csv'});
+                //saveAs(blob, "ActivitiesReport_" + this.year.year + "_" + this.month.month + ".csv");
+                
+                
                 this.csvLoading = false;
             },
             err => console.error(err)

@@ -1047,18 +1047,51 @@ namespace Kers.Controllers
         [Route("{year}/{month}/{userId}/data.csv")]
         //[Produces("text/csv")]
         [Authorize]
-        public IActionResult GetDataAsCsv(int year, int month, int userId){
-
+        public async Task<IActionResult> GetDataAsCsv(int year, int month, int userId){
+/* 
             KersUser user;
             if(userId == 0){
                 user = this.CurrentUser();
                 userId = user.Id;
             }else{
                 user = this.context.KersUser.Find(userId);
+            } */
+
+
+            var criteria = new ActivitySearchCriteria();
+            criteria.Start = new DateTime(year,month, 1, 0,0,0);
+            criteria.End = new DateTime( year, month, DateTime.DaysInMonth(year, month),23,59,59);
+            criteria.Search = "";
+            criteria.Skip = 0;
+            criteria.Take = 10000;
+
+            var ret = new List<List<string>>();
+            ret.Add(activityRepo.ReportHeaderRow());
+            var result = await SeearchResults(criteria, userId);
+            var races = context.Race.OrderBy( r => r.Order).ToList();
+            var ethnicities = context.Ethnicity.OrderBy( r => r.Order).ToList();
+            var options = context.ActivityOption.OrderBy( o => o.Order).ToList();
+            var optionNumbers = context.ActivityOptionNumber.OrderBy( v => v.Order).ToList();
+            var ages = context.SnapDirectAges.Where( a => a.Active).OrderBy( a => a.order).ToList();
+            var audience = context.SnapDirectAudience.Where( a => a.Active).OrderBy( a => a.order).ToList();
+            foreach( var res in result.Results){
+                ret.Add( activityRepo.ReportRow(
+                                            res.Revision.ActivityId,
+                                            null,
+                                            races,
+                                            ethnicities,
+                                            options,
+                                            optionNumbers,
+                                            ages,
+                                            audience
+                                        )      
+                        );
             }
 
+            return new OkObjectResult(ret);
 
-            var lastActivities = context.Activity.
+
+          /*   var lastActivities = context.Activity.
                                 Where(e=>e.KersUser == user && e.ActivityDate.Month == month && e.ActivityDate.Year == year).
                                 Select(a =>
                                     new {
@@ -1070,16 +1103,16 @@ namespace Kers.Controllers
                                     }
                                 
                                 ).ToList();
-                                
+                             
             var cc = new CsvConfiguration(new System.Globalization.CultureInfo("en-US"));
             using (var ms = new MemoryStream()) {
                 using (var sw = new StreamWriter(stream: ms, encoding: new UTF8Encoding(true))) {
                     using (var cw = new CsvWriter(sw, cc)) {
-                        cw.WriteRecords(lastActivities);
+                        cw.WriteRecords(ret);
                     }// The stream gets flushed here.
                     return File(ms.ToArray(), "text/csv", $"export_{DateTime.UtcNow.Ticks}.csv");
                 }
-            }
+            } */
             //return File(lastActivities, "text/csv", $"export_{DateTime.UtcNow.Ticks}.csv");
             //return Ok( lastActivities );
         }
