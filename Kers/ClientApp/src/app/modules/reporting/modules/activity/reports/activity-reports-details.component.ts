@@ -9,9 +9,9 @@ import { saveAs } from 'file-saver';
   <loading *ngIf="loading"></loading>
   <div *ngIf="!loading">
     <div class="text-right">
-        <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
+        <loading [type]="'bars'" *ngIf="pdfLoading || csvLoading"></loading>
         <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading"><i class="fa fa-download"></i> Pdf</a>
-        <a class="btn btn-info btn-xs" (click)="csv()"><i class="fa fa-download"></i> Csv</a>
+        <a class="btn btn-info btn-xs" (click)="csv()" *ngIf="!csvLoading"><i class="fa fa-download"></i> Csv</a>
     </div>
         <div class="col-md-12 col-sm-12 col-xs-12" *ngFor="let activity of monthActivities">
             <div class="ln_solid"></div>
