@@ -7,30 +7,85 @@
 
 @if(@Model != null)
 {
-    <div>Fiscal Year: 
+    <div class="fy-switcher">Fiscal Year: <label for="toggle-1">@selected.Name <i class="fa fa-angle-down"></i></label>
+<input type="checkbox" checked="false" id="toggle-1">
+<div class="fiscalyears">
     @foreach( var year in Model ){
         if( year != selected )
         {
             if(urlString != "")
             {
                 var url = urlString.Replace("{name}", year.Name).Replace("{id}", year.Id.ToString());
-                <a href="@url">@year.Name</a> @:| 
+                @year.Name @:<br> 
             }
             else
             {
-                <a asp-route-fy="@year.Name">@year.Name</a> @:|
+                <a asp-route-fy="@year.Name">@year.Name</a> @: <br>
             }
             
         }
         else
         {
-            <strong>@year.Name</strong> @:|
+            <strong>@year.Name</strong> @:<br>
         }
     }
+    </div>
     </div>
     if( showDetails??false )
     {
         <div class="small">@selected.Start.Date.ToString("MMM d, yyyy") - @selected.End.Date.ToString("MMM d, yyyy")</div>
     }
     
+
+    
+
+
+
+<style>
+/* Checkbox Hack */
+
+input[type=checkbox] {
+   position: absolute;
+   top: -9999px;
+   left: -9999px;
 }
+label { 
+  -webkit-appearance: push-button;
+  -moz-appearance: button; 
+  display: inline-block;
+  margin: 0 0 5px 0;
+  cursor: pointer;
+}
+
+/* Default State */
+.fiscalyears {
+   border: 1px solid #666;
+   text-align: left;
+   width: auto;
+   background-color: white;
+   position:absolute;
+   padding: 4px 8px;
+   right: 10px;
+   top: 50px;
+   z-index: 800;
+}
+
+@@media screen and (max-width: 768px) {
+  .fiscalyears {
+    top: 20px;
+  }
+}
+
+/* Toggled State */
+input[type=checkbox]:checked ~ .fiscalyears {
+   display: none;
+}
+
+
+</style>
+
+
+}
+
+
+

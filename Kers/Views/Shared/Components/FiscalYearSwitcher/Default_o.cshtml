@@ -7,7 +7,7 @@
 
 @if(@Model != null)
 {
-    <div>Fiscal Year: 
+    <div class="fiscalyear-switcher">Fiscal Year: 
     @foreach( var year in Model ){
         if( year != selected )
         {
@@ -19,8 +19,7 @@
             else
             {
                 <a asp-route-fy="@year.Name">@year.Name</a> @:|
-            }
-            
+            } 
         }
         else
         {
@@ -33,49 +32,4 @@
         <div class="small">@selected.Start.Date.ToString("MMM d, yyyy") - @selected.End.Date.ToString("MMM d, yyyy")</div>
     }
     
-
-    <label for="toggle-1"> Button </label>
-<input type="checkbox" id="toggle-1">
-    
-<div class="facebook"> Facebook Content</div>
-
-
-<style>
-    /* Checkbox Hack */
-
-input[type=checkbox] {
-   position: absolute;
-   top: -9999px;
-   left: -9999px;
 }
-label { 
-  -webkit-appearance: push-button;
-  -moz-appearance: button; 
-  display: inline-block;
-  margin: 60px 0 10px 0;
-  cursor: pointer;
-}
-
-/* Default State */
-.facebook {
-   background: #03C;
-   width: 400px;
-   height: 100px;
-   line-height: 100px;
-   color: white;
-   text-align: center;
-}
-
-/* Toggled State */
-input[type=checkbox]:checked ~ .facebook {
-   display: none;
-}
-
-
-</style>
-
-
-}
-
-
-
