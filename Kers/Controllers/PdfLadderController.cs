@@ -126,6 +126,8 @@ namespace Kers.Controllers
 						}
 
 						runningY += 28;
+						pdfCanvas.DrawText("Track: " + (application.Track == 0 ? 'A' : 'B'), positionX, runningY, getPaint(10.0f));
+						runningY += textLineHeight;
 						pdfCanvas.DrawText("Promotion to Level: " + application.LadderLevel.Name, positionX, runningY, getPaint(10.0f));
 						runningY += textLineHeight;
 						pdfCanvas.DrawText("Date of last Career Ladder Promotion: " + application.LastPromotion.ToString("MM/dd/yyyy"), positionX, runningY, getPaint(10.0f));
