@@ -129,11 +129,11 @@ export class SnapedBudgetHomeComponent {
     reimbursementNepAssistants_loading = false;
     csvReimbursementNepAssistants(){
       this.reimbursementNepAssistants_loading = true;
-      this.service.csv('reimbursementnepassistants/2018').subscribe(
+      this.service.csv('reimbursementnepassistants/'+ this.fiscalYear.name).subscribe(
           data => {
               var blob = new Blob([data], {type: 'text/csv'});
               this.reimbursementNepAssistants_loading = false;
-              saveAs(blob, "ReimbursementNepAssistants_2018.csv");
+              saveAs(blob, "ReimbursementNepAssistants_"+this.fiscalYear.name+".csv");
           },
           err => console.error(err)
       )
@@ -141,11 +141,11 @@ export class SnapedBudgetHomeComponent {
     reimbursementCounty_loading = false;
     csvReimbursementCounty(){
       this.reimbursementCounty_loading = true;
-      this.service.csv('reimbursementcounty/2018').subscribe(
+      this.service.csv('reimbursementcounty/'+ this.fiscalYear.name).subscribe(
           data => {
               var blob = new Blob([data], {type: 'text/csv'});
               this.reimbursementCounty_loading = false;
-              saveAs(blob, "ReimbursementCounty_2018.csv");
+              saveAs(blob, "ReimbursementCounty_"+this.fiscalYear.name+".csv");
           },
           err => console.error(err)
       )
