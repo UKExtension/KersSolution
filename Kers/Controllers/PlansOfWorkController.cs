@@ -430,6 +430,9 @@ namespace Kers.Controllers
             }else{
                 fiscalYearTo = fiscalYearRepo.nextFiscalYear(FiscalYearType.ServiceLog);
             }
+            if( this.context.PlanOfWork.Where( p => p.FiscalYear == fiscalYearTo).Any()){
+                return NotFound(new {Error = "There are already plans of work present for the target fiscal year"});
+            }
             var newPlans = new List<PlanOfWork>();
             var counties = context.PlanningUnit.Where( u => u.DistrictId != null);
             foreach( var county in counties){
