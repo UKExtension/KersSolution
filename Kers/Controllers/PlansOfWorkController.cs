@@ -425,7 +425,7 @@ namespace Kers.Controllers
                 fiscalYearFrom = fiscalYearRepo.currentFiscalYear(FiscalYearType.ServiceLog);
             }
             FiscalYear fiscalYearTo;
-            if(fyFrom != "0"){
+            if(fyTo != "0"){
                 fiscalYearTo = fiscalYearRepo.byName(fyTo, FiscalYearType.ServiceLog);
             }else{
                 fiscalYearTo = fiscalYearRepo.nextFiscalYear(FiscalYearType.ServiceLog);
@@ -659,11 +659,11 @@ namespace Kers.Controllers
 
         private PlanningUnit CurrentPlanningUnit(){
             var u = this.CurrentUserId();
-            var profile = mainContext.zEmpRptProfiles.
-                            Where(p=> p.linkBlueID == u).
+            var profile = this.context.ReportingProfile.
+                            Where(p=> p.LinkBlueId == u).
                             FirstOrDefault();
             return  this.context.PlanningUnit.
-                    Where( p=>p.Code == profile.planningUnitID).
+                    Where( p => p.Id == profile.PlanningUnitId).
                     FirstOrDefault();
         }
 
