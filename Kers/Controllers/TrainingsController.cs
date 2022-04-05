@@ -319,14 +319,14 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
         }
-        private async void CheckTheWaitingList(Training training){
+        private void CheckTheWaitingList(Training training){
             if(training.Enrollment.Where( a => a.eStatus == "W").Any()){
                 while( training.Enrollment.Where( a => a.eStatus == "W").Any() 
                             && training.Enrollment.Where( a => a.eStatus == "E").Count() < training.seatLimit){
                     var first = training.Enrollment.Where( a => a.eStatus == "W")
                                 .OrderBy( a => a.enrolledDate).FirstOrDefault();
                     first.eStatus = "E";
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
                     messageRepo.ScheduleTrainingMessage("TOENROLLED", training, first.Attendie);
                 }
             }
