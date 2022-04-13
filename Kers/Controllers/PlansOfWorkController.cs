@@ -94,14 +94,16 @@ namespace Kers.Controllers
                 }
             }
 
-            var plansPerCounty = plansOfWorkPerFiscalYear.GroupBy( p => p.PlanningUnit )
+            var plansPerCounty = plansOfWorkPerFiscalYear
+                                    .Include(p => p.PlanningUnit)
+                                    .ToList()
+                                    .GroupBy( p => p.PlanningUnit )
                                     .Select( p =>
                                         new {
                                             county = p.Key,
                                             plans = p.Select( a => a )
-                                        }
-                                    
-                                    );
+                                        }                
+                                    ).ToList();
             var countiesWithoutPlan = new List<PlanningUnit>();
             foreach( var cnt in plansPerCounty){
                 var editedCount = 0;
