@@ -44,12 +44,12 @@
 <style>
 /* Checkbox Hack */
 
-input[type=checkbox] {
+#toggle-1 {
    position: absolute;
    top: -9999px;
    left: -9999px;
 }
-label { 
+.fy-switcher > label { 
   -webkit-appearance: push-button;
   -moz-appearance: button; 
   display: inline-block;
@@ -77,7 +77,7 @@ label {
 }
 
 /* Toggled State */
-input[type=checkbox]:checked ~ .fiscalyears {
+#toggle-1:checked ~ .fiscalyears {
    display: none;
 }
 
