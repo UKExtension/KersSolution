@@ -106,7 +106,7 @@ export class TrainingInfoComponent implements OnInit {
       var today = new Date();
       today.setHours(3, 0, 0);
 
-      if( cutof <= today ) return true;
+      if( cutof < today ) return true;
     }
     return false;
   }
@@ -114,8 +114,8 @@ export class TrainingInfoComponent implements OnInit {
     if(training.registerCutoffDays){
       var cutof = this.registerCutOfDate(training);
       var today = new Date();
-      today.setHours(3, 0, 0);
-      if( cutof <= today ) return false;
+      today.setHours(2, 0, 0);
+      if( cutof < today ) return false;
     }
     return true;
   }
