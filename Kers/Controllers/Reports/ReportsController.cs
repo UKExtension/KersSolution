@@ -90,6 +90,25 @@ namespace Kers.Controllers.Reports
             }
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
+
+            var filteredCounties = this.context.PlanningUnit.
+                                Where(c=>c.ExtensionArea != null)
+                                .Include( c => c.ExtensionArea).ThenInclude( a => a.ExtensionRegion)
+                                .ToList();
+
+            filteredCounties = filteredCounties.Where( c =>  c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+            var counties =  filteredCounties.
+                                GroupBy( c => c.ExtensionArea.ExtensionRegion )
+                                .Select( g => new DistrictViewModel{
+                                                District = g.Key,
+                                                Counties = g.Select( a => a).OrderBy( c => c.Name).ToList()
+                                            }
+                                        )
+                                .OrderBy(c => c.District.Name).ToList();
+
+
+/* 
+
             var filteredCounties = this.context.PlanningUnit.
                                 Where(c=>c.District != null)
                                 .Include( c => c.District)
@@ -102,7 +121,7 @@ namespace Kers.Controllers.Reports
                                                 Counties = g.Select( a => a).OrderBy( c => c.Name).ToList()
                                             }
                                         )
-                                .OrderBy(c => c.District.Name).ToList();
+                                .OrderBy(c => c.District.Name).ToList(); */
             return View(counties);
         }
 
@@ -214,7 +233,7 @@ namespace Kers.Controllers.Reports
     }
 
     public class DistrictViewModel{
-        public District District {get;set;}
+        public ExtensionRegion District {get;set;}
         public List<PlanningUnit> Counties {get;set;}
     }
 
