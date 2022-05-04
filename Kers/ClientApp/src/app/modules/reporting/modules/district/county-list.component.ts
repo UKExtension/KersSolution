@@ -100,6 +100,8 @@ export class CountyListComponent {
             this.counties = this.areaService.counties(this.areaId);
         }else if(this.type == 'region'){
             this.counties = this.regionService.counties(this.regionId);
+        }else if( this.type == 'all'){
+            this.counties = this.stateService.counties();
         }else{
             if( this.district == null){
                 this.counties = this.stateService.notCounties();

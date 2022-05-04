@@ -9,6 +9,7 @@ import {DistrictListComponent} from './district-list.component';
 import { CountyService } from '../county/county.service';
 import { DistrictService } from '../district/district.service';
 import { DistrictModule } from '../district/district.module';
+import { NavigateCountiesComponent } from './navigate-counties.component';
 
 
 
@@ -20,7 +21,8 @@ import { DistrictModule } from '../district/district.module';
                   DistrictModule
                     ],
   declarations: [   StateHomeComponent,
-                    DistrictListComponent
+                    DistrictListComponent,
+                    NavigateCountiesComponent
                     ],
   providers:    [     
                   StateService,
