@@ -27,7 +27,7 @@
     <div class="x_content" *ngIf="areas">
         <ng-container *ngFor="let area of areas | async">
             <div class="col-lg-4 col-md-6 col-xs-12">
-                    <a [routerLink]="['/reporting/county', area.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{area.name}}</a>
+                    <a [routerLink]="['/reporting/extensionarea', area.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{area.name}}</a>
             </div>
         </ng-container>  
     </div>
@@ -36,7 +36,7 @@
     <div class="x_content" *ngIf="regions">
         <ng-container *ngFor="let region of regions | async">
             <div class="col-lg-4 col-md-6 col-xs-12">
-                    <a [routerLink]="['/reporting/county', region.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{region.description}}</a>
+                    <a [routerLink]="['/reporting/extensionregion', region.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{region.description}}</a>
             </div>
         </ng-container>  
     </div>
