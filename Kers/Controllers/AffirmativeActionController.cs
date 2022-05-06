@@ -289,27 +289,40 @@ namespace Kers.Controllers
 
 
         private KersUser userByLinkBlueId(string linkBlueId){
-            var profile = mainContext.zEmpRptProfiles.
+           /*  var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.linkBlueID == linkBlueId).
+                            FirstOrDefault(); */
+            KersUser user = context.KersUser.
+                            Where(u => u.RprtngProfile.LinkBlueId == linkBlueId).
+                            Include( u => u.RprtngProfile).
                             FirstOrDefault();
-            KersUser user = null;
+            /* 
             if(profile != null){
                 user = userRepo.findByProfileID(profile.Id);
                 if(user == null){
                     user = userRepo.createUserFromProfile(profile);
                 }
-            }
+            } */
             return user;
         }
 
         private PlanningUnit CurrentPlanningUnit(){
             var u = this.CurrentUserId();
+
+
+            var unit = this.context.
+                        ReportingProfile.
+                        Where( p => p.LinkBlueId == u).
+                        Select( p => p.PlanningUnit).
+                        FirstOrDefault();
+            return unit;
+/* 
             var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.linkBlueID == u).
                             FirstOrDefault();
             return  this.context.PlanningUnit.
                     Where( p=>p.Code == profile.planningUnitID).
-                    FirstOrDefault();
+                    FirstOrDefault(); */
         }
 
         private zEmpRptProfile profileByUser(KersUser user){
