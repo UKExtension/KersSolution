@@ -10,6 +10,6 @@ namespace Kers.Models.Entities.SoilData
         public int Id { get; set; }
         public string Name {get;set;}
         public int SampleAttributeTypeId {get;set;}
-        //public SampleAttributeType SampleAttributeType {get;set;}
+        public SampleAttributeType SampleAttributeType {get;set;}
     }
 }
