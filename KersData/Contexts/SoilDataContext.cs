@@ -25,7 +25,371 @@ namespace Kers.Models.Contexts
         public virtual DbSet<SoilReportStatus> SoilReportStatus {get;set;}
         public virtual DbSet<SoilReportStatusChange> SoilReportStatusChange {get; set;}
         public virtual DbSet<TypeForm> TypeForm {get;set;}
+        public virtual DbSet<SampleInfoBundle> SampleInfoBundle {get;set;}
+        public virtual DbSet<SampleAttributeType> SampleAttributeType {get;set;}
+        public virtual DbSet<SampleAttribute> SampleAttribute {get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder){
+
+            modelBuilder.Entity<SampleAttribute>().HasData(
+                new SampleAttribute{1,"Barley", 1 },
+                new SampleAttribute{2,"Barley/Soybeans", 1 },
+                new SampleAttribute{3,"Burley Tobacco", 1 },
+                new SampleAttribute{4,"Canola", 1 },
+                new SampleAttribute{5,"Canola/Soybeans", 1 },
+                new SampleAttribute{6,"Corn", 1 },
+                new SampleAttribute{7,"Dark Tobacco", 1 },
+                new SampleAttribute{8,"Forage Crops (multiple)", 1 },
+                new SampleAttribute{9,"Forage Sorghum", 1 },
+                new SampleAttribute{10,"Grain Crops (multiple)", 1 },
+                new SampleAttribute{11,"Grain Sorghum", 1 },
+                new SampleAttribute{12,"Hemp", 1 },
+                new SampleAttribute{13,"Millet", 1 },
+                new SampleAttribute{14,"Oats", 1 },
+                new SampleAttribute{15,"Oats/Soybeans", 1 },
+                new SampleAttribute{16,"Rye", 1 },
+                new SampleAttribute{17,"Rye/Soybeans", 1 },
+                new SampleAttribute{18,"Small Grains", 1 },
+                new SampleAttribute{19,"Small Grains/Corn", 1 },
+                new SampleAttribute{20,"Small Grains/Soybeans", 1 },
+                new SampleAttribute{21,"Soybeans", 1 },
+                new SampleAttribute{22,"Sunflower", 1 },
+                new SampleAttribute{23,"Tobacco Beds", 1 },
+                new SampleAttribute{24,"Triticale", 1 },
+                new SampleAttribute{25,"Triticale/Soybeans", 1 },
+                new SampleAttribute{26,"Wheat", 1 },
+                new SampleAttribute{27,"Wheat/Corn", 1 },
+                new SampleAttribute{28,"Wheat/Soybeans", 1 },
+                new SampleAttribute{29,"Other", 1 },
+                
+                new SampleAttribute{30,"Barley", 2 },
+                new SampleAttribute{31,"Barley/Soybeans", 2 },
+                new SampleAttribute{32,"Burley Tobacco", 2 },
+                new SampleAttribute{33,"Canola", 2 },
+                new SampleAttribute{34,"Canola/Soybeans", 2 },
+                new SampleAttribute{35,"Corn", 2 },
+                new SampleAttribute{36,"Dark Tobacco", 2 },
+                new SampleAttribute{37,"Forage Crops (multiple)", 2 },
+                new SampleAttribute{38,"Forage Sorghum", 2 },
+                new SampleAttribute{39,"Grain Crops (multiple)", 2 },
+                new SampleAttribute{40,"Grain Sorghum", 2 },
+                new SampleAttribute{41,"Hemp", 2 },
+                new SampleAttribute{42,"Millet", 2 },
+                new SampleAttribute{43,"Oats", 2 },
+                new SampleAttribute{44,"Oats/Soybeans", 2 },
+                new SampleAttribute{45,"Rye", 2 },
+                new SampleAttribute{46,"Rye/Soybeans", 2 },
+                new SampleAttribute{47,"Small Grains", 2 },
+                new SampleAttribute{48,"Small Grains/Corn", 2 },
+                new SampleAttribute{49,"Small Grains/Soybeans", 2 },
+                new SampleAttribute{50,"Soybeans", 2 },
+                new SampleAttribute{51,"Sunflower", 2 },
+                new SampleAttribute{52,"Tobacco Beds", 2 },
+                new SampleAttribute{53,"Triticale", 2 },
+                new SampleAttribute{54,"Triticale/Soybeans", 2 },
+                new SampleAttribute{55,"Wheat", 2 },
+                new SampleAttribute{56,"Wheat/Corn", 2 },
+                new SampleAttribute{57,"Wheat/Soybeans", 2 },
+                new SampleAttribute{58,"Other", 2 },
+
+
+                new SampleAttribute{59,"Conventional Tillage", 3 },
+                new SampleAttribute{60,"No Tillage", 3 },
+                new SampleAttribute{61,"Doublecrop-Conventional", 3 },
+                new SampleAttribute{62,"Doublecrop-No Till", 3 },
+
+                new SampleAttribute{63,"Conventional Tillage", 4 },
+                new SampleAttribute{64,"No Tillage", 4 },
+                new SampleAttribute{65,"Hay or Pasture < 4yrs.", 4 },
+                new SampleAttribute{66,"Hay or Pasture > 4yrs.", 4 },
+                new SampleAttribute{67,"Doublecrop-Conventional", 4 },
+                new SampleAttribute{68,"Doublecrop-No Till", 4 },
+
+                new SampleAttribute{69,"Grain", 5 },
+                new SampleAttribute{70,"Cover Crop", 5 },
+                new SampleAttribute{71,"Silage", 5 },
+                new SampleAttribute{72,"Tobacco", 5 },
+                new SampleAttribute{73,"Silage-Grain (double crop)", 5 },
+                new SampleAttribute{74,"Grain-Grain (double crop)", 5 },
+                new SampleAttribute{75,"Silage-Silage (double crop)", 5 },
+
+                new SampleAttribute{76,"Well Drained", 6 },
+                new SampleAttribute{77,"Moderately Well", 6 },
+                new SampleAttribute{78,"Somewhat Poorly", 6 },
+                new SampleAttribute{79,"Poorly Drained", 6 },
+                new SampleAttribute{80,"Poorly, but tiled", 6 },
+
+                new SampleAttribute{81,"Alfalfa", 17 },
+                new SampleAttribute{82,"Alfalfa/Grass", 17 },
+                new SampleAttribute{83,"Bermudagrass, common", 17 },
+                new SampleAttribute{84,"Bermudagrass, improved", 17 },
+                new SampleAttribute{85,"Birdsfoot Trefoil", 17 },
+                new SampleAttribute{86,"Bluegrass", 17 },
+                new SampleAttribute{87,"Bluegrass/White Clover", 17 },
+                new SampleAttribute{88,"Bluestem", 17 },
+                new SampleAttribute{89,"Buffer or Filter Strip", 17 },
+                new SampleAttribute{90,"Clover/Grass", 17 },
+                new SampleAttribute{91,"Cool Season Grass", 17 },
+                new SampleAttribute{92,"Crownvetch", 17 },
+                new SampleAttribute{93,"Fescue", 17 },
+                new SampleAttribute{94,"Fescue/Lespedeza (multiple)", 17 },
+                new SampleAttribute{95,"Fescue/White Clover", 17 },
+                new SampleAttribute{96,"Indiangrass", 17 },
+                new SampleAttribute{97,"Lespedeza", 17 },
+                new SampleAttribute{98,"Lespedeza/Grass", 17 },
+                new SampleAttribute{99,"Native Grassland Restoration", 17 },
+                new SampleAttribute{100,"Orchardgrass", 17 },
+                new SampleAttribute{101,"Orchardgrass/Red Clover", 17 },
+                new SampleAttribute{102,"Orchardgrass/White Clover", 17 },
+                new SampleAttribute{103,"Other", 17 },
+                new SampleAttribute{104,"Red Clover", 17 },
+                new SampleAttribute{105,"Red Clover/Grass", 17 },
+                new SampleAttribute{106,"Side-oats grama", 17 },
+                new SampleAttribute{107,"Sorghum Sudangrass", 17 },
+                new SampleAttribute{108,"Sudangrass", 17 },
+                new SampleAttribute{109,"Switchgrass", 17 },
+                new SampleAttribute{110,"Timothy", 17 },
+                new SampleAttribute{111,"Timothy/Red Clover", 17 },
+                new SampleAttribute{112,"Warm Season Annual Grass", 17 },
+                new SampleAttribute{113,"Warm Season Native Grass", 17 },
+                new SampleAttribute{114,"White Clover", 17 },
+                new SampleAttribute{115,"White Clover/Grass", 17 },
+                new SampleAttribute{116,"Wildlife Food Plot", 17 },
+
+
+                new SampleAttribute{117,"New Seeding", 18 },
+                new SampleAttribute{118,"Renovation", 18 },
+                new SampleAttribute{119,"Annual Top Dressing", 18 },
+
+                new SampleAttribute{120,"Pasture", 19 },
+                new SampleAttribute{121,"Cover Crop", 19 },
+                new SampleAttribute{122,"Hay", 19 },
+                new SampleAttribute{123,"Seed Production", 19 },
+                new SampleAttribute{124,"Horse Pasture", 19 },
+
+
+
+                new SampleAttribute{125,"Apples", 7 },
+                new SampleAttribute{126,"Azalea/Rhododendron", 7 },
+                new SampleAttribute{127,"Blueberries", 7 },
+                new SampleAttribute{128,"Brambles", 7 },
+                new SampleAttribute{129,"Broadleaved Evergreen Tree or Shrub", 7 },
+                new SampleAttribute{130,"Deciduous Shrub", 7 },
+                new SampleAttribute{131,"Deciduous Tree", 7 },
+                new SampleAttribute{132,"Flower Garden", 7 },
+                new SampleAttribute{133,"Grape Arbor", 7 },
+                new SampleAttribute{134,"Ground Covers", 7 },
+                new SampleAttribute{135,"Needled Evergreen Tree or Shrub", 7 },
+                new SampleAttribute{136,"Other", 7 },
+                new SampleAttribute{137,"Peaches", 7 },
+                new SampleAttribute{138,"Roses", 7 },
+                new SampleAttribute{139,"Strawberries", 7 },
+                new SampleAttribute{140,"Vegetable Garden", 7 },
+
+                new SampleAttribute{141,"New Planting or Seeding", 8 },
+                new SampleAttribute{142,"Plant Maintenance", 8 },
+
+
+                new SampleAttribute{143,"Mostly Sunny Location", 9 },
+                new SampleAttribute{144,"Mostly Shady Location", 9 },
+
+                new SampleAttribute{145,"Bermudagrass", 20 },
+                new SampleAttribute{146,"Creeping Bentgrass", 20 },
+                new SampleAttribute{147,"Fine Fescue", 20 },
+                new SampleAttribute{148,"Kentucky Bluegrass", 20 },
+                new SampleAttribute{149,"Perennial Ryegrass", 20 },
+                new SampleAttribute{150,"Tall Fescue", 20 },
+                new SampleAttribute{151,"Zoysiagrass", 20 },
+
+                new SampleAttribute{152,"Home Lawn", 21 },
+                new SampleAttribute{153,"Golf Green", 21 },
+                new SampleAttribute{154,"Golf Tee", 21 },
+                new SampleAttribute{155,"Golf Fairway", 21 },
+                new SampleAttribute{156,"Sod Production", 21 },
+                new SampleAttribute{157,"Athletic Field", 21 },
+                new SampleAttribute{158,"General Turf", 21 },
+                new SampleAttribute{159,"Other Location", 21 },
+
+                new SampleAttribute{160,"New Planting or Seeding", 22 },
+                new SampleAttribute{161,"Plant Maintenance", 22 },
+
+                new SampleAttribute{162,"Mostly Sunny Location", 23 },
+                new SampleAttribute{163,"Mostly Shady Location", 23 },
+
+                new SampleAttribute{164,"Annuals", 10 },
+                new SampleAttribute{165,"Apples", 10 },
+                new SampleAttribute{166,"Asparagus", 10 },
+                new SampleAttribute{167,"Azaleas", 10 },
+                new SampleAttribute{168,"Beans (snap,dry,lima,etc.)", 10 },
+                new SampleAttribute{169,"Blueberries", 10 },
+                new SampleAttribute{170,"Brambles", 10 },
+                new SampleAttribute{171,"Bulbs", 10 },
+                new SampleAttribute{172,"Cherries, Tart", 10 },
+                new SampleAttribute{173,"Cole Crops (broccoli, etc.)", 10 },
+                new SampleAttribute{174,"Conifers (not pines or junipers)", 10 },
+                new SampleAttribute{175,"Conifers, junipers", 10 },
+                new SampleAttribute{176,"Conifers, pines", 10 },
+                new SampleAttribute{177,"Cool Peas", 10 },
+                new SampleAttribute{178,"Corn, Sweet", 10 },
+                new SampleAttribute{179,"Cucumbers", 10 },
+                new SampleAttribute{180,"Currants and Gooseberries", 10 },
+                new SampleAttribute{181,"Deciduous Shrubs", 10 },
+                new SampleAttribute{182,"Deciduous Trees", 10 },
+                new SampleAttribute{183,"Eggplant", 10 },
+                new SampleAttribute{184,"Evergreen Shrubs, Broadleaved", 10 },
+                new SampleAttribute{185,"Evergreen Trees, Broadleaved", 10 },
+                new SampleAttribute{186,"Grapes", 10 },
+                new SampleAttribute{187,"Greens (collards, kale, etc.)", 10 },
+                new SampleAttribute{188,"Hollies", 10 },
+                new SampleAttribute{189,"Muskmelons (cantaloupes)", 10 },
+                new SampleAttribute{190,"Okra", 10 },
+                new SampleAttribute{191,"Onions (green & bulb)", 10 },
+                new SampleAttribute{192,"Other", 10 },
+                new SampleAttribute{193,"Peaches", 10 },
+                new SampleAttribute{194,"Pears", 10 },
+                new SampleAttribute{195,"Pecans", 10 },
+                new SampleAttribute{196,"Peppers (bell & pimento)", 10 },
+                new SampleAttribute{197,"Perrenials (not bulbs)", 10 },
+                new SampleAttribute{198,"Plums", 10 },
+                new SampleAttribute{199,"Potatoes", 10 },
+                new SampleAttribute{200,"Rhododendrons", 10 },
+                new SampleAttribute{201,"Rhubarb", 10 },
+                new SampleAttribute{202,"Root Crops (beets, carrots,etc.)", 10 },
+                new SampleAttribute{203,"Southern Peas", 10 },
+                new SampleAttribute{204,"Squash & Pumpkins", 10 },
+                new SampleAttribute{205,"Strawberries", 10 },
+                new SampleAttribute{206,"Sweet Potatoes", 10 },
+                new SampleAttribute{207,"Tomatoes", 10 },
+                new SampleAttribute{208,"Walnuts", 10 },
+                new SampleAttribute{209,"Watermelons", 10 },
+
+
+
+
+
+                new SampleAttribute{210,"Annuals", 11 },
+                new SampleAttribute{211,"Apples", 11 },
+                new SampleAttribute{212,"Asparagus", 11 },
+                new SampleAttribute{213,"Azaleas", 11 },
+                new SampleAttribute{214,"Beans (snap,dry,lima,etc.)", 11 },
+                new SampleAttribute{215,"Blueberries", 11 },
+                new SampleAttribute{216,"Brambles", 11 },
+                new SampleAttribute{217,"Bulbs", 11 },
+                new SampleAttribute{218,"Cherries, Tart", 11 },
+                new SampleAttribute{219,"Cole Crops (broccoli, etc.)", 11 },
+                new SampleAttribute{220,"Conifers (not pines or junipers)", 11 },
+                new SampleAttribute{221,"Conifers, junipers", 11 },
+                new SampleAttribute{222,"Conifers, pines", 11 },
+                new SampleAttribute{223,"Cool Peas", 11 },
+                new SampleAttribute{224,"Corn, Sweet", 11 },
+                new SampleAttribute{225,"Cucumbers", 11 },
+                new SampleAttribute{226,"Currants and Gooseberries", 11 },
+                new SampleAttribute{227,"Deciduous Shrubs", 11 },
+                new SampleAttribute{228,"Deciduous Trees", 11 },
+                new SampleAttribute{229,"Eggplant", 11 },
+                new SampleAttribute{230,"Evergreen Shrubs, Broadleaved", 11 },
+                new SampleAttribute{231,"Evergreen Trees, Broadleaved", 11 },
+                new SampleAttribute{232,"Grapes", 11 },
+                new SampleAttribute{233,"Greens (collards, kale, etc.)", 11 },
+                new SampleAttribute{234,"Hollies", 11 },
+                new SampleAttribute{235,"Muskmelons (cantaloupes)", 11 },
+                new SampleAttribute{236,"Okra", 11 },
+                new SampleAttribute{237,"Onions (green & bulb)", 11 },
+                new SampleAttribute{238,"Other", 11 },
+                new SampleAttribute{239,"Peaches", 11 },
+                new SampleAttribute{240,"Pears", 11 },
+                new SampleAttribute{241,"Pecans", 11 },
+                new SampleAttribute{242,"Peppers (bell & pimento)", 11 },
+                new SampleAttribute{243,"Perrenials (not bulbs)", 11 },
+                new SampleAttribute{244,"Plums", 11 },
+                new SampleAttribute{245,"Potatoes", 11 },
+                new SampleAttribute{246,"Rhododendrons", 11 },
+                new SampleAttribute{247,"Rhubarb", 11 },
+                new SampleAttribute{248,"Root Crops (beets, carrots,etc.)", 11 },
+                new SampleAttribute{249,"Southern Peas", 11 },
+                new SampleAttribute{250,"Squash & Pumpkins", 11 },
+                new SampleAttribute{251,"Strawberries", 11 },
+                new SampleAttribute{252,"Sweet Potatoes", 11 },
+                new SampleAttribute{253,"Tomatoes", 11 },
+                new SampleAttribute{254,"Walnuts", 11 },
+                new SampleAttribute{255,"Watermelons", 11 },
+
+
+
+
+
+                new SampleAttribute{256,"Bare sod", 12 },
+                new SampleAttribute{257,"Black plastic mulch", 12 },
+                new SampleAttribute{258,"Conventional Tillage", 12 },
+                new SampleAttribute{259,"Limited Tillage with no weed control", 12 },
+                new SampleAttribute{260,"Limited Tillage with weed control", 12 },
+                new SampleAttribute{261,"No tillage", 12 },
+                new SampleAttribute{262,"Organic mulch", 12 },
+                new SampleAttribute{263,"Plants grown through black plastic mulch", 12 },
+                new SampleAttribute{264,"Sod Nursery", 12 },
+                new SampleAttribute{265,"Sod orchard", 12 },
+                new SampleAttribute{266,"Tilled Nursery with weed control", 12 },
+
+                new SampleAttribute{267,"Sampled before planting", 13 },
+
+                new SampleAttribute{268,"Irrigated", 14 },
+                new SampleAttribute{269,"Not Irrigated", 14 },
+
+
+                new SampleAttribute{270,"Moderately Well Drained", 15 },
+                new SampleAttribute{271,"Poorly Drained", 15 },
+                new SampleAttribute{272,"Somewhat Poorly Drained", 15 },
+                new SampleAttribute{273,"Well Drained", 15 }
+            );
+
+
+
+
+
+
+
+
+
+
+
+            modelBuilder.Entity<SampleAttributeType>().HasData(
+                new SampleAttributeType{1,"Primary Crop", 1, 1 },
+                new SampleAttributeType{2,"Previous Crop", 1, 3 },
+                new SampleAttributeType{3,"Primary Management", 1, 4 },
+                new SampleAttributeType{4,"Previous Management", 1, 6 },
+                new SampleAttributeType{5,"Primary Use", 1, 7 },
+                new SampleAttributeType{6,"Soil Drainage", 1, 11 },
+
+                new SampleAttributeType{7,"Plant", 2, 1 },
+                new SampleAttributeType{8,"Maintenance", 2, 3 },
+                new SampleAttributeType{9,"Sunny or Shady", 2, 4 },
+
+                new SampleAttributeType{10,"Primary Crop", 3, 1 },
+                new SampleAttributeType{11,"Previous Crop", 3, 2 },
+                new SampleAttributeType{12,"Primary Management", 3, 3 },
+                new SampleAttributeType{13,"Previous Management", 3, 4 },
+                new SampleAttributeType{14,"Sampling Time", 3, 5 },
+                new SampleAttributeType{15,"Irrigation", 3, 6 },
+                new SampleAttributeType{16,"Soil Drainage", 3, 7 },
+
+                new SampleAttributeType{17,"Primary Crop", 4, 1 },
+                new SampleAttributeType{18,"Primary Management", 4, 4 },
+                new SampleAttributeType{19,"Primary Use", 4, 7 },
+
+                new SampleAttributeType{20,"Plant", 5, 1 },
+                new SampleAttributeType{21,"Location", 5, 2 },
+                new SampleAttributeType{22,"Maintenance", 5, 3 },
+                new SampleAttributeType{23,"Sunny or Shady", 5, 4 }
+            );
+
+
+
+
+
+
+
+
+
+
             modelBuilder.Entity<CountyCode>().HasData(
                 new CountyCode{Id=1, Name = "ADAIR", Code = "001", CountyID = 1},
                 new CountyCode{Id=2, Name = "ALLEN", Code = "003", CountyID = 3},

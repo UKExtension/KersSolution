@@ -25,5 +25,7 @@ namespace Kers.Models.Entities.SoilData
         public List<SoilReport> Reports {get;set;}
         //public List<SoilReportStatusChange> StatusHistory {get;set;}
         public SoilReportStatusChange LastStatus {get;set;}
+        public BillingType BillingType {get;set;}
+        public int? BillingTypeId {get;set;}
     }
 }

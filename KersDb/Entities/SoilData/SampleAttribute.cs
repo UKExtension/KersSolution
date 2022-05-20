@@ -9,7 +9,7 @@ namespace Kers.Models.Entities.SoilData
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name {get;set;}
-        public int CropAttributeTypeId {get;set;}
-        public SampleAttributeType CropAttributeType {get;set;}
+        public int SampleAttributeTypeId {get;set;}
+        //public SampleAttributeType SampleAttributeType {get;set;}
     }
 }

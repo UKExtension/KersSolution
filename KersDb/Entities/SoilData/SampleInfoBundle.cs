@@ -8,8 +8,11 @@ namespace Kers.Models.Entities.SoilData
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Name {get;set;}
+        public SoilReportBundle SoilReportBundle {get;set;}
+        public int SoilReportBundleId {get;set;}
         public int TypeFormId {get;set;}
         public TypeForm TypeForm {get;set;}
+        public Purpose Purpose {get;set;}
+        public int PurposeId {get;set;}
     }
 }
