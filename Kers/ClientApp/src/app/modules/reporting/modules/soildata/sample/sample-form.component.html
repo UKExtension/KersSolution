@@ -1,0 +1,62 @@
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2>Soil Sample Info</h2>
+    </div>
+
+    <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="soilSampleForm">
+        
+
+        <div class="form-group">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Client:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <loading *ngIf="loading"></loading>
+                <div *ngIf="!loading">
+                  <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true" *ngIf="!addressBrowserOpen">change</a>
+                </div>
+                <div *ngIf="!addressBrowserOpen">
+                  <br>
+                  <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">add</a>
+                </div>
+                <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+            </div>
+        </div>
+
+
+
+        
+        <div class="form-group">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Owner ID:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" name="ownerID" formControlName="ownerID" id="ownerID" class="form-control col-xs-12" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Acres:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" formControlName="acres" id="acres" class="form-control col-xs-12"/>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Plants????:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <div *ngFor="let control of sampleInfoBundles.controls; index as i">
+                    <input [formControl]="sampleInfoBundles.controls[i]" />
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add plant????</a>
+            </div>
+        </div>
+
+        
+
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
+                <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                <button type="submit" [disabled]="soilSampleForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

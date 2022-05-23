@@ -27,5 +27,8 @@ namespace Kers.Models.Entities.SoilData
         public SoilReportStatusChange LastStatus {get;set;}
         public BillingType BillingType {get;set;}
         public int? BillingTypeId {get;set;}
+        public string OwnerID {get;set;}
+        public float Acres {get;set;}
+        public List<SampleInfoBundle> SampleInfoBundles {get;set;}
     }
 }

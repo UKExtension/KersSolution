@@ -6,6 +6,7 @@ import { SoildataNotesComponent } from './notes/soildata-notes.component';
 import { SoildataSigneesComponent } from './signees/soildata-signees.component';
 import { SoildataReportsComponent } from './reports/soildata-reports.component';
 import { SoildataReportsCatalogComponent } from './reports/soildata-reports-catalog.component';
+import { SampleFormComponent } from './sample/sample-form.component';
 
 
 const routes: Routes = [{
@@ -28,6 +29,11 @@ const routes: Routes = [{
        {
          path: 'reports',
          component: SoildataReportsCatalogComponent
+       }
+       ,
+       {
+         path: 'sample',
+         component: SampleFormComponent
        }
         
         

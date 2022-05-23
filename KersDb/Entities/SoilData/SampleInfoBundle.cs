@@ -14,5 +14,6 @@ namespace Kers.Models.Entities.SoilData
         public TypeForm TypeForm {get;set;}
         public Purpose Purpose {get;set;}
         public int PurposeId {get;set;}
+
     }
 }

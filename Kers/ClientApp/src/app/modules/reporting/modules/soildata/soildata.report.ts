@@ -1,3 +1,4 @@
+import { BillingType } from './sample/SampleInfoBundle';
 import {FarmerAddress, CountyCode} from './soildata.service';
 
 
@@ -15,12 +16,17 @@ export class SoilReportBundle{
     reports:SoilReport[];
     statusHistory:SoilReportStatusChange[];
     lastStatus:SoilReportStatusChange;
+    billingType:BillingType;
+    billingTypeId:number;
+    ownerID:string;
+    acres:number;
 }
 
 export class SoilReportStatusChange{
     id:number;
     soilReportStatus:SoilReportStatus;
     created:Date;
+    kersUserId?:number;
 }
 
 export class SoilReportStatus{

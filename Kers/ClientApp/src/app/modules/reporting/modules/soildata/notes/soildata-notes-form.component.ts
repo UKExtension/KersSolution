@@ -38,6 +38,7 @@ import { FormBuilder, Validators } from '@angular/forms';
   `,
   styles: []
 })
+
 export class SoildataNotesFormComponent implements OnInit {
 
   @Input() note:CountyNote;
