@@ -28,7 +28,8 @@ namespace Kers.Models.Entities.SoilData
         public BillingType BillingType {get;set;}
         public int? BillingTypeId {get;set;}
         public string OwnerID {get;set;}
-        public float Acres {get;set;}
+        public string Acres {get;set;}
+        public string OptionalInfo {get;set;}
         public List<SampleInfoBundle> SampleInfoBundles {get;set;}
     }
 }

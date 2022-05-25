@@ -34,9 +34,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
       <loading *ngIf="loading"></loading>
       <div *ngIf="!loading">
         <div class="col-lg-4 col-md-6 col-xs-12" *ngFor="let address of addresses.data"><br>
-        {{address.first}} {{address.last}}<br>
-        {{address.address}}<br>
-        {{address.city}}, {{address.st}} {{address.zip}} <br><span *ngIf="address.emailAddress">Email: {{address.emailAddress}}</span><br>
+          <soildata-list-address [address]="address" [brief]="false"></soildata-list-address>
         <a class="btn btn-info btn-xs" (click)="selected(address)">select</a>
         </div>
       </div>

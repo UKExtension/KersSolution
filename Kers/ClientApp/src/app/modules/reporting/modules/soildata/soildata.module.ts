@@ -20,6 +20,8 @@ import { SoildataReportCropComponent } from './reports/soildata-report-crop.comp
 import { SoildataReportLabResulsComponent } from './reports/soildata-report-lab-resuls.component';
 import { SoildataAddressBrowserComponent } from './addresses/soildata-address-browser.component';
 import { SampleFormComponent } from './sample/sample-form.component';
+import { SoilCropFormElementComponent } from './sample/soil-crop-form-element.component';
+import { SoildataListAddressComponent } from './addresses/soildata-list-address.component';
 
 
 
@@ -41,7 +43,9 @@ import { SampleFormComponent } from './sample/sample-form.component';
   SoildataReportCropComponent,
   SoildataReportLabResulsComponent,
   SoildataAddressBrowserComponent,
-  SampleFormComponent],
+  SampleFormComponent,
+  SoilCropFormElementComponent,
+  SoildataListAddressComponent],
   imports: [
     SharedModule,
     AngularMyDatePickerModule,

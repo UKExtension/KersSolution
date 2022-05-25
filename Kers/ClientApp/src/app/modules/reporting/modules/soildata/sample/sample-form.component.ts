@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FarmerAddress } from '../soildata.service';
 import { SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 
@@ -16,6 +17,7 @@ export class SampleFormComponent implements OnInit {
 
   loading = false;
   addressBrowserOpen = true;
+  selectedAddress:FarmerAddress;
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<SampleInfoBundle>();
 
@@ -59,9 +61,15 @@ export class SampleFormComponent implements OnInit {
   }
 
 
+  cropRemoved($event){
 
-  addressSelected(event){
+  }
 
+
+  addressSelected(event:FarmerAddress){
+    this.selectedAddress = event;
+    console.log(event);
+    this.addressBrowserOpen = false;
   }
 
   addressSelectionCanceled(){

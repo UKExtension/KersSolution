@@ -40,5 +40,22 @@ namespace Kers.Controllers.Soil
                 this._coreContext = _coreContext;
 
         }
+
+
+        [HttpGet("forms")]
+        public IActionResult GetFormTypes(){
+            var forms = this._context.TypeForm.OrderBy(r => r.Code).ToList();
+            return new OkObjectResult(forms);
+        }
+
+        [HttpGet("attributetypes/{formTypeId}")]
+        public IActionResult AttributeTypes(int formTypeId){
+            var types = this._context.SampleAttributeType.Where(t => t.TypeFormId == formTypeId).OrderBy(r => r.Order).ToList();
+            return new OkObjectResult(types);
+        }
+
+
+
+
     }
 }

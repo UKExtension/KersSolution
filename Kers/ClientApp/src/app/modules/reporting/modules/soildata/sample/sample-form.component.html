@@ -11,20 +11,16 @@
             <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Client:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <loading *ngIf="loading"></loading>
-                <div *ngIf="!loading">
-                  <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true" *ngIf="!addressBrowserOpen">change</a>
-                </div>
+
                 <div *ngIf="!addressBrowserOpen">
                   <br>
-                  <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">add</a>
+                  <soildata-list-address [address]="selectedAddress" [brief]="false"></soildata-list-address>
+                  <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">change</a>
                 </div>
                 <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
             </div>
         </div>
 
-
-
-        
         <div class="form-group">
             <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Owner ID:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -39,11 +35,12 @@
         </div>
 
 
-        <div class="form-group">
-            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Plants????:</label>           
+        <div class="form-group"  formArrayName="sampleInfoBundles">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Intended Crop(s):</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <div *ngFor="let control of sampleInfoBundles.controls; index as i">
-                    <input [formControl]="sampleInfoBundles.controls[i]" />
+                     <!-- repeated crop form element template -->
+                    <soil-crop-form-element [index]="i" (removeMe)="cropRemoved($event)" [formControlName]="i"></soil-crop-form-element>
                 </div>
                 <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add plant????</a>
             </div>
