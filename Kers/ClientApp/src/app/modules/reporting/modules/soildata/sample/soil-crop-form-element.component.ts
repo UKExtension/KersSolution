@@ -1,9 +1,9 @@
 import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TypeForm } from '../soildata.report';
-import { SampleInfoBundle } from './SampleInfoBundle';
+import { SampleAttributeType, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 
 
@@ -11,16 +11,40 @@ import { SoilSampleService } from './soil-sample.service';
 @Component({
   selector: 'soil-crop-form-element',
   template: `
-<div class="form-group" [formGroup]="sessionGroup">
+<div class="form-horizontal form-label-left" [formGroup]="sessionGroup">
     
   <div class="row" style="padding: 8px 0;">
     <div class="col-sm-10">
-        <select name="typeFormId" formControlName="typeFormId" class="form-control col-md-7 col-xs-12">
-            <option *ngFor="let formtype of typeForms | async" [value]="formtype.id">{{formtype.name}}</option>
-        </select>
+
+        <div class="form-group">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Intended Use:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              <select name="typeFormId" formControlName="typeFormId" class="form-control col-md-7 col-xs-12" (change)="formTypeChange($event)">
+                  <option value="">-- select form type --</option>
+                  <option *ngFor="let formtype of typeForms | async" [value]="formtype.id">{{formtype.name}}</option>
+              </select>
+            </div>
+        </div>
+        <ng-container *ngIf="selectedFormType!=''">
+          <div class="form-group" *ngFor="let attributyType of attributeTypes | async">
+              <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">{{attributyType.name}}:</label>           
+              <div class="col-md-9 col-sm-9 col-xs-12">
+                
+              </div>
+          </div>
+        </ng-container>
 
 
-        <small>(Note)</small>
+
+
+
+
+
+
+
+
+
+        
     </div>
     <div class="col-sm-2">
             <div class="col-xs-1 ng-star-inserted"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
@@ -51,6 +75,12 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     @Output() removeMe = new EventEmitter<number>();
 
     typeForms:Observable<TypeForm[]>;
+    attributeTypes:Observable<SampleAttributeType[]>;
+
+    get selectedFormType() {
+      var formTypeControl =  this.sessionGroup.get('typeFormId') as FormControl;
+      return formTypeControl.value;
+    }
 
     date = new Date();
     constructor( 
@@ -60,7 +90,7 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     {
       super();
       this.sessionGroup = formBuilder.group({
-        typeFormId: ['']
+        typeFormId: ['', Validators.required]
       });
   
       this.sessionGroup.valueChanges.subscribe(val => {
@@ -74,12 +104,16 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     } 
 
     ngOnInit(){
-    }
-
-
-    onDateChanged($event){
       
     }
+
+
+    formTypeChange(event){
+      this.attributeTypes = this.service.attributeTypes(this.selectedFormType);
+    }
+
+
+
     writeValue(session: SampleInfoBundle) {
       this.value = session;
       this.sessionGroup.patchValue(this.value);
