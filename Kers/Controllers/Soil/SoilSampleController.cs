@@ -54,6 +54,12 @@ namespace Kers.Controllers.Soil
             return new OkObjectResult(types);
         }
 
+        [HttpGet("attributes/{attributeTypeId}")]
+        public IActionResult Attributes(int attributeTypeId){
+            var types = this._context.SampleAttribute.Where(t => t.SampleAttributeTypeId == attributeTypeId).OrderBy(r => r.Name).ToList();
+            return new OkObjectResult(types);
+        }
+
 
 
 

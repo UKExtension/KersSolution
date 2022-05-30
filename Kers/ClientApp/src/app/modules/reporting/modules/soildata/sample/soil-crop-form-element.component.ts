@@ -27,10 +27,7 @@ import { SoilSampleService } from './soil-sample.service';
         </div>
         <ng-container *ngIf="selectedFormType!=''">
           <div class="form-group" *ngFor="let attributyType of attributeTypes | async">
-              <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">{{attributyType.name}}:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                
-              </div>
+              <soil-cropattribute-form-element [type]="attributyType"></soil-cropattribute-form-element>
           </div>
         </ng-container>
 

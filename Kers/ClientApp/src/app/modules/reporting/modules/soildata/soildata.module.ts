@@ -22,6 +22,7 @@ import { SoildataAddressBrowserComponent } from './addresses/soildata-address-br
 import { SampleFormComponent } from './sample/sample-form.component';
 import { SoilCropFormElementComponent } from './sample/soil-crop-form-element.component';
 import { SoildataListAddressComponent } from './addresses/soildata-list-address.component';
+import { SoilCropattributeFormElementComponent } from './sample/soil-cropattribute-form-element.component';
 
 
 
@@ -45,6 +46,7 @@ import { SoildataListAddressComponent } from './addresses/soildata-list-address.
   SoildataAddressBrowserComponent,
   SampleFormComponent,
   SoilCropFormElementComponent,
+  SoilCropattributeFormElementComponent,
   SoildataListAddressComponent],
   imports: [
     SharedModule,

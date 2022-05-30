@@ -5,7 +5,7 @@ import { HttpErrorHandler, HandleError } from '../../../core/services/http-error
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TypeForm } from '../soildata.report';
-import { SampleAttributeType } from './SampleInfoBundle';
+import { SampleAttribute, SampleAttributeType } from './SampleInfoBundle';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +36,14 @@ export class SoilSampleService {
       return this.http.get<SampleAttributeType[]>(this.location.prepareExternalUrl(url))
           .pipe(
               catchError(this.handleError('sample attribute types', []))
+          );
+    }
+
+    attributes(typeAttributeId:number):Observable<SampleAttribute[]>{
+      var url = this.baseUrl + "attributes/" + typeAttributeId;
+      return this.http.get<SampleAttribute[]>(this.location.prepareExternalUrl(url))
+          .pipe(
+              catchError(this.handleError('sample attributes', []))
           );
     }
 }
