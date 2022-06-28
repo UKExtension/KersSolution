@@ -8,6 +8,23 @@ import { SoilSampleService } from './soil-sample.service';
   selector: 'soil-sample-form',
   templateUrl: './sample-form.component.html',
   styles: [
+    `
+    .address-browser{
+      border: 1px solid #e5e5e5;
+      padding: 15px;
+    }
+
+
+    .index-border{
+      border: 1px solid #1ABB9C;
+      width: 20px;
+      height: 20px;
+      margin: 5px 10px 5px 0;
+      border-radius: 50%;
+      padding: 9px 12px;
+    }
+
+    `
   ]
 })
 export class SampleFormComponent implements OnInit {
@@ -61,8 +78,8 @@ export class SampleFormComponent implements OnInit {
   }
 
 
-  cropRemoved($event){
-
+  cropRemoved(event:number){
+    console.log(event);
   }
 
 

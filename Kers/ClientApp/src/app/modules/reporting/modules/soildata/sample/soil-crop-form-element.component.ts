@@ -14,7 +14,7 @@ import { SoilSampleService } from './soil-sample.service';
 <div class="form-horizontal form-label-left" [formGroup]="sessionGroup">
     
   <div class="row" style="padding: 8px 0;">
-    <div class="col-sm-10">
+    <div class="col-sm-11">
 
         <div class="form-group">
             <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Intended Use:</label>           
@@ -32,19 +32,10 @@ import { SoilSampleService } from './soil-sample.service';
         </ng-container>
 
 
-
-
-
-
-
-
-
-
-
         
     </div>
-    <div class="col-sm-2">
-            <div class="col-xs-1 ng-star-inserted"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
+    <div class="col-sm-1">
+            <div *ngIf="index != 0" class="col-xs-1 ng-star-inserted text-right pull-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
             <br>
         <small>&nbsp;</small>
     </div>
@@ -97,7 +88,7 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
       this.typeForms = service.formTypes();
     }
     onRemove(){
-        //this.removeMe.emit(this.value.index);
+        this.removeMe.emit(this.index);
     } 
 
     ngOnInit(){

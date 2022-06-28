@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import { FarmerAddress, SoildataService, FarmerAddressSearchResult } from '../soildata.service';
 import { Observable, Subject } from 'rxjs';
 import { FarmerAddressSearchCriteria } from '../soildata.report';
@@ -7,10 +7,10 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
 @Component({
   selector: 'soildata-address-browser',
   template: `
-    <div class="ln_solid"></div>
+    <div *ngIf="close" class="ln_solid"></div>
 
     <div class="row" *ngIf="addresses$ | async as addresses">
-      <div class="col-xs-12" style="margin-bottom: 30px;">
+      <div *ngIf="close" class="col-xs-12" style="margin-bottom: 30px;">
         <a class="btn btn-info btn-xs pull-right" (click)="canceled()">close</a>
       </div>
       <div class="col-sm-6 col-xs-12">
@@ -61,7 +61,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
       </div>
     </div>
     
-    <div class="ln_solid"></div>
+    <div *ngIf="close" class="ln_solid"></div>
   `,
   styles: []
 })
@@ -74,7 +74,7 @@ export class SoildataAddressBrowserComponent implements OnInit {
   criteria:FarmerAddressSearchCriteria;
   
 
-
+  @Input('close') close=true;
 
 
   

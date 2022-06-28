@@ -1,7 +1,7 @@
 <loading *ngIf="loading"></loading>
 <div class="row" *ngIf="!loading">
     <div class="col-sm-offset-3 col-sm-9">
-        <h2>Soil Sample Info</h2>
+        <h2>Soil Sample Info</h2><br><br>
     </div>
 
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="soilSampleForm">
@@ -17,7 +17,10 @@
                   <soildata-list-address [address]="selectedAddress" [brief]="false"></soildata-list-address>
                   <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">change</a>
                 </div>
-                <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+                <div *ngIf="addressBrowserOpen" class="address-browser">
+                    <h4>Select client from the list or enter a new one</h4><br>   
+                    <soildata-address-browser [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+                </div>
             </div>
         </div>
 
@@ -36,13 +39,16 @@
 
 
         <div class="form-group"  formArrayName="sampleInfoBundles">
-            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Intended Crop(s):</label>           
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Crop(s):</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <div *ngFor="let control of sampleInfoBundles.controls; index as i">
                      <!-- repeated crop form element template -->
-                    <soil-crop-form-element [index]="i" (removeMe)="cropRemoved($event)" [formControlName]="i"></soil-crop-form-element>
+                    <div  class="address-browser">
+                        <soil-crop-form-element [index]="i" (removeMe)="cropRemoved($event)" [formControlName]="i"></soil-crop-form-element>
+                    </div>
+                    <br>
                 </div>
-                <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add plant????</a>
+                <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add crop</a>
             </div>
         </div>
 
