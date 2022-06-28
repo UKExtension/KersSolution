@@ -52,6 +52,7 @@ export class SampleFormComponent implements OnInit {
       { 
           ownerID: [""],
           acres: [""],
+          optionalInfo: [""],
           sampleInfoBundles: this.fb.array([])
       });
 
