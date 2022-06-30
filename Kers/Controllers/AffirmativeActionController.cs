@@ -62,11 +62,15 @@ namespace Kers.Controllers
             }
             var plan = context.AffirmativeActionPlan.
                                     Where(p=>p.PlanningUnitId == unit && p.FiscalYearId == FiscalYear.Id).
-                                    Include(a=>a.Revisions).ThenInclude(r=>r.MakeupValues).
-                                    Include(a=>a.Revisions).ThenInclude(r=>r.SummaryValues).
+                                    //Include(a=>a.Revisions).ThenInclude(r=>r.MakeupValues).
+                                    //Include(a=>a.Revisions).ThenInclude(r=>r.SummaryValues).
                                     FirstOrDefault();
             if(plan != null){
-                var lastRevision = plan.Revisions.OrderBy( r => r.Created).Last();
+                var lastRevision = context.AffirmativeActionPlanRevision.Where(r => r.AffirmativeActionPlanId == plan.Id).
+                                                Include(r=>r.MakeupValues).
+                                                Include(r=>r.SummaryValues).
+                                                OrderBy( r => r.Created).
+                                                Last();
                 if(lastRevision != null){
                     lastRevision.MakeupValues = lastRevision.MakeupValues.
                                                     OrderBy(m=>m.GroupTypeId).

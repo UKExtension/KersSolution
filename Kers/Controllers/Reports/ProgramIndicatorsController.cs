@@ -124,6 +124,8 @@ namespace Kers.Controllers.Reports
                         if( id == 0 ){
                             var allIndicators = context.ProgramIndicatorValue
                                                     .Where( v => v.ProgramIndicator.MajorProgram == program )
+                                                    .Include( v => v.PlanningUnit)
+                                                    .ToList()
                                                     .GroupBy( v => v.PlanningUnit)
                                                     .Select( v => new {
                                                         Unit = v.Key,
