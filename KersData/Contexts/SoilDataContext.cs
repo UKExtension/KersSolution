@@ -28,6 +28,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<SampleInfoBundle> SampleInfoBundle {get;set;}
         public virtual DbSet<SampleAttributeType> SampleAttributeType {get;set;}
         public virtual DbSet<SampleAttribute> SampleAttribute {get;set;}
+        public virtual DbSet<BillingType> BillingType {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){
 

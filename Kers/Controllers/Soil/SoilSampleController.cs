@@ -60,6 +60,12 @@ namespace Kers.Controllers.Soil
             return new OkObjectResult(types);
         }
 
+        [HttpGet("billingtypes")]
+        public IActionResult BillingTypes(){
+            var types = this._context.BillingType.OrderBy(r => r.Id).ToList();
+            return new OkObjectResult(types);
+        }
+
 
 
 

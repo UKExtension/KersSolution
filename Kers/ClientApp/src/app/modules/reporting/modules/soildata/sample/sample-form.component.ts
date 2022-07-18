@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { Observable } from 'rxjs';
 import { FarmerAddress } from '../soildata.service';
-import { SampleInfoBundle } from './SampleInfoBundle';
+import { BillingType, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 
 @Component({
@@ -37,20 +39,32 @@ export class SampleFormComponent implements OnInit {
   selectedAddress:FarmerAddress;
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<SampleInfoBundle>();
-
+  private myDatePickerOptions: IAngularMyDpOptions = {
+    // other options...
+        dateFormat: 'mm/dd/yyyy',
+        satHighlight: true,
+        firstDayOfWeek: 'su'
+    };
 
   get sampleInfoBundles() {
     return this.soilSampleForm.get('sampleInfoBundles') as FormArray;
   }
+  billingTypes$:Observable<BillingType[]>;
 
   constructor(
     private fb: FormBuilder,
     private service:SoilSampleService
   ) { 
-
+    let date = new Date();
     this.soilSampleForm = this.fb.group(
       { 
           ownerID: [""],
+          sampleLabelCreated: [{
+
+            isRange: false, singleDate: {jsDate: date}
+
+                      }, Validators.required],
+          billingTypeId: [1],
           acres: [""],
           optionalInfo: [""],
           sampleInfoBundles: this.fb.array([])
@@ -60,6 +74,7 @@ export class SampleFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.addSegment(null);
+    this.billingTypes$ = this.service.billingtypes();
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {
