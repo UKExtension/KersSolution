@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { number } from 'echarts';
 import { Observable } from 'rxjs';
 import { FarmerAddress } from '../soildata.service';
 import { BillingType, SampleInfoBundle } from './SampleInfoBundle';
@@ -77,7 +78,12 @@ export class SampleFormComponent implements OnInit {
   ngOnInit(): void {
     this.addSegment(null);
     this.billingTypes$ = this.service.billingtypes();
-    this.lastSampleNum$ = this.service.lastsamplenum();
+    this.service.lastsamplenum().subscribe(
+      res => {
+        var lastNumber:number = res;
+        this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
+      }
+    );
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {
