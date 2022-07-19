@@ -31,7 +31,7 @@ import { SoilSampleService } from './soil-sample.service';
 })
 export class SampleFormComponent implements OnInit {
   
-  @Input() note:SampleInfoBundle;
+  @Input() sample:SampleInfoBundle;
   soilSampleForm:any;
 
   loading = false;
@@ -50,6 +50,7 @@ export class SampleFormComponent implements OnInit {
     return this.soilSampleForm.get('sampleInfoBundles') as FormArray;
   }
   billingTypes$:Observable<BillingType[]>;
+  lastSampleNum$:Observable<number>;
 
   constructor(
     private fb: FormBuilder,
@@ -65,6 +66,7 @@ export class SampleFormComponent implements OnInit {
 
                       }, Validators.required],
           billingTypeId: [1],
+          coSamnum: [""],
           acres: [""],
           optionalInfo: [""],
           sampleInfoBundles: this.fb.array([])
@@ -75,6 +77,7 @@ export class SampleFormComponent implements OnInit {
   ngOnInit(): void {
     this.addSegment(null);
     this.billingTypes$ = this.service.billingtypes();
+    this.lastSampleNum$ = this.service.lastsamplenum();
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {

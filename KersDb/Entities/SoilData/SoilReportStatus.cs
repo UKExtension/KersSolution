@@ -13,5 +13,6 @@ namespace Kers.Models.Entities.SoilData
         public string Name {get;set;}
         public string Description {get;set;}
         public string CssClass {get;set;}
+        public int? zEmpRoleType {get;set;}
     }
 }

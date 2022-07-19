@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.Data;
 using Kers.Models.ViewModels;
+using Kers.Models.Entities.SoilData;
 
 namespace Kers.Controllers.Soil
 {
@@ -64,6 +65,48 @@ namespace Kers.Controllers.Soil
         public IActionResult BillingTypes(){
             var types = this._context.BillingType.OrderBy(r => r.Id).ToList();
             return new OkObjectResult(types);
+        }
+
+        [HttpGet("lastsamplenum/{CountyCodeId?}")]
+        public IActionResult LastSampleNum(int CountyCodeId = 0){
+
+            if(CountyCodeId ==  0) CountyCodeId = this.CurrentCountyCode().Id;
+
+            var NumRecord = this._context.CountyAutoCoSamNum.Where( c => c.CountyCodeId == CountyCodeId).FirstOrDefault();
+            if( NumRecord != null ) return new OkObjectResult( NumRecord.LastSampleNumber );
+            // Last Sample Code Number not found in the database
+            int LastNumber = FindLastCountyNum(CountyCodeId);
+            // Create Record
+            CountyAutoCoSamNum numberRecord = new CountyAutoCoSamNum();
+            numberRecord.CountyCodeId = CountyCodeId;
+            numberRecord.AutoSampleNumber = true;
+            numberRecord.LastSampleNumber = LastNumber;
+            this._context.CountyAutoCoSamNum.Add(numberRecord);
+            this._context.SaveChanges();
+            return new OkObjectResult(LastNumber);
+        }
+
+        private int FindLastCountyNum(int CountyCodeId){
+            var countyNumbers = this._context.SoilReportBundle.Where( b => b.PlanningUnitId == CountyCodeId).OrderByDescending( b => b.SampleLabelCreated).Take(40).Select( b => b.CoSamnum).ToList();
+            int currentNumber = 0;
+            foreach ( string countyCodes in countyNumbers){
+                var parts = countyCodes.Split("-");
+                var NumPart = parts[0];
+                int i = 0; 
+                bool result = int.TryParse(NumPart, out i);
+                if( i > currentNumber ) currentNumber = i;
+            }
+            return currentNumber;
+        }
+
+        private CountyCode CurrentCountyCode(){
+            var PlanningUnitId = _coreContext.ReportingProfile.Where( p => p.LinkBlueId == CurrentUserLinkBlueId()).Select( p => p.PlanningUnitId).FirstOrDefault();
+            return _context.CountyCodes.Where( c => c.PlanningUnitId == PlanningUnitId ).FirstOrDefault();
+        }
+
+
+        protected string CurrentUserLinkBlueId(){
+            return User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
 

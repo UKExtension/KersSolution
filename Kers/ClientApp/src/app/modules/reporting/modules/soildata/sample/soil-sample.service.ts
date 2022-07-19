@@ -39,6 +39,13 @@ export class SoilSampleService {
           );
     }
 
+    lastsamplenum(countyCodeId:number = 0):Observable<number>{
+      var url = this.baseUrl + "lastsamplenum/" + countyCodeId;
+      return this.http.get<number>(this.location.prepareExternalUrl(url))
+          .pipe(
+              catchError(this.handleError('sample attributes', 0))
+          );
+    }
     attributes(typeAttributeId:number):Observable<SampleAttribute[]>{
       var url = this.baseUrl + "attributes/" + typeAttributeId;
       return this.http.get<SampleAttribute[]>(this.location.prepareExternalUrl(url))
