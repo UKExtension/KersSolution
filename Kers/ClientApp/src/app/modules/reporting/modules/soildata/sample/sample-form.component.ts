@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
-import { number } from 'echarts';
 import { Observable } from 'rxjs';
 import { FarmerAddress } from '../soildata.service';
 import { BillingType, SampleInfoBundle } from './SampleInfoBundle';
@@ -37,6 +36,7 @@ export class SampleFormComponent implements OnInit {
 
   loading = false;
   addressBrowserOpen = true;
+  testTypes:Array<any>;
   selectedAddress:FarmerAddress;
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<SampleInfoBundle>();
@@ -68,6 +68,7 @@ export class SampleFormComponent implements OnInit {
                       }, Validators.required],
           billingTypeId: [1],
           coSamnum: [""],
+          optionalTests: '',
           acres: [""],
           optionalInfo: [""],
           sampleInfoBundles: this.fb.array([])
@@ -84,6 +85,12 @@ export class SampleFormComponent implements OnInit {
         this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
       }
     );
+
+    this.testTypes = [{id: 1, label: 'One'},
+                      {id: 2, label: 'Two'},
+                      {id: 3, label: 'Three'}];
+
+
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {

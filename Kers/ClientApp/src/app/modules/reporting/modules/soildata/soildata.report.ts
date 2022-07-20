@@ -1,4 +1,4 @@
-import { BillingType } from './sample/SampleInfoBundle';
+import { BillingType, LabTestType } from './sample/SampleInfoBundle';
 import {FarmerAddress, CountyCode} from './soildata.service';
 
 
@@ -20,6 +20,7 @@ export class SoilReportBundle{
     billingTypeId:number;
     ownerID:string;
     acres:number;
+    optionalTests:LabTestType[];
 }
 
 export class SoilReportStatusChange{
