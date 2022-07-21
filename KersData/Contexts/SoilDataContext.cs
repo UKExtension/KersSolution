@@ -30,6 +30,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<SampleAttribute> SampleAttribute {get;set;}
         public virtual DbSet<BillingType> BillingType {get;set;}
         public virtual DbSet<CountyAutoCoSamNum> CountyAutoCoSamNum {get;set;}
+        public virtual DbSet<OptionalTest> OptionalTest {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){
 
