@@ -913,19 +913,22 @@ namespace Kers.Controllers.Reports
         [Route("[action]")]
         public async Task<IActionResult> Indicators()
         {
-            FiscalYear fiscalYear = GetFYByName("2020");
+            FiscalYear fiscalYear = GetFYByName("2022");
             //Get All Data for the fy by employee
             
 
 
-            var IndicatorValuesPerPerson = context.ProgramIndicatorValue
+            var IndicatorValues = context.ProgramIndicatorValue
                                         .Where( i => 
                                                     i.ProgramIndicator.MajorProgram.StrategicInitiative.FiscalYear.Id == fiscalYear.Id
                                                     &&
                                                     i.KersUser.Specialties.Where( s => s.Specialty.Code == "progFCS").Any() 
                                                     
                                                     )
-                                        .GroupBy(
+                                                    .Include( i => i.KersUser)
+                                                    .ToList();
+                                        
+            var IndicatorValuesPerPerson =IndicatorValues.GroupBy(
                                             u => u.KersUser
                                         )
                                         .Select( i => new PersonIndicator{
