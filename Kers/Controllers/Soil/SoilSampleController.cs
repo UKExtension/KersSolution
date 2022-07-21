@@ -67,6 +67,14 @@ namespace Kers.Controllers.Soil
             return new OkObjectResult(types);
         }
 
+        [HttpGet("optionaltests")]
+        public IActionResult OptionalTests(){
+            var types = this._context.OptionalTest.OrderBy(r => r.Id).ToList();
+            return new OkObjectResult(types);
+        }
+
+
+
         [HttpGet("lastsamplenum/{CountyCodeId?}")]
         public IActionResult LastSampleNum(int CountyCodeId = 0){
 

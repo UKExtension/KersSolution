@@ -5,7 +5,7 @@ import { HttpErrorHandler, HandleError } from '../../../core/services/http-error
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TypeForm } from '../soildata.report';
-import { BillingType, SampleAttribute, SampleAttributeType } from './SampleInfoBundle';
+import { BillingType, OptionalTest, SampleAttribute, SampleAttributeType } from './SampleInfoBundle';
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +58,14 @@ export class SoilSampleService {
       return this.http.get<BillingType[]>(this.location.prepareExternalUrl(url))
           .pipe(
               catchError(this.handleError('billing types', []))
+          );
+    }
+
+    optionaltests():Observable<OptionalTest[]>{
+      var url = this.baseUrl + "optionaltests";
+      return this.http.get<OptionalTest[]>(this.location.prepareExternalUrl(url))
+          .pipe(
+              catchError(this.handleError('optionaltests', []))
           );
     }
 }

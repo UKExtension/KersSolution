@@ -56,3 +56,9 @@ export class BillingType{
     id:number;
     name:string;
 }
+
+export class OptionalTest{
+    id:number;
+    code:string;
+    name:string;
+}

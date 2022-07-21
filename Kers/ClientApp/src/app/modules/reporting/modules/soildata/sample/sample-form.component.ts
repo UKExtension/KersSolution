@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable } from 'rxjs';
 import { FarmerAddress } from '../soildata.service';
-import { BillingType, SampleInfoBundle } from './SampleInfoBundle';
+import { BillingType, OptionalTest, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 
 @Component({
@@ -86,11 +86,18 @@ export class SampleFormComponent implements OnInit {
       }
     );
 
-    this.testTypes = [{id: 1, label: 'One'},
-                      {id: 2, label: 'Two'},
-                      {id: 3, label: 'Three'}];
-
-
+    this.service.optionaltests().subscribe(
+                          res => {
+                              var tsts = <OptionalTest[]> res;
+                              var ts = Array<any>();
+                              tsts.forEach(function(element){
+                                  ts.push(
+                                      {value: element.id, label: element.name}
+                                  );
+                              });
+                              this.testTypes = ts;
+                          }
+                      );
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {
