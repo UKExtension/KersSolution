@@ -8,6 +8,7 @@ export class SampleInfoBundle{
     typeFormId:number;
     purpose:Purpose
     purposeId:number;
+    sampleAttributeSampleInfoBundles:SampleAttributeSampleInfoBundle[];
 };
 
 export class Purpose{

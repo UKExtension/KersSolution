@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace Kers.Models.Entities.SoilData
 {
@@ -14,6 +15,7 @@ namespace Kers.Models.Entities.SoilData
         public TypeForm TypeForm {get;set;}
         public Purpose Purpose {get;set;}
         public int PurposeId {get;set;}
+        public List<SampleAttributeSampleInfoBundle> SampleAttributeSampleInfoBundles {get;set;}
 
     }
 }

@@ -25,9 +25,9 @@ import { SoilSampleService } from './soil-sample.service';
               </select>
             </div>
         </div>
-        <ng-container *ngIf="selectedFormType!=''">
-          <div class="form-group" *ngFor="let attributyType of attributeTypes | async">
-              <soil-cropattribute-form-element [type]="attributyType"></soil-cropattribute-form-element>
+        <ng-container *ngIf="selectedFormType!=''" formArrayName="sampleAttributeSampleInfoBundles">
+          <div class="form-group" *ngFor="let attributyType of attributeTypes | async ; let i=index">
+              <soil-cropattribute-form-element [type]="attributyType" [formControlName]="i"></soil-cropattribute-form-element>
           </div>
         </ng-container>
 
@@ -78,7 +78,8 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     {
       super();
       this.sessionGroup = formBuilder.group({
-        typeFormId: ['', Validators.required]
+        typeFormId: ['', Validators.required],
+        sampleAttributeSampleInfoBundles:this.formBuilder.array([])
       });
   
       this.sessionGroup.valueChanges.subscribe(val => {

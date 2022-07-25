@@ -132,4 +132,8 @@ export class SampleFormComponent implements OnInit {
 
   }
 
+  onSubmit(){
+    console.log(this.soilSampleForm.value);
+  }
+
 }
