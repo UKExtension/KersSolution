@@ -1,9 +1,9 @@
 import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TypeForm } from '../soildata.report';
-import { SampleAttributeType, SampleInfoBundle } from './SampleInfoBundle';
+import { SampleAttributeSampleInfoBundle, SampleAttributeType, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 
 
@@ -11,7 +11,7 @@ import { SoilSampleService } from './soil-sample.service';
 @Component({
   selector: 'soil-crop-form-element',
   template: `
-<div class="form-horizontal form-label-left" [formGroup]="sessionGroup">
+<div class="form-horizontal form-label-left" [formGroup]="sampleForm">
     
   <div class="row" style="padding: 8px 0;">
     <div class="col-sm-11">
@@ -26,8 +26,8 @@ import { SoilSampleService } from './soil-sample.service';
             </div>
         </div>
         <ng-container *ngIf="selectedFormType!=''" formArrayName="sampleAttributeSampleInfoBundles">
-          <div class="form-group" *ngFor="let attributyType of attributeTypes | async ; let i=index">
-              <soil-cropattribute-form-element [type]="attributyType" [formControlName]="i"></soil-cropattribute-form-element>
+          <div class="form-group" *ngFor="let attributyType of sampleAttributeSampleInfoBundles.controls ; let i=index">
+              <soil-cropattribute-form-element [formControlName]="i"></soil-cropattribute-form-element>
           </div>
         </ng-container>
 
@@ -58,7 +58,7 @@ import { SoilSampleService } from './soil-sample.service';
                 ]
 })
 export class SoilCropFormElementComponent extends BaseControlValueAccessor<SampleInfoBundle> implements ControlValueAccessor, OnInit { 
-    sessionGroup: FormGroup;
+    sampleForm: FormGroup;
     @Input('index') index:number;
     @Output() removeMe = new EventEmitter<number>();
 
@@ -66,8 +66,11 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     attributeTypes:Observable<SampleAttributeType[]>;
 
     get selectedFormType() {
-      var formTypeControl =  this.sessionGroup.get('typeFormId') as FormControl;
+      var formTypeControl =  this.sampleForm.get('typeFormId') as FormControl;
       return formTypeControl.value;
+    }
+    get sampleAttributeSampleInfoBundles() {
+      return this.sampleForm.get('sampleAttributeSampleInfoBundles') as FormArray;
     }
 
     date = new Date();
@@ -77,12 +80,12 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     )   
     {
       super();
-      this.sessionGroup = formBuilder.group({
+      this.sampleForm = formBuilder.group({
         typeFormId: ['', Validators.required],
         sampleAttributeSampleInfoBundles:this.formBuilder.array([])
       });
   
-      this.sessionGroup.valueChanges.subscribe(val => {
+      this.sampleForm.valueChanges.subscribe(val => {
         this.value = <SampleInfoBundle>val;
         this.onChange(this.value);
       });
@@ -98,19 +101,31 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
 
 
     formTypeChange(event){
-      this.attributeTypes = this.service.attributeTypes(this.selectedFormType);
+      //this.attributeTypes = 
+      
+      this.service.attributeTypes(this.selectedFormType).subscribe(
+        res => {
+          var types:SampleAttributeType[] = res;
+          this.sampleAttributeSampleInfoBundles.setValue([]);
+          for( let type of types){
+            this.sampleAttributeSampleInfoBundles.push(this.formBuilder.control({sampleAttribute: {sampleAttributeTypeId: type.id, sampleAttributeType:type}}));
+          }
+        }
+      );
+      
+ 
     }
 
 
 
     writeValue(session: SampleInfoBundle) {
       this.value = session;
-      this.sessionGroup.patchValue(this.value);
+      this.sampleForm.patchValue(this.value);
     }
 /* 
 
     validate(c: AbstractControl): ValidationErrors | null{
-      return this.sessionGroup.valid ? null : { invalidForm: {valid: false, message: "Session fields are invalid"}};
+      return this.sampleForm.valid ? null : { invalidForm: {valid: false, message: "Session fields are invalid"}};
     }
  */
 

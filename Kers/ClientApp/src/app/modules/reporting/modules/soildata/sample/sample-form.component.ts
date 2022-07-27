@@ -118,7 +118,7 @@ export class SampleFormComponent implements OnInit {
 
 
   cropRemoved(event:number){
-    console.log(event);
+    this.sampleInfoBundles.removeAt(event);
   }
 
 

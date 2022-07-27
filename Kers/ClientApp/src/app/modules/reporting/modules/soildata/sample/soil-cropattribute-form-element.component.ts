@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Valida
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TypeForm } from '../soildata.report';
-import { SampleAttribute, SampleAttributeType, SampleInfoBundle } from './SampleInfoBundle';
+import { SampleAttribute, SampleAttributeSampleInfoBundle, SampleAttributeType, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 
 
@@ -11,11 +11,10 @@ import { SoilSampleService } from './soil-sample.service';
 @Component({
   selector: 'soil-cropattribute-form-element',
   template: `
-<div class="form-horizontal form-label-left" [formGroup]="sessionGroup">
+<div class="form-horizontal form-label-left" [formGroup]="attributeGroup">
     
-  <div class="row" style="padding: 8px 0;">
+  <div class="row" style="padding: 8px 0;" *ngIf="value">
     <div class="col-sm-12">
-
         <div class="form-group">
             <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">{{type.name}}:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -44,14 +43,14 @@ import { SoilSampleService } from './soil-sample.service';
                 } */
                 ]
 })
-export class SoilCropattributeFormElementComponent extends BaseControlValueAccessor<SampleAttribute> implements ControlValueAccessor, OnInit { 
-    sessionGroup: FormGroup;
-    @Input('type') type:SampleAttributeType;
+export class SoilCropattributeFormElementComponent extends BaseControlValueAccessor<SampleAttributeSampleInfoBundle> implements ControlValueAccessor, OnInit { 
+    attributeGroup: FormGroup;
+    type:SampleAttributeType;
 
     attributes:Observable<SampleAttribute[]>;
 
     get selectedFormType() {
-      var formTypeControl =  this.sessionGroup.get('attributeId') as FormControl;
+      var formTypeControl =  this.attributeGroup.get('attributeId') as FormControl;
       return formTypeControl.value;
     }
 
@@ -62,12 +61,12 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     )   
     {
       super();
-      this.sessionGroup = formBuilder.group({
+      this.attributeGroup = formBuilder.group({
         attributeId: ['', Validators.required]
       });
   
-      this.sessionGroup.valueChanges.subscribe(val => {
-        this.value = <SampleAttribute>val;
+      this.attributeGroup.valueChanges.subscribe(val => {
+        this.value = <SampleAttributeSampleInfoBundle>val;
         this.onChange(this.value);
       });
       
@@ -75,21 +74,24 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     
 
     ngOnInit(){
-       this.attributes = this.service.attributes( this.type.id);
+       
     }
 
     formTypeChange(event){
 
     }
 
-    writeValue(session: SampleAttribute) {
-      this.value = session;
-      this.sessionGroup.patchValue(this.value);
+    writeValue(attribute: SampleAttributeSampleInfoBundle) {
+      //console.log(attribute);
+      //this.value = attribute;
+      this.type = attribute.sampleAttribute.sampleAttributeType;
+      this.attributes = this.service.attributes( attribute.sampleAttribute.sampleAttributeTypeId);
+      this.attributeGroup.patchValue(attribute);
     }
 /* 
 
     validate(c: AbstractControl): ValidationErrors | null{
-      return this.sessionGroup.valid ? null : { invalidForm: {valid: false, message: "Session fields are invalid"}};
+      return this.attributeGroup.valid ? null : { invalidForm: {valid: false, message: "Session fields are invalid"}};
     }
  */
 
