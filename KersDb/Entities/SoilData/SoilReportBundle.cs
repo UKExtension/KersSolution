@@ -18,6 +18,7 @@ namespace Kers.Models.Entities.SoilData
         public CountyCode PlanningUnit {get;set;}
         public int PlanningUnitId {get;set;}
         public FarmerForReport FarmerForReport {get;set;}
+        public int FarmerForReportId {get;set;}
         public int? FarmerAddressId {get;set;}
         public string CoSamnum {get;set;}
         public FarmerAddress FarmerAddress {get;set;}
@@ -31,5 +32,6 @@ namespace Kers.Models.Entities.SoilData
         public string Acres {get;set;}
         public string OptionalInfo {get;set;}
         public List<SampleInfoBundle> SampleInfoBundles {get;set;}
+        public List<OptionalTestSoilReportBundle> OptionalTestSoilReportBundles {get;set;}
     }
 }

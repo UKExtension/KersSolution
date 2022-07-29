@@ -18,7 +18,7 @@ import { SoilSampleService } from './soil-sample.service';
         <div class="form-group">
             <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">{{type.name}}:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
-              <select name="typeFormId" formControlName="attributeId" class="form-control col-md-7 col-xs-12" (change)="formTypeChange($event)">
+              <select name="typeFormId" formControlName="sampleAttributeId" class="form-control col-md-7 col-xs-12" (change)="formTypeChange($event)">
                   <option value="">-- select {{type.name}} --</option>
                   <option *ngFor="let attribute of attributes | async" [value]="attribute.id">{{attribute.name}}</option>
               </select>
@@ -62,7 +62,7 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     {
       super();
       this.attributeGroup = formBuilder.group({
-        attributeId: ['', Validators.required]
+        sampleAttributeId: ['', Validators.required]
       });
   
       this.attributeGroup.valueChanges.subscribe(val => {

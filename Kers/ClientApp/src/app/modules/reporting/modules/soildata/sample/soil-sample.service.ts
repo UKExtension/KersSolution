@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { TypeForm } from '../soildata.report';
+import { SoilReportBundle, TypeForm } from '../soildata.report';
 import { BillingType, OptionalTest, SampleAttribute, SampleAttributeType } from './SampleInfoBundle';
 
 @Injectable({
@@ -68,4 +68,10 @@ export class SoilSampleService {
               catchError(this.handleError('optionaltests', []))
           );
     }
+    addsample( sample:SoilReportBundle ):Observable<SoilReportBundle>{
+        return this.http.post<SoilReportBundle>(this.location.prepareExternalUrl(this.baseUrl + 'addsample'), sample)
+            .pipe(
+                catchError(this.handleError('add sample', <SoilReportBundle>{}))
+            );
+      }
 }

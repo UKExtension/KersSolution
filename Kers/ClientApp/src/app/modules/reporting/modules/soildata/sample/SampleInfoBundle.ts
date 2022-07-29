@@ -63,3 +63,9 @@ export class OptionalTest{
     code:string;
     name:string;
 }
+export class OptionalTestSoilReportBundle{
+    id:number;
+    optionalTestId:number;
+    soilReportBundleId:number;
+
+}

@@ -120,5 +120,40 @@ namespace Kers.Controllers.Soil
 
 
 
+
+
+        [HttpPost("addsample")]
+        [Authorize]
+        public IActionResult AddSample( [FromBody] SoilReportBundle sample){
+            if(sample != null){
+                
+                foreach( SampleInfoBundle smpl in sample.SampleInfoBundles){
+                    var cleanedConnections = new List<SampleAttributeSampleInfoBundle>();
+                    foreach( SampleAttributeSampleInfoBundle attr in smpl.SampleAttributeSampleInfoBundles ){
+                        if( attr.SampleAttributeId != 0 ){
+                            cleanedConnections.Add(attr);
+                        }
+                    }
+                    smpl.SampleAttributeSampleInfoBundles = cleanedConnections;
+                }
+                sample.AgentReviewed = DateTime.Now;
+                sample.DataProcessed = DateTime.Now;
+                sample.FarmerForReportId = 3;
+                var contCode = this.CurrentCountyCode();
+                sample.PlanningUnit = contCode;
+                _context.Add(sample);
+                _context.SaveChanges();
+                
+               
+               return new OkObjectResult(sample);
+            }else{
+                //this.Log( activity ,"ActivityRevision", "Error in adding Activity attempt.", "Activity", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+
     }
 }

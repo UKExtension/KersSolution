@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable } from 'rxjs';
+import { SoilReportBundle } from '../soildata.report';
 import { FarmerAddress } from '../soildata.service';
 import { BillingType, OptionalTest, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
@@ -133,7 +134,24 @@ export class SampleFormComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log(this.soilSampleForm.value);
+    var SampleDataToSubmit = <SoilReportBundle> this.soilSampleForm.value;
+    if(this.selectedAddress != undefined){
+      SampleDataToSubmit.farmerAddressId = this.selectedAddress.id;
+    }
+    SampleDataToSubmit.sampleLabelCreated = this.soilSampleForm.value.sampleLabelCreated.singleDate.jsDate;
+    var opTsts = [];
+    for( var tst of this.soilSampleForm.value.optionalTests){
+      opTsts.push({optionalTestId:tst.value})
+    }
+    SampleDataToSubmit.optionalTestSoilReportBundles = opTsts;
+    SampleDataToSubmit.optionalTests = undefined;
+    this.service.addsample(SampleDataToSubmit).subscribe(
+      res => {
+        console.log(res);
+      }
+    );
+
+    console.log(SampleDataToSubmit);
   }
 
 }
