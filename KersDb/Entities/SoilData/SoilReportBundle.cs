@@ -23,6 +23,7 @@ namespace Kers.Models.Entities.SoilData
         public string CoSamnum {get;set;}
         public FarmerAddress FarmerAddress {get;set;}
         public TypeForm TypeForm {get;set;}
+        public int TypeFormId {get;set;}
         public List<SoilReport> Reports {get;set;}
         //public List<SoilReportStatusChange> StatusHistory {get;set;}
         public SoilReportStatusChange LastStatus {get;set;}

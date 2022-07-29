@@ -126,7 +126,6 @@ namespace Kers.Controllers.Soil
         [Authorize]
         public IActionResult AddSample( [FromBody] SoilReportBundle sample){
             if(sample != null){
-                
                 foreach( SampleInfoBundle smpl in sample.SampleInfoBundles){
                     var cleanedConnections = new List<SampleAttributeSampleInfoBundle>();
                     foreach( SampleAttributeSampleInfoBundle attr in smpl.SampleAttributeSampleInfoBundles ){
@@ -135,10 +134,12 @@ namespace Kers.Controllers.Soil
                         }
                     }
                     smpl.SampleAttributeSampleInfoBundles = cleanedConnections;
+                    smpl.PurposeId = 1;
+                    sample.TypeFormId = smpl.TypeFormId;
                 }
-                sample.AgentReviewed = DateTime.Now;
-                sample.DataProcessed = DateTime.Now;
-                sample.FarmerForReportId = 3;
+                //sample.AgentReviewed = DateTime.Now;
+                //sample.DataProcessed = DateTime.Now;
+                sample.FarmerForReportId = 40627;
                 var contCode = this.CurrentCountyCode();
                 sample.PlanningUnit = contCode;
                 _context.Add(sample);
