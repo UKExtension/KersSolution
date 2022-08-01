@@ -183,7 +183,7 @@ namespace Kers.Models.Repositories
                     TotalContacts += activity.Male + activity.Female;
                 }
 
-                var contactRevs = await this.LastContactRevisionIds(start, end, filter, id );
+                var contactRevs = await this.LastContactRevisionIds(start, end, filter, id, refreshCache );
                 var FilteredContacts = new List<ContactRevision>();
                 for(var i = 0; i <= contactRevs.Count(); i += batchCount){
                     var currentBatch = contactRevs.Skip(i).Take(batchCount);
@@ -1576,7 +1576,7 @@ namespace Kers.Models.Repositories
             var cacheKey = CacheKeys.ContactsLastRevisionIdsPerPeriod + filter.ToString() + "_" + id.ToString() + start.ToString("s") + end.ToString("s");
             var cacheString = await _cache.GetStringAsync(cacheKey);
             List<int> ids;
-            if (!string.IsNullOrEmpty(cacheString)){
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
                 ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
             }else{
                 ids = new List<int>();
