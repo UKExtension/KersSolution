@@ -134,7 +134,7 @@ namespace Kers.Controllers.Reports
                             var reported = allIndicators.Where( i => i.Reported != 0).Select( s => s.Unit ).ToList();
                             var reporting = new ReportingCountiesPerProgram();
                             reporting.Units = reported;
-                            reporting.MajorProgram = program;
+                            reporting.MajorProgram = program; 
                             reporting.UnitsToString = string.Join(", ", reporting.Units.OrderBy(s => s.Name).Select(x => x.Name.Substring(0, x.Name.Length - 11)));
                             ReportingCountiesPerProgram.Add(reporting);
                         }
@@ -260,7 +260,10 @@ namespace Kers.Controllers.Reports
                                                 }).ToList();
                     
                     MajorProgramIndicatorsViewModel indicatorsPerMajorProgram = new MajorProgramIndicatorsViewModel();
-
+                    indicatorsPerMajorProgram.Title = program.Name;
+                    indicatorsPerMajorProgram.Code = program.PacCode;
+                    indicatorsPerMajorProgram.Indicators = groupedIncicators;
+                    ViewData["indicators"] = indicatorsPerMajorProgram;
 
                     
                 }
