@@ -1,0 +1,24 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    var County = ViewData["county"] as Kers.Models.Entities.KERScore.PlanningUnit;
+    ViewData["fy"] = FiscalYear.Name;
+    ViewData["Title"] = County.Name + " Program Indicators and Success Stories";
+    ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");
+}
+@model Kers.Models.ViewModels.ProgramStoryViewModel
+
+<br><br>
+<div class="row">
+    <label class="col-md-2">Select Major Program</label>
+    <div class="col-md-8">
+        <select asp-for="MajorProgram.Id" asp-items="@(new SelectList(Model.MajorPrograms,"Id","Name"))" class="form-control" onchange="location = '@Url.RouteUrl("CountyIndicatorsStory", new { countyId = County.Id, })' + '/' + this.value;">
+            <option>-- select --</option>
+        </select>
+    </div>
+</div><br><br>
+
+@await Html.PartialAsync("StoriesList", Model.Stories)
+
+
+<br><br>
