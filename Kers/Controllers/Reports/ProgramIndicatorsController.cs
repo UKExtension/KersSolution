@@ -232,7 +232,7 @@ namespace Kers.Controllers.Reports
                             let l = (from lim in stry.Revisions
                                     orderby lim.Created descending
                                     select lim).FirstOrDefault()
-                            where l.MajorProgramId == majorProgramId select stry;
+                            where l.MajorProgramId == majorProgramId && stry.PlanningUnitId == countyId select stry;
 
 
                     var stories = await str
