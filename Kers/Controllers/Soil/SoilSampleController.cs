@@ -137,9 +137,6 @@ namespace Kers.Controllers.Soil
                     smpl.PurposeId = 1;
                     sample.TypeFormId = smpl.TypeFormId;
                 }
-                //sample.AgentReviewed = DateTime.Now;
-                //sample.DataProcessed = DateTime.Now;
-                sample.FarmerForReportId = 40627;
                 var contCode = this.CurrentCountyCode();
                 sample.PlanningUnit = contCode;
                 _context.Add(sample);
