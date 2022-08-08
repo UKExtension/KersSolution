@@ -139,6 +139,7 @@ namespace Kers.Controllers.Soil
                 }
                 var contCode = this.CurrentCountyCode();
                 sample.PlanningUnit = contCode;
+                sample.UniqueCode = Guid.NewGuid().ToString();
                 var cntId = sample.CoSamnum;
                 int i = 0; 
                 if( int.TryParse(cntId, out i) ){
