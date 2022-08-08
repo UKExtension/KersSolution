@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: '[soildata-reports-catalog-details]',
   template: `
-    <td *ngIf="default">{{report.labTestsReady | date:'mediumDate'}}</td>
+    <td *ngIf="default">{{report.sampleLabelCreated | date:'mediumDate'}}</td>
     <td *ngIf="default">{{report.typeForm.code}}</td>
     <td *ngIf="default">{{report.coSamnum}}</td>
     <td *ngIf="default">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>

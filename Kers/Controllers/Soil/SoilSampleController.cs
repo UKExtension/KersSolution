@@ -139,6 +139,12 @@ namespace Kers.Controllers.Soil
                 }
                 var contCode = this.CurrentCountyCode();
                 sample.PlanningUnit = contCode;
+                var cntId = sample.CoSamnum;
+                int i = 0; 
+                if( int.TryParse(cntId, out i) ){
+                    var NumRecord = this._context.CountyAutoCoSamNum.Where( c => c.CountyCodeId == contCode.Id).FirstOrDefault();
+                    NumRecord.LastSampleNumber = i;
+                }
                 _context.Add(sample);
                 _context.SaveChanges();
                 

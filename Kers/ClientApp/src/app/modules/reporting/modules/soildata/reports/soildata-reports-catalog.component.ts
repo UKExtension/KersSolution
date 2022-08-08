@@ -25,6 +25,10 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   condition = false;
 
+  newSample:boolean = false;
+  sampleNumberDisplayed:boolean = false;
+  lastCountyNumber:string;
+
 
   myDateRangePickerOptions: IAngularMyDpOptions = {
     dateRange: true,
@@ -145,6 +149,15 @@ export class SoildataReportsCatalogComponent implements OnInit {
   onRefresh() {
     this.loading = true; // Turn on the spinner.
     this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
+  }
+
+  SampleFormCanceled(){
+    this.newSample = false;
+  }
+  SampleFormSubmit(event:SoilReportBundle){
+    this.newSample = false;
+    this.lastCountyNumber = event.coSamnum;
+    this.sampleNumberDisplayed = true;
   }
   
   switchOrder(type:string){

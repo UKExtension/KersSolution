@@ -40,7 +40,7 @@ export class SampleFormComponent implements OnInit {
   testTypes:Array<any>;
   selectedAddress:FarmerAddress;
   @Output() onFormCancel = new EventEmitter<void>();
-  @Output() onFormSubmit = new EventEmitter<SampleInfoBundle>();
+  @Output() onFormSubmit = new EventEmitter<SoilReportBundle>();
   private myDatePickerOptions: IAngularMyDpOptions = {
     // other options...
         dateFormat: 'mm/dd/yyyy',
@@ -145,13 +145,19 @@ export class SampleFormComponent implements OnInit {
     }
     SampleDataToSubmit.optionalTestSoilReportBundles = opTsts;
     SampleDataToSubmit.optionalTests = undefined;
-    this.service.addsample(SampleDataToSubmit).subscribe(
-      res => {
-        console.log(res);
-      }
-    );
+    if( !this.sample ){
+      this.service.addsample(SampleDataToSubmit).subscribe(
+        res => {
+          this.onFormSubmit.emit(res);
+        }
+      );
 
-    console.log(SampleDataToSubmit);
+    }
+    
+
+  }
+  onCancel(){
+    this.onFormCancel.emit();
   }
 
 }

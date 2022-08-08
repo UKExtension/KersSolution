@@ -1,12 +1,19 @@
-<br><h3>Soil Test Results</h3><br>
+<h3>Soil Samples</h3>
+<div class="text-right">
+  <a class="btn btn-info btn-xs" *ngIf="!newSample" (click)="newSample = true">+ new sample</a>
+</div>
+<soil-sample-form *ngIf="newSample" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
+<div *ngIf="sampleNumberDisplayed">
+  <h4>County Sample Number:</h4>
+  <h2>{{lastCountyNumber}}</h2>
+  <a (click)="sampleNumberDisplayed=false">Close</a>
+</div>
+<br><br>
 <div class="row">
   <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
     <input type="text" [(ngModel)]="criteria.search" placeholder="Search by client name (first OR last) in selected dates and search criteria" (keyup)="onSearch($event)" class="form-control" name="Search" />
   </div>
   <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-    <!-- 
-      <my-date-range-picker name="mydaterange" [(ngModel)]="model" [options]="myDateRangePickerOptions" (dateRangeChanged)="dateCnanged($event)"></my-date-range-picker>
-    -->
     <div class="input-group" style="width:250px; float:right;">
             
       <input type="text" class="form-control input-box" placeholder="Click to select a date" 
@@ -110,7 +117,7 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-              <th>Report Date</th>
+              <th>Sample In</th>
               <th>Form Type</th>
               <th>CO Sample Num</th>
               <th>Client</th>
