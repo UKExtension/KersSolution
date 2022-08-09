@@ -30,6 +30,7 @@ import { Observable } from 'rxjs';
       <loading *ngIf="statusLoading" [type]="bars"></loading>
     </td>
     <td *ngIf="default" class="text-right">
+      <a class="btn btn-info btn-xs" (click)="sampleEditView()"><i class="fa fa-pencil"></i> sample</a>
       <a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil"></i> review</a>
       <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
@@ -50,6 +51,9 @@ import { Observable } from 'rxjs';
         </div>
       </div>
       <soildata-report-form [report]="report"></soildata-report-form>
+    </td>
+    <td *ngIf="sampleEdit" colspan="6">
+      <soil-sample-form [sample]="report" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
     </td>
   `,
   styles: [`
@@ -82,6 +86,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
 
   default = true;
   edit = false;
+  sampleEdit = false;
   pdfLoading = false;
   deleteLoading = false;
   statusLoading = false;
@@ -106,10 +111,17 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   defaultView(){
     this.default = true;
     this.edit = false;
+    this.sampleEdit = false;
   }
   editView(){
     this.default = false;
     this.edit = true;
+    this.sampleEdit = false;
+  }
+  sampleEditView(){
+    this.default = false;
+    this.edit = false;
+    this.sampleEdit = true;
   }
   print(){
     this.pdfLoading = true;
@@ -141,6 +153,12 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
       }
     )
     
+  }
+  SampleFormCanceled(){
+    this.defaultView();
+  }
+  SampleFormSubmit(event:SoilReportBundle){
+    console.log(event);
   }
 
   email(){
