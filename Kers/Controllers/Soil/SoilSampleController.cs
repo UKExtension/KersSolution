@@ -146,6 +146,11 @@ namespace Kers.Controllers.Soil
                     var NumRecord = this._context.CountyAutoCoSamNum.Where( c => c.CountyCodeId == contCode.Id).FirstOrDefault();
                     NumRecord.LastSampleNumber = i;
                 }
+                if( sample.FarmerAddressId != null ){
+                    sample.FarmerForReport = CreateFarmerForReport(sample.FarmerAddressId??0);
+                }
+
+
                 _context.Add(sample);
                 _context.SaveChanges();
                 
@@ -155,6 +160,31 @@ namespace Kers.Controllers.Soil
                 //this.Log( activity ,"ActivityRevision", "Error in adding Activity attempt.", "Activity", "Error");
                 return new StatusCodeResult(500);
             }
+        }
+
+        private FarmerForReport CreateFarmerForReport( int FarmerId ){
+            var newFarmer = new FarmerForReport();
+            var Frmr = this._context.FarmerAddress.Find(FarmerId);
+            newFarmer.First = Frmr.First;
+            newFarmer.Mi = Frmr.Mi;
+            newFarmer.Last = Frmr.Last;
+            newFarmer.Title = Frmr.Title;
+            newFarmer.Modifier = Frmr.Modifier;
+            newFarmer.Company = Frmr.Company;
+            newFarmer.Address = Frmr.Address;
+            newFarmer.City = Frmr.City;
+            newFarmer.St = Frmr.St;
+            newFarmer.Status = Frmr.Status;
+            newFarmer.WorkNumber = Frmr.WorkNumber;
+            newFarmer.DuplicateHouseHold = Frmr.DuplicateHouseHold;
+            newFarmer.HomeNumber = Frmr.HomeNumber;
+            newFarmer.Fax = Frmr.Fax;
+            newFarmer.FarmerID = Frmr.FarmerID;
+            newFarmer.Zip = Frmr.Zip;
+            newFarmer.EmailAddress = Frmr.EmailAddress;
+            
+            return newFarmer;
+
         }
 
 
