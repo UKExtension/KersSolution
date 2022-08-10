@@ -76,7 +76,7 @@ export class SampleFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.addSegment(null);
+    
     this.billingTypes$ = this.service.billingtypes();
     this.service.lastsamplenum().subscribe(
       res => {
@@ -95,27 +95,44 @@ export class SampleFormComponent implements OnInit {
                                   );
                               });
                               this.testTypes = ts;
+
+
+
+                              if( this.sample != null ){
+                                this.soilSampleForm.patchValue(this.sample);
+                                if(this.sample.farmerForReport != null){
+                                  this.selectedAddress = this.sample.farmerForReport;
+                                  this.addressBrowserOpen = false;
+                                }
+                        
+                        
+                                let date = new Date(this.sample.sampleLabelCreated);
+                        
+                                this.soilSampleForm.patchValue({sampleLabelCreated: {
+                                      isRange: false, singleDate: {jsDate: date}
+                                  }});
+                        
+                                var optTsts = [];
+                                for( var tst of this.sample.optionalTestSoilReportBundles){
+                                  optTsts.push(
+                                    {value: tst.optionalTestId, label: tsts.filter(c => c.id == tst.optionalTestId )[0].name}
+                                  );
+                                }
+
+                                this.soilSampleForm.patchValue({optionalTests:optTsts});
+                                for( var plant of this.sample.sampleInfoBundles){
+                                  this.addSegment(plant);
+                                }
+                        
+                        
+                              }else{
+                                this.addSegment(null);
+                              }
+
+
                           }
                       );
-      if( this.sample != null ){
-        console.log( this.sample );
-        this.soilSampleForm.patchValue(this.sample);
-        if(this.sample.farmerForReport != null){
-          this.selectedAddress = this.sample.farmerForReport;
-          this.addressBrowserOpen = false;
-        }
-
-
-        let date = new Date(this.sample.sampleLabelCreated);
-
-        this.soilSampleForm.patchValue({sampleLabelCreated: {
-              isRange: false, singleDate: {jsDate: date}
-          }});
-
-
-
-
-      }  
+      
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {
@@ -128,7 +145,12 @@ export class SampleFormComponent implements OnInit {
         }
       );
     }else{
-      // Populate new group
+      group = this.fb.control(
+        {
+          typeFormId: sampleInfoBundles.typeFormId
+        }
+      );
+
     }
     
     this.sampleInfoBundles.push(group);

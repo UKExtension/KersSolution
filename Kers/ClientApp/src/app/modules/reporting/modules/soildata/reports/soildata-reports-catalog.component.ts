@@ -3,7 +3,7 @@ import { SoilReportSearchCriteria, SoilReportBundle, TypeForm } from '../soildat
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { SoildataService } from '../soildata.service';
-import { startWith, flatMap, tap } from 'rxjs/operators';
+import { startWith, flatMap, tap, mergeMap } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 
 @Component({
@@ -114,7 +114,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.reports$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        flatMap(_ => this.service.getCustom(this.criteria)), // Get some items
+        mergeMap(_ => this.service.getCustom(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
   }
