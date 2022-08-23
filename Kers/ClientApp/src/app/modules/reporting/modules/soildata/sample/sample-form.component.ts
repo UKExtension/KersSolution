@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable } from 'rxjs';
 import { SoilReportBundle } from '../soildata.report';
@@ -12,12 +12,6 @@ import { SoilSampleService } from './soil-sample.service';
   templateUrl: './sample-form.component.html',
   styles: [
     `
-    .address-browser{
-      border: 1px solid #e5e5e5;
-      padding: 15px;
-    }
-
-
     .index-border{
       border: 1px solid #1ABB9C;
       width: 20px;
@@ -61,6 +55,7 @@ export class SampleFormComponent implements OnInit {
     let date = new Date();
     this.soilSampleForm = this.fb.group(
       { 
+          farmerAddress: ["", Validators.required],
           ownerID: [""],
           sampleLabelCreated: [{
             isRange: false, singleDate: {jsDate: date}
@@ -71,7 +66,7 @@ export class SampleFormComponent implements OnInit {
           acres: [""],
           optionalInfo: [""],
           sampleInfoBundles: this.fb.array([])
-      });
+      }, { validator: sampleValidator });
 
   }
 
@@ -123,7 +118,7 @@ export class SampleFormComponent implements OnInit {
                                 for( var plant of this.sample.sampleInfoBundles){
                                   this.addSegment(plant);
                                 }
-                        
+                                console.log(this.sample);
                         
                               }else{
                                 this.addSegment(null);
@@ -147,7 +142,8 @@ export class SampleFormComponent implements OnInit {
     }else{
       group = this.fb.control(
         {
-          typeFormId: sampleInfoBundles.typeFormId
+          typeFormId: sampleInfoBundles.typeFormId,
+          sampleAttributeSampleInfoBundles: sampleInfoBundles.sampleAttributeSampleInfoBundles
         }
       );
 
@@ -199,4 +195,21 @@ export class SampleFormComponent implements OnInit {
     this.onFormCancel.emit();
   }
 
+}
+
+export const sampleValidator = (control: AbstractControl): {[key: string]: boolean} => {
+/* 
+  let start = control.get('start');
+  let end = control.get('end');
+
+  if( end.value != null && end.value.singleDate != null){
+    let startDate = start.value.singleDate.jsDate;
+    let endDate = end.value.singleDate.jsDate;
+    if( startDate.getTime() > endDate.getTime()){
+      return {"endDate":true};
+    }
+  }
+ */
+
+  return null;
 }

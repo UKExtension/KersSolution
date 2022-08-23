@@ -24,10 +24,10 @@ import { SoilSampleService } from './soil-sample.service';
                   <option *ngFor="let formtype of typeForms | async" [value]="formtype.id">{{formtype.name}}</option>
               </select>
             </div>
-        </div>
-        <ng-container *ngIf="selectedFormType!=''" formArrayName="sampleAttributeSampleInfoBundles">
+        </div><br>
+        <ng-container *ngIf="selectedFormType!='' && !attributesLoading" formArrayName="sampleAttributeSampleInfoBundles">
           <div class="form-group" *ngFor="let attributyType of sampleAttributeSampleInfoBundles.controls ; let i=index">
-              <soil-cropattribute-form-element [formControlName]="i"></soil-cropattribute-form-element>
+              <soil-cropattribute-form-element [formControlName]="i" [connections]="connections"></soil-cropattribute-form-element>
           </div>
         </ng-container>
 
@@ -59,11 +59,13 @@ import { SoilSampleService } from './soil-sample.service';
 })
 export class SoilCropFormElementComponent extends BaseControlValueAccessor<SampleInfoBundle> implements ControlValueAccessor, OnInit { 
     sampleForm: FormGroup;
+    connections:SampleAttributeSampleInfoBundle[] = null;
     @Input('index') index:number;
     @Output() removeMe = new EventEmitter<number>();
 
     typeForms:Observable<TypeForm[]>;
     attributeTypes:Observable<SampleAttributeType[]>;
+    attributesLoading = false;
 
     get selectedFormType() {
       var formTypeControl =  this.sampleForm.get('typeFormId') as FormControl;
@@ -101,17 +103,25 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
 
 
     formTypeChange(event){
-      //this.attributeTypes = 
-      
-      this.service.attributeTypes(this.selectedFormType).subscribe(
-        res => {
-          var types:SampleAttributeType[] = res;
-          this.sampleAttributeSampleInfoBundles.setValue([]);
-          for( let type of types){
-            this.sampleAttributeSampleInfoBundles.push(this.formBuilder.control({sampleAttribute: {sampleAttributeTypeId: type.id, sampleAttributeType:type}}));
+      if(this.selectedFormType != '' ){
+        this.attributesLoading = true;
+
+        
+        this.sampleAttributeSampleInfoBundles.clear();
+        
+        this.service.attributeTypes(this.selectedFormType).subscribe(
+          res => {
+            var types:SampleAttributeType[] = res;
+            
+            for( let type of types){
+              this.sampleAttributeSampleInfoBundles.push(this.formBuilder.control({sampleAttribute: {sampleAttributeTypeId: type.id, sampleAttributeType:type}}));
+            }
+            this.attributesLoading = false;
+            
           }
-        }
-      );
+        );
+      }
+      
       
  
     }
@@ -120,7 +130,9 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
 
     writeValue(session: SampleInfoBundle) {
       this.value = session;
+      if( session.sampleAttributeSampleInfoBundles != null && session.sampleAttributeSampleInfoBundles.length > 0 ) this.connections = session.sampleAttributeSampleInfoBundles;
       this.sampleForm.patchValue(this.value);
+      this.formTypeChange(null);
     }
 /* 
 

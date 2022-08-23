@@ -30,11 +30,12 @@ import { Observable } from 'rxjs';
       <loading *ngIf="statusLoading" [type]="bars"></loading>
     </td>
     <td *ngIf="default" class="text-right">
-      <a class="btn btn-info btn-xs" (click)="sampleEditView()"><i class="fa fa-pencil"></i> sample</a>
-      <a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil"></i> review</a>
-      <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a>
+      <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-pencil"></i> edit</a>
+      <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-copy"></i> copy</a>
+      <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="report.reports != null && report.reports.length > 0"><i class="fa fa-pencil"></i> review</a>
+      <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading && report.reports != null && report.reports.length > 0"><i class="fa fa-download"></i> pdf</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
-      <a class="btn btn-info btn-xs" (click)="email()" ><i class="fa fa-envelope"></i> email</a>
+      <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="report.reports != null && report.reports.length > 0"><i class="fa fa-envelope"></i> email</a>
     </td>
     <td *ngIf="edit" colspan="6">
       <div class="row">

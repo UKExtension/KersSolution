@@ -6,21 +6,10 @@
 
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="soilSampleForm">
         
-
         <div class="form-group">
             <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Client:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <loading *ngIf="loading"></loading>
-
-                <div *ngIf="!addressBrowserOpen">
-                  <br>
-                  <soildata-list-address [address]="selectedAddress" [brief]="false"></soildata-list-address>
-                  <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">change</a>
-                </div>
-                <div *ngIf="addressBrowserOpen" class="address-browser">
-                    <h4>Select client from the list or enter a new one</h4><br>   
-                    <soildata-address-browser [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
-                </div>
+                <address-browser-form-element formControlName="farmerAddress"></address-browser-form-element>
             </div>
         </div>
 
@@ -111,4 +100,5 @@
             </div>
         </div>
     </form>
+    <!-- {{soilSampleForm.value | json}} -->
 </div>

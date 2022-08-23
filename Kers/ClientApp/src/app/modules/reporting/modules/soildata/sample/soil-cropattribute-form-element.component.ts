@@ -20,7 +20,7 @@ import { SoilSampleService } from './soil-sample.service';
             <div class="col-md-9 col-sm-9 col-xs-12">
               <select name="typeFormId" formControlName="sampleAttributeId" class="form-control col-md-7 col-xs-12" (change)="formTypeChange($event)">
                   <option value="">-- select {{type.name}} --</option>
-                  <option *ngFor="let attribute of attributes | async" [value]="attribute.id">{{attribute.name}}</option>
+                  <option *ngFor="let attribute of attributes" [value]="attribute.id">{{attribute.name}}</option>
               </select>
             </div>
         </div>        
@@ -44,10 +44,13 @@ import { SoilSampleService } from './soil-sample.service';
                 ]
 })
 export class SoilCropattributeFormElementComponent extends BaseControlValueAccessor<SampleAttributeSampleInfoBundle> implements ControlValueAccessor, OnInit { 
+    
+    @Input() connections:SampleAttributeSampleInfoBundle[] = null;
+  
     attributeGroup: FormGroup;
     type:SampleAttributeType;
 
-    attributes:Observable<SampleAttribute[]>;
+    attributes:SampleAttribute[];
 
     get selectedFormType() {
       var formTypeControl =  this.attributeGroup.get('attributeId') as FormControl;
@@ -68,6 +71,7 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
       this.attributeGroup.valueChanges.subscribe(val => {
         this.value = <SampleAttributeSampleInfoBundle>val;
         this.onChange(this.value);
+        //if( this.connections != null ) this.attributeGroup.patchValue( this.connections );
       });
       
     }
@@ -82,11 +86,21 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     }
 
     writeValue(attribute: SampleAttributeSampleInfoBundle) {
-      //console.log(attribute);
-      //this.value = attribute;
-      this.type = attribute.sampleAttribute.sampleAttributeType;
-      this.attributes = this.service.attributes( attribute.sampleAttribute.sampleAttributeTypeId);
-      this.attributeGroup.patchValue(attribute);
+      if(attribute != null ){
+        this.type = attribute.sampleAttribute.sampleAttributeType;
+        this.service.attributes( attribute.sampleAttribute.sampleAttributeTypeId).subscribe(
+          res =>{
+            this.attributes  = res;
+            if( this.connections != null){
+              let attrIds = this.connections.map(a => a.sampleAttributeId);
+              const filteredArray = this.attributes.filter(value => attrIds.includes(value.id));
+              if(filteredArray.length > 0) this.attributeGroup.patchValue({sampleAttributeId:filteredArray[0].id});
+            }
+            
+          } 
+        );
+        this.attributeGroup.patchValue(attribute);
+      }
     }
 /* 
 
