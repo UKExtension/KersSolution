@@ -146,7 +146,8 @@ namespace Kers.Controllers.Soil
                     var NumRecord = this._context.CountyAutoCoSamNum.Where( c => c.CountyCodeId == contCode.Id).FirstOrDefault();
                     NumRecord.LastSampleNumber = i;
                 }
-                if( sample.FarmerAddressId != null ){
+                if( sample.FarmerAddress != null ){
+                    sample.FarmerAddressId = this.FarmerAddress.Id;
                     sample.FarmerForReport = CreateFarmerForReport(sample.FarmerAddressId??0);
                 }
 
