@@ -2,7 +2,7 @@
 <div class="text-right">
   <a class="btn btn-info btn-xs" *ngIf="!newSample" (click)="newSample = true">+ new sample</a>
 </div>
-<soil-sample-form *ngIf="newSample" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
+<soil-sample-form *ngIf="newSample" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)" [sample]="reportForCopy" [isThisACopy]="isThisSampleCopy"></soil-sample-form>
 <div *ngIf="sampleNumberDisplayed">
   <h4>County Sample Number:</h4>
   <h2>{{lastCountyNumber}}</h2>
@@ -126,7 +126,7 @@
             </tr>
         </thead>
         <tbody *ngIf="!loading">
-          <tr *ngFor="let report of reports" [soildata-reports-catalog-details]="report" (onStatusChange)="statusChanged()"></tr>
+          <tr *ngFor="let report of reports" [soildata-reports-catalog-details]="report" (onStatusChange)="statusChanged()" (onCopySample)="copySample($event)"></tr>
         </tbody>
     </table>
     

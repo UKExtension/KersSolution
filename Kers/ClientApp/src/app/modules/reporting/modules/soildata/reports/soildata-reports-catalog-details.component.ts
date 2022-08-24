@@ -31,7 +31,7 @@ import { Observable } from 'rxjs';
     </td>
     <td *ngIf="default" class="text-right">
       <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-pencil"></i> edit</a>
-      <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-copy"></i> copy</a>
+      <a class="btn btn-info btn-xs" (click)="sampleCopy()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-copy"></i> copy</a>
       <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="report.reports != null && report.reports.length > 0"><i class="fa fa-pencil"></i> review</a>
       <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading && report.reports != null && report.reports.length > 0"><i class="fa fa-download"></i> pdf</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
@@ -84,6 +84,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Input('soildata-reports-catalog-details') report: SoilReportBundle;
 
   @Output() onStatusChange = new EventEmitter<SoilReportStatus | null>();
+  @Output() onCopySample = new EventEmitter<SoilReportBundle>();
 
   default = true;
   edit = false;
@@ -145,6 +146,12 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
       }
     )
   }
+
+  sampleCopy(){
+    this.onCopySample.emit(this.report);
+  }
+
+
   onDelete(){
     this.deleteLoading = true;
     this.service.deleteReport(this.report.id).subscribe(

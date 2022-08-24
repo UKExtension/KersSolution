@@ -17,6 +17,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
   type="dsc";
   pdfLoading = false;
 
+  reportForCopy:SoilReportBundle = null;
+  isThisSampleCopy:boolean = false;
+
   @Input() criteria:SoilReportSearchCriteria;
   @Input() startDate:Date;
   @Input() endDate:Date;
@@ -167,6 +170,17 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.type = type;
     this.criteria["order"] = type;
     this.onRefresh();
+  }
+
+  copySample(event:SoilReportBundle){
+    this.reportForCopy = event;
+    this.isThisSampleCopy = true;
+    this.newSample = true;
+    setTimeout(()=>{  
+      this.reportForCopy = null;
+      this.isThisSampleCopy = false;
+          }, 400);
+    
   }
 
   printAll(reports:SoilReportBundle[]){

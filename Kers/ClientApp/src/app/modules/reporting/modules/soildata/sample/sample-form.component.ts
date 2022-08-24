@@ -27,6 +27,7 @@ import { SoilSampleService } from './soil-sample.service';
 export class SampleFormComponent implements OnInit {
   
   @Input() sample:SoilReportBundle;
+  @Input() isThisACopy:boolean = false;
   soilSampleForm:any;
 
   loading = false;
@@ -73,12 +74,7 @@ export class SampleFormComponent implements OnInit {
   ngOnInit(): void {
     
     this.billingTypes$ = this.service.billingtypes();
-    this.service.lastsamplenum().subscribe(
-      res => {
-        var lastNumber:number = res;
-        this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
-      }
-    );
+    
 
     this.service.optionaltests().subscribe(
                           res => {
@@ -118,10 +114,23 @@ export class SampleFormComponent implements OnInit {
                                 for( var plant of this.sample.sampleInfoBundles){
                                   this.addSegment(plant);
                                 }
-                                console.log(this.sample);
+                                if(this.isThisACopy){
+                                  this.service.lastsamplenum().subscribe(
+                                    res => {
+                                      var lastNumber:number = res;
+                                      this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
+                                    }
+                                  );
+                                }
                         
                               }else{
                                 this.addSegment(null);
+                                this.service.lastsamplenum().subscribe(
+                                  res => {
+                                    var lastNumber:number = res;
+                                    this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
+                                  }
+                                );
                               }
 
 
