@@ -147,8 +147,9 @@ namespace Kers.Controllers.Soil
                     NumRecord.LastSampleNumber = i;
                 }
                 if( sample.FarmerAddress != null ){
-                    sample.FarmerAddressId = this.FarmerAddress.Id;
+                    sample.FarmerAddressId = sample.FarmerAddress.Id;
                     sample.FarmerForReport = CreateFarmerForReport(sample.FarmerAddressId??0);
+                    sample.FarmerAddress = null;
                 }
 
 
