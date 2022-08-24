@@ -3,7 +3,7 @@ import { SoilReportSearchCriteria, SoilReportBundle, TypeForm } from '../soildat
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { SoildataService } from '../soildata.service';
-import { startWith, flatMap, tap, mergeMap } from 'rxjs/operators';
+import { startWith, tap, mergeMap } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 
 @Component({

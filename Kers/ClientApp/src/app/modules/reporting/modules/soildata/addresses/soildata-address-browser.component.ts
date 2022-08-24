@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import { FarmerAddress, SoildataService, FarmerAddressSearchResult } from '../soildata.service';
 import { Observable, Subject } from 'rxjs';
 import { FarmerAddressSearchCriteria } from '../soildata.report';
-import { startWith, flatMap, tap } from 'rxjs/operators';
+import { startWith, mergeMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'soildata-address-browser',
@@ -99,7 +99,7 @@ export class SoildataAddressBrowserComponent implements OnInit {
     this.addresses$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        flatMap(_ => this.service.getCustomAddresses(this.criteria)), // Get some items
+        mergeMap(_ => this.service.getCustomAddresses(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
   }

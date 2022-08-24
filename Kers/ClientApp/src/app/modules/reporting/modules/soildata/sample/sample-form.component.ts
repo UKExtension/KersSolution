@@ -56,7 +56,7 @@ export class SampleFormComponent implements OnInit {
     let date = new Date();
     this.soilSampleForm = this.fb.group(
       { 
-          farmerAddress: ["", Validators.required],
+          farmerAddress: [null, Validators.required],
           ownerID: [""],
           sampleLabelCreated: [{
             isRange: false, singleDate: {jsDate: date}

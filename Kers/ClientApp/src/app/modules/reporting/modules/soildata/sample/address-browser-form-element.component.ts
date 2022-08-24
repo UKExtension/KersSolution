@@ -78,8 +78,8 @@ export class AddressBrowserFormElementComponent extends BaseControlValueAccessor
     }
 
     writeValue(address: FarmerAddress) {
-        if( address != null){
-            this.addressSelected(address);
+        if( address != undefined){
+          this.addressSelected(address);
         }
     }
 
