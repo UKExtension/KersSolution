@@ -296,7 +296,7 @@ namespace Kers.Controllers
                     bundle.LastStatus.Created = DateTime.Now;
                     _soilDataContext.SaveChanges();
                 }
-                this.Log(bundle,"SoilReportBundle", "Bundle Status Updated.");
+                this.Log(bundle,"SoilReportBundle", "Bundle Status Updated.", "SoilReportBundle");
                 return new OkObjectResult(bundle);
             }else{
                 this.Log( sentBundle ,"SoilReportBundle", "Not Found SoilReportBundle status update bundle attempt.", "SoilReportBundle", "Error");
@@ -325,7 +325,7 @@ namespace Kers.Controllers
                     }
                 }
                 _soilDataContext.SaveChanges();
-                this.Log(crop,"SoilReport", "SoilReport note Updated.");
+                this.Log(crop,"SoilReport", "SoilReport note Updated.", "SoilReportBundle");
                 return new OkObjectResult(crop);
             }else{
                 this.Log( note ,"SoilReport", "Not Found SoilReport or missing note in an update report attempt.", "SoilReport", "Error");
@@ -346,7 +346,7 @@ namespace Kers.Controllers
 
                 report.LastStatus.SoilReportStatus = status;
                 _soilDataContext.SaveChanges();
-                this.Log(report,"SoilReport", "SoilReport status Updated.");
+                this.Log(report,"SoilReport", "SoilReport status Updated.", "SoilReport");
                 return new OkObjectResult(status);
             }else{
                 this.Log( bundleId ,"SoilReport", "Not Found SoilReport or missing note in an update report status attempt.", "SoilReport", "Error");
@@ -390,7 +390,7 @@ namespace Kers.Controllers
                 adr.HomeNumber = address.HomeNumber;
                 adr.EmailAddress = address.EmailAddress;
                 _soilDataContext.SaveChanges();
-                this.Log(address,"FarmerAddress", "FarmerAddress Updated.");
+                this.Log(address,"FarmerAddress", "FarmerAddress Updated.","FarmerAddress");
                 return new OkObjectResult(address);
             }else{
                 this.Log( address ,"FarmerAddress", "Not Found Farmer Address in an update attempt.", "FarmerAddress", "Error");
@@ -408,7 +408,7 @@ namespace Kers.Controllers
                 note.CountyCode = countyCode;
                 _soilDataContext.Add(note); 
                 _soilDataContext.SaveChanges();
-                this.Log(note,"CountyNote", "County Note added.");
+                this.Log(note,"CountyNote", "County Note added.","CountyNote");
                 return new OkObjectResult(note); 
             }else{
                 this.Log( note ,"CountyNote", "Error in adding County Note attempt.", "CountyNote", "Error");
@@ -424,7 +424,7 @@ namespace Kers.Controllers
                 nte.Name = note.Name;
                 nte.Note = note.Note;
                 _soilDataContext.SaveChanges();
-                this.Log(note,"CountyNote", "County Note Updated.");
+                this.Log(note,"CountyNote", "County Note Updated.","CountyNote");
                 return new OkObjectResult(nte);
             }else{
                 this.Log( note ,"CountyNote", "Not Found County Note in an update attempt.", "CountyNote", "Error");

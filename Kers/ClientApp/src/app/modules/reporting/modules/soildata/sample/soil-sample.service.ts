@@ -73,5 +73,15 @@ export class SoilSampleService {
             .pipe(
                 catchError(this.handleError('add sample', <SoilReportBundle>{}))
             );
-      }
+    }
+
+    updateSample(id:number, sample:SoilReportBundle):Observable<SoilReportBundle>{
+        var url = this.baseUrl + 'updatesample/' + id;
+        return this.http.put<SoilReportBundle>(this.location.prepareExternalUrl(url), sample)
+                .pipe(
+                    catchError(this.handleError('updateSample', sample))
+                );
+    }
+
+
 }

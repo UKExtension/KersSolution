@@ -28,15 +28,17 @@ namespace Kers.Controllers.Soil
 {
 
     [Route("api/[controller]")]
-    public class SoilSampleController : Controller
+    public class SoilSampleController : BaseController
     {
         KERScoreContext _coreContext;
         SoilDataContext _context;
 
         public SoilSampleController( 
+                    KERSmainContext mainContext,
+                    IKersUserRepository userRepo,
                     SoilDataContext _context,
                     KERScoreContext _coreContext
-            ){
+            ):base(mainContext, _coreContext, userRepo){
                 this._context = _context;
                 this._coreContext = _coreContext;
 
@@ -155,17 +157,67 @@ namespace Kers.Controllers.Soil
 
                 _context.Add(sample);
                 _context.SaveChanges();
-                
-               
+                this.Log( sample ,"SoilReportBundle", "Soil Sample Info added.", "SoilReportBundle");
+
                return new OkObjectResult(sample);
             }else{
-                //this.Log( activity ,"ActivityRevision", "Error in adding Activity attempt.", "Activity", "Error");
+                this.Log( sample ,"SoilReportBundle", "Error in adding Soil Sample Info attempt.", "SoilReportBundle", "Error");
                 return new StatusCodeResult(500);
             }
         }
 
+
+        [HttpPut("updatesample/{id}")]
+        [Authorize]
+        public IActionResult UpdateSample( int id, [FromBody] SoilReportBundle sample){
+            var smpl = _context.SoilReportBundle.Where( t => t.Id == id)
+                        .Include( s => s.FarmerForReport)
+                        .FirstOrDefault();
+            if(sample != null && smpl != null ){
+
+                smpl.SampleLabelCreated = sample.SampleLabelCreated;
+                smpl.OwnerID = sample.OwnerID;
+                smpl.Acres = sample.Acres;
+                smpl.OptionalInfo = sample.OptionalInfo;
+                if(sample.FarmerAddress != null ){
+                    smpl.FarmerAddressId = sample.FarmerAddress.Id;
+                }
+                UpdateFarmerForReport(smpl.FarmerForReport, smpl.FarmerAddressId??0);
+                smpl.SampleInfoBundles = null;
+                foreach( SampleInfoBundle smplBundle in sample.SampleInfoBundles){
+                    var cleanedConnections = new List<SampleAttributeSampleInfoBundle>();
+                    foreach( SampleAttributeSampleInfoBundle attr in smplBundle.SampleAttributeSampleInfoBundles ){
+                        if( attr.SampleAttributeId != 0 ){
+                            cleanedConnections.Add(attr);
+                        }
+                    }
+                    smplBundle.SampleAttributeSampleInfoBundles = cleanedConnections;
+
+                    smpl.TypeFormId = smplBundle.TypeFormId;
+                }
+                smpl.SampleInfoBundles = sample.SampleInfoBundles;
+                smpl.BillingTypeId = sample.BillingTypeId;
+                smpl.CoSamnum = sample.CoSamnum;
+                _context.SaveChanges();
+                this.Log( sample ,"SoilReportBundle", "Soil Sample Info updated.", "SoilReportBundle");
+                return new OkObjectResult(smpl);
+            }else{
+                this.Log( sample ,"SoilReportBundle", "Not Found SoilSample in an update attempt.", "SoilReportBundle", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+
+
         private FarmerForReport CreateFarmerForReport( int FarmerId ){
             var newFarmer = new FarmerForReport();
+            UpdateFarmerForReport(newFarmer, FarmerId);
+            return newFarmer;
+
+        }
+
+        private void UpdateFarmerForReport( FarmerForReport newFarmer, int FarmerId){
             var Frmr = this._context.FarmerAddress.Find(FarmerId);
             newFarmer.First = Frmr.First;
             newFarmer.Mi = Frmr.Mi;
@@ -184,9 +236,6 @@ namespace Kers.Controllers.Soil
             newFarmer.FarmerID = Frmr.FarmerID;
             newFarmer.Zip = Frmr.Zip;
             newFarmer.EmailAddress = Frmr.EmailAddress;
-            
-            return newFarmer;
-
         }
 
 
