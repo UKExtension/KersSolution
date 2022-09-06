@@ -166,7 +166,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     this.defaultView();
   }
   SampleFormSubmit(event:SoilReportBundle){
-    console.log(event);
+    this.onStatusChange.emit(null);
   }
 
   email(){

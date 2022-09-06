@@ -90,7 +90,6 @@ export class SampleFormComponent implements OnInit {
 
 
                               if( this.sample != null ){
-                                console.log(this.sample);
                                 this.soilSampleForm.patchValue(this.sample);
                                 if(this.sample.farmerForReport != null){
                                   this.selectedAddress = this.sample.farmerForReport;
@@ -198,10 +197,8 @@ export class SampleFormComponent implements OnInit {
       );
 
     }else{
-      console.log(SampleDataToSubmit);
       this.service.updateSample( this.sample.id, SampleDataToSubmit ).subscribe(
         res => {
-          console.log(res);
           this.onFormSubmit.emit(res);
         }
       )

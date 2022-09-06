@@ -172,18 +172,18 @@ namespace Kers.Controllers.Soil
         public IActionResult UpdateSample( int id, [FromBody] SoilReportBundle sample){
             var smpl = _context.SoilReportBundle.Where( t => t.Id == id)
                         .Include( s => s.FarmerForReport)
+                        .Include( b => b.SampleInfoBundles).ThenInclude( i => i.SampleAttributeSampleInfoBundles)
+                        .Include( b => b.OptionalTestSoilReportBundles)
                         .FirstOrDefault();
             if(sample != null && smpl != null ){
+                
 
-                smpl.SampleLabelCreated = sample.SampleLabelCreated;
-                smpl.OwnerID = sample.OwnerID;
-                smpl.Acres = sample.Acres;
-                smpl.OptionalInfo = sample.OptionalInfo;
-                if(sample.FarmerAddress != null ){
-                    smpl.FarmerAddressId = sample.FarmerAddress.Id;
+                foreach( var bndl in smpl.SampleInfoBundles){
+                    _context.RemoveRange(bndl.SampleAttributeSampleInfoBundles);
+                    _context.SaveChanges();
                 }
-                UpdateFarmerForReport(smpl.FarmerForReport, smpl.FarmerAddressId??0);
-                smpl.SampleInfoBundles = null;
+                _context.RemoveRange(smpl.SampleInfoBundles);
+                _context.SaveChanges();
                 foreach( SampleInfoBundle smplBundle in sample.SampleInfoBundles){
                     var cleanedConnections = new List<SampleAttributeSampleInfoBundle>();
                     foreach( SampleAttributeSampleInfoBundle attr in smplBundle.SampleAttributeSampleInfoBundles ){
@@ -195,6 +195,17 @@ namespace Kers.Controllers.Soil
 
                     smpl.TypeFormId = smplBundle.TypeFormId;
                 }
+                smpl.SampleInfoBundles = sample.SampleInfoBundles;
+                smpl.OptionalTestSoilReportBundles = sample.OptionalTestSoilReportBundles;
+                
+                smpl.SampleLabelCreated = sample.SampleLabelCreated;
+                smpl.OwnerID = sample.OwnerID;
+                smpl.Acres = sample.Acres;
+                smpl.OptionalInfo = sample.OptionalInfo;
+                if(sample.FarmerAddress != null ){
+                    smpl.FarmerAddressId = sample.FarmerAddress.Id;
+                }
+                UpdateFarmerForReport(smpl.FarmerForReport, smpl.FarmerAddressId??0);
                 smpl.SampleInfoBundles = sample.SampleInfoBundles;
                 smpl.BillingTypeId = sample.BillingTypeId;
                 smpl.CoSamnum = sample.CoSamnum;

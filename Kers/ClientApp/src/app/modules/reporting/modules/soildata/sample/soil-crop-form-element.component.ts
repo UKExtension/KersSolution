@@ -84,7 +84,8 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
       super();
       this.sampleForm = formBuilder.group({
         typeFormId: ['', Validators.required],
-        sampleAttributeSampleInfoBundles:this.formBuilder.array([])
+        sampleAttributeSampleInfoBundles:this.formBuilder.array([]),
+        purposeId: [1]
       });
   
       this.sampleForm.valueChanges.subscribe(val => {
