@@ -11,7 +11,7 @@ import { SoilSampleService } from './soil-sample.service';
 @Component({
   selector: 'soil-crop-form-element',
   template: `
-<div class="form-horizontal form-label-left" [formGroup]="sampleForm">
+<div class="form-horizontal form-label-left sample-crop" [formGroup]="sampleForm">
     
   <div class="row" style="padding: 8px 0;">
     <div class="col-sm-11">
@@ -43,6 +43,12 @@ import { SoilSampleService } from './soil-sample.service';
 </div>
 
   `,
+  styles: [`
+  .sample-crop{
+    border-bottom: 1px solid #ccc
+  }
+  `]
+  ,
   providers:[  { 
                   provide: NG_VALUE_ACCESSOR,
                   useExisting: forwardRef(() => SoilCropFormElementComponent),
