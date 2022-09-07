@@ -154,7 +154,7 @@ namespace Kers.Controllers.Soil
                     sample.FarmerAddress = null;
                 }
 
-
+                sample.CoSamnum = sample.CoSamnum.PadLeft(5, '0');
                 _context.Add(sample);
                 _context.SaveChanges();
                 this.Log( sample ,"SoilReportBundle", "Soil Sample Info added.", "SoilReportBundle");

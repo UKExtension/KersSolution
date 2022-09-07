@@ -105,7 +105,7 @@ namespace Kers.Controllers
                         .Include( b => b.FarmerAddress)
                         .Include( b => b.SampleInfoBundles).ThenInclude( i => i.SampleAttributeSampleInfoBundles)
                         .Include( b => b.OptionalTestSoilReportBundles);
-            IOrderedQueryable orderedBundles;
+            IOrderedQueryable<SoilReportBundle> orderedBundles;
             if(criteria.Order == "smpl"){
                 orderedBundles = bundles.OrderByDescending( s => s.CoSamnum);
             }else if( criteria.Order == "smplasc"){
@@ -115,6 +115,10 @@ namespace Kers.Controllers
             }else{
                 orderedBundles = bundles.OrderBy( s => s.LabTestsReady);
             }
+            foreach( var bndle in orderedBundles){
+                bndle.CoSamnum = bndle.CoSamnum.TrimStart('0');
+            }
+
             return new OkObjectResult(orderedBundles);
         }
 
