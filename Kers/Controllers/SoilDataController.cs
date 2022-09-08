@@ -111,9 +111,9 @@ namespace Kers.Controllers
             }else if( criteria.Order == "smplasc"){
                 orderedBundles = bundles.OrderBy( s => s.CoSamnum);
             }else if( criteria.Order == "dsc"){
-                orderedBundles = bundles.OrderByDescending( s => s.LabTestsReady);
+                orderedBundles = bundles.OrderByDescending( s => s.SampleLabelCreated);
             }else{
-                orderedBundles = bundles.OrderBy( s => s.LabTestsReady);
+                orderedBundles = bundles.OrderBy( s => s.SampleLabelCreated);
             }
             foreach( var bndle in orderedBundles){
                 bndle.CoSamnum = bndle.CoSamnum.TrimStart('0');
