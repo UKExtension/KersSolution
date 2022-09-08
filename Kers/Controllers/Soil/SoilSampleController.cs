@@ -143,6 +143,14 @@ namespace Kers.Controllers.Soil
                 sample.PlanningUnit = contCode;
                 sample.UniqueCode = Guid.NewGuid().ToString();
                 var cntId = sample.CoSamnum;
+                var now = DateTime.Now;
+                sample.SampleLabelCreated = new DateTime(
+                                                    sample.SampleLabelCreated.Year,
+                                                    sample.SampleLabelCreated.Month,
+                                                    sample.SampleLabelCreated.Day,
+                                                    now.Hour,
+                                                    now.Minute,
+                                                    now.Second) ;
                 int i = 0; 
                 if( int.TryParse(cntId, out i) ){
                     var NumRecord = this._context.CountyAutoCoSamNum.Where( c => c.CountyCodeId == contCode.Id).FirstOrDefault();
@@ -208,7 +216,7 @@ namespace Kers.Controllers.Soil
                 UpdateFarmerForReport(smpl.FarmerForReport, smpl.FarmerAddressId??0);
                 smpl.SampleInfoBundles = sample.SampleInfoBundles;
                 smpl.BillingTypeId = sample.BillingTypeId;
-                smpl.CoSamnum = sample.CoSamnum;
+                smpl.CoSamnum = sample.CoSamnum.PadLeft(5, '0');
                 _context.SaveChanges();
                 this.Log( sample ,"SoilReportBundle", "Soil Sample Info updated.", "SoilReportBundle");
                 return new OkObjectResult(smpl);
