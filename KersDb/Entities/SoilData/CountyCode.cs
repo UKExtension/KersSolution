@@ -12,5 +12,7 @@ namespace Kers.Models.Entities.SoilData
         public string Name {get;set;}
         public int CountyID {get;set;}
         public int PlanningUnitId {get;set;}
+        public string ReportEmail {get;set;}
+        public string InvoiceEmail {get;set;}
     }
 }
