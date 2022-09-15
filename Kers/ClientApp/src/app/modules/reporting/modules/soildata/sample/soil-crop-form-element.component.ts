@@ -53,14 +53,12 @@ import { SoilSampleService } from './soil-sample.service';
                   provide: NG_VALUE_ACCESSOR,
                   useExisting: forwardRef(() => SoilCropFormElementComponent),
                   multi: true
-                } 
-                /* 
-                ,
+                },
                 {
                   provide: NG_VALIDATORS,
                   useExisting: forwardRef(() => SoilCropFormElementComponent),
                   multi: true
-                } */
+                } 
                 ]
 })
 export class SoilCropFormElementComponent extends BaseControlValueAccessor<SampleInfoBundle> implements ControlValueAccessor, OnInit { 
@@ -141,11 +139,11 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
       this.sampleForm.patchValue(this.value);
       this.formTypeChange(null);
     }
-/* 
+ 
 
     validate(c: AbstractControl): ValidationErrors | null{
-      return this.sampleForm.valid ? null : { invalidForm: {valid: false, message: "Session fields are invalid"}};
+      return this.sampleForm.valid ? null : { invalidForm: {valid: false, message: "Crop fields are invalid"}};
     }
- */
+
 
 }
