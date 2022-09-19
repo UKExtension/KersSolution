@@ -1,7 +1,7 @@
 <loading *ngIf="loading"></loading>
 <div class="row" *ngIf="!loading">
     <div class="col-sm-offset-3 col-sm-9">
-        <h2>Soil Sample Info</h2><br><br>
+        <h2 *ngIf="!sample">New Soil Sample Info</h2><h2 *ngIf="sample">Update Soil Sample Info</h2><br><br>
     </div>
 
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="soilSampleForm">

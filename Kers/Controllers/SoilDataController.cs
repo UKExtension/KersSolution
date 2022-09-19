@@ -344,13 +344,24 @@ namespace Kers.Controllers
             var report = _soilDataContext.SoilReportBundle
                             .Where( b => b.Id == bundleId)
                                 .Include( b => b.LastStatus)
+                                .Include( b => b.StatusHistory)
                             .FirstOrDefault();
             var status = _soilDataContext.SoilReportStatus.Where( s => s.Id == statusId).FirstOrDefault();
-            if(report != null && status != null ){
+            var user = this.CurrentUser();
+            Boolean allowed = true;
 
-                report.LastStatus.SoilReportStatus = status;
+
+            if(report != null && status != null && allowed){
+                SoilReportStatusChange change = new SoilReportStatusChange();
+                change.SoilReportStatus = status;
+                change.Created = DateTime.Now;
+                change.KersUserId = user.Id;
+                change.SoilReportBundleId = report.Id;
+                _soilDataContext.SoilReportStatusChange.Add(change);
                 _soilDataContext.SaveChanges();
-                this.Log(report,"SoilReport", "SoilReport status Updated.", "SoilReport");
+                report.LastStatus = change;
+                _soilDataContext.SaveChanges();
+                this.Log(report,"SoilReport", "SoilReport status Updated to "+status.Name+".", "SoilReport");
                 return new OkObjectResult(status);
             }else{
                 this.Log( bundleId ,"SoilReport", "Not Found SoilReport or missing note in an update report status attempt.", "SoilReport", "Error");

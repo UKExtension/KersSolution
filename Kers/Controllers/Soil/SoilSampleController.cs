@@ -161,7 +161,10 @@ namespace Kers.Controllers.Soil
                     sample.FarmerForReport = CreateFarmerForReport(sample.FarmerAddressId??0);
                     sample.FarmerAddress = null;
                 }
-
+                var status = _context.SoilReportStatus.Where( s => s.Name == "Entered").FirstOrDefault();
+                sample.LastStatus = new SoilReportStatusChange();
+                sample.LastStatus.SoilReportStatus = status;
+                sample.LastStatus.Created = DateTime.Now;
                 sample.CoSamnum = sample.CoSamnum.PadLeft(5, '0');
                 _context.Add(sample);
                 _context.SaveChanges();
