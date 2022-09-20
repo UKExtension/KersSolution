@@ -177,20 +177,37 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   }
 
   ProcessStatuses(){
-    if(       this.report.lastStatus != null 
-                && 
-            (
-              this.report.lastStatus.soilReportStatus.roleCode == undefined 
-                || 
-              this.report.lastStatus.soilReportStatus.roleCode == ""
-            )
-              ){
-      this.$statuses.subscribe(
-        res => {
-          this.processedStatuses = res.filter( f => ((f.roleCode == undefined || f.roleCode == "") && f.group == this.report.lastStatus.soilReportStatus.group));
-        }
-      )
-    }
+    this.userService.currentUserHasAnyOfTheRoles(["STLA"]).subscribe(
+
+      res => {
+
+        if(res){
+          this.$statuses.subscribe(
+
+            res => {
+              this.processedStatuses = res;
+            }
+            
+          )
+        }else if( this.report.lastStatus != null )
+                
+                if (
+                  this.report.lastStatus.soilReportStatus.roleCode == undefined 
+                    || 
+                  this.report.lastStatus.soilReportStatus.roleCode == ""
+                ){
+                  this.$statuses.subscribe(
+                    res => {
+                      this.processedStatuses = res.filter( f => ((f.roleCode == undefined || f.roleCode == "") && f.group == this.report.lastStatus.soilReportStatus.group));
+                    }
+                  )
+                }
+      }
+
+
+
+    );
+    
   }
 
 
