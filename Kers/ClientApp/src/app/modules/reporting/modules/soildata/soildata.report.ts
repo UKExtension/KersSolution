@@ -39,6 +39,8 @@ export class SoilReportStatus{
     name:string;
     description:string;
     cssClass:string;
+    order:number;
+    roleCode:string;
 }
 
 export class SoilReport{

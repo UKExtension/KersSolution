@@ -16,5 +16,6 @@ namespace Kers.Models.Entities.SoilData
         public int? zEmpRoleType {get;set;}
         public string RoleCode {get;set;}
         public int Order {get;set;}
+        public int Group {get;set;}
     }
 }

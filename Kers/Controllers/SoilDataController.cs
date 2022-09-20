@@ -344,7 +344,6 @@ namespace Kers.Controllers
             var report = _soilDataContext.SoilReportBundle
                             .Where( b => b.Id == bundleId)
                                 .Include( b => b.LastStatus)
-                                .Include( b => b.StatusHistory)
                             .FirstOrDefault();
             var status = _soilDataContext.SoilReportStatus.Where( s => s.Id == statusId).FirstOrDefault();
             var user = this.CurrentUser();
@@ -577,8 +576,8 @@ namespace Kers.Controllers
 
         [HttpGet("reportstatus")]
         public async Task<IActionResult> ReportStatus(){
-            var FormTypes = this._soilDataContext.SoilReportStatus.OrderBy( t => t.Id).ToListAsync();
-            return new OkObjectResult(await FormTypes);
+            var Statuses = this._soilDataContext.SoilReportStatus.OrderBy( t => t.Order).ToListAsync();
+            return new OkObjectResult(await Statuses);
         }
 
     }

@@ -31,6 +31,8 @@ namespace Kers.Models.Contexts
         public virtual DbSet<BillingType> BillingType {get;set;}
         public virtual DbSet<CountyAutoCoSamNum> CountyAutoCoSamNum {get;set;}
         public virtual DbSet<OptionalTest> OptionalTest {get;set;}
+        //public virtual DbSet<SampleInterfaceButtonStatus> SampleInterfaceButtonStatus {get;set;}
+        //public virtual DbSet<SampleInterfaceButton> SampleInterfaceButton {get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){
 

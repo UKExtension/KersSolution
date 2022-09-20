@@ -13,21 +13,26 @@ import { Observable } from 'rxjs';
     <td *ngIf="default">{{report.coSamnum}}</td>
     <td *ngIf="default">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
     <td *ngIf="default" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
-      <div *ngIf="!statusLoading">
-        <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
-          {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-angle-down"></i>
-        </a>
-        <div *ngIf="statusChangeClicked" style="position:absolute;">
-          <table class="table status-choice">
-            <tbody>
-              <tr *ngFor="let st of $statuses | async">
-                <td><a style="cursor:pointer;" (click)="changeStatusTo(st.id)">{{st.name}}</a></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div *ngIf="processedStatuses == null && report.lastStatus !=null">
+        {{report.lastStatus.soilReportStatus.name}}
       </div>
-      <loading *ngIf="statusLoading" [type]="bars"></loading>
+      <ng-container *ngIf="processedStatuses != null">
+        <div *ngIf="!statusLoading">
+          <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
+            {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-angle-down"></i>
+          </a>
+          <div *ngIf="statusChangeClicked" style="position:absolute;">
+            <table class="table status-choice">
+              <tbody>
+                <tr *ngFor="let st of processedStatuses">
+                  <td><a style="cursor:pointer;" (click)="changeStatusTo(st.id)">{{st.name}}</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <loading *ngIf="statusLoading" [type]="bars"></loading>
+      </ng-container>
     </td>
     <td *ngIf="default" class="text-right">
       <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-pencil"></i> edit</a>
@@ -97,6 +102,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   user:User;
   statusChangeClicked = false;
   $statuses:Observable<SoilReportStatus[]>;
+  processedStatuses:SoilReportStatus[];
 
   constructor(
     private service:SoildataService,
@@ -108,6 +114,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
       res => this.user = res
     );
     this.$statuses = this.service.reportStatuses();
+    this.ProcessStatuses();
   }
 
   defaultView(){
@@ -168,6 +175,32 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   SampleFormSubmit(event:SoilReportBundle){
     this.onStatusChange.emit(null);
   }
+
+  ProcessStatuses(){
+    if(       this.report.lastStatus != null 
+                && 
+            (
+              this.report.lastStatus.soilReportStatus.roleCode == undefined 
+                || 
+              this.report.lastStatus.soilReportStatus.roleCode == ""
+            )
+              ){
+      this.$statuses.subscribe(
+        res => {
+          this.processedStatuses = [];
+
+          for( let curSt of res ){
+            if(curSt.roleCode == undefined  ||  curSt.roleCode == ""){
+              this.processedStatuses.push(curSt);
+            }
+          }
+          
+        }
+      )
+    }
+  }
+
+
 
   email(){
     this.service.updateBundleStatusToArchived(this.report.id, this.report).subscribe(
