@@ -148,7 +148,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   changeStatusTo(id:number){
     this.service.changestatus(id, this.report.id).subscribe(
       res => {
-        this.report.lastStatus.soilReportStatus = res;
+        //this.report.lastStatus.soilReportStatus = res;
         this.onStatusChange.emit(res);
       }
     )
