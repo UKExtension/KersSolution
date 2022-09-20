@@ -187,14 +187,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
               ){
       this.$statuses.subscribe(
         res => {
-          this.processedStatuses = [];
-
-          for( let curSt of res ){
-            if(curSt.roleCode == undefined  ||  curSt.roleCode == ""){
-              this.processedStatuses.push(curSt);
-            }
-          }
-          
+          this.processedStatuses = res.filter( f => ((f.roleCode == undefined || f.roleCode == "") && f.group == this.report.lastStatus.soilReportStatus.group));
         }
       )
     }
