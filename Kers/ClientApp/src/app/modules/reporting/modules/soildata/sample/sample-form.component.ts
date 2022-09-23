@@ -74,8 +74,7 @@ export class SampleFormComponent implements OnInit {
   ngOnInit(): void {
     
     this.billingTypes$ = this.service.billingtypes();
-    
-
+    if( this.sample != null && !this.isThisACopy ) this.soilSampleForm.controls["coSamnum"].disable();
     this.service.optionaltests().subscribe(
                           res => {
                               var tsts = <OptionalTest[]> res;

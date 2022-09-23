@@ -36,7 +36,19 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
           </div>
         </div>
       </div>
-
+      <div class="ln_solid"></div>
+      <div class="form-group">
+        <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice Email:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text"  name="invoiceEmail" formControlName="invoiceEmail" id="invoiceEmail" class="form-control col-xs-12" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="reportEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Report Email:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text"  name="reportEmail" formControlName="reportEmail" id="reportEmail" class="form-control col-xs-12" />
+        </div>
+      </div>
           <div class="ln_solid"></div>
           <div class="form-group">
               <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
@@ -66,8 +78,17 @@ export class SoildataSigneesComponent implements OnInit {
 
   ngOnInit() {
     this.signeesForm = this.formBuilder.group({
-      signees: this.formBuilder.array([])
+      signees: this.formBuilder.array([]),
+      invoiceEmail: "",
+      reportEmail: ""
     });
+    this.service.countyInfo().subscribe(
+      res => {
+        this.signeesForm.patchValue({
+          invoiceEmail:res.invoiceEmail, reportEmail:res.reportEmail
+        })
+      }
+    )
     this.service.signeesByCounty().subscribe(
       res => {
         for( let item of res ) this.addItem(item);

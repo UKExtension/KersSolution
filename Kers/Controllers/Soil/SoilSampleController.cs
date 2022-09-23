@@ -208,8 +208,14 @@ namespace Kers.Controllers.Soil
                 }
                 smpl.SampleInfoBundles = sample.SampleInfoBundles;
                 smpl.OptionalTestSoilReportBundles = sample.OptionalTestSoilReportBundles;
-                
-                smpl.SampleLabelCreated = sample.SampleLabelCreated;
+                var now = DateTime.Now;
+                smpl.SampleLabelCreated = new DateTime(
+                                                    sample.SampleLabelCreated.Year,
+                                                    sample.SampleLabelCreated.Month,
+                                                    sample.SampleLabelCreated.Day,
+                                                    now.Hour,
+                                                    now.Minute,
+                                                    now.Second);
                 smpl.OwnerID = sample.OwnerID;
                 smpl.Acres = sample.Acres;
                 smpl.OptionalInfo = sample.OptionalInfo;

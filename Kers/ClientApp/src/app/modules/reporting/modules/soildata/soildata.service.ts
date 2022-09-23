@@ -156,7 +156,13 @@ export class SoildataService {
             );
       }
 
-      
+      countyInfo( id:number = 0 ):Observable<CountyCode>{
+        var url = this.baseUrl + "countyinfo/" + id;
+        return this.http.get<CountyCode>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('County Info', <CountyCode>{}))
+            );
+      }
 
       getCustom(searchParams:SoilReportSearchCriteria):Observable<SoilReportBundle[]>{
         var url = this.baseUrl + "GetCustom/";
@@ -198,6 +204,8 @@ export interface CountyCode{
     name:string;
     countyID:number;
     planningUnitId:number;
+    invoiceEmail:string;
+    reportEmail:string;
 }
 
 export class FarmerAddress{

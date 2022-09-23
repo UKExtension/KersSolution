@@ -494,6 +494,8 @@ namespace Kers.Controllers
                 this.Log( signees ,"FormTypeSignees", "Not Found County in an FormTypeSignees update attempt.", "FormTypeSignees", "Error");
                 return new StatusCodeResult(500);
             }
+            CurrentCountyCode.InvoiceEmail = signees.invoiceEmail;
+            CurrentCountyCode.ReportEmail = signees.reportEmail;
 
             var currentSignees = await _soilDataContext.FormTypeSignees
                                     .Where( s =>  s.PlanningUnit == CurrentCountyCode)
@@ -573,6 +575,15 @@ namespace Kers.Controllers
             var FormTypes = this._soilDataContext.TypeForm.OrderBy( t => t.Code).ToListAsync();
             return new OkObjectResult(await FormTypes);
         }
+        [HttpGet("countyinfo/{countyid?}")]
+        public async Task<IActionResult> CountyInfo(int countyid = 0){
+            if( countyid == 0 ){
+                countyid = this.CurrentUser().RprtngProfile.PlanningUnitId;
+            }
+            var CurrentCountyCode = await this._soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == countyid).FirstOrDefaultAsync();
+            if( CurrentCountyCode == null) return new StatusCodeResult(500);
+            return new OkObjectResult(CurrentCountyCode);
+        }
 
         [HttpGet("reportstatus")]
         public async Task<IActionResult> ReportStatus(){
@@ -585,5 +596,7 @@ namespace Kers.Controllers
 
     public class SigneesObject{
         public List<FormTypeSignees> signees;
+        public string invoiceEmail;
+        public string reportEmail;
     }
 }
