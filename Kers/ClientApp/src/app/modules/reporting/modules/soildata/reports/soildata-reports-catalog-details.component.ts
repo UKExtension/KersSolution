@@ -39,6 +39,7 @@ import { Observable } from 'rxjs';
       <a class="btn btn-info btn-xs" (click)="sampleCopy()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-copy"></i> copy</a>
       <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="report.reports != null && report.reports.length > 0"><i class="fa fa-pencil"></i> review</a>
       <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading && report.reports != null && report.reports.length > 0"><i class="fa fa-download"></i> pdf</a>
+      <a class="btn btn-info btn-xs" (click)="altCropView()" *ngIf="!pdfLoading && report.reports != null && report.reports.length > 0"><i class="fa fa-download"></i> Alt Crop</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
       <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="report.reports != null && report.reports.length > 0"><i class="fa fa-envelope"></i> email</a>
     </td>
@@ -59,8 +60,12 @@ import { Observable } from 'rxjs';
       <soildata-report-form [report]="report"></soildata-report-form>
     </td>
     <td *ngIf="sampleEdit" colspan="6">
-      <soil-sample-form [sample]="report" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
+      <soil-sample-form [sample]="report" [isThisAltCrop]="true" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
     </td>
+    <td *ngIf="altCrop" colspan="6">
+      <soil-sample-form [sample]="report" [isThisAltCrop]="true" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
+    </td>
+    
   `,
   styles: [`
   .soil-report-status-recieved{
@@ -93,6 +98,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
 
   default = true;
   edit = false;
+  altCrop = false;
   sampleEdit = false;
   pdfLoading = false;
   deleteLoading = false;
@@ -121,16 +127,26 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     this.default = true;
     this.edit = false;
     this.sampleEdit = false;
+    this.altCrop = false;
   }
   editView(){
     this.default = false;
     this.edit = true;
     this.sampleEdit = false;
+    this.altCrop = false;
   }
   sampleEditView(){
     this.default = false;
     this.edit = false;
     this.sampleEdit = true;
+    this.altCrop = false;
+  }
+  altCropView(){
+    this.default = false;
+    this.edit = false;
+    this.sampleEdit = false;
+    this.altCrop = true;
+
   }
   print(){
     this.pdfLoading = true;

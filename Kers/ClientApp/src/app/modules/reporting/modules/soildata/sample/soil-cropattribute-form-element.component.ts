@@ -84,6 +84,9 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     formTypeChange(event){
 
     }
+    setDisabledState(){
+      this.attributeGroup.controls["sampleAttributeId"].disable();
+    }
 
     writeValue(attribute: SampleAttributeSampleInfoBundle) {
       if(attribute != null ){

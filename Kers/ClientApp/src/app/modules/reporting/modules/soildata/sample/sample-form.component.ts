@@ -28,6 +28,7 @@ export class SampleFormComponent implements OnInit {
   
   @Input() sample:SoilReportBundle;
   @Input() isThisACopy:boolean = false;
+  @Input() isThisAltCrop:boolean = false;
   soilSampleForm:any;
 
   loading = false;
@@ -75,6 +76,7 @@ export class SampleFormComponent implements OnInit {
     
     this.billingTypes$ = this.service.billingtypes();
     if( this.sample != null && !this.isThisACopy ) this.soilSampleForm.controls["coSamnum"].disable();
+    
     this.service.optionaltests().subscribe(
                           res => {
                               var tsts = <OptionalTest[]> res;
@@ -121,7 +123,7 @@ export class SampleFormComponent implements OnInit {
                                     }
                                   );
                                 }
-                        
+                                if( this.isThisAltCrop) this.prepereAltCrop();
                               }else{
                                 this.addSegment(null);
                                 this.service.lastsamplenum().subscribe(
@@ -136,6 +138,20 @@ export class SampleFormComponent implements OnInit {
                           }
                       );
       
+  }
+  prepereAltCrop(){
+    this.soilSampleForm.controls["farmerAddress"].disable();
+    this.soilSampleForm.controls["ownerID"].disable();
+    this.soilSampleForm.controls["sampleLabelCreated"].disable();
+    this.soilSampleForm.controls["billingTypeId"].disable();
+    this.soilSampleForm.controls["coSamnum"].disable();
+    this.soilSampleForm.controls["acres"].disable();
+    this.soilSampleForm.controls["optionalTests"].disable();
+    this.soilSampleForm.controls["optionalInfo"].disable();
+    for( var smple of this.sampleInfoBundles.controls){
+      smple.disable();
+    }
+
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {

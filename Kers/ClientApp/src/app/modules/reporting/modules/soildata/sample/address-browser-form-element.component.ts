@@ -27,9 +27,9 @@ import { SoilSampleService } from './soil-sample.service';
                 <div *ngIf="!addressBrowserOpen">
                   <br>
                   <soildata-list-address [address]="selectedAddress" [brief]="false"></soildata-list-address>
-                  <a class="btn btn-info btn-xs" (click)="openBrowser()">change</a>
+                  <a *ngIf="!disabled" class="btn btn-info btn-xs" (click)="openBrowser()">change</a>
                 </div>
-                <div *ngIf="addressBrowserOpen" class="address-browser">
+                <div *ngIf="addressBrowserOpen && !disabled" class="address-browser">
                     <h4>Select client from the list or enter a new one</h4><br>   
                     <soildata-address-browser [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
                 </div>
@@ -54,6 +54,7 @@ import { SoilSampleService } from './soil-sample.service';
 export class AddressBrowserFormElementComponent extends BaseControlValueAccessor<FarmerAddress> implements ControlValueAccessor, OnInit { 
     selectedAddress:FarmerAddress;
     addressBrowserOpen = true;
+    disabled = false;
     constructor( 
       
     )   
@@ -68,7 +69,9 @@ export class AddressBrowserFormElementComponent extends BaseControlValueAccessor
        
     }
 
-
+    setDisabledState(){
+      this.disabled = true;
+    }
 
 
     openBrowser(){

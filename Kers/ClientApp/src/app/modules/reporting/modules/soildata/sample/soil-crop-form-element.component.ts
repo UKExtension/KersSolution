@@ -35,7 +35,7 @@ import { SoilSampleService } from './soil-sample.service';
         
     </div>
     <div class="col-sm-1">
-            <div *ngIf="index != 0" class="col-xs-1 ng-star-inserted text-right pull-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
+            <div *ngIf="index != 0 && !disabled" class="col-xs-1 ng-star-inserted text-right pull-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
             <br>
         <small>&nbsp;</small>
     </div>
@@ -70,6 +70,7 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     typeForms:Observable<TypeForm[]>;
     attributeTypes:Observable<SampleAttributeType[]>;
     attributesLoading = false;
+    disabled = false;
 
     get selectedFormType() {
       var formTypeControl =  this.sampleForm.get('typeFormId') as FormControl;
@@ -119,7 +120,17 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
             var types:SampleAttributeType[] = res;
             
             for( let type of types){
-              this.sampleAttributeSampleInfoBundles.push(this.formBuilder.control({sampleAttribute: {sampleAttributeTypeId: type.id, sampleAttributeType:type}}));
+              if(this.disabled){
+                this.sampleAttributeSampleInfoBundles.push(this.formBuilder.control(
+                                  {
+                                    value: {sampleAttribute: {sampleAttributeTypeId: type.id, sampleAttributeType:type}},
+                                    disabled:true
+                                  }
+                                    ));
+              }else{
+                this.sampleAttributeSampleInfoBundles.push(this.formBuilder.control({sampleAttribute: {sampleAttributeTypeId: type.id, sampleAttributeType:type}}));
+              }
+              
             }
             this.attributesLoading = false;
             
@@ -139,7 +150,11 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
       this.sampleForm.patchValue(this.value);
       this.formTypeChange(null);
     }
- 
+    
+    setDisabledState(){
+      this.disabled = true;
+      this.sampleForm.controls["typeFormId"].disable();
+    }
 
     validate(c: AbstractControl): ValidationErrors | null{
       return this.sampleForm.valid ? null : { invalidForm: {valid: false, message: "Crop fields are invalid"}};
