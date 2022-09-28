@@ -151,18 +151,27 @@ export class SampleFormComponent implements OnInit {
     for( var smple of this.sampleInfoBundles.controls){
       smple.disable();
     }
-
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {
     var group:FormControl; 
 
     if(sampleInfoBundles == null){
-      group = this.fb.control(
-        {
-          typeFormId: ''
-        }
-      );
+      if( this.isThisAltCrop){
+        group = this.fb.control(
+          {
+            typeFormId: '',
+            purposeId: 2
+          }
+        );
+      }else{
+        group = this.fb.control(
+          {
+            typeFormId: ''
+          }
+        );
+      }
+      
     }else{
       group = this.fb.control(
         {
@@ -184,7 +193,6 @@ export class SampleFormComponent implements OnInit {
 
   addressSelected(event:FarmerAddress){
     this.selectedAddress = event;
-    console.log(event);
     this.addressBrowserOpen = false;
   }
 
@@ -193,17 +201,33 @@ export class SampleFormComponent implements OnInit {
   }
 
   onSubmit(){
-    var SampleDataToSubmit = <SoilReportBundle> this.soilSampleForm.value;
+    var SampleDataToSubmit:SoilReportBundle;
+    var opTsts = [];
+    if(this.isThisAltCrop){
+      var rawValue = this.soilSampleForm.getRawValue()
+      SampleDataToSubmit = rawValue;
+      SampleDataToSubmit.sampleLabelCreated =rawValue.sampleLabelCreated.singleDate.jsDate;
+      for( var tst of rawValue.optionalTests){
+        opTsts.push({optionalTestId:tst.value})
+      }
+    }else{
+      SampleDataToSubmit = this.soilSampleForm.value;
+      SampleDataToSubmit.sampleLabelCreated = this.soilSampleForm.value.sampleLabelCreated.singleDate.jsDate;
+      
+      for( var tst of this.soilSampleForm.value.optionalTests){
+        opTsts.push({optionalTestId:tst.value})
+      }
+    }
+    
+    console.log(SampleDataToSubmit);
     if(this.selectedAddress != undefined){
       SampleDataToSubmit.farmerAddressId = this.selectedAddress.id;
     }
-    SampleDataToSubmit.sampleLabelCreated = this.soilSampleForm.value.sampleLabelCreated.singleDate.jsDate;
-    var opTsts = [];
-    for( var tst of this.soilSampleForm.value.optionalTests){
-      opTsts.push({optionalTestId:tst.value})
-    }
+    
+    
     SampleDataToSubmit.optionalTestSoilReportBundles = opTsts;
     SampleDataToSubmit.optionalTests = undefined;
+    /* 
     if( !this.sample ){
       this.service.addsample(SampleDataToSubmit).subscribe(
         res => {
@@ -219,7 +243,7 @@ export class SampleFormComponent implements OnInit {
       )
     }
     
-
+ */
   }
   onCancel(){
     this.onFormCancel.emit();
