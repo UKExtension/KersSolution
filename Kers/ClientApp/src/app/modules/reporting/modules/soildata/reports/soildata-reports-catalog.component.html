@@ -100,9 +100,14 @@
         <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
         <div class="col-md-6 col-sm-6 col-xs-12">
           
-            
-            <a class="btn btn-info btn-xs" (click)="printAll(reports)"  *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a> Generate consolidated report of filtered results
-            <loading *ngIf="pdfLoading"></loading>
+            <ng-container *ngIf="reportsExist">
+              <a class="btn btn-info btn-xs" (click)="printAll(reports)"  *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a> Generate consolidated report of filtered results
+              <loading *ngIf="pdfLoading"></loading>
+            </ng-container>
+            <ng-container *ngIf="samplesExist">
+              <br><a class="btn btn-info btn-xs" (click)="printPackigingSlip(reports)"  *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a> Generate packaging slip
+              <loading *ngIf="samplePdfLoading"></loading>
+            </ng-container>
         </div>
     </div>
       
@@ -126,7 +131,7 @@
             </tr>
         </thead>
         <tbody *ngIf="!loading">
-          <tr *ngFor="let report of reports" [soildata-reports-catalog-details]="report" (onStatusChange)="statusChanged()" (onCopySample)="copySample($event)"></tr>
+          <tr *ngFor="let report of reports" [soildata-reports-catalog-details]="report" (isItReport)="registerReports($event)" (isItSample)="registerSamples($event)" (onStatusChange)="statusChanged()" (onCopySample)="copySample($event)"></tr>
         </tbody>
     </table>
     

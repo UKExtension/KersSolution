@@ -16,9 +16,13 @@ export class SoildataReportsCatalogComponent implements OnInit {
   reports$:Observable<SoilReportBundle[]>;
   type="dsc";
   pdfLoading = false;
+  samplePdfLoading = false;
 
   reportForCopy:SoilReportBundle = null;
   isThisSampleCopy:boolean = false;
+
+  reportsExist = false;
+  samplesExist = false;
 
   @Input() criteria:SoilReportSearchCriteria;
   @Input() startDate:Date;
@@ -150,6 +154,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
   }
 
   onRefresh() {
+    this.reportsExist = false;
+    this.samplesExist = false;
     this.loading = true; // Turn on the spinner.
     this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
   }
@@ -182,6 +188,12 @@ export class SoildataReportsCatalogComponent implements OnInit {
           }, 400);
     
   }
+  registerReports(event:boolean){
+    if( event ) this.reportsExist = true;
+  }
+  registerSamples(event:boolean){
+    if( event ) this.samplesExist = true;
+  }
 
   printAll(reports:SoilReportBundle[]){
     this.pdfLoading = true;
@@ -193,7 +205,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
         this.onRefresh();
       }
     )
-    
+  }
+
+  printPackigingSlip(reports:SoilReportBundle[]){
 
   }
 

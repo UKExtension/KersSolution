@@ -73,8 +73,10 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     disabled = false;
 
     get selectedFormType() {
+      var rawValue = this.sampleForm.getRawValue();
       var formTypeControl =  this.sampleForm.get('typeFormId') as FormControl;
-      return formTypeControl.value;
+      var val = rawValue["typeFormId"];
+      return val;
     }
     get sampleAttributeSampleInfoBundles() {
       return this.sampleForm.get('sampleAttributeSampleInfoBundles') as FormArray;
@@ -95,7 +97,7 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
   
       this.sampleForm.valueChanges.subscribe(val => {
         this.value = <SampleInfoBundle>val;
-        this.onChange(this.value);
+        this.onChange(this.sampleForm.getRawValue());
       });
       this.typeForms = service.formTypes();
     }

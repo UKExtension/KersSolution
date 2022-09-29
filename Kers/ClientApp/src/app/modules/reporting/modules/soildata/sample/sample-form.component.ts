@@ -149,7 +149,7 @@ export class SampleFormComponent implements OnInit {
     this.soilSampleForm.controls["optionalTests"].disable();
     this.soilSampleForm.controls["optionalInfo"].disable();
     for( var smple of this.sampleInfoBundles.controls){
-      smple.disable();
+      if(smple.value["purposeId"] != 2) smple.disable();
     }
   }
 
@@ -157,7 +157,7 @@ export class SampleFormComponent implements OnInit {
     var group:FormControl; 
 
     if(sampleInfoBundles == null){
-      if( this.isThisAltCrop){
+      if( this.isThisAltCrop ){
         group = this.fb.control(
           {
             typeFormId: '',
@@ -176,7 +176,8 @@ export class SampleFormComponent implements OnInit {
       group = this.fb.control(
         {
           typeFormId: sampleInfoBundles.typeFormId,
-          sampleAttributeSampleInfoBundles: sampleInfoBundles.sampleAttributeSampleInfoBundles
+          sampleAttributeSampleInfoBundles: sampleInfoBundles.sampleAttributeSampleInfoBundles,
+          purposeId: sampleInfoBundles.purposeId
         }
       );
 
@@ -204,7 +205,7 @@ export class SampleFormComponent implements OnInit {
     var SampleDataToSubmit:SoilReportBundle;
     var opTsts = [];
     if(this.isThisAltCrop){
-      var rawValue = this.soilSampleForm.getRawValue()
+      var rawValue = this.soilSampleForm.getRawValue();
       SampleDataToSubmit = rawValue;
       SampleDataToSubmit.sampleLabelCreated =rawValue.sampleLabelCreated.singleDate.jsDate;
       for( var tst of rawValue.optionalTests){
@@ -218,8 +219,6 @@ export class SampleFormComponent implements OnInit {
         opTsts.push({optionalTestId:tst.value})
       }
     }
-    
-    console.log(SampleDataToSubmit);
     if(this.selectedAddress != undefined){
       SampleDataToSubmit.farmerAddressId = this.selectedAddress.id;
     }
@@ -227,7 +226,7 @@ export class SampleFormComponent implements OnInit {
     
     SampleDataToSubmit.optionalTestSoilReportBundles = opTsts;
     SampleDataToSubmit.optionalTests = undefined;
-    /* 
+    
     if( !this.sample ){
       this.service.addsample(SampleDataToSubmit).subscribe(
         res => {
@@ -243,7 +242,7 @@ export class SampleFormComponent implements OnInit {
       )
     }
     
- */
+
   }
   onCancel(){
     this.onFormCancel.emit();

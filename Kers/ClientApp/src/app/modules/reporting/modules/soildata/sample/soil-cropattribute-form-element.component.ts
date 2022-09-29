@@ -70,7 +70,7 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
   
       this.attributeGroup.valueChanges.subscribe(val => {
         this.value = <SampleAttributeSampleInfoBundle>val;
-        this.onChange(this.value);
+        this.onChange(this.attributeGroup.getRawValue());
         //if( this.connections != null ) this.attributeGroup.patchValue( this.connections );
       });
       

@@ -96,6 +96,8 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
 
   @Output() onStatusChange = new EventEmitter<SoilReportStatus | null>();
   @Output() onCopySample = new EventEmitter<SoilReportBundle>();
+  @Output() isItReport = new EventEmitter<boolean>();
+  @Output() isItSample = new EventEmitter<boolean>();
 
   default = true;
   edit = false;
@@ -122,6 +124,17 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     );
     this.$statuses = this.service.reportStatuses();
     this.ProcessStatuses();
+    if(this.report.reports != null && this.report.reports.length > 0 ){
+      this.isItReport.emit(true);
+    }else{
+      this.isItReport.emit(false);
+      if(this.report.sampleInfoBundles != null && this.report.sampleInfoBundles.length > 0 ){
+        this.isItSample.emit(true);
+      }else{
+        this.isItSample.emit(false);
+      }
+    }
+    
   }
 
   defaultView(){
