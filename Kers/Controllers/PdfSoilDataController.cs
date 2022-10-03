@@ -86,6 +86,37 @@ namespace Kers.Controllers
 				return File(stream.DetachAsData().AsStream(), "application/pdf", "SoilTestResults.pdf");
 			}
 		}
+
+
+		[HttpPost("packing")]
+		public IActionResult PackingSlipPdf([FromBody] UniqueIds unigueIds)
+        {
+			using (var stream = new SKDynamicMemoryWStream ())
+                using (var document = SKDocument.CreatePdf (stream, this.metadata("Kers, Soil Testing, Consolidated Report", "Soil Test Reports", "Summary Soil Test Report"))) {
+					var samples = this._soilContext.SoilReportBundle
+											.Where( b => unigueIds.ids.Contains(b.UniqueCode) && b.Reports.Count() == 0)
+											.Include( b => b.PlanningUnit)
+											.Include( b => b.FarmerForReport)
+											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+											.OrderBy( b => b.CoSamnum)
+											.ToList();
+					foreach( var sample in samples){
+						if( sample != null){
+							
+						}else{
+							this.Log( unigueIds,"SoilReportBundle", "Error in finding SoilReportBundle for packing slip attempt.", "SoilReportBundle", "Error");
+							return new StatusCodeResult(500);
+						}
+					}
+					
+				document.Close();
+				return File(stream.DetachAsData().AsStream(), "application/pdf", "SoilTestResults.pdf");
+			}
+		}
+
+
+
+
 		public class UniqueIds{
 			public List<string> ids;
 		}

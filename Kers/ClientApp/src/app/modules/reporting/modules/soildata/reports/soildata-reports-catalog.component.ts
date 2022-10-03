@@ -207,8 +207,16 @@ export class SoildataReportsCatalogComponent implements OnInit {
     )
   }
 
-  printPackigingSlip(reports:SoilReportBundle[]){
-
+  printPackingSlip(reports:SoilReportBundle[]){
+    this.samplePdfLoading = true;
+    this.service.packingSlipdPdf(reports.map(r => r.uniqueCode)).subscribe(
+      data => {
+        var blob = new Blob([data], {type: 'application/pdf'});
+        saveAs(blob, "PackingSlip.pdf");
+        this.samplePdfLoading = false;
+        this.onRefresh();
+      }
+    )
   }
 
 

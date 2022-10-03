@@ -105,7 +105,7 @@
               <loading *ngIf="pdfLoading"></loading>
             </ng-container>
             <ng-container *ngIf="samplesExist">
-              <br><a class="btn btn-info btn-xs" (click)="printPackigingSlip(reports)"  *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a> Generate packaging slip
+              <br><a class="btn btn-info btn-xs" (click)="printPackingSlip(reports)"  *ngIf="!samplePdfLoading"><i class="fa fa-download"></i> pdf</a> Generate packaging slip
               <loading *ngIf="samplePdfLoading"></loading>
             </ng-container>
         </div>

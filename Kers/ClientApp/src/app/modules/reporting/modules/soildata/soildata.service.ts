@@ -191,6 +191,12 @@ export class SoildataService {
             catchError(this.handleError('pdf', <Blob>{}))
         );
       }
+      packingSlipdPdf(ids:string[]):Observable<Blob>{
+        return this.http.post(this.location.prepareExternalUrl('/api/PdfSoilData/packing/' ), {ids:ids}, {responseType: 'blob'})
+        .pipe(
+            catchError(this.handleError('pdf', <Blob>{}))
+        );
+      }
 
 }
 export class FarmerAddressSearchResult{
