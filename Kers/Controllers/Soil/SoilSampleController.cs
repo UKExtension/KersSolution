@@ -185,6 +185,7 @@ namespace Kers.Controllers.Soil
                         .Include( s => s.FarmerForReport)
                         .Include( b => b.SampleInfoBundles).ThenInclude( i => i.SampleAttributeSampleInfoBundles)
                         .Include( b => b.OptionalTestSoilReportBundles)
+                        .Include( b => b.LastStatus)
                         .FirstOrDefault();
             if(sample != null && smpl != null ){
                 
@@ -195,6 +196,7 @@ namespace Kers.Controllers.Soil
                 }
                 _context.RemoveRange(smpl.SampleInfoBundles);
                 _context.SaveChanges();
+                var isItAnAltCrop = false;
                 foreach( SampleInfoBundle smplBundle in sample.SampleInfoBundles){
                     var cleanedConnections = new List<SampleAttributeSampleInfoBundle>();
                     foreach( SampleAttributeSampleInfoBundle attr in smplBundle.SampleAttributeSampleInfoBundles ){
@@ -203,8 +205,12 @@ namespace Kers.Controllers.Soil
                         }
                     }
                     smplBundle.SampleAttributeSampleInfoBundles = cleanedConnections;
-
+                    if( sample.PurposeId == 2 ) isItAnAltCrop = true;
                     smpl.TypeFormId = smplBundle.TypeFormId;
+                }
+                if(isItAnAltCrop){
+                    var status = _context.SoilReportStatus.Where( s => s.Name == "AltCrop").FirstOrDefault();
+                    sample.LastStatus.SoilReportStatus = status;
                 }
                 smpl.SampleInfoBundles = sample.SampleInfoBundles;
                 smpl.OptionalTestSoilReportBundles = sample.OptionalTestSoilReportBundles;
