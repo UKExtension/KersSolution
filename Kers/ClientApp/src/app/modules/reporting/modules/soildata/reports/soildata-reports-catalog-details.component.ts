@@ -128,7 +128,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
       this.isItReport.emit(true);
     }else{
       this.isItReport.emit(false);
-      if(this.report.sampleInfoBundles != null && this.report.sampleInfoBundles.length > 0 ){
+      if(this.report.sampleInfoBundles != null && this.report.sampleInfoBundles.length > 0 && this.report.lastStatus.soilReportStatus.name == "Entered" ){
         this.isItSample.emit(true);
       }else{
         this.isItSample.emit(false);
