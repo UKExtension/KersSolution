@@ -205,12 +205,15 @@ namespace Kers.Controllers.Soil
                         }
                     }
                     smplBundle.SampleAttributeSampleInfoBundles = cleanedConnections;
-                    if( sample.PurposeId == 2 ) isItAnAltCrop = true;
+                    if( smplBundle.PurposeId == 2 ) isItAnAltCrop = true;
                     smpl.TypeFormId = smplBundle.TypeFormId;
                 }
                 if(isItAnAltCrop){
                     var status = _context.SoilReportStatus.Where( s => s.Name == "AltCrop").FirstOrDefault();
-                    sample.LastStatus.SoilReportStatus = status;
+                    if( smpl.LastStatus == null ){
+                        smpl.LastStatus = new SoilReportStatusChange();
+                    }
+                    smpl.LastStatus.SoilReportStatus = status;
                 }
                 smpl.SampleInfoBundles = sample.SampleInfoBundles;
                 smpl.OptionalTestSoilReportBundles = sample.OptionalTestSoilReportBundles;
