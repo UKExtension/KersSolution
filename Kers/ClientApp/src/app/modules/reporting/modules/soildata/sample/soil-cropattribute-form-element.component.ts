@@ -78,7 +78,7 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     
 
     ngOnInit(){
-       
+            
     }
 
     formTypeChange(event){
@@ -89,8 +89,12 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     }
 
     writeValue(attribute: SampleAttributeSampleInfoBundle) {
+      console.log(attribute);
       if(attribute != null ){
         this.type = attribute.sampleAttribute.sampleAttributeType;
+        if(this.type.name == "Primary Crop"){
+          this.attributeGroup.get("sampleAttributeId").setValidators(Validators.required);
+        }
         this.service.attributes( attribute.sampleAttribute.sampleAttributeTypeId).subscribe(
           res =>{
             this.attributes  = res;
@@ -105,11 +109,11 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
         this.attributeGroup.patchValue(attribute);
       }
     }
-/* 
+ 
 
     validate(c: AbstractControl): ValidationErrors | null{
       return this.attributeGroup.valid ? null : { invalidForm: {valid: false, message: "Session fields are invalid"}};
     }
- */
+
 
 }

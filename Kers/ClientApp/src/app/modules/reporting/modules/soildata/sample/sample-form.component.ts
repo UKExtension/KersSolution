@@ -63,7 +63,7 @@ export class SampleFormComponent implements OnInit {
             isRange: false, singleDate: {jsDate: date}
                       }, Validators.required],
           billingTypeId: [1],
-          coSamnum: ["", Validators.maxLength(4)],
+          coSamnum: ["", [Validators.maxLength(4), Validators.required]],
           optionalTests: '',
           acres: [""],
           optionalInfo: [""],
@@ -204,21 +204,13 @@ export class SampleFormComponent implements OnInit {
   onSubmit(){
     var SampleDataToSubmit:SoilReportBundle;
     var opTsts = [];
-    if(this.isThisAltCrop){
-      var rawValue = this.soilSampleForm.getRawValue();
-      SampleDataToSubmit = rawValue;
-      SampleDataToSubmit.sampleLabelCreated =rawValue.sampleLabelCreated.singleDate.jsDate;
-      for( var tst of rawValue.optionalTests){
-        opTsts.push({optionalTestId:tst.value})
-      }
-    }else{
-      SampleDataToSubmit = this.soilSampleForm.value;
-      SampleDataToSubmit.sampleLabelCreated = this.soilSampleForm.value.sampleLabelCreated.singleDate.jsDate;
-      
-      for( var tst of this.soilSampleForm.value.optionalTests){
-        opTsts.push({optionalTestId:tst.value})
-      }
+    var rawValue = this.soilSampleForm.getRawValue();
+    SampleDataToSubmit = rawValue;
+    SampleDataToSubmit.sampleLabelCreated =rawValue.sampleLabelCreated.singleDate.jsDate;
+    for( var tst of rawValue.optionalTests){
+      opTsts.push({optionalTestId:tst.value})
     }
+
     if(this.selectedAddress != undefined){
       SampleDataToSubmit.farmerAddressId = this.selectedAddress.id;
     }
