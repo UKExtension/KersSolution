@@ -180,7 +180,18 @@
   <div class="col-xs-12" *ngIf="criteria.start == null"><a [routerLink]="['/reporting/training/catalog']" >Back to Training Catalog</a></div>
   <div>&nbsp;</div>
   <div class="col-xs-12" *ngIf="!loading">
-      <h6 class="red">TRAINING SESSION ROSTER   Enrollment Count: {{getOnlyEnrolled(training).length}}<small *ngIf="numberWaiting(training) > 0"> (waiting list length: {{numberWaiting(training)}})</small></h6>
+      <h6 class="red">TRAINING SESSION ROSTER   Enrollment Count: {{getOnlyEnrolled(training).length}}</h6>
+      <ng-container *ngIf="numberWaiting(training) > 0">
+        <br><small > (waiting list length: {{numberWaiting(training)}})</small><a (click)="openWaitingList = !openWaitingList">toggle waiting list</a>
+        <div *ngIf="openWaitingList">
+          <table class="table">
+            <tr *ngFor="let enrolled of waitingList">
+              <td>enrolled</td>
+
+            </tr>
+          </table>
+        </div>
+      </ng-container>
   </div>
   <div class="col-xs-12" *ngIf="!loading">
       <div class="table-responsive" *ngIf="training.enrollment.length > 0">
