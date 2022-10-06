@@ -63,7 +63,7 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     {
       super();
       this.attributeGroup = formBuilder.group({
-        sampleAttributeId: [null]
+        sampleAttributeId: [""]
       });
   
       this.attributeGroup.valueChanges.subscribe(val => {
