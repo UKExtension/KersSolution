@@ -180,18 +180,30 @@
   <div class="col-xs-12" *ngIf="criteria.start == null"><a [routerLink]="['/reporting/training/catalog']" >Back to Training Catalog</a></div>
   <div>&nbsp;</div>
   <div class="col-xs-12" *ngIf="!loading">
-      <h6 class="red">TRAINING SESSION ROSTER   Enrollment Count: {{getOnlyEnrolled(training).length}}</h6>
+      <h6 class="red">TRAINING SESSION ROSTER   Enrollment Count: {{getOnlyEnrolled(training).length}}
       <ng-container *ngIf="numberWaiting(training) > 0">
-        <br><small > (waiting list length: {{numberWaiting(training)}})</small><a (click)="openWaitingList = !openWaitingList">toggle waiting list</a>
-        <div *ngIf="openWaitingList">
-          <table class="table">
-            <tr *ngFor="let enrolled of waitingList">
-              <td>enrolled</td>
-
-            </tr>
+        <small > (waiting list length: {{numberWaiting(training)}})</small>
+        <ng-container *ngIf="(canSeeWatingList() | async) || user.Id == training.submittedById">
+          &nbsp;
+          <a (click)="openWaitingList = !openWaitingList" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="openWaitingList"></i>
+            <i class="fa fa-plus-square" *ngIf="!openWaitingList"></i> list
+          </a>
+        </ng-container>
+      </ng-container></h6>
+        <div *ngIf="openWaitingList" class="table-responsive" >
+          <table class="table table-bordered">
+            <tbody>
+              <tr *ngFor="let enr of waitingList">
+                <td><span>{{enr.enrolledDate | date:'mediumDate'}}</span></td>
+                  <td><span>{{enr.attendie.rprtngProfile.name}}</span></td>
+                  <td><span>{{enr.attendie.rprtngProfile.planningUnit.name}}</span></td>
+                  <td><span *ngFor="let area of enr.attendie.specialties">{{specialty(area)}} </span></td>
+                  <td><span>{{enr.attendie.rprtngProfile.email}}</span></td>
+              </tr>
+            </tbody>
           </table>
         </div>
-      </ng-container>
+      
   </div>
   <div class="col-xs-12" *ngIf="!loading">
       <div class="table-responsive" *ngIf="training.enrollment.length > 0">

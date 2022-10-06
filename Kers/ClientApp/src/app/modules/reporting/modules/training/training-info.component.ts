@@ -62,6 +62,10 @@ export class TrainingInfoComponent implements OnInit {
     return start;
   }
 
+  canSeeWatingList():Observable<boolean>{
+    return this.userService.currentUserHasAnyOfTheRoles(["CESADM"]);
+  }
+
   cancelCutOfDate(training:Training):Date{
     var start = new Date(training.start);
     if( training.cancelCutoffDays == null) return start;
