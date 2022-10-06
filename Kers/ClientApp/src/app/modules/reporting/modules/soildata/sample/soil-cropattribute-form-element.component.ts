@@ -33,14 +33,12 @@ import { SoilSampleService } from './soil-sample.service';
                   provide: NG_VALUE_ACCESSOR,
                   useExisting: forwardRef(() => SoilCropattributeFormElementComponent),
                   multi: true
-                } 
-                /* 
-                ,
+                } ,
                 {
                   provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => SoilCropFormElementComponent),
+                  useExisting: forwardRef(() => SoilCropattributeFormElementComponent),
                   multi: true
-                } */
+                }
                 ]
 })
 export class SoilCropattributeFormElementComponent extends BaseControlValueAccessor<SampleAttributeSampleInfoBundle> implements ControlValueAccessor, OnInit { 
@@ -65,7 +63,7 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     {
       super();
       this.attributeGroup = formBuilder.group({
-        sampleAttributeId: ['']
+        sampleAttributeId: [null]
       });
   
       this.attributeGroup.valueChanges.subscribe(val => {
@@ -89,12 +87,14 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
     }
 
     writeValue(attribute: SampleAttributeSampleInfoBundle) {
-      console.log(attribute);
       if(attribute != null ){
         this.type = attribute.sampleAttribute.sampleAttributeType;
+
         if(this.type.name == "Primary Crop"){
           this.attributeGroup.get("sampleAttributeId").setValidators(Validators.required);
+          this.attributeGroup.get("sampleAttributeId").updateValueAndValidity();
         }
+         
         this.service.attributes( attribute.sampleAttribute.sampleAttributeTypeId).subscribe(
           res =>{
             this.attributes  = res;
@@ -103,10 +103,11 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
               const filteredArray = this.attributes.filter(value => attrIds.includes(value.id));
               if(filteredArray.length > 0) this.attributeGroup.patchValue({sampleAttributeId:filteredArray[0].id});
             }
+            this.attributeGroup.patchValue(attribute);
             
           } 
         );
-        this.attributeGroup.patchValue(attribute);
+        
       }
     }
  

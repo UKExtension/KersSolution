@@ -135,8 +135,7 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
               
             }
             this.attributesLoading = false;
-            
-          }
+         }
         );
       }
       
@@ -159,7 +158,11 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     }
 
     validate(c: AbstractControl): ValidationErrors | null{
-      return this.sampleForm.valid ? null : { invalidForm: {valid: false, message: "Crop fields are invalid"}};
+      var returnValue = null;
+      if(!this.sampleForm.valid){
+        returnValue = { invalidForm: {valid: false, message: "Crop fields are invalid"}};
+      }
+      return returnValue;
     }
 
 
