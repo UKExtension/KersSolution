@@ -899,6 +899,15 @@ namespace Kers.Controllers
 											.Include( b => b.LastStatus)
 											.OrderBy( b => b.CoSamnum)
 											.ToList();
+
+
+			var grouppeByTests = this.samples
+										.GroupBy( s => string.Join( ',', s.OptionalTestSoilReportBundles.OrderBy( v => v.OptionalTestId).Select( v => v.OptionalTest.Code ).ToArray() ))
+										.Select( g => new {
+											Key = g.Key,
+											Samples = g.Select( s => s)
+										}).ToList();
+
 			this.withOptionalTests = this.samples.Where( s => s.OptionalTestSoilReportBundles.Count() > 0 ).ToList();
 			this.withoutOptionalTests = this.samples.Where( s => s.OptionalTestSoilReportBundles.Count() == 0 ).ToList();
 			this.pages = new List<List<List<string>>>();
