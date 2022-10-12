@@ -114,7 +114,7 @@ namespace Kers.Models.Repositories
                 }
 
                 // Find people with commitment but no reported hours
-                var rest = context.SnapEd_Commitment.Where(
+                var restList = context.SnapEd_Commitment.Where(
                                                         c =>                    
                                                             !userIds.Contains(c.KersUserId1??0)
                                                             && 
@@ -123,7 +123,10 @@ namespace Kers.Models.Repositories
                                                             c.SnapEd_ActivityType.Measurement == "Hour"
                                                             &&
                                                             c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
-                                ).GroupBy( d=> d.KersUser.Id)
+                                )
+                                .Include( c => c.KersUser)
+                                .ToList();
+                var rest = restList.GroupBy( d=> d.KersUser.Id)
                                 .Select(
                                     k => new {
                                         Commitments = k.Select( a => a),
@@ -219,18 +222,20 @@ namespace Kers.Models.Repositories
                 keys.Add( "TotalCommitmentHours" );
                 result = string.Join(",", keys.ToArray()) + "\n";
 
-                var commitment = await context.SnapEd_Commitment
+                var commitmentList = await context.SnapEd_Commitment
                                     .Where( c => 
                                                     c.FiscalYear == fiscalYear
                                                     &&
                                                     c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
                                                     )
-                                    .GroupBy( c => c.KersUser)
+                                                    .Include( c => c.KersUser)
+                                                    .ToListAsync();
+                var commitment = commitmentList.GroupBy( c => c.KersUser)
                                     .Select( c => new {
                                         User = c.Key,
                                         commitments = c.Select( s => s )
-                                    })
-                                    .ToListAsync();
+                                    }).ToList();
+                                    
                 foreach( var usr in commitment){
                     var user = await context.KersUser.Where( u => u.Id == usr.User.Id)
                                 .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit ).ThenInclude( u => u.ExtensionArea)
@@ -399,19 +404,21 @@ namespace Kers.Models.Repositories
                 keys.Add( "TotalCommitmentHours" );
                 result = string.Join(",", keys.ToArray()) + "\n";
 
-                var commitment = await context.SnapEd_Commitment
+                var commitmentList = await context.SnapEd_Commitment
                                     .Where( c => 
                                                 c.FiscalYear == fiscalYear
                                                 &&
                                                 c.KersUser.RprtngProfile.Institution.Code == "21000-1862"
                                             )
-                                    .GroupBy( c => c.KersUser.RprtngProfile.PlanningUnit)
+                                        .Include( c => c.KersUser ).ThenInclude( u => u.RprtngProfile ).ThenInclude( p => p.PlanningUnit)
+                                        .ToListAsync();
+                var commitment = commitmentList.GroupBy( c => c.KersUser.RprtngProfile.PlanningUnit)
                                     .Select( c => new {
                                         Unit = c.Key,
                                         commitments = c.Select( s => s )
                                     })
                                     .OrderBy(s => s.Unit.Name)
-                                    .ToListAsync();
+                                    .ToList();
                 foreach( var unit in commitment){
                     
                     var row = fiscalYear.Name + ",";
