@@ -36,7 +36,7 @@ namespace Kers.Controllers
 		private int numPages;
 		private int currentPage;
 
-		private int[] packSlipTableVerticalLines = new int[]{ 29, 50, 180, 240, 300, 410, 500, 586 };
+		private int[] packSlipTableVerticalLines = new int[]{ 29, 50, 180, 240, 280, 360, 480, 586 };
 
 
 		int currentYPosition = 0;
@@ -823,11 +823,11 @@ namespace Kers.Controllers
 			}
 			pdfCanvas.DrawText("UK LAB #", packSlipTableVerticalLines[1] + padding , yPos + yPadding, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("Type Test", packSlipTableVerticalLines[2] + padding , yPos + yPadding, getPaint(10.0f, 1));
-			pdfCanvas.DrawText("County ID", packSlipTableVerticalLines[3] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Cnt ID", packSlipTableVerticalLines[3] + padding , yPos + yPadding, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("Sample #", packSlipTableVerticalLines[4] + padding , yPos + yPadding, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("Client Name", packSlipTableVerticalLines[5] + padding , yPos + yPadding, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("Owner ID", packSlipTableVerticalLines[6] + padding , yPos + yPadding, getPaint(10.0f, 1));
-			pdfCanvas.DrawLine(29,yPos + 20, width - 29,  yPos + 20, thinLinePaint);
+			pdfCanvas.DrawLine(29,yPos + 20, width - 26,  yPos + 20, thinLinePaint);
 		}
 
 		private void PackSlipSampleRows( SKCanvas pdfCanvas, List<List<string>> pageData  ){
