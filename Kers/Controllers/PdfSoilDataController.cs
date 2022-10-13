@@ -37,7 +37,6 @@ namespace Kers.Controllers
 		private int currentPage;
 
 		private int[] packSlipTableVerticalLines = new int[]{ 29, 50, 180, 240, 300, 410, 500, 586 };
-		private int CurrentSampleNumber = 1;
 
 
 		int currentYPosition = 0;
@@ -822,12 +821,12 @@ namespace Kers.Controllers
 			foreach( var pos in packSlipTableVerticalLines){
 				pdfCanvas.DrawLine(pos,yPos, pos, yPos + 26, thinLinePaint);
 			}
-			pdfCanvas.DrawText("UK LAB #", packSlipTableVerticalLines[1] + padding , yPos + yPadding, getPaint(8.0f, 1));
-			pdfCanvas.DrawText("Type Test", packSlipTableVerticalLines[2] + padding , yPos + yPadding, getPaint(8.0f, 1));
-			pdfCanvas.DrawText("County ID", packSlipTableVerticalLines[3] + padding , yPos + yPadding, getPaint(8.0f, 1));
-			pdfCanvas.DrawText("Sample #", packSlipTableVerticalLines[4] + padding , yPos + yPadding, getPaint(8.0f, 1));
-			pdfCanvas.DrawText("Client Name", packSlipTableVerticalLines[5] + padding , yPos + yPadding, getPaint(8.0f, 1));
-			pdfCanvas.DrawText("Owner ID", packSlipTableVerticalLines[6] + padding , yPos + yPadding, getPaint(8.0f, 1));
+			pdfCanvas.DrawText("UK LAB #", packSlipTableVerticalLines[1] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Type Test", packSlipTableVerticalLines[2] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("County ID", packSlipTableVerticalLines[3] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Sample #", packSlipTableVerticalLines[4] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Client Name", packSlipTableVerticalLines[5] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Owner ID", packSlipTableVerticalLines[6] + padding , yPos + yPadding, getPaint(10.0f, 1));
 			pdfCanvas.DrawLine(29,yPos + 20, width - 29,  yPos + 20, thinLinePaint);
 		}
 
@@ -835,20 +834,20 @@ namespace Kers.Controllers
 
 			var padding = 4;
 			var yPos = 160;
-			var yPadding = 15;
+			var yPadding = 18;
 			var yLineHight = 30;
-
+			var rowNum = 1;
 			foreach( var row in pageData ){
 				foreach( var pos in packSlipTableVerticalLines){
 					pdfCanvas.DrawLine(pos,yPos, pos, yPos + yLineHight, thinLinePaint);
 				}
-				pdfCanvas.DrawText(CurrentSampleNumber.ToString(), packSlipTableVerticalLines[0] + padding , yPos + yPadding, getPaint(8.0f, 1));
-				pdfCanvas.DrawText(row[0], packSlipTableVerticalLines[2] + padding , yPos + yPadding, getPaint(8.0f, 1));
-				pdfCanvas.DrawText(row[1], packSlipTableVerticalLines[3] + padding , yPos + yPadding, getPaint(8.0f, 1));
-				pdfCanvas.DrawText(row[2], packSlipTableVerticalLines[4] + padding , yPos + yPadding, getPaint(8.0f, 1));
-				pdfCanvas.DrawText(row[3], packSlipTableVerticalLines[5] + padding , yPos + yPadding, getPaint(8.0f, 1));
-				pdfCanvas.DrawText(row[4], packSlipTableVerticalLines[6] + padding , yPos + yPadding, getPaint(8.0f, 1));
-				CurrentSampleNumber++;
+				pdfCanvas.DrawText(rowNum.ToString(), packSlipTableVerticalLines[0] + padding , yPos + yPadding, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(row[0], packSlipTableVerticalLines[2] + padding , yPos + yPadding, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(row[1] , packSlipTableVerticalLines[3] + (packSlipTableVerticalLines[4] - packSlipTableVerticalLines[3])/2, yPos + yPadding, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Center));
+				pdfCanvas.DrawText(row[2], packSlipTableVerticalLines[4] + (packSlipTableVerticalLines[5] - packSlipTableVerticalLines[4])/2 , yPos + yPadding, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Center));
+				pdfCanvas.DrawText(row[3], packSlipTableVerticalLines[5] + padding , yPos + yPadding, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(row[4], packSlipTableVerticalLines[6] + padding , yPos + yPadding, getPaint(10.0f, 1));
+				rowNum++;
 				yPos+= yLineHight;
 				pdfCanvas.DrawLine(29,yPos, width - 26, yPos, thinLinePaint);
 			}
@@ -864,6 +863,7 @@ namespace Kers.Controllers
 
 		public List<SoilReportBundle> samples;
 		public List<SoilReportBundle> withOptionalTests;
+		public List<SoilReportBundle> samplesByTests;
 		public List<SoilReportBundle> withoutOptionalTests;
 		public List<List<List<string>>>pages;
 
@@ -908,9 +908,16 @@ namespace Kers.Controllers
 											Samples = g.Select( s => s)
 										}).ToList();
 
-			this.withOptionalTests = this.samples.Where( s => s.OptionalTestSoilReportBundles.Count() > 0 ).ToList();
-			this.withoutOptionalTests = this.samples.Where( s => s.OptionalTestSoilReportBundles.Count() == 0 ).ToList();
+			//this.withOptionalTests = this.samples.Where( s => s.OptionalTestSoilReportBundles.Count() > 0 ).ToList();
+			//this.withoutOptionalTests = this.samples.Where( s => s.OptionalTestSoilReportBundles.Count() == 0 ).ToList();
 			this.pages = new List<List<List<string>>>();
+			foreach( var grp in grouppeByTests ){
+				for( var i = 0; i < grp.Samples.Count(); i+=this.LinesPerPage){
+					this.pages.Add(this.Page(grp.Samples.Skip(i).Take(this.LinesPerPage).ToList()));
+				}
+			}
+/* 
+
 			if( this.withoutOptionalTests.Count()>0){
 				for( var i = 0; i < this.withoutOptionalTests.Count(); i+=this.LinesPerPage){
 					this.pages.Add(this.Page(this.withoutOptionalTests.Skip(i).Take(this.LinesPerPage).ToList()));
@@ -921,6 +928,7 @@ namespace Kers.Controllers
 					this.pages.Add(this.Page(this.withOptionalTests.Skip(i).Take(this.LinesPerPage).ToList()));
 				}
 			}
+			 */
 		}
 
 
