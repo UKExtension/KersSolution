@@ -844,7 +844,7 @@ namespace Kers.Controllers
 				pdfCanvas.DrawText(rowNum.ToString(), packSlipTableVerticalLines[0] + padding , yPos + yPadding, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(row[0], packSlipTableVerticalLines[2] + padding , yPos + yPadding, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(row[1] , packSlipTableVerticalLines[3] + (packSlipTableVerticalLines[4] - packSlipTableVerticalLines[3])/2, yPos + yPadding, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Center));
-				pdfCanvas.DrawText(row[2], packSlipTableVerticalLines[4] + (packSlipTableVerticalLines[5] - packSlipTableVerticalLines[4])/2 , yPos + yPadding, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Center));
+				pdfCanvas.DrawText(row[2].TrimStart(new Char[] { '0' } ), packSlipTableVerticalLines[4] + (packSlipTableVerticalLines[5] - packSlipTableVerticalLines[4])/2 , yPos + yPadding, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Center));
 				pdfCanvas.DrawText(row[3], packSlipTableVerticalLines[5] + padding , yPos + yPadding, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(row[4], packSlipTableVerticalLines[6] + padding , yPos + yPadding, getPaint(10.0f, 1));
 				rowNum++;
