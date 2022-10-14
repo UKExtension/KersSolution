@@ -245,8 +245,6 @@ namespace Kers.Controllers.Soil
         }
 
 
-
-
         private FarmerForReport CreateFarmerForReport( int FarmerId ){
             var newFarmer = new FarmerForReport();
             UpdateFarmerForReport(newFarmer, FarmerId);
@@ -275,8 +273,30 @@ namespace Kers.Controllers.Soil
             newFarmer.EmailAddress = Frmr.EmailAddress;
         }
 
+        [HttpPost("reportsdata")]
+		public IActionResult PackingSlipPdf([FromBody] UniqueIds unigueIds)
+        {
+            var samples = this._soilContext.SoilReportBundle
+											.Where( b => unigueIds.ids.Contains(b.UniqueCode) && b.Reports.Count() > 0)
+											.Include( b => b.Reports)
+											.OrderBy( b => b.CoSamnum)
+											.ToList();
+            List<List<string>> data = new List<List<string>>()
+            foreach( var sample in samples){
+                foreach( var report in sample.Reports){
+                    List<string> row = new List<string>();
+
+
+                    
+                }
+            }
+            return new OkObjectResult(data);
+        }
 
 
 
     }
+    public class UniqueIds{
+		public List<string> ids;
+	}
 }
