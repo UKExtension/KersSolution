@@ -284,13 +284,47 @@ namespace Kers.Controllers.Soil
             List<List<string>> data = new List<List<string>>()
             foreach( var sample in samples){
                 foreach( var report in sample.Reports){
-                    List<string> row = new List<string>();
-
-
-                    
+                    data.Add( ReportToStringList(report));
                 }
             }
             return new OkObjectResult(data);
+        }
+
+        private List<string> ReportToStringList(SoilReport report ){
+            var row = new List<string>
+            {
+                report.DateIn,
+                report.DateSent,
+                reportDateOut,
+                report.TypeForm,
+                report.LabNum,
+                report.CoId.ToString(),
+                report.CoSamnum,
+                report.FarmerId,
+                report.OsId,
+                report.Acres,
+                report.Crop_Info1,
+                report.Crop_Info2,
+                report.Crop_Info3,
+                report.Crop_Info4,
+                report.Crop_Info5,
+                report.Crop_Info6,
+                report.Crop_Info7,
+                report.Crop_Info8,
+                report.Crop_Info9,
+                report.Crop_Info10,
+                report.Crop_Info11,
+                report.Comment1,
+                report.Comment2,
+                report.Comment3,
+                report.Comment4,
+                report.Comment5,
+                report.Comment6,
+                report.Comment7,
+                report.LimeComment,
+                report.AgentNote
+            }
+            return row;
         }
 
 
