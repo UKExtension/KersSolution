@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, retry, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults, SoilReportSearchCriteria, TypeForm, SoilReportStatus, FarmerAddressSearchCriteria } from './soildata.report';
 
@@ -197,6 +197,15 @@ export class SoildataService {
             catchError(this.handleError('pdf', <Blob>{}))
         );
       }
+
+      getData(ids:string[]):Observable<string[]>{
+        var url = '/api/SoilSample/reportsdata/';
+        return this.http.post<string[]>(this.location.prepareExternalUrl(url), {ids:ids})
+            .pipe(
+                retry(3),
+                catchError(this.handleError('getCustomData',[]))
+            );
+    }
 
 }
 export class FarmerAddressSearchResult{

@@ -103,6 +103,10 @@
             <ng-container *ngIf="reportsExist">
               <a class="btn btn-info btn-xs" (click)="printAll(reports)"  *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a> Generate consolidated report of filtered results
               <loading *ngIf="pdfLoading"></loading>
+<br>
+              <a class="btn btn-info btn-xs" (click)="downloadCsv(reports)"  *ngIf="!csvDataLoading"><i class="fa fa-download"></i> csv</a> Download reports data
+              <loading *ngIf="csvDataLoading"></loading>
+
             </ng-container>
             <ng-container *ngIf="samplesExist">
               <br><a class="btn btn-info btn-xs" (click)="printPackingSlip(reports)"  *ngIf="!samplePdfLoading"><i class="fa fa-download"></i> pdf</a> Generate packing slip

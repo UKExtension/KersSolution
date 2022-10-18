@@ -274,14 +274,15 @@ namespace Kers.Controllers.Soil
         }
 
         [HttpPost("reportsdata")]
-		public IActionResult PackingSlipPdf([FromBody] UniqueIds unigueIds)
+		public IActionResult ReportsData([FromBody] UniqueIds unigueIds)
         {
-            var samples = this._soilContext.SoilReportBundle
+            var samples = this._context.SoilReportBundle
 											.Where( b => unigueIds.ids.Contains(b.UniqueCode) && b.Reports.Count() > 0)
 											.Include( b => b.Reports)
 											.OrderBy( b => b.CoSamnum)
 											.ToList();
-            List<List<string>> data = new List<List<string>>()
+            List<List<string>> data = new List<List<string>>();
+            data.Add( this.ReportHeader());
             foreach( var sample in samples){
                 foreach( var report in sample.Reports){
                     data.Add( ReportToStringList(report));
@@ -290,40 +291,65 @@ namespace Kers.Controllers.Soil
             return new OkObjectResult(data);
         }
 
+
+        private List<string> ReportHeader(){
+            var header = new List<string>{
+                "Date",
+                "County #",
+                "Owner #",
+                "Crop",
+                "Form Type",
+                "Lab pH",
+                "Lab Buffer pH",
+                "Lab P",
+                "Lab K",
+                "Lab Ca",
+                "Lab Mg",
+                "Lab Zn",
+                "Rec N",
+                "Rec P2O5",
+                "Rec K2O",
+                "Rec LIME",
+                "Rec Zn"
+
+            };
+            return header;
+        }
+
+
         private List<string> ReportToStringList(SoilReport report ){
             var row = new List<string>
             {
-                report.DateIn,
-                report.DateSent,
-                reportDateOut,
-                report.TypeForm,
-                report.LabNum,
-                report.CoId.ToString(),
+                report.DateIn.ToString(),
                 report.CoSamnum,
-                report.FarmerId,
-                report.OsId,
-                report.Acres,
-                report.Crop_Info1,
-                report.Crop_Info2,
-                report.Crop_Info3,
-                report.Crop_Info4,
-                report.Crop_Info5,
-                report.Crop_Info6,
-                report.Crop_Info7,
-                report.Crop_Info8,
-                report.Crop_Info9,
-                report.Crop_Info10,
-                report.Crop_Info11,
-                report.Comment1,
-                report.Comment2,
-                report.Comment3,
-                report.Comment4,
-                report.Comment5,
-                report.Comment6,
-                report.Comment7,
-                report.LimeComment,
-                report.AgentNote
-            }
+                report.FarmerID,
+                report.CropInfo1,
+                report.TypeForm
+            };
+            var tests = this._context.TestResults.Where( r => r.PrimeIndex == report.Prime_Index).ToList();
+            var LabPh = tests.Where( t => t.TestName == "Soil pH").FirstOrDefault();
+            row.Add( LabPh == null ? "" : LabPh.Result);
+            var LabBufferPh = tests.Where( t => t.TestName == "Buffer pH").FirstOrDefault();
+            row.Add( LabBufferPh == null ? "" : LabBufferPh.Result);
+            var LabP = tests.Where( t => t.TestName == "Phosphorus").FirstOrDefault();
+            row.Add( LabP == null ? "" : LabP.Result);
+            var LabK = tests.Where( t => t.TestName == "Potassium").FirstOrDefault();
+            row.Add( LabK == null ? "" : LabK.Result);
+            var LabCa = tests.Where( t => t.TestName == "Calcium").FirstOrDefault();
+            row.Add( LabCa == null ? "" : LabCa.Result);
+            var LabMg = tests.Where( t => t.TestName == "Magnesium").FirstOrDefault();
+            row.Add( LabMg == null ? "" : LabMg.Result);
+            var LabZn = tests.Where( t => t.TestName == "Zinc").FirstOrDefault();
+            row.Add( LabMg == null ? "" : LabZn.Result);
+            var RecN = tests.Where( t => t.TestName == "Nitrogen").FirstOrDefault();
+            row.Add( RecN == null ? "" : RecN.Recommmendation);
+            var RecP = tests.Where( t => t.TestName == "Phosphorus").FirstOrDefault();
+            row.Add( RecP == null ? "" : RecP.Recommmendation);
+            var RecK = tests.Where( t => t.TestName == "Potassium").FirstOrDefault();
+            row.Add( RecK == null ? "" : RecK.Recommmendation);
+            row.Add( report.LimeComment);
+            var RecZn = tests.Where( t => t.TestName == "Zinc").FirstOrDefault();
+            row.Add( RecZn == null ? "" : RecZn.Recommmendation);
             return row;
         }
 

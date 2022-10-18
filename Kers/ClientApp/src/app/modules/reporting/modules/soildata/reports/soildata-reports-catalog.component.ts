@@ -17,6 +17,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
   type="dsc";
   pdfLoading = false;
   samplePdfLoading = false;
+  csvDataLoading = false;
 
   reportForCopy:SoilReportBundle = null;
   isThisSampleCopy:boolean = false;
@@ -217,6 +218,30 @@ export class SoildataReportsCatalogComponent implements OnInit {
         this.onRefresh();
       }
     )
+  }
+  downloadCsv(reports:SoilReportBundle[]) {
+    this.csvDataLoading = true;
+    var ids = reports.map(r => r.uniqueCode);
+    console.log(ids);
+    this.service.getData(ids).subscribe(
+      data => {
+        console.log(data);
+        const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
+        const header = Object.keys(data[0]);
+        let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+        //csv.unshift(header.join(','));
+        let csvArray = csv.join('\r\n');
+
+        var blob = new Blob([csvArray], {type: 'text/csv' })
+        saveAs(blob, "KERS_SoilDataReports.csv");
+
+
+        this.csvDataLoading = false;
+      }
+    )
+
+
+    
   }
 
 
