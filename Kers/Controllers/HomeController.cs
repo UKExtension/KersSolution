@@ -65,6 +65,53 @@ namespace Kers.Controllers
 
         [AllowAnonymous]
         [HttpPost]
+        [Route("auth")]
+        public IActionResult Auth( [FromBody]LoginViewModel loginViewModel)
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("federationmetadata")]
+        public IActionResult Federationmetadata( )
+        {
+            var today = DateTime.Now;
+
+            string xmlString = @"<?xml version=""1.0""?>
+<md:EntityDescriptor xmlns:md=""urn:oasis:names:tc:SAML:2.0:metadata""
+                     validUntil="""+ today.AddDays(2).ToString("yyyy-MM-ddTHH:mm:ssK") + @"""
+                     cacheDuration=""PT604800S""
+                     entityID=""????Entity Id?????"">
+    <md:SPSSODescriptor AuthnRequestsSigned=""false"" WantAssertionsSigned=""false"" protocolSupportEnumeration=""urn:oasis:names:tc:SAML:2.0:protocol"">
+        <md:SingleLogoutService Binding=""urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect""
+                                Location=""https://kers.ca.uky.edu/core/logout"" />
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+        <md:AssertionConsumerService Binding=""urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST""
+                                     Location=""https://kers.ca.uky.edu/core/auth""
+                                     index=""1"" />
+        
+    </md:SPSSODescriptor>
+    <md:Organization>
+       <md:OrganizationName xml:lang=""en-US"">College of Agriculture Food and Environment</md:OrganizationName>
+       <md:OrganizationDisplayName xml:lang=""en-US"">CAFE</md:OrganizationDisplayName>
+       <md:OrganizationURL xml:lang=""en-US"">https://www.ca.uky.edu</md:OrganizationURL>
+    </md:Organization>
+    <md:ContactPerson contactType=""technical"">
+        <md:GivenName>Ivelin Denev</md:GivenName>
+        <md:EmailAddress>ivelin.denev@uky.edu</md:EmailAddress>
+    </md:ContactPerson>
+    <md:ContactPerson contactType=""support"">
+        <md:GivenName>Ivelin Denev</md:GivenName>
+        <md:EmailAddress>ivelin.denev@uky.edu</md:EmailAddress>
+    </md:ContactPerson>
+</md:EntityDescriptor>";
+            return this.Content(xmlString, "text/xml");
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
         [Route("api/token")]
         public IActionResult Post( [FromBody]LoginViewModel loginViewModel)
         {
