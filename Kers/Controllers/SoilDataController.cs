@@ -122,6 +122,45 @@ namespace Kers.Controllers
             return new OkObjectResult(orderedBundles);
         }
 
+        [HttpPost("GetStatuses/{allCounties?}/{countyId?}")]
+        public IActionResult GetPresentStatuses( [FromBody] SoilReportSearchCriteria criteria, 
+                                        Boolean allCounties = false,
+                                        int countyId = 0
+                                        ){
+            List<int> statuses;
+            var bundles = from i in _soilDataContext.SoilReportBundle select i;
+            if( !allCounties ){
+                if(countyId == 0){
+                    var user = this.CurrentUser();
+                    countyId = user.RprtngProfile.PlanningUnitId;
+                }
+                bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
+            }
+            bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
+            bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
+            statuses = bundles.Select( b => b.LastStatus.SoilReportStatusId).ToList();
+            return new OkObjectResult(statuses);
+        }
+        [HttpPost("GetTypes/{allCounties?}/{countyId?}")]
+        public IActionResult GetPresentTypes( [FromBody] SoilReportSearchCriteria criteria, 
+                                        Boolean allCounties = false,
+                                        int countyId = 0
+                                        ){
+            List<int> types;
+            var bundles = from i in _soilDataContext.SoilReportBundle select i;
+            if( !allCounties ){
+                if(countyId == 0){
+                    var user = this.CurrentUser();
+                    countyId = user.RprtngProfile.PlanningUnitId;
+                }
+                bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
+            }
+            bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
+            bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
+            types = bundles.Select( b => b.TypeFormId).ToList();
+            return new OkObjectResult(types);
+        }
+
         public class FarmerAddressSearchCriteria{
             public string Search;
             public string Order;
