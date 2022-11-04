@@ -73,16 +73,16 @@ namespace Kers.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("federationmetadata")]
+        [Route("federationmetadata/federationmetadata.xml")]
         public IActionResult Federationmetadata( )
         {
             var today = DateTime.Now;
 
             string xmlString = @"<?xml version=""1.0""?>
 <md:EntityDescriptor xmlns:md=""urn:oasis:names:tc:SAML:2.0:metadata""
-                     validUntil="""+ today.AddDays(2).ToString("yyyy-MM-ddTHH:mm:ssK") + @"""
+                     validUntil="""+ today.AddDays(12).ToString("yyyy-MM-ddTHH:mm:ssK") + @"""
                      cacheDuration=""PT604800S""
-                     entityID=""????Entity Id?????"">
+                     entityID=""https://kers.ca.uky.edu"">
     <md:SPSSODescriptor AuthnRequestsSigned=""false"" WantAssertionsSigned=""false"" protocolSupportEnumeration=""urn:oasis:names:tc:SAML:2.0:protocol"">
         <md:SingleLogoutService Binding=""urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect""
                                 Location=""https://kers.ca.uky.edu/core/logout"" />
