@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Kers.Services;
 
 namespace Kers.Controllers
 {
@@ -68,7 +69,43 @@ namespace Kers.Controllers
         [Route("auth")]
         public IActionResult Auth( [FromBody]LoginViewModel loginViewModel)
         {
+
+            // 1. TODO: specify the certificate that your SAML provider gave you
+            string samlCertificate = @"MIIC1DCCAbygAwIBAgIQNnU/hwOgD7tNaTWiR2zKNTANBgkqhkiG9w0BAQsFADAmMSQwIgYDVQQDExtBREZTIFNpZ25pbmcgLSBhZGZzLnVreS5lZHUwHhcNMTcxMjE1MTQ1NDUwWhcNMjcxMjEzMTQ1NDUwWjAmMSQwIgYDVQQDExtBREZTIFNpZ25pbmcgLSBhZGZzLnVreS5lZHUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCY4oh4v8gsrzuN2eA1J65cOAu7JZVH67md/yh9LhFDfVBxfiUxFae03JdPFnyX/5DzAajnnKYU4wvlH2AteIL5kOyAlAgLG2TS1zmP8ybDcU22+pJXoapXyfj2ATUhur1gRswlihXHZ7WSc7Qm1Yh/WfLgNcBvdHoUrdR4LGZczBURDfZCJCS4jPCbvngpURqDJZ2JPvpZ6HX2C3UB0gdSN8fwjvgbfGBVCy2Z1UPRUHyOdIGMa13o0E/qcH442szwEAA2WYkMLSxWfW340VlRGi1Ht/qPIoOTi2GvNPKUXwWvWnu3RaLY5Jdivuyg/7VR+MDoAd7nQjvc2LrE4Y0BAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAH8KYZbfPC/E8+isu7JA4G+6N3D9oSbyuVWJJ7GLpoM0804nvPIn7fxgldvFJXcTYQkb/lD5fpSyrPJIkU3GIsYLI+co4wAh/krWN8XiMTJbOCPnhQx38UKd/IxG9nNJCoFMc/Gjofy1OZLGzgISrjI91df6CL/sbw/7RmW7PtKgW6xaYFyii1uIwxrJM345HofXTDoJLxu7f/Vj7PltAjqD8taH6GWmvP57rtI0Z6DjSgZ1uZ6SBa5MSOKGP9uFWKdOPr8Hw71jpfV4CZ+pTu6FG7tzEXN3trOD0pFaqnhnT+enUidT2AJIvuIlsK8aNkv++/Qx9SQiwLgtFk96Gco=";
+
+            // 2. Let's read the data - SAML providers usually POST it into the "SAMLResponse" var
+            var samlResponse = new Response(samlCertificate, Request.Form["SAMLResponse"]);
+            ViewData["response"] = samlResponse;
+            // 3. We're done!
+            if (samlResponse.IsValid())
+            {
+                //WOOHOO!!! user is logged in
+
+                //Some more optional stuff for you
+                //let's extract username/firstname etc
+                string username, email, firstname, lastname;
+                try
+                {
+                    username = samlResponse.GetNameID();
+                    email = samlResponse.GetEmail();
+                    firstname = samlResponse.GetFirstName();
+                    lastname = samlResponse.GetLastName();
+                }
+                catch(Exception ex)
+                {
+                    //insert error handling code
+                    //no, really, please do
+                    return null;
+                }
+
+                //user has been authenticated, put your code here, like set a cookie or something...
+                //or call FormsAuthentication.SetAuthCookie()
+                //or call context.SignInAsync() in ASP.NET Core
+                //or do something else
+            }
             return View();
+
+
         }
 
         [AllowAnonymous]
@@ -107,6 +144,33 @@ namespace Kers.Controllers
     </md:ContactPerson>
 </md:EntityDescriptor>";
             return this.Content(xmlString, "text/xml");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("login")]
+        public ActionResult Login()
+        {
+            //TODO: specify the SAML provider url here, aka "Endpoint"
+            var samlEndpoint = "https://adfs.uky.edu/adfs/ls/";
+
+            var request = new AuthRequest(
+                "https://kers.ca.uky.edu", //TODO: put your app's "entity ID" here
+                "https://kers.ca.uky.edu/core/auth" //TODO: put Assertion Consumer URL (where the provider should redirect users after authenticating)
+                );
+
+
+            var red = request.GetRedirectUrl(samlEndpoint);
+            //redirect the user to the SAML provider
+            return Redirect(red);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("logintest")]
+        public IActionResult LoginTestPage( )
+        {
+            return View();
         }
 
 
