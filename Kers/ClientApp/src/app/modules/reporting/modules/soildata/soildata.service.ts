@@ -172,6 +172,22 @@ export class SoildataService {
             );
       }
 
+      getCustomStatuses(searchParams:SoilReportSearchCriteria):Observable<SoilReportStatus[]>{
+        var url = this.baseUrl + "GetStatuses/";
+        return this.http.post<SoilReportStatus[]>(this.location.prepareExternalUrl(url), searchParams)
+            .pipe(
+                catchError(this.handleError('getCustomStatuses', []))
+            );
+      }
+      getCustomFormTypes(searchParams:SoilReportSearchCriteria):Observable<TypeForm[]>{
+        var url = this.baseUrl + "GetTypes/";
+        return this.http.post<TypeForm[]>(this.location.prepareExternalUrl(url), searchParams)
+            .pipe(
+                catchError(this.handleError('getCustomFormTypes', []))
+            );
+      }
+
+
       getCustomAddresses(searchParams:FarmerAddressSearchCriteria):Observable<FarmerAddressSearchResult>{
         var url = this.baseUrl + "GetCustomFarmerAddress/";
         return this.http.post<FarmerAddressSearchResult>(this.location.prepareExternalUrl(url), searchParams)

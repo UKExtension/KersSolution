@@ -127,7 +127,7 @@ namespace Kers.Controllers
                                         Boolean allCounties = false,
                                         int countyId = 0
                                         ){
-            List<int> statuses;
+            List<SoilReportStatus> statuses;
             var bundles = from i in _soilDataContext.SoilReportBundle select i;
             if( !allCounties ){
                 if(countyId == 0){
@@ -138,7 +138,8 @@ namespace Kers.Controllers
             }
             bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
             bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
-            statuses = bundles.Select( b => b.LastStatus.SoilReportStatusId).ToList();
+            bundles.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus);
+            statuses = bundles.Select( b => b.LastStatus.SoilReportStatus).ToList();
             return new OkObjectResult(statuses);
         }
         [HttpPost("GetTypes/{allCounties?}/{countyId?}")]
@@ -146,7 +147,7 @@ namespace Kers.Controllers
                                         Boolean allCounties = false,
                                         int countyId = 0
                                         ){
-            List<int> types;
+            List<TypeForm> types;
             var bundles = from i in _soilDataContext.SoilReportBundle select i;
             if( !allCounties ){
                 if(countyId == 0){
@@ -157,7 +158,8 @@ namespace Kers.Controllers
             }
             bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
             bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
-            types = bundles.Select( b => b.TypeFormId).ToList();
+            bundles.Include( b => b.TypeForm);
+            types = bundles.Select( b => b.TypeForm).ToList();
             return new OkObjectResult(types);
         }
 

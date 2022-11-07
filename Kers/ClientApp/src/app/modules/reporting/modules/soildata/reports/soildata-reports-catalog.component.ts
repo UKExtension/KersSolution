@@ -73,27 +73,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     if( this.endDate == null ){
       this.endDate = new Date();
     }
-    this.service.formTypes().subscribe(
-      res => {
-        for(let type of res){
-          this.criteria.formType.push(type.id);
-          this.typesCheckboxes.push({
-            name:type.code, value: type.id, checked:true
-          })
-        }
-      }
-    )
-
-    this.service.reportStatuses().subscribe(
-      res => {
-        for(let status of res){
-          this.criteria.status.push(status.id);
-          this.statusesCheckboxes.push({
-            name:status.name, value: status.id, checked:true
-          })
-        }
-      }
-    )
+    
     
     this.criteria = {
       start: this.startDate.toISOString(),
@@ -125,6 +105,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
         mergeMap(_ => this.service.getCustom(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
+    this.getStatuses();
+    this.getFormTypes();
   }
 
 
@@ -134,6 +116,32 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
     this.criteria["end"] = event.dateRange.endJsDate.toISOString();
     this.onRefresh();
+  }
+
+  getStatuses(){
+    this.service.reportStatuses().subscribe(
+      res => {
+        for(let status of res){
+          this.criteria.status.push(status.id);
+          this.statusesCheckboxes.push({
+            name:status.name, value: status.id, checked:true
+          })
+        }
+      }
+    )
+
+  }
+  getFormTypes(){
+    this.service.formTypes().subscribe(
+      res => {
+        for(let type of res){
+          this.criteria.formType.push(type.id);
+          this.typesCheckboxes.push({
+            name:type.code, value: type.id, checked:true
+          })
+        }
+      }
+    )
   }
 
   statusChanged(){
