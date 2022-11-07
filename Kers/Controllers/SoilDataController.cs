@@ -140,7 +140,13 @@ namespace Kers.Controllers
             bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
             bundles.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus);
             statuses = bundles.Select( b => b.LastStatus.SoilReportStatus).ToList();
-            return new OkObjectResult(statuses);
+            List<SoilReportStatus> filteredStatuses = new List<SoilReportStatus>();
+            foreach( var status in statuses){
+                if( !filteredStatuses.Any( s => s.Id == status.Id)){
+                    filteredStatuses.Add(status);
+                }
+            }
+            return new OkObjectResult(filteredStatuses.OrderBy( t => t.Order ));
         }
         [HttpPost("GetTypes/{allCounties?}/{countyId?}")]
         public IActionResult GetPresentTypes( [FromBody] SoilReportSearchCriteria criteria, 
@@ -160,7 +166,13 @@ namespace Kers.Controllers
             bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
             bundles.Include( b => b.TypeForm);
             types = bundles.Select( b => b.TypeForm).ToList();
-            return new OkObjectResult(types);
+            List<TypeForm> filteredTypes = new List<TypeForm>();
+            foreach( var type in types){
+                if( !filteredTypes.Any( s => s.Id == type.Id)){
+                    filteredTypes.Add(type);
+                }
+            }
+            return new OkObjectResult(filteredTypes.OrderBy( t =>t.Name ));
         }
 
         public class FarmerAddressSearchCriteria{

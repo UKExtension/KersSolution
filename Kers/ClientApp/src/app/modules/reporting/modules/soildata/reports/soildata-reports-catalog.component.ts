@@ -119,7 +119,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
   }
 
   getStatuses(){
-    this.service.reportStatuses().subscribe(
+    this.statusesCheckboxes = [];
+    this.service.getCustomStatuses(this.criteria).subscribe(
       res => {
         for(let status of res){
           this.criteria.status.push(status.id);
@@ -132,7 +133,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   }
   getFormTypes(){
-    this.service.formTypes().subscribe(
+    this.typesCheckboxes = [];
+    this.service.getCustomFormTypes(this.criteria).subscribe(
       res => {
         for(let type of res){
           this.criteria.formType.push(type.id);
