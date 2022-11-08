@@ -1,6 +1,7 @@
 @{
     ViewData["Title"] = "Home Page";
     var response = ViewData["response"] as Kers.Services.Response;
+    var rawresponse = ViewData["rawresponse"] as string;
 }
 
 Auth<br>
@@ -9,4 +10,7 @@ XML: @response.Xml
 Name Id: @response.GetNameID()
 <br>
 First Name: @response.GetFirstName()
+
+<br><br>
+Raw Response: @rawresponse
 

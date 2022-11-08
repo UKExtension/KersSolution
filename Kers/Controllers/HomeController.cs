@@ -67,13 +67,15 @@ namespace Kers.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("auth")]
-        public IActionResult Auth( [FromBody]LoginViewModel loginViewModel)
+        public IActionResult Auth( [FromForm]LoginViewModel loginViewModel)
         {
 
             // 1. TODO: specify the certificate that your SAML provider gave you
-            string samlCertificate = @"MIIC1DCCAbygAwIBAgIQNnU/hwOgD7tNaTWiR2zKNTANBgkqhkiG9w0BAQsFADAmMSQwIgYDVQQDExtBREZTIFNpZ25pbmcgLSBhZGZzLnVreS5lZHUwHhcNMTcxMjE1MTQ1NDUwWhcNMjcxMjEzMTQ1NDUwWjAmMSQwIgYDVQQDExtBREZTIFNpZ25pbmcgLSBhZGZzLnVreS5lZHUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCY4oh4v8gsrzuN2eA1J65cOAu7JZVH67md/yh9LhFDfVBxfiUxFae03JdPFnyX/5DzAajnnKYU4wvlH2AteIL5kOyAlAgLG2TS1zmP8ybDcU22+pJXoapXyfj2ATUhur1gRswlihXHZ7WSc7Qm1Yh/WfLgNcBvdHoUrdR4LGZczBURDfZCJCS4jPCbvngpURqDJZ2JPvpZ6HX2C3UB0gdSN8fwjvgbfGBVCy2Z1UPRUHyOdIGMa13o0E/qcH442szwEAA2WYkMLSxWfW340VlRGi1Ht/qPIoOTi2GvNPKUXwWvWnu3RaLY5Jdivuyg/7VR+MDoAd7nQjvc2LrE4Y0BAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAH8KYZbfPC/E8+isu7JA4G+6N3D9oSbyuVWJJ7GLpoM0804nvPIn7fxgldvFJXcTYQkb/lD5fpSyrPJIkU3GIsYLI+co4wAh/krWN8XiMTJbOCPnhQx38UKd/IxG9nNJCoFMc/Gjofy1OZLGzgISrjI91df6CL/sbw/7RmW7PtKgW6xaYFyii1uIwxrJM345HofXTDoJLxu7f/Vj7PltAjqD8taH6GWmvP57rtI0Z6DjSgZ1uZ6SBa5MSOKGP9uFWKdOPr8Hw71jpfV4CZ+pTu6FG7tzEXN3trOD0pFaqnhnT+enUidT2AJIvuIlsK8aNkv++/Qx9SQiwLgtFk96Gco=";
-
+            string samlCertificate = @"-----BEGIN CERTIFICATE-----
+MIIC2jCCAcKgAwIBAgIQZbcjAuiuwKVHMP+ILffqRTANBgkqhkiG9w0BAQsFADApMScwJQYDVQQDEx5BREZTIEVuY3J5cHRpb24gLSBhZGZzLnVreS5lZHUwHhcNMTcxMjE1MTUyMzMyWhcNMjcxMjEzMTUyMzMyWjApMScwJQYDVQQDEx5BREZTIEVuY3J5cHRpb24gLSBhZGZzLnVreS5lZHUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDRRm18Dju8YhsugHh6y8w0Pqu+x+xzhlTtUo00hRel1a/hq30Sz0RnUWn686gEM4C6J502YZ4hqTbDnidhGrv3yI5F/F859vNBKL1aNWTUYpGOK45uSEgXLULiv4aXlSwNPJZ2FmHZfS5JP6ekhccW8fNQXSHpeEl949P5rxafyn/dw0nZAPo1zyvFB4gLGdwti6GtU0WBQQrcT7MPBMpEiILTdhEptdgBIdv9gIg9Ryow55cgtH4odqpoB6vcofPpdVf6EIfPaDiXjhHAH/gwgkIXV2AFtmHFfSLv9JfNZFmruuVxXy1ZntPZbaZLx8WdZPqKvRePivJH9Sytbq7PAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAA5NNArgCIHHMfk9tMFS8n01IyuJYo60QGGIm2K4WAw2G6btP+F+4iesv1qWwOFrQhe/wx0siD+Qyag8aGtoro+sJIh0oHPWZH1+eh26S0rssn+GYOQjNjjsznbj6ZywKVX2TiPkMvYvoniRlDlC9kNBc+OzYCUIy+7SzkZfl0IrILWhtpN/XUuCOTv2xVyLlgyXicQK2mIahdufr0PcvVGeJmKcY9PBk8B4YZGC6LMAzeroop4DTHC8FtQrZwJzyA3bNEUjFB12zG2MUceHop3px4zTZ35sp0xekj3jQ+6E1javqwVU3xTxfKws33Vi/P2RMqt0b1zCfM/oSWRkras=
+-----END CERTIFICATE-----";
             // 2. Let's read the data - SAML providers usually POST it into the "SAMLResponse" var
+            ViewData["rawresponse"] = Request.Form["SAMLResponse"];
             var samlResponse = new Response(samlCertificate, Request.Form["SAMLResponse"]);
             ViewData["response"] = samlResponse;
             // 3. We're done!
@@ -83,6 +85,7 @@ namespace Kers.Controllers
 
                 //Some more optional stuff for you
                 //let's extract username/firstname etc
+                
                 string username, email, firstname, lastname;
                 try
                 {
