@@ -115,7 +115,11 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.endDate = event.dateRange.endJsDate;
     this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
     this.criteria["end"] = event.dateRange.endJsDate.toISOString();
+    this.criteria.status = [];
+    this.criteria.formType = [];
     this.onRefresh();
+    this.getStatuses();
+    this.getFormTypes();
   }
 
   getStatuses(){
