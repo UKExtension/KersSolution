@@ -151,8 +151,8 @@ MIIC2jCCAcKgAwIBAgIQZbcjAuiuwKVHMP+ILffqRTANBgkqhkiG9w0BAQsFADApMScwJQYDVQQDEx5B
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("login")]
-        public ActionResult Login()
+        [Route("loginsso")]
+        public ActionResult LoginSSO()
         {
             //TODO: specify the SAML provider url here, aka "Endpoint"
             var samlEndpoint = "https://adfs.uky.edu/adfs/ls/";
