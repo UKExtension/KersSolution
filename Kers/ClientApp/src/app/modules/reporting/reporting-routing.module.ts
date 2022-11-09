@@ -167,7 +167,8 @@ const reportingRoutes: Routes = [
         ]
       }
     ]
-  }
+  },
+  { path: 'help', loadChildren: () => import('./modules/help/help.module').then(m => m.HelpModule) }
 ];
 
 @NgModule({
