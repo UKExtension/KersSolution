@@ -34,6 +34,13 @@ export class HelpService {
                 catchError(this.handleError('all', []))
             );
     }
+    bayCategory(categoryId:number):Observable<Help[]>{
+        var url = this.baseUrl + "bycategory/" + categoryId;
+        return this.http.get<Help[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('by category', []))
+            );
+    }
 
 
     addHelp(help:Help): Observable<Help>{
@@ -120,6 +127,8 @@ export class HelpCategory{
         public id: number,
         public title: string,
         public description: string,
+        public parentId:number,
+        public helpContents:Help[],
         public parent?: HelpCategory,
         public employeePositionId?: number,
         public zEmpRoleTypeId?: number,

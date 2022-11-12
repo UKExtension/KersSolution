@@ -72,7 +72,7 @@ namespace Kers.Controllers
 
             // 1. TODO: specify the certificate that your SAML provider gave you
             string samlCertificate = @"-----BEGIN CERTIFICATE-----
-MIIC2jCCAcKgAwIBAgIQZbcjAuiuwKVHMP+ILffqRTANBgkqhkiG9w0BAQsFADApMScwJQYDVQQDEx5BREZTIEVuY3J5cHRpb24gLSBhZGZzLnVreS5lZHUwHhcNMTcxMjE1MTUyMzMyWhcNMjcxMjEzMTUyMzMyWjApMScwJQYDVQQDEx5BREZTIEVuY3J5cHRpb24gLSBhZGZzLnVreS5lZHUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDRRm18Dju8YhsugHh6y8w0Pqu+x+xzhlTtUo00hRel1a/hq30Sz0RnUWn686gEM4C6J502YZ4hqTbDnidhGrv3yI5F/F859vNBKL1aNWTUYpGOK45uSEgXLULiv4aXlSwNPJZ2FmHZfS5JP6ekhccW8fNQXSHpeEl949P5rxafyn/dw0nZAPo1zyvFB4gLGdwti6GtU0WBQQrcT7MPBMpEiILTdhEptdgBIdv9gIg9Ryow55cgtH4odqpoB6vcofPpdVf6EIfPaDiXjhHAH/gwgkIXV2AFtmHFfSLv9JfNZFmruuVxXy1ZntPZbaZLx8WdZPqKvRePivJH9Sytbq7PAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAA5NNArgCIHHMfk9tMFS8n01IyuJYo60QGGIm2K4WAw2G6btP+F+4iesv1qWwOFrQhe/wx0siD+Qyag8aGtoro+sJIh0oHPWZH1+eh26S0rssn+GYOQjNjjsznbj6ZywKVX2TiPkMvYvoniRlDlC9kNBc+OzYCUIy+7SzkZfl0IrILWhtpN/XUuCOTv2xVyLlgyXicQK2mIahdufr0PcvVGeJmKcY9PBk8B4YZGC6LMAzeroop4DTHC8FtQrZwJzyA3bNEUjFB12zG2MUceHop3px4zTZ35sp0xekj3jQ+6E1javqwVU3xTxfKws33Vi/P2RMqt0b1zCfM/oSWRkras=
+" + _configuration["SSO:SigningCertificate"] + @"
 -----END CERTIFICATE-----";
             // 2. Let's read the data - SAML providers usually POST it into the "SAMLResponse" var
             ViewData["rawresponse"] = Request.Form["SAMLResponse"];

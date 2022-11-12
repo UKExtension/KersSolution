@@ -54,6 +54,12 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(all);
         }
 
+        [HttpGet("bycategory/{categoryId}")]
+        public IActionResult ByCategory(int categoryId){
+            var articles = this.context.HelpContent.Where( g => g.CategoryId == categoryId );
+            return new OkObjectResult(articles);
+        }
+
 
 
         [HttpPost()]
@@ -114,7 +120,8 @@ namespace Kers.Controllers.Admin
 
         [HttpGet("allCategories")]
         public IActionResult allCategories(int parentId){
-            return new OkObjectResult(context.HelpCategory.ToList());
+            var categories = context.HelpCategory.Include( h => h.HelpContents).ToList();
+            return new OkObjectResult(categories);
         }
 
         
