@@ -86,13 +86,14 @@ namespace Kers.Controllers
                 //Some more optional stuff for you
                 //let's extract username/firstname etc
                 
-                string username, email, firstname, lastname;
+                string username, firstname, lastname, personid;
                 try
                 {
                     username = samlResponse.GetNameID();
-                    email = samlResponse.GetEmail();
-                    firstname = samlResponse.GetFirstName();
-                    lastname = samlResponse.GetLastName();
+                    firstname = samlResponse.GetCustomAttribute("FirstName");
+                    personid = samlResponse.GetCustomAttribute("Employee_number");
+                    lastname = samlResponse.GetCustomAttribute("LastName");
+                       
                 }
                 catch(Exception ex)
                 {

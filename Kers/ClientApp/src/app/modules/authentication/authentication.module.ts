@@ -9,10 +9,12 @@ import {LogoutComponent} from './components/logout.component';
 import {AuthenticationService} from './authentication.service';
 import {AuthenticationGuard } from './authentication-guard.service';
 import {AuthHttp} from './auth.http';
+import { Login2faComponent } from './components/login-2fa.component';
 
 @NgModule({
     declarations: [
         LoginComponent,
+        Login2faComponent,
         LoginHomeComponent,
         LogoutComponent
     ],
@@ -21,6 +23,7 @@ import {AuthHttp} from './auth.http';
         ReactiveFormsModule,
         RouterModule.forChild([
             { path: 'login', component: LoginHomeComponent },
+            { path: 'login2fa', component: Login2faComponent },
             { path: 'logout', component: LogoutComponent }
         ]),
         SharedModule

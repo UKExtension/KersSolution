@@ -4,13 +4,12 @@
     var rawresponse = ViewData["rawresponse"] as string;
 }
 
-Auth<br>
-XML: @response.Xml
 <br>
-Name Id: @response.GetNameID()
+LinkBlue Id: @response.GetNameID()
 <br>
-First Name: @response.GetFirstName()
-
-<br><br>
-Raw Response: @rawresponse
+First Name: @response.GetCustomAttribute("FirstName");
+<br>
+Last Name: @response.GetCustomAttribute("LastName");
+<br>
+Person Id: @response.GetCustomAttribute("Employee_number");
 
