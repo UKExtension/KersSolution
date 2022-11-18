@@ -1,12 +1,21 @@
-import { Component, Inject, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Inject, OnInit, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 import {FormBuilder, Validators }   from '@angular/forms';
 import {Location} from '@angular/common';
 
 @Component({
-  selector: 'login',
-  templateUrl: 'login-2fa.component.html'
+  selector: 'login2fa',
+  templateUrl: 'login-2fa.component.html',
+  styles: [`
+  body{
+      background-color: #F7F7F7 !important;
+  }
+  
+  
+
+  ` ],
+  encapsulation: ViewEncapsulation.None
 })
 export class Login2faComponent implements OnInit { 
 

@@ -4,27 +4,24 @@
       <loading *ngIf="loading"></loading>
       <section class="login_content" *ngIf="!loading">
           <form>
-              <h1>Extension Login</h1>
+              <h1>KERS Login</h1>
                 <div class="alert alert-danger" role="alert" *ngIf="loginError"><strong>Warning:</strong> {{message}}</div>
-                <form (submit)="performLogin($event)" [formGroup]="loginForm" >
-                  <div>
-                      <input type="text" id="name" class="form-control" placeholder="LinkBlue ID" required formControlName="name" name="name" autofocus>              
-                  </div>
-                  <div>
-                        <input type="password" id="password" required formControlName="password" name="password" class="form-control" placeholder="Password" >
-                  </div>
-                  <div>
-                      <button class="btn btn-default submit" type="submit">Log in</button> 
-                  </div>
-                </form>
+
+                      <a href="/loginsso" class="btn btn-info btn-lg" type="submit">Log in</a> <br><br>
+                      <div class="info-box1">
+                        <p style="text-align: center;">
+                          <a href="https://ukam.uky.edu/manager/Account/Login.aspx" target="_blank" style="text-decoration: underline;">Manage Your Account</a>
+                        </p>
+                      </div>
+
                 <div class="clearfix"></div>
 
                 <div class="separator">
-                  <p class="change_link">Please log in using your <a href="http://www.uky.edu/UKHome/subpages/linkblue.html" target="_blank">Link Blue</a> credentials.<br>
-      This is the same ID and password you use<br>for Exchange e-mail and myUK.</p>
+                  <p class="change_link">Please log in using your <a href="https://www.uky.edu/linkblue/" target="_blank" style="margin-right: 0px;">Link Blue</a> credentials.<br> 
+                    This is the same authentication process you<br>use for e-mail and myUK.</p>
                   <div class="clearfix"></div>
                   <br />
-
+                  <a href="https://psd.ca.uky.edu/kersfaqs" style="text-decoration: underline;" target="_blank">KERS Frequently Asked Questions</a><br><br><br><br>
                   <div>
                     <h1><img src="{{ukLogoSrc}}" width="44" height="31"> Extension</h1>
                     <p>University of Kentucky<br>College of Agriculture, Food and Environment</p>
