@@ -156,16 +156,13 @@ namespace Kers.Controllers
         public ActionResult LoginSSO()
         {
             //TODO: specify the SAML provider url here, aka "Endpoint"
-            var samlEndpoint = "https://adfs.uky.edu/adfs/ls/";
+            var samlEndpoint = _configuration["SSO:Endpoint"];
 
             var request = new AuthRequest(
-                "https://kers.ca.uky.edu", //TODO: put your app's "entity ID" here
-                "https://kers.ca.uky.edu/core/auth" //TODO: put Assertion Consumer URL (where the provider should redirect users after authenticating)
+                _configuration["SSO:EntityId"], 
+                _configuration["SSO:AssertionUrl"] 
                 );
-
-
             var red = request.GetRedirectUrl(samlEndpoint);
-            //redirect the user to the SAML provider
             return Redirect(red);
         }
 
@@ -299,7 +296,7 @@ namespace Kers.Controllers
             
             var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
-            String uri = "https://kers.ca.uky.edu/kers_mobile/Handler.ashx";
+            String uri = _configuration["AD:Handler"];
 
             var length = loginViewModel.Username.Length;
             var username = loginViewModel.Username;
