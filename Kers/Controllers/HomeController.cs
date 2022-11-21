@@ -123,15 +123,14 @@ namespace Kers.Controllers
 <md:EntityDescriptor xmlns:md=""urn:oasis:names:tc:SAML:2.0:metadata""
                      validUntil="""+ today.AddDays(12).ToString("yyyy-MM-ddTHH:mm:ssK") + @"""
                      cacheDuration=""PT604800S""
-                     entityID=""https://kers.ca.uky.edu"">
+                     entityID="""+ _configuration["SSO:EntityId"] + @""">
     <md:SPSSODescriptor AuthnRequestsSigned=""false"" WantAssertionsSigned=""false"" protocolSupportEnumeration=""urn:oasis:names:tc:SAML:2.0:protocol"">
         <md:SingleLogoutService Binding=""urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect""
-                                Location=""https://kers.ca.uky.edu/core/logout"" />
+                                Location="""+ _configuration["SSO:LogoutUrl"] + @""" />
         <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
         <md:AssertionConsumerService Binding=""urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST""
-                                     Location=""https://kers.ca.uky.edu/core/auth""
+                                     Location="""+ _configuration["SSO:AssertionUrl"] + @"""
                                      index=""1"" />
-        
     </md:SPSSODescriptor>
     <md:Organization>
        <md:OrganizationName xml:lang=""en-US"">College of Agriculture Food and Environment</md:OrganizationName>
@@ -139,12 +138,12 @@ namespace Kers.Controllers
        <md:OrganizationURL xml:lang=""en-US"">https://www.ca.uky.edu</md:OrganizationURL>
     </md:Organization>
     <md:ContactPerson contactType=""technical"">
-        <md:GivenName>Ivelin Denev</md:GivenName>
-        <md:EmailAddress>ivelin.denev@uky.edu</md:EmailAddress>
+        <md:GivenName>"+ _configuration["SSO:ContactPerson"] + @"</md:GivenName>
+        <md:EmailAddress>"+ _configuration["SSO:ContactEmail"] + @"</md:EmailAddress>
     </md:ContactPerson>
     <md:ContactPerson contactType=""support"">
-        <md:GivenName>Ivelin Denev</md:GivenName>
-        <md:EmailAddress>ivelin.denev@uky.edu</md:EmailAddress>
+        <md:GivenName>"+ _configuration["SSO:ContactPerson"] + @"</md:GivenName>
+        <md:EmailAddress>"+ _configuration["SSO:ContactEmail"] + @"</md:EmailAddress>
     </md:ContactPerson>
 </md:EntityDescriptor>";
             return this.Content(xmlString, "text/xml");
