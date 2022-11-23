@@ -80,12 +80,7 @@ namespace Kers.Controllers
             ViewData["response"] = samlResponse;
             // 3. We're done!
             if (samlResponse.IsValid())
-            {
-                //WOOHOO!!! user is logged in
-
-                //Some more optional stuff for you
-                //let's extract username/firstname etc
-                
+            {                
                 string username, firstname, lastname, personid;
                 try
                 {
@@ -94,12 +89,14 @@ namespace Kers.Controllers
                     personid = samlResponse.GetCustomAttribute("Employee_number");
                     lastname = samlResponse.GetCustomAttribute("LastName");
                        
-                }
-                catch(Exception ex)
-                {
-                    //insert error handling code
-                    //no, really, please do
-                    return null;
+                }catch(Exception ex){
+                    Log(   null, 
+                            "SSOLoginError",
+                            ex.ToString()
+                            
+                        );
+                    var errorMessage = "An error occur in the login process.";
+                    return Ok(new {error = errorMessage});
                 }
 
                 //user has been authenticated, put your code here, like set a cookie or something...
@@ -162,7 +159,8 @@ namespace Kers.Controllers
                 _configuration["SSO:EntityId"], 
                 _configuration["SSO:AssertionUrl"] 
                 );
-            var red = request.GetRedirectUrl(samlEndpoint);
+            var redirectUrl = "reporting/servicelog";
+            var red = request.GetRedirectUrl(samlEndpoint, redirectUrl);
             return Redirect(red);
         }
 
