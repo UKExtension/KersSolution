@@ -1,12 +1,15 @@
 <div class="login">
   <div class="login_wrapper">
     <div class="animate form login_form">
+      <div class="alert alert-danger" *ngIf="messageService.messages.length">
+        <button type="button" class="close" (click)="messageService.clear()"><span>&times;</span></button>
+        <div *ngFor='let message of messageService.messages'> {{message}} </div>
+      </div>
       <loading *ngIf="loading"></loading>
       <section class="login_content" *ngIf="!loading">
           <form>
               <h1>KERS Login</h1>
-                <div class="alert alert-danger" role="alert" *ngIf="loginError"><strong>Warning:</strong> {{message}}</div>
-
+                
                       <a href="/loginsso" class="btn btn-info btn-lg" type="submit">Log in</a> <br><br>
                       <div class="info-box1">
                         <p style="text-align: center;">

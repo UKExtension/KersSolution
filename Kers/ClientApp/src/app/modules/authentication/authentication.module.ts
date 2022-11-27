@@ -10,20 +10,23 @@ import {AuthenticationService} from './authentication.service';
 import {AuthenticationGuard } from './authentication-guard.service';
 import {AuthHttp} from './auth.http';
 import { Login2faComponent } from './components/login-2fa.component';
+import { LoginJwtGetComponent } from './components/login-jwt-get.component';
 
 @NgModule({
     declarations: [
         LoginComponent,
         Login2faComponent,
         LoginHomeComponent,
-        LogoutComponent
+        LogoutComponent,
+        LoginJwtGetComponent
     ],
     imports: [
         FormsModule,
         ReactiveFormsModule,
         RouterModule.forChild([
-            { path: 'login', component: LoginHomeComponent },
+            { path: 'loginadadm', component: LoginHomeComponent },
             { path: 'login2fa', component: Login2faComponent },
+            {path:'jwtget', component: LoginJwtGetComponent},
             { path: 'logout', component: LogoutComponent }
         ]),
         SharedModule

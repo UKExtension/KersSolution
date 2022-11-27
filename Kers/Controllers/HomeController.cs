@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Kers.Services;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Kers.Controllers
 {
@@ -151,17 +153,15 @@ namespace Kers.Controllers
         [Route("loginsso")]
         public ActionResult LoginSSO()
         {
-            //TODO: specify the SAML provider url here, aka "Endpoint"
-            var samlEndpoint = _configuration["SSO:Endpoint"];
-
+           var samlEndpoint = _configuration["SSO:Endpoint"];
             var request = new AuthRequest(
                 _configuration["SSO:EntityId"], 
                 _configuration["SSO:AssertionUrl"] 
                 );
-            var redirectUrl = "reporting/servicelog";
-            var red = request.GetRedirectUrl(samlEndpoint, redirectUrl);
+            var red = request.GetRedirectUrl(samlEndpoint);
             return Redirect(red);
         }
+        
 
         [AllowAnonymous]
         [HttpGet]
@@ -169,6 +169,100 @@ namespace Kers.Controllers
         public IActionResult LoginTestPage( )
         {
             return View();
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("logintestpost")]
+        public IActionResult LoginTestPost(string username, string password )
+        {
+
+            KersUser usr;
+            SAP_HR_ACTIVE noProfileUser = null;
+            if(username == "random"){
+                //var cntx = new KERSmainContext();
+                usr = coreContext.KersUser.Where( u => u.RprtngProfile.enabled == true ).Include( u => u.RprtngProfile).AsEnumerable().OrderBy( i => Guid.NewGuid() ).FirstOrDefault();
+                username = usr.RprtngProfile.LinkBlueId;
+            }else{
+                usr = coreContext.KersUser.Where( u => u.RprtngProfile.LinkBlueId == username ).Include( u => u.RprtngProfile).FirstOrDefault();
+                if(usr == null){
+                    noProfileUser = mContext.SAP_HR_ACTIVE.Where(u=>u.Userid == username).FirstOrDefault();
+                    if(noProfileUser == null){
+                        var errorMessage = "Non UK Extension Emoployee.";
+                        return Ok(new {error = errorMessage});
+                    }                    
+                }else{
+                    if( usr.RprtngProfile.enabled == false ){
+                        var errorMessage = "Your Account is Disabled. Please Contact your Area Director for Providing you Access.";
+                        return Ok(new {error = errorMessage});
+                    }
+                }
+            }
+
+
+
+            List<Claim> claims = new List<Claim>();
+            claims.Add( new Claim(JwtRegisteredClaimNames.Sub, username) );
+            claims.Add( new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
+            if( noProfileUser == null){
+                
+                var user = coreContext.
+                            KersUser.
+                            Where(u => u.RprtngProfile.LinkBlueId == username).
+                            Include(u => u.Roles).
+                            Include(u => u.PersonalProfile).
+                            Include(u => u.RprtngProfile).
+                            Include(u => u.RprtngProfile).ThenInclude(r=>r.PlanningUnit).
+                            Include(u => u.RprtngProfile).ThenInclude(r=>r.GeneralLocation).
+                            Include(u => u.ExtensionPosition).
+                            Include(u=> u.Specialties).ThenInclude(s=>s.Specialty).
+                            FirstOrDefault();
+                user.LastLogin = DateTime.Now;                
+                if(user.ExtensionPosition != null){
+                    claims.Add( new Claim("ExtensionPosition", user.ExtensionPosition.Id.ToString()));
+                }else{
+                    claims.Add( new Claim("ExtensionPosition", "10"));
+                }
+                
+                var roles = userRepo.roles(user.Id);
+
+                foreach(var role in roles){
+                    var roleClaim = new Claim(ClaimTypes.Role, role.Id.ToString());
+                    claims.Add(roleClaim);
+                }
+
+                this.Log(user);
+                
+            }
+            var claimsArray = claims.ToArray();
+
+            var token = new JwtSecurityToken
+            (
+                issuer: "KERSSystem",
+                audience: "KersUsers",
+                claims: claimsArray,
+                expires: DateTime.UtcNow.AddDays(60),
+                notBefore: DateTime.UtcNow,
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Secret:JWTKey"])),
+                        SecurityAlgorithms.HmacSha256)
+            );
+            var response = new
+            {
+                newUser = noProfileUser,
+                access_token = new JwtSecurityTokenHandler().WriteToken(token)
+            };
+            string red = Url.Content("~/");
+            red += "jwtget";
+            string npu = JsonConvert.SerializeObject(
+                                            noProfileUser,  
+                                            new JsonSerializerSettings() {
+                                                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                                                }
+                                );
+            var qb = new QueryBuilder();
+            qb.Add("newUser", npu );
+            qb.Add( "access_token", new JwtSecurityTokenHandler().WriteToken(token));
+            var url = red + qb;
+            return Redirect(url);
         }
 
 
