@@ -22,7 +22,7 @@ export class Login2faComponent implements OnInit {
 
   public ukLogoSrc: string;
   loginError = false;
-  
+  loginUrl:string;
   loading = false;
 
   @Output() onNewUser = new EventEmitter<object>();
@@ -43,6 +43,7 @@ export class Login2faComponent implements OnInit {
     if(this.authService.isLoggedIn()){
       this.router.navigate(['/reporting']);
     }
+    this.loginUrl = this.location.prepareExternalUrl('/loginsso');
   }
   
 
