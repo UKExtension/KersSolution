@@ -22,6 +22,6 @@ export class LogoutComponent {
     ngOnInit(){
         this.authService.logout();
         this.userService.unset();
-        this.router.navigate(['/login2fa']);
+        this.router.navigate(['/login']);
     }
 }

@@ -24,7 +24,7 @@ import { LoginJwtGetComponent } from './components/login-jwt-get.component';
         FormsModule,
         ReactiveFormsModule,
         RouterModule.forChild([
-            { path: 'loginadadm', component: LoginHomeComponent },
+            { path: 'login', component: LoginHomeComponent },
             { path: 'login2fa', component: Login2faComponent },
             {path:'jwtget', component: LoginJwtGetComponent},
             { path: 'logout', component: LogoutComponent }
