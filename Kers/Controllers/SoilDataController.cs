@@ -421,7 +421,25 @@ namespace Kers.Controllers
             }
         }
 
-
+        [HttpPost("checkaddress")]
+        [Authorize]
+        public IActionResult CheckAddress( [FromBody] FarmerAddress address){
+            if(address != null){
+                var user = this.CurrentUser();
+                var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
+                address.CountyCodeId = countyCode.CountyID;
+                var found = _soilDataContext.FarmerAddress.Where( a => a.First.ToLower().Trim() == address.First.ToLower().Trim() 
+                                                                        && a.Last.ToLower().Trim() == address.Last.ToLower().Trim()
+                                                                        && a.First != "" 
+                                                                        && a.Last != ""
+                                                                        && a.CountyCodeId == countyCode.CountyID
+                                                                ).FirstOrDefault();
+                return new OkObjectResult(found);
+            }else{
+                this.Log( address ,"FarmerAddress", "Error in searching FarmerAddress with the same name attempt.", "FarmerAddress", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
 
 
         [HttpPost("addaddress")]

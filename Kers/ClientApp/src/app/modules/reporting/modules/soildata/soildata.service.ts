@@ -214,6 +214,14 @@ export class SoildataService {
         );
       }
 
+      checkAddress(address:FarmerAddress ):Observable<FarmerAddress | null>{
+        var url = this.baseUrl + "checkaddress";
+        return this.http.post<FarmerAddress | null>(this.location.prepareExternalUrl(url), address)
+        .pipe(
+            catchError(this.handleError('pdf', null))
+        );
+      }
+
       getData(ids:string[]):Observable<string[]>{
         var url = '/api/SoilSample/reportsdata/';
         return this.http.post<string[]>(this.location.prepareExternalUrl(url), {ids:ids})
