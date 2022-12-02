@@ -104,7 +104,7 @@ export class LadderApplicationFormComponent implements OnInit {
           track:"0",
           programOfStudy: [""],
           evidence: [""],
-          numberOfYears: [""],
+          numberOfYears: ["",[Validators.required, Validators.pattern("^[0-9]*$")]],
           ratings: this.fb.array([]),
           images: this.fb.array([])
     },);
