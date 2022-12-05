@@ -4,6 +4,7 @@ import { AuthenticationService } from '../authentication.service';
 import {FormBuilder, Validators }   from '@angular/forms';
 import {Location} from '@angular/common';
 import { MessageService } from '../../reporting/core/services/message.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'login2fa',
@@ -24,6 +25,7 @@ export class Login2faComponent implements OnInit {
   loginError = false;
   loginUrl:string;
   loading = false;
+  isProduction:boolean;
 
   @Output() onNewUser = new EventEmitter<object>();
 
@@ -36,6 +38,7 @@ export class Login2faComponent implements OnInit {
               ) 
   {
     this.ukLogoSrc = location.prepareExternalUrl('/assets/images/UK_gray.svg');
+    this.isProduction = environment.production;
   }
 
   ngOnInit(){
