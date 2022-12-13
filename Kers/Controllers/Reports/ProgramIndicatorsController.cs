@@ -124,6 +124,8 @@ namespace Kers.Controllers.Reports
                         if( id == 0 ){
                             var allIndicators = context.ProgramIndicatorValue
                                                     .Where( v => v.ProgramIndicator.MajorProgram == program )
+                                                    .Include( v => v.PlanningUnit)
+                                                    .ToList()
                                                     .GroupBy( v => v.PlanningUnit)
                                                     .Select( v => new {
                                                         Unit = v.Key,
@@ -132,7 +134,7 @@ namespace Kers.Controllers.Reports
                             var reported = allIndicators.Where( i => i.Reported != 0).Select( s => s.Unit ).ToList();
                             var reporting = new ReportingCountiesPerProgram();
                             reporting.Units = reported;
-                            reporting.MajorProgram = program;
+                            reporting.MajorProgram = program; 
                             reporting.UnitsToString = string.Join(", ", reporting.Units.OrderBy(s => s.Name).Select(x => x.Name.Substring(0, x.Name.Length - 11)));
                             ReportingCountiesPerProgram.Add(reporting);
                         }
@@ -211,6 +213,84 @@ namespace Kers.Controllers.Reports
             return View(counties);
         }
 
+
+
+        [HttpGet("countyindicatorswithstories/{countyId}/{majorProgramId?}/{fy?}", Name="CountyIndicatorsStory")]
+        public async Task<IActionResult> CountyIndicatorsStory(int countyId, int majorProgramId = 0, string fy="0"){
+            FiscalYear fiscalYear;
+
+            var model = new ProgramStoryViewModel();
+            
+            if(majorProgramId != 0){
+                var program = await this.context.MajorProgram.Where( u => u.Id == majorProgramId)
+                                        .Include( p => p.StrategicInitiative).ThenInclude( i => i .FiscalYear)
+                                        .FirstOrDefaultAsync();
+                if(program != null){
+                    model.MajorProgram = program;
+                    ViewData["MajorProgram"] = program;
+                    var str = from stry in context.Story
+                            let l = (from lim in stry.Revisions
+                                    orderby lim.Created descending
+                                    select lim).FirstOrDefault()
+                            where l.MajorProgramId == majorProgramId && stry.PlanningUnitId == countyId select stry;
+
+
+                    var stories = await str
+                                            .Include(s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
+                                            .Include(s => s.KersUser).ThenInclude( u => u.PersonalProfile)
+                                            .Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude(u => u.PlanningUnit)
+                                            //.Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
+                                            .Include( s => s.Revisions ).ThenInclude( r => r.StoryOutcome)
+                                            .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
+                                            .ToListAsync();
+                    model.Stories = this.storyViewModelList(stories);
+
+
+                    var indicators = await this.context.ProgramIndicatorValue
+                                                .Where( v => v.ProgramIndicator.MajorProgramId == program.Id && v.PlanningUnitId == countyId)
+                                                .Include( v => v.ProgramIndicator)
+                                                .ToListAsync();
+
+                    var groupedIncicators = indicators
+                                                .GroupBy( i => i.ProgramIndicator )
+                                                .Select( s => new IndicatorViewModel{
+                                                    Code = s.Key.order,
+                                                    Description = s.Key.Question,
+                                                    Amount = s.Sum(l => l.Value)
+                                                }).ToList();
+                    
+                    MajorProgramIndicatorsViewModel indicatorsPerMajorProgram = new MajorProgramIndicatorsViewModel();
+                    indicatorsPerMajorProgram.Title = program.Name;
+                    indicatorsPerMajorProgram.Code = program.PacCode;
+                    indicatorsPerMajorProgram.Indicators = groupedIncicators;
+                    ViewData["indicators"] = indicatorsPerMajorProgram;
+
+                    
+                }
+                fiscalYear = program.StrategicInitiative.FiscalYear;
+            }else{
+                fiscalYear = GetFYByName(fy);
+
+                if(fiscalYear == null){
+                    
+                    return new StatusCodeResult(500);
+                }
+            }
+            var programs = await this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear == fiscalYear).OrderBy(l => l.order).ToListAsync();
+            model.MajorPrograms = programs;
+            ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
+
+            ViewData["county"] = this.context.PlanningUnit.Find(countyId);
+
+
+            ViewData["fy"] = fy;
+            return View(model);
+        }
+
+
+
+
         public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
             FiscalYear fiscalYear;
             if(fy == "0"){
@@ -227,6 +307,33 @@ namespace Kers.Controllers.Reports
                 cacheDaysSpan = 3;
             }
             return cacheDaysSpan;
+        }
+
+        private List<StoryViewModel> storyViewModelList(List<Story> stories){
+            List<StoryViewModel> modelStories = new List<StoryViewModel>();
+            foreach( var story in stories ){
+                var strViewModel = new StoryViewModel();
+                var lastRevision = story.Revisions.OrderBy( r => r.Created).Last();
+                strViewModel.Title = lastRevision.Title;
+                strViewModel.Story = lastRevision.Story;
+                strViewModel.KersUser = story.KersUser;
+                strViewModel.MajorProgram = lastRevision.MajorProgram;
+                strViewModel.PlanningUnit = story.KersUser.RprtngProfile.PlanningUnit;
+                strViewModel.StoryOutcome = lastRevision.StoryOutcome;
+                strViewModel.StoryId = story.Id;
+                strViewModel.Updated = lastRevision.Created;
+                if(lastRevision.PlanOfWork != null){
+                    strViewModel.PlanOfWork = lastRevision.PlanOfWork.Revisions.OrderBy( p => p.Created ).Last();
+                }
+                var firstImage = lastRevision.StoryImages.OrderBy( i => i.Created).FirstOrDefault();
+                if(firstImage != null){
+                    strViewModel.ImageName = firstImage.UploadImage.UploadFile.Name;
+                }else{
+                    strViewModel.ImageName = "";
+                }
+                modelStories.Add(strViewModel);
+            }
+            return modelStories;
         }
     }
 

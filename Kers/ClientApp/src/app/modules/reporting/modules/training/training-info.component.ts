@@ -18,6 +18,8 @@ export class TrainingInfoComponent implements OnInit {
   loading = false;
   criteria:TrainingSearchCriteria;
   coppied = false;
+  waitingList:TrainingEnrollment[];
+  openWaitingList = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +62,10 @@ export class TrainingInfoComponent implements OnInit {
     return start;
   }
 
+  canSeeWatingList():Observable<boolean>{
+    return this.userService.currentUserHasAnyOfTheRoles(["CESADM"]);
+  }
+
   cancelCutOfDate(training:Training):Date{
     var start = new Date(training.start);
     if( training.cancelCutoffDays == null) return start;
@@ -95,7 +101,8 @@ export class TrainingInfoComponent implements OnInit {
     return training.enrollment.filter( e => e.eStatus == "E");
   }
   numberWaiting(training:Training):number{
-    return training.enrollment.filter( e => e.eStatus == "W").length;
+    this.waitingList = training.enrollment.filter( e => e.eStatus == "W");
+    return this.waitingList.length;
   }
 
   isItInsideTheCancellationWindow(training:Training):boolean{

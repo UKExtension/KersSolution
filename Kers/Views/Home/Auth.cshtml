@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Home Page";
+    var response = ViewData["response"] as Kers.Services.Response;
+    var rawresponse = ViewData["rawresponse"] as string;
+}
+
+<br>
+LinkBlue Id: @response.GetNameID()
+<br>
+First Name: @response.GetCustomAttribute("FirstName");
+<br>
+Last Name: @response.GetCustomAttribute("LastName");
+<br>
+Person Id: @response.GetCustomAttribute("Employee_number");
+<br>
+

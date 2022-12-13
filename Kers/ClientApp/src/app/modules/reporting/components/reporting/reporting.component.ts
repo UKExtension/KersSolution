@@ -25,6 +25,7 @@ export class ReportingComponent implements OnInit {
     errorMessage: string;
     title: string;
     layoutClasses = {};
+    logo:string;
 
     constructor( 
                 private navService: NavigationService, 
@@ -48,6 +49,7 @@ export class ReportingComponent implements OnInit {
         }); 
         this.layoutClasses['nav-md'] = true;
         this.layoutClasses['nav-sm'] = false;
+        this.logo = location.prepareExternalUrl('/assets/images/UKKSULogos.png');
     }
 
     ngOnInit(){
@@ -59,6 +61,7 @@ export class ReportingComponent implements OnInit {
                 },
             error =>  this.errorMessage = <any>error
         );
+        
         /*
         this.profileService.currentUser().subscribe(
             profile => this.profile = profile,

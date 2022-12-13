@@ -45,7 +45,27 @@
         </table>
         @if( id == 0 )
         {
-            <p><strong>Counties Reporting:</strong> @ReportingCountiesPerProgram.Where( p => p.MajorProgram.PacCode == prgrm.Code ).First().UnitsToString </p><br>
+            <p><strong>Counties Reporting:</strong>
+            @{
+
+                var prg = ReportingCountiesPerProgram.Where( p => p.MajorProgram.PacCode == prgrm.Code ).First();
+
+            }
+            
+            @foreach( var unit in prg.Units ){
+                <a 
+                        asp-controller="ProgramIndicators"  
+                        asp-action="CountyIndicatorsStory" 
+                        asp-route-countyId="@unit.Id" 
+                        asp-route-majorProgramId="@prg.MajorProgram.Id"
+                        >@unit.Name.Substring(0, unit.Name.Length - 11)</a>@: |
+            }
+            
+            
+            
+
+             
+             </p><br>
         }
     }
 }

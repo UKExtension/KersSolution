@@ -147,27 +147,15 @@ const reportingRoutes: Routes = [
             ]
           },
           {
-            path: 'help',
-            children: [
-              {
-                path: '',
-                component: ReportingHelpHomeComponent
-              },
-              {
-                path: ':id',
-                component: ReportingHelpHomeComponent
-
-              }
-            ]
-          },
-          {
             path: '',
             component: ReportingWidgetsComponent
-          }
+          },
+          { path: 'help', loadChildren: () => import('./modules/help/help.module').then(m => m.HelpModule) }
         ]
       }
     ]
-  }
+  },
+  
 ];
 
 @NgModule({

@@ -61,8 +61,23 @@ namespace Kers.Controllers
         }
 
 
+        
+        [HttpPost("checktoken")]
+        [Authorize]
+        public IActionResult CheckToken(){
+            return Ok(new {response="test"});
+        }
 
+        [HttpPost("checknewuser")]
+        [Authorize]
+        public IActionResult CheckNewUser(){
+            var userid = this.CurrentUserId();
+            if( _context.ReportingProfile.Where( p => p.LinkBlueId == userid).Any()) return Ok(false);
+            if( _mContext.SAP_HR_ACTIVE.Where( m => m.Userid == userid).Any()) return Ok(true);
+            return Ok(false);
+        }
 
+        
 
 
         [HttpGet("current")]

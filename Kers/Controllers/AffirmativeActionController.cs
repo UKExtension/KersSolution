@@ -62,11 +62,15 @@ namespace Kers.Controllers
             }
             var plan = context.AffirmativeActionPlan.
                                     Where(p=>p.PlanningUnitId == unit && p.FiscalYearId == FiscalYear.Id).
-                                    Include(a=>a.Revisions).ThenInclude(r=>r.MakeupValues).
-                                    Include(a=>a.Revisions).ThenInclude(r=>r.SummaryValues).
+                                    //Include(a=>a.Revisions).ThenInclude(r=>r.MakeupValues).
+                                    //Include(a=>a.Revisions).ThenInclude(r=>r.SummaryValues).
                                     FirstOrDefault();
             if(plan != null){
-                var lastRevision = plan.Revisions.OrderBy( r => r.Created).Last();
+                var lastRevision = context.AffirmativeActionPlanRevision.Where(r => r.AffirmativeActionPlanId == plan.Id).
+                                                Include(r=>r.MakeupValues).
+                                                Include(r=>r.SummaryValues).
+                                                OrderBy( r => r.Created).
+                                                Last();
                 if(lastRevision != null){
                     lastRevision.MakeupValues = lastRevision.MakeupValues.
                                                     OrderBy(m=>m.GroupTypeId).
@@ -289,27 +293,40 @@ namespace Kers.Controllers
 
 
         private KersUser userByLinkBlueId(string linkBlueId){
-            var profile = mainContext.zEmpRptProfiles.
+           /*  var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.linkBlueID == linkBlueId).
+                            FirstOrDefault(); */
+            KersUser user = context.KersUser.
+                            Where(u => u.RprtngProfile.LinkBlueId == linkBlueId).
+                            Include( u => u.RprtngProfile).
                             FirstOrDefault();
-            KersUser user = null;
+            /* 
             if(profile != null){
                 user = userRepo.findByProfileID(profile.Id);
                 if(user == null){
                     user = userRepo.createUserFromProfile(profile);
                 }
-            }
+            } */
             return user;
         }
 
         private PlanningUnit CurrentPlanningUnit(){
             var u = this.CurrentUserId();
+
+
+            var unit = this.context.
+                        ReportingProfile.
+                        Where( p => p.LinkBlueId == u).
+                        Select( p => p.PlanningUnit).
+                        FirstOrDefault();
+            return unit;
+/* 
             var profile = mainContext.zEmpRptProfiles.
                             Where(p=> p.linkBlueID == u).
                             FirstOrDefault();
             return  this.context.PlanningUnit.
                     Where( p=>p.Code == profile.planningUnitID).
-                    FirstOrDefault();
+                    FirstOrDefault(); */
         }
 
         private zEmpRptProfile profileByUser(KersUser user){

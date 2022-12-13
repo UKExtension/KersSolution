@@ -1,0 +1,46 @@
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    var County = ViewData["county"] as Kers.Models.Entities.KERScore.PlanningUnit;
+    var prgrm = ViewData["indicators"] as Kers.Controllers.Reports.MajorProgramIndicatorsViewModel;
+    ViewData["fy"] = FiscalYear.Name;
+    ViewData["Title"] = County.Name + " Program Indicators and Success Stories";
+    ViewData["Subtitle"] = FiscalYear.Start.ToString("MMM d, yyyy") + " - " + FiscalYear.End.ToString("MMM d, yyyy");
+}
+@model Kers.Models.ViewModels.ProgramStoryViewModel
+
+<br><br>
+<div class="row">
+    <label class="col-md-2">Select Major Program</label>
+    <div class="col-md-8">
+        <select asp-for="MajorProgram.Id" asp-items="@(new SelectList(Model.MajorPrograms,"Id","Name"))" class="form-control" onchange="location = '@Url.RouteUrl("CountyIndicatorsStory", new { countyId = County.Id, })' + '/' + this.value;">
+            <option>-- select --</option>
+        </select>
+    </div>
+</div><br><br>
+<table class="table">
+            <thead>
+                <th colspan="3">@prgrm.Code.ToString() - @prgrm.Title</th>
+            </thead>
+            <tbody>
+                @foreach( var indctr in prgrm.Indicators){
+                    <tr>
+                        <td>
+                            @prgrm.Code.ToString().@indctr.Code)
+                        </td>
+                        <td>
+                            @indctr.Amount
+                        </td>
+                        <td>
+                            @Html.Raw(@indctr.Description)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br><br>
+        <h1>Success Stories</h1>
+@await Html.PartialAsync("StoriesList", Model.Stories)
+
+
+<br><br>

@@ -20,6 +20,9 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Kers.Services;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Kers.Controllers
 {
@@ -63,6 +66,190 @@ namespace Kers.Controllers
         }
 
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("auth")]
+        public IActionResult Auth( [FromForm]LoginViewModel loginViewModel)
+        {
+
+            // 1. TODO: specify the certificate that your SAML provider gave you
+            string samlCertificate = @"-----BEGIN CERTIFICATE-----
+" + _configuration["SSO:SigningCertificate"] + @"
+-----END CERTIFICATE-----";
+            // 2. Let's read the data - SAML providers usually POST it into the "SAMLResponse" var
+            ViewData["rawresponse"] = Request.Form["SAMLResponse"];
+            var samlResponse = new Response(samlCertificate, Request.Form["SAMLResponse"]);
+            ViewData["response"] = samlResponse;
+            // 3. We're done!
+            if (samlResponse.IsValid()){                
+                string username, firstname, lastname, personid;
+                try
+                {
+                    username = samlResponse.GetNameID();
+                    firstname = samlResponse.GetCustomAttribute("FirstName");
+                    personid = samlResponse.GetCustomAttribute("Employee_number");
+                    lastname = samlResponse.GetCustomAttribute("LastName");
+                       
+
+
+            
+                    KersUser usr;
+                    SAP_HR_ACTIVE noProfileUser = null;
+
+                    usr = coreContext.KersUser.Where( u => u.RprtngProfile.LinkBlueId == username ).Include( u => u.RprtngProfile).FirstOrDefault();
+                    if(usr == null){
+                        noProfileUser = mContext.SAP_HR_ACTIVE.Where(u=>u.Userid == username).FirstOrDefault();
+                        if(noProfileUser == null){
+                            var errorMessage = "Non UK Extension Emoployee.";
+                            return Ok(new {error = errorMessage});
+                        }                    
+                    }else{
+                        if( usr.RprtngProfile.enabled == false ){
+                            var errorMessage = "Your Account is Disabled. Please Contact your Area Director for Providing you Access.";
+                            return Ok(new {error = errorMessage});
+                        }
+                    }
+                    
+
+
+
+                    List<Claim> claims = new List<Claim>();
+                    claims.Add( new Claim(JwtRegisteredClaimNames.Sub, username) );
+                    claims.Add( new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
+                    if( noProfileUser == null){
+                        
+                        var user = coreContext.
+                                    KersUser.
+                                    Where(u => u.RprtngProfile.LinkBlueId == username).
+                                    Include(u => u.Roles).
+                                    Include(u => u.PersonalProfile).
+                                    Include(u => u.RprtngProfile).
+                                    Include(u => u.RprtngProfile).ThenInclude(r=>r.PlanningUnit).
+                                    Include(u => u.RprtngProfile).ThenInclude(r=>r.GeneralLocation).
+                                    Include(u => u.ExtensionPosition).
+                                    Include(u=> u.Specialties).ThenInclude(s=>s.Specialty).
+                                    FirstOrDefault();
+                        user.LastLogin = DateTime.Now;                
+                        if(user.ExtensionPosition != null){
+                            claims.Add( new Claim("ExtensionPosition", user.ExtensionPosition.Id.ToString()));
+                        }else{
+                            claims.Add( new Claim("ExtensionPosition", "10"));
+                        }
+                        
+                        var roles = userRepo.roles(user.Id);
+
+                        foreach(var role in roles){
+                            var roleClaim = new Claim(ClaimTypes.Role, role.Id.ToString());
+                            claims.Add(roleClaim);
+                        }
+
+                        this.Log(user);
+                        
+                    }
+                    var claimsArray = claims.ToArray();
+
+                    var token = new JwtSecurityToken
+                    (
+                        issuer: "KERSSystem",
+                        audience: "KersUsers",
+                        claims: claimsArray,
+                        expires: DateTime.UtcNow.AddDays(60),
+                        notBefore: DateTime.UtcNow,
+                        signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Secret:JWTKey"])),
+                                SecurityAlgorithms.HmacSha256)
+                    );
+                    var response = new
+                    {
+                        newUser = noProfileUser,
+                        access_token = new JwtSecurityTokenHandler().WriteToken(token)
+                    };
+                    string red = Url.Content("~/");
+                    red += "jwtget";
+                    string npu = JsonConvert.SerializeObject(
+                                                    noProfileUser,  
+                                                    new JsonSerializerSettings() {
+                                                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                                                        }
+                                        );
+                    var qb = new QueryBuilder();
+                    qb.Add("newUser", npu );
+                    qb.Add( "access_token", new JwtSecurityTokenHandler().WriteToken(token));
+                    var url = red + qb;
+                    return Redirect(url);
+                }catch(Exception ex){
+                    Log(   null, 
+                            "SSOLoginError",
+                            ex.ToString()
+                            
+                        );
+                    var errorMessage = "An error occur in the login process.";
+                    return Ok(new {error = errorMessage});
+                }
+
+                //user has been authenticated, put your code here, like set a cookie or something...
+                //or call FormsAuthentication.SetAuthCookie()
+                //or call context.SignInAsync() in ASP.NET Core
+                //or do something else
+            
+             
+          
+            }
+            return Redirect("/core/login2fa");
+
+
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("federationmetadata/federationmetadata.xml")]
+        public IActionResult Federationmetadata( )
+        {
+            var today = DateTime.Now;
+
+            string xmlString = @"<?xml version=""1.0""?>
+<md:EntityDescriptor xmlns:md=""urn:oasis:names:tc:SAML:2.0:metadata""
+                     validUntil="""+ today.AddDays(12).ToString("yyyy-MM-ddTHH:mm:ssK") + @"""
+                     cacheDuration=""PT604800S""
+                     entityID="""+ _configuration["SSO:EntityId"] + @""">
+    <md:SPSSODescriptor AuthnRequestsSigned=""false"" WantAssertionsSigned=""false"" protocolSupportEnumeration=""urn:oasis:names:tc:SAML:2.0:protocol"">
+        <md:SingleLogoutService Binding=""urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect""
+                                Location="""+ _configuration["SSO:LogoutUrl"] + @""" />
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+        <md:AssertionConsumerService Binding=""urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST""
+                                     Location="""+ _configuration["SSO:AssertionUrl"] + @"""
+                                     index=""1"" />
+    </md:SPSSODescriptor>
+    <md:Organization>
+       <md:OrganizationName xml:lang=""en-US"">College of Agriculture Food and Environment</md:OrganizationName>
+       <md:OrganizationDisplayName xml:lang=""en-US"">CAFE</md:OrganizationDisplayName>
+       <md:OrganizationURL xml:lang=""en-US"">https://www.ca.uky.edu</md:OrganizationURL>
+    </md:Organization>
+    <md:ContactPerson contactType=""technical"">
+        <md:GivenName>"+ _configuration["SSO:ContactPerson"] + @"</md:GivenName>
+        <md:EmailAddress>"+ _configuration["SSO:ContactEmail"] + @"</md:EmailAddress>
+    </md:ContactPerson>
+    <md:ContactPerson contactType=""support"">
+        <md:GivenName>"+ _configuration["SSO:ContactPerson"] + @"</md:GivenName>
+        <md:EmailAddress>"+ _configuration["SSO:ContactEmail"] + @"</md:EmailAddress>
+    </md:ContactPerson>
+</md:EntityDescriptor>";
+            return this.Content(xmlString, "text/xml");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("loginsso")]
+        public ActionResult LoginSSO()
+        {
+           var samlEndpoint = _configuration["SSO:Endpoint"];
+            var request = new AuthRequest(
+                _configuration["SSO:EntityId"], 
+                _configuration["SSO:AssertionUrl"] 
+                );
+            var red = request.GetRedirectUrl(samlEndpoint);
+            return Redirect(red);
+        }
+        
         [AllowAnonymous]
         [HttpPost]
         [Route("api/token")]
@@ -184,7 +371,7 @@ namespace Kers.Controllers
             
             var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
-            String uri = "https://kers.ca.uky.edu/kers_mobile/Handler.ashx";
+            String uri = _configuration["AD:Handler"];
 
             var length = loginViewModel.Username.Length;
             var username = loginViewModel.Username;

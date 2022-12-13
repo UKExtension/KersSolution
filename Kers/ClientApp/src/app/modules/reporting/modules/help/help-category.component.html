@@ -1,0 +1,10 @@
+<div *ngFor="let item of dataList">
+    <ul *ngIf="item.parentId==parentId">
+        <li>{{item.title}}
+            <div *ngFor="let article of item.helpContents">
+                <help-article [article]="article"></help-article>
+            </div>
+        <help-category [parentId]="item.id" [dataList]="removeCurrentLevelItems(dataList,parentId)"></help-category>
+        </li>
+    </ul>
+</div>

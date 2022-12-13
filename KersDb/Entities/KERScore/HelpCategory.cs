@@ -20,6 +20,8 @@ namespace Kers.Models.Entities.KERScore
         public DateTime Updated {get; set;}
         public KersUser CreatedBy {get; set;}
         public KersUser LastUpdatedBy {get; set;}
+        [ForeignKey("CategoryId")]
+        public List<HelpContent> HelpContents {get;set;}
         public int? EmployeePositionId {get; set;}
         public int? zEmpRoleTypeId {get; set;}
         public int? isContyStaff {get;set;}

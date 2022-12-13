@@ -43,7 +43,7 @@ namespace Kers.Tasks
                     var fiscalYearRepo = new FiscalYearRepository( context );
                     var repo = new SnapDirectRepository(context, cache, mainContext, memoryCache);
                     var startTime = DateTime.Now;
-                    var str = repo.TotalByMonth(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd), true);
+                    var str = repo.TotalByMonth(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd, true), true);
                     Random rnd = new Random();
                     int RndInt = rnd.Next(1, 53);
                     if( RndInt == 2 ){

@@ -71,7 +71,7 @@ namespace Kers.Controllers
         public IActionResult GetAreas(int regionId = 0){
             IQueryable<ExtensionArea> areas = this.context.ExtensionArea;
             if(regionId != 0) areas = areas.Where( a => a.ExtensionRegionId == regionId);
-            return new OkObjectResult(areas.OrderBy( r => r.order));
+            return new OkObjectResult(areas.OrderBy( r => r.Name));
         }
         [HttpGet("congressional")]
         public IActionResult GetCongressionalDistricts(){

@@ -312,7 +312,11 @@ namespace Kers.Controllers.Admin
             //var usr = _httpContextAccessor.HttpContext.User;
             //var nm = usr.FindFirst(ClaimTypes.NameIdentifier).Value;
             //var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var nm = User;
+            var val = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+            
+            return val;
         }
 
         private KersUser CurrentUser(){
