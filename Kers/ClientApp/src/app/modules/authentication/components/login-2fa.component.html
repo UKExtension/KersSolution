@@ -9,13 +9,29 @@
       <section class="login_content" *ngIf="!loading">
           <form>
               <h1>KERS Login</h1>
-                
-                      <a href="{{loginUrl}}" class="btn btn-info btn-lg" type="submit">Log in</a> <br><br>
-                      <div class="info-box1">
-                        <p style="text-align: center;">
-                          <a href="https://ukam.uky.edu/manager/Account/Login.aspx" target="_blank" style="text-decoration: underline;">Manage Your Account</a>
-                        </p>
-                      </div>
+
+
+              <form  *ngIf="!isProduction" (submit)="performLogin($event)" [formGroup]="loginForm" >
+                <div class="alert alert-danger" role="alert" *ngIf="loginError"><strong>Warning:</strong> {{message}}</div>
+                <div>
+                    <input type="text" id="name" class="form-control" placeholder="LinkBlue ID" required formControlName="name" name="name" autofocus>              
+                </div>
+                <div>
+                      <input type="password" id="password" required formControlName="password" name="password" class="form-control" placeholder="Password" >
+                </div>
+                <div>
+                    <button class="btn btn-default submit" type="submit">Log in</button> 
+                </div>
+              </form>
+
+              <div *ngIf="isProduction">
+                <a href="{{loginUrl}}" class="btn btn-info btn-lg" type="submit">Log in</a> <br><br>
+              </div>
+              <div class="info-box1">
+                <p style="text-align: center;">
+                  <a href="https://ukam.uky.edu/manager/Account/Login.aspx" target="_blank" style="text-decoration: underline;">Manage Your Account</a>
+                </p>
+              </div>
 
                 <div class="clearfix"></div>
 

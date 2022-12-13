@@ -22,10 +22,12 @@ import { environment } from '../../../../environments/environment';
 export class Login2faComponent implements OnInit { 
 
   public ukLogoSrc: string;
+  message: string = "Username or Password Missmatch";
   loginError = false;
   loginUrl:string;
   loading = false;
   isProduction:boolean;
+  loginForm = null;
 
   @Output() onNewUser = new EventEmitter<object>();
 
@@ -39,6 +41,11 @@ export class Login2faComponent implements OnInit {
   {
     this.ukLogoSrc = location.prepareExternalUrl('/assets/images/UK_gray.svg');
     this.isProduction = environment.production;
+    this.loginForm = fb.group(
+      {
+        name: ['', Validators.required], 
+        password: ['', Validators.required]
+      })
   }
 
   ngOnInit(){
@@ -47,6 +54,43 @@ export class Login2faComponent implements OnInit {
       this.router.navigate(['/reporting']);
     }
     this.loginUrl = this.location.prepareExternalUrl('/loginsso');
+  }
+
+
+  performLogin(e){
+   
+    e.preventDefault();
+    var username = this.loginForm.value.name;
+    var password = this.loginForm.value.password;
+    this.loading = true;
+    this.authService.login(username, password) 
+      .subscribe( 
+        (data) => {
+            this.loading = false;
+            if(data["error"] != null){
+              this.loginError = true;
+              this.message = data["error"];
+            }else{
+              this.loginError = false;
+              if(data["newUser"] != null){
+                this.onNewUser.emit(data);
+              }else{
+                var auth = this.authService.getAuth();
+                if(this.authService.redirectUrl == undefined){
+                  this.router.navigate(['/reporting']);
+                }else{
+                  this.router.navigate([this.authService.redirectUrl]);
+                }
+              }
+            }
+            
+          },
+            _ => {
+              this.loading = false;
+              this.loginError = true;
+            }
+      );
+     
   }
   
 
