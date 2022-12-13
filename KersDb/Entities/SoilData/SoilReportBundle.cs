@@ -32,6 +32,7 @@ namespace Kers.Models.Entities.SoilData
         public string OwnerID {get;set;}
         public string Acres {get;set;}
         public string OptionalInfo {get;set;}
+        public string PrivateNote {get;set;}
         public List<SampleInfoBundle> SampleInfoBundles {get;set;}
         public List<OptionalTestSoilReportBundle> OptionalTestSoilReportBundles {get;set;}
     }

@@ -67,6 +67,7 @@ export class SampleFormComponent implements OnInit {
           optionalTests: '',
           acres: [""],
           optionalInfo: [""],
+          privateNote: [""],
           sampleInfoBundles: this.fb.array([])
       }, { validator: sampleValidator });
 

@@ -255,8 +255,8 @@ namespace Kers.Controllers
 			pdfCanvas.DrawText("REPORT TYPE: " + report.TypeForm, 29, 95, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("LAB NUM: " + report.LabNum, 29, 112, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("CO NUM: " + bundle.CoSamnum, 29, 129, getPaint(10.0f, 1));
-			if(report.Acres != null && report.Acres != "0"){
-				pdfCanvas.DrawText("ACRES: " + report.Acres, 29, 146, getPaint(10.0f, 1));
+			if(bundle.Acres != null && bundle.Acres != "0"){
+				pdfCanvas.DrawText("ACRES: " + bundle.Acres, 29, 146, getPaint(10.0f, 1));
 			}
 
 			// Farmer Address
@@ -289,8 +289,8 @@ namespace Kers.Controllers
 			pdfCanvas.DrawLine(370, 130, width - 29, 130, thinLinePaint);
 			
 
-			if(report.OsId != null && report.OsId != ""){
-				pdfCanvas.DrawText("OWNER SAMPLE ID: "+report.OsId, 29, currentYPosition, getPaint(10.0f, 1));
+			if( bundle.OwnerID != null && bundle.OwnerID != ""){
+				pdfCanvas.DrawText("OWNER SAMPLE ID: "+bundle.OwnerID, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition += 2;
 			}
 		}

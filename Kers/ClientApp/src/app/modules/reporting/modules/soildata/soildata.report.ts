@@ -22,6 +22,8 @@ export class SoilReportBundle{
     billingTypeId:number;
     ownerID:string;
     acres:number;
+    optionalInfo:string;
+    privateNote:string;
     optionalTests:LabTestType[];
     sampleInfoBundles: SampleInfoBundle[];
     optionalTestSoilReportBundles: OptionalTestSoilReportBundle[];
