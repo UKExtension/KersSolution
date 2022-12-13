@@ -142,7 +142,7 @@ namespace Kers.Controllers
             statuses = bundles.Select( b => b.LastStatus.SoilReportStatus).ToList();
             List<SoilReportStatus> filteredStatuses = new List<SoilReportStatus>();
             foreach( var status in statuses){
-                if( !filteredStatuses.Any( s => s.Id == status.Id)){
+                if( status!=null && !filteredStatuses.Any( s => s.Id == status.Id)){
                     filteredStatuses.Add(status);
                 }
             }
