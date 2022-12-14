@@ -228,6 +228,7 @@ namespace Kers.Controllers.Soil
                 smpl.OwnerID = sample.OwnerID;
                 smpl.Acres = sample.Acres;
                 smpl.OptionalInfo = sample.OptionalInfo;
+                smpl.PrivateNote = sample.PrivateNote;
                 if(sample.FarmerAddress != null ){
                     smpl.FarmerAddressId = sample.FarmerAddress.Id;
                 }
