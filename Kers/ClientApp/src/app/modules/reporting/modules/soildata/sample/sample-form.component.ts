@@ -142,13 +142,13 @@ export class SampleFormComponent implements OnInit {
   }
   prepereAltCrop(){
     this.soilSampleForm.controls["farmerAddress"].disable();
-    this.soilSampleForm.controls["ownerID"].disable();
+    //this.soilSampleForm.controls["ownerID"].disable();
     this.soilSampleForm.controls["sampleLabelCreated"].disable();
     this.soilSampleForm.controls["billingTypeId"].disable();
     this.soilSampleForm.controls["coSamnum"].disable();
-    this.soilSampleForm.controls["acres"].disable();
+    //this.soilSampleForm.controls["acres"].disable();
     this.soilSampleForm.controls["optionalTests"].disable();
-    this.soilSampleForm.controls["optionalInfo"].disable();
+    //this.soilSampleForm.controls["optionalInfo"].disable();
     for( var smple of this.sampleInfoBundles.controls){
       if(smple.value["purposeId"] != 2) smple.disable();
     }

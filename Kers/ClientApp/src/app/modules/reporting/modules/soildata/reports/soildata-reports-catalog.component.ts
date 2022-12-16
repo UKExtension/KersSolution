@@ -124,6 +124,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   getStatuses(){
     this.statusesCheckboxes = [];
+    this.criteria.status = [];
     this.service.getCustomStatuses(this.criteria).subscribe(
       res => {
         for(let status of res){
@@ -151,6 +152,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
   }
 
   statusChanged(){
+    this.getStatuses();
     this.onRefresh();
   }
 
@@ -184,7 +186,6 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.sampleNumberDisplayed = true;
     var ths = this;
     setTimeout(()=>{  ths.onRefresh();    }, 40);
-    
   }
   
   switchOrder(type:string){
