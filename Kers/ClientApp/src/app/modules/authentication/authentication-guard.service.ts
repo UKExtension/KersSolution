@@ -31,7 +31,7 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild {
     this.authService.redirectUrl = url;
 
     // Navigate to the login page with extras
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login2fa']);
     return false;
   }
 }
