@@ -166,6 +166,26 @@ namespace Kers.Models.Repositories
             return false;
         }
 
+        public bool ScheduleLadderMessage(string type, LadderApplication application, KersUser To){
+            var template = context.MessageTemplate.Where( t => t.Code == type).FirstOrDefault();
+            if( template != null){
+                /* var message = new Message();
+                message.FromId = training.OrganizerId;
+                message.ToId = To.Id;
+                message.Subject = String.Format( template.Subject, training.Subject);
+                var trainingArray = this.TrainingToMessageArray(training);
+                message.BodyText = String.Format( template.BodyText, trainingArray);
+                message.BodyHtml = String.Format( template.BodyHtml, trainingArray);
+                message.Created = DateTimeOffset.Now;
+                message.ScheduledFor = ScheduledFor??DateTimeOffset.Now;
+                message.IsItSent = false;
+                context.Add(message);
+                context.SaveChanges(); */
+                return true;
+            }
+            return false;
+        }
+
 
         /***********************************************/
         // Returns array of strings for replacements in

@@ -32,16 +32,19 @@ namespace Kers.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         KERScoreContext _context;
         IFiscalYearRepository fiscalYearRepo;
+        IMessageRepository messageRepository;
         public LadderController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     IWebHostEnvironment hostingEnvironment,
-                    IFiscalYearRepository fiscalYearRepo
+                    IFiscalYearRepository fiscalYearRepo,
+                    IMessageRepository _messageRepository
             ):base(mainContext, context, userRepo){
                 _context = context;
                 _hostingEnvironment = hostingEnvironment;
                 this.fiscalYearRepo = fiscalYearRepo;
+                this.messageRepository = _messageRepository;
         }
 
 
@@ -204,7 +207,46 @@ namespace Kers.Controllers
                 }
             }
             this.context.SaveChanges();
+            this.SendMessages( application );
             return new OkObjectResult(application);
+        }
+
+        private void SendMessages( LadderApplication application ){
+            int userCountyId = this._context.KersUser.Where( u => u.Id == application.KersUserId ).Select( u => u.RprtngProfile.PlanningUnitId).FirstOrDefault();
+            LadderStage stage = this._context.LadderStage
+                                    .Where( l => l.Id == application.LastStage.Id)
+                                    .Include( l => l.LadderStageRoles)
+                                        .ThenInclude( r => r.zEmpRoleType)
+                                    .FirstOrDefault();
+            List<zEmpRoleType> roles = stage.LadderStageRoles.Select( l => l.zEmpRoleType).ToList();
+            var usersWithStageRoles = this._context.zEmpProfileRoles
+                                    .Where( l => roles.Select( r => r.Id).Contains( l.zEmpRoleTypeId))
+                                    .Include( l => l.User )
+                                        .ThenInclude( u => u.RprtngProfile)
+                                        .ThenInclude( p => p.PlanningUnit)
+                                        .ThenInclude( n => n.ExtensionArea)
+                                    .ToList().Select( r => r.User);
+            if(stage.Restriction == LadderStageRestrictionKeys.Region){
+                int countyRegionId = _context.PlanningUnit.Where( p => p.Id == userCountyId && p.ExtensionArea != null )
+                                        .Select( u =>  u.ExtensionArea.ExtensionRegionId ).FirstOrDefault();
+                usersWithStageRoles = usersWithStageRoles
+                                        .Where( u =>    u.RprtngProfile.PlanningUnit.ExtensionArea != null 
+                                                        && 
+                                                        u.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegionId == countyRegionId )
+                                        .ToList();
+            }else if(stage.Restriction == LadderStageRestrictionKeys.Area){
+                int countyAreaId = _context.PlanningUnit.Where( p => p.Id == userCountyId && p.ExtensionArea != null )
+                                        .Select( u =>  u.ExtensionArea.Id ).FirstOrDefault();
+                usersWithStageRoles = usersWithStageRoles
+                                        .Where( u =>    u.RprtngProfile.PlanningUnit.ExtensionArea != null 
+                                                        && 
+                                                        u.RprtngProfile.PlanningUnit.ExtensionArea.Id == countyAreaId )
+                                        .ToList();
+            }
+            foreach( var to in usersWithStageRoles){
+                this.messageRepository.ScheduleLadderMessage( "ladder", application, to);
+            }
+
         }
 
         private LadderStage NextStage( int StageId){
@@ -352,6 +394,7 @@ namespace Kers.Controllers
                 entity.Images = LadderApplication.Images;
                 entity.LastUpdated = DateTime.Now;
                 this.context.SaveChanges();
+                if(!entity.Draft) this.SendMessages( entity );
                 this.Log(LadderApplication,"LadderApplication", "LadderApplication Updated.");
                 foreach( var e in entity.Images ){
                     e.UploadImage = context.UploadImage.Where( i => i.Id == e.UploadImageId).FirstOrDefault();
@@ -397,22 +440,14 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult DeleteLadderImage( int id ){
             var entity = context.UploadImage.Find(id);
- 
             if(entity != null){
-                
-                
-
                 var LadderImage = context.LadderImage.Where( i => i.UploadImageId == id).FirstOrDefault();
                 if( LadderImage != null) context.LadderImage.Remove(LadderImage);
                 var file = context.UploadFile.Find(entity.UploadFileId);
                 if(file != null ) context.UploadFile.Remove(file);
-                
                 context.UploadImage.Remove(entity);
-
                 context.SaveChanges();
-                
                 this.Log(entity,"LadderImage", "LadderImage Removed.");
-
                 return new OkResult();
             }else{
                 this.Log( id ,"LadderImage", "Not Found LadderImage in a delete attempt.", "LadderImage", "Error");

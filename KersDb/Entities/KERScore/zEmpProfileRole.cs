@@ -14,5 +14,6 @@ namespace Kers.Models.Entities.KERScore
         public int zEmpRoleTypeId { get; set; } 
         public zEmpRoleType zEmpRoleType { get; set; }     
         public KersUser User { get; set; }
+        public int UserId {get;set;}
     }
 }
