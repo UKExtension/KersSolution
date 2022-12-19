@@ -97,16 +97,37 @@ namespace Kers.Controllers
                     SAP_HR_ACTIVE noProfileUser = null;
 
                     usr = coreContext.KersUser.Where( u => u.RprtngProfile.LinkBlueId == username ).Include( u => u.RprtngProfile).FirstOrDefault();
+                    
+                    string redirect = Url.Content("~/");
+                    redirect += "/core/login2fa";
+                    var builder = new QueryBuilder();
+
+
                     if(usr == null){
                         noProfileUser = mContext.SAP_HR_ACTIVE.Where(u=>u.Userid == username).FirstOrDefault();
                         if(noProfileUser == null){
                             var errorMessage = "Non UK Extension Emoployee.";
-                            return Ok(new {error = errorMessage});
+
+
+                            
+                            
+                                
+                            
+                            builder.Add("errormessage", errorMessage );
+                            var reedirecturl = redirect + builder;
+
+                            return Redirect(reedirecturl);
+                            //return Redirect("/core/login2fa");
+                            //return Ok(new {error = errorMessage});
                         }                    
                     }else{
                         if( usr.RprtngProfile.enabled == false ){
                             var errorMessage = "Your Account is Disabled. Please Contact your Area Director for Providing you Access.";
-                            return Ok(new {error = errorMessage});
+                            builder.Add("errormessage", errorMessage );
+                            var reedirecturl = redirect + builder;
+                            return Redirect(reedirecturl);
+                            
+                            //return Ok(new {error = errorMessage});
                         }
                     }
                     

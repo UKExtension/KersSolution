@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 import {FormBuilder, Validators }   from '@angular/forms';
 import {Location} from '@angular/common';
@@ -34,6 +34,7 @@ export class Login2faComponent implements OnInit {
   constructor(
                 public authService: AuthenticationService, 
                 public router: Router,
+                private route: ActivatedRoute,
                 public messageService: MessageService,
                 private fb: FormBuilder,
                 private location: Location
@@ -54,6 +55,16 @@ export class Login2faComponent implements OnInit {
       this.router.navigate(['/reporting']);
     }
     this.loginUrl = this.location.prepareExternalUrl('/loginsso');
+
+    this.route.queryParams
+      .subscribe(params => {
+        if(params.errormessage != undefined){
+          this.messageService.add(params.errormessage);
+        }
+      }
+    );
+
+
   }
 
 
