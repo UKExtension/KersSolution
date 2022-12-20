@@ -227,7 +227,7 @@ namespace Kers.Controllers
 			//Header Right
 			pdfCanvas.DrawText("Soil Test Report", 452, 42, getPaint(17.0f, 1));
 			//if(bundle.LabTestsReady != null){
-				pdfCanvas.DrawText(bundle.LabTestsReady.ToString("d"), 490, 60, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(bundle.DataProcessed.ToString("d"), 490, 60, getPaint(10.0f, 1));
 			//}
 			//County Office Address
 			var unit =  _context.PlanningUnit.Where( u => u.Id == bundle.PlanningUnit.PlanningUnitId).FirstOrDefault();  
