@@ -42,7 +42,7 @@ import { Observable } from 'rxjs';
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
       <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="report.reports != null && report.reports.length > 0"><i class="fa fa-envelope"></i> email</a>
       <ng-container *ngIf="!pdfLoading && report.reports != null && report.reports.length > 0"><br>
-      <a class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Modify</a></ng-container>
+      <a class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Alter</a></ng-container>
     </td>
     <td *ngIf="edit" colspan="6">
       <div class="row">
