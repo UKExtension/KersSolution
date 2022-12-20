@@ -354,10 +354,32 @@ namespace Kers.Controllers.Soil
             return row;
         }
 
+        [HttpPost("checksamnum")]
+		public IActionResult CheckSampleNumber([FromBody] CoSamNumCheck SampleNumber)
+        {
+            var exists = false;
+            var sNum = SampleNumber.CoSamNum.PadLeft(5, '0');
+            var dateToCompare = DateTime.Now.AddDays(-200);
+            CountyCode CountyCode = this.CurrentCountyCode();
+            exists = _context.SoilReportBundle
+                        .Where(
+                            b =>
+                                b.PlanningUnit == CountyCode
+                                &&
+                                b.CoSamnum == sNum
+                                &&
+                                b.SampleLabelCreated > dateToCompare
+                        ).Any();
+            return new OkObjectResult(exists);
+        }
+
 
 
     }
     public class UniqueIds{
 		public List<string> ids;
 	}
+    public class CoSamNumCheck{
+        public string CoSamNum;
+    }
 }

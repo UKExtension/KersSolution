@@ -75,6 +75,14 @@ export class SoilSampleService {
             );
     }
 
+    checkCoSamNum( val:string ):Observable< boolean | null >{
+        var url = this.baseUrl + "checksamnum";
+        return this.http.post<boolean | null>(this.location.prepareExternalUrl(url), {coSamNum: val})
+        .pipe(
+            catchError(this.handleError('pdf', null))
+        );
+    }
+
     updateSample(id:number, sample:SoilReportBundle):Observable<SoilReportBundle>{
         var url = this.baseUrl + 'updatesample/' + id;
         return this.http.put<SoilReportBundle>(this.location.prepareExternalUrl(url), sample)

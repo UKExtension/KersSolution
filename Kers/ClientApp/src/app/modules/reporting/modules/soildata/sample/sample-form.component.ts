@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { SoilReportBundle } from '../soildata.report';
 import { FarmerAddress } from '../soildata.service';
 import { BillingType, OptionalTest, SampleInfoBundle } from './SampleInfoBundle';
@@ -49,6 +50,8 @@ export class SampleFormComponent implements OnInit {
   }
   billingTypes$:Observable<BillingType[]>;
   lastSampleNum$:Observable<number>;
+  foundSampleNum$:Observable<boolean | null> = null;
+ 
 
   constructor(
     private fb: FormBuilder,
@@ -74,7 +77,7 @@ export class SampleFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    var sampleControl = this.soilSampleForm.get('coSamnum') as FormControl;
     this.billingTypes$ = this.service.billingtypes();
     if( this.sample != null && !this.isThisACopy ) this.soilSampleForm.controls["coSamnum"].disable();
     
@@ -138,6 +141,11 @@ export class SampleFormComponent implements OnInit {
 
                           }
                       );
+      this.foundSampleNum$ = sampleControl.valueChanges.pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap(_ => this.service.checkCoSamNum(sampleControl.value as string) ),
+      );
       
   }
   prepereAltCrop(){
