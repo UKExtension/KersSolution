@@ -169,18 +169,18 @@ namespace Kers.Models.Repositories
         public bool ScheduleLadderMessage(string type, LadderApplication application, KersUser To){
             var template = context.MessageTemplate.Where( t => t.Code == type).FirstOrDefault();
             if( template != null){
-                /* var message = new Message();
-                message.FromId = training.OrganizerId;
+                var message = new Message();
+                message.FromId = application.KersUserId;
                 message.ToId = To.Id;
-                message.Subject = String.Format( template.Subject, training.Subject);
-                var trainingArray = this.TrainingToMessageArray(training);
-                message.BodyText = String.Format( template.BodyText, trainingArray);
-                message.BodyHtml = String.Format( template.BodyHtml, trainingArray);
+                message.Subject = String.Format( template.Subject, application.KersUser.RprtngProfile.Name);
+                string[] applicationArray = { application.KersUser.RprtngProfile.Name, application.LadderLevel.Name, application.LastStageId.ToString() };
+                message.BodyText = String.Format( template.BodyText, applicationArray);
+                message.BodyHtml = String.Format( template.BodyHtml, applicationArray);
                 message.Created = DateTimeOffset.Now;
-                message.ScheduledFor = ScheduledFor??DateTimeOffset.Now;
+                message.ScheduledFor = DateTimeOffset.Now;
                 message.IsItSent = false;
                 context.Add(message);
-                context.SaveChanges(); */
+                context.SaveChanges();
                 return true;
             }
             return false;

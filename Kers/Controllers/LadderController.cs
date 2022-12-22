@@ -164,9 +164,11 @@ namespace Kers.Controllers
         [HttpPost("review/{Approved}")]
         [Authorize]
         public IActionResult ReviewLadderApplication( Boolean Approved, [FromBody] LadderApplicationStage ApplStage){
-            var application = context.LadderApplication.Where( a => a.Id == ApplStage.LadderApplicationId)
+            var application = context.LadderApplication
+                                .Where( a => a.Id == ApplStage.LadderApplicationId)
                                 .Include( a => a.Stages).ThenInclude( s => s.LadderStage)
-                                .Include( a => a.KersUser)
+                                .Include( a => a.KersUser).ThenInclude(u => u.RprtngProfile)
+                                .Include( a => a.KersUser).ThenInclude(u => u.PersonalProfile)
                                 .Include( a => a.LadderLevel)
                                 .FirstOrDefault();
 
@@ -212,7 +214,8 @@ namespace Kers.Controllers
         }
 
         private void SendMessages( LadderApplication application ){
-            int userCountyId = this._context.KersUser.Where( u => u.Id == application.KersUserId ).Select( u => u.RprtngProfile.PlanningUnitId).FirstOrDefault();
+
+            int userCountyId = application.KersUser.RprtngProfile.PlanningUnitId;
             LadderStage stage = this._context.LadderStage
                                     .Where( l => l.Id == application.LastStage.Id)
                                     .Include( l => l.LadderStageRoles)
@@ -244,7 +247,7 @@ namespace Kers.Controllers
                                         .ToList();
             }
             foreach( var to in usersWithStageRoles){
-                this.messageRepository.ScheduleLadderMessage( "ladder", application, to);
+                this.messageRepository.ScheduleLadderMessage( "LADDERREVIEW", application, to);
             }
 
         }
