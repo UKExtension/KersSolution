@@ -106,12 +106,7 @@ namespace Kers.Controllers
                     if(usr == null){
                         noProfileUser = mContext.SAP_HR_ACTIVE.Where(u=>u.Userid == username).FirstOrDefault();
                         if(noProfileUser == null){
-                            var errorMessage = "Non UK Extension Emoployee.";
-
-
-                            
-                            
-                                
+                            var errorMessage = "Non UK Extension Emoployee.";   
                             
                             builder.Add("errormessage", errorMessage );
                             var reedirecturl = redirect + builder;
@@ -215,7 +210,7 @@ namespace Kers.Controllers
              
           
             }
-            return Redirect("/core/login2fa");
+            return Redirect("/core/login2fa?notLoggedIn=true");
 
 
         }

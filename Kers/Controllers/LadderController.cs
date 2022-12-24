@@ -247,7 +247,7 @@ namespace Kers.Controllers
                                         .ToList();
             }
             foreach( var to in usersWithStageRoles){
-                this.messageRepository.ScheduleLadderMessage( "LADDERREVIEW", application, to);
+                //this.messageRepository.ScheduleLadderMessage( "LADDERREVIEW", application, to);
             }
 
         }
