@@ -245,11 +245,12 @@ namespace Kers.Controllers
                                                         && 
                                                         u.RprtngProfile.PlanningUnit.ExtensionArea.Id == countyAreaId )
                                         .ToList();
+            }else{
+                return;
             }
             foreach( var to in usersWithStageRoles){
-                //this.messageRepository.ScheduleLadderMessage( "LADDERREVIEW", application, to);
+                this.messageRepository.ScheduleLadderMessage( "LADDERREVIEW", application, to);
             }
-
         }
 
         private LadderStage NextStage( int StageId){
