@@ -41,7 +41,7 @@
                 <input type="text" name="coSamnum" formControlName="coSamnum" id="coSamnum" class="form-control col-xs-12" />
             </div>
         </div>
-        <div *ngIf="foundSampleNum$ | async" class="red form-group">
+        <div *ngIf="(sample == null  || (sample != null && sample.lastStatus.soilReportStatus.name == 'Entered' && sample.coSamnum != soilSampleForm.controls['coSamnum'].value)) && (foundSampleNum$ | async)" class="red form-group">
             <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">&nbsp;</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">Warning: Same County Sample Number already exists.</div>
         </div>

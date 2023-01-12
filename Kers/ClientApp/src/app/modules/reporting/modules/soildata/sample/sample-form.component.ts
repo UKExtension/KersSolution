@@ -79,7 +79,7 @@ export class SampleFormComponent implements OnInit {
   ngOnInit(): void {
     var sampleControl = this.soilSampleForm.get('coSamnum') as FormControl;
     this.billingTypes$ = this.service.billingtypes();
-    if( this.sample != null && !this.isThisACopy ) this.soilSampleForm.controls["coSamnum"].disable();
+    if( this.sample != null && !this.isThisACopy && this.sample.lastStatus.soilReportStatus.name != 'Entered' ) this.soilSampleForm.controls["coSamnum"].disable();
     
     this.service.optionaltests().subscribe(
                           res => {
@@ -123,9 +123,11 @@ export class SampleFormComponent implements OnInit {
                                   this.service.lastsamplenum().subscribe(
                                     res => {
                                       var lastNumber:number = res;
+                                      console.log(lastNumber);
                                       this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
                                     }
                                   );
+                                  this.soilSampleForm.patchValue({optionalInfo:"", acres:"", ownerID:""});
                                 }
                                 if( this.isThisAltCrop) this.prepereAltCrop();
                               }else{

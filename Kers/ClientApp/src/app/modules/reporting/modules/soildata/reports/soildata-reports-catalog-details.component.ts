@@ -35,14 +35,14 @@ import { Observable } from 'rxjs';
       </ng-container>
     </td>
     <td *ngIf="default" class="text-right">
-      <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-pencil"></i> edit</a>
-      <a class="btn btn-info btn-xs" (click)="sampleCopy()" *ngIf="report.sampleInfoBundles != null && report.sampleInfoBundles.length > 0 && report.reports.length == 0"><i class="fa fa-copy"></i> copy</a>
-      <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="report.reports != null && report.reports.length > 0"><i class="fa fa-pencil"></i> review</a>
-      <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading && report.reports != null && report.reports.length > 0"><i class="fa fa-download"></i> pdf</a>
+      <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="isEditButtonAvailable()"><i class="fa fa-pencil"></i> edit</a>
+      <a class="btn btn-info btn-xs" (click)="sampleCopy()" *ngIf="isCopyButtonAvailable()"><i class="fa fa-copy"></i> copy</a>
+      <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="isReviewButtonAvailable()"><i class="fa fa-pencil"></i> review</a>
+      <a class="btn btn-info btn-xs" (click)="print()" *ngIf="isPdfButtonAvailable()"><i class="fa fa-download"></i> pdf</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
-      <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="report.reports != null && report.reports.length > 0"><i class="fa fa-envelope"></i> email</a>
-      <ng-container *ngIf="!pdfLoading && report.reports != null && report.reports.length > 0"><br>
-      <a class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Alter</a></ng-container>
+      <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="isEmailButtonAvailable()"><i class="fa fa-envelope"></i> email</a>
+      <ng-container *ngIf="isAlterButtonAvailable() && isEmailButtonAvailable()"><br></ng-container>
+      <a *ngIf="isAlterButtonAvailable()" class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Alter</a>
     </td>
     <td *ngIf="edit" colspan="6">
       <div class="row">
@@ -65,6 +65,7 @@ import { Observable } from 'rxjs';
       <soil-sample-form [sample]="report" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
     </td>
     <td *ngIf="altCrop" colspan="6">
+      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
       <soil-sample-form [sample]="report" [isThisAltCrop]="true" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
     </td>
     
@@ -163,6 +164,86 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     this.altCrop = true;
 
   }
+
+  isEditButtonAvailable():boolean{
+    if( this.report.sampleInfoBundles != null 
+          && 
+        this.report.sampleInfoBundles.length > 0 
+          && 
+        this.report.reports.length == 0
+          &&
+        this.report.lastStatus.soilReportStatus.name != 'InLab'
+    ){
+      return true;
+    }
+    return false;
+  }
+
+  isCopyButtonAvailable():boolean{
+    if( this.report.sampleInfoBundles != null 
+          && 
+        this.report.sampleInfoBundles.length > 0 
+          && 
+        this.report.reports.length == 0
+          &&
+        this.report.lastStatus.soilReportStatus.name != 'InLab'
+    ){
+      return true;
+    }
+    return false;
+  }
+  isReviewButtonAvailable():boolean{
+    if( 
+      this.report.reports != null 
+        && 
+      this.report.reports.length > 0
+        &&
+      (this.report.lastStatus != null && this.report.lastStatus.soilReportStatus.name != 'AltCrop')
+    ){
+      return true;
+    }
+    return false;
+  }
+
+  isPdfButtonAvailable():boolean{
+    if( 
+      !this.pdfLoading 
+        && 
+      this.report.reports != null 
+        && 
+      this.report.reports.length > 0
+        &&
+      (this.report.lastStatus != null && this.report.lastStatus.soilReportStatus.name != 'AltCrop')
+    ){
+      return true;
+    }
+    return false;
+  }
+  isEmailButtonAvailable():boolean{
+    if( 
+      this.report.reports != null 
+        && 
+      this.report.reports.length > 0
+        &&
+      (this.report.lastStatus != null && this.report.lastStatus.soilReportStatus.name != 'AltCrop')
+    ){
+      return true;
+    }
+    return false;
+  }
+  isAlterButtonAvailable():boolean{
+    if( 
+      this.report.reports != null 
+        && 
+      this.report.reports.length > 0
+    ){
+      return true;
+    }
+    return false;
+  }
+
+
+
   print(){
     this.pdfLoading = true;
     

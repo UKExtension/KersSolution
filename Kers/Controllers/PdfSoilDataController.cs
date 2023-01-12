@@ -209,7 +209,7 @@ namespace Kers.Controllers
 				UnderTheHeader(pdfCanvas, report, bundle);
 				CropInfo(pdfCanvas, report, bundle);
 				
-				ExtraInfo(pdfCanvas, report);
+				ExtraInfo(pdfCanvas, report, bundle);
 				TestResults(pdfCanvas, report);
 				pdfCanvas = LimeComment(pdfCanvas, report, document);
 				pdfCanvas = AgentComment(pdfCanvas, report, document);
@@ -374,8 +374,17 @@ namespace Kers.Controllers
 			 */
 			
 		}
-		private void ExtraInfo(SKCanvas pdfCanvas, SoilReport report){
+		private void ExtraInfo(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
 			var extraPresent = false;
+			if( bundle.OptionalInfo != null && bundle.OptionalInfo != ""){
+				extraPresent = true;
+				pdfCanvas.DrawLine(29, currentYPosition, width - 29, currentYPosition, thinLinePaint);
+				currentYPosition += 10;
+				pdfCanvas.DrawText(bundle.OptionalInfo, 29, currentYPosition, getPaint(10.0f, 1));
+				currentYPosition+=12;
+			}
+
+/* 
 			if(report.Extra1 != null){
 				extraPresent = true;
 				pdfCanvas.DrawLine(29, currentYPosition, width - 29, currentYPosition, thinLinePaint);
@@ -401,6 +410,9 @@ namespace Kers.Controllers
 				pdfCanvas.DrawText(report.Extra3, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition+=12;
 			}
+
+ */
+
 			if(extraPresent) currentYPosition -= 3;
 		}
 		private void TestResults(SKCanvas pdfCanvas, SoilReport report){
