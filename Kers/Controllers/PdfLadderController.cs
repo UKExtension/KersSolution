@@ -140,10 +140,6 @@ namespace Kers.Controllers
 
 
 
-
-
-
-
 						var evedenceLines = SplitLineToMultiline( StripHTML(application.Evidence), 120);
 						foreach( var evd in evedenceLines ){
 							runningY += textLineHeight;
@@ -159,9 +155,12 @@ namespace Kers.Controllers
 
 						var startOfTheYear = new DateTime( fiscalYear.End.Year, 1, 1);
 
-						var trainings = TrainingsByUser(application.KersUserId, application.LastPromotion, startOfTheYear);
-						var hours = HourssByUser(application.KersUserId, application.LastPromotion, startOfTheYear);
-						var coreHours = HourssByUser(application.KersUserId, application.LastPromotion, startOfTheYear, true);
+						var startOfTheYearOfTheLastPromotion = new DateTime(application.LastPromotion.Year, 1, 1);
+
+
+						var trainings = TrainingsByUser(application.KersUserId, startOfTheYearOfTheLastPromotion, startOfTheYear);
+						var hours = HourssByUser(application.KersUserId, startOfTheYearOfTheLastPromotion, startOfTheYear);
+						var coreHours = HourssByUser(application.KersUserId, startOfTheYearOfTheLastPromotion, startOfTheYear, true);
 					
 
 						pdfCanvas = document.BeginPage(height, width);
@@ -171,7 +170,7 @@ namespace Kers.Controllers
 						AddPageInfo(pdfCanvas, pageNum, 0, application.KersUser, DateTime.Now, pageTitle);
 						
 						pdfCanvas.DrawText("InService Hours Earned from " 
-													+ application.LastPromotion.ToString("MM/dd/yyyy") 
+													+ startOfTheYearOfTheLastPromotion.ToString("MM/dd/yyyy") 
 													+ " till " + startOfTheYear.ToString("MM/dd/yyyy") 
 													+ ": "  + hours.ToString() , positionX, runningY, getPaint(10.0f));
 

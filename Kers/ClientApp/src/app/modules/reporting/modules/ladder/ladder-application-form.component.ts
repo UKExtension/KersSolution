@@ -48,6 +48,7 @@ export class LadderApplicationFormComponent implements OnInit {
     hoursAttended:Observable<number>;
 
     firstOfTheYear:Date;
+    firstOfTheYearofLastPromotion:Date;
 
     fileToUpload: File = null;
 
@@ -111,6 +112,7 @@ export class LadderApplicationFormComponent implements OnInit {
     this.today = new Date();
     this.myDatePickerOptions.disableSince = {year: this.today.getFullYear(), month: this.today.getMonth() + 1, day: this.today.getDate()};
     this.lastPromotionDate = new Date(this.today.getFullYear() -3, 6, 1);
+    this.firstOfTheYearofLastPromotion = new Date(this.lastPromotionDate.getFullYear(), 0, 1);
     //this.firstOfTheYear = new Date(this.today.getFullYear(), 0, 1);
    }
 
@@ -132,6 +134,7 @@ export class LadderApplicationFormComponent implements OnInit {
         
       }); 
       this.lastPromotionDate = new Date(this.application.lastPromotion);
+      this.firstOfTheYearofLastPromotion = new Date(this.lastPromotionDate.getFullYear(), 0, 1);
       for( let rating of this.application.ratings){
         this.addRating( rating.year, rating.ratting );
       }
@@ -159,7 +162,7 @@ export class LadderApplicationFormComponent implements OnInit {
     }
   }
   updateHours(){
-    this.hoursAttended = this.trainingService.hoursByUser(0,this.lastPromotionDate, this.firstOfTheYear);
+    this.hoursAttended = this.trainingService.hoursByUser(0,this.firstOfTheYearofLastPromotion, this.firstOfTheYear);
   }
 
   addRating(year:string = '', rating:string = '') {
@@ -248,6 +251,7 @@ export class LadderApplicationFormComponent implements OnInit {
 
   onDateChanged(event: IMyDateModel) {
     this.lastPromotionDate = event.singleDate.jsDate;
+    this.firstOfTheYearofLastPromotion = new Date(this.lastPromotionDate.getFullYear(), 0, 1);
     this.updateHours();
     this.trainingDetails = false;
   }

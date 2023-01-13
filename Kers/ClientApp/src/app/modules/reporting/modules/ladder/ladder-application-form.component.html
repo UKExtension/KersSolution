@@ -34,31 +34,23 @@
     <div class="form-group">
       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastPromotion">Date of last Career Ladder Promotion:</label>
       <div class="col-md-4 col-sm-6 col-xs-7">
-
-
-        <div class="input-group">
-          <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-              angular-mydatepicker name="lastPromotion" (click)="dp.toggleCalendar()" 
-              formControlName="lastPromotion" [options]="myDatePickerOptions" 
-              #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
-          <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
-        </div>
-
-
-
-<!-- 
-          <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="lastPromotion"></my-date-picker>
-  -->     
-        </div>
+      <div class="input-group">
+        <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+            angular-mydatepicker name="lastPromotion" (click)="dp.toggleCalendar()" 
+            formControlName="lastPromotion" [options]="myDatePickerOptions" 
+            #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+        <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
+      </div>
+    </div>
     </div>
     <div class="form-group">
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Historical Training Transcript:</label>
       <div class="col-md-9 col-sm-9 col-xs-12">
-        InService Hours Earned from {{lastPromotionDate | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}: <strong>{{hoursAttended | async}}</strong><br><br>
+        InService Hours Earned from {{firstOfTheYearofLastPromotion | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}: <strong>{{hoursAttended | async}}</strong><br><br>
         <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a> <span *ngIf="!trainingDetails"><br>By clicking on the <em>Details</em> button, you will see your training transcript for the selected period.<br>The list will automatically be submitted with the application.<br></span><br>
         <div *ngIf="trainingDetails">
           <div><a class="btn btn-info btn-xs" (click)="trainingDetails=false">close</a></div>
-          <training-transcript [start]="lastPromotionDate" [end]="firstOfTheYear"></training-transcript>
+          <training-transcript [start]="firstOfTheYearofLastPromotion" [end]="firstOfTheYear"></training-transcript>
         </div>
         
       </div>

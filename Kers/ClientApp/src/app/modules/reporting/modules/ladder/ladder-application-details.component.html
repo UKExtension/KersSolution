@@ -71,14 +71,14 @@
 
   <div class="row">
     <div class="col-sm-4 text-right">
-      InService Hours Earned from {{application.lastPromotion | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}:
+      InService Hours Earned from {{startOfTheYearOfTheLastPromotion | date:'shortDate'}} till {{firstOfTheYear | date:'shortDate'}}:
     </div>
     <div class="col-sm-8">
       <strong>{{hoursAttended | async}}</strong><br>
       <a *ngIf="!trainingDetails" class="btn btn-info btn-xs" (click)="trainingDetails=true">Details </a>
       <div *ngIf="trainingDetails">
         <div><a class="btn btn-info btn-xs" (click)="trainingDetails=false">close</a></div>
-        <training-transcript [user]="application.kersUser" [start]="lastPromotionDate" [end]="firstOfTheYear"></training-transcript>
+        <training-transcript [user]="application.kersUser" [start]="startOfTheYearOfTheLastPromotion" [end]="firstOfTheYear"></training-transcript>
       </div>
     </div>
   </div>

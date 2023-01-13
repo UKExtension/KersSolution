@@ -18,6 +18,7 @@ export class LadderApplicationDetailsComponent implements OnInit {
   loading = true;
   firstOfTheYear:Date;
   lastPromotionDate:Date;
+  startOfTheYearOfTheLastPromotion:Date;
   hoursAttended:Observable<number>;
   pdfLoading = false;
 
@@ -32,11 +33,12 @@ export class LadderApplicationDetailsComponent implements OnInit {
     if(this.application != null){
       this.loading = false;
       this.lastPromotionDate = new Date(this.application.lastPromotion);
+      this.startOfTheYearOfTheLastPromotion = new Date(this.lastPromotionDate.getFullYear(), 0, 1);
       this.fiscalYearService.forDate(new Date(this.application.created)).subscribe(
         res => {
           var end = new Date(res.end);
           this.firstOfTheYear = new Date(end.getFullYear(), 0, 1);
-          this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.lastPromotionDate, this.firstOfTheYear);
+          this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.startOfTheYearOfTheLastPromotion, this.firstOfTheYear);
         }
       );
     }else if( this.applicationId != null){
@@ -45,11 +47,12 @@ export class LadderApplicationDetailsComponent implements OnInit {
           this.application = res;
           this.loading = false;
           this.lastPromotionDate = new Date(this.application.lastPromotion);
+          this.startOfTheYearOfTheLastPromotion = new Date(this.lastPromotionDate.getFullYear(), 0, 1);
           this.fiscalYearService.forDate(new Date(this.application.created)).subscribe(
             res => {
               var end = new Date(res.end);
               this.firstOfTheYear = new Date(end.getFullYear(), 0, 1);
-              this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.lastPromotionDate, this.firstOfTheYear);
+              this.hoursAttended = this.trainingService.hoursByUser(this.application.kersUserId,this.startOfTheYearOfTheLastPromotion, this.firstOfTheYear);
             }
           );
         }
