@@ -214,17 +214,18 @@ namespace Kers.Controllers.Soil
                         smpl.LastStatus = new SoilReportStatusChange();
                     }
                     smpl.LastStatus.SoilReportStatus = status;
-                }
-                smpl.SampleInfoBundles = sample.SampleInfoBundles;
-                smpl.OptionalTestSoilReportBundles = sample.OptionalTestSoilReportBundles;
-                var now = DateTime.Now;
-                smpl.SampleLabelCreated = new DateTime(
+                }else{
+                    var now = DateTime.Now;
+                    smpl.SampleLabelCreated = new DateTime(
                                                     sample.SampleLabelCreated.Year,
                                                     sample.SampleLabelCreated.Month,
                                                     sample.SampleLabelCreated.Day,
                                                     now.Hour,
                                                     now.Minute,
                                                     now.Second);
+                }
+                smpl.SampleInfoBundles = sample.SampleInfoBundles;
+                smpl.OptionalTestSoilReportBundles = sample.OptionalTestSoilReportBundles; 
                 smpl.OwnerID = sample.OwnerID;
                 smpl.Acres = sample.Acres;
                 smpl.OptionalInfo = sample.OptionalInfo;
