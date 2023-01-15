@@ -217,10 +217,11 @@ namespace Kers.Controllers
 
             int userCountyId = application.KersUser.RprtngProfile.PlanningUnitId;
             LadderStage stage = this._context.LadderStage
-                                    .Where( l => l.Id == application.LastStage.Id)
+                                    .Where( l => l.Id == application.LastStageId)
                                     .Include( l => l.LadderStageRoles)
                                         .ThenInclude( r => r.zEmpRoleType)
                                     .FirstOrDefault();
+            if( stage == null || stage.LadderStageRoles == null ) return;
             List<zEmpRoleType> roles = stage.LadderStageRoles.Select( l => l.zEmpRoleType).ToList();
             var usersWithStageRoles = this._context.zEmpProfileRoles
                                     .Where( l => roles.Select( r => r.Id).Contains( l.zEmpRoleTypeId))
@@ -358,6 +359,9 @@ namespace Kers.Controllers
                 foreach( var e in LadderApplication.Images ){
                     e.UploadImage = context.UploadImage.Where( i => i.Id == e.UploadImageId).FirstOrDefault();
                 }
+                var user = this.context.KersUser.Where( u => u.Id == LadderApplication.KersUserId).Include( u => u.RprtngProfile).FirstOrDefault();
+                LadderApplication.KersUser = user;
+                if(!LadderApplication.Draft) this.SendMessages( LadderApplication );
                 return new OkObjectResult(LadderApplication);
             }else{
                 this.Log( LadderApplication,"LadderApplication", "Error in adding LadderApplication attempt.", "LadderApplication", "Error");
@@ -375,6 +379,7 @@ namespace Kers.Controllers
                             .Include( a => a.Images)
                             .Include( a => a.Ratings)
                             .Include( a => a.Stages)
+                            .Include( a => a.KersUser).ThenInclude( r => r.RprtngProfile)
                             .FirstOrDefault();
 
             if(LadderApplication != null ){
@@ -398,6 +403,8 @@ namespace Kers.Controllers
                 entity.Images = LadderApplication.Images;
                 entity.LastUpdated = DateTime.Now;
                 this.context.SaveChanges();
+                var laderlevel = this.context.LadderLevel.Where( l => l.Id == entity.LadderLevelId).FirstOrDefault();
+                entity.LadderLevel = laderlevel;
                 if(!entity.Draft) this.SendMessages( entity );
                 this.Log(LadderApplication,"LadderApplication", "LadderApplication Updated.");
                 foreach( var e in entity.Images ){
