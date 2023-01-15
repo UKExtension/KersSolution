@@ -239,12 +239,17 @@ namespace Kers.Controllers
                                                         u.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegionId == countyRegionId )
                                         .ToList();
             }else if(stage.Restriction == LadderStageRestrictionKeys.Area){
-                int countyAreaId = _context.PlanningUnit.Where( p => p.Id == userCountyId && p.ExtensionArea != null )
-                                        .Select( u =>  u.ExtensionArea.Id ).FirstOrDefault();
+
+                ExtensionArea countyArea = _context.PlanningUnit.Where( p => p.Id == userCountyId && p.ExtensionArea != null )
+                                        .Select( u =>  u.ExtensionArea ).FirstOrDefault();
+
+                var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                var pairing = AreaController.FindContainingPair( countyArea.Name );
+
                 usersWithStageRoles = usersWithStageRoles
                                         .Where( u =>    u.RprtngProfile.PlanningUnit.ExtensionArea != null 
                                                         && 
-                                                        u.RprtngProfile.PlanningUnit.ExtensionArea.Id == countyAreaId )
+                                                        pairing.Contains(u.RprtngProfile.PlanningUnit.ExtensionArea.Name) )
                                         .ToList();
             }else{
                 return;
