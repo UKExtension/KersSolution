@@ -5,12 +5,16 @@
     Received Date: {{ report.sampleLabelCreated | date: 'mediumDate'}}<br>
     Report Date: {{ report.dataProcessed | date: 'mediumDate'}}<br>
     Laboratory Number: {{report.reports[0].labNum}}<br>
-    <span *ngIf="report.ownerID">Owner Sample Id: {{report.ownerID}}<br></span>
-    <span *ngIf="report.acres">Acres: {{report.acres}}<br></span>
-    <span *ngIf="report.optionalInfo">{{report.optionalInfo}}<br></span>
+    
     
   </div>
   <div class="col-sm-6">
+    <span *ngIf="report.ownerID">Owner Sample Id: {{report.ownerID}}<br></span>
+    <span *ngIf="report.acres">Acres: {{report.acres}}<br></span>
+    <span *ngIf="report.optionalInfo">{{report.optionalInfo}}<br></span>
+
+<!-- 
+
     <strong>Farmer:</strong><br>
     <loading *ngIf="loading"></loading>
     <div *ngIf="report.farmerForReport != null && !loading">
@@ -25,6 +29,10 @@
       <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">add</a>
     </div>
     <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+  
+   -->
+  
+  
   </div>
 </div><br><br>
 <div class="row">

@@ -123,13 +123,16 @@ export class SampleFormComponent implements OnInit {
                                   this.service.lastsamplenum().subscribe(
                                     res => {
                                       var lastNumber:number = res;
-                                      console.log(lastNumber);
                                       this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
                                     }
                                   );
                                   this.soilSampleForm.patchValue({optionalInfo:"", acres:"", ownerID:""});
                                 }
-                                if( this.isThisAltCrop) this.prepereAltCrop();
+                                if( this.isThisAltCrop){
+                                  this.prepereAltCrop();
+                                }else{
+                                  this.prepereEdit();
+                                }
                               }else{
                                 this.addSegment(null);
                                 this.service.lastsamplenum().subscribe(
@@ -151,7 +154,7 @@ export class SampleFormComponent implements OnInit {
       
   }
   prepereAltCrop(){
-    this.soilSampleForm.controls["farmerAddress"].disable();
+    //this.soilSampleForm.controls["farmerAddress"].disable();
     //this.soilSampleForm.controls["ownerID"].disable();
     this.soilSampleForm.controls["sampleLabelCreated"].disable();
     this.soilSampleForm.controls["billingTypeId"].disable();
@@ -161,6 +164,14 @@ export class SampleFormComponent implements OnInit {
     //this.soilSampleForm.controls["optionalInfo"].disable();
     for( var smple of this.sampleInfoBundles.controls){
       if(smple.value["purposeId"] != 2) smple.disable();
+    }
+  }
+  prepereEdit(){
+    if( this.sample ){
+      if(this.sample.lastStatus.soilReportStatus.name == "Sent" || this.sample.lastStatus.soilReportStatus.name == "InLab"){
+        this.soilSampleForm.controls["optionalTests"].disable();
+      }
+      
     }
   }
 
@@ -182,7 +193,6 @@ export class SampleFormComponent implements OnInit {
           }
         );
       }
-      
     }else{
       group = this.fb.control(
         {

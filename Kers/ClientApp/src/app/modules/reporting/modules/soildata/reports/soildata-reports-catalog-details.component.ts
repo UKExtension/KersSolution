@@ -171,8 +171,6 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
         this.report.sampleInfoBundles.length > 0 
           && 
         this.report.reports.length == 0
-          &&
-        this.report.lastStatus.soilReportStatus.name != 'InLab'
     ){
       return true;
     }
