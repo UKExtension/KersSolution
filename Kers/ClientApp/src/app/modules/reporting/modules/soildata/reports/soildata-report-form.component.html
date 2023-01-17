@@ -9,9 +9,9 @@
     
   </div>
   <div class="col-sm-6">
-    <span *ngIf="report.ownerID">Owner Sample Id: {{report.ownerID}}<br></span>
-    <span *ngIf="report.acres">Acres: {{report.acres}}<br></span>
-    <span *ngIf="report.optionalInfo">{{report.optionalInfo}}<br></span>
+    <ng-container *ngIf="report.ownerID">Owner Sample Id: {{report.ownerID}}<br></ng-container>
+    <ng-container *ngIf="report.acres">Acres: {{report.acres}}<br></ng-container>
+    <ng-container *ngIf="report.optionalInfo">{{report.optionalInfo}}<br></ng-container>
 
 <!-- 
 

@@ -41,7 +41,6 @@ import { Observable } from 'rxjs';
       <a class="btn btn-info btn-xs" (click)="print()" *ngIf="isPdfButtonAvailable()"><i class="fa fa-download"></i> pdf</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
       <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="isEmailButtonAvailable()"><i class="fa fa-envelope"></i> email</a>
-      <ng-container *ngIf="isAlterButtonAvailable() && isEmailButtonAvailable()"><br></ng-container>
       <a *ngIf="isAlterButtonAvailable()" class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Alter</a>
     </td>
     <td *ngIf="edit" colspan="6">
