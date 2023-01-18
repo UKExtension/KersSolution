@@ -51,13 +51,14 @@ export class MileageFormComponent implements OnInit {
     var formValue = this.mileageForm.value;
     if(formValue.startingLocation != undefined && formValue.segments.length == 1){
       var firstSegment = formValue.segments[0];
+      console.log(firstSegment);
       if( firstSegment.locationId != ""
             &&
           firstSegment.programCategoryId != ""
             &&
           firstSegment.businessPurpose != ""
             &&
-          firstSegment.fundingSourceId != ""
+          (firstSegment.fundingSourceId != "" || !this.itIsPersonalVehicle)
             &&
           firstSegment.mileage != ""
           &&
