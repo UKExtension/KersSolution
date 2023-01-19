@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { SoilReportBundle } from '../soildata.report';
 import { FarmerAddress } from '../soildata.service';
 import { BillingType, OptionalTest, SampleInfoBundle } from './SampleInfoBundle';
@@ -57,6 +57,11 @@ export class SampleFormComponent implements OnInit {
     private fb: FormBuilder,
     private service:SoilSampleService
   ) { 
+    
+
+  }
+
+  ngOnInit(): void {
     let date = new Date();
     this.soilSampleForm = this.fb.group(
       { 
@@ -66,17 +71,13 @@ export class SampleFormComponent implements OnInit {
             isRange: false, singleDate: {jsDate: date}
                       }, Validators.required],
           billingTypeId: [1],
-          coSamnum: ["", [Validators.maxLength(4), Validators.required]],
+          coSamnum: ["", [Validators.maxLength(4), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample)],
           optionalTests: '',
           acres: [""],
           optionalInfo: [""],
           privateNote: [""],
           sampleInfoBundles: this.fb.array([])
       }, { validator: sampleValidator });
-
-  }
-
-  ngOnInit(): void {
     var sampleControl = this.soilSampleForm.get('coSamnum') as FormControl;
     this.billingTypes$ = this.service.billingtypes();
     if( this.sample != null && !this.isThisACopy && this.sample.lastStatus.soilReportStatus.name != 'Entered' ) this.soilSampleForm.controls["coSamnum"].disable();
@@ -262,6 +263,34 @@ export class SampleFormComponent implements OnInit {
   }
 
 }
+
+
+export class SampleNumberValidator {
+  static createValidator( service: SoilSampleService, sample:SoilReportBundle ): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors> => {
+      if(sample == null){
+        return service
+        .checkCoSamNum(control.value)
+        .pipe(
+          map((result: boolean) =>
+            result ? { countySampleNumberAlreadyExists: true } : null
+          )
+        );
+      }else if(sample.coSamnum == control.value){
+        return of(null);
+      } 
+      return service
+        .checkCoSamNum(control.value)
+        .pipe(
+          map((result: boolean) =>
+            result ? { countySampleNumberAlreadyExists: true } : null
+          )
+        );
+    };
+  }
+}
+
+
 
 export const sampleValidator = (control: AbstractControl): {[key: string]: boolean} => {
 /* 
