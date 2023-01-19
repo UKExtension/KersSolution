@@ -186,6 +186,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.sampleNumberDisplayed = true;
     var ths = this;
     setTimeout(()=>{  ths.onRefresh();    }, 40);
+    this.getStatuses();
   }
   
   switchOrder(type:string){
