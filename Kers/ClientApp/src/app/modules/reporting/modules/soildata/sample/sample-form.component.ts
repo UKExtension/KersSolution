@@ -71,13 +71,14 @@ export class SampleFormComponent implements OnInit {
             isRange: false, singleDate: {jsDate: date}
                       }, Validators.required],
           billingTypeId: [1],
-          coSamnum: ["", [Validators.maxLength(4), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample)],
+          coSamnum: ["", [Validators.maxLength(4), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample, this.isThisACopy)],
           optionalTests: '',
           acres: [""],
           optionalInfo: [""],
           privateNote: [""],
           sampleInfoBundles: this.fb.array([])
-      }, { validator: sampleValidator });
+      }
+    );
     var sampleControl = this.soilSampleForm.get('coSamnum') as FormControl;
     this.billingTypes$ = this.service.billingtypes();
     if( this.sample != null && !this.isThisACopy && this.sample.lastStatus.soilReportStatus.name != 'Entered' ) this.soilSampleForm.controls["coSamnum"].disable();
@@ -127,7 +128,7 @@ export class SampleFormComponent implements OnInit {
                                       this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
                                     }
                                   );
-                                  this.soilSampleForm.patchValue({optionalInfo:"", acres:"", ownerID:""});
+                                  this.soilSampleForm.patchValue({ acres:"", ownerID:""});
                                 }
                                 if( this.isThisAltCrop){
                                   this.prepereAltCrop();
@@ -266,7 +267,7 @@ export class SampleFormComponent implements OnInit {
 
 
 export class SampleNumberValidator {
-  static createValidator( service: SoilSampleService, sample:SoilReportBundle ): AsyncValidatorFn {
+  static createValidator( service: SoilSampleService, sample:SoilReportBundle, isItCopy:boolean ): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       if(sample == null){
         return service
@@ -276,7 +277,7 @@ export class SampleNumberValidator {
             result ? { countySampleNumberAlreadyExists: true } : null
           )
         );
-      }else if(sample.coSamnum == control.value){
+      }else if(sample.coSamnum == control.value && !isItCopy){
         return of(null);
       } 
       return service
@@ -290,21 +291,3 @@ export class SampleNumberValidator {
   }
 }
 
-
-
-export const sampleValidator = (control: AbstractControl): {[key: string]: boolean} => {
-/* 
-  let start = control.get('start');
-  let end = control.get('end');
-
-  if( end.value != null && end.value.singleDate != null){
-    let startDate = start.value.singleDate.jsDate;
-    let endDate = end.value.singleDate.jsDate;
-    if( startDate.getTime() > endDate.getTime()){
-      return {"endDate":true};
-    }
-  }
- */
-
-  return null;
-}
