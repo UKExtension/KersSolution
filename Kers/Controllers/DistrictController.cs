@@ -145,6 +145,12 @@ namespace Kers.Controllers
                 int num;
                 if( type == "activity"){
                     num = await context.Activity.Where( a => a.KersUser == employee && a.ActivityDate.Month == (month + 1) && a.ActivityDate.Year == year ).CountAsync();
+                }else if( type == "indicator"){
+                    var submissions = await context.ProgramIndicatorValue
+                                .Where( a => a.KersUser == employee).ToListAsync();
+                    num = submissions
+                                .Where( a => a.LastModifiedDateTime.Value.UtcDateTime.Month == (month - 1) && a.LastModifiedDateTime.Value.UtcDateTime.Year == year)
+                                .Count();
                 }else{
                     num = await context.Expense.Where( a => a.KersUser == employee && a.ExpenseDate.Month == (month + 1) && a.ExpenseDate.Year == year ).CountAsync();
                 }
