@@ -72,12 +72,12 @@ namespace Kers.Controllers
         public IActionResult Auth( [FromForm]LoginViewModel loginViewModel)
         {
 
-            // 1. TODO: specify the certificate that your SAML provider gave you
             string samlCertificate = @"-----BEGIN CERTIFICATE-----
 " + _configuration["SSO:SigningCertificate"] + @"
 -----END CERTIFICATE-----";
             // 2. Let's read the data - SAML providers usually POST it into the "SAMLResponse" var
             ViewData["rawresponse"] = Request.Form["SAMLResponse"];
+            string relayState = Request.Form["RelayState"];
             var samlResponse = new Response(samlCertificate, Request.Form["SAMLResponse"]);
             ViewData["response"] = samlResponse;
             // 3. We're done!
@@ -174,11 +174,6 @@ namespace Kers.Controllers
                         signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Secret:JWTKey"])),
                                 SecurityAlgorithms.HmacSha256)
                     );
-                    var response = new
-                    {
-                        newUser = noProfileUser,
-                        access_token = new JwtSecurityTokenHandler().WriteToken(token)
-                    };
                     string red = Url.Content("~/");
                     red += "jwtget";
                     string npu = JsonConvert.SerializeObject(
@@ -190,6 +185,7 @@ namespace Kers.Controllers
                     var qb = new QueryBuilder();
                     qb.Add("newUser", npu );
                     qb.Add( "access_token", new JwtSecurityTokenHandler().WriteToken(token));
+                    if(!String.IsNullOrEmpty(relayState)) qb.Add("relayState", relayState);
                     var url = red + qb;
                     return Redirect(url);
                 }catch(Exception ex){
@@ -202,12 +198,7 @@ namespace Kers.Controllers
                     return Ok(new {error = errorMessage});
                 }
 
-                //user has been authenticated, put your code here, like set a cookie or something...
-                //or call FormsAuthentication.SetAuthCookie()
-                //or call context.SignInAsync() in ASP.NET Core
-                //or do something else
-            
-             
+                //user has been authenticated
           
             }
             return Redirect("/core/login2fa?notLoggedIn=true");
@@ -262,7 +253,8 @@ namespace Kers.Controllers
                 _configuration["SSO:EntityId"], 
                 _configuration["SSO:AssertionUrl"] 
                 );
-            var red = request.GetRedirectUrl(samlEndpoint);
+            var relayState = "/core/reporting/servicelog";
+            var red = request.GetRedirectUrl(samlEndpoint, relayState);
             return Redirect(red);
         }
         
