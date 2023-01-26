@@ -287,7 +287,7 @@ namespace Kers.Controllers.Soil
             data.Add( this.ReportHeader());
             foreach( var sample in samples){
                 foreach( var report in sample.Reports){
-                    data.Add( ReportToStringList(report));
+                    data.Add( ReportToStringList(report, sample));
                 }
             }
             return new OkObjectResult(data);
@@ -302,7 +302,6 @@ namespace Kers.Controllers.Soil
                 "Crop",
                 "Form Type",
                 "Lab pH",
-                "Lab Buffer pH",
                 "Lab P",
                 "Lab K",
                 "Lab Ca",
@@ -319,20 +318,18 @@ namespace Kers.Controllers.Soil
         }
 
 
-        private List<string> ReportToStringList(SoilReport report ){
+        private List<string> ReportToStringList(SoilReport report, SoilReportBundle bundle ){
             var row = new List<string>
             {
-                report.DateIn.ToString(),
-                report.CoSamnum,
-                report.FarmerID,
+                bundle.SampleLabelCreated.ToString(),
+                bundle.CoSamnum.TrimStart('0'),
+                bundle.OwnerID,
                 report.CropInfo1,
                 report.TypeForm
             };
             var tests = this._context.TestResults.Where( r => r.PrimeIndex == report.Prime_Index).ToList();
             var LabPh = tests.Where( t => t.TestName == "Soil pH").FirstOrDefault();
-            row.Add( LabPh == null ? "" : LabPh.Result);
-            var LabBufferPh = tests.Where( t => t.TestName == "Buffer pH").FirstOrDefault();
-            row.Add( LabBufferPh == null ? "" : LabBufferPh.Result);
+            row.Add( LabPh == null ? "" : LabPh.Result);    
             var LabP = tests.Where( t => t.TestName == "Phosphorus").FirstOrDefault();
             row.Add( LabP == null ? "" : LabP.Result);
             var LabK = tests.Where( t => t.TestName == "Potassium").FirstOrDefault();
