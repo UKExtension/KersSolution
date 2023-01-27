@@ -5,6 +5,7 @@ import {FormBuilder, Validators }   from '@angular/forms';
 import {Location} from '@angular/common';
 import { MessageService } from '../../reporting/core/services/message.service';
 import { environment } from '../../../../environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'login2fa',
@@ -54,8 +55,12 @@ export class Login2faComponent implements OnInit {
     if(this.authService.isLoggedIn()){
       this.router.navigate(['/reporting']);
     }
-    this.loginUrl = this.location.prepareExternalUrl('/loginsso');
-
+    var loginPath = '/loginsso';
+    if(this.authService.redirectUrl != null){
+      let httpParams = new HttpParams().set('rurl', this.authService.redirectUrl);
+      loginPath += "?" + httpParams.toString();
+    }
+    this.loginUrl = this.location.prepareExternalUrl(loginPath);
     this.route.queryParams
       .subscribe(params => {
         if(params.errormessage != undefined){
