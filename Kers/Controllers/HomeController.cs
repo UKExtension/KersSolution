@@ -246,14 +246,17 @@ namespace Kers.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("loginsso")]
-        public ActionResult LoginSSO()
+        public ActionResult LoginSSO(string rurl)
         {
            var samlEndpoint = _configuration["SSO:Endpoint"];
             var request = new AuthRequest(
                 _configuration["SSO:EntityId"], 
                 _configuration["SSO:AssertionUrl"] 
                 );
-            var relayState = "/core/reporting/servicelog";
+            var relayState = "/reporting";
+            if( rurl != null){
+                relayState = rurl;
+            }
             var red = request.GetRedirectUrl(samlEndpoint, relayState);
             return Redirect(red);
         }
