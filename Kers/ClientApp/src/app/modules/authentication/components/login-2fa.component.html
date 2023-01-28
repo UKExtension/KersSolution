@@ -1,7 +1,7 @@
 <div class="login">
   <div class="login_wrapper">
     <div class="animate form login_form">
-      <div class="alert alert-danger" *ngIf="messageService.messages.length">
+      <div class="alert alert-danger" *ngIf="messageService.messages.length > 0">
         <button type="button" class="close" (click)="messageService.clear()"><span>&times;</span></button>
         <div *ngFor='let message of messageService.messages'> {{message}} </div>
       </div>
