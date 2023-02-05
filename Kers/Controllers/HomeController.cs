@@ -65,6 +65,30 @@ namespace Kers.Controllers
             return View();
         }
 
+/* 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("LoginTestPage")]
+        public IActionResult LoginTestPage(){
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("LoginTestPage")]
+        public IActionResult LoginTestPage([FromForm] LoginViewModel login){
+
+            string redirect = Url.Content("~/");
+            redirect += "login2fa";
+            var builder = new QueryBuilder();
+            var errorMessage = "Your Account is Disabled. Please Contact your Area Director for Providing you Access.";
+            builder.Add("errormessage", errorMessage );
+            var redirecturl = redirect + builder;
+
+            return Redirect(redirecturl);
+
+        }
+ */
 
         [AllowAnonymous]
         [HttpPost]
@@ -99,7 +123,7 @@ namespace Kers.Controllers
                     usr = coreContext.KersUser.Where( u => u.RprtngProfile.LinkBlueId == username ).Include( u => u.RprtngProfile).FirstOrDefault();
                     
                     string redirect = Url.Content("~/");
-                    redirect += "/core/login2fa";
+                    redirect += "login2fa";
                     var builder = new QueryBuilder();
 
 

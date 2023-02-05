@@ -63,7 +63,7 @@ export class LoginJwtGetComponent implements OnInit {
       params => {
         this.token =  <string> params["access_token"];
         this.newUser = <SapUser> JSON.parse(params["newUser"]);
-        this.redirectURL = <string> params["access_token"];
+        this.redirectURL = <string> params["relayState"];
         this.checkToken().subscribe(
           res => {
             if(this.newUser != null){
@@ -84,8 +84,11 @@ export class LoginJwtGetComponent implements OnInit {
               )
             }else{
               this.authService.setAuth( { newUser: this.newUser, access_token: this.token });
-              if(this.redirectURL != "" && this.redirectURL != null) this.router.navigate([this.redirectURL]);
-              this.router.navigate(['/reporting']);
+              if(this.redirectURL != "" && this.redirectURL != null){
+                this.router.navigate([this.redirectURL]);
+              }else{
+                this.router.navigate(['/reporting']);
+              }
             }
           },
           err => {
