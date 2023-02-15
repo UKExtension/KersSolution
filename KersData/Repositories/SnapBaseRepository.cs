@@ -143,7 +143,7 @@ namespace Kers.Models.Repositories
             return UKRevisions;
         }
 
-        protected List<ActivityRevisionsPerMonth> RevisionsWithDirectContactsPerMonth( FiscalYear fiscalYear){
+        protected List<ActivityRevisionsPerMonth> RevisionsWithDirectContactsPerMonth( FiscalYear fiscalYear, bool refreshCache = false){
             var perMonth = new List<ActivityRevisionsPerMonth>();
             var currentDate = DateTime.Now;
             var runningDate = fiscalYear.Start;
@@ -156,7 +156,7 @@ namespace Kers.Models.Repositories
                     var cacheKey = "DirectActivityRevisionsPerMonth" + months[i].Month.ToString() + months[i].Year.ToString();
                     var cachedTypes = _cache.GetString(cacheKey);
                     var entity = new ActivityRevisionsPerMonth();
-                    if (!string.IsNullOrEmpty(cachedTypes)){
+                    if (!string.IsNullOrEmpty(cachedTypes) && !refreshCache){
                         entity = JsonConvert.DeserializeObject<ActivityRevisionsPerMonth>(cachedTypes);
                     }else{
                         var byMonth = context.Activity.Where( c => 

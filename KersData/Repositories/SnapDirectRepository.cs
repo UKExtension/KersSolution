@@ -301,7 +301,7 @@ namespace Kers.Models.Repositories
                 keys.Add("MonthlyTotal");
                 result = string.Join(",", keys.ToArray()) + "\n";
 
-                var perMonth = RevisionsWithDirectContactsPerMonth( fiscalYear);
+                var perMonth = RevisionsWithDirectContactsPerMonth( fiscalYear, refreshCache);
                 foreach( var mnth in perMonth){
                     var dt = new DateTime(mnth.Year, mnth.Month, 15);
                     var row = dt.ToString("yyyyMM") + ",";

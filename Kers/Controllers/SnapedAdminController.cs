@@ -85,9 +85,13 @@ namespace Kers.Controllers
         [Authorize]
         public async Task<IActionResult> GetTimeTeaching( [FromBody] SnapedSearchCriteria criteria
                                         ){
-            
+            var startTime= new DateTime(criteria.Start.Year, criteria.Start.Month, criteria.Start.Day,0, 0, 0);
+            var endTime= new DateTime(criteria.End.Year, criteria.End.Month, criteria.End.Day,23, 59, 59);
             var result = this.context.Activity.AsNoTracking()
-                                .Where( a => a.ActivityDate >= criteria.Start && a.ActivityDate <= criteria.End && a.LastRevision.SnapDirectId != null);
+                                .Where( a => a.ActivityDate >= startTime 
+                                            && a.ActivityDate <= endTime 
+                                            && a.LastRevision.SnapDirectId != null
+                                            && a.KersUser.RprtngProfile.Institution.Code == "21000-1862");
             if( criteria.CongressionalDistrictId != null && criteria.CongressionalDistrictId != 0){
                 result = result.Where( a => a.PlanningUnit.CongressionalDistrictUnit.CongressionalDistrictId == criteria.CongressionalDistrictId);
             }
