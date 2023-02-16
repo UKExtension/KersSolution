@@ -11,7 +11,6 @@ import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount }
   selector: 'app-time-teaching',
   template: `
     
-  
 
   <h3>Time Spent Teaching</h3><br>
   <div class="row">

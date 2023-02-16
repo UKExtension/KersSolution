@@ -8,6 +8,7 @@ import { SnapedBudgetHomeComponent } from './snaped-budget-home.component';
 import { SnapedReportsComponent } from './snaped-reports.component';
 import { CustomReportsComponent } from './custom-reports.component';
 import { TimeTeachingComponent } from './time-teaching.component';
+import { SnapedAllRecordsComponent } from './snaped-all-records.component';
 
 
 @NgModule({
@@ -49,6 +50,10 @@ import { TimeTeachingComponent } from './time-teaching.component';
                     {
                       path: 'time',
                       component: TimeTeachingComponent
+                    },
+                    {
+                      path: 'all',
+                      component: SnapedAllRecordsComponent
                     }
                   ]
                 }
