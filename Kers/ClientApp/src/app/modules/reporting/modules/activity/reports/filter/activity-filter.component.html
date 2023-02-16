@@ -73,6 +73,24 @@
         </select>
       </div>
     </div>
+    <div *ngIf="!isUser" class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Extension Postition</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onPositionChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let position of positions$ | async" value="{{position.id}}">{{position.title}}</option>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="!isUser" class="form-group" >
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Program Areas</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select class="form-control" (change)="onSpecialtyChange($event)" name="Region">
+          <option value="null">-- Select --</option>
+          <option *ngFor="let prArea of programAreas$ | async" value="{{prArea.id}}">{{prArea.name}}</option>
+        </select>
+      </div>
+    </div>
     <div class="form-group" >
       <label class="control-label col-md-3 col-sm-3 col-xs-12">Selected</label>
       <div class="col-md-6 col-sm-6 col-xs-12">

@@ -232,8 +232,30 @@ namespace Kers.Controllers
             if( criteria.UnitId != null && criteria.UnitId != 0){
                 result = result.Where( a => a.PlanningUnitId == criteria.UnitId);
             }
+            if( criteria.PositionId != null && criteria.PositionId != 0){
+                result = result.Where( a => a.KersUser.ExtensionPositionId == criteria.PositionId);
+            }
+         /*    if( criteria.SpecialtyId != null && criteria.SpecialtyId != 0){
+                var spec = new Specialty();
+                spec.Id = criteria.SpecialtyId??0;
+                result = result.Where( a => a.KersUser.Specialties.Contains( spec  ));
+            } */
+            result = result
+                        .Include( a=>a.LastRevision).ThenInclude(r => r.ActivityOptionSelections)
+                        .Include( a => a.KersUser).ThenInclude( u => u.Specialties);
             var LastRevs = new List<ActivityRevision>();
-            foreach( var res in result.Include( a=>a.Revisions).ThenInclude(r => r.ActivityOptionSelections)) LastRevs.Add(res.Revisions.OrderBy( r => r.Created).Last());
+            if( criteria.SpecialtyId != null && criteria.SpecialtyId != 0){
+                foreach( var res in result){
+                    if(res.KersUser.Specialties.Select( s => s.SpecialtyId).ToList().Contains(criteria.SpecialtyId??0)){
+                        LastRevs.Add(res.LastRevision);
+                    }
+                }
+            }else{
+                foreach( var res in result){
+                    LastRevs.Add(res.LastRevision);
+                } 
+            }
+            
             var searchResult = new List<ActivitySearchResult>();
             var ret = new ActivitySeearchResultsWithCount();
             var skipped = 0;
@@ -282,6 +304,8 @@ namespace Kers.Controllers
             public int? RegionId;
             public int? AreaId;
             public int? UnitId;
+            public int? PositionId;
+            public int? SpecialtyId;
             public int? Skip;
             public int? Take;
 

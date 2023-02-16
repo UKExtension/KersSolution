@@ -4,7 +4,7 @@ import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, tap, mergeMap } from 'rxjs/operators';
 import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } from '../../../state/state.service';
-import { PlanningUnit } from "../../../user/user.service";
+import { ExtensionPosition, PlanningUnit, Specialty, UserService } from "../../../user/user.service";
 import { saveAs } from 'file-saver';
 import { ActivitySearchCriteria, ActivitySeearchResultsWithCount, ActivityService } from '../../activity.service';
 import { ActivityOption } from '../../../servicelog/servicelog.service';
@@ -39,6 +39,8 @@ export class ActivityFilterComponent implements OnInit {
   regions$:Observable<ExtensionRegion[]>;
   areas$:Observable<ExtensionArea[]>;
   counties$:Observable<PlanningUnit[]>;
+  positions$:Observable<ExtensionPosition[]>;
+  programAreas$:Observable<Specialty[]>;
 
 
   type="direct";
@@ -74,7 +76,8 @@ export class ActivityFilterComponent implements OnInit {
 
   constructor(
     private service:ActivityService,
-    private stateService:StateService
+    private stateService:StateService,
+    private userService:UserService
   ) { }
 
   ngOnInit() {
@@ -82,6 +85,8 @@ export class ActivityFilterComponent implements OnInit {
     this.congressional$ = this.stateService.congressional();
     this.regions$ = this.stateService.regions();
     this.counties$ = this.stateService.counties();
+    this.positions$ = this.userService.extensionPositions();
+    this.programAreas$ = this.userService.specialties();
     this.service.options().subscribe(
       res => {
         for( let type of res){
@@ -119,6 +124,8 @@ export class ActivityFilterComponent implements OnInit {
       regionId: null,
       areaId: null,
       unitId: null,
+      positionId: null,
+      specialtyId: null,
       options: [],
       skip: 0,
       take: 20
@@ -183,6 +190,22 @@ export class ActivityFilterComponent implements OnInit {
       this.criteria.unitId = undefined;
     }else{
       this.criteria["unitId"] = event.target.value;
+    }
+    this.onRefresh();
+  }
+  onPositionChange(event){
+    if(event.target.value == "null"){
+      this.criteria.positionId = undefined;
+    }else{
+      this.criteria["positionId"] = event.target.value;
+    }
+    this.onRefresh();
+  }
+  onSpecialtyChange(event){
+    if(event.target.value == "null"){
+      this.criteria.specialtyId = undefined;
+    }else{
+      this.criteria["specialtyId"] = event.target.value;
     }
     this.onRefresh();
   }

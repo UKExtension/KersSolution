@@ -308,6 +308,8 @@ export class ActivitySearchCriteria{
     regionId?:number;
     areaId?:number;
     unitId?:number;
+    positionId?:number;
+    specialtyId?:number;
     options:number[];
     skip:number = 0;
     take?:number;
