@@ -149,7 +149,7 @@ namespace Kers.Controllers
                     var submissions = await context.ProgramIndicatorValue
                                 .Where( a => a.KersUser == employee).ToListAsync();
                     num = submissions
-                                .Where( a => a.LastModifiedDateTime.Value.UtcDateTime.Month == (month - 1) && a.LastModifiedDateTime.Value.UtcDateTime.Year == year)
+                                .Where( a => a.LastModifiedDateTime.Value.UtcDateTime.Month == (month + 1) && a.LastModifiedDateTime.Value.UtcDateTime.Year == year)
                                 .Count();
                 }else{
                     num = await context.Expense.Where( a => a.KersUser == employee && a.ExpenseDate.Month == (month + 1) && a.ExpenseDate.Year == year ).CountAsync();
