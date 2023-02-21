@@ -117,6 +117,20 @@ namespace Kers.Controllers
                                             .ToListAsync();
 
             
+            }else if( filter == "county" ){
+                districtEmployees = await context.KersUser
+                                            .Where( u => u.RprtngProfile.PlanningUnitId == id
+                                                            &&
+                                                            u.ExtensionPosition.Title == "Extension Agent"
+                                                            &&
+                                                            u.RprtngProfile.PlanningUnit.Name != "Wildcat County CES (demo only)"
+                                                            && 
+                                                            u.RprtngProfile.enabled)
+                                            .Include( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit)
+                                            .Include( u => u.PersonalProfile).ThenInclude( r => r.UploadImage)
+                                            .ToListAsync();
+
+            
             }else{
                 districtEmployees = await context.KersUser
                                             .Where( u => u.RprtngProfile.PlanningUnit.DistrictId == id

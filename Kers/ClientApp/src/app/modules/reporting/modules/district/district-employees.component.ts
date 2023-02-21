@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DistrictService, District, EmployeeNumActivities } from './district.service';
 import { Observable } from 'rxjs';
 import { ExtensionArea, ExtensionRegion } from '../state/state.service';
+import { PlanningUnit } from '../plansofwork/plansofwork.service';
 
 @Component({
   selector: 'district-employees',
@@ -13,6 +14,7 @@ export class DistrictEmployeesComponent implements OnInit {
   @Input() district:District;
   @Input() area:ExtensionArea;
   @Input() region:ExtensionRegion;
+  @Input() county:PlanningUnit;
 
   activities:Observable<EmployeeNumActivities[]>;
   month:number;
@@ -56,6 +58,8 @@ export class DistrictEmployeesComponent implements OnInit {
       this.activities = this.service.employeeactivity(this.area.id, this.month, this.year, this.order, this.type, this.skip, this.take, "area", true);
     }else if( this.region != null ){
       this.activities = this.service.employeeactivity(this.region.id, this.month, this.year, this.order, this.type, this.skip, this.take, "region");
+    }else if( this.county != null ){
+      this.activities = this.service.employeeactivity(this.county.id, this.month, this.year, this.order, this.type, this.skip, this.take, "county");
     }else{
       this.activities = this.service.employeeactivity(this.district.id, this.month, this.year, this.order, this.type, this.skip, this.take);
     }

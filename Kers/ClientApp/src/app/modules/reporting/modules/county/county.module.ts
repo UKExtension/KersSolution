@@ -11,6 +11,7 @@ import { PlansofworkModule } from "../plansofwork/plansofwork.module";
 import { AffirmativeModule } from "../affirmative/affirmative.module";
 import { UnitHomeComponent } from './unit-home.component';
 import { KsuHomeComponent } from './ksu-home.component';
+import { DistrictModule } from '../district/district.module';
 
 
 
@@ -20,7 +21,8 @@ import { KsuHomeComponent } from './ksu-home.component';
                     CountyRoutingModule,
                     PlansofworkModule,
                     AffirmativeModule,
-                    UserModule
+                    UserModule,
+                    DistrictModule
                     ],
   declarations: [ CountyHomeComponent,
                   UnitHomeComponent,

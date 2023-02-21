@@ -65,7 +65,19 @@ import { switchMap } from 'rxjs/operators';
 
 
     <user-directory-list [county]="county" [showEmployeeSummaryButton]="true"></user-directory-list>
-
+    <div class="row" *ngIf="county">
+        <div class="col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Number of Submitted Activities per Agent</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <district-employees [county]="county"></district-employees>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="row">
@@ -142,7 +154,7 @@ export class CountyHomeComponent {
     id:number = 0;
     county: PlanningUnit;
     onlyEnabled:boolean = true;
-    returnto:string = 'district';
+    returnto:string = 'area';
 
     constructor( 
         private reportingService: ReportingService,
