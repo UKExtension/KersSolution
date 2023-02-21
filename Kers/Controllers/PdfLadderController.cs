@@ -136,7 +136,7 @@ namespace Kers.Controllers
 						runningY += textLineHeight;
 						pdfCanvas.DrawText("Program of Study: " + application.ProgramOfStudy, positionX, runningY, getPaint(10.0f));
 						runningY += textLineHeight;
-						pdfCanvas.DrawText("Evidence of Further Professioal or academic Training: " , positionX, runningY, getPaint(10.0f));
+						pdfCanvas.DrawText("Evidence of Further Professional or academic Training: " , positionX, runningY, getPaint(10.0f));
 
 
 
