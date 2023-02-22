@@ -47,6 +47,10 @@ export class UserService {
         }
     }
 
+    changeCurrentUserPlanningUnitTo( unit:PlanningUnit):void{
+        if(this.usr != null)  this.usr.rprtngProfile.planningUnit = unit;
+    }
+
     currentUserHasAnyOfTheRoles(roles:string[]):Observable<boolean>{
         return this.current()
             .pipe(
