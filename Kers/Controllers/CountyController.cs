@@ -234,11 +234,9 @@ namespace Kers.Controllers
 
         private PlanningUnit CurrentPlanningUnit(){
             var u = this.CurrentUserId();
-            var profile = mainContext.zEmpRptProfiles.
-                            Where(p=> p.linkBlueID == u).
-                            FirstOrDefault();
+            var unitId = context.ReportingProfile.Where( p => p.LinkBlueId == u).Select( p => p.PlanningUnitId).FirstOrDefault();
             return  this.context.PlanningUnit.
-                    Where( p=>p.Code == profile.planningUnitID).
+                    Where( p=>p.Id == unitId).
                     Include( p => p.Vehicles).
                     FirstOrDefault();
         }
