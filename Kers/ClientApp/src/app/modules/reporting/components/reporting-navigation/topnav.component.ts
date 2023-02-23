@@ -81,9 +81,7 @@ export class TopNavComponent implements OnInit{
             res => {
                 var newUser = <User>res;
                 this.user.rprtngProfile = newUser.rprtngProfile;
-                this.userService.changeCurrentUserPlanningUnitTo(newUser.rprtngProfile.planningUnit);
             }
-
         )
     }
 }
