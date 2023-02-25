@@ -1,16 +1,16 @@
-import { Component, OnInit, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import { FarmerAddress, SoildataService, FarmerAddressSearchResult } from '../soildata.service';
 import { Observable, Subject } from 'rxjs';
 import { FarmerAddressSearchCriteria } from '../soildata.report';
-import { startWith, flatMap, tap } from 'rxjs/operators';
+import { startWith, mergeMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'soildata-address-browser',
   template: `
-    <div class="ln_solid"></div>
+    <div *ngIf="close" class="ln_solid"></div>
 
     <div class="row" *ngIf="addresses$ | async as addresses">
-      <div class="col-xs-12" style="margin-bottom: 30px;">
+      <div *ngIf="close" class="col-xs-12" style="margin-bottom: 30px;">
         <a class="btn btn-info btn-xs pull-right" (click)="canceled()">close</a>
       </div>
       <div class="col-sm-6 col-xs-12">
@@ -34,9 +34,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
       <loading *ngIf="loading"></loading>
       <div *ngIf="!loading">
         <div class="col-lg-4 col-md-6 col-xs-12" *ngFor="let address of addresses.data"><br>
-        {{address.first}} {{address.last}}<br>
-        {{address.address}}<br>
-        {{address.city}}, {{address.st}} {{address.zip}} <br><span *ngIf="address.emailAddress">Email: {{address.emailAddress}}</span><br>
+          <soildata-list-address [address]="address" [brief]="false"></soildata-list-address>
         <a class="btn btn-info btn-xs" (click)="selected(address)">select</a>
         </div>
       </div>
@@ -63,7 +61,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
       </div>
     </div>
     
-    <div class="ln_solid"></div>
+    <div *ngIf="close" class="ln_solid"></div>
   `,
   styles: []
 })
@@ -76,7 +74,7 @@ export class SoildataAddressBrowserComponent implements OnInit {
   criteria:FarmerAddressSearchCriteria;
   
 
-
+  @Input('close') close=true;
 
 
   
@@ -101,7 +99,7 @@ export class SoildataAddressBrowserComponent implements OnInit {
     this.addresses$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        flatMap(_ => this.service.getCustomAddresses(this.criteria)), // Get some items
+        mergeMap(_ => this.service.getCustomAddresses(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
   }

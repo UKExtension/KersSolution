@@ -1,3 +1,4 @@
+import { BillingType, LabTestType, OptionalTestSoilReportBundle, SampleInfoBundle } from './sample/SampleInfoBundle';
 import {FarmerAddress, CountyCode} from './soildata.service';
 
 
@@ -11,16 +12,28 @@ export class SoilReportBundle{
     coSamnum:string;
     planningUnit:CountyCode;
     farmerForReport:FarmerForReport;
+    farmerAddressId?:number;
+    farmerAddress:FarmerAddress;
     typeForm:TypeForm;
     reports:SoilReport[];
     statusHistory:SoilReportStatusChange[];
     lastStatus:SoilReportStatusChange;
+    billingType:BillingType;
+    billingTypeId:number;
+    ownerID:string;
+    acres:number;
+    optionalInfo:string;
+    privateNote:string;
+    optionalTests:LabTestType[];
+    sampleInfoBundles: SampleInfoBundle[];
+    optionalTestSoilReportBundles: OptionalTestSoilReportBundle[];
 }
 
 export class SoilReportStatusChange{
     id:number;
     soilReportStatus:SoilReportStatus;
     created:Date;
+    kersUserId?:number;
 }
 
 export class SoilReportStatus{
@@ -28,6 +41,9 @@ export class SoilReportStatus{
     name:string;
     description:string;
     cssClass:string;
+    order:number;
+    roleCode:string;
+    group:number;
 }
 
 export class SoilReport{

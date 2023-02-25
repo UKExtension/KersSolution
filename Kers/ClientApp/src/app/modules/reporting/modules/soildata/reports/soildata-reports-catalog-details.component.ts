@@ -8,32 +8,40 @@ import { Observable } from 'rxjs';
 @Component({
   selector: '[soildata-reports-catalog-details]',
   template: `
-    <td *ngIf="default">{{report.labTestsReady | date:'mediumDate'}}</td>
+    <td *ngIf="default">{{report.sampleLabelCreated | date:'mediumDate'}}</td>
     <td *ngIf="default">{{report.typeForm.code}}</td>
     <td *ngIf="default">{{report.coSamnum}}</td>
     <td *ngIf="default">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
     <td *ngIf="default" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
-      <div *ngIf="!statusLoading">
-        <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
-          {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-angle-down"></i>
-        </a>
-        <div *ngIf="statusChangeClicked" style="position:absolute;">
-          <table class="table status-choice">
-            <tbody>
-              <tr *ngFor="let st of $statuses | async">
-                <td><a style="cursor:pointer;" (click)="changeStatusTo(st.id)">{{st.name}}</a></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div *ngIf="processedStatuses == null && report.lastStatus !=null">
+        {{report.lastStatus.soilReportStatus.name}}
       </div>
-      <loading *ngIf="statusLoading" [type]="bars"></loading>
+      <ng-container *ngIf="processedStatuses != null">
+        <div *ngIf="!statusLoading">
+          <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
+            {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-angle-down"></i>
+          </a>
+          <div *ngIf="statusChangeClicked" style="position:absolute;">
+            <table class="table status-choice">
+              <tbody>
+                <tr *ngFor="let st of processedStatuses">
+                  <td><a style="cursor:pointer;" (click)="changeStatusTo(st.id)">{{st.name}}</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <loading *ngIf="statusLoading" [type]="bars"></loading>
+      </ng-container>
     </td>
     <td *ngIf="default" class="text-right">
-      <a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil"></i> review</a>
-      <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a>
+      <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="isEditButtonAvailable()"><i class="fa fa-pencil"></i> edit</a>
+      <a class="btn btn-info btn-xs" (click)="sampleCopy()" *ngIf="isCopyButtonAvailable()"><i class="fa fa-copy"></i> copy</a>
+      <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="isReviewButtonAvailable()"><i class="fa fa-pencil"></i> review</a>
+      <a class="btn btn-info btn-xs" (click)="print()" *ngIf="isPdfButtonAvailable()"><i class="fa fa-download"></i> pdf</a>
       <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
-      <a class="btn btn-info btn-xs" (click)="email()" ><i class="fa fa-envelope"></i> email</a>
+      <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="isEmailButtonAvailable()"><i class="fa fa-envelope"></i> email</a>
+      <a *ngIf="isAlterButtonAvailable()" class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Alter</a>
     </td>
     <td *ngIf="edit" colspan="6">
       <div class="row">
@@ -51,6 +59,15 @@ import { Observable } from 'rxjs';
       </div>
       <soildata-report-form [report]="report"></soildata-report-form>
     </td>
+    <td *ngIf="sampleEdit" colspan="6">
+      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+      <soil-sample-form [sample]="report" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
+    </td>
+    <td *ngIf="altCrop" colspan="6">
+      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+      <soil-sample-form [sample]="report" [isThisAltCrop]="true" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
+    </td>
+    
   `,
   styles: [`
   .soil-report-status-recieved{
@@ -79,9 +96,14 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Input('soildata-reports-catalog-details') report: SoilReportBundle;
 
   @Output() onStatusChange = new EventEmitter<SoilReportStatus | null>();
+  @Output() onCopySample = new EventEmitter<SoilReportBundle>();
+  @Output() isItReport = new EventEmitter<boolean>();
+  @Output() isItSample = new EventEmitter<boolean>();
 
   default = true;
   edit = false;
+  altCrop = false;
+  sampleEdit = false;
   pdfLoading = false;
   deleteLoading = false;
   statusLoading = false;
@@ -90,6 +112,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   user:User;
   statusChangeClicked = false;
   $statuses:Observable<SoilReportStatus[]>;
+  processedStatuses:SoilReportStatus[];
 
   constructor(
     private service:SoildataService,
@@ -101,16 +124,123 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
       res => this.user = res
     );
     this.$statuses = this.service.reportStatuses();
+    this.ProcessStatuses();
+    if(this.report.reports != null && this.report.reports.length > 0 ){
+      this.isItReport.emit(true);
+    }else{
+      this.isItReport.emit(false);
+      if(this.report.sampleInfoBundles != null && this.report.sampleInfoBundles.length > 0 && this.report.lastStatus != null && this.report.lastStatus.soilReportStatus.name == "Entered" ){
+        this.isItSample.emit(true);
+      }else{
+        this.isItSample.emit(false);
+      }
+    }
+    
   }
 
   defaultView(){
     this.default = true;
     this.edit = false;
+    this.sampleEdit = false;
+    this.altCrop = false;
   }
   editView(){
     this.default = false;
     this.edit = true;
+    this.sampleEdit = false;
+    this.altCrop = false;
   }
+  sampleEditView(){
+    this.default = false;
+    this.edit = false;
+    this.sampleEdit = true;
+    this.altCrop = false;
+  }
+  altCropView(){
+    this.default = false;
+    this.edit = false;
+    this.sampleEdit = false;
+    this.altCrop = true;
+
+  }
+
+  isEditButtonAvailable():boolean{
+    if( this.report.sampleInfoBundles != null 
+          && 
+        this.report.sampleInfoBundles.length > 0 
+          && 
+        this.report.reports.length == 0
+    ){
+      return true;
+    }
+    return false;
+  }
+
+  isCopyButtonAvailable():boolean{
+    if( this.report.sampleInfoBundles != null 
+          && 
+        this.report.sampleInfoBundles.length > 0 
+          && 
+        this.report.reports.length == 0
+          &&
+        this.report.lastStatus.soilReportStatus.name != 'InLab'
+    ){
+      return true;
+    }
+    return false;
+  }
+  isReviewButtonAvailable():boolean{
+    if( 
+      this.report.reports != null 
+        && 
+      this.report.reports.length > 0
+        &&
+      (this.report.lastStatus != null && this.report.lastStatus.soilReportStatus.name != 'AltCrop')
+    ){
+      return true;
+    }
+    return false;
+  }
+
+  isPdfButtonAvailable():boolean{
+    if( 
+      !this.pdfLoading 
+        && 
+      this.report.reports != null 
+        && 
+      this.report.reports.length > 0
+        &&
+      (this.report.lastStatus != null && this.report.lastStatus.soilReportStatus.name != 'AltCrop')
+    ){
+      return true;
+    }
+    return false;
+  }
+  isEmailButtonAvailable():boolean{
+    if( 
+      this.report.reports != null 
+        && 
+      this.report.reports.length > 0
+        &&
+      (this.report.lastStatus != null && this.report.lastStatus.soilReportStatus.name != 'AltCrop')
+    ){
+      return true;
+    }
+    return false;
+  }
+  isAlterButtonAvailable():boolean{
+    if( 
+      this.report.reports != null 
+        && 
+      this.report.reports.length > 0
+    ){
+      return true;
+    }
+    return false;
+  }
+
+
+
   print(){
     this.pdfLoading = true;
     
@@ -127,11 +257,17 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   changeStatusTo(id:number){
     this.service.changestatus(id, this.report.id).subscribe(
       res => {
-        this.report.lastStatus.soilReportStatus = res;
+        //this.report.lastStatus.soilReportStatus = res;
         this.onStatusChange.emit(res);
       }
     )
   }
+
+  sampleCopy(){
+    this.onCopySample.emit(this.report);
+  }
+
+
   onDelete(){
     this.deleteLoading = true;
     this.service.deleteReport(this.report.id).subscribe(
@@ -142,6 +278,48 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     )
     
   }
+  SampleFormCanceled(){
+    this.defaultView();
+  }
+  SampleFormSubmit(event:SoilReportBundle){
+    this.onStatusChange.emit(null);
+  }
+
+  ProcessStatuses(){
+    this.userService.currentUserHasAnyOfTheRoles(["STLA"]).subscribe(
+
+      res => {
+
+        if(res){
+          this.$statuses.subscribe(
+
+            res => {
+              this.processedStatuses = res;
+            }
+            
+          )
+        }else if( this.report.lastStatus != null )
+                
+                if (
+                  this.report.lastStatus.soilReportStatus.roleCode == undefined 
+                    || 
+                  this.report.lastStatus.soilReportStatus.roleCode == ""
+                ){
+                  this.$statuses.subscribe(
+                    res => {
+                      this.processedStatuses = res.filter( f => ((f.roleCode == undefined || f.roleCode == "") && f.group == this.report.lastStatus.soilReportStatus.group));
+                    }
+                  )
+                }
+      }
+
+
+
+    );
+    
+  }
+
+
 
   email(){
     this.service.updateBundleStatusToArchived(this.report.id, this.report).subscribe(

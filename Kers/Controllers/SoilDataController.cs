@@ -92,27 +92,87 @@ namespace Kers.Controllers
             bundles = bundles.Where( b => criteria.FormType.Count() == 0 || criteria.FormType.Contains(b.TypeForm.Id));
             bundles = bundles.Where( b => b.LastStatus == null || criteria.status.Count() == 0 || criteria.status.Contains(b.LastStatus.SoilReportStatus.Id) );
             //if(criteria.Start != null){
-                bundles = bundles.Where( i => i.LabTestsReady > criteria.Start);
+                bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
             //}
             //if( criteria.End != null){
-                bundles = bundles.Where( i => i.LabTestsReady < criteria.End);
+                bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
             //}
             bundles = bundles
                         .Include( b => b.Reports)
                         .Include( b => b.FarmerForReport)
                         .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
-                        .Include( b => b.TypeForm);
-            IOrderedQueryable orderedBundles;
+                        .Include( b => b.TypeForm)
+                        .Include( b => b.FarmerAddress)
+                        .Include( b => b.SampleInfoBundles).ThenInclude( i => i.SampleAttributeSampleInfoBundles)
+                        .Include( b => b.OptionalTestSoilReportBundles);
+            IOrderedQueryable<SoilReportBundle> orderedBundles;
             if(criteria.Order == "smpl"){
                 orderedBundles = bundles.OrderByDescending( s => s.CoSamnum);
             }else if( criteria.Order == "smplasc"){
                 orderedBundles = bundles.OrderBy( s => s.CoSamnum);
             }else if( criteria.Order == "dsc"){
-                orderedBundles = bundles.OrderByDescending( s => s.LabTestsReady);
+                orderedBundles = bundles.OrderByDescending( s => s.SampleLabelCreated);
             }else{
-                orderedBundles = bundles.OrderBy( s => s.LabTestsReady);
+                orderedBundles = bundles.OrderBy( s => s.SampleLabelCreated);
             }
+            foreach( var bndle in orderedBundles){
+                bndle.CoSamnum = bndle.CoSamnum.TrimStart('0');
+            }
+
             return new OkObjectResult(orderedBundles);
+        }
+
+        [HttpPost("GetStatuses/{allCounties?}/{countyId?}")]
+        public IActionResult GetPresentStatuses( [FromBody] SoilReportSearchCriteria criteria, 
+                                        Boolean allCounties = false,
+                                        int countyId = 0
+                                        ){
+            List<SoilReportStatus> statuses;
+            var bundles = from i in _soilDataContext.SoilReportBundle select i;
+            if( !allCounties ){
+                if(countyId == 0){
+                    var user = this.CurrentUser();
+                    countyId = user.RprtngProfile.PlanningUnitId;
+                }
+                bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
+            }
+            bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
+            bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
+            bundles.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus);
+            statuses = bundles.Select( b => b.LastStatus.SoilReportStatus).ToList();
+            List<SoilReportStatus> filteredStatuses = new List<SoilReportStatus>();
+            foreach( var status in statuses){
+                if( status!=null && !filteredStatuses.Any( s => s.Id == status.Id)){
+                    filteredStatuses.Add(status);
+                }
+            }
+            return new OkObjectResult(filteredStatuses.OrderBy( t => t.Order ));
+        }
+        [HttpPost("GetTypes/{allCounties?}/{countyId?}")]
+        public IActionResult GetPresentTypes( [FromBody] SoilReportSearchCriteria criteria, 
+                                        Boolean allCounties = false,
+                                        int countyId = 0
+                                        ){
+            List<TypeForm> types;
+            var bundles = from i in _soilDataContext.SoilReportBundle select i;
+            if( !allCounties ){
+                if(countyId == 0){
+                    var user = this.CurrentUser();
+                    countyId = user.RprtngProfile.PlanningUnitId;
+                }
+                bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
+            }
+            bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
+            bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
+            bundles.Include( b => b.TypeForm);
+            types = bundles.Select( b => b.TypeForm).ToList();
+            List<TypeForm> filteredTypes = new List<TypeForm>();
+            foreach( var type in types){
+                if( !filteredTypes.Any( s => s.Id == type.Id)){
+                    filteredTypes.Add(type);
+                }
+            }
+            return new OkObjectResult(filteredTypes.OrderBy( t =>t.Name ));
         }
 
         public class FarmerAddressSearchCriteria{
@@ -293,7 +353,7 @@ namespace Kers.Controllers
                     bundle.LastStatus.Created = DateTime.Now;
                     _soilDataContext.SaveChanges();
                 }
-                this.Log(bundle,"SoilReportBundle", "Bundle Status Updated.");
+                this.Log(bundle,"SoilReportBundle", "Bundle Status Updated.", "SoilReportBundle");
                 return new OkObjectResult(bundle);
             }else{
                 this.Log( sentBundle ,"SoilReportBundle", "Not Found SoilReportBundle status update bundle attempt.", "SoilReportBundle", "Error");
@@ -322,7 +382,7 @@ namespace Kers.Controllers
                     }
                 }
                 _soilDataContext.SaveChanges();
-                this.Log(crop,"SoilReport", "SoilReport note Updated.");
+                this.Log(crop,"SoilReport", "SoilReport note Updated.", "SoilReportBundle");
                 return new OkObjectResult(crop);
             }else{
                 this.Log( note ,"SoilReport", "Not Found SoilReport or missing note in an update report attempt.", "SoilReport", "Error");
@@ -339,11 +399,21 @@ namespace Kers.Controllers
                                 .Include( b => b.LastStatus)
                             .FirstOrDefault();
             var status = _soilDataContext.SoilReportStatus.Where( s => s.Id == statusId).FirstOrDefault();
-            if(report != null && status != null ){
+            var user = this.CurrentUser();
+            Boolean allowed = true;
 
-                report.LastStatus.SoilReportStatus = status;
+
+            if(report != null && status != null && allowed){
+                SoilReportStatusChange change = new SoilReportStatusChange();
+                change.SoilReportStatus = status;
+                change.Created = DateTime.Now;
+                change.KersUserId = user.Id;
+                change.SoilReportBundleId = report.Id;
+                _soilDataContext.SoilReportStatusChange.Add(change);
                 _soilDataContext.SaveChanges();
-                this.Log(report,"SoilReport", "SoilReport status Updated.");
+                report.LastStatus = change;
+                _soilDataContext.SaveChanges();
+                this.Log(report,"SoilReport", "SoilReport status Updated to "+status.Name+".", "SoilReport");
                 return new OkObjectResult(status);
             }else{
                 this.Log( bundleId ,"SoilReport", "Not Found SoilReport or missing note in an update report status attempt.", "SoilReport", "Error");
@@ -351,7 +421,25 @@ namespace Kers.Controllers
             }
         }
 
-
+        [HttpPost("checkaddress")]
+        [Authorize]
+        public IActionResult CheckAddress( [FromBody] FarmerAddress address){
+            if(address != null){
+                var user = this.CurrentUser();
+                var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
+                address.CountyCodeId = countyCode.CountyID;
+                var found = _soilDataContext.FarmerAddress.Where( a => a.First.ToLower().Trim() == address.First.ToLower().Trim() 
+                                                                        && a.Last.ToLower().Trim() == address.Last.ToLower().Trim()
+                                                                        && a.First != "" 
+                                                                        && a.Last != ""
+                                                                        && a.CountyCodeId == countyCode.CountyID
+                                                                ).FirstOrDefault();
+                return new OkObjectResult(found);
+            }else{
+                this.Log( address ,"FarmerAddress", "Error in searching FarmerAddress with the same name attempt.", "FarmerAddress", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
 
 
         [HttpPost("addaddress")]
@@ -387,7 +475,7 @@ namespace Kers.Controllers
                 adr.HomeNumber = address.HomeNumber;
                 adr.EmailAddress = address.EmailAddress;
                 _soilDataContext.SaveChanges();
-                this.Log(address,"FarmerAddress", "FarmerAddress Updated.");
+                this.Log(address,"FarmerAddress", "FarmerAddress Updated.","FarmerAddress");
                 return new OkObjectResult(address);
             }else{
                 this.Log( address ,"FarmerAddress", "Not Found Farmer Address in an update attempt.", "FarmerAddress", "Error");
@@ -405,7 +493,7 @@ namespace Kers.Controllers
                 note.CountyCode = countyCode;
                 _soilDataContext.Add(note); 
                 _soilDataContext.SaveChanges();
-                this.Log(note,"CountyNote", "County Note added.");
+                this.Log(note,"CountyNote", "County Note added.","CountyNote");
                 return new OkObjectResult(note); 
             }else{
                 this.Log( note ,"CountyNote", "Error in adding County Note attempt.", "CountyNote", "Error");
@@ -421,7 +509,7 @@ namespace Kers.Controllers
                 nte.Name = note.Name;
                 nte.Note = note.Note;
                 _soilDataContext.SaveChanges();
-                this.Log(note,"CountyNote", "County Note Updated.");
+                this.Log(note,"CountyNote", "County Note Updated.","CountyNote");
                 return new OkObjectResult(nte);
             }else{
                 this.Log( note ,"CountyNote", "Not Found County Note in an update attempt.", "CountyNote", "Error");
@@ -477,6 +565,8 @@ namespace Kers.Controllers
                 this.Log( signees ,"FormTypeSignees", "Not Found County in an FormTypeSignees update attempt.", "FormTypeSignees", "Error");
                 return new StatusCodeResult(500);
             }
+            CurrentCountyCode.InvoiceEmail = signees.invoiceEmail;
+            CurrentCountyCode.ReportEmail = signees.reportEmail;
 
             var currentSignees = await _soilDataContext.FormTypeSignees
                                     .Where( s =>  s.PlanningUnit == CurrentCountyCode)
@@ -556,11 +646,20 @@ namespace Kers.Controllers
             var FormTypes = this._soilDataContext.TypeForm.OrderBy( t => t.Code).ToListAsync();
             return new OkObjectResult(await FormTypes);
         }
+        [HttpGet("countyinfo/{countyid?}")]
+        public async Task<IActionResult> CountyInfo(int countyid = 0){
+            if( countyid == 0 ){
+                countyid = this.CurrentUser().RprtngProfile.PlanningUnitId;
+            }
+            var CurrentCountyCode = await this._soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == countyid).FirstOrDefaultAsync();
+            if( CurrentCountyCode == null) return new StatusCodeResult(500);
+            return new OkObjectResult(CurrentCountyCode);
+        }
 
         [HttpGet("reportstatus")]
         public async Task<IActionResult> ReportStatus(){
-            var FormTypes = this._soilDataContext.SoilReportStatus.OrderBy( t => t.Id).ToListAsync();
-            return new OkObjectResult(await FormTypes);
+            var Statuses = this._soilDataContext.SoilReportStatus.OrderBy( t => t.Order).ToListAsync();
+            return new OkObjectResult(await Statuses);
         }
 
     }
@@ -568,5 +667,7 @@ namespace Kers.Controllers
 
     public class SigneesObject{
         public List<FormTypeSignees> signees;
+        public string invoiceEmail;
+        public string reportEmail;
     }
 }

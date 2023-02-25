@@ -1,0 +1,111 @@
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!sample">New Soil Sample Info</h2><h2 *ngIf="sample">Update Soil Sample Info</h2><br><br>
+    </div>
+
+    <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="soilSampleForm">
+        
+        <div class="form-group">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Client:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <address-browser-form-element formControlName="farmerAddress"></address-browser-form-element>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="rDT">Date In:</label>
+            <div class="col-md-5 col-sm-7 col-xs-8">
+    
+                <div class="input-group">
+                
+                    <input type="text" class="form-control input-box" placeholder="Click to select a date" 
+                        angular-mydatepicker name="sampleLabelCreated" (click)="dp.toggleCalendar()" 
+                        formControlName="sampleLabelCreated" [options]="myDatePickerOptions" 
+                        #dp="angular-mydatepicker">
+                    <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId">Billing Options:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <select name="billingTypeId" formControlName="billingTypeId" class="form-control col-md-7 col-xs-12">
+                    <option *ngFor="let billingType of billingTypes$ | async" [value]="billingType.id">{{billingType.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">County Sample #:<br><small style="font-weight:normal;">(Max Length 4 symbols)</small></label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" name="coSamnum" formControlName="coSamnum" id="coSamnum" class="form-control col-xs-12" />
+            </div>
+        </div>
+        <div *ngIf="soilSampleForm.get('coSamnum').hasError('countySampleNumberAlreadyExists')" class="red form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">&nbsp;</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">Warning: Same County Sample Number already exists.</div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="optionalTests">Optional Tests:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <ng-select
+                    id="optionalTests"
+                    formControlName="optionalTests"
+                    [items]="testTypes"
+                    [multiple]="true"
+                    [hideSelected]="true"
+                    placeholder = "(select any/all that apply)">
+                </ng-select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Owner ID:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" name="ownerID" formControlName="ownerID" id="ownerID" class="form-control col-xs-12" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Acres:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" formControlName="acres" id="acres" class="form-control col-xs-12"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Optional Info:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" formControlName="optionalInfo" id="optionalInfo" class="form-control col-xs-12"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="privateNote" class="control-label col-md-3 col-sm-3 col-xs-12">Non-reported Comment:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" formControlName="privateNote" id="privateNote" class="form-control col-xs-12"/>
+            </div>
+        </div>
+
+        <div class="form-group"  formArrayName="sampleInfoBundles">
+            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Crop(s):</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <div *ngFor="let control of sampleInfoBundles.controls; index as i">
+                     <!-- repeated crop form element template -->
+                    <div  class="address-browser">
+                        <soil-crop-form-element [index]="i" (removeMe)="cropRemoved($event)" [formControlName]="i"></soil-crop-form-element>
+                    </div>
+                    <br>
+                </div>
+                <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add crop</a>
+            </div>
+        </div>
+
+        
+
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
+                <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                <button type="submit" [disabled]="soilSampleForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
+    <!-- {{soilSampleForm.value | json}} -->
+</div>

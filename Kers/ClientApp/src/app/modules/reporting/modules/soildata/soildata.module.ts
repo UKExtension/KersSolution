@@ -19,32 +19,45 @@ import { SoildataReportFormComponent } from './reports/soildata-report-form.comp
 import { SoildataReportCropComponent } from './reports/soildata-report-crop.component';
 import { SoildataReportLabResulsComponent } from './reports/soildata-report-lab-resuls.component';
 import { SoildataAddressBrowserComponent } from './addresses/soildata-address-browser.component';
-
+import { SampleFormComponent } from './sample/sample-form.component';
+import { SoilCropFormElementComponent } from './sample/soil-crop-form-element.component';
+import { SoildataListAddressComponent } from './addresses/soildata-list-address.component';
+import { SoilCropattributeFormElementComponent } from './sample/soil-cropattribute-form-element.component';
+import { AddressBrowserFormElementComponent } from './sample/address-browser-form-element.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 
 
 
 @NgModule({
-  declarations: [
-  SoildataHomeComponent,
-  SoildataFarmerAddressComponent,
-  SoildataNotesComponent,
-  SoildataFarmerAddressFormComponent,
-  SoildataFarmerAddressDetailComponent,
-  SoildataNotesDetailComponent,
-  SoildataNotesFormComponent,
-  SoildataSigneesComponent,
-  SoildataReportsComponent,
-  SoildataReportsCatalogComponent,
-  SoildataReportsCatalogDetailsComponent,
-  SoildataReportFormComponent,
-  SoildataReportCropComponent,
-  SoildataReportLabResulsComponent,
-  SoildataAddressBrowserComponent],
   imports: [
     SharedModule,
     AngularMyDatePickerModule,
     CommonModule,
-    SoildataRoutingModule
-  ]
+    SoildataRoutingModule,
+    NgSelectModule,
+    FormsModule
+  ],
+  declarations: [
+    SoildataHomeComponent,
+    SoildataFarmerAddressComponent,
+    SoildataNotesComponent,
+    SoildataFarmerAddressFormComponent,
+    SoildataFarmerAddressDetailComponent,
+    SoildataNotesDetailComponent,
+    SoildataNotesFormComponent,
+    SoildataSigneesComponent,
+    SoildataReportsComponent,
+    SoildataReportsCatalogComponent,
+    SoildataReportsCatalogDetailsComponent,
+    SoildataReportFormComponent,
+    SoildataReportCropComponent,
+    SoildataReportLabResulsComponent,
+    SoildataAddressBrowserComponent,
+    SampleFormComponent,
+    SoilCropFormElementComponent,
+    SoilCropattributeFormElementComponent,
+    AddressBrowserFormElementComponent,
+    SoildataListAddressComponent]
 })
 export class SoildataModule { }

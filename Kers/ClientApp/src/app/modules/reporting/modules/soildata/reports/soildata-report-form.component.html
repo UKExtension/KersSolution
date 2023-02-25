@@ -2,17 +2,19 @@
 <div class="row">
   <div class="col-sm-6">
     <strong>{{report.typeForm.name}}</strong><br>
-    Received Date: {{ report.dataProcessed | date: 'mediumDate'}}<br>
-    Report Date: {{ report.labTestsReady | date: 'mediumDate'}}<br>
+    Received Date: {{ report.sampleLabelCreated | date: 'mediumDate'}}<br>
+    Report Date: {{ report.dataProcessed | date: 'mediumDate'}}<br>
     Laboratory Number: {{report.reports[0].labNum}}<br>
-    Owner Sample Id: {{report.reports[0].osId}}<br>
-    <span *ngIf="report.reports[0].acres">Acres: {{report.reports[0].acres}}<br></span>
-    <span *ngIf="report.reports[0].extra1">{{report.reports[0].extra1}}<br></span>
-    <span *ngIf="report.reports[0].extra2">{{report.reports[0].extra2}}<br></span>
-    <span *ngIf="report.reports[0].extra3">{{report.reports[0].extra3}}<br></span>
+    
     
   </div>
   <div class="col-sm-6">
+    <ng-container *ngIf="report.ownerID">Owner Sample Id: {{report.ownerID}}<br></ng-container>
+    <ng-container *ngIf="report.acres">Acres: {{report.acres}}<br></ng-container>
+    <ng-container *ngIf="report.optionalInfo">{{report.optionalInfo}}<br></ng-container>
+
+<!-- 
+
     <strong>Farmer:</strong><br>
     <loading *ngIf="loading"></loading>
     <div *ngIf="report.farmerForReport != null && !loading">
@@ -27,6 +29,10 @@
       <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">add</a>
     </div>
     <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+  
+   -->
+  
+  
   </div>
 </div><br><br>
 <div class="row">

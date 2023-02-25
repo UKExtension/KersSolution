@@ -36,8 +36,11 @@ namespace Kers.Controllers
 		private int numPages;
 		private int currentPage;
 
+		private int[] packSlipTableVerticalLines = new int[]{ 29, 50, 180, 240, 280, 360, 480, 586 };
+
 
 		int currentYPosition = 0;
+
         public PdfSoilDataController(
             KERScoreContext _context,
 			IKersUserRepository userRepo,
@@ -86,9 +89,30 @@ namespace Kers.Controllers
 				return File(stream.DetachAsData().AsStream(), "application/pdf", "SoilTestResults.pdf");
 			}
 		}
-		public class UniqueIds{
-			public List<string> ids;
+
+
+		[HttpPost("packing")]
+		public IActionResult PackingSlipPdf([FromBody] UniqueIds unigueIds)
+        {
+			using (var stream = new SKDynamicMemoryWStream ())
+                using (var document = SKDocument.CreatePdf (stream, this.metadata("Kers, Soil Testing, Consolidated Report", "Soil Test Reports", "Summary Soil Test Report"))) {
+					PackingSlipData data = new PackingSlipData(this._soilContext, unigueIds);
+					var numPackSlipPages = data.pages.Count();
+					var currentPackSlipPage = 1;
+					foreach( var pageData in data.pages ){
+						PackSlipPage(document, pageData, currentPackSlipPage++, numPackSlipPages);
+					}
+					var newStatus = this._soilContext.SoilReportStatus.Where( s => s.Name == "Sent").FirstOrDefault();
+					foreach( var sample in data.samples){
+						sample.LastStatus.SoilReportStatus = newStatus;
+					}
+					this._soilContext.SaveChanges();
+					document.Close();
+					return File(stream.DetachAsData().AsStream(), "application/pdf", "SoilTestResults.pdf");
+			}
 		}
+
+		
 
 		private void AddressesPage(List<SoilReportBundle> samples, SKDocument document){
 			var usableWidth = width - 30;
@@ -185,7 +209,7 @@ namespace Kers.Controllers
 				UnderTheHeader(pdfCanvas, report, bundle);
 				CropInfo(pdfCanvas, report, bundle);
 				
-				ExtraInfo(pdfCanvas, report);
+				ExtraInfo(pdfCanvas, report, bundle);
 				TestResults(pdfCanvas, report);
 				pdfCanvas = LimeComment(pdfCanvas, report, document);
 				pdfCanvas = AgentComment(pdfCanvas, report, document);
@@ -203,7 +227,7 @@ namespace Kers.Controllers
 			//Header Right
 			pdfCanvas.DrawText("Soil Test Report", 452, 42, getPaint(17.0f, 1));
 			//if(bundle.LabTestsReady != null){
-				pdfCanvas.DrawText(bundle.LabTestsReady.ToString("d"), 490, 60, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(bundle.DataProcessed.ToString("d"), 490, 60, getPaint(10.0f, 1));
 			//}
 			//County Office Address
 			var unit =  _context.PlanningUnit.Where( u => u.Id == bundle.PlanningUnit.PlanningUnitId).FirstOrDefault();  
@@ -231,8 +255,8 @@ namespace Kers.Controllers
 			pdfCanvas.DrawText("REPORT TYPE: " + report.TypeForm, 29, 95, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("LAB NUM: " + report.LabNum, 29, 112, getPaint(10.0f, 1));
 			pdfCanvas.DrawText("CO NUM: " + bundle.CoSamnum, 29, 129, getPaint(10.0f, 1));
-			if(report.Acres != null && report.Acres != "0"){
-				pdfCanvas.DrawText("ACRES: " + report.Acres, 29, 146, getPaint(10.0f, 1));
+			if(bundle.Acres != null && bundle.Acres != "0"){
+				pdfCanvas.DrawText("ACRES: " + bundle.Acres, 29, 146, getPaint(10.0f, 1));
 			}
 
 			// Farmer Address
@@ -265,8 +289,8 @@ namespace Kers.Controllers
 			pdfCanvas.DrawLine(370, 130, width - 29, 130, thinLinePaint);
 			
 
-			if(report.OsId != null && report.OsId != ""){
-				pdfCanvas.DrawText("OWNER SAMPLE ID: "+report.OsId, 29, currentYPosition, getPaint(10.0f, 1));
+			if( bundle.OwnerID != null && bundle.OwnerID != ""){
+				pdfCanvas.DrawText("OWNER SAMPLE ID: "+bundle.OwnerID, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition += 2;
 			}
 		}
@@ -350,8 +374,17 @@ namespace Kers.Controllers
 			 */
 			
 		}
-		private void ExtraInfo(SKCanvas pdfCanvas, SoilReport report){
+		private void ExtraInfo(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
 			var extraPresent = false;
+			if( bundle.OptionalInfo != null && bundle.OptionalInfo != ""){
+				extraPresent = true;
+				pdfCanvas.DrawLine(29, currentYPosition, width - 29, currentYPosition, thinLinePaint);
+				currentYPosition += 10;
+				pdfCanvas.DrawText(bundle.OptionalInfo, 29, currentYPosition, getPaint(10.0f, 1));
+				currentYPosition+=12;
+			}
+
+/* 
 			if(report.Extra1 != null){
 				extraPresent = true;
 				pdfCanvas.DrawLine(29, currentYPosition, width - 29, currentYPosition, thinLinePaint);
@@ -377,6 +410,9 @@ namespace Kers.Controllers
 				pdfCanvas.DrawText(report.Extra3, 29, currentYPosition, getPaint(10.0f, 1));
 				currentYPosition+=12;
 			}
+
+ */
+
 			if(extraPresent) currentYPosition -= 3;
 		}
 		private void TestResults(SKCanvas pdfCanvas, SoilReport report){
@@ -765,5 +801,180 @@ namespace Kers.Controllers
         }
 
 
+		/***********************************/
+		// Drawing Packing Slip Pages
+		/***********************************/
+
+
+		private void PackSlipPage(SKDocument document, List<List<string>> pageData, int currentPage, int numPages){
+			var pdfCanvas = document.BeginPage(width, height);
+			PackSlipPageHeader(pdfCanvas);
+			PackSlipPagePageInfo( pdfCanvas, currentPage, numPages );
+			PackSlipTableHeader( pdfCanvas );
+			PackSlipSampleRows( pdfCanvas, pageData );
+			document.EndPage();
+		}
+
+		private void PackSlipPageHeader(SKCanvas pdfCanvas){
+			pdfCanvas.DrawText( "Soil Samples Packing Slip", 52, 72, getPaint(17.0f, 1));
+		}
+
+		private void PackSlipPagePageInfo( SKCanvas pdfCanvas, int currentPage, int numPages ){
+			pdfCanvas.DrawText("Page "+currentPage.ToString()+" of "+numPages.ToString(), width - 65, 16, getPaint(7.0f));
+			pdfCanvas.DrawText( "Packing Slip Generated: " + DateTime.Now.ToString(), 29, height - 16, getPaint(7.0f) );
+		}
+
+		private void PackSlipTableHeader( SKCanvas pdfCanvas){
+			
+			var padding = 4;
+			var yPos = 140;
+			var yPadding = 15;
+			pdfCanvas.DrawLine(29,yPos, width - 26, yPos, thinLinePaint);
+			foreach( var pos in packSlipTableVerticalLines){
+				pdfCanvas.DrawLine(pos,yPos, pos, yPos + 26, thinLinePaint);
+			}
+			pdfCanvas.DrawText("UK LAB #", packSlipTableVerticalLines[1] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Type Test", packSlipTableVerticalLines[2] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Cnt ID", packSlipTableVerticalLines[3] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Sample #", packSlipTableVerticalLines[4] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Client Name", packSlipTableVerticalLines[5] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawText("Owner ID", packSlipTableVerticalLines[6] + padding , yPos + yPadding, getPaint(10.0f, 1));
+			pdfCanvas.DrawLine(29,yPos + 20, width - 26,  yPos + 20, thinLinePaint);
+		}
+
+		private void PackSlipSampleRows( SKCanvas pdfCanvas, List<List<string>> pageData  ){
+
+			var padding = 4;
+			var yPos = 160;
+			var yPadding = 18;
+			var yLineHight = 30;
+			var rowNum = 1;
+			foreach( var row in pageData ){
+				foreach( var pos in packSlipTableVerticalLines){
+					pdfCanvas.DrawLine(pos,yPos, pos, yPos + yLineHight, thinLinePaint);
+				}
+				pdfCanvas.DrawText(rowNum.ToString(), packSlipTableVerticalLines[0] + padding , yPos + yPadding, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(row[0], packSlipTableVerticalLines[2] + padding , yPos + yPadding, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(row[1] , packSlipTableVerticalLines[3] + (packSlipTableVerticalLines[4] - packSlipTableVerticalLines[3])/2, yPos + yPadding, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Center));
+				pdfCanvas.DrawText(row[2].TrimStart(new Char[] { '0' } ), packSlipTableVerticalLines[4] + (packSlipTableVerticalLines[5] - packSlipTableVerticalLines[4])/2 , yPos + yPadding, getPaint(10.0f, 1, 0xFF000000, SKTextAlign.Center));
+				pdfCanvas.DrawText(row[3], packSlipTableVerticalLines[5] + padding , yPos + yPadding, getPaint(10.0f, 1));
+				pdfCanvas.DrawText(row[4], packSlipTableVerticalLines[6] + padding , yPos + yPadding, getPaint(10.0f, 1));
+				rowNum++;
+				yPos+= yLineHight;
+				pdfCanvas.DrawLine(29,yPos, width - 26, yPos, thinLinePaint);
+			}
+		}
+
+		
+
+
+
     }
+
+	public class PackingSlipData{
+
+		public List<SoilReportBundle> samples;
+		public List<SoilReportBundle> withOptionalTests;
+		public List<SoilReportBundle> samplesByTests;
+		public List<SoilReportBundle> withoutOptionalTests;
+		public List<List<List<string>>>pages;
+
+
+
+
+		private int LinesPerPage = 18;
+		private UniqueIds ids;
+		private SoilDataContext _soilContext;
+
+		public PackingSlipData(SoilDataContext soilContext, UniqueIds unigueIds){
+			this._soilContext = soilContext;
+			this.ids = unigueIds;
+			this.ProcessData();
+		}
+
+		public PackingSlipData(SoilDataContext soilContext, UniqueIds unigueIds, int LinesPerPage){
+			this._soilContext = soilContext;
+			this.LinesPerPage = LinesPerPage;
+			this.ids = unigueIds;
+			this.ProcessData();
+		}
+
+		private void ProcessData(){
+			this.samples = this._soilContext.SoilReportBundle
+											.Where( b => this.ids.ids.Contains(b.UniqueCode) 
+															&& b.Reports.Count() == 0 
+															&& b.LastStatus.SoilReportStatus.Name == "Entered"
+													)
+											.Include( b => b.PlanningUnit)
+											.Include( b => b.FarmerForReport)
+											.Include( b => b.OptionalTestSoilReportBundles).ThenInclude( o => o.OptionalTest)
+											.Include( b => b.LastStatus)
+											.OrderBy( b => b.CoSamnum)
+											.ToList();
+
+
+			var grouppeByTests = this.samples
+										.GroupBy( s => string.Join( ',', s.OptionalTestSoilReportBundles.OrderBy( v => v.OptionalTestId).Select( v => v.OptionalTest.Code ).ToArray() ))
+										.Select( g => new {
+											Key = g.Key,
+											Samples = g.Select( s => s)
+										}).ToList();
+
+			//this.withOptionalTests = this.samples.Where( s => s.OptionalTestSoilReportBundles.Count() > 0 ).ToList();
+			//this.withoutOptionalTests = this.samples.Where( s => s.OptionalTestSoilReportBundles.Count() == 0 ).ToList();
+			this.pages = new List<List<List<string>>>();
+			foreach( var grp in grouppeByTests ){
+				for( var i = 0; i < grp.Samples.Count(); i+=this.LinesPerPage){
+					this.pages.Add(this.Page(grp.Samples.Skip(i).Take(this.LinesPerPage).ToList()));
+				}
+			}
+/* 
+
+			if( this.withoutOptionalTests.Count()>0){
+				for( var i = 0; i < this.withoutOptionalTests.Count(); i+=this.LinesPerPage){
+					this.pages.Add(this.Page(this.withoutOptionalTests.Skip(i).Take(this.LinesPerPage).ToList()));
+				}
+			}
+			if( this.withOptionalTests.Count()>0){
+				for( var i = 0; i < this.withOptionalTests.Count(); i+=this.LinesPerPage){
+					this.pages.Add(this.Page(this.withOptionalTests.Skip(i).Take(this.LinesPerPage).ToList()));
+				}
+			}
+			 */
+		}
+
+
+		private List<string> Row( SoilReportBundle sample ){
+			var row = new List<string>();
+			if( sample.OptionalTestSoilReportBundles.Count() > 0 ){
+				row.Add("01," + string.Join( ',', sample.OptionalTestSoilReportBundles.Select( s => s.OptionalTest.Code).ToArray() ));
+			}else{
+				row.Add("01");
+			}
+			
+			row.Add( sample.PlanningUnit.CountyID.ToString());
+			row.Add( sample.CoSamnum);
+			row.Add( sample.FarmerForReport.First + " " + sample.FarmerForReport.Last);
+			row.Add( sample.OwnerID);
+			return row;
+		}
+
+		private List<List<string>> Page( List<SoilReportBundle> samples){
+			List<List<string>> page = new List<List<string>>();
+			foreach( var smpl in samples ){
+				page.Add(Row(smpl));
+			}
+			return page;
+		}
+
+	}
+
+
+
+	public class UniqueIds{
+		public List<string> ids;
+	}
+
+
+
 }

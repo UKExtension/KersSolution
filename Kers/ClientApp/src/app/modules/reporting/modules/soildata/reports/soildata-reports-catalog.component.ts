@@ -3,7 +3,7 @@ import { SoilReportSearchCriteria, SoilReportBundle, TypeForm } from '../soildat
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { SoildataService } from '../soildata.service';
-import { startWith, flatMap, tap } from 'rxjs/operators';
+import { startWith, tap, mergeMap } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 
 @Component({
@@ -16,6 +16,14 @@ export class SoildataReportsCatalogComponent implements OnInit {
   reports$:Observable<SoilReportBundle[]>;
   type="dsc";
   pdfLoading = false;
+  samplePdfLoading = false;
+  csvDataLoading = false;
+
+  reportForCopy:SoilReportBundle = null;
+  isThisSampleCopy:boolean = false;
+
+  reportsExist = false;
+  samplesExist = false;
 
   @Input() criteria:SoilReportSearchCriteria;
   @Input() startDate:Date;
@@ -24,6 +32,10 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
 
   condition = false;
+
+  newSample:boolean = false;
+  sampleNumberDisplayed:boolean = false;
+  lastCountyNumber:string;
 
 
   myDateRangePickerOptions: IAngularMyDpOptions = {
@@ -61,27 +73,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     if( this.endDate == null ){
       this.endDate = new Date();
     }
-    this.service.formTypes().subscribe(
-      res => {
-        for(let type of res){
-          this.criteria.formType.push(type.id);
-          this.typesCheckboxes.push({
-            name:type.code, value: type.id, checked:true
-          })
-        }
-      }
-    )
-
-    this.service.reportStatuses().subscribe(
-      res => {
-        for(let status of res){
-          this.criteria.status.push(status.id);
-          this.statusesCheckboxes.push({
-            name:status.name, value: status.id, checked:true
-          })
-        }
-      }
-    )
+    
     
     this.criteria = {
       start: this.startDate.toISOString(),
@@ -110,9 +102,11 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.reports$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        flatMap(_ => this.service.getCustom(this.criteria)), // Get some items
+        mergeMap(_ => this.service.getCustom(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
+    this.getStatuses();
+    this.getFormTypes();
   }
 
 
@@ -121,10 +115,44 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.endDate = event.dateRange.endJsDate;
     this.criteria["start"] = event.dateRange.beginJsDate.toISOString();
     this.criteria["end"] = event.dateRange.endJsDate.toISOString();
+    this.criteria.status = [];
+    this.criteria.formType = [];
     this.onRefresh();
+    this.getStatuses();
+    this.getFormTypes();
+  }
+
+  getStatuses(){
+    this.statusesCheckboxes = [];
+    this.criteria.status = [];
+    this.service.getCustomStatuses(this.criteria).subscribe(
+      res => {
+        for(let status of res){
+          this.criteria.status.push(status.id);
+          this.statusesCheckboxes.push({
+            name:status.name, value: status.id, checked:true
+          })
+        }
+      }
+    )
+
+  }
+  getFormTypes(){
+    this.typesCheckboxes = [];
+    this.service.getCustomFormTypes(this.criteria).subscribe(
+      res => {
+        for(let type of res){
+          this.criteria.formType.push(type.id);
+          this.typesCheckboxes.push({
+            name:type.code, value: type.id, checked:true
+          })
+        }
+      }
+    )
   }
 
   statusChanged(){
+    this.getStatuses();
     this.onRefresh();
   }
 
@@ -143,14 +171,45 @@ export class SoildataReportsCatalogComponent implements OnInit {
   }
 
   onRefresh() {
+    this.reportsExist = false;
+    this.samplesExist = false;
     this.loading = true; // Turn on the spinner.
     this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
+  }
+
+  SampleFormCanceled(){
+    this.newSample = false;
+  }
+  SampleFormSubmit(event:SoilReportBundle){
+    this.newSample = false;
+    this.lastCountyNumber = event.coSamnum;
+    this.sampleNumberDisplayed = true;
+    var ths = this;
+    setTimeout(()=>{  ths.onRefresh();    }, 40);
+    this.getStatuses();
   }
   
   switchOrder(type:string){
     this.type = type;
     this.criteria["order"] = type;
     this.onRefresh();
+  }
+
+  copySample(event:SoilReportBundle){
+    this.reportForCopy = event;
+    this.isThisSampleCopy = true;
+    this.newSample = true;
+    setTimeout(()=>{  
+      this.reportForCopy = null;
+      this.isThisSampleCopy = false;
+          }, 400);
+    
+  }
+  registerReports(event:boolean){
+    if( event ) this.reportsExist = true;
+  }
+  registerSamples(event:boolean){
+    if( event ) this.samplesExist = true;
   }
 
   printAll(reports:SoilReportBundle[]){
@@ -163,8 +222,42 @@ export class SoildataReportsCatalogComponent implements OnInit {
         this.onRefresh();
       }
     )
-    
+  }
 
+  printPackingSlip(reports:SoilReportBundle[]){
+    this.samplePdfLoading = true;
+    this.service.packingSlipdPdf(reports.map(r => r.uniqueCode)).subscribe(
+      data => {
+        var blob = new Blob([data], {type: 'application/pdf'});
+        saveAs(blob, "PackingSlip.pdf");
+        this.samplePdfLoading = false;
+        this.onRefresh();
+      }
+    )
+  }
+  downloadCsv(reports:SoilReportBundle[]) {
+    this.csvDataLoading = true;
+    var ids = reports.map(r => r.uniqueCode);
+    console.log(ids);
+    this.service.getData(ids).subscribe(
+      data => {
+        console.log(data);
+        const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
+        const header = Object.keys(data[0]);
+        let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+        //csv.unshift(header.join(','));
+        let csvArray = csv.join('\r\n');
+
+        var blob = new Blob([csvArray], {type: 'text/csv' })
+        saveAs(blob, "KERS_SoilDataReports.csv");
+
+
+        this.csvDataLoading = false;
+      }
+    )
+
+
+    
   }
 
 

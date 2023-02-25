@@ -7,13 +7,9 @@ import { FarmerAddress } from '../soildata.service';
   <div class="ln_solid"></div>
   <div class="row">
       <div class="col-xs-10">
-          
-          <article class="media event" *ngIf="rowDefault">
-              <div class="media-body">
-              <a class="title">{{address.first}} {{address.last}}</a>
-              <p>Address: {{address.address}}, {{address.city}} {{address.st}}</p>
-              </div>
-          </article>
+          <ng-container  *ngIf="rowDefault">
+            <soildata-list-address [address]="address"></soildata-list-address>
+          </ng-container>
           <div class="col-xs-12" *ngIf="rowEdit">
               <soildata-farmer-address-form [address]="address" (onFormCancel)="default()" (onFormSubmit)="addressSubmitted($event)"></soildata-farmer-address-form>
           </div>

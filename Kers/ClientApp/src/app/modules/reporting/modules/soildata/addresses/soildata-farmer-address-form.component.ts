@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FarmerAddress, SoildataService } from '../soildata.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { debounce, debounceTime, distinctUntilChanged, mergeMap, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'soildata-farmer-address-form',
@@ -24,6 +26,12 @@ import { FormBuilder, Validators } from '@angular/forms';
               <div class="col-md-9 col-sm-9 col-xs-12">
                   <input type="text" name="last" formControlName="last" id="last" class="form-control col-xs-12" />
               </div>
+          </div>
+          <div *ngIf="foundSameAddress$ | async">
+            <label for="last" class="control-label col-md-3 col-sm-3 col-xs-12"></label>           
+            <div class="col-md-9 col-sm-9 col-xs-12 red">
+                Warning: Client with the same name already exists.<br><br>
+            </div>
           </div>
           <div class="form-group">
               <label for="address" class="control-label col-md-3 col-sm-3 col-xs-12">Address:</label>           
@@ -91,6 +99,9 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
   addressForm:any;
   coppied = false;
   loading = false;
+
+  foundSameAddress$:Observable<FarmerAddress | null> = null;
+
   @Output() onFormCancel = new EventEmitter<void>();
   @Output() onFormSubmit = new EventEmitter<FarmerAddress>();
 
@@ -112,8 +123,20 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
 
   }
 
+
   ngOnInit() {
     if(this.address) this.addressForm.patchValue(this.address);
+    var first = this.addressForm.get('first') as FormControl;
+    var last = this.addressForm.get('last') as FormControl;
+    this.foundSameAddress$ = first.valueChanges.pipe(
+                debounceTime(500),
+                distinctUntilChanged(),
+                switchMap(_ => this.service.checkAddress(this.addressForm.value as FarmerAddress) ),
+                mergeMap( _ => last.valueChanges.pipe(
+                    debounceTime(500),
+                    distinctUntilChanged(),
+                    switchMap(_ => this.service.checkAddress(this.addressForm.value as FarmerAddress) )), )
+            );
   }
   onCancel(){
     this.onFormCancel.emit();
@@ -142,6 +165,17 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
       }
       
   }
+
+/* 
+
+  onSearch(_){
+    this.service.checkAddress( this.addressForm.value as FarmerAddress).pipe(
+        debounceTime(150),
+        distinctUntilChanged(),
+
+    )
+  }
+ */
   public notify(payload: string) {
     this.coppied = true;
   }
