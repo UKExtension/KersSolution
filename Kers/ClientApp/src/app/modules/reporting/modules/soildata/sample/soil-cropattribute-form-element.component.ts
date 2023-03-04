@@ -90,7 +90,7 @@ export class SoilCropattributeFormElementComponent extends BaseControlValueAcces
       if(attribute != null ){
         this.type = attribute.sampleAttribute.sampleAttributeType;
 
-        if(this.type.name == "Primary Crop"){
+        if(this.type.name == "Primary Crop" || this.type.name == "Plant"){
           this.attributeGroup.get("sampleAttributeId").setValidators(Validators.required);
           this.attributeGroup.get("sampleAttributeId").updateValueAndValidity();
         }

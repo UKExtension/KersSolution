@@ -231,7 +231,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
         var blob = new Blob([data], {type: 'application/pdf'});
         saveAs(blob, "PackingSlip.pdf");
         this.samplePdfLoading = false;
-        this.onRefresh();
+        //this.onRefresh();
+        this.statusChanged();
       }
     )
   }

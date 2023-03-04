@@ -91,11 +91,16 @@ namespace Kers.Controllers
             }
             bundles = bundles.Where( b => criteria.FormType.Count() == 0 || criteria.FormType.Contains(b.TypeForm.Id));
             bundles = bundles.Where( b => b.LastStatus == null || criteria.status.Count() == 0 || criteria.status.Contains(b.LastStatus.SoilReportStatus.Id) );
+            
+            var startCriteria = new DateTime( criteria.Start.Year, criteria.Start.Month, criteria.Start.Day, 0, 0, 0 );
+            var endCriteria = new DateTime( criteria.End.Year, criteria.End.Month, criteria.End.Day, 23, 59, 59 );
+            
+            
             //if(criteria.Start != null){
-                bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
+                bundles = bundles.Where( i => i.SampleLabelCreated >= startCriteria);
             //}
             //if( criteria.End != null){
-                bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
+                bundles = bundles.Where( i => i.SampleLabelCreated <= endCriteria);
             //}
             bundles = bundles
                         .Include( b => b.Reports)

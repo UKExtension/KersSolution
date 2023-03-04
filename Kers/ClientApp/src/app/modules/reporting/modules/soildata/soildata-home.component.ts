@@ -12,7 +12,6 @@ import { ReportingService } from '../../components/reporting/reporting.service';
         <a class="btn btn-default"[routerLink]="['/reporting/soildata/signees']" routerLinkActive="active">Signees</a>
       </p>
     </div>
-    <div><reporting-display-help id="9"></reporting-display-help></div>
     <router-outlet></router-outlet>
   `,
   styles: []
