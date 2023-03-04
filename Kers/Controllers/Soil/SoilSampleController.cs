@@ -233,7 +233,13 @@ namespace Kers.Controllers.Soil
                 if(sample.FarmerAddress != null ){
                     smpl.FarmerAddressId = sample.FarmerAddress.Id;
                 }
-                UpdateFarmerForReport(smpl.FarmerForReport, smpl.FarmerAddressId??0);
+                var numFarmersForReport = _context.FarmerForReport.Where( r => r.Id == smpl.FarmerForReportId).Count();
+                if(numFarmersForReport > 1){
+                    smpl.FarmerForReport = CreateFarmerForReport(smpl.FarmerAddressId??0);
+                }else{
+                    UpdateFarmerForReport(smpl.FarmerForReport, smpl.FarmerAddressId??0);
+                }
+                
                 smpl.SampleInfoBundles = sample.SampleInfoBundles;
                 smpl.BillingTypeId = sample.BillingTypeId;
                 smpl.CoSamnum = sample.CoSamnum.PadLeft(5, '0');
