@@ -454,6 +454,7 @@ namespace Kers.Controllers
                 var user = this.CurrentUser();
                 var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
                 address.CountyCodeId = countyCode.CountyID;
+                address.FarmerID  = Guid.NewGuid().ToString("N");
                 address.UniqueCode = Guid.NewGuid().ToString();
                 _soilDataContext.Add(address); 
                 _soilDataContext.SaveChanges();

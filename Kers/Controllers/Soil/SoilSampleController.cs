@@ -263,6 +263,7 @@ namespace Kers.Controllers.Soil
         private void UpdateFarmerForReport( FarmerForReport newFarmer, int FarmerId){
             var Frmr = this._context.FarmerAddress.Find(FarmerId);
             newFarmer.First = Frmr.First;
+            newFarmer.FarmerID = Frmr.FarmerID;
             newFarmer.Mi = Frmr.Mi;
             newFarmer.Last = Frmr.Last;
             newFarmer.Title = Frmr.Title;
