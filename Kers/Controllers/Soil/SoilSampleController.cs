@@ -233,7 +233,7 @@ namespace Kers.Controllers.Soil
                 if(sample.FarmerAddress != null ){
                     smpl.FarmerAddressId = sample.FarmerAddress.Id;
                 }
-                var numFarmersForReport = _context.FarmerForReport.Where( r => r.Id == smpl.FarmerForReportId).Count();
+                var numFarmersForReport = _context.SoilReportBundle.Where( r => r.FarmerForReportId == smpl.FarmerForReportId).Count();
                 if(numFarmersForReport > 1){
                     smpl.FarmerForReport = CreateFarmerForReport(smpl.FarmerAddressId??0);
                 }else{
