@@ -29,7 +29,11 @@ import { SoilSampleService } from './soil-sample.service';
                   <soildata-list-address [address]="selectedAddress" [brief]="false"></soildata-list-address>
                   <a *ngIf="!disabled" class="btn btn-info btn-xs" (click)="openBrowser()">change</a>
                 </div>
+                
                 <div *ngIf="addressBrowserOpen && !disabled" class="address-browser">
+                    <div class="col-xs-12" *ngIf="selectedAddress != null">
+                      <a class="pull-right" (click)="addressSelectionCanceled()" style="cursor:pointer;">X</a>
+                    </div>
                     <h4>Select client from the list or enter a new one</h4><br>   
                     <soildata-address-browser [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
                 </div>
@@ -76,7 +80,7 @@ export class AddressBrowserFormElementComponent extends BaseControlValueAccessor
 
     openBrowser(){
         this.addressBrowserOpen = true;
-        this.selectedAddress = null;
+        //this.selectedAddress = null;
         this.onChange(null);
     }
 
@@ -93,7 +97,7 @@ export class AddressBrowserFormElementComponent extends BaseControlValueAccessor
     }
 
     addressSelectionCanceled(){
-
+      this.addressBrowserOpen = false;
     }
 /* 
 
