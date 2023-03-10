@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SoilReportBundle, SoilReport } from '../soildata.report';
 import { FarmerAddress, SoildataService } from '../soildata.service';
 
@@ -9,6 +9,7 @@ import { FarmerAddress, SoildataService } from '../soildata.service';
 })
 export class SoildataReportFormComponent implements OnInit {
   @Input() report: SoilReportBundle;
+  @Output() onCropNoteUpdated = new EventEmitter<void>();
   addressBrowserOpen = false;
   loading = false;
   
@@ -34,6 +35,7 @@ export class SoildataReportFormComponent implements OnInit {
   }
   cropNoteUpdate(event:SoilReport){
     this.report.lastStatus = event.soilReportBundle.lastStatus;
+    this.onCropNoteUpdated.emit();
   }
 
 }

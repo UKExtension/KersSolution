@@ -10,19 +10,13 @@
     <input type="text" [(ngModel)]="criteria.search" placeholder="Search by client name (first OR last) in selected dates and search criteria" (keyup)="onSearch($event)" class="form-control" name="Search" />
   </div>
   <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-    <div class="input-group" style="width:250px; float:right;">
-            
+    <div class="input-group" style="width:250px; float:right;"> 
       <input type="text" class="form-control input-box" placeholder="Click to select a date" 
       angular-mydatepicker name="mydaterange" (click)="dp.toggleCalendar()" 
       [(ngModel)]="model" [options]="myDateRangePickerOptions" 
       #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
       <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
-    
-  </div>
-
-
-
-
+    </div>
   </div>
 
 </div>
@@ -69,8 +63,6 @@
               </label>
           </div>
       </div>
-
-
       <div class="form-group" >
           <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
           <div class="col-md-9 col-sm-9 col-xs-12">
@@ -114,9 +106,6 @@
       
     </form>
   </div><br>
-
-
-
   <div class="table-responsive">
     
     <table class="table table-bordered table-striped">

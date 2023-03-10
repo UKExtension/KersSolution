@@ -57,7 +57,7 @@ import { Observable } from 'rxjs';
           <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
         </div>
       </div>
-      <soildata-report-form [report]="report"></soildata-report-form>
+      <soildata-report-form [report]="report" (onCropNoteUpdated)="cropNoteUpdated()"></soildata-report-form>
     </td>
     <td *ngIf="sampleEdit" colspan="6">
       <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
@@ -237,6 +237,10 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  cropNoteUpdated(){
+    this.onStatusChange.emit(null);
   }
 
 
