@@ -27,5 +27,7 @@ namespace Kers.Models.Entities.KERScore
         public DateTimeOffset SentAt {get;set;}
         public DateTimeOffset Created {get; set;}
         public DateTimeOffset Updated {get; set;}
+        public int? SentAttempts {get;set;}
+        public string ErrorMessage {get;set;}
     }
 }
