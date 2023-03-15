@@ -16,7 +16,7 @@ class KERScoreContextDbContextFactory : IDesignTimeDbContextFactory<KERScoreCont
         var builder = new DbContextOptionsBuilder<KERScoreContext>();
 
         string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        if(environment == "development"){
+        if(environment == "Development"){
             builder.UseSqlite(configuration["ConnectionStrings:connKersCoreLocal"], b => b.MigrationsAssembly("Kers"));
         }else{
             builder.UseSqlServer(configuration["ConnectionStrings:connKersCore"], b => b.MigrationsAssembly("Kers"));
