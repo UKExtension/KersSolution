@@ -11,7 +11,7 @@ import { saveAs } from 'file-saver';
   templateUrl: 'soildata-reports-catalog.component.html'
 })
 export class SoildataReportsCatalogComponent implements OnInit {
-  refresh: Subject<SoilReportBundle | null>; // For load/reload
+  refresh: Subject<SoilReportBundle[] | null>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
   reports$:Observable<SoilReportBundle[]>;
   reps:SoilReportBundle[];
@@ -103,8 +103,11 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.getFormTypes();
     this.reports$ = this.refresh.asObservable()
       .pipe(
-        startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        mergeMap(_ =>  this.service.getCustom(this.criteria)), // Get some items
+        startWith({} as SoilReportBundle[]), // Emit value to force load on page load; actual value does not matter
+        mergeMap(initialItemState =>  this.service.getCustom(this.criteria).pipe(
+          startWith(initialItemState),
+          scan((item, changes) => ({...item, ...changes}), {} as SoilReportBundle[])
+        )), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
     
