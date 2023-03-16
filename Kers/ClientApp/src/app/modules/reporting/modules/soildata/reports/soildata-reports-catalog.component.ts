@@ -3,7 +3,7 @@ import { SoilReportSearchCriteria, SoilReportBundle, TypeForm } from '../soildat
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { SoildataService } from '../soildata.service';
-import { startWith, tap, mergeMap } from 'rxjs/operators';
+import { startWith, tap, mergeMap, map, scan } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 
 @Component({
@@ -11,9 +11,10 @@ import { saveAs } from 'file-saver';
   templateUrl: 'soildata-reports-catalog.component.html'
 })
 export class SoildataReportsCatalogComponent implements OnInit {
-  refresh: Subject<string>; // For load/reload
+  refresh: Subject<SoilReportBundle | null>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
   reports$:Observable<SoilReportBundle[]>;
+  reps:SoilReportBundle[];
   type="dsc";
   pdfLoading = false;
   samplePdfLoading = false;
@@ -98,15 +99,15 @@ export class SoildataReportsCatalogComponent implements OnInit {
       }
     }
     this.refresh = new Subject();
-
+    this.getStatuses();
+    this.getFormTypes();
     this.reports$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        mergeMap(_ => this.service.getCustom(this.criteria)), // Get some items
+        mergeMap(_ =>  this.service.getCustom(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
-    this.getStatuses();
-    this.getFormTypes();
+    
   }
 
 
@@ -174,7 +175,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.reportsExist = false;
     this.samplesExist = false;
     this.loading = true; // Turn on the spinner.
-    this.refresh.next('onRefresh'); // Emit value to force reload; actual value does not matter
+    this.refresh.next(null); // Emit value to force reload; actual value does not matter
   }
 
   SampleFormCanceled(){
@@ -185,8 +186,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.lastCountyNumber = event.coSamnum;
     this.sampleNumberDisplayed = true;
     var ths = this;
-    setTimeout(()=>{  ths.onRefresh();    }, 40);
-    this.getStatuses();
+    //setTimeout(()=>{  ths.onRefresh();    }, 40);
+    this.refresh.next(event);
+    //this.getStatuses();
   }
   
   switchOrder(type:string){
