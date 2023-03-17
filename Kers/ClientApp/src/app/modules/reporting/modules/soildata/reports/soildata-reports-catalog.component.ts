@@ -189,9 +189,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.lastCountyNumber = event.coSamnum;
     this.sampleNumberDisplayed = true;
     var ths = this;
-    //setTimeout(()=>{  ths.onRefresh();    }, 40);
-    this.refresh.next(event);
-    //this.getStatuses();
+    setTimeout(()=>{  ths.onRefresh();    }, 40);
+    this.getStatuses();
   }
   
   switchOrder(type:string){
