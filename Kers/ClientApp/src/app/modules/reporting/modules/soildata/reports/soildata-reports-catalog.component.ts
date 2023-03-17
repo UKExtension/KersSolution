@@ -104,10 +104,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.reports$ = this.refresh.asObservable()
       .pipe(
         startWith({} as SoilReportBundle[]), // Emit value to force load on page load; actual value does not matter
-        mergeMap(initialItemState =>  this.service.getCustom(this.criteria).pipe(
-          startWith(initialItemState),
-          scan((item, changes) => ({...item, ...changes}), {} as SoilReportBundle[])
-        )), // Get some items
+        mergeMap(initialItemState =>  this.service.getCustom(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
     
