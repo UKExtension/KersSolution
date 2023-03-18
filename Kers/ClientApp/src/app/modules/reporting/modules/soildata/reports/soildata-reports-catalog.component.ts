@@ -14,7 +14,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
   refresh: Subject<SoilReportBundle[] | null>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
   reports$:Observable<SoilReportBundle[]>;
-  reps:SoilReportBundle[];
+  filteredReports:SoilReportBundle[];
+  reportsByDateRange: SoilReportBundle[];
   type="dsc";
   pdfLoading = false;
   samplePdfLoading = false;
@@ -101,13 +102,23 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.refresh = new Subject();
     this.getStatuses();
     this.getFormTypes();
+    this.service.getCustom(this.criteria).subscribe(
+      res =>{
+        this.reportsByDateRange = res;
+        this.filteredReports = this.reportsByDateRange;
+        this.loading = false;
+      } 
+    )
+
+
+    /* 
     this.reports$ = this.refresh.asObservable()
       .pipe(
         startWith({} as SoilReportBundle[]), // Emit value to force load on page load; actual value does not matter
         mergeMap(initialItemState =>  this.service.getCustom(this.criteria)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
-    
+     */
   }
 
 
@@ -121,6 +132,38 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.onRefresh();
     this.getStatuses();
     this.getFormTypes();
+  }
+
+  applyFilterCriteria(){
+    //Apply form type checkboxes
+    this.filteredReports = this.reportsByDateRange.filter( r => this.criteria.formType.includes(r.typeForm.id));
+    //Filter by status
+    this.filteredReports = this.filteredReports.filter( r => this.criteria.status.includes( r.lastStatus.soilReportStatusId));
+    //Filter by name
+    this.filteredReports = this.filteredReports.filter( r => (
+                                                      r.farmerForReport.first.toLowerCase().includes(this.criteria.search.toLowerCase())
+                                                      ||
+                                                      r.farmerForReport.last.toLowerCase().includes(this.criteria.search.toLowerCase())
+                                                       ));
+      //Apply Sorting
+      if(this.criteria.order == 'dsc'){
+        this.filteredReports.sort((a,b) => ((new Date(b.sampleLabelCreated).getTime()) - ( new Date(a.sampleLabelCreated).getTime())));
+      }else if(this.criteria.order == 'asc'){
+        this.filteredReports.sort((a,b)=> ((new Date(a.sampleLabelCreated).getTime()) - ( new Date(b.sampleLabelCreated).getTime())));
+      }else if(this.criteria.order == "smplasc"){
+        this.filteredReports.sort((a,b)=> (a.coSamnum > b.coSamnum) ? 1 : -1);
+      }else if(this.criteria.order == "smpl"){
+        this.filteredReports.sort((a,b)=> (b.coSamnum > a.coSamnum) ? 1 : -1);
+      }
+
+
+      
+      
+
+
+
+
+
   }
 
   getStatuses(){
@@ -154,28 +197,40 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   statusChanged(){
     this.getStatuses();
-    this.onRefresh();
+    this.applyFilterCriteria();
+    //this.onRefresh();
   }
 
   onSearch(event){
     this.criteria["search"] = event.target.value;
-    this.onRefresh();
+    this.applyFilterCriteria();
+    //this.onRefresh();
   }
   onFormTypeChange(){
     this.criteria.formType = this.selectedFormTypes;
-    this.onRefresh();
+    this.applyFilterCriteria();
   }
 
   onReportStatusesChange(){
     this.criteria.status = this.selectedReportStatuses;
-    this.onRefresh();
+    this.applyFilterCriteria();
+
+    //this.filteredReports = this.reportsByDateRange.filter( r => this.criteria.status.includes(r.typeForm.id));
+
+    //this.onRefresh();
   }
 
   onRefresh() {
     this.reportsExist = false;
     this.samplesExist = false;
     this.loading = true; // Turn on the spinner.
-    this.refresh.next(null); // Emit value to force reload; actual value does not matter
+    this.service.getCustom(this.criteria).subscribe(
+      res =>{
+        this.reportsByDateRange = res;
+        this.filteredReports = this.reportsByDateRange;
+        this.loading = false;
+      } 
+    )
   }
 
   SampleFormCanceled(){
@@ -185,15 +240,16 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.newSample = false;
     this.lastCountyNumber = event.coSamnum;
     this.sampleNumberDisplayed = true;
-    var ths = this;
-    setTimeout(()=>{  ths.onRefresh();    }, 40);
+    this.filteredReports.unshift(event);
+    this.reportsByDateRange.unshift(event);
     this.getStatuses();
   }
   
   switchOrder(type:string){
     this.type = type;
     this.criteria["order"] = type;
-    this.onRefresh();
+    this.applyFilterCriteria();
+    //this.onRefresh();
   }
 
   copySample(event:SoilReportBundle){

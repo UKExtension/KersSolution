@@ -21,7 +21,7 @@
 
 </div>
 
-<div  *ngIf="reports$ | async as reports">
+<div  *ngIf="filteredReports">
 
   <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
     <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
@@ -84,7 +84,7 @@
               </div>
           </div>
       </div>  
-      <div class="form-group" *ngIf="reports.length > 0">
+      <div class="form-group" *ngIf="filteredReports.length > 0">
         <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
         <div class="col-md-6 col-sm-6 col-xs-12">
           
@@ -120,7 +120,7 @@
             </tr>
         </thead>
         <tbody *ngIf="!loading">
-          <tr *ngFor="let report of reports" [soildata-reports-catalog-details]="report" (isItReport)="registerReports($event)" (isItSample)="registerSamples($event)" (onStatusChange)="statusChanged()" (onCopySample)="copySample($event)"></tr>
+          <tr *ngFor="let report of filteredReports" [soildata-reports-catalog-details]="report" (isItReport)="registerReports($event)" (isItSample)="registerSamples($event)" (onStatusChange)="statusChanged()" (onCopySample)="copySample($event)"></tr>
         </tbody>
     </table>
     

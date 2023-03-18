@@ -125,7 +125,9 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     );
     this.$statuses = this.service.reportStatuses();
     this.ProcessStatuses();
-    if(this.report.reports != null && this.report.reports.length > 0 ){
+    if(this.report.reports == null) this.report.reports = [];
+    this.report.coSamnum = this.report.coSamnum.replace(/^0+/, '');
+    if( this.report.reports.length > 0 ){
       this.isItReport.emit(true);
     }else{
       this.isItReport.emit(false);

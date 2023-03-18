@@ -166,6 +166,7 @@ namespace Kers.Controllers.Soil
                 sample.LastStatus.SoilReportStatus = status;
                 sample.LastStatus.Created = DateTime.Now;
                 sample.CoSamnum = sample.CoSamnum.PadLeft(5, '0');
+                sample.TypeForm = this._context.TypeForm.Find(sample.TypeFormId);
                 _context.Add(sample);
                 _context.SaveChanges();
                 this.Log( sample ,"SoilReportBundle", "Soil Sample Info added.", "SoilReportBundle");
