@@ -151,9 +151,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
       }else if(this.criteria.order == 'asc'){
         this.filteredReports.sort((a,b)=> ((new Date(a.sampleLabelCreated).getTime()) - ( new Date(b.sampleLabelCreated).getTime())));
       }else if(this.criteria.order == "smplasc"){
-        this.filteredReports.sort((a,b)=> (a.coSamnum > b.coSamnum) ? 1 : -1);
+        this.filteredReports.sort((a,b)=> (a.coSamnum.padStart(6, '0') > b.coSamnum.padStart(6, '0')) ? 1 : -1);
       }else if(this.criteria.order == "smpl"){
-        this.filteredReports.sort((a,b)=> (b.coSamnum > a.coSamnum) ? 1 : -1);
+        this.filteredReports.sort((a,b)=> (b.coSamnum.padStart(6, '0') > a.coSamnum.padStart(6, '0')) ? 1 : -1);
       }
 
 
