@@ -197,8 +197,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   statusChanged(){
     this.getStatuses();
-    this.applyFilterCriteria();
-    //this.onRefresh();
+    this.onRefresh();
   }
 
   onSearch(event){
@@ -213,11 +212,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   onReportStatusesChange(){
     this.criteria.status = this.selectedReportStatuses;
+    this.getStatuses();
     this.applyFilterCriteria();
-
-    //this.filteredReports = this.reportsByDateRange.filter( r => this.criteria.status.includes(r.typeForm.id));
-
-    //this.onRefresh();
   }
 
   onRefresh() {
@@ -240,7 +236,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.newSample = false;
     this.lastCountyNumber = event.coSamnum;
     this.sampleNumberDisplayed = true;
-    this.filteredReports.unshift(event);
+    //this.filteredReports.unshift(event);
     this.reportsByDateRange.unshift(event);
     this.getStatuses();
   }
@@ -288,7 +284,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
         var blob = new Blob([data], {type: 'application/pdf'});
         saveAs(blob, "PackingSlip.pdf");
         this.samplePdfLoading = false;
-        //this.onRefresh();
+        this.onRefresh();
         this.statusChanged();
       }
     )
