@@ -155,15 +155,6 @@ export class SoildataReportsCatalogComponent implements OnInit {
       }else if(this.criteria.order == "smpl"){
         this.filteredReports.sort((a,b)=> (b.coSamnum.padStart(6, '0') > a.coSamnum.padStart(6, '0')) ? 1 : -1);
       }
-
-
-      
-      
-
-
-
-
-
   }
 
   getStatuses(){
@@ -212,7 +203,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   onReportStatusesChange(){
     this.criteria.status = this.selectedReportStatuses;
-    this.getStatuses();
+    //this.getStatuses();
     this.applyFilterCriteria();
   }
 
