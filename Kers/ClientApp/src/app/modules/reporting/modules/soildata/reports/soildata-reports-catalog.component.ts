@@ -227,9 +227,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.newSample = false;
     this.lastCountyNumber = event.coSamnum;
     this.sampleNumberDisplayed = true;
-    //this.filteredReports.unshift(event);
     this.reportsByDateRange.unshift(event);
-    this.getStatuses();
+    if(this.filteredReports.filter( f => f.id == event.id).length == 0 ) this.filteredReports.unshift(event);
+    //this.getStatuses();
   }
   
   switchOrder(type:string){
