@@ -232,7 +232,18 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.reportsByDateRange.unshift(event);
     if(this.filteredReports.filter( f => f.id == event.id).length == 0 ) this.filteredReports.unshift(event);
     if( this.availableStatuses.filter( s => s.name == "Entered").length == 0 ){
-      //Insert entered status
+      this.service.reportStatuses().subscribe(
+        res => {
+          var enteredStatus = res.filter( s => s.name == "Entered");
+          if(enteredStatus.length > 0 ){
+            var entered = enteredStatus[0];
+            this.criteria.status.push(entered.id);
+            this.statusesCheckboxes.push({
+              name:entered.name, value: entered.id, checked:true
+            })
+          }
+        }
+      )
     }
     //this.getStatuses();
   }
