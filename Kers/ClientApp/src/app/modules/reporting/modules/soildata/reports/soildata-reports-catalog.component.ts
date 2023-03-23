@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SoilReportSearchCriteria, SoilReportBundle, TypeForm } from '../soildata.report';
+import { SoilReportSearchCriteria, SoilReportBundle, TypeForm, SoilReportStatus } from '../soildata.report';
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { SoildataService } from '../soildata.service';
@@ -50,6 +50,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   typesCheckboxes = [];
   statusesCheckboxes = [];
+  availableStatuses:SoilReportStatus[] = [];
 
   get selectedFormTypes() { 
     return this.typesCheckboxes
@@ -162,6 +163,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.criteria.status = [];
     this.service.getCustomStatuses(this.criteria).subscribe(
       res => {
+        this.availableStatuses = res;
         for(let status of res){
           this.criteria.status.push(status.id);
           this.statusesCheckboxes.push({
@@ -229,6 +231,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.sampleNumberDisplayed = true;
     this.reportsByDateRange.unshift(event);
     if(this.filteredReports.filter( f => f.id == event.id).length == 0 ) this.filteredReports.unshift(event);
+    if( this.availableStatuses.filter( s => s.name == "Entered").length == 0 ){
+      //Insert entered status
+    }
     //this.getStatuses();
   }
   
