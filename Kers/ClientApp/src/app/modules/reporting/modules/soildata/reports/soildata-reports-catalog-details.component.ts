@@ -338,7 +338,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     var body = "https://kers.ca.uky.edu/core/api/PdfSoilData/report/"+this.report.uniqueCode+'%0D%0A%0D%0A';
     body += this.report.farmerForReport.first + ',';
     body += "%0D%0A%0D%0AThe link above contains your soil test report for";
-    body += "%0D%0AOwner Sample ID: "+this.report.reports[0].osId+".%0D%0A%0D%0A";
+    body += "%0D%0AOwner Sample ID: "+this.report.ownerID+".%0D%0A%0D%0A";
     body += "Click on the link or copy and paste it into a web browser and hit Enter. Choose to open the pdf file.";
     body += '%0D%0A%0D%0A' + this.user.rprtngProfile.planningUnit.name;
     body += '%0D%0A' + this.user.rprtngProfile.planningUnit.phone;
