@@ -120,7 +120,7 @@
             </tr>
         </thead>
         <tbody *ngIf="!loading">
-          <tr *ngFor="let report of filteredReports" [soildata-reports-catalog-details]="report" (isItReport)="registerReports($event)" (isItSample)="registerSamples($event)" (onStatusChange)="statusChanged()" (onCopySample)="copySample($event)"></tr>
+          <tr *ngFor="let report of filteredReports" [soildata-reports-catalog-details]="report" (isItReport)="registerReports($event)" (isItSample)="registerSamples($event)" (onStatusChange)="statusChanged()" (onNoteChange)="reportAgentNoteChanged($event)" (onCopySample)="copySample($event)"></tr>
         </tbody>
     </table>
     

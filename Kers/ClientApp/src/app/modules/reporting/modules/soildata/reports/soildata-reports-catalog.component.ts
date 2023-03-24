@@ -192,6 +192,22 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.getStatuses();
     this.onRefresh();
   }
+  reportAgentNoteChanged(event:SoilReportStatus){
+    if( this.availableStatuses.filter( s => s.id == event.id).length == 0 ){
+      this.service.reportStatuses().subscribe(
+        res => {
+          var enteredStatus = res.filter( s => s.id == event.id);
+          if(enteredStatus.length > 0 ){
+            var entered = enteredStatus[0];
+            this.criteria.status.push(entered.id);
+            this.statusesCheckboxes.push({
+              name:entered.name, value: entered.id, checked:true
+            })
+          }
+        }
+      )
+    }
+  }
 
   onSearch(event){
     this.criteria["search"] = event.target.value;

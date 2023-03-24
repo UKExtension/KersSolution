@@ -96,6 +96,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Input('soildata-reports-catalog-details') report: SoilReportBundle;
 
   @Output() onStatusChange = new EventEmitter<SoilReportStatus | null>();
+  @Output() onNoteChange = new EventEmitter<SoilReportStatus>();
   @Output() onCopySample = new EventEmitter<SoilReportBundle>();
   @Output() isItReport = new EventEmitter<boolean>();
   @Output() isItSample = new EventEmitter<boolean>();
@@ -242,7 +243,8 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   }
 
   cropNoteUpdated(){
-    this.onStatusChange.emit(null);
+    this.defaultView();
+    this.onNoteChange.emit(this.report.lastStatus.soilReportStatus);
   }
 
 
