@@ -200,6 +200,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
           if(enteredStatus.length > 0 ){
             var entered = enteredStatus[0];
             this.criteria.status.push(entered.id);
+            this.availableStatuses.push(entered);
             this.statusesCheckboxes.push({
               name:entered.name, value: entered.id, checked:true
             })
@@ -254,6 +255,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
           if(enteredStatus.length > 0 ){
             var entered = enteredStatus[0];
             this.criteria.status.push(entered.id);
+            this.availableStatuses.push(entered);
             this.statusesCheckboxes.push({
               name:entered.name, value: entered.id, checked:true
             })

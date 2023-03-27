@@ -141,8 +141,10 @@ namespace Kers.Controllers
                 }
                 bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
             }
-            bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
-            bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
+            var startCriteria = new DateTime( criteria.Start.Year, criteria.Start.Month, criteria.Start.Day, 0, 0, 0 );
+            var endCriteria = new DateTime( criteria.End.Year, criteria.End.Month, criteria.End.Day, 23, 59, 59 );
+            bundles = bundles.Where( i => i.SampleLabelCreated >= startCriteria);
+            bundles = bundles.Where( i => i.SampleLabelCreated <= endCriteria);
             bundles.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus);
             statuses = bundles.Select( b => b.LastStatus.SoilReportStatus).ToList();
             List<SoilReportStatus> filteredStatuses = new List<SoilReportStatus>();
@@ -167,8 +169,10 @@ namespace Kers.Controllers
                 }
                 bundles = bundles.Where( b => b.PlanningUnit.PlanningUnitId == countyId);
             }
-            bundles = bundles.Where( i => i.SampleLabelCreated >= criteria.Start);
-            bundles = bundles.Where( i => i.SampleLabelCreated <= criteria.End);
+            var startCriteria = new DateTime( criteria.Start.Year, criteria.Start.Month, criteria.Start.Day, 0, 0, 0 );
+            var endCriteria = new DateTime( criteria.End.Year, criteria.End.Month, criteria.End.Day, 23, 59, 59 );
+            bundles = bundles.Where( i => i.SampleLabelCreated >= startCriteria);
+            bundles = bundles.Where( i => i.SampleLabelCreated <= endCriteria);
             bundles.Include( b => b.TypeForm);
             types = bundles.Select( b => b.TypeForm).ToList();
             List<TypeForm> filteredTypes = new List<TypeForm>();
