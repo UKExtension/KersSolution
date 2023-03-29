@@ -141,21 +141,24 @@ export class SoildataReportsCatalogComponent implements OnInit {
     //Filter by status
     this.filteredReports = this.filteredReports.filter( r => this.criteria.status.includes( r.lastStatus.soilReportStatusId));
     //Filter by name
-    this.filteredReports = this.filteredReports.filter( r => (
-                                                      r.farmerForReport.first.toLowerCase().includes(this.criteria.search.toLowerCase())
-                                                      ||
-                                                      r.farmerForReport.last.toLowerCase().includes(this.criteria.search.toLowerCase())
-                                                       ));
-      //Apply Sorting
-      if(this.criteria.order == 'dsc'){
-        this.filteredReports.sort((a,b) => ((new Date(b.sampleLabelCreated).getTime()) - ( new Date(a.sampleLabelCreated).getTime())));
-      }else if(this.criteria.order == 'asc'){
-        this.filteredReports.sort((a,b)=> ((new Date(a.sampleLabelCreated).getTime()) - ( new Date(b.sampleLabelCreated).getTime())));
-      }else if(this.criteria.order == "smplasc"){
-        this.filteredReports.sort((a,b)=> (a.coSamnum.padStart(6, '0') > b.coSamnum.padStart(6, '0')) ? 1 : -1);
-      }else if(this.criteria.order == "smpl"){
-        this.filteredReports.sort((a,b)=> (b.coSamnum.padStart(6, '0') > a.coSamnum.padStart(6, '0')) ? 1 : -1);
-      }
+    if(this.criteria.search != undefined && this.criteria.search != ""){
+      this.filteredReports = this.filteredReports.filter( r => (
+        r.farmerForReport.first.toLowerCase().includes(this.criteria.search.toLowerCase())
+        ||
+        r.farmerForReport.last.toLowerCase().includes(this.criteria.search.toLowerCase())
+         ));
+    }
+    //Apply Sorting
+    if(this.criteria.order == 'dsc'){
+      this.filteredReports.sort((a,b) => ((new Date(b.sampleLabelCreated).getTime()) - ( new Date(a.sampleLabelCreated).getTime())));
+    }else if(this.criteria.order == 'asc'){
+      this.filteredReports.sort((a,b)=> ((new Date(a.sampleLabelCreated).getTime()) - ( new Date(b.sampleLabelCreated).getTime())));
+    }else if(this.criteria.order == "smplasc"){
+      this.filteredReports.sort((a,b)=> (a.coSamnum.padStart(6, '0') > b.coSamnum.padStart(6, '0')) ? 1 : -1);
+    }else if(this.criteria.order == "smpl"){
+      this.filteredReports.sort((a,b)=> (b.coSamnum.padStart(6, '0') > a.coSamnum.padStart(6, '0')) ? 1 : -1);
+    }
+    this.softUpdateIfSampleExists();
   }
 
   getStatuses(){
@@ -187,12 +190,58 @@ export class SoildataReportsCatalogComponent implements OnInit {
       }
     )
   }
+  softUpdateAvailableStatuses(){
+    var oldStatuses:SoilReportStatus[] = [];
+    this.availableStatuses.forEach(val => oldStatuses.push(Object.assign({}, val)));
+    this.availableStatuses = [];
+    for( let rep of  this.reportsByDateRange){
+      if( !this.availableStatuses.map(s => s.id).includes(rep.lastStatus.soilReportStatusId)) this.availableStatuses.push(rep.lastStatus.soilReportStatus);
+    }
+    
+    //this.criteria.status = this.availableStatuses.map( s => s.id);
+    this.statusesCheckboxes = [];
+    for(let status of this.availableStatuses){
+      console.log(status.id);
+      console.log( this.criteria.status);
+      if( this.criteria.status.includes(status.id) ){
+        console.log('status matches');
+        this.statusesCheckboxes.push({
+          name:status.name, value: status.id, checked:true
+        });
+      }else if(!oldStatuses.map(s => s.id).includes(status.id)){
+        console.log('new status');
+        this.criteria.status.push(status.id)
+        this.statusesCheckboxes.push({
+          name:status.name, value: status.id, checked:true
+        });
+      }else{
+        console.log( "not checked")
+        this.statusesCheckboxes.push({
+          name:status.name, value: status.id, checked:false
+        });
+      }
+    }
+    console.log(this.statusesCheckboxes);
+  }
+
+  softUpdateIfSampleExists(){
+    this.samplesExist = this.filteredReports.filter( r => r.lastStatus.soilReportStatus.name == "Entered").length != 0;
+  }
+  softUpdateIfReportsExists(){
+    this.samplesExist = this.filteredReports.filter( r => r.reports != undefined && r.reports.length != 0).length != 0;
+  }
+
+
 
   statusChanged(){
     this.getStatuses();
     this.onRefresh();
   }
   reportAgentNoteChanged(event:SoilReportStatus){
+    this.softUpdateAvailableStatuses();
+    this.applyFilterCriteria();
+/* 
+
     if( this.availableStatuses.filter( s => s.id == event.id).length == 0 ){
       this.service.reportStatuses().subscribe(
         res => {
@@ -208,6 +257,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
         }
       )
     }
+
+ */
+
   }
 
   onSearch(event){
@@ -248,22 +300,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.sampleNumberDisplayed = true;
     this.reportsByDateRange.unshift(event);
     if(this.filteredReports.filter( f => f.id == event.id).length == 0 ) this.filteredReports.unshift(event);
-    if( this.availableStatuses.filter( s => s.name == "Entered").length == 0 ){
-      this.service.reportStatuses().subscribe(
-        res => {
-          var enteredStatus = res.filter( s => s.name == "Entered");
-          if(enteredStatus.length > 0 ){
-            var entered = enteredStatus[0];
-            this.criteria.status.push(entered.id);
-            this.availableStatuses.push(entered);
-            this.statusesCheckboxes.push({
-              name:entered.name, value: entered.id, checked:true
-            })
-          }
-        }
-      )
-    }
-    //this.getStatuses();
+    this.softUpdateAvailableStatuses();
+    this.softUpdateIfSampleExists();
   }
   
   switchOrder(type:string){
@@ -297,7 +335,21 @@ export class SoildataReportsCatalogComponent implements OnInit {
         var blob = new Blob([data], {type: 'application/pdf'});
         saveAs(blob, "SoilTestResults.pdf");
         this.pdfLoading = false;
-        this.onRefresh();
+        this.service.reportStatuses().subscribe(
+          res => {
+            var reviewedStatus = res.filter( s => s.name == "Reviewed")[0];
+            var archivedStatus = res.filter( s => s.name == "Archived")[0];
+            for( var rep of this.filteredReports){
+              if(rep.lastStatus.soilReportStatusId == reviewedStatus.id){
+                rep.lastStatus.soilReportStatus = archivedStatus;
+                rep.lastStatus.soilReportStatusId = archivedStatus.id;
+              }
+            }
+            this.softUpdateAvailableStatuses();
+            this.applyFilterCriteria();
+            this.softUpdateIfReportsExists;
+          }
+        )
       }
     )
   }
@@ -309,8 +361,22 @@ export class SoildataReportsCatalogComponent implements OnInit {
         var blob = new Blob([data], {type: 'application/pdf'});
         saveAs(blob, "PackingSlip.pdf");
         this.samplePdfLoading = false;
-        this.onRefresh();
-        this.statusChanged();
+
+        this.service.reportStatuses().subscribe(
+          res => {
+            var enteredStatus = res.filter( s => s.name == "Entered")[0];
+            var sentStatus = res.filter( s => s.name == "Sent")[0];
+            for( var rep of this.filteredReports){
+              if(rep.lastStatus.soilReportStatusId == enteredStatus.id){
+                rep.lastStatus.soilReportStatus = sentStatus;
+                rep.lastStatus.soilReportStatusId = sentStatus.id;
+              }
+            }
+            this.softUpdateAvailableStatuses();
+            this.applyFilterCriteria();
+            this.softUpdateIfSampleExists();
+          }
+        )
       }
     )
   }
@@ -320,11 +386,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
     console.log(ids);
     this.service.getData(ids).subscribe(
       data => {
-        console.log(data);
         const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
         const header = Object.keys(data[0]);
         let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
-        //csv.unshift(header.join(','));
         let csvArray = csv.join('\r\n');
 
         var blob = new Blob([csvArray], {type: 'text/csv' })

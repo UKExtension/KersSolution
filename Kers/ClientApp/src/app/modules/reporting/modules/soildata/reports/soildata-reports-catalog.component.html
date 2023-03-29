@@ -26,8 +26,8 @@
   <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
     <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
   </a>
-  <div class="row">
-    <form *ngIf="condition" class="form-horizontal form-label-left">
+  <div class="row" [style.display]="condition ? null : 'none'">
+    <form class="form-horizontal form-label-left">
       <div class="col-sm-offset-3 col-sm-9">
         <h2>Refine Search</h2>
       </div>
@@ -52,13 +52,15 @@
         <label class="control-label col-md-3 col-sm-3 col-xs-12">Report Status</label>
         <div class="col-md-6 col-sm-6 col-xs-12">
           
-            
+            {{statusesCheckboxes | json}}
               <label *ngFor="let option of statusesCheckboxes" class="checkbox-inline">
                   <input type="checkbox"
                         (change)="onReportStatusesChange($event)"
                         name="options"
                         value="{{option.value}}"
-                        [(ngModel)]="option.checked"/>
+                        [checked] = "option.checked=='true'"
+                        [(ngModel)]="option.checked"
+                        />
                   {{option.name}}
               </label>
           </div>
