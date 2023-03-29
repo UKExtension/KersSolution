@@ -162,6 +162,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
   }
 
   getStatuses(){
+    
     this.statusesCheckboxes = [];
     this.criteria.status = [];
     this.service.getCustomStatuses(this.criteria).subscribe(
@@ -201,27 +202,33 @@ export class SoildataReportsCatalogComponent implements OnInit {
     //this.criteria.status = this.availableStatuses.map( s => s.id);
     this.statusesCheckboxes = [];
     for(let status of this.availableStatuses){
-      console.log(status.id);
-      console.log( this.criteria.status);
+      var isItChecked:boolean = true;
       if( this.criteria.status.includes(status.id) ){
-        console.log('status matches');
+        isItChecked = false;
         this.statusesCheckboxes.push({
-          name:status.name, value: status.id, checked:true
+          name:status.name, value: status.id, checked:isItChecked
         });
       }else if(!oldStatuses.map(s => s.id).includes(status.id)){
-        console.log('new status');
-        this.criteria.status.push(status.id)
+        //this.criteria.status.push(status.id);
+        isItChecked = false;
         this.statusesCheckboxes.push({
-          name:status.name, value: status.id, checked:true
+          name:status.name, value: status.id, checked:isItChecked
         });
       }else{
-        console.log( "not checked")
+        isItChecked = false;
         this.statusesCheckboxes.push({
-          name:status.name, value: status.id, checked:false
+          name:status.name, value: status.id, checked:isItChecked
         });
       }
     }
-    console.log(this.statusesCheckboxes);
+
+    for( var s of this.statusesCheckboxes){
+      if( this.criteria.status.includes(s.value) ){
+        s.checked = true;
+      }else{
+        s.checked = false;
+      }
+    }
   }
 
   softUpdateIfSampleExists(){
@@ -234,8 +241,10 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
 
   statusChanged(){
-    this.getStatuses();
-    this.onRefresh();
+    //this.getStatuses();
+    //this.onRefresh();
+    this.softUpdateAvailableStatuses();
+    this.applyFilterCriteria();
   }
   reportAgentNoteChanged(event:SoilReportStatus){
     this.softUpdateAvailableStatuses();

@@ -186,7 +186,9 @@ namespace Kers.Controllers.Soil
                         .Include( s => s.FarmerForReport)
                         .Include( b => b.SampleInfoBundles).ThenInclude( i => i.SampleAttributeSampleInfoBundles)
                         .Include( b => b.OptionalTestSoilReportBundles)
-                        .Include( b => b.LastStatus)
+                        .Include( b => b.TypeForm)
+                        .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                        .Include( b => b.Reports)
                         .FirstOrDefault();
             if(sample != null && smpl != null ){
                 

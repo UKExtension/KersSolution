@@ -265,8 +265,10 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   changeStatusTo(id:number){
     this.service.changestatus(id, this.report.id).subscribe(
       res => {
-        //this.report.lastStatus.soilReportStatus = res;
+        this.report.lastStatus.soilReportStatus = res;
+        this.report.lastStatus.soilReportStatusId = res.id;
         this.onStatusChange.emit(res);
+        this.statusChangeClicked = false;
       }
     )
   }
@@ -291,6 +293,9 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   }
   SampleFormSubmit(event:SoilReportBundle){
     this.onStatusChange.emit(null);
+    this.report = event;
+    this.report.coSamnum = this.report.coSamnum.replace(/^0+/, '');
+    this.defaultView();
   }
 
   ProcessStatuses(){
