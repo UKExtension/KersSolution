@@ -79,6 +79,12 @@ import { Observable } from 'rxjs';
   .soil-report-status-archived{
     background-color: #e5e5e5;
   }
+  .soil-report-status-recieved{
+    background-color: #ceab54;
+  }
+  .soil-repot-status-inlab{
+    background-color: #ebb1e2;
+  }
   .status-choice{
     background-color: #fff;
     border-bottom: 1px solid #ccc;
