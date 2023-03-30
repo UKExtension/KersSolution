@@ -209,7 +209,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
           name:status.name, value: status.id, checked:isItChecked
         });
       }else if(!oldStatuses.map(s => s.id).includes(status.id)){
-        //this.criteria.status.push(status.id);
+        this.criteria.status.push(status.id);
         isItChecked = false;
         this.statusesCheckboxes.push({
           name:status.name, value: status.id, checked:isItChecked
@@ -356,7 +356,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
             }
             this.softUpdateAvailableStatuses();
             this.applyFilterCriteria();
-            this.softUpdateIfReportsExists;
+            this.softUpdateIfReportsExists();
           }
         )
       }
