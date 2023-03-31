@@ -13,7 +13,7 @@
 Report Date: @Model.LabTestsReady.ToString("d")<br>
 Received Date: @Model.DataProcessed.ToString("d")<br>
 Laboratory Number: @Model.Reports.First().LabNum<br>
-Owner Sample Id: @Model.Reports.First().OsId <br>
+Owner Sample Id: @Model.OwnerID <br>
 </div>
 @foreach (var item in Model.Reports)
 {

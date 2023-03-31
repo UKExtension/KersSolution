@@ -166,6 +166,7 @@ namespace Kers.Controllers.Soil
                 sample.LastStatus.SoilReportStatus = status;
                 sample.LastStatus.Created = DateTime.Now;
                 sample.CoSamnum = sample.CoSamnum.PadLeft(5, '0');
+                sample.TypeForm = this._context.TypeForm.Find(sample.TypeFormId);
                 _context.Add(sample);
                 _context.SaveChanges();
                 this.Log( sample ,"SoilReportBundle", "Soil Sample Info added.", "SoilReportBundle");
@@ -185,11 +186,10 @@ namespace Kers.Controllers.Soil
                         .Include( s => s.FarmerForReport)
                         .Include( b => b.SampleInfoBundles).ThenInclude( i => i.SampleAttributeSampleInfoBundles)
                         .Include( b => b.OptionalTestSoilReportBundles)
-                        .Include( b => b.LastStatus)
+                        .Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+                        .Include( b => b.Reports)
                         .FirstOrDefault();
             if(sample != null && smpl != null ){
-                
-
                 foreach( var bndl in smpl.SampleInfoBundles){
                     _context.RemoveRange(bndl.SampleAttributeSampleInfoBundles);
                     _context.SaveChanges();
@@ -244,6 +244,7 @@ namespace Kers.Controllers.Soil
                 smpl.BillingTypeId = sample.BillingTypeId;
                 smpl.CoSamnum = sample.CoSamnum.PadLeft(5, '0');
                 _context.SaveChanges();
+                smpl.TypeForm = this._context.TypeForm.Find(smpl.TypeFormId);
                 this.Log( sample ,"SoilReportBundle", "Soil Sample Info updated.", "SoilReportBundle");
                 return new OkObjectResult(smpl);
             }else{

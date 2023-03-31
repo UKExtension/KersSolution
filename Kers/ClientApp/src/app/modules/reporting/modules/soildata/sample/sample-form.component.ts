@@ -1,3 +1,4 @@
+import { ViewportScroller } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
@@ -55,7 +56,8 @@ export class SampleFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service:SoilSampleService
+    private service:SoilSampleService,
+    private viewportScroller: ViewportScroller
   ) { 
     
 
@@ -153,7 +155,7 @@ export class SampleFormComponent implements OnInit {
         distinctUntilChanged(),
         switchMap(_ => this.service.checkCoSamNum(sampleControl.value as string) ),
       );
-      
+      this.viewportScroller.scrollToAnchor("topOfTheForm");
   }
   prepereAltCrop(){
     //this.soilSampleForm.controls["farmerAddress"].disable();

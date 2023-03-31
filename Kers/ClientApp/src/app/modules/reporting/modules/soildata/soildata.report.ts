@@ -32,6 +32,7 @@ export class SoilReportBundle{
 export class SoilReportStatusChange{
     id:number;
     soilReportStatus:SoilReportStatus;
+    soilReportStatusId:number;
     created:Date;
     kersUserId?:number;
 }

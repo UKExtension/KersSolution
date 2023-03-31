@@ -79,6 +79,12 @@ import { Observable } from 'rxjs';
   .soil-report-status-archived{
     background-color: #e5e5e5;
   }
+  .soil-report-status-recieved{
+    background-color: #ceab54;
+  }
+  .soil-repot-status-inlab{
+    background-color: #ebb1e2;
+  }
   .status-choice{
     background-color: #fff;
     border-bottom: 1px solid #ccc;
@@ -96,6 +102,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Input('soildata-reports-catalog-details') report: SoilReportBundle;
 
   @Output() onStatusChange = new EventEmitter<SoilReportStatus | null>();
+  @Output() onNoteChange = new EventEmitter<SoilReportStatus>();
   @Output() onCopySample = new EventEmitter<SoilReportBundle>();
   @Output() isItReport = new EventEmitter<boolean>();
   @Output() isItSample = new EventEmitter<boolean>();
@@ -125,7 +132,9 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     );
     this.$statuses = this.service.reportStatuses();
     this.ProcessStatuses();
-    if(this.report.reports != null && this.report.reports.length > 0 ){
+    if(this.report.reports == null) this.report.reports = [];
+    this.report.coSamnum = this.report.coSamnum.replace(/^0+/, '');
+    if( this.report.reports.length > 0 ){
       this.isItReport.emit(true);
     }else{
       this.isItReport.emit(false);
@@ -240,17 +249,25 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   }
 
   cropNoteUpdated(){
-    this.onStatusChange.emit(null);
+    this.defaultView();
+    this.onNoteChange.emit(this.report.lastStatus.soilReportStatus);
   }
 
 
 
   print(){
     this.pdfLoading = true;
-    
     this.service.pdf(this.report.uniqueCode).subscribe(
         data => {
-            if(this.report.lastStatus != null) this.report.lastStatus.soilReportStatus.name = "Archived";
+            if(this.report.lastStatus != null){
+              this.service.reportStatuses().subscribe(
+                res => {
+                  var archivedStatus = res.filter( s => s.name == "Archived")[0];
+                  this.report.lastStatus.soilReportStatus = archivedStatus;
+
+                }
+              );
+            } 
             var blob = new Blob([data], {type: 'application/pdf'});
             saveAs(blob, "SoilTestResults.pdf");
             this.pdfLoading = false;
@@ -261,8 +278,10 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   changeStatusTo(id:number){
     this.service.changestatus(id, this.report.id).subscribe(
       res => {
-        //this.report.lastStatus.soilReportStatus = res;
+        this.report.lastStatus.soilReportStatus = res;
+        this.report.lastStatus.soilReportStatusId = res.id;
         this.onStatusChange.emit(res);
+        this.statusChangeClicked = false;
       }
     )
   }
@@ -287,6 +306,9 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   }
   SampleFormSubmit(event:SoilReportBundle){
     this.onStatusChange.emit(null);
+    this.report = event;
+    this.report.coSamnum = this.report.coSamnum.replace(/^0+/, '');
+    this.defaultView();
   }
 
   ProcessStatuses(){
@@ -336,7 +358,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     var body = "https://kers.ca.uky.edu/core/api/PdfSoilData/report/"+this.report.uniqueCode+'%0D%0A%0D%0A';
     body += this.report.farmerForReport.first + ',';
     body += "%0D%0A%0D%0AThe link above contains your soil test report for";
-    body += "%0D%0AOwner Sample ID: "+this.report.reports[0].osId+".%0D%0A%0D%0A";
+    body += "%0D%0AOwner Sample ID: "+this.report.ownerID+".%0D%0A%0D%0A";
     body += "Click on the link or copy and paste it into a web browser and hit Enter. Choose to open the pdf file.";
     body += '%0D%0A%0D%0A' + this.user.rprtngProfile.planningUnit.name;
     body += '%0D%0A' + this.user.rprtngProfile.planningUnit.phone;

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SoilReportSearchCriteria, SoilReportBundle, TypeForm } from '../soildata.report';
+import { SoilReportSearchCriteria, SoilReportBundle, TypeForm, SoilReportStatus } from '../soildata.report';
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { SoildataService } from '../soildata.service';
@@ -14,7 +14,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
   refresh: Subject<SoilReportBundle[] | null>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
   reports$:Observable<SoilReportBundle[]>;
-  reps:SoilReportBundle[];
+  filteredReports:SoilReportBundle[];
+  reportsByDateRange: SoilReportBundle[];
   type="dsc";
   pdfLoading = false;
   samplePdfLoading = false;
@@ -49,6 +50,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   typesCheckboxes = [];
   statusesCheckboxes = [];
+  availableStatuses:SoilReportStatus[] = [];
 
   get selectedFormTypes() { 
     return this.typesCheckboxes
@@ -101,13 +103,13 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.refresh = new Subject();
     this.getStatuses();
     this.getFormTypes();
-    this.reports$ = this.refresh.asObservable()
-      .pipe(
-        startWith({} as SoilReportBundle[]), // Emit value to force load on page load; actual value does not matter
-        mergeMap(initialItemState =>  this.service.getCustom(this.criteria)), // Get some items
-        tap(_ => this.loading = false) // Turn off the spinner
-      );
-    
+    this.service.getCustom(this.criteria).subscribe(
+      res =>{
+        this.reportsByDateRange = res;
+        this.filteredReports = this.reportsByDateRange;
+        this.loading = false;
+      } 
+    )
   }
 
 
@@ -123,11 +125,39 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.getFormTypes();
   }
 
+  applyFilterCriteria(){
+    //Apply form type checkboxes
+    this.filteredReports = this.reportsByDateRange.filter( r => this.criteria.formType.includes(r.typeForm.id));
+    //Filter by status
+    this.filteredReports = this.filteredReports.filter( r => this.criteria.status.includes( r.lastStatus.soilReportStatusId));
+    //Filter by name
+    if(this.criteria.search != undefined && this.criteria.search != ""){
+      this.filteredReports = this.filteredReports.filter( r => (
+        r.farmerForReport.first.toLowerCase().includes(this.criteria.search.toLowerCase())
+        ||
+        r.farmerForReport.last.toLowerCase().includes(this.criteria.search.toLowerCase())
+         ));
+    }
+    //Apply Sorting
+    if(this.criteria.order == 'dsc'){
+      this.filteredReports.sort((a,b) => ((new Date(b.sampleLabelCreated).getTime()) - ( new Date(a.sampleLabelCreated).getTime())));
+    }else if(this.criteria.order == 'asc'){
+      this.filteredReports.sort((a,b)=> ((new Date(a.sampleLabelCreated).getTime()) - ( new Date(b.sampleLabelCreated).getTime())));
+    }else if(this.criteria.order == "smplasc"){
+      this.filteredReports.sort((a,b)=> (a.coSamnum.padStart(6, '0') > b.coSamnum.padStart(6, '0')) ? 1 : -1);
+    }else if(this.criteria.order == "smpl"){
+      this.filteredReports.sort((a,b)=> (b.coSamnum.padStart(6, '0') > a.coSamnum.padStart(6, '0')) ? 1 : -1);
+    }
+    this.softUpdateIfSampleExists();
+  }
+
   getStatuses(){
+    
     this.statusesCheckboxes = [];
     this.criteria.status = [];
     this.service.getCustomStatuses(this.criteria).subscribe(
       res => {
+        this.availableStatuses = res;
         for(let status of res){
           this.criteria.status.push(status.id);
           this.statusesCheckboxes.push({
@@ -151,31 +181,92 @@ export class SoildataReportsCatalogComponent implements OnInit {
       }
     )
   }
+  softUpdateAvailableStatuses(){
+    var oldStatuses:SoilReportStatus[] = [];
+    this.availableStatuses.forEach(val => oldStatuses.push(Object.assign({}, val)));
+    this.availableStatuses = [];
+    for( let rep of  this.reportsByDateRange){
+      if( !this.availableStatuses.map(s => s.id).includes(rep.lastStatus.soilReportStatusId)) this.availableStatuses.push(rep.lastStatus.soilReportStatus);
+    }
+    
+    //this.criteria.status = this.availableStatuses.map( s => s.id);
+    this.statusesCheckboxes = [];
+    for(let status of this.availableStatuses){
+      var isItChecked:boolean = true;
+      if( this.criteria.status.includes(status.id) ){
+        isItChecked = false;
+        this.statusesCheckboxes.push({
+          name:status.name, value: status.id, checked:isItChecked
+        });
+      }else if(!oldStatuses.map(s => s.id).includes(status.id)){
+        this.criteria.status.push(status.id);
+        isItChecked = false;
+        this.statusesCheckboxes.push({
+          name:status.name, value: status.id, checked:isItChecked
+        });
+      }else{
+        isItChecked = false;
+        this.statusesCheckboxes.push({
+          name:status.name, value: status.id, checked:isItChecked
+        });
+      }
+    }
+
+    for( var s of this.statusesCheckboxes){
+      if( this.criteria.status.includes(s.value) ){
+        s.checked = true;
+      }else{
+        s.checked = false;
+      }
+    }
+  }
+
+  softUpdateIfSampleExists(){
+    this.samplesExist = this.filteredReports.filter( r => r.lastStatus.soilReportStatus.name == "Entered").length != 0;
+  }
+  softUpdateIfReportsExists(){
+    var numReports = this.filteredReports.filter( r => r.reports != undefined && r.reports.length != 0);
+    this.reportsExist = numReports.length != 0;
+  }
+
+
 
   statusChanged(){
-    this.getStatuses();
-    this.onRefresh();
+    this.softUpdateAvailableStatuses();
+    this.applyFilterCriteria();
+  }
+  reportAgentNoteChanged(event:SoilReportStatus){
+    this.softUpdateAvailableStatuses();
+    this.applyFilterCriteria();
   }
 
   onSearch(event){
     this.criteria["search"] = event.target.value;
-    this.onRefresh();
+    this.applyFilterCriteria();
+    //this.onRefresh();
   }
   onFormTypeChange(){
     this.criteria.formType = this.selectedFormTypes;
-    this.onRefresh();
+    this.applyFilterCriteria();
   }
 
   onReportStatusesChange(){
     this.criteria.status = this.selectedReportStatuses;
-    this.onRefresh();
+    this.applyFilterCriteria();
+    this.softUpdateIfReportsExists();
   }
 
   onRefresh() {
     this.reportsExist = false;
     this.samplesExist = false;
     this.loading = true; // Turn on the spinner.
-    this.refresh.next(null); // Emit value to force reload; actual value does not matter
+    this.service.getCustom(this.criteria).subscribe(
+      res =>{
+        this.reportsByDateRange = res;
+        this.filteredReports = this.reportsByDateRange;
+        this.loading = false;
+      } 
+    )
   }
 
   SampleFormCanceled(){
@@ -185,15 +276,17 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.newSample = false;
     this.lastCountyNumber = event.coSamnum;
     this.sampleNumberDisplayed = true;
-    var ths = this;
-    setTimeout(()=>{  ths.onRefresh();    }, 40);
-    this.getStatuses();
+    this.reportsByDateRange.unshift(event);
+    if(this.filteredReports.filter( f => f.id == event.id).length == 0 ) this.filteredReports.unshift(event);
+    this.softUpdateAvailableStatuses();
+    this.softUpdateIfSampleExists();
   }
   
   switchOrder(type:string){
     this.type = type;
     this.criteria["order"] = type;
-    this.onRefresh();
+    this.applyFilterCriteria();
+    //this.onRefresh();
   }
 
   copySample(event:SoilReportBundle){
@@ -220,7 +313,22 @@ export class SoildataReportsCatalogComponent implements OnInit {
         var blob = new Blob([data], {type: 'application/pdf'});
         saveAs(blob, "SoilTestResults.pdf");
         this.pdfLoading = false;
-        this.onRefresh();
+        this.service.reportStatuses().subscribe(
+          res => {
+            var reviewedStatus = res.filter( s => s.name == "Reviewed")[0];
+            var receivedStatus = res.filter( s => s.name == "Received")[0];
+            var archivedStatus = res.filter( s => s.name == "Archived")[0];
+            for( var rep of this.filteredReports){
+              if(rep.lastStatus.soilReportStatusId == reviewedStatus.id || rep.lastStatus.soilReportStatusId == receivedStatus.id){
+                rep.lastStatus.soilReportStatus = archivedStatus;
+                rep.lastStatus.soilReportStatusId = archivedStatus.id;
+              }
+            }
+            this.softUpdateAvailableStatuses();
+            this.applyFilterCriteria();
+            this.softUpdateIfReportsExists();
+          }
+        )
       }
     )
   }
@@ -232,8 +340,22 @@ export class SoildataReportsCatalogComponent implements OnInit {
         var blob = new Blob([data], {type: 'application/pdf'});
         saveAs(blob, "PackingSlip.pdf");
         this.samplePdfLoading = false;
-        //this.onRefresh();
-        this.statusChanged();
+
+        this.service.reportStatuses().subscribe(
+          res => {
+            var enteredStatus = res.filter( s => s.name == "Entered")[0];
+            var sentStatus = res.filter( s => s.name == "Sent")[0];
+            for( var rep of this.filteredReports){
+              if(rep.lastStatus.soilReportStatusId == enteredStatus.id){
+                rep.lastStatus.soilReportStatus = sentStatus;
+                rep.lastStatus.soilReportStatusId = sentStatus.id;
+              }
+            }
+            this.softUpdateAvailableStatuses();
+            this.applyFilterCriteria();
+            this.softUpdateIfSampleExists();
+          }
+        )
       }
     )
   }
@@ -243,11 +365,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
     console.log(ids);
     this.service.getData(ids).subscribe(
       data => {
-        console.log(data);
         const replacer = (key, value) => value === null ? '' : value; // specify how you want to handle null values here
         const header = Object.keys(data[0]);
         let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
-        //csv.unshift(header.join(','));
         let csvArray = csv.join('\r\n');
 
         var blob = new Blob([csvArray], {type: 'text/csv' })
