@@ -257,10 +257,17 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
 
   print(){
     this.pdfLoading = true;
-    
     this.service.pdf(this.report.uniqueCode).subscribe(
         data => {
-            if(this.report.lastStatus != null) this.report.lastStatus.soilReportStatus.name = "Archived";
+            if(this.report.lastStatus != null){
+              this.service.reportStatuses().subscribe(
+                res => {
+                  var archivedStatus = res.filter( s => s.name == "Archived")[0];
+                  this.report.lastStatus.soilReportStatus = archivedStatus;
+
+                }
+              );
+            } 
             var blob = new Blob([data], {type: 'application/pdf'});
             saveAs(blob, "SoilTestResults.pdf");
             this.pdfLoading = false;

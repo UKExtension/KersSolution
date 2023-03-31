@@ -110,16 +110,6 @@ export class SoildataReportsCatalogComponent implements OnInit {
         this.loading = false;
       } 
     )
-
-
-    /* 
-    this.reports$ = this.refresh.asObservable()
-      .pipe(
-        startWith({} as SoilReportBundle[]), // Emit value to force load on page load; actual value does not matter
-        mergeMap(initialItemState =>  this.service.getCustom(this.criteria)), // Get some items
-        tap(_ => this.loading = false) // Turn off the spinner
-      );
-     */
   }
 
 
@@ -235,40 +225,19 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.samplesExist = this.filteredReports.filter( r => r.lastStatus.soilReportStatus.name == "Entered").length != 0;
   }
   softUpdateIfReportsExists(){
-    this.samplesExist = this.filteredReports.filter( r => r.reports != undefined && r.reports.length != 0).length != 0;
+    var numReports = this.filteredReports.filter( r => r.reports != undefined && r.reports.length != 0);
+    this.reportsExist = numReports.length != 0;
   }
 
 
 
   statusChanged(){
-    //this.getStatuses();
-    //this.onRefresh();
     this.softUpdateAvailableStatuses();
     this.applyFilterCriteria();
   }
   reportAgentNoteChanged(event:SoilReportStatus){
     this.softUpdateAvailableStatuses();
     this.applyFilterCriteria();
-/* 
-
-    if( this.availableStatuses.filter( s => s.id == event.id).length == 0 ){
-      this.service.reportStatuses().subscribe(
-        res => {
-          var enteredStatus = res.filter( s => s.id == event.id);
-          if(enteredStatus.length > 0 ){
-            var entered = enteredStatus[0];
-            this.criteria.status.push(entered.id);
-            this.availableStatuses.push(entered);
-            this.statusesCheckboxes.push({
-              name:entered.name, value: entered.id, checked:true
-            })
-          }
-        }
-      )
-    }
-
- */
-
   }
 
   onSearch(event){
@@ -283,8 +252,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
 
   onReportStatusesChange(){
     this.criteria.status = this.selectedReportStatuses;
-    //this.getStatuses();
     this.applyFilterCriteria();
+    this.softUpdateIfReportsExists();
   }
 
   onRefresh() {
@@ -347,9 +316,10 @@ export class SoildataReportsCatalogComponent implements OnInit {
         this.service.reportStatuses().subscribe(
           res => {
             var reviewedStatus = res.filter( s => s.name == "Reviewed")[0];
+            var receivedStatus = res.filter( s => s.name == "Received")[0];
             var archivedStatus = res.filter( s => s.name == "Archived")[0];
             for( var rep of this.filteredReports){
-              if(rep.lastStatus.soilReportStatusId == reviewedStatus.id){
+              if(rep.lastStatus.soilReportStatusId == reviewedStatus.id || rep.lastStatus.soilReportStatusId == receivedStatus.id){
                 rep.lastStatus.soilReportStatus = archivedStatus;
                 rep.lastStatus.soilReportStatusId = archivedStatus.id;
               }
