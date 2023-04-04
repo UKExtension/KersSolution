@@ -35,3 +35,11 @@
 <h5>Learning Opportunities:</h5>
 <blockquote>@Html.Raw(@Model.LastRevision.Learning)</blockquote>
 
+@if(@Model.Stories.Count()>0){
+    <br><br>
+    <h2>Success Stories</h2>
+    @foreach( var story in Model.Stories)
+                        {
+                            @await Html.PartialAsync("StoryBriefPartial", story)
+                        }
+}

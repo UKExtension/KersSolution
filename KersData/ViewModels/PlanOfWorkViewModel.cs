@@ -11,6 +11,7 @@ namespace Kers.Models.ViewModels
         public FiscalYear FiscalYear { get; set; }
         public PlanningUnit PlanningUnit { get; set; }
         public PlanOfWorkRevision LastRevision { get; set; }
+        public List<Story> Stories {get;set;}
 
     }
 }

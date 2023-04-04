@@ -18,7 +18,10 @@
                                     asp-route-id="@Model.MajorProgram.Id"
                                     >@Model.MajorProgram.Name</a></p>
         @if(@Model.PlanOfWork != null){
-            <p><strong>Plan of Work: </strong>@Model.PlanOfWork.Title</p>
+            <p><strong>Plan of Work: </strong><a asp-controller="PlansOfWork" 
+                                    asp-action="planfullcounty" 
+                                    asp-route-id="@Model.PlanOfWork.PlanOfWorkId"
+                                    >@Model.PlanOfWork.Title</a></p>
         }
         <p><strong>Outcome: </strong>@Model.StoryOutcome.Name</p>
         <environment names="Development">
