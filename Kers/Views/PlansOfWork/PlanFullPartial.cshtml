@@ -38,8 +38,11 @@
 @if(@Model.Stories.Count()>0){
     <br><br>
     <h2>Success Stories</h2>
+    <div>
     @foreach( var story in Model.Stories)
                         {
                             @await Html.PartialAsync("StoryBriefPartial", story)
                         }
+    </div>
+    <div style="clear:both"> </div>
 }
