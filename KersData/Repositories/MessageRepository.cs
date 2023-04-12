@@ -35,7 +35,7 @@ namespace Kers.Models.Repositories
         public List<Message> ProcessMessageQueue(IConfiguration configuration, IWebHostEnvironment environment){
             
             var messages = this.context.Message
-                .Where( m => m.IsItSent == false && m.ScheduledFor <= DateTimeOffset.Now )
+                .Where( m => m.IsItSent == false && m.ScheduledFor <= DateTimeOffset.Now && ( m.SentAttempts == null || m.SentAttempts < 6) )
                 .Include( u => u.To).ThenInclude( t => t.PersonalProfile)
                 .Include( u => u.To).ThenInclude( t => t.RprtngProfile)
                 .ToList();
@@ -125,6 +125,7 @@ namespace Kers.Models.Repositories
                             message.IsItSent = true;
                             message.SentAt = DateTimeOffset.Now;
                         }
+                        message.SentAttempts = 1;
                         client.Disconnect (true);
                         
                     } catch (Exception ex) {
@@ -138,6 +139,7 @@ namespace Kers.Models.Repositories
                                                     ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                                                 });
                         this.context.Add( log );
+                        message.SentAttempts = message.SentAttempts == null ? 1 : message.SentAttempts + 1;
                         this.context.SaveChanges();
                         //return new OkObjectResult(ex.Message);
                     }
