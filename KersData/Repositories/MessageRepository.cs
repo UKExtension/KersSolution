@@ -140,6 +140,7 @@ namespace Kers.Models.Repositories
                                                 });
                         this.context.Add( log );
                         message.SentAttempts = message.SentAttempts == null ? 1 : message.SentAttempts + 1;
+                        message.ErrorMessage = ex.Message;
                         this.context.SaveChanges();
                         //return new OkObjectResult(ex.Message);
                     }
