@@ -7,6 +7,7 @@ import {UserService, User} from '../user/user.service';
 import {StoryService, Story, StoryImage, StoryOutcome} from './story.service';
 import {PlansofworkService, PlanOfWork} from '../plansofwork/plansofwork.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
+import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 
 
 
@@ -35,11 +36,14 @@ export class StoryFormComponent implements OnInit{
     initiatives:StrategicInitiative[];
     plans: Observable<PlanOfWork[]>;
 
+    indicators:Indicator[];
+
     outcome: Observable<StoryOutcome[]>;
 
     constructor( 
         private fb: FormBuilder,
         private programsService:ProgramsService,
+        private indicatorsService: IndicatorsService,
         private location: Location,
         private userService:UserService,
         private plansService: PlansofworkService,
@@ -84,7 +88,7 @@ export class StoryFormComponent implements OnInit{
                     this.storyForm = this.fb.group(
                         {
                             title: ["", Validators.required],
-                            story: ["", Validators.required],
+                            story: ["The problem<br><br>The educational program response<br><br>The participants/target audience<br><br>Other partners (if applicable)<br><br>Program impact or participant response.", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
                             planOfWorkId: ["", Validators.required],
@@ -158,6 +162,16 @@ export class StoryFormComponent implements OnInit{
         year.end = new Date(year.end);
 
         return year;
+    }
+
+    ProgramChanged(event){
+        var mpId = this.storyForm.value.majorProgramId;
+        
+        this.indicatorsService.indicatorsforprogram(mpId).subscribe(
+            res => {
+                this.indicators = res;
+            }
+        )
     }
 
 
