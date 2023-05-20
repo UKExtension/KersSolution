@@ -8,6 +8,7 @@ import { SoilReportBundle } from '../soildata.report';
 import { FarmerAddress } from '../soildata.service';
 import { BillingType, OptionalTest, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
+import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
   selector: 'soil-sample-form',
@@ -57,7 +58,8 @@ export class SampleFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service:SoilSampleService,
-    private viewportScroller: ViewportScroller
+    private viewportScroller: ViewportScroller,
+    private reportingService: ReportingService
   ) { 
     
 
@@ -247,6 +249,8 @@ export class SampleFormComponent implements OnInit {
     if( !this.sample ){
       this.service.addsample(SampleDataToSubmit).subscribe(
         res => {
+          window.scrollTo(0,0);
+          this.reportingService.setAlert("New Sample Submitted.");
           this.onFormSubmit.emit(res);
         }
       );
@@ -254,6 +258,8 @@ export class SampleFormComponent implements OnInit {
     }else{
       this.service.updateSample( this.sample.id, SampleDataToSubmit ).subscribe(
         res => {
+          window.scrollTo(0,0);
+          this.reportingService.setAlert("Sample Data Updated.");
           this.onFormSubmit.emit(res);
         }
       )

@@ -123,7 +123,9 @@ namespace Kers.Controllers
             foreach( var bndle in orderedBundles){
                 bndle.CoSamnum = bndle.CoSamnum.TrimStart('0');
             }
-
+            foreach( var bundle in orderedBundles){
+                bundle.FarmerAddress.Reports = null;
+            }
             return new OkObjectResult(orderedBundles);
         }
 
