@@ -8,86 +8,25 @@
 <div class="row" *ngIf="!loading">
     <div><reporting-display-help id="4"></reporting-display-help></div>
     <div class="col-sm-offset-3 col-sm-9">
-        <h2 *ngIf="!story">New Impact Statement <span *ngIf="fiscalYear"> for FY{{fiscalYear.name}}</span></h2>
+        <h2 *ngIf="!story">New Success Story <span *ngIf="fiscalYear"> for FY{{fiscalYear.name}}</span></h2>
         <h2 *ngIf="story">Edit Success Story</h2>
     </div>
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="storyForm">
         <div class="form-group">
-            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12"><strong>Program Name:</strong> Please profile the <strong>official name or title</strong> of your program</label>        
+            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Title:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <input type="text" name="title" formControlName="title" id="title" class="form-control col-xs-12" />
             </div>
         </div>
         <div class="form-group">
-            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12"><strong>Select Audience Type:</strong> Who did this program serve? Select all that apply.</label>        
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <div class="checkbox">
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>General community</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Young children (Pre-K and younger)</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>K-12 students</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Parents/families</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Older adults/seniors</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Agricultural workers/farmers</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Professionals (e.g., educators, teachers, and healthcare providers)</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Job seekers</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Entrepreneurs</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Businesses</span>
-                        </label><br>
-                        <label class="">
-                        <input type="checkbox" class="flat"><span>Other (please specify):</span>
-                        </label><br>
-                        <input type="text" class="form-control col-xs-12" />
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12"><strong>Program Reach:</strong> <span>How many people did the program directly serve (i.e., number of program participants or attendees)</span></label>        
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <input type="text" class="form-control col-xs-12" />
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="majorProgramId">Major Program: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <select name="majorProgramId" id="majorProgramId" formControlName="majorProgramId" (change)="ProgramChanged($event)" class="form-control col-md-7 col-xs-12" >
+                <select name="majorProgramId" id="majorProgramId" formControlName="majorProgramId" class="form-control col-md-7 col-xs-12" >
                     <option value="">--- select ---</option>
                     <optgroup  *ngFor="let initiative of initiatives" label="{{initiative.name}}">
                         <option *ngFor="let program of initiative.majorPrograms" [value]="program.id">{{program.name}} ({{program.pacCode}})</option>
                     </optgroup>
                 </select>
-            </div>
-                
-            
-        </div>
-        <div class="form-group" *ngIf="indicators != null && indicators.length > 0">
-            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Related Program Indicators:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <div *ngFor="let indicator of indicators">
-                    <div class="checkbox">
-                        <label class="">
-                        <input type="checkbox" class="flat"><span [innerHtml]="indicator.question"></span>
-                        </label>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="form-group" *ngIf="currentUser.extensionPosition.code == 'AGENT'">
@@ -109,40 +48,10 @@
 				</select>
             </div>
         </div>
-         
         <div class="form-group" *ngIf="editorOptionsLoaded">
-            <div><reporting-display-help id="4"></reporting-display-help></div>
-            <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12"><strong>Issue:</strong> Please provide a brief description of the need/issue that this program addressed.</label>           
+            <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12">Success Story:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!storyForm.controls.story.valid">
-                <textarea [froalaEditor]="options" class="form-control col-xs-12"></textarea>
-            </div>
-        </div>
-        <div class="form-group" *ngIf="editorOptionsLoaded">
-            <div><reporting-display-help id="4"></reporting-display-help></div>
-            <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12"><strong>Education Response:</strong> Please provide a brief description of this program.</label>           
-            <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!storyForm.controls.story.valid">
-                <textarea [froalaEditor]="options" class="form-control col-xs-12"></textarea>
-            </div>
-        </div>
-        <div class="form-group" *ngIf="editorOptionsLoaded">
-            <div><reporting-display-help id="4"></reporting-display-help></div>
-            <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12"><strong>Partners (if applicable)</strong>: Please provide the names and brief description of the roles of your partners.</label>           
-            <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!storyForm.controls.story.valid">
-                <textarea [froalaEditor]="options" class="form-control col-xs-12"></textarea>
-            </div>
-        </div>
-        <div class="form-group" *ngIf="editorOptionsLoaded">
-            <div><reporting-display-help id="4"></reporting-display-help></div>
-            <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12"><strong>Target Audience and Reach:</strong> Please provide the number and description of program participants.</label>           
-            <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!storyForm.controls.story.valid">
-                <textarea [froalaEditor]="options" class="form-control col-xs-12"></textarea>
-            </div>
-        </div>
-        <div class="form-group" *ngIf="editorOptionsLoaded">
-            <div><reporting-display-help id="4"></reporting-display-help></div>
-            <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12"><strong>Statement of Outcomes/Impact:</strong> Please describe the change(s) that occurred in individuals, groups, families, businesses, or community as a result of this program.</label>           
-            <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!storyForm.controls.story.valid">
-                <textarea [froalaEditor]="options" class="form-control col-xs-12"></textarea>
+                <textarea [froalaEditor]="options" name="story" formControlName="story" id="story" class="form-control col-xs-12"></textarea>
             </div>
         </div>
         <div class="form-group" *ngIf="editorOptionsLoaded">
