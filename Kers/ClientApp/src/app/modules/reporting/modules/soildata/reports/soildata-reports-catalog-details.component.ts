@@ -8,11 +8,11 @@ import { Observable } from 'rxjs';
 @Component({
   selector: '[soildata-reports-catalog-details]',
   template: `
-    <td *ngIf="default">{{report.sampleLabelCreated | date:'mediumDate'}}</td>
-    <td *ngIf="default">{{report.typeForm.code}}</td>
-    <td *ngIf="default">{{report.coSamnum}}</td>
-    <td *ngIf="default">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
-    <td *ngIf="default" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
+    <td *ngIf="default" [class.pulse]="display_pulse">{{report.sampleLabelCreated | date:'mediumDate'}}</td>
+    <td *ngIf="default" [ngClass]="{'pulse': display_pulse }">{{report.typeForm.code}}</td>
+    <td *ngIf="default" [ngClass]="{'pulse': display_pulse }">{{report.coSamnum}}</td>
+    <td *ngIf="default" [ngClass]="{'pulse': display_pulse }">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
+    <td *ngIf="default"  [ngClass]="{'pulse': display_pulse }" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
       <div *ngIf="processedStatuses == null && report.lastStatus !=null">
         {{report.lastStatus.soilReportStatus.name}}
       </div>
@@ -34,7 +34,7 @@ import { Observable } from 'rxjs';
         <loading *ngIf="statusLoading" [type]="bars"></loading>
       </ng-container>
     </td>
-    <td *ngIf="default" class="text-right">
+    <td *ngIf="default" class="text-right" [ngClass]="{'pulse': display_pulse }">
       <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="isEditButtonAvailable()"><i class="fa fa-pencil"></i> edit</a>
       <a class="btn btn-info btn-xs" (click)="sampleCopy()" *ngIf="isCopyButtonAvailable()"><i class="fa fa-copy"></i> copy</a>
       <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="isReviewButtonAvailable()"><i class="fa fa-pencil"></i> review</a>
@@ -43,7 +43,7 @@ import { Observable } from 'rxjs';
       <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="isEmailButtonAvailable()"><i class="fa fa-envelope"></i> email</a>
       <a *ngIf="isAlterButtonAvailable()" class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Alter</a>
     </td>
-    <td *ngIf="edit" colspan="6">
+    <td *ngIf="edit" colspan="6" [ngClass]="{'pulse': display_pulse }">
       <div class="row">
         <div class="col-xs-6">
         <loading [type]="'bars'" *ngIf="deleteLoading"></loading>
@@ -59,11 +59,11 @@ import { Observable } from 'rxjs';
       </div>
       <soildata-report-form [report]="report" (onCropNoteUpdated)="cropNoteUpdated()"></soildata-report-form>
     </td>
-    <td *ngIf="sampleEdit" colspan="6">
+    <td *ngIf="sampleEdit" colspan="6" [ngClass]="{'pulse': display_pulse }">
       <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
       <soil-sample-form [sample]="report" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
     </td>
-    <td *ngIf="altCrop" colspan="6">
+    <td *ngIf="altCrop" colspan="6" [ngClass]="{'pulse': display_pulse }">
       <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
       <soil-sample-form [sample]="report" [isThisAltCrop]="true" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
     </td>
@@ -96,6 +96,46 @@ import { Observable } from 'rxjs';
     padding: 10px 15px;
     border: 0;
   }
+
+
+
+
+  .pulse{
+    -webkit-animation: color-change-3x 0.6s linear both;
+            animation: color-change-3x 0.6s linear both;
+  }
+  .pulse2 {
+    background-color: blue;
+    color: red;
+  }
+
+
+ @-webkit-keyframes color-change-3x {
+   0% {
+     background: #19dcea;
+   }
+   50% {
+     background: salmon;
+   }
+   0% {
+     background: #ea2222;
+   }
+ }
+ @keyframes color-change-3x {
+   0% {
+     background: #19dcea;
+   }
+   50% {
+     background: salmon;
+   }
+   0% {
+     background: #ea2222;
+   }
+ }
+ 
+
+
+
   `]
 })
 export class SoildataReportsCatalogDetailsComponent implements OnInit {
@@ -120,6 +160,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   statusChangeClicked = false;
   $statuses:Observable<SoilReportStatus[]>;
   processedStatuses:SoilReportStatus[];
+  display_pulse = false;
 
   constructor(
     private service:SoildataService,
@@ -152,6 +193,11 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     this.edit = false;
     this.sampleEdit = false;
     this.altCrop = false;
+    this.display_pulse = true;
+
+        setTimeout(() => {
+          this.display_pulse = false;
+        }, 1000);
   }
   editView(){
     this.default = false;
@@ -282,6 +328,12 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
         this.report.lastStatus.soilReportStatusId = res.id;
         this.onStatusChange.emit(res);
         this.statusChangeClicked = false;
+
+        this.display_pulse = true;
+
+        setTimeout(() => {
+          this.display_pulse = false;
+        }, 1000);
       }
     )
   }
