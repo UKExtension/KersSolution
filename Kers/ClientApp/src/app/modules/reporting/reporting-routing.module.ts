@@ -99,11 +99,11 @@ const reportingRoutes: Routes = [
           {
             path: 'countyevents', 
             loadChildren: () => import('./modules/events/county/county-events.module').then(m => m.CountyEventsModule)
-          },/* 
+          },
           {
-            path: 'budget', 
-            loadChildren: './modules/budget/budget.module#BudgetModule'
-          }, */
+            path: 'demos', 
+            loadChildren: () => import('./modules/demos/demos.module').then(m => m.DemosModule)
+          }, 
           {
             path:'ladder',
             loadChildren: () => import('./modules/ladder/ladder.module').then(m => m.LadderModule)
