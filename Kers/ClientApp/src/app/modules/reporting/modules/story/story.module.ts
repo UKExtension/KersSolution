@@ -20,15 +20,20 @@ import { StoryAuthorComponent } from './reports/story-author.component';
 import { StoryDisplayComponent } from './reports/story-display.component';
 import {StoryReportsDisplayListSyncComponent} from './reports/story-reports-display-list-sync.component';
 import { StoryShortComponent } from './reports/story-short.component';
+import { StoryFormDemoComponent } from './story-form-demo.component';
 
 @NgModule({
   imports:      [ SharedModule,
                   StoryRoutingModule
                 ],
+  exports: [
+    StoryFormDemoComponent
+  ],
   declarations: [ 
                   StoryComponent,
                   StoryHomeComponent,
                   StoryFormComponent,
+                  StoryFormDemoComponent,
                   StoryListComponent,
                   StoryDetailComponent,
                   StoryReportsDetailComponent,

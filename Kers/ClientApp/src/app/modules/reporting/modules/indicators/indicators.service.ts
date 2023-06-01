@@ -44,7 +44,7 @@ export class IndicatorsService {
         var url = this.baseUrl + "indicatorsforprogram/" + programId;
         return this.http.get<Indicator[]>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('listIndicators', []))
+                catchError(this.handleError('indicatorsforprogram', []))
             );
     }
 
