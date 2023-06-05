@@ -5,7 +5,7 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'app-indicators-demo',
+  selector: 'indicators-demo',
   template: `
     
 
@@ -13,7 +13,7 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 
 
   <div class="row" *ngIf="!loading">
-  <div><reporting-display-help id="4"></reporting-display-help></div>
+  <div><reporting-display-help id="22"></reporting-display-help></div>
   <div class="col-sm-offset-3 col-sm-9">
       <h2 *ngIf="!story">Program Indicators <span *ngIf="fiscalYear"> for FY{{fiscalYear.name}}</span></h2>
       <h2 *ngIf="story">Edit Program Indicators</h2><br>
@@ -46,12 +46,18 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
           </div>
       </div>
       <div class="form-group"  *ngIf="indicatorsForm.value.indicatorId != ''">
-          <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Value:</label>        
+          <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Number of participants achieving this indicator:</label>        
           <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="text" class="form-control col-xs-12" formControlName="value" style="width: 25%;" /><br><br><br>
           </div>
       </div>
 
+      <div class="form-group"  *ngIf="indicatorsForm.value.indicatorId != ''">
+            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Program Name/Title:</label>        
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" name="title" formControlName="title" id="title" class="form-control col-xs-12" />
+            </div>
+        </div>
       <div class="form-group" *ngIf="indicatorsForm.value.indicatorId != ''">
           <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Audience Type:<br><small>Select all that apply</small></label>        
           <div class="col-md-9 col-sm-9 col-xs-12">
@@ -152,6 +158,7 @@ export class IndicatorsDemoComponent implements OnInit {
     {
         majorProgramId: ["", Validators.required],
         indicatorId: ["", Validators.required],
+        title: [""],
         value: ["", Validators.required],
         audience: [""],
         reach: [""]
