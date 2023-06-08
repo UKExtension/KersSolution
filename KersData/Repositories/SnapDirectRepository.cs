@@ -1099,8 +1099,8 @@ namespace Kers.Models.Repositories
                         spclt += " " + (sp.Specialty.Code.Substring(0, 4) == "prog"?sp.Specialty.Code.Substring(4):sp.Specialty.Code);
                     }
                     row += spclt + ",";
-                    row +=  string.Concat("\"", lastRevision.Title, "\"")  + ",";
-                    row +=  string.Concat("\"", StripHTML(lastRevision.Description), "\"")  + ",";
+                    row +=  string.Concat("\"", lastRevision.Title.Replace("\"", ""), "\"")  + ",";
+                    row +=  string.Concat("\"", StripHTML(lastRevision.Description.Replace("\"", "")), "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Male, "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Female, "\"")  + ",";
                     if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
