@@ -34,7 +34,7 @@ import { Observable } from 'rxjs';
         <loading *ngIf="statusLoading" [type]="bars"></loading>
       </ng-container>
     </td>
-    <td *ngIf="default" class="text-right" [ngClass]="{'pulse': display_pulse }">
+    <td *ngIf="default" class="text-left" [ngClass]="{'pulse': display_pulse }">
       <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="isEditButtonAvailable()"><i class="fa fa-pencil"></i> edit</a>
       <a class="btn btn-info btn-xs" (click)="sampleCopy()" *ngIf="isCopyButtonAvailable()"><i class="fa fa-copy"></i> copy</a>
       <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="isReviewButtonAvailable()"><i class="fa fa-pencil"></i> review</a>
@@ -112,24 +112,24 @@ import { Observable } from 'rxjs';
 
  @-webkit-keyframes color-change-3x {
    0% {
-     background: #19dcea;
-   }
-   50% {
      background: salmon;
    }
+   50% {
+     background: bisque;
+   }
    0% {
-     background: #ea2222;
+     background: #bisque;
    }
  }
  @keyframes color-change-3x {
    0% {
-     background: #19dcea;
-   }
-   50% {
      background: salmon;
    }
+   50% {
+     background: bisque;
+   }
    0% {
-     background: #ea2222;
+     background: bisque;
    }
  }
  
