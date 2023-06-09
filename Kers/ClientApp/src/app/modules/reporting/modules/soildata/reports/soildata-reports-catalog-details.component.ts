@@ -295,7 +295,10 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   }
 
   cropNoteUpdated(){
-    this.defaultView();
+    if( !(this.report.reports != null && this.report.reports.length > 1)){
+      this.defaultView();
+    }
+    
     this.onNoteChange.emit(this.report.lastStatus.soilReportStatus);
   }
 
