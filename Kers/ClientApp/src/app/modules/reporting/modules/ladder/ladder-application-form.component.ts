@@ -169,8 +169,7 @@ export class LadderApplicationFormComponent implements OnInit {
     const group = new FormGroup({
       year: new FormControl(year, [Validators.required, 
         Validators.pattern('^\\d*$')]),
-      ratting: new FormControl(rating, [Validators.required, 
-        Validators.pattern('^\\d*$')])
+      ratting: new FormControl(rating, [Validators.required])
     });
     this.ratings.push(group);
   }
