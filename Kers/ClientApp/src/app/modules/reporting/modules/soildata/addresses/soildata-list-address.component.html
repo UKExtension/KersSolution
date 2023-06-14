@@ -8,6 +8,7 @@
     {{address.first}} {{address.last}}<br>
     {{address.address}}<br>
     {{address.city}}<span *ngIf="address.st && address.st!=''">, {{address.st}}</span> {{address.zip}} <br>
+    <span *ngIf="address.homeNumber">Phone: {{address.homeNumber}}<br></span>
     <span *ngIf="address.emailAddress">Email: {{address.emailAddress}}</span><br>
 </article>
 <ng-container *ngIf="select  && !isEdit"><a class="btn btn-info btn-xs" (click)="selected()">select</a></ng-container> <ng-container *ngIf="edit && !isEdit"><a><i style="cursor: pointer;" class="fa fa-pencil-square-o" (click)="isEdit=true"></i></a></ng-container>
