@@ -10,8 +10,8 @@ import { Observable, of } from 'rxjs';
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
       <div class="col-sm-offset-3 col-sm-9">
-          <h2 *ngIf="!address">New Farmer Address</h2>
-          <h2 *ngIf="address">Update Farmer Address</h2>
+          <h2 *ngIf="!address">New Client Address</h2>
+          <h2 *ngIf="address">Update Client Address</h2>
       </div>
 
       <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="addressForm">

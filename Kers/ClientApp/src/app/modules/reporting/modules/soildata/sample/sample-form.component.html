@@ -103,10 +103,11 @@
 
         <div class="ln_solid"></div>
         <div class="form-group">
-            <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
+            <div class="col-md-6 col-sm-6 col-xs-10 col-sm-offset-3">
                 <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
                 <button type="submit" [disabled]="soilSampleForm.invalid"  class="btn btn-success">Submit</button>
             </div>
+            <div class="col-md-3 col-sm-3 col-xs-2 text-right" *ngIf="sample">Sample #: <strong>{{sample.coSamnum}}</strong>&nbsp;&nbsp;&nbsp;</div>
         </div>
     </form>
     <!-- {{soilSampleForm.value | json}} -->

@@ -9,13 +9,15 @@
     
   </div>
   <div class="col-sm-6">
+    Client Name: {{report.farmerForReport.first}} {{report.farmerForReport.last}}<br>
     <ng-container *ngIf="report.ownerID">Owner Sample Id: {{report.ownerID}}<br></ng-container>
     <ng-container *ngIf="report.acres">Acres: {{report.acres}}<br></ng-container>
     <ng-container *ngIf="report.optionalInfo">{{report.optionalInfo}}<br></ng-container>
+    <ng-container *ngIf="report.privateNote != null && report.privateNote != ''">Non-reported Comment: {{report.privateNote}}<br></ng-container>
 
 <!-- 
 
-    <strong>Farmer:</strong><br>
+    <strong>Farmer:</strong><br> 
     <loading *ngIf="loading"></loading>
     <div *ngIf="report.farmerForReport != null && !loading">
       {{report.farmerForReport.first}} {{report.farmerForReport.last}}<br>

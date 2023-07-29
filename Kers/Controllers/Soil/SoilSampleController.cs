@@ -289,6 +289,7 @@ namespace Kers.Controllers.Soil
             var samples = this._context.SoilReportBundle
 											.Where( b => unigueIds.ids.Contains(b.UniqueCode) && b.Reports.Count() > 0)
 											.Include( b => b.Reports)
+                                            .Include( b => b.FarmerForReport)
 											.OrderBy( b => b.CoSamnum)
 											.ToList();
             List<List<string>> data = new List<List<string>>();
@@ -307,6 +308,7 @@ namespace Kers.Controllers.Soil
                 "Date",
                 "County #",
                 "Owner #",
+                "Owner Name",
                 "Crop",
                 "Form Type",
                 "Lab pH",
@@ -332,6 +334,7 @@ namespace Kers.Controllers.Soil
                 bundle.SampleLabelCreated.ToString(),
                 bundle.CoSamnum.TrimStart('0'),
                 bundle.OwnerID,
+                bundle.FarmerForReport.First + " " + bundle.FarmerForReport.Last,
                 report.CropInfo1,
                 report.TypeForm
             };

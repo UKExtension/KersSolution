@@ -34,8 +34,7 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
       <loading *ngIf="loading"></loading>
       <div *ngIf="!loading">
         <div class="col-lg-4 col-md-6 col-xs-12" *ngFor="let address of addresses.data"><br>
-          <soildata-list-address [address]="address" [brief]="false"></soildata-list-address>
-        <a class="btn btn-info btn-xs" (click)="selected(address)">select</a>
+          <soildata-list-address [address]="address" [brief]="false" [select]="true" [edit]="true" (onSelected)="selected($event)"></soildata-list-address>
         </div>
       </div>
 
@@ -130,6 +129,9 @@ export class SoildataAddressBrowserComponent implements OnInit {
   loadMore(){
     this.criteria.amount += 6;
     this.onRefresh();
+  }
+  editAddress(address:FarmerAddress){
+    console.log(address);
   }
 
 }

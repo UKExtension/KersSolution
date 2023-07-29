@@ -954,7 +954,9 @@ namespace Kers.Controllers
 			
 			row.Add( sample.PlanningUnit.CountyID.ToString());
 			row.Add( sample.CoSamnum);
-			row.Add( sample.FarmerForReport.First + " " + sample.FarmerForReport.Last);
+			var ClientName = (sample.FarmerForReport.First + " " + sample.FarmerForReport.Last);
+			int maxLength = Math.Min(ClientName.Length, 22);
+			row.Add( ClientName.Substring(0, maxLength));
 			row.Add( sample.OwnerID);
 			return row;
 		}

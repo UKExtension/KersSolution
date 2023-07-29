@@ -1,12 +1,19 @@
-<article class="media event" *ngIf="brief">
+<article class="media event" *ngIf="brief  && !isEdit">
     <div class="media-body">
         <p class="title">{{address.first}} {{address.last}}</p>
         <p>Address: {{address.address}}, {{address.city}} {{address.st}}</p>
     </div>
 </article>
-<article class="media event" *ngIf="!brief">
+<article class="media event" *ngIf="!brief && !isEdit">
     {{address.first}} {{address.last}}<br>
     {{address.address}}<br>
     {{address.city}}<span *ngIf="address.st && address.st!=''">, {{address.st}}</span> {{address.zip}} <br>
+    <span *ngIf="address.homeNumber">Phone: {{address.homeNumber}}<br></span>
     <span *ngIf="address.emailAddress">Email: {{address.emailAddress}}</span><br>
 </article>
+<ng-container *ngIf="select  && !isEdit"><a class="btn btn-info btn-xs" (click)="selected()">select</a></ng-container> <ng-container *ngIf="edit && !isEdit"><a><i style="cursor: pointer;" class="fa fa-pencil-square-o" (click)="isEdit=true"></i></a></ng-container>
+<div class="row" style="clear:both; width: 100%;" *ngIf="isEdit">
+   <div class="col-sm-9">
+        <soildata-farmer-address-form [address]="address" (onFormCancel)="isEdit = !isEdit" (onFormSubmit)="edited($event)"></soildata-farmer-address-form>
+    </div>
+</div>

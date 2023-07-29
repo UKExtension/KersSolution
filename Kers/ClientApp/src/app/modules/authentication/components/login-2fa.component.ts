@@ -42,6 +42,7 @@ export class Login2faComponent implements OnInit {
               ) 
   {
     this.ukLogoSrc = location.prepareExternalUrl('/assets/images/UK_gray.svg');
+    //this.isProduction = false;
     this.isProduction = environment.production;
     this.loginForm = fb.group(
       {

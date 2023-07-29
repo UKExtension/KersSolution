@@ -258,8 +258,8 @@ export class SampleFormComponent implements OnInit {
     }else{
       this.service.updateSample( this.sample.id, SampleDataToSubmit ).subscribe(
         res => {
-          window.scrollTo(0,0);
-          this.reportingService.setAlert("Sample Data Updated.");
+          //window.scrollTo(0,0);
+          //this.reportingService.setAlert("Sample Data Updated.");
           this.onFormSubmit.emit(res);
         }
       )
