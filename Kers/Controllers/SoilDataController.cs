@@ -124,7 +124,7 @@ namespace Kers.Controllers
                 bndle.CoSamnum = bndle.CoSamnum.TrimStart('0');
             }
             foreach( var bundle in orderedBundles){
-                bundle.FarmerAddress.Reports = null;
+                if( bundle.FarmerAddress != null) bundle.FarmerAddress.Reports = null;
             }
             return new OkObjectResult(orderedBundles);
         }
