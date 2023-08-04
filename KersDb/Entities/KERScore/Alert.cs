@@ -16,9 +16,11 @@ namespace Kers.Models.Entities.KERScore
         public int AlertType {get;set;}
         public DateTime Start {get;set;}
         public DateTime End {get;set;}
+        public string MoreInfoUrl {get;set;}
         public int? EmployeePositionId {get; set;}
         public int? zEmpRoleTypeId {get; set;}
         public int? isContyStaff {get;set;}
+        public bool Active {get;set;}
         public KersUser CreatedBy {get;set;}
         public DateTime Created {get;set;}
         public DateTime LastUpdated {get;set;}

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-alerts',
+  selector: 'alerts',
   templateUrl: './alerts.component.html'
 })
 export class AlertsComponent implements OnInit {

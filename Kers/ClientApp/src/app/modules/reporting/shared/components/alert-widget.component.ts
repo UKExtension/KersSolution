@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'alert-widget',
@@ -14,9 +16,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AlertWidgetComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) {
+
+    router.events.pipe(
+        filter(event => event instanceof NavigationEnd)
+      ).subscribe(event => {
+          console.log(event["url"]);
+      });
+   }
 
   ngOnInit(): void {
+    
   }
 
 }
