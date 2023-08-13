@@ -1,29 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AlertsService } from '../../modules/alerts/alerts.service';
+import { Observable } from 'rxjs';
+import { Alert } from '../../modules/alerts/Alert';
 
 @Component({
   selector: 'alert-widget',
   template: `
-  <div class="alert alert-success alert-dismissible " role="alert">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-  </button>
-  <strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.
-  </div>
+  <alert-banner *ngFor="let alert of alerts$ | async " [alert]="alert"></alert-banner>
   `,
   styles: [
   ]
 })
 export class AlertWidgetComponent implements OnInit {
+  alerts$:Observable<Alert[]>;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private service:AlertsService
   ) {
 
     router.events.pipe(
         filter(event => event instanceof NavigationEnd)
       ).subscribe(event => {
-          console.log(event["url"]);
+          this.alerts$ = service.getPage(event["url"]);
       });
    }
 

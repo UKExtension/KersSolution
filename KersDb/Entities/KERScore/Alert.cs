@@ -11,8 +11,8 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id {get; set;}
-        public String Message {get; set;}
-        public String UrlRoute {get; set;}
+        public string Message {get; set;}
+        public string UrlRoute {get; set;}
         public int AlertType {get;set;}
         public DateTime Start {get;set;}
         public DateTime End {get;set;}

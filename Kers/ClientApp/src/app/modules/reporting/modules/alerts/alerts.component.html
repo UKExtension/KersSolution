@@ -1,2 +1,55 @@
-<p>alerts works!</p>
-<alerts-form></alerts-form>
+<div>
+    <div class="text-right">
+        <a class="btn btn-info btn-xs" *ngIf="!newAlert" (click)="newAlert = true">+ new alert</a>
+    </div>
+    <alerts-form  *ngIf="newAlert" (onFormSubmit)="onSubmit($event)" (onFormCancel)="newAlert=false"></alerts-form>
+    <!-- <mileage-form *ngIf="newExpense" [isNewCountyVehicle]="newCountyVehicle" (onFormCancel)="newExpense=false" (onFormSubmit)="newExpenseSubmitted($event)"></mileage-form>
+    -->  <br><br>
+    <h2>Active Alerts</h2> 
+    <div class="table-responsive" *ngIf="activeAlerts$ | async as alerts">
+        <table class="table table-bordered table-striped" *ngIf="alerts.length > 0">
+
+            <thead>
+                <tr>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Message</th>
+                  <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let alert of alerts" [alert-list-row]="alert" (onEdited)="refreshData()"></tr>
+            </tbody>
+
+
+
+            
+        </table>
+        <div *ngIf="alerts.length == 0">There are no active alerts at the moment.</div>
+    </div>
+
+    <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
+        <i class="fa fa-plus-square" *ngIf="!condition"></i> inactive alerts
+    </a>
+    <div *ngIf="condition">
+        <h2>Inactive Alerts</h2>
+        <div class="table-responsive" *ngIf="pastAlerts$ | async as pastAlerts">
+            <table class="table table-bordered table-striped" *ngIf="pastAlerts.length > 0">
+                <thead>
+                    <tr>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Message</th>
+                      <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let alert of pastAlerts" [alert-list-row]="alert" (onEdited)="refreshData()"></tr>
+                </tbody>
+            </table>
+            <div *ngIf="pastAlerts.length == 0">There are no inactive alerts at the moment.</div>
+        </div>
+    </div>
+</div>
+
+

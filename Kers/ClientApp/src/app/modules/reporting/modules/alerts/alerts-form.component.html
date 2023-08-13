@@ -1,16 +1,12 @@
 
-<div class="row">
+<loading *ngIf="loading"></loading>
+<div *ngIf="!loading" class="row">
     <div class="col-sm-offset-3 col-sm-9">
-        <h2>New Alert</h2>
+        <h2 *ngIf="alert == null">New Alert</h2>
+        <h2 *ngIf="alert != null">Edit Alert</h2>
         <br><br>
     </div>
-
-
-       
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="alertForm">
-        
-           
-
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
             <div class="col-md-4 col-sm-6 col-xs-7">
@@ -23,8 +19,6 @@
               </div>
             </div>
         </div>
-
-
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
             <div class="col-md-4 col-sm-6 col-xs-7">
@@ -46,115 +40,77 @@
                 <input type="text" name="message" formControlName="message" id="message" class="form-control col-xs-12" />
             </div>
         </div>
-
-      <!-- 
-      
         <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
-        <div class="col-md-4 col-sm-6 col-xs-7">
-          <div class="input-group">
-            <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-                angular-mydatepicker name="startdate" (click)="dp.toggleCalendar()" 
-                formControlName="start" [options]="myDatePickerOptions" 
-                #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
-            <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
-          </div>
-        </div>
-        
-      </div>
-      <div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
-            <div class="col-md-4 col-sm-6 col-xs-7">
-              <div [class.notvalid]="countyEventForm.hasError('endDate')" >
-                <div class="input-group">
-                  <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-                    [class.ng-invalid]="countyEventForm.hasError('endDate')"
-                    angular-mydatepicker name="endDate" (click)="dp1.toggleCalendar()" 
-                    formControlName="end" [options]="myDatePickerOptionsEnd" 
-                    #dp1="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
-                  <span class="input-group-addon" id="basic-addon1" (click)="dp1.toggleCalendar()"><i class="fa fa-calendar"></i></span>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 col-md-offset-0 col-sm-6 col-xs-7 col-sm-offset-3" *ngIf="countyEventForm.get('end').value != null">
-              <div [class.notvalid]="countyEventForm.hasError('endTime')" >
-                <timepicker formControlName="endtime" [start]="6" [end]="22" class="clearfix"></timepicker>
-              </div>
-            </div>
-        </div>
-      </div>
-      <div class="form-group" >
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="etimezone"><span *ngIf="!countyEventForm.value.hasEndDate">Timezone:</span></label>
-        <div class="col-md-5 col-sm-7 col-xs-8">
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default" (click)="isEastern(true)" [class.active]="easternTimezone">
-                    <input type="radio" name="etimezone" formControlName="etimezone" [value]="true"> Eastern Timezone
-                    </label>
-                    <label class="btn btn-default" [class.active]="!easternTimezone" (click)="isEastern(false)">
-                    <input type="radio" name="etimezone" formControlName="etimezone" [value]="false"> Central Timezone
-                    </label>
-                </div>
-        </div>
-        
-
-
-
-
-
-        
-      </div>
-      
-      <div class="form-group">
-          <label for="body" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!countyEventForm.controls.body.valid">
-              <textarea [froalaEditor]="options" name="body" formControlName="body" id="body" class="form-control col-xs-12"></textarea>
-          </div>
-      </div>
-      <div class="form-group">
-        <label for="webLink" class="control-label col-md-3 col-sm-3 col-xs-12">Url:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="webLink" formControlName="webLink" id="webLink" class="form-control col-xs-12"/>
-            <small> A web address for more information (optional).</small>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="multycounty" class="control-label col-md-3 col-sm-3 col-xs-12">Multy County Event:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <label class="switch">
-              <input type="checkbox" id="multycounty" formControlName="multycounty">
-              <div class="slider round" (click)="onMultyChecked()"></div>
-          </label>
-        </div>
-      </div>
-  
-  
-      <div class="form-group" *ngIf="planningUnitsOptions.length > 0 && multycounty">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Counties:</label>
+          <label for="moreInfoUrl" class="control-label col-md-3 col-sm-3 col-xs-12">Url:</label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
-              <ng-select
-                  id="units"
-                  formControlName="units"
-                  [items]="planningUnitsOptions"
-                  [multiple]="true"
-                  [hideSelected]="true"
-                  placeholder = "(select any/all that apply)">
-              </ng-select>
-              <small>The rule for entering an event is that the event takes place in your county. If this is a multi-county event only the host county should enter the event. As the host county, select from the list above each county (in addition to your county) that is associated with this multi-county event.
-          </small>
+              <input type="text" name="moreInfoUrl" formControlName="moreInfoUrl" id="moreInfoUrl" class="form-control col-xs-12"/>
+              <small> Web address for more information (optional).</small>
           </div>
-          
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="alertType">Level:</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="alertType" id="alertType" formControlName="alertType" class="form-control col-md-4 col-xs-8">
+                  <option value="">--- select alert color ---</option>
+                  <option *ngFor="let alertType of alerts" [value]="alertType.id">{{alertType.name}}</option>
+              </select>  
+          </div>
       </div>
-      
-      <div class="ln_solid"></div>
       <div class="form-group">
-          <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-              <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-              <button type="submit" [disabled]="countyEventForm.invalid"  class="btn btn-success">Submit</button>
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="urlRoute">Placement:</label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <select name="urlRoute" id="urlRoute" formControlName="urlRoute" class="form-control col-md-4 col-xs-8">
+                <option value="">--- select page to be displayed ---</option>
+                <option *ngFor="let route of routes | async" [value]="route.urlRoute">{{route.name}}</option>
+            </select>  
+        </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="enabled">Enabled:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12" style="padding-top: 9px;">
+              <input type="checkbox" id="active" formControlName="active" />               
           </div>
       </div>
-        -->
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="zEmpRoleTypeId">Role Restricted to:</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="zEmpRoleTypeId" id="zEmpRoleTypeId" formControlName="zEmpRoleTypeId" class="form-control col-md-4 col-xs-8">
+                  <option value="">--- not restricted ---</option>
+                  <option *ngFor="let role of roles" [value]="role.id">{{role.title}}</option>
+              </select>  
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="employeePositionId">Position Restricted to:</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="employeePositionId" id="employeePositionId" formControlName="employeePositionId" class="form-control col-md-4 col-xs-8">
+                  <option value="">--- not restricted ---</option>
+                  <option *ngFor="let position of positions" [value]="position.id">{{position.title}}</option>
+             </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="employeePositionId">County Staff Restricted:</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+              <label class="radio-inline">
+                  <input type="radio" name="isContyStaff" formControlName="isContyStaff" [value]=0 > Not Restricted
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="isContyStaff" formControlName="isContyStaff" [value]=1 > County Staff
+              </label>
+              <label class="radio-inline">
+                  <input type="radio" name="isContyStaff" formControlName="isContyStaff" [value]=2 > Non County Staff
+              </label>
+          </div>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                <button type="submit" [disabled]="alertForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    
     </form>
 
 

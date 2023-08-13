@@ -241,6 +241,12 @@ namespace Kers.Models.Contexts
         public virtual DbSet<LadderKersUserLevel> LadderKersUserLevel {get;set;}
 
         /***************************************/
+        //  Alerts
+        /***************************************/
+        public virtual DbSet<Alert> Alert {get;set;}
+        public virtual DbSet<AlertRoute> AlertRoute {get;set;}
+
+        /***************************************/
         //  General
         /***************************************/
         public virtual DbSet<Log> Log {get; set;}

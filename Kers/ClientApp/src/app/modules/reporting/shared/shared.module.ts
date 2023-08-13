@@ -41,6 +41,7 @@ import { MonthSwitcherComponent } from './components/month-switcher.component';
 import {CopyClipboardDirective} from './directives/copy-clipboard.directive';
 import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
 import { AlertWidgetComponent } from './components/alert-widget.component';
+import { AlertBannerComponent } from './components/alert-banner.component';
 
 
 
@@ -72,7 +73,8 @@ import { AlertWidgetComponent } from './components/alert-widget.component';
                   ImageUploadComponent ,
                   CopyClipboardDirective,
                   TimeFormat,
-                  AlertWidgetComponent
+                  AlertWidgetComponent,
+                  AlertBannerComponent
                 ],
   exports:      [ 
       CommonModule, 
