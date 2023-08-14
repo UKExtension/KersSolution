@@ -40,6 +40,14 @@ export class IndicatorsService {
                 );
     }
 
+    indicatorsforprogram(programId:number):Observable<Indicator[]>{
+        var url = this.baseUrl + "indicatorsforprogram/" + programId;
+        return this.http.get<Indicator[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('indicatorsforprogram', []))
+            );
+    }
+
     indicatorValues(program:MajorProgram):Observable<IndicatorValue[]>{
             var url = this.baseUrl + "indicatorvalues/" + program.id;
             return this.http.get<IndicatorValue[]>(this.location.prepareExternalUrl(url))

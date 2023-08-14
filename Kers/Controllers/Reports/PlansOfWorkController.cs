@@ -243,6 +243,16 @@ namespace Kers.Controllers.Reports
             pow.Id = plan.Id;
             pow.PlanningUnit = plan.PlanningUnit;
             pow.LastRevision = plan.Revisions.OrderBy( r => r.Created).Last();
+            var storyIds = await this.context.StoryRevision
+                                        .Where( s => plan.Revisions.Select( r => r.Id).ToList().Contains(s.PlanOfWorkId) )
+                                        .Select( s => s.StoryId)
+                                        .ToListAsync();
+            pow.Stories = this.context.Story
+                            .Where( s => storyIds.Contains( s.Id ))
+                            .Include( s => s.KersUser).ThenInclude( u => u.PersonalProfile)
+                            .Include( s => s.MajorProgram)
+                            .Include( s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
+                            .ToList();
             return pow;
         }
 

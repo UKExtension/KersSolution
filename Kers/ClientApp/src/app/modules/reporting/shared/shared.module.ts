@@ -40,6 +40,8 @@ import { ImageUploadComponent } from './form-controls/image-upload.component';
 import { MonthSwitcherComponent } from './components/month-switcher.component';
 import {CopyClipboardDirective} from './directives/copy-clipboard.directive';
 import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
+import { AlertWidgetComponent } from './components/alert-widget.component';
+import { AlertBannerComponent } from './components/alert-banner.component';
 
 
 
@@ -70,7 +72,9 @@ import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
                   MonthSwitcherComponent,
                   ImageUploadComponent ,
                   CopyClipboardDirective,
-                  TimeFormat
+                  TimeFormat,
+                  AlertWidgetComponent,
+                  AlertBannerComponent
                 ],
   exports:      [ 
       CommonModule, 
@@ -92,7 +96,8 @@ import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
       MonthSwitcherComponent,
       ImageUploadComponent,
       CopyClipboardDirective,
-      TimeFormat
+      TimeFormat,
+      AlertWidgetComponent
  ]
 })
 export class SharedModule { }

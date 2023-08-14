@@ -75,7 +75,7 @@ export class ServicelogFormComponent implements OnInit{
     snapPolicy = false;
 
     isPastSnapFiscalYear = false;
-    previousFiscalYear = 2019;
+    previousFiscalYear = 2023;
 
     signupOpen = false;
 
@@ -423,7 +423,7 @@ export class ServicelogFormComponent implements OnInit{
             }, { validator: snapValidator }
         );
         this.myDatePickerOptions.disableSince = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() + 1};
-        this.myDatePickerOptions.disableUntil = {year: 2021, month: 6, day: 30};
+        this.myDatePickerOptions.disableUntil = {year: 2023, month: 6, day: 30};
         //this.myDatePickerOptions.editableDateField = false;
         //this.myDatePickerOptions.showClearDateBtn = false;
         

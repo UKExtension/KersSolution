@@ -12,10 +12,10 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 
 
 @Component({
-    selector: 'story-form',
-    templateUrl: 'story-form.component.html'
+    selector: 'story-form-demo',
+    templateUrl: 'story-form-demo.component.html'
 })
-export class StoryFormComponent implements OnInit{ 
+export class StoryFormDemoComponent implements OnInit{ 
 
     @Input() story = null;
 
@@ -185,7 +185,7 @@ export class StoryFormComponent implements OnInit{
         
 
 
-    onSubmit(){
+    onSubmit(){/* 
         this.loading = true;
         var val = this.storyForm.value;
         val.storyImages = this.storyImages;
@@ -210,7 +210,7 @@ export class StoryFormComponent implements OnInit{
                 err => this.errorMessage = <any>err
             );
         }
-
+ */
     }
 
     onCancel(){

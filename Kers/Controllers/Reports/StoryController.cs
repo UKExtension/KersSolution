@@ -222,8 +222,8 @@ namespace Kers.Controllers.Reports
             strViewModel.StoryOutcome = lastRevision.StoryOutcome;
             strViewModel.StoryId = story.Id;
             strViewModel.Updated = lastRevision.Created;
-            if(lastRevision.PlanOfWork != null){
-                strViewModel.PlanOfWork = lastRevision.PlanOfWork.Revisions.OrderBy( p => p.Created ).Last();
+            if(lastRevision.PlanOfWorkId != 0){
+                strViewModel.PlanOfWork = this.context.PlanOfWorkRevision.Find(lastRevision.PlanOfWorkId);
             }
             var firstImage = lastRevision.StoryImages.OrderBy( i => i.Created).FirstOrDefault();
             if(firstImage != null){

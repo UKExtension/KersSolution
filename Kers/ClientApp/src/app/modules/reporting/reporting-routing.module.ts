@@ -31,6 +31,7 @@ const reportingRoutes: Routes = [
             loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule)
             
           },
+          { path: 'alerts', loadChildren: () => import('./modules/alerts/alerts.module').then(m => m.AlertsModule) },
           {
             path: 'plansofwork', 
             loadChildren: () => import('./modules/plansofwork/plansofwork.module').then(m => m.PlansofworkModule)
@@ -99,11 +100,11 @@ const reportingRoutes: Routes = [
           {
             path: 'countyevents', 
             loadChildren: () => import('./modules/events/county/county-events.module').then(m => m.CountyEventsModule)
-          },/* 
+          },
           {
-            path: 'budget', 
-            loadChildren: './modules/budget/budget.module#BudgetModule'
-          }, */
+            path: 'demos', 
+            loadChildren: () => import('./modules/demos/demos.module').then(m => m.DemosModule)
+          }, 
           {
             path:'ladder',
             loadChildren: () => import('./modules/ladder/ladder.module').then(m => m.LadderModule)
@@ -155,6 +156,7 @@ const reportingRoutes: Routes = [
       }
     ]
   },
+  
   
 ];
 
