@@ -38,8 +38,10 @@ export class AlertsService {
         );
   }
   getPage(route:string):Observable<Alert[]>{
-    var url = this.baseUrl + 'getPageAlerts/' + encodeURIComponent(route);
-    return this.http.get<Alert[]>(this.location.prepareExternalUrl(url))
+    var url = this.baseUrl + 'getPageAlerts';
+    // + encodeURIComponent(route);
+    var rt:RouteObject = {"route": route}
+    return this.http.post<Alert[]>(this.location.prepareExternalUrl(url),rt)
         .pipe(
             catchError(this.handleError('Get Page Alerts', []))
         );
@@ -69,4 +71,7 @@ export class AlertsService {
 
 
 
+}
+class RouteObject{
+  route:string;
 }

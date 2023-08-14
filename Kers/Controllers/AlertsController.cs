@@ -70,11 +70,11 @@ namespace Kers.Controllers.Reports
            
             return new OkObjectResult(await alerts.OrderBy( rt => rt.Start).ToListAsync());
         }
-        [HttpGet]
-        [Route("getPageAlerts/{route}")]
-        public async Task<IActionResult> GetPage(string route)
+        [HttpPost]
+        [Route("getPageAlerts")]
+        public async Task<IActionResult> GetPage([FromBody] RouteObject rt)
         {
-            IQueryable<Alert> alerts = this.context.Alert.Where( a => a.UrlRoute == HttpUtility.UrlDecode(route) && a.Active == true);
+            IQueryable<Alert> alerts = this.context.Alert.Where( a => a.UrlRoute == rt.route && a.Active == true);
             var now = DateTime.Now;
             alerts = alerts.Where( a => a.Start < now && a.End > now );
 
@@ -154,5 +154,9 @@ namespace Kers.Controllers.Reports
 
 
 
+    }
+
+    public class RouteObject{
+        public string route;
     }
 }
