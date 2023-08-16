@@ -488,7 +488,7 @@ namespace Kers.Controllers
                 adr.EmailAddress = address.EmailAddress;
                 _soilDataContext.SaveChanges();
                 this.Log(address,"FarmerAddress", "FarmerAddress Updated.","FarmerAddress");
-                return new OkObjectResult(address);
+                return new OkObjectResult(adr);
             }else{
                 this.Log( address ,"FarmerAddress", "Not Found Farmer Address in an update attempt.", "FarmerAddress", "Error");
                 return new StatusCodeResult(500);

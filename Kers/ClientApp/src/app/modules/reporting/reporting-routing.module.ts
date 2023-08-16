@@ -31,6 +31,7 @@ const reportingRoutes: Routes = [
             loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule)
             
           },
+          { path: 'alerts', loadChildren: () => import('./modules/alerts/alerts.module').then(m => m.AlertsModule) },
           {
             path: 'plansofwork', 
             loadChildren: () => import('./modules/plansofwork/plansofwork.module').then(m => m.PlansofworkModule)
@@ -155,6 +156,7 @@ const reportingRoutes: Routes = [
       }
     ]
   },
+  
   
 ];
 

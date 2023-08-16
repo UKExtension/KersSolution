@@ -1,0 +1,17 @@
+<td *ngIf="default">{{alert.start | date:'mediumDate'}}</td>
+<td *ngIf="default">{{alert.end | date:'mediumDate'}}</td>
+<td *ngIf="default">{{alert.message | slice:0:40}}</td>
+<td *ngIf="default">
+    <a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil-square-o"></i> edit</a>
+    <a class="btn btn-info btn-xs" (click)="deleteView()"><i class="fa fa-close"></i> delete</a>
+</td>
+<td *ngIf="editOpen" colspan="4">
+    <a class="btn btn-info btn-xs pull-right" (click)="defaultView()"><i class="fa fa-close"></i> close</a><br>
+    <alerts-form [alert]="alert" (onFormCancel)="defaultView()" (onFormSubmit)="edited($event)"></alerts-form>
+</td>
+<td *ngIf="deleteOpen" colspan="4">
+    <a class="btn btn-info btn-xs pull-right" (click)="defaultView()"><i class="fa fa-close"></i> close</a><br>
+    Delete View
+    Do you really want to delete alert <strong>{{alert.message}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="defaultView()" class="btn btn-info btn-xs">No</button>
+          
+</td>
