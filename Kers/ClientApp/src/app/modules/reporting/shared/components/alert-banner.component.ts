@@ -13,7 +13,12 @@ import { Alert, AlertTypes } from '../../modules/alerts/Alert';
     </div>
   </div>
   `,
-  styles: [
+  styles: [`
+  .alert-danger a{
+    color:#333;
+  }
+  
+  `
   ]
 })
 export class AlertBannerComponent implements OnInit {
