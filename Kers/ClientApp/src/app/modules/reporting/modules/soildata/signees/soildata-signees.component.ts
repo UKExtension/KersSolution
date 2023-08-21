@@ -10,8 +10,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
   selector: 'soildata-signees',
   template: `<br>
   <h3>Agent Information</h3><br>
-  <p>When reviewing reports in KERS and selecting the "Submit" button, the signee signature, name, and profession title in the KERS personal profile will appear on printed reports.
-  <br>When reports are printed without review in KERS, the signee name and professional title entered below will appear on printed reports</p>
+  <p>The signature name and title that appears on the report will be the individual's personal profile in KERS when the report is reviewed and submitted in KERS.  The name and titles on this page are used when the KERS review process is skipped.</p>
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
       <form novalidate class="form-horizontal form-label-left" (ngSubmit)="onSubmit()" [formGroup]="signeesForm">
@@ -53,7 +52,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
           <div class="form-group">
               <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
                   <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-                  <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Submit</button>
+                  <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Sign & Submit</button>
               </div>
           </div>
       </form>
