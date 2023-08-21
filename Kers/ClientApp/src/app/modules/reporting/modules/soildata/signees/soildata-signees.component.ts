@@ -10,7 +10,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
   selector: 'soildata-signees',
   template: `<br>
   <h3>Agent Information</h3><br>
-  <p>The signature name and title that appears on the report will be the individual's personal profile in KERS when the report is reviewed and submitted in KERS.  The name and titles on this page are used when the KERS review process is skipped.</p>
+  <p>The signature that appears on reports will come from the KERS personal profile of the person completing the review step.<br>If the review step is skipped, the information on this page will be used.</p>
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
       <form novalidate class="form-horizontal form-label-left" (ngSubmit)="onSubmit()" [formGroup]="signeesForm">
