@@ -10,8 +10,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
   selector: 'soildata-signees',
   template: `<br>
   <h3>Agent Information</h3><br>
-  <p>When reviewing reports in KERS and selecting the "Submit" button, the signee signature, name, and profession title in the KERS personal profile will appear on printed reports.
-  <br>When reports are printed without review in KERS, the signee name and professional title entered below will appear on printed reports</p>
+  <p>The signature that appears on reports will come from the KERS personal profile of the person completing the review step.<br>If the review step is skipped, the information on this page will be used.</p>
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
       <form novalidate class="form-horizontal form-label-left" (ngSubmit)="onSubmit()" [formGroup]="signeesForm">
@@ -37,6 +36,12 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
         </div>
       </div>
       <div class="ln_solid"></div>
+      <div class="form-group">
+        <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12"></label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+        Multiple recipients may be entered (separata with semicolon and space)<br>
+        </div>
+      </div>
       <div class="form-group">
         <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice Email:</label>           
         <div class="col-md-9 col-sm-9 col-xs-12">

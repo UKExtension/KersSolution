@@ -6,17 +6,23 @@
 <soil-sample-form *ngIf="newSample" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)" [sample]="reportForCopy" [isThisACopy]="isThisSampleCopy"></soil-sample-form>
 <br><br>
 <div class="row">
-  <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
-    <input type="text" [(ngModel)]="criteria.search" placeholder="Search by client name (first OR last) in selected dates and search criteria" (keyup)="onSearch($event)" class="form-control" name="Search" />
-  </div>
-  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-    <div class="input-group" style="width:250px; float:right;"> 
+  <div class="col-sm-4 col-xs-12 text-right" style="margin-top: 3px;">
+    <div class="input-group" style="width:250px;"> 
       <input type="text" class="form-control input-box" placeholder="Click to select a date" 
       angular-mydatepicker name="mydaterange" (click)="dp.toggleCalendar()" 
       [(ngModel)]="model" [options]="myDateRangePickerOptions" 
       #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
       <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
     </div>
+  </div>
+  <div class="col-sm-5 col-xs-12" style="margin-top: 3px;">
+    <input type="text" [(ngModel)]="criteria.search" placeholder="Search by first OR last name (results displayed for date range selected)" (keyup)="onSearch($event)" class="form-control" name="Search" />
+  </div>
+  <div class="col-sm-3 col-xs-12 text-right" style="margin-top: 3px;">
+    <ng-container *ngIf="samplesExist">
+      Generate packing slip <a class="btn btn-info btn-xs" (click)="printPackingSlip(filteredReports)"  *ngIf="!samplePdfLoading"><i class="fa fa-download"></i> pdf</a>
+      <loading *ngIf="samplePdfLoading"></loading>
+    </ng-container>
   </div>
 
 </div>
@@ -94,10 +100,6 @@
               <a class="btn btn-info btn-xs" (click)="downloadCsv(filteredReports)"  *ngIf="!csvDataLoading"><i class="fa fa-download"></i> csv</a> Download reports data
               <loading *ngIf="csvDataLoading"></loading>
 
-            </ng-container>
-            <ng-container *ngIf="samplesExist">
-              <br><a class="btn btn-info btn-xs" (click)="printPackingSlip(filteredReports)"  *ngIf="!samplePdfLoading"><i class="fa fa-download"></i> pdf</a> Generate packing slip
-              <loading *ngIf="samplePdfLoading"></loading>
             </ng-container>
         </div>
     </div>

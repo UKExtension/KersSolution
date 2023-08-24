@@ -17,6 +17,12 @@ import { Alert, AlertTypes } from '../../modules/alerts/Alert';
   .alert-danger a{
     color:#333;
   }
+  .alert-info a,  .alert-success a{
+    color:#333;
+  }
+  .alert a{
+    text-decoration:underline;
+  }
   
   `
   ]

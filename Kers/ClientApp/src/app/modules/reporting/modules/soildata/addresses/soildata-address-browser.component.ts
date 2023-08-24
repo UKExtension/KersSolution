@@ -14,7 +14,7 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
         <a class="btn btn-info btn-xs pull-right" (click)="canceled()">close</a>
       </div>
       <div class="col-sm-6 col-xs-12">
-        <input type="text" [(ngModel)]="criteria.search" placeholder="Search by client name (first OR last)" (keyup)="onSearch($event)" class="form-control" name="Search" />
+        <input type="text" [(ngModel)]="criteria.search" placeholder="Search by first OR last name" (keyup)="onSearch($event)" class="form-control" name="Search" />
       </div>
       <div class="col-sm-6 col-xs-12 text-right">
 

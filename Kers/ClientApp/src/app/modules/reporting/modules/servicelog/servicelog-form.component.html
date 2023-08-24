@@ -154,10 +154,10 @@
                 <label class="switch" *ngIf="!snapFiscalYear17">
                     <input type="checkbox" id="isSnap" formControlName="isSnap">
                     <div class="slider round" (click)="onSnapEdChecked()"></div>
-                </label>
+                </label><!-- 
                 <p *ngIf="isPastSnapFiscalYear"><br>
                     Snap Ed reporting for the Fiscal Year 2018 is over.<br> Changing Activity Date to current Fiscal Year Will Allow you to submit or edit Snap Ed Records.
-                </p>
+                </p> -->
             </div>
         </div>
         <div *ngIf="isAdmin && snapEligable" class="row">
