@@ -37,6 +37,12 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
       </div>
       <div class="ln_solid"></div>
       <div class="form-group">
+        <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12"></label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+        Multiple recipients may be entered (separata with semicolon and space)<br>
+        </div>
+      </div>
+      <div class="form-group">
         <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice Email:</label>           
         <div class="col-md-9 col-sm-9 col-xs-12">
             <input type="text"  name="invoiceEmail" formControlName="invoiceEmail" id="invoiceEmail" class="form-control col-xs-12" />
@@ -52,7 +58,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
           <div class="form-group">
               <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
                   <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-                  <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Sign & Submit</button>
+                  <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Submit</button>
               </div>
           </div>
       </form>
