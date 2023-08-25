@@ -20,6 +20,12 @@ namespace Kers.Models.Entities.KERScore
         public int? EmployeePositionId {get; set;}
         public int? zEmpRoleTypeId {get; set;}
         public int? isContyStaff {get;set;}
+        public ExtensionRegion ExtensionRegion {get;set;}
+        public int? ExtensionRegionId {get;set;}
+        public ExtensionArea ExtensionArea {get;set;}
+        public int? ExtensionAreaId {get;set;}
+        public PlanningUnit PlanningUnit {get;set;}
+        public int? PlanningUnitId {get;set;}
         public bool Active {get;set;}
         public KersUser CreatedBy {get;set;}
         public DateTime Created {get;set;}

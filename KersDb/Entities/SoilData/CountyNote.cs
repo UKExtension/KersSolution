@@ -12,5 +12,6 @@ namespace Kers.Models.Entities.SoilData
         public int CountyCodeId {get;set;}
         public string Name {get;set;}
         public string Note {get;set;}
+        public int Order {get;set;}
     }
 }

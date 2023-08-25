@@ -8,12 +8,35 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
 
 @Component({
   selector: 'soildata-signees',
-  template: `<br>
-  <h3>Agent Information</h3><br>
-  <p>The signature that appears on reports will come from the KERS personal profile of the person completing the review step.<br>If the review step is skipped, the information on this page will be used.</p>
+  template: `
+  
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
       <form novalidate class="form-horizontal form-label-left" (ngSubmit)="onSubmit()" [formGroup]="signeesForm">
+      <br>
+      <h3>Notifications Recepients</h3><br>
+        <div class="form-group">
+          <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12"></label>           
+          <div class="col-md-9 col-sm-9 col-xs-12">
+          Multiple recipients may be entered (separate with semicolon and space)<br>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice Email:</label>           
+          <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text"  name="invoiceEmail" formControlName="invoiceEmail" id="invoiceEmail" class="form-control col-xs-12" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reportEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Report Email:</label>           
+          <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text"  name="reportEmail" formControlName="reportEmail" id="reportEmail" class="form-control col-xs-12" />
+          </div>
+        </div>
+        <br>
+      <h3>Agent Information</h3><br>
+      <h5>The signature that appears on reports will come from the KERS personal profile of the person completing the review step.<br>If the review step is skipped, the information on this page will be used.</h5>
+  
       <div formArrayName="signees" *ngFor="let item of signeesForm.get('signees').controls; let i = index;">
         <div [formGroupName]="i">
           
@@ -35,25 +58,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
           </div>
         </div>
       </div>
-      <div class="ln_solid"></div>
-      <div class="form-group">
-        <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12"></label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-        Multiple recipients may be entered (separata with semicolon and space)<br>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice Email:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text"  name="invoiceEmail" formControlName="invoiceEmail" id="invoiceEmail" class="form-control col-xs-12" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="reportEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Report Email:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text"  name="reportEmail" formControlName="reportEmail" id="reportEmail" class="form-control col-xs-12" />
-        </div>
-      </div>
+     
           <div class="ln_solid"></div>
           <div class="form-group">
               <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">

@@ -520,6 +520,7 @@ namespace Kers.Controllers
             if(note != null && nte != null ){
                 nte.Name = note.Name;
                 nte.Note = note.Note;
+                nte.Order = note.Order;
                 _soilDataContext.SaveChanges();
                 this.Log(note,"CountyNote", "County Note Updated.","CountyNote");
                 return new OkObjectResult(nte);
@@ -624,6 +625,7 @@ namespace Kers.Controllers
             }
             var notes = await _soilDataContext.CountyNotes.
                                     Where(a => a.CountyCode.PlanningUnitId == countyid).
+                                    OrderBy( a => a.Order).
                                     ToListAsync();
             return new OkObjectResult(notes);
         }

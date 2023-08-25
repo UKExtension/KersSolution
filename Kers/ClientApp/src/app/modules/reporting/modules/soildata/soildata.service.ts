@@ -279,6 +279,7 @@ export interface CountyNote{
     countyCode:CountyCode;
     name:string;
     note:string;
+    order:number;
 }
 
 

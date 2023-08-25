@@ -2,6 +2,11 @@
     <div class="media-body">
         <p class="title">{{address.first}} {{address.last}}</p>
         <p>Address: {{address.address}}, {{address.city}} {{address.st}}</p>
+        <p>Reports Url: https://kers.ca.uky.edu/core/reports/soil/customer/{{address.uniqueCode}} &nbsp;
+            <button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reports/soil/customer/'+address.uniqueCode" (copied)="notify($event)">
+                <i class="fa fa-clipboard"></i>&nbsp;
+                <ng-container *ngIf="!coppied">Copy</ng-container> <ng-container *ngIf="coppied">Copied</ng-container>
+            </button></p>
     </div>
 </article>
 <article class="media event" *ngIf="!brief && !isEdit">

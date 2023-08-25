@@ -25,6 +25,12 @@ import { FormBuilder, Validators } from '@angular/forms';
                   <textarea name="note" formControlName="note" id="note" class="form-control col-xs-12" rows="12"></textarea>
               </div>
           </div>
+          <div class="form-group">
+              <label for="order" class="control-label col-md-3 col-sm-3 col-xs-12">Display Order:</label>           
+              <div class="col-md-9 col-sm-9 col-xs-12">
+                  <input type="number" name="order" formControlName="order" id="order" class="form-control col-xs-12" style="width:50%;" />
+              </div>
+          </div>
 
           <div class="ln_solid"></div>
           <div class="form-group">
@@ -55,7 +61,8 @@ export class SoildataNotesFormComponent implements OnInit {
     this.noteForm = this.fb.group(
       { 
           name: ["", Validators.required],
-          note: ["", Validators.required]
+          note: ["", Validators.required],
+          order: 0
       });
 
   }

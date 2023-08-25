@@ -14,6 +14,7 @@ export class SoildataListAddressComponent implements OnInit {
   @Input() edit:boolean = false;
 
   public isEdit:boolean = false;
+  coppied = false;
 
 
   @Output() onSelected = new EventEmitter<FarmerAddress>();
@@ -29,6 +30,9 @@ export class SoildataListAddressComponent implements OnInit {
     this.address = newaddress;
     this.isEdit = false;
     this.onSelected.emit(this.address);
+  }
+  public notify(payload: string) {
+    this.coppied = true;
   }
   
 }
