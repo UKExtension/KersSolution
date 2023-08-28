@@ -14,7 +14,7 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
   <div class="row" *ngIf="!loading">
       <form novalidate class="form-horizontal form-label-left" (ngSubmit)="onSubmit()" [formGroup]="signeesForm">
       <br>
-      <h3>Notifications Recepients</h3><br>
+      <h3>Notifications Recipients</h3><br>
         <div class="form-group">
           <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12"></label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
@@ -33,6 +33,14 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
               <input type="text"  name="reportEmail" formControlName="reportEmail" id="reportEmail" class="form-control col-xs-12" />
           </div>
         </div>
+        <div class="ln_solid"></div>
+          <div class="form-group">
+              <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
+                  <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+                  <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Submit</button>
+              </div>
+          </div>
+          
         <br>
       <h3>Agent Information</h3><br>
       <h5>The signature that appears on reports will come from the KERS personal profile of the person completing the review step.<br>If the review step is skipped, the information on this page will be used.</h5>
