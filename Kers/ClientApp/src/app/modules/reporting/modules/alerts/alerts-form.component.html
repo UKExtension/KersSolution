@@ -108,16 +108,16 @@
           <label class="control-label col-md-3 col-sm-3 col-xs-12">Region</label>
           <div class="col-md-6 col-sm-6 col-xs-12">
             <select class="form-control" formControlName="extensionRegionId" (change)="onRegionChange($event)" name="Region">
-              <option value="null">-- All Regions --</option>
+              <option value="">-- All Regions --</option>
               <option *ngFor="let region of regions$ | async" value="{{region.id}}">{{region.name}}</option>
             </select>
           </div>
         </div>
-        <div class="form-group" *ngIf="criteria.regionId != null && criteria.regionId != 0">
+        <div class="form-group" *ngIf="selectedRegionId != null && selectedRegionId != 0 && selectedRegionId != ''">
           <label class="control-label col-md-3 col-sm-3 col-xs-12">Area</label>
           <div class="col-md-6 col-sm-6 col-xs-12">
             <select class="form-control" formControlName="extensionAreaId" (change)="onAreaChange($event)" name="Region">
-              <option value="null">-- All Areas --</option>
+              <option value="">-- All Areas --</option>
               <option *ngFor="let area of areas$ | async" value="{{area.id}}">{{area.name}}</option>
             </select>
           </div>
@@ -126,7 +126,7 @@
           <label class="control-label col-md-3 col-sm-3 col-xs-12">County</label>
           <div class="col-md-6 col-sm-6 col-xs-12">
             <select class="form-control" formControlName="planningUnitId" name="Region">
-              <option value="null">-- All Counties --</option>
+              <option value="">-- All Counties --</option>
               <option *ngFor="let county of counties$ | async" value="{{county.id}}">{{county.name}}</option>
             </select>
           </div>

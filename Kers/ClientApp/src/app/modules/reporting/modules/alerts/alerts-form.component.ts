@@ -26,6 +26,9 @@ export class AlertsFormComponent implements OnInit {
   routes:Observable<AlertRoute[]>;
   loading = false;
 
+  selectedRegionId:number;
+  selectedAreaId:number;
+
   @Input() alert:Alert;
 
   @Output() onFormCancel = new EventEmitter<void>();
@@ -75,9 +78,9 @@ export class AlertsFormComponent implements OnInit {
           zEmpRoleTypeId: "",
           employeePositionId: [''],
           isContyStaff: 0,
-          extensionRegionId: null,
-          extensionAreaId:null,
-          planningUnitId:null
+          extensionRegionId: "",
+          extensionAreaId:"",
+          planningUnitId:""
       }
     );
 
@@ -100,6 +103,10 @@ export class AlertsFormComponent implements OnInit {
             error => this.errorMessage = <any> error
       );
       if(this.alert){
+        if(this.alert.extensionRegionId){
+          this.selectedRegionId = this.alert.extensionRegionId;
+          this.areas$ = this.stateService.areas(this.selectedRegionId);
+        }
         
         this.alertForm.patchValue(this.alert);
         this.alertForm.patchValue({
@@ -115,12 +122,12 @@ export class AlertsFormComponent implements OnInit {
 
 
   onRegionChange(event){
-    console.log(event);
-    this.areas$ = this.stateService.areas(event.target.value);
+    this.selectedRegionId = event.target.value;
+    this.areas$ = this.stateService.areas(this.selectedRegionId);
   }
 
   onAreaChange(event){
-
+    this.selectedAreaId = event.target.value;
   }
 
   onSubmit(){
