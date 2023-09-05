@@ -6,6 +6,8 @@ import { Position, UsersService } from '../admin/users/users.service';
 import { Alert, AlertRoute, AlertTypes, AlertType } from './Alert';
 import { AlertsService } from './alerts.service';
 import { Observable } from 'rxjs';
+import { ExtensionArea, ExtensionRegion, StateService } from '../state/state.service';
+import { PlanningUnit } from '../user/user.service';
 
 @Component({
   selector: 'alerts-form',
@@ -41,14 +43,17 @@ export class AlertsFormComponent implements OnInit {
   };
 
   defaultTime = "12:34:56.1000000 -04:00";
-
+  regions$:Observable<ExtensionRegion[]>;
+  areas$:Observable<ExtensionArea[]>;
+  counties$:Observable<PlanningUnit[]>;
 
 
   constructor(
     private fb: FormBuilder,
     private service:AlertsService,
     private rolesService: RolesService,
-    private usersService: UsersService 
+    private usersService: UsersService, 
+    private stateService:StateService
   ) {
     this.routes = service.routes();
     this.date = new Date( this.date.getFullYear(), this.date.getMonth(), this.date.getDate() );
@@ -69,7 +74,10 @@ export class AlertsFormComponent implements OnInit {
           active: true,
           zEmpRoleTypeId: "",
           employeePositionId: [''],
-          isContyStaff: 0
+          isContyStaff: 0,
+          extensionRegionId: null,
+          extensionAreaId:null,
+          planningUnitId:null
       }
     );
 
@@ -77,6 +85,8 @@ export class AlertsFormComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.regions$ = this.stateService.regions();
+    this.counties$ = this.stateService.counties();
     this.rolesService.listRoles().subscribe(
       res => {
           this.roles = <Role[]>res;
@@ -103,7 +113,13 @@ export class AlertsFormComponent implements OnInit {
       }
   }
 
-  onDateChanged(event){
+
+  onRegionChange(event){
+    console.log(event);
+    this.areas$ = this.stateService.areas(event.target.value);
+  }
+
+  onAreaChange(event){
 
   }
 

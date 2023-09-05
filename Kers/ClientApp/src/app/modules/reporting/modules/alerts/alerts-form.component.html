@@ -14,7 +14,7 @@
                 <input type="text" class="form-control input-box" placeholder="Click to select a date" 
                     angular-mydatepicker name="startdate" (click)="dp.toggleCalendar()" 
                     formControlName="start" [options]="myDatePickerOptions" 
-                    #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+                    #dp="angular-mydatepicker">
                 <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
               </div>
             </div>
@@ -28,7 +28,7 @@
                     [class.ng-invalid]="alertForm.hasError('endDate')"
                     angular-mydatepicker name="endDate" (click)="dp1.toggleCalendar()" 
                     formControlName="end" [options]="myDatePickerOptionsEnd" 
-                    #dp1="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+                    #dp1="angular-mydatepicker">
                   <span class="input-group-addon" id="basic-addon1" (click)="dp1.toggleCalendar()"><i class="fa fa-calendar"></i></span>
                 </div>
               </div>
@@ -103,6 +103,36 @@
               </label>
           </div>
         </div>
+
+        <div *ngIf="!isUser" class="form-group" >
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">Region</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <select class="form-control" formControlName="extensionRegionId" (change)="onRegionChange($event)" name="Region">
+              <option value="null">-- All Regions --</option>
+              <option *ngFor="let region of regions$ | async" value="{{region.id}}">{{region.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" *ngIf="criteria.regionId != null && criteria.regionId != 0">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">Area</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <select class="form-control" formControlName="extensionAreaId" (change)="onAreaChange($event)" name="Region">
+              <option value="null">-- All Areas --</option>
+              <option *ngFor="let area of areas$ | async" value="{{area.id}}">{{area.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="!isUser" class="form-group" >
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">County</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <select class="form-control" formControlName="planningUnitId" name="Region">
+              <option value="null">-- All Counties --</option>
+              <option *ngFor="let county of counties$ | async" value="{{county.id}}">{{county.name}}</option>
+            </select>
+          </div>
+        </div>
+
+
         <div class="ln_solid"></div>
         <div class="form-group">
             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
