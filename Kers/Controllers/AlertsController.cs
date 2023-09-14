@@ -76,9 +76,33 @@ namespace Kers.Controllers.Reports
         {
             IQueryable<Alert> alerts = this.context.Alert.Where( a => a.UrlRoute == rt.route && a.Active == true);
             var now = DateTime.Now;
-            alerts = alerts.Where( a => a.Start < now && a.End > now );
+            alerts = alerts.Where( a => a.Start < now && a.End > now && a.Active );
+            List<Alert> alertsByDateRange = await alerts.OrderBy( rt => rt.Start).ToListAsync();
+            List<Alert> filteredAlerts = new List<Alert>();
+            if( alertsByDateRange.Count() > 0 ){
+                KersUser user = CurrentUser();
+                var PlanningUnit = context.PlanningUnit.Find(user.RprtngProfile.PlanningUnitId);
+                foreach( var alert in alertsByDateRange){
+                    if( alert.EmployeePositionId != null && user.ExtensionPositionId != alert.EmployeePositionId ) break;
+                    if( alert.isContyStaff != null){
+                        if(PlanningUnit.ExtensionAreaId == null && alert.isContyStaff == 1) break;
+                        if(PlanningUnit.ExtensionAreaId != null && alert.isContyStaff == 2) break;
+                    }
+                    if( alert.zEmpRoleTypeId != null ){
+                        if( !context.zEmpProfileRole.Where( r => r.Id == alert.zEmpRoleTypeId && r.UserId == user.Id).Any()) break;
+                    }
+                    if(alert.PlanningUnitId != null && alert.PlanningUnitId != PlanningUnit.Id ) break;
+                    if( alert.ExtensionAreaId != null && alert.ExtensionAreaId != PlanningUnit.ExtensionAreaId ) break;
+                    if( alert.ExtensionRegionId != null && PlanningUnit.ExtensionAreaId != null){
+                        var Area = this.context.ExtensionArea.Find( PlanningUnit.ExtensionAreaId );
+                        if( Area.ExtensionRegionId != alert.ExtensionRegionId ) break;
+                    }
+                    filteredAlerts.Add(alert);
+                }
+            }
+            
 
-            return new OkObjectResult(await alerts.OrderBy( rt => rt.Start).ToListAsync());
+            return new OkObjectResult(filteredAlerts);
         }
 
 
@@ -121,6 +145,9 @@ namespace Kers.Controllers.Reports
                 entity.zEmpRoleTypeId = alert.zEmpRoleTypeId;
                 entity.isContyStaff = alert.isContyStaff;
                 entity.Active = alert.Active;
+                entity.ExtensionAreaId = alert.ExtensionAreaId;
+                entity.ExtensionRegionId = alert.ExtensionRegionId;
+                entity.PlanningUnitId = alert.PlanningUnitId;
                 entity.CreatedBy = CurrentUser();
                 entity.LastUpdated = DateTime.Now;
                 context.SaveChanges();

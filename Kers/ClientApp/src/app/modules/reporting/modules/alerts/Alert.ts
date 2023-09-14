@@ -15,6 +15,10 @@ export class Alert{
     employeePositionId?:number;
     zEmpRoleTypeId?:number;
     isCountyStarr?:number;
+    extensionRegionId?: number;
+    extensionAreaId?: number;
+    planningUnitId?:number;
+
 }
 
 export class AlertRoute{
