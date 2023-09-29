@@ -32,14 +32,15 @@ namespace Kers.Tasks
             using (var scope = serviceScopeFactory.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<KERScoreContext>();
+                var fiscalYearRepo = new FiscalYearRepository( context );
+                var fiscalYear = fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd, true);
                 try{
                     var cache = scope.ServiceProvider.GetService<IDistributedCache>();
                     var memoryCache = scope.ServiceProvider.GetService<IMemoryCache>();
-                    var fiscalYearRepo = new FiscalYearRepository( context );
                     var mainContext = scope.ServiceProvider.GetService<KERSmainContext>();
                     var repo = new SnapDirectRepository(context, cache, mainContext, memoryCache);
                     var startTime = DateTime.Now;
-                    var str = repo.IndividualContactTotals(fiscalYearRepo.currentFiscalYear(FiscalYearType.SnapEd, true), true);
+                    var str = repo.IndividualContactTotals(fiscalYear, true);
                     Random rnd = new Random();
                     int RndInt = rnd.Next(1, 53);
                     if( RndInt == 2 ){
@@ -48,12 +49,12 @@ namespace Kers.Tasks
                     var endTime = DateTime.Now;
                     await LogComplete(context, 
                                     "SnapIndividualContactTotalsTask", str, 
-                                    "Snap Individual Contact Totals Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
+                                    "Snap Individual Contact Totals (FY"+fiscalYear.Name+") Task executed for " + (endTime - startTime).TotalSeconds + " seconds"
                                 );
                 }catch( Exception e){
                     await LogError(context, 
                                     "SnapIndividualContactTotalsTask", e, 
-                                    "Snap Individual Contact Totals Task failed"
+                                    "Snap Individual Contact Totals (FY"+fiscalYear.Name+") Task failed"
                             );
                 }
                 

@@ -19,6 +19,7 @@ import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetRei
         </div>
         <snape-ed-commitment-stats *ngIf="fiscalYear" [user]="user" [fiscalYear]="fiscalYear"></snape-ed-commitment-stats>
         <br><br>
+        <!--
         <div *ngIf="isSnapEdAssistant">
             <h2>Reimbursements</h2>
             <div *ngIf="budget">
@@ -44,6 +45,7 @@ import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetRei
                 </table>
             </div>
         </div>
+        -->
         <h2>County SNAP-Ed Budget</h2>
         <div *ngIf="countyBudget">
         <table class="table table-striped" *ngIf="countyReimbursements">
