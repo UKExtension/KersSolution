@@ -17,7 +17,7 @@ import { UserService, User } from '../user.service';
                         <h2 *ngIf="user.personalProfile">{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</h2>
                         <p><strong>{{user.extensionPosition.title}}</strong></p>
                         <ul class="list-unstyled">
-                            <li *ngIf="user.rprtngProfile"><i class="fa fa-building"></i> {{user.rprtngProfile.planningUnit.name}}</li> 
+                            <li *ngIf="user.rprtngProfile"><i class="fa fa-building"></i> {{user.rprtngProfile.planningUnit.name}}<span *ngIf="showKSUaffiliation && user.rprtngProfile.institutionId==2"> (KSU)</span></li> 
                             <li *ngIf="user.personalProfile"><i class="fa fa-phone"></i> 
                                 <span *ngIf="user.personalProfile.officePhone != ''">{{user.personalProfile.officePhone}}</span>
                                 <span *ngIf="user.personalProfile.officePhone == null || user.personalProfile.officePhone == '' || !user.personalProfile">{{user.rprtngProfile.planningUnit.phone}}</span> 
@@ -102,6 +102,7 @@ export class UserDirectoryProfileComponent {
     @Input() user:User;
     @Input() showEmployeeSummaryButton:boolean = false;
     @Input() showSnapButton = false;
+    @Input() showKSUaffiliation = false;
     
     public profilePicSrc;
     constructor(
