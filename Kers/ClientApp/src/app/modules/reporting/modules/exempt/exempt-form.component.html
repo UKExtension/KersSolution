@@ -1,0 +1,148 @@
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-9">
+        <h2 *ngIf="!countyEvent">New Entity</h2>
+        <h2 *ngIf="countyEvent">Update Entity</h2>
+        <br><br>
+    </div>
+    <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="ExemptForm">
+      
+      <div class="form-group">
+        <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Official Name of Entity:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="subject" formControlName="subject" id="subject" class="form-control col-xs-12" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12"> </label>           
+        <div class="col-md-9 col-sm-9 col-xs-12"><br><br>
+          If entity has it's own employer or federal identification number (EIN or FIN), provide that below.
+          If the entity does not have its own bank account (funds go through another entity) then the entity
+          might not have its own EIN or FIN.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="ein" class="control-label col-md-3 col-sm-3 col-xs-12">EIN or FIN 9-digit number:<br><small>(do not include hyphen)</small></label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="ein" formControlName="ein" id="ein" class="form-control col-xs-12" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="bankName" class="control-label col-md-3 col-sm-3 col-xs-12">Name of BANK where account is located:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="bankName" formControlName="bankName" id="bankName" class="form-control col-xs-12" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="bankAccountName" class="control-label col-md-3 col-sm-3 col-xs-12">Name of the bank ACCOUNT:<br><small>(printed on statement)</small></label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="bankAccountName" formControlName="bankAccountName" id="bankAccountName" class="form-control col-xs-12" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="taxExemptFinancialYearId">Entity's financial year:</label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <select name="taxExemptFinancialYearId" formControlName="taxExemptFinancialYearId" class="form-control col-md-7 col-xs-12">
+                <option value="">-- select --</option>
+                <option *ngFor="let financialYear of financialYears | async" [value]="financialYear.id">{{financialYear.name}}</option>
+            </select>
+          </div> 
+        </div>
+
+      <div class="form-group" *ngIf="planningUnitsOptions.length > 0 ">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Geographic area (counties) represented by this entity:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <ng-select
+                id="units"
+                formControlName="units"
+                [items]="planningUnitsOptions"
+                [multiple]="true"
+                [hideSelected]="true"
+                placeholder = "(select any/all that apply)">
+            </ng-select>
+        </div>
+        
+    </div>
+
+      <!-- 
+      <div class="form-group">
+          <label for="body" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>           
+          <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!countyEventForm.controls.body.valid">
+              <textarea [froalaEditor]="options" name="body" formControlName="body" id="body" class="form-control col-xs-12"></textarea>
+          </div>
+      </div>
+      <div class="form-group">
+        <label for="webLink" class="control-label col-md-3 col-sm-3 col-xs-12">Url:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="webLink" formControlName="webLink" id="webLink" class="form-control col-xs-12"/>
+            <small> A web address for more information (optional).</small>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="programCategoriesOptions.length > 0">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Program Category:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+              <ng-select
+                id="programCategories"
+                formControlName="programCategories"
+                [items]="programCategoriesOptions"
+                [multiple]="true"
+                [hideSelected]="true"
+                placeholder = "(select any/all that apply)"
+              >
+              </ng-select>
+          </div>
+      </div>
+      <div class="form-group">
+        <label for="multycounty" class="control-label col-md-3 col-sm-3 col-xs-12">Multy County Event:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <label class="switch">
+              <input type="checkbox" id="multycounty" formControlName="multycounty">
+              <div class="slider round" (click)="onMultyChecked()"></div>
+          </label>
+        </div>
+      </div>
+  
+  
+      <div class="form-group" *ngIf="planningUnitsOptions.length > 0 && multycounty">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Counties:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+              <ng-select
+                  id="units"
+                  formControlName="units"
+                  [items]="planningUnitsOptions"
+                  [multiple]="true"
+                  [hideSelected]="true"
+                  placeholder = "(select any/all that apply)">
+              </ng-select>
+              <small>The rule for entering an event is that the event takes place in your county. If this is a multi-county event only the host county should enter the event. As the host county, select from the list above each county (in addition to your county) that is associated with this multi-county event.
+          </small>
+          </div>
+          
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Location:</label>
+        <div  class="col-md-6 col-sm-9 col-xs-12">
+          <br>
+          <div *ngIf="!locationBrowser">
+            <h4>{{selectedLocation.address.building}}</h4>
+            <h5>{{selectedLocation.address.street}}</h5>
+            <h5>{{selectedLocation.address.city}} {{selectedLocation.address.state != ""?", "+selectedLocation.address.state:""}} {{selectedLocation.address.postalCode}}</h5>
+          </div>
+          <a *ngIf="!selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> add locaton</a>
+          <a *ngIf="selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="editLocation()"> change locaton</a>
+        </div>
+        <div *ngIf="locationBrowser" class="col-md-9 col-sm-9 col-xs-12">
+          <location-browser *ngIf="county" [county]="county" (onSelected)="locationSelected($event)"></location-browser>
+        </div>
+      </div> -->
+      <div class="ln_solid"></div>
+      <div class="form-group">
+          <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+              <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+              <button type="submit" [disabled]="ExemptForm.invalid"  class="btn btn-success">Submit</button>
+          </div>
+      </div>
+        
+    </form>
+  </div>

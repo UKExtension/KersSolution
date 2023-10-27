@@ -1,3 +1,105 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { PlanningUnit, User, UserService } from '../user/user.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ReportingService } from '../../components/reporting/reporting.service';
+import { TaxExempt, TaxExemptFinancialYear } from './exmpt';
+import { PlanningunitService } from '../planningunit/planningunit.service';
+import { ExemptService } from './exempt.service';
+import { Observable } from 'rxjs';
+
+@Component({
+  selector: 'exempt-form',
+  templateUrl: './exempt-form.component.html',
+  styles: [
+  ]
+})
+export class ExemptFormComponent implements OnInit {
+  
+
+  countyEvent = false;
+
+  @Input()exempt:TaxExempt;
+
+  ExemptForm:any;
+  planningUnits: PlanningUnit[];
+  planningUnitsOptions = Array<any>();
+  county:PlanningUnit;
+  countyId:number;
+  user:User;
+  financialYears:Observable<TaxExemptFinancialYear[]>;
+
+  constructor(
+    private fb: FormBuilder,
+    private reportingService: ReportingService,
+    private planningUnitService: PlanningunitService,
+    private userService:UserService,
+    private service:ExemptService
+  ) { }
+
+  ngOnInit(): void {
+    this.financialYears = this.service.financialYears();
+    this.ExemptForm = this.fb.group(
+      {
+        
+        name:["", Validators.required],
+        ein:"",
+        bankName:"",
+        bankAccountName:'',
+        units: '',
+        taxExemptFinancialYearId:''
+          
+      }
+    );
+
+
+
+    this.userService.current().subscribe(
+      res =>{
+        this.county = res.rprtngProfile.planningUnit;
+        this.countyId = res.rprtngProfile.planningUnitId;
+        var cntId = res.rprtngProfile.planningUnitId;
+        this.user = res;
+        this.planningUnitService.counties().subscribe(
+          res =>{
+            this.planningUnits = res;
+            var optns = Array<any>();
+            this.planningUnits.forEach(function(element){
+              if(element.id != cntId){
+                optns.push(
+                  { value: element.id, label: element.name}
+                );
+              }
+              
+            });
+            this.planningUnitsOptions = optns;
+          });
+      });
+
+
+    this.defaultTitle();
+  }
+
+  onSubmit(){
+
+  }
+
+  onCancel(){
+    
+  }
+
+  defaultTitle(){
+    this.reportingService.setTitle("Tax Exempt/Volunteer Entities Management");
+    //this.reportingService.setSubtitle("For specific In-Service related questions or assistance, please email: agpsd@lsv.uky.edu");
+  }
+  ngOnDestroy(){
+    this.reportingService.setTitle("Kentucky Extension Reporting System");
+    this.reportingService.setSubtitle("");
+  }
+
+}
+
+
+/*
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {Location} from '@angular/common';
@@ -94,6 +196,7 @@ export class CountyEventFormComponent implements OnInit {
 
   ngOnInit() {
     if(this.countyEvent){
+      console.log( this.countyEvent);
       this.countyEventForm.patchValue(this.countyEvent);
       var start = new Date( this.countyEvent.start);
       this.countyEventForm.patchValue({
@@ -303,3 +406,5 @@ interface ImageResponse{
 
 
 };
+
+*/

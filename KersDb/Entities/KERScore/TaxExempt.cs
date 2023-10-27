@@ -11,7 +11,9 @@ namespace Kers.Models.Entities.KERScore
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public KersUser By {get;set;}
+        public int ById {get;set;}
         public PlanningUnit Unit {get;set;}
+        public int UnitId {get;set;}
         public string Name {get;set;}
         public string Ein {get;set;}
         public string BankName {get;set;}
