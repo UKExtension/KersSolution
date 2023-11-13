@@ -232,7 +232,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   }
 
   isCopyButtonAvailable():boolean{
-    if( this.report.sampleInfoBundles != null 
+    if( this.report.sampleInfoBundles != null && this.report.lastStatus != null
           && 
         this.report.sampleInfoBundles.length > 0 
           && 

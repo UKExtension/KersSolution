@@ -12,6 +12,7 @@ import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults, SoilReportS
 export class SoildataService {
 
   private baseUrl = '/api/Soildata/';
+  private statuses:SoilReportStatus[];
 
   private handleError: HandleError;
 
@@ -134,11 +135,22 @@ export class SoildataService {
       }
 
       reportStatuses():Observable<SoilReportStatus[]>{
-        var url = this.baseUrl + "reportstatus";
-        return this.http.get<SoilReportStatus[]>(this.location.prepareExternalUrl(url))
-            .pipe(
-                catchError(this.handleError('SoilReportStatuses', []))
-            );
+        if( this.statuses == null){
+            var url = this.baseUrl + "reportstatus";
+            return this.http.get<SoilReportStatus[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    tap(
+                        res =>
+                        {
+                            this.statuses = <SoilReportStatus[]>res
+                        }
+                    ),
+                    catchError(this.handleError('SoilReportStatuses', []))
+                );
+        }else{
+            return of(this.statuses);
+        }
+       
       }
 
       changestatus(statusId:number, bundleId:number):Observable<SoilReportStatus>{
