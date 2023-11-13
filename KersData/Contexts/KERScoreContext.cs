@@ -228,6 +228,8 @@ namespace Kers.Models.Contexts
         public virtual DbSet<TaxExempt> TaxExempt {get;set;}
         public virtual DbSet<TaxExemptFundsHandled> TaxExemptFundsHandled {get;set;}
         public virtual DbSet<TaxExemptFinancialYear> TaxExemptFinancialYear {get;set;}
+        public virtual DbSet<TaxExemptProgramCategoryConnection> TaxExemptProgramCategoryConnection {get;set;}
+        public virtual DbSet<TaxExemptProgramCategory> TaxExemptProgramCategory {get;set;}
 
 
         /***************************************/

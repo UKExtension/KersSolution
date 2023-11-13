@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import { TaxExemptFinancialYear } from './exmpt';
+import { TaxExempt, TaxExemptFinancialYear, TaxExemptFundsHandled, TaxExemptProgramCategory } from './exmpt';
 
 
 @Injectable({
@@ -25,34 +25,69 @@ export class ExemptService {
       }
 
 
-      financialYears():Observable<TaxExemptFinancialYear[]>{
-        
-            var url = this.baseUrl + "financialyears";
-            return this.http.get<TaxExemptFinancialYear[]>(this.location.prepareExternalUrl(url))
+    financialYears():Observable<TaxExemptFinancialYear[]>{
+        var url = this.baseUrl + "financialyears";
+        return this.http.get<TaxExemptFinancialYear[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('financialyears', <TaxExemptFinancialYear[]>{}))
+            );
+    }
+    programCategories():Observable<TaxExemptProgramCategory[]>{
+        var url = this.baseUrl + "programcategories";
+        return this.http.get<TaxExemptProgramCategory[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('programcategories', <[]>{}))
+            );
+    }
+    fundsHandled():Observable<TaxExemptFundsHandled[]>{
+        var url = this.baseUrl + "fundshandled";
+        return this.http.get<TaxExemptFundsHandled[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('TaxExemptFundsHandled', <[]>{}))
+            );
+    }
+    exemptsList():Observable<TaxExempt[]>{
+        var url = this.baseUrl + "exemptslist";
+        return this.http.get<TaxExempt[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('TaxExemptList', <[]>{}))
+            );
+    }
+
+    addExempt( exempt:TaxExempt ):Observable<TaxExempt>{
+        return this.http.post<TaxExempt>(this.location.prepareExternalUrl(this.baseUrl), exempt)
+            .pipe(
+                catchError(this.handleError('addExempt', <TaxExempt>{}))
+            );
+    }
+    update(id:number, exempt:TaxExempt):Observable<TaxExempt>{
+        var url = this.baseUrl + id;
+        return this.http.put<TaxExempt>(this.location.prepareExternalUrl(url), JSON.stringify(exempt))
                 .pipe(
-                    catchError(this.handleError('financialyears', <TaxExemptFinancialYear[]>{}))
+                    catchError(this.handleError('update', exempt))
                 );
-                    
-        
-    }
+    } 
 
-/* 
-
-    getCustom(searchParams?:{}) : Observable<User[]>{
-        var url = this.baseUrl + "GetCustom/";
-        return this.http.get<User[]>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
+    /* 
+          
+      updateLocation(id:number, location:ExtensionEventLocationConnection):Observable<ExtensionEventLocationConnection>{
+        var url = this.baseUrl + 'updatelocation/' + id;
+        return this.http.put<ExtensionEventLocationConnection>(this.location.prepareExternalUrl(url), location)
+                .pipe(
+                    catchError(this.handleError('update', location))
+                );
+      }
+      
+      // id: ExtensionEventLocationConnection.id
+      // Deletes Connection as well as location itself
+      deleteLocationConnection(id:number):Observable<{}>{
+        var url = this.baseUrl + "deletelocationconnection/" + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('getCustom', []))
+                catchError(this.handleError('delete note'))
             );
-    }
+      }
 
-    getCustomCount(searchParams?:{}):Observable<number>{
-        var url = this.baseUrl + "GetCustomCount/";
-        return this.http.get<number>(this.location.prepareExternalUrl(url), this.addParams(searchParams))
-            .pipe(
-                catchError(this.handleError('getCustomCount', 0))
-            );
-    }
 
  */
 

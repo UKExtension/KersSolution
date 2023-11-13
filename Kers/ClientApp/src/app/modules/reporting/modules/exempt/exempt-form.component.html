@@ -1,4 +1,5 @@
-<div class="row">
+<loading *ngIf="loading"></loading>
+<div class="row" *ngIf="!loading">
     <div class="col-sm-offset-3 col-sm-9">
         <h2 *ngIf="!countyEvent">New Entity</h2>
         <h2 *ngIf="countyEvent">Update Entity</h2>
@@ -7,9 +8,9 @@
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="ExemptForm">
       
       <div class="form-group">
-        <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Official Name of Entity:</label>           
+        <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Official Name of Entity:</label>           
         <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="subject" formControlName="subject" id="subject" class="form-control col-xs-12" />
+            <input type="text" name="name" formControlName="name" id="name" class="form-control col-xs-12" />
         </div>
       </div>
       <div class="form-group">
@@ -49,93 +50,181 @@
             </select>
           </div> 
         </div>
-
+        <div class="form-group" formArrayName="taxExemptProgramCategories">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="taxExemptProgramCategories">Program area represented by this entity:</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div *ngFor="let category of ExemptForm.controls.taxExemptProgramCategories.controls; let i=index" [formGroupName]="i" class="checkbox" style="float:left; width:auto; padding-left: 10px;padding-right: 5px;">
+              <label><input type="checkbox" formControlName="selected"> {{programCategories[i].name}}</label>
+            </div>
+          </div> 
+        </div>
       <div class="form-group" *ngIf="planningUnitsOptions.length > 0 ">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Geographic area (counties) represented by this entity:</label>
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="areas">Geographic area (counties) represented by this entity:</label>
         <div class="col-md-9 col-sm-9 col-xs-12">
             <ng-select
-                id="units"
-                formControlName="units"
+                id="areas"
+                formControlName="areas"
                 [items]="planningUnitsOptions"
                 [multiple]="true"
                 [hideSelected]="true"
                 placeholder = "(select any/all that apply)">
             </ng-select>
         </div>
-        
     </div>
+    <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="taxExemptFinancialYearId">Did all donors during the financial year receive a written acknowledgement of their gift by January 31,
+        as required by the IRS?</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+          <select  name="donorsReceivedAck" id="donorsReceivedAck" formControlName="donorsReceivedAck" class="form-control col-md-7 col-xs-12">
+              <option value="">-- select --</option>
+              <option value="yes">yes</option>
+              <option selected="selected" value="no">no</option>
+              <option value="not applicable">not applicable</option>
+          </select>
+        </div> 
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12"> </label>           
+        <div class="col-md-9 col-sm-9 col-xs-12"><br>
+          Enter the date on which the specific information was last submitted below.
+The expectation is that this information will be up-to-date at all times.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="annBudget" class="control-label col-md-3 col-sm-3 col-xs-12">Annual Budget: <sup>1</sup></label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="annBudget" formControlName="annBudget" id="annBudget" class="form-control col-xs-12"  style="width:40%"/>
+            <br><br>MM/DD/YYYY
+          </div>
+      </div>
+      <div class="form-group">
+        <label for="annFinancialRpt" class="control-label col-md-3 col-sm-3 col-xs-12">Annual Financial Report: <sup>1</sup></label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="annFinancialRpt" formControlName="annFinancialRpt" id="annFinancialRpt" class="form-control col-xs-12"  style="width:40%"/>
+            <br><br>MM/DD/YYYY
+          </div>
+      </div>
+      <div class="form-group">
+        <label for="annAuditRpt" class="control-label col-md-3 col-sm-3 col-xs-12">Annual Audit Report: <sup>1</sup></label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="annAuditRpt" formControlName="annAuditRpt" id="annAuditRpt" class="form-control col-xs-12"  style="width:40%"/>
+            <br><br>MM/DD/YYYY
+          </div>
+      </div>
+      <div class="form-group">
+        <label for="annInvRpt" class="control-label col-md-3 col-sm-3 col-xs-12">Annual Inventory Report: <sup>1</sup></label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="annInvRpt" formControlName="annInvRpt" id="annInvRpt" class="form-control col-xs-12" style="width:40%"/>
+            <br><br>MM/DD/YYYY
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12"> </label>           
+        <div class="col-md-9 col-sm-9 col-xs-12"><br>
+          <sup>1</sup> Tax exempt status derived from County Extension District Board - Date on which the document was submitted to the appropriate agent, county program council, county Extension Council, and District Board.
+<br><br>
+<sup>1</sup> Tax exempt status derived from 501(c) organization - Date on which the document was submitted to the appropriate Agent and county program council.
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Annual Inventory Report:</label>           
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <div *ngFor="let handled of fundsHandled" style="padding: 0 0 15px 20px;">
+            <label class="radio-inline">
+              <input type="radio" formControlName="handledId" [value]="handled.id" style="left:0;"> {{handled.name}}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="is501" style="border:1px solid teal; margin-bottom: 20px;">
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12"> </label>           
+          <div class="col-md-9 col-sm-9 col-xs-12"><br>
+            INFORMATION SPECIFIC TO TAX EXEMPT STATUS DERIVED FROM 501(c) ORGANIZATION
+        </div>
+      </div>
+        <div class="form-group">
+          <label for="organizationName" class="control-label col-md-3 col-sm-3 col-xs-12">What is the name of the 501(c) organization?</label>           
+          <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text" name="organizationName" formControlName="organizationName" id="organizationName" class="form-control col-xs-12" />
+          </div>
+        </div>
+          <div class="form-group">
+            <label for="organizationEin" class="control-label col-md-3 col-sm-3 col-xs-12">EIN of the 501(c). 9-digit number (do not include hyphen):</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" name="organizationEin" formControlName="organizationEin" id="organizationEin" class="form-control col-xs-12"  style="width: 50%;"/>
+            </div>
+          </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="organizationResidesId">County where the 501(c) resides:</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                  <select name="organizationResidesId" formControlName="organizationResidesId" class="form-control col-md-7 col-xs-12">
+                      <option value="">-- select --</option>
+                      <option *ngFor="let unit of planningUnits" [value]="unit.id">{{unit.name}}</option>
+                  </select>
+                </div> 
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12"> </label>           
+                <div class="col-md-9 col-sm-9 col-xs-12"><br>
+                  Enter the date on which the specific information was last submitted below.<br>
+The expectation is that this information will be up-to-date at all times.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="organizationLetterDate" class="control-label col-md-3 col-sm-3 col-xs-12">IRS letter of determination:<sup>2</sup></label>           
+              <div class="col-md-9 col-sm-9 col-xs-12">
+                  <input type="text" name="organizationLetterDate" formControlName="organizationLetterDate" id="organizationLetterDate" class="form-control col-xs-12"   style="width: 50%;"/>
+                  <br><br>MM/DD/YYYY
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="organizationSignedDate" class="control-label col-md-3 col-sm-3 col-xs-12">Signed MOU:<sup>3</sup></label>           
+              <div class="col-md-9 col-sm-9 col-xs-12">
+                  <input type="text" name="organizationSignedDate" formControlName="organizationSignedDate" id="organizationSignedDate" class="form-control col-xs-12"   style="width: 50%;"/>
+                  <br><br>MM/DD/YYYY
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="organizationAppropriate" class="control-label col-md-3 col-sm-3 col-xs-12">Appropriate IRS 990 series form filed:<sup>4</sup></label>           
+              <div class="col-md-9 col-sm-9 col-xs-12">
+                  <input type="text" name="organizationAppropriate" formControlName="organizationAppropriate" id="organizationAppropriate" class="form-control col-xs-12"   style="width: 50%;"/>
+                  <br><br>MM/DD/YYYY
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12"> </label>           
+              <div class="col-md-9 col-sm-9 col-xs-12"><br>
+                <sup>2</sup> Date on which the document was submitted to the appropriate agent and county Extension Council, Extension District Board, county Extension office, and Director of Cooperative Extension. This document remains on file and is not submitted annually. The date reflects when it was originally submitted.
+                <br><br>
+                <sup>3</sup> Date on which the document was submitted to the Director of Extension, appropriate assistant director, district director, county Extension office. This document remains on file and is not submitted annually. The date reflects when it was originally submitted.
+                <br><br>
+                <sup>4</sup> Date on which the document was submitted to the IRS, appropriate agent, and county Extension Council.
+            </div>
+          </div>
+        </div>
+        <div style="border:1px solid salmon" *ngIf="isBoard">
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12"> </label>           
+            <div class="col-md-9 col-sm-9 col-xs-12"><br>
+          INFORMATION SPECIFIC TO TAX EXEMPT STATUS DERIVED FROM COUNTY EXTENSION DISTRICT BOARD
+          </div>
+        </div>
 
-      <!-- 
-      <div class="form-group">
-          <label for="body" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!countyEventForm.controls.body.valid">
-              <textarea [froalaEditor]="options" name="body" formControlName="body" id="body" class="form-control col-xs-12"></textarea>
-          </div>
-      </div>
-      <div class="form-group">
-        <label for="webLink" class="control-label col-md-3 col-sm-3 col-xs-12">Url:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="webLink" formControlName="webLink" id="webLink" class="form-control col-xs-12"/>
-            <small> A web address for more information (optional).</small>
-        </div>
-      </div>
-      <div class="form-group" *ngIf="programCategoriesOptions.length > 0">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Program Category:</label>
+
+        <div class="form-group">
+          <label for="districtName" class="control-label col-md-3 col-sm-3 col-xs-12">Name of the Extension District Board:</label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
-              <ng-select
-                id="programCategories"
-                formControlName="programCategories"
-                [items]="programCategoriesOptions"
-                [multiple]="true"
-                [hideSelected]="true"
-                placeholder = "(select any/all that apply)"
-              >
-              </ng-select>
+              <input type="text" name="districtName" formControlName="districtName" id="districtName" class="form-control col-xs-12" />
           </div>
-      </div>
-      <div class="form-group">
-        <label for="multycounty" class="control-label col-md-3 col-sm-3 col-xs-12">Multy County Event:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <label class="switch">
-              <input type="checkbox" id="multycounty" formControlName="multycounty">
-              <div class="slider round" (click)="onMultyChecked()"></div>
-          </label>
         </div>
-      </div>
-  
-  
-      <div class="form-group" *ngIf="planningUnitsOptions.length > 0 && multycounty">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="specialties">Counties:</label>
+        <div class="form-group">
+          <label for="districtEin" class="control-label col-md-3 col-sm-3 col-xs-12">The District's EIN:</label>           
           <div class="col-md-9 col-sm-9 col-xs-12">
-              <ng-select
-                  id="units"
-                  formControlName="units"
-                  [items]="planningUnitsOptions"
-                  [multiple]="true"
-                  [hideSelected]="true"
-                  placeholder = "(select any/all that apply)">
-              </ng-select>
-              <small>The rule for entering an event is that the event takes place in your county. If this is a multi-county event only the host county should enter the event. As the host county, select from the list above each county (in addition to your county) that is associated with this multi-county event.
-          </small>
+              <input type="text" name="districtEin" formControlName="districtEin" id="districtEin" class="form-control col-xs-12" style="width: 50%;" />
           </div>
-          
+        </div>
       </div>
-      <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12">Location:</label>
-        <div  class="col-md-6 col-sm-9 col-xs-12">
-          <br>
-          <div *ngIf="!locationBrowser">
-            <h4>{{selectedLocation.address.building}}</h4>
-            <h5>{{selectedLocation.address.street}}</h5>
-            <h5>{{selectedLocation.address.city}} {{selectedLocation.address.state != ""?", "+selectedLocation.address.state:""}} {{selectedLocation.address.postalCode}}</h5>
-          </div>
-          <a *ngIf="!selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="locationBrowser = true"> add locaton</a>
-          <a *ngIf="selectedLocation && !locationBrowser" class="btn btn-info btn-xs" (click)="editLocation()"> change locaton</a>
-        </div>
-        <div *ngIf="locationBrowser" class="col-md-9 col-sm-9 col-xs-12">
-          <location-browser *ngIf="county" [county]="county" (onSelected)="locationSelected($event)"></location-browser>
-        </div>
-      </div> -->
       <div class="ln_solid"></div>
       <div class="form-group">
           <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">

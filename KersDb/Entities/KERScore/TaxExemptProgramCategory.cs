@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,10 +9,8 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        public int TaxExemptId {get;set;}
-        public TaxExempt TaxExempt {get;set;}
-        public int ProgramCategoryId {get;set;}
-        public ProgramCategory ProgramCategory {get;set;}
+        public string Name {get;set;}
+        public int Order {get;set;}
+        public Boolean Active {get;set;}
     } 
 }

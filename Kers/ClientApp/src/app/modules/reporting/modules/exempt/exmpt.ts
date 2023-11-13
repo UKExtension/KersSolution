@@ -16,9 +16,24 @@ export class TaxExempt{
     annFinancialRpt:string;
     annAuditRpt:string;
     annInvRpt:string;
-    units:TaxExemptArea[];
+    areas:TaxExemptArea[];
     taxExemptFinancialYear:TaxExemptFinancialYear;
     taxExemptFinancialYearId:number;
+    handled:TaxExemptFundsHandled
+    handledId:number;
+    taxExemptProgramCategories:TaxExemptProgramCategoryConnection[];
+    districtName:string;
+    districtEin:string;
+    organizationName:string;
+    organizationEin:string;
+    organizationResides:PlanningUnit;
+    organizationResidesId:number;
+    organizationLetterDate:string;
+    organizationSignedDate:string;
+    organizationAppropriate:string;
+    created:Date;
+    updated:Date;
+
     
 }
 
@@ -33,4 +48,25 @@ export class TaxExemptFinancialYear{
     id:number;
     name: string;
     order:number;
+}
+
+export class TaxExemptFundsHandled{
+    id:number;
+    name:string;
+    order:number;
+    active:boolean;
+    is501:boolean;
+}
+export class TaxExemptProgramCategory{
+    id:number;
+    name:string;
+    order:number;
+    active:boolean;
+}
+export class TaxExemptProgramCategoryConnection{
+    id:number;
+    taxExempt:TaxExempt;
+    taxExemptId:number;
+    taxExemptProgramCategoryId:number;
+    taxExemptProgramCategory:TaxExemptProgramCategory;
 }

@@ -31,7 +31,7 @@ namespace Kers.Models.Entities.KERScore
         public List<TaxExemptArea> Areas {get;set;}
         public TaxExemptFinancialYear TaxExemptFinancialYear {get;set;}
         public int? TaxExemptFinancialYearId {get;set;}
-        public List<TaxExemptProgramCategory> TaxExemptProgramCategories {get;set;}
+        public List<TaxExemptProgramCategoryConnection> TaxExemptProgramCategories {get;set;}
         public int HandledId {get;set;}
         public TaxExemptFundsHandled Handled {get;set;}
 

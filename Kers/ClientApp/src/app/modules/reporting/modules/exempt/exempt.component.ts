@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './exempt.component.html'
 })
 export class ExemptComponent implements OnInit {
+  newExempt:boolean = false;
 
   constructor() { }
 

@@ -4,4 +4,11 @@
 </p>
 
 
-<exempt-form></exempt-form>
+
+<div>
+    <div class="text-right">
+        <a class="btn btn-info btn-xs" *ngIf="!newExempt" (click)="newExempt=!newExempt">+ new tax exempt entity</a>
+    </div>
+    <exempt-form *ngIf="newExempt" (onFormCancel)="newExempt=!newExempt"></exempt-form>
+</div>
+<exempt-list></exempt-list>
