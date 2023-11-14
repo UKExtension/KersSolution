@@ -175,8 +175,8 @@ namespace Kers.Controllers.Admin
             List<MajorProgram> programs = new List<MajorProgram>();
             List<ProgramCategory> categories = new List<ProgramCategory>();
 
-            var fiscalYear = this.GetFYByName("2023", FiscalYearType.ServiceLog);
-            var nextFiscalYear = this.GetFYByName("2024", FiscalYearType.ServiceLog);
+            var fiscalYear = this.GetFYByName("2024", FiscalYearType.ServiceLog);
+            var nextFiscalYear = this.GetFYByName("2025", FiscalYearType.ServiceLog);
             var initiatives = context.StrategicInitiative.AsNoTracking().Where( i => i.FiscalYear == fiscalYear)
                                     .Include( i => i.ProgramCategory)
                                     .Include( i => i.MajorPrograms).ThenInclude(m => m.ProgramIndicators);
@@ -197,7 +197,7 @@ namespace Kers.Controllers.Admin
                 newInitiatives.Add( initiative );
                 context.Add(initiative);
             }
-
+ 
             if(saveContext && context.StrategicInitiative.Where( i => i.FiscalYear == nextFiscalYear).FirstOrDefault() == null){
                 coreContext.SaveChanges();
             }
