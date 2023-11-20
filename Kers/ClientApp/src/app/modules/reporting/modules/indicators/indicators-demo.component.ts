@@ -8,16 +8,16 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 @Component({
   template: `
 
-
+<span style="color:orange;">---- This form serves demonstration purpose and won't work or save entered test data. ----</span><br><br>
     These numbers are to be kept up to date PER INDIVIDUAL (YOU) - NOT THE COUNTY.<br>
 Simply update the numbers as needed throughout the fiscal year.<br>
 <strong>ENTER WHOLE NUMBERS ONLY.</strong><br>
 <div *ngIf="fiscalYear" style="padding-top:15px;">
-    <indicators-form [fiscalYear]="fiscalYear"></indicators-form>
+    <indicators-form [fiscalYear]="fiscalYear" [demoMode]="true"></indicators-form>
 </div>
   `
 })
-export class IndicatorsHomeComponent { 
+export class IndicatorsDemoComponent { 
     
     fiscalYear:FiscalYear;
     constructor( 
@@ -29,7 +29,7 @@ export class IndicatorsHomeComponent {
     }
 
     ngOnInit(){
-        this.fiscalYearService.current("serviceLog", true).subscribe(
+        this.fiscalYearService.next("serviceLog", true).subscribe(
             res => {
                 this.fiscalYear = res;
                 this.defaultTitle();

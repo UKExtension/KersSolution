@@ -1,0 +1,56 @@
+<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Error: </strong> {{errorMessage}}
+</div>
+
+
+<div class="alert alert-success alert-dismissible fade in" role="alert" *ngIf="dataSubmitted">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>Indicator data for <em>{{selectedProgram.name}}</em> has been submitted </strong><br>
+To enter/adjust data for another Major Program, just select the Major Program from the dropdown list bellow.
+</div>
+<br>
+<loading *ngIf="initiatives == null"></loading>
+<div *ngIf="initiatives != null">
+    Select the Major Program from the dropdown list to access/enter your Program Indicator numbers:<br>
+    <select name="mp3" id="mp3" class="form-control col-md-7 col-xs-12" (change)="onChange($event.target.value)">
+        <option value="">--- select ---</option>
+        <optgroup  *ngFor="let initiative of initiatives" label="{{initiative.name}}">
+            <option *ngFor="let program of initiative.majorPrograms" [value]="program.id">{{program.name}} ({{program.pacCode}})</option>
+        </optgroup>
+    </select>
+    <div *ngIf="selectedProgram"><br><br><br>
+        <h2>{{selectedProgram.name}}</h2><br>
+
+        <div class="row" *ngIf="selectedIndicators != null && selectedIndicators.length > 0">
+
+            <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="indicatorsForm">
+                <loading *ngIf="loading"></loading>
+                
+                <div formArrayName="indicatorsGroup" *ngIf="!loading">
+                    
+                        <div *ngFor="let indicator of indicatorsForm.controls.indicatorsGroup.controls; let i=index" [formGroupName]="i" class="form-group">
+                            <div class="col-xs-3">
+                                
+                                    <input class="form-control" type="number" id="firstName" formControlName="value" />
+                                
+                            </div>
+                            <div class="col-xs-9" [innerHTML]="selectedIndicators[i].question"></div>
+                        
+                    </div>
+                </div> 
+                <div class="ln_solid"></div>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <button type="submit" [disabled]="indicatorsForm.invalid || demoMode"  class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+                    
+            </form>
+
+        </div>
+        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0">There are no indicators available for selected Major Program</div>
+    </div>
+</div>
