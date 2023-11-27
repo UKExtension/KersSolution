@@ -68,28 +68,12 @@ export class ExemptService {
                 );
     } 
 
-    /* 
-          
-      updateLocation(id:number, location:ExtensionEventLocationConnection):Observable<ExtensionEventLocationConnection>{
-        var url = this.baseUrl + 'updatelocation/' + id;
-        return this.http.put<ExtensionEventLocationConnection>(this.location.prepareExternalUrl(url), location)
-                .pipe(
-                    catchError(this.handleError('update', location))
-                );
-      }
-      
-      // id: ExtensionEventLocationConnection.id
-      // Deletes Connection as well as location itself
-      deleteLocationConnection(id:number):Observable<{}>{
-        var url = this.baseUrl + "deletelocationconnection/" + id;
-        return this.http.delete(this.location.prepareExternalUrl(url))
+    pdf(id:number):Observable<Blob>{
+        return this.http.get(this.location.prepareExternalUrl('/api/PdfExempt/exempt/' + id ), {responseType: 'blob'})
             .pipe(
-                catchError(this.handleError('delete note'))
+                catchError(this.handleError('pdf', <Blob>{}))
             );
       }
-
-
- */
 
 }
 

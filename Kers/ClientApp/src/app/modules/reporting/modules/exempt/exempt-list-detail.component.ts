@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TaxExempt } from './exmpt';
+import { saveAs } from 'file-saver';
+import { ExemptService } from './exempt.service';
 
 @Component({
   selector: '[exempt-list-detail]',
@@ -13,12 +15,16 @@ export class ExemptListDetailComponent implements OnInit {
   defaultView = true;
   deleteOppened = false;
 
+  pdfLoading = false;
+
   @Input ('exempt-list-detail') exempt: TaxExempt;
 
   @Output() onExemptUpdated = new EventEmitter();
   @Output() onExemptDeleted = new EventEmitter();
 
-  constructor() { }
+  constructor(
+    private service:ExemptService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -29,6 +35,17 @@ export class ExemptListDetailComponent implements OnInit {
     this.editOppened = true;
   }
   pdf(){
+
+    this.pdfLoading = true;
+    this.service.pdf(this.exempt.id).subscribe(
+        data => {
+            var blob = new Blob([data], {type: 'application/pdf'});
+            saveAs(blob, "TaxExemptEntity_#"+this.exempt.id+".pdf");
+            this.pdfLoading = false;
+        },
+        err => console.error(err)
+    )
+
 
   }
   default(){
