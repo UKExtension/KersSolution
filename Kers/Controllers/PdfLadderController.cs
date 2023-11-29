@@ -85,7 +85,7 @@ namespace Kers.Controllers
 						var positionX = margin;
 						var runningY = 31;
 						//AddUkLogo(pdfCanvas, 16, runningY);
-						AddUkCaLogo(pdfCanvas, 16, runningY+15);
+						AddUkCaLogo(pdfCanvas, positionX, runningY+15);
 						pdfCanvas.DrawText("Professional Career Ladder", 223, 62, getPaint(20.0f, 1));
 						pdfCanvas.DrawText("Promotion Application", 223, 82, getPaint(20.0f, 1));
 						pdfCanvas.DrawText("For Outstanding Job Performance and Experiences Gained Through Program Development", 223, 95, getPaint(7.5f));
