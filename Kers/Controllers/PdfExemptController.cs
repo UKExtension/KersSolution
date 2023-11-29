@@ -31,8 +31,6 @@ namespace Kers.Controllers
 		const int margin = 42;
 		const int textLineHeight = 14;
 		int[] trainingsTableLines = new int[]{ 0, 100, 143, 440, 500, 530};
-		int trainingsTableLineHight = 14;
-		int trainingsTableCellMargin = 2;
 		string pageTitle = "Professional Career Ladder Promotion Application";
 		IFiscalYearRepository _fiscalYearRepo;
 
@@ -63,7 +61,7 @@ namespace Kers.Controllers
 
 			using (var stream = new SKDynamicMemoryWStream ())
                 using (var document = SKDocument.CreatePdf (stream, 
-							this.metadata( "Kers, Career Ladder, Reporting", "Career Ladder Application", "Professional Career Ladder Promotion Application") )) {
+							this.metadata( "Kers, Tax Exempt, Reporting", "Tax Exempt Entity", "University of Kentucky Extension Tax Exempt Entity") )) {
 					var exempt = this._context.TaxExempt.Where( e => e.Id == id)
 										.Include(e => e.By).ThenInclude( u => u.PersonalProfile)
 										.FirstOrDefault();
@@ -74,7 +72,7 @@ namespace Kers.Controllers
 						AddPageInfo(pdfCanvas, pageNum, 0, exempt.By, DateTime.Now, pageTitle);
 						var positionX = margin;
 						var runningY = 31;
-						AddUkLogo(pdfCanvas, positionX, runningY);
+						AddUkCaLogo(pdfCanvas, positionX, runningY+15);
 						pdfCanvas.DrawText("Professional Career Ladder", 223, 62, getPaint(20.0f, 1));
 						pdfCanvas.DrawText("Promotion Application", 223, 82, getPaint(20.0f, 1));
 						pdfCanvas.DrawText("For Outstanding Job Performance and Experiences Gained Through Program Development", 223, 95, getPaint(7.5f));
