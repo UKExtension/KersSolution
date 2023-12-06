@@ -48,5 +48,6 @@ namespace Kers.Models.Entities.KERScore
         public string OrganizationAppropriate {get;set;}
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
+        public int LegacyId {get;set;}
     }
 }

@@ -10,6 +10,7 @@ import { ExemptComponent } from './exempt.component';
 import { ExemptFormComponent } from './exempt-form.component';
 import { ExemptListDetailComponent } from './exempt-list-detail.component';
 import { ExemptListComponent } from './exempt-list.component';
+import { ExemptReviewComponent } from './exempt-review.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { ExemptListComponent } from './exempt-list.component';
     ExemptComponent,
     ExemptFormComponent,
     ExemptListDetailComponent,
-    ExemptListComponent
+    ExemptListComponent,
+    ExemptReviewComponent
   ],
   imports: [
     CommonModule,

@@ -46,8 +46,8 @@ export class ExemptService {
                 catchError(this.handleError('TaxExemptFundsHandled', <[]>{}))
             );
     }
-    exemptsList():Observable<TaxExempt[]>{
-        var url = this.baseUrl + "exemptslist";
+    exemptsList(countyId:number = 0):Observable<TaxExempt[]>{
+        var url = this.baseUrl + "exemptslist/"+countyId;
         return this.http.get<TaxExempt[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('TaxExemptList', <[]>{}))
@@ -67,6 +67,13 @@ export class ExemptService {
                     catchError(this.handleError('update', exempt))
                 );
     } 
+    delete(id:number):Observable<{}>{
+        var url = this.baseUrl + id;
+        return this.http.delete(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('delete'))
+            );
+    }
 
     pdf(id:number):Observable<Blob>{
         return this.http.get(this.location.prepareExternalUrl('/api/PdfExempt/exempt/' + id ), {responseType: 'blob'})

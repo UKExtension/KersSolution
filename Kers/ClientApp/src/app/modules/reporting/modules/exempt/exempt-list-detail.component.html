@@ -1,25 +1,29 @@
-<td *ngIf="defaultView">{{exempt.name}}</td>
-<td *ngIf="defaultView">{{programAreas()}}</td>
-<td *ngIf="defaultView">{{exempt.updated | date:'short'}}</td>
-<td *ngIf="defaultView">{{exempt.taxExemptFinancialYear.name}}</td>
-<td *ngIf="defaultView" class="text-right">
-    
-    <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
-    <button (click)="pdf()" class="btn btn-info btn-xs">pdf</button>
-    <button (click)="delete()" class="btn btn-info btn-xs">delete</button>
+<td *ngIf="loading" colspan="5"><loading></loading></td>
+<ng-container *ngIf="!loading">
+    <td *ngIf="defaultView">{{exempt.name}}</td>
+    <td *ngIf="defaultView">{{programAreas()}}</td>
+    <td *ngIf="defaultView">{{exempt.updated | date:'short'}}</td>
+    <td *ngIf="defaultView">{{exempt.taxExemptFinancialYear.name}}</td>
+    <td *ngIf="defaultView" class="text-right">
+        
+        <ng-container *ngIf="canEdit"><button (click)="edit()" class="btn btn-info btn-xs">edit</button></ng-container>
+        <button (click)="pdf()" class="btn btn-info btn-xs">pdf</button>
+        <ng-container *ngIf="canEdit"><button (click)="delete()" class="btn btn-info btn-xs">delete</button></ng-container>
 
-</td>
-<td *ngIf="editOppened" colspan="5">
-    <div class="text-right">
-        <button (click)="default()" class="btn btn-info btn-xs">close</button>
-    </div>
-    <exempt-form [exempt]="exempt" (onFormCancel)="default()" (onFormSubmit)="edited($event)"></exempt-form>
-    edit
-</td>
-<td *ngIf="deleteOppened"  colspan="5">
-    <div class="text-right">
-        <button (click)="default()" class="btn btn-info btn-xs">close</button>
-    </div>
-    
-    delete
-</td>
+    </td>
+    <td *ngIf="editOppened" colspan="5">
+        <div class="text-right">
+            <button (click)="default()" class="btn btn-info btn-xs">close</button>
+        </div>
+        <exempt-form [exempt]="exempt" (onFormCancel)="default()" (onFormSubmit)="edited($event)"></exempt-form>
+
+    </td>
+    <td *ngIf="deleteOppened"  colspan="5">
+        <div class="text-right">
+            <button (click)="default()" class="btn btn-info btn-xs">close</button>
+        </div>
+        
+        Do you really want to delete tax exempt entity <strong>{{exempt.name}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+        
+    </td>
+</ng-container>

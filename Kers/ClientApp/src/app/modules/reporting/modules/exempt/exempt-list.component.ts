@@ -10,7 +10,8 @@ import { Observable } from 'rxjs';
   ]
 })
 export class ExemptListComponent implements OnInit {
-  exempts$:Observable<TaxExempt[]>
+  exempts$:Observable<TaxExempt[]>;
+  newExempt = false;
   constructor(
     private service:ExemptService
   ) {
@@ -22,7 +23,8 @@ export class ExemptListComponent implements OnInit {
   }
 
   onExemptUpdate(){
-
+    this.exempts$=this.service.exemptsList();
+    this.newExempt=false;
   }
 
 }

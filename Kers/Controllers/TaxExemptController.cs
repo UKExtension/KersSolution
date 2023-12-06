@@ -64,9 +64,13 @@ namespace Kers.Controllers
             var yrs = this._context.TaxExemptFundsHandled.Where(a => a.Active).OrderBy(r => r.Order);
             return new OkObjectResult(await yrs.ToListAsync());
         }
-        [HttpGet("exemptslist")]
-        public async Task<IActionResult> ExemptsList( ){
-            var yrs = this._context.TaxExempt.Where(a => true)
+        [HttpGet("exemptslist/{countyId?}")]
+        public async Task<IActionResult> ExemptsList(int countyId = 0 ){
+            if(countyId == 0){
+                var user = this.CurrentUser();
+                countyId = user.RprtngProfile.PlanningUnitId;
+            }
+            var yrs = this._context.TaxExempt.Where(a => a.UnitId == countyId)
                                 .Include( a => a.Handled)
                                 .Include( a => a.TaxExemptProgramCategories).ThenInclude( c => c.TaxExemptProgramCategory)
                                 .Include( a => a.TaxExemptFinancialYear)
@@ -143,6 +147,20 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
         }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteExempt( int id ){
+            var entity = context.TaxExempt.Find(id);
+            if(entity != null){
+                context.TaxExempt.Remove(entity);
+                context.SaveChanges();
+                this.Log(entity,"TaxExempt", "Success, Tax Exempt Deleted.");
+                return new OkResult();
+            }else{
+                this.Log( id ,"TaxExempt", "Not Found TaxExempt in a delete attempt.", "Tax Exempt", "Error");
+                return new StatusCodeResult(500);
+            }
+        }
+
 
 
 /* 

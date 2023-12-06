@@ -1,0 +1,33 @@
+<p>All Kentucky Cooperative Extension volunteer-led entities that handle money (have income and expenses) are to be listed below.</p>
+
+<p>Note: Even if the funds of a club/group go through the county program council's bank account, the club/group should be listed here. In reality, the club is handling money--the club determines how the money is to be spent by preparing a budget. The council treasurer makes payments based on the club's budget.</p>
+<br><br>
+
+<div class="row">
+    <div class="form-group">
+            <label class="control-label col-md-2 col-sm-2 col-xs-10">Select County: </label>   
+            <div class="col-md-8 col-sm-8 col-xs-10">
+                <select name="organizationResidesId" class="form-control col-md-6 col-xs-10" (change)="changeCounty($event)">
+                    <option value="">-- select --</option>
+                    <option *ngFor="let unit of planningUnits$ | async" [value]="unit.id">{{unit.name}}</option>
+                </select>
+            </div>
+    </div> 
+</div><br><br>
+<div *ngIf="exempts$">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Entity Name</th>
+            <th>CES Program Area(s)</th>
+            <th>Record Last Updated</th>
+            <th>Financial Year</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+              <tr *ngFor="let exempt of exempts$ | async" [exempt-list-detail]="exempt" [canEdit]="false"></tr>
+        </tbody>               
+    </table>            
+</div>
+    

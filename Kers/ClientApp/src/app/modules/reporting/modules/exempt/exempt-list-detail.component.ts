@@ -14,10 +14,10 @@ export class ExemptListDetailComponent implements OnInit {
   editOppened = false;
   defaultView = true;
   deleteOppened = false;
-
-  pdfLoading = false;
+  loading = false;
 
   @Input ('exempt-list-detail') exempt: TaxExempt;
+  @Input () canEdit: boolean = true;
 
   @Output() onExemptUpdated = new EventEmitter();
   @Output() onExemptDeleted = new EventEmitter();
@@ -36,12 +36,12 @@ export class ExemptListDetailComponent implements OnInit {
   }
   pdf(){
 
-    this.pdfLoading = true;
+    this.loading = true;
     this.service.pdf(this.exempt.id).subscribe(
         data => {
             var blob = new Blob([data], {type: 'application/pdf'});
             saveAs(blob, "TaxExemptEntity_#"+this.exempt.id+".pdf");
-            this.pdfLoading = false;
+            this.loading = false;
         },
         err => console.error(err)
     )
@@ -69,6 +69,16 @@ export class ExemptListDetailComponent implements OnInit {
     var ars = this.exempt.taxExemptProgramCategories.map( c => c.taxExemptProgramCategory.name);
     areas = ars.join(', ');
     return areas;
+  }
+  confirmDelete(){
+    this.loading = true;
+    this.service.delete(this.exempt.id).subscribe(
+        res=>{
+            this.onExemptDeleted.emit();
+            this.loading = false;
+        }
+    );
+    
   }
 
 }

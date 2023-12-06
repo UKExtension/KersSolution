@@ -42,7 +42,6 @@ export class ExemptFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private reportingService: ReportingService,
     private planningUnitService: PlanningunitService,
     private userService:UserService,
     private service:ExemptService
@@ -161,8 +160,6 @@ export class ExemptFormComponent implements OnInit {
           });
       });
       
-      
-      this.defaultTitle();
   }
 
 
@@ -199,13 +196,5 @@ export class ExemptFormComponent implements OnInit {
     this.onFormCancel.emit();
   }
 
-  defaultTitle(){
-    this.reportingService.setTitle("Tax Exempt/Volunteer Entities Management");
-    //this.reportingService.setSubtitle("For specific In-Service related questions or assistance, please email: agpsd@lsv.uky.edu");
-  }
-  ngOnDestroy(){
-    this.reportingService.setTitle("Kentucky Extension Reporting System");
-    this.reportingService.setSubtitle("");
-  }
 
 }
