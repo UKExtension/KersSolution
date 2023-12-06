@@ -53,6 +53,7 @@ namespace Kers.Controllers.Reports
                                     .Include( a => a.TypeForm)
                                     .Include( a => a.LastStatus).ThenInclude( s => s.SoilReportStatus)
                                     .Include(a => a.Reports)
+                                    .OrderByDescending( a => a.SampleLabelCreated)
                                     .ToListAsync();
             return View(results);
         }
