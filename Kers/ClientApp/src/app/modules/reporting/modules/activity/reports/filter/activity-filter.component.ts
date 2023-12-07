@@ -240,7 +240,7 @@ export class ActivityFilterComponent implements OnInit {
   getCsvData(){
     if(this.csvCriteria.skip < this.csvResultsCount && this.csvInitiated){
       var startDate = new Date();
-      this.service.getCustomData(this.csvCriteria).subscribe(
+      this.service.getCustomData(this.csvCriteria, this.userId).subscribe(
         res => {
           this.csvData = this.csvData.concat(res);
           this.csvBatchesCompleted++;
