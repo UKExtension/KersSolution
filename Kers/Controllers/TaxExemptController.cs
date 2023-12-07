@@ -106,6 +106,7 @@ namespace Kers.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult UpdateExempt( int id, [FromBody] TaxExempt exempt){
             var entity = context.TaxExempt.Where( e => e.Id == id)
                             .Include( a => a.TaxExemptProgramCategories)
@@ -148,6 +149,7 @@ namespace Kers.Controllers
             }
         }
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult DeleteExempt( int id ){
             var entity = context.TaxExempt.Find(id);
             if(entity != null){
@@ -160,6 +162,15 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
         }
+
+        [HttpGet("migrate")]
+        public async Task<IActionResult> Migrate( ){
+            var oldEntries = this._reportingContext.zCesTaxExemptEntity;
+
+            return new OkObjectResult(await oldEntries.ToListAsync());
+        }
+
+
 
 
 
