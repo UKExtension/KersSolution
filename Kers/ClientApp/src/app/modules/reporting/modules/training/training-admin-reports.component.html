@@ -43,9 +43,9 @@
           </tr>
       </thead>
       <tr *ngFor="let training of trainings">
-        <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+        <td>{{training.subject}}</td>
         <td><span *ngIf="training.submittedBy">{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span></td>
-        <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
+        <td>{{training.start | date:'shortDate'}}</td>
         <td><span *ngIf="!training.iHour">0</span><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
         <td>{{training.enrollment.length}}</td>
         <td>{{attendance(training)}}</td>

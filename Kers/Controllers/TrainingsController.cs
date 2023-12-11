@@ -540,6 +540,7 @@ namespace Kers.Controllers
                                 .Include( t => t.iHour)
                                 .Include( t => t.Enrollment)
                                 .Include( t => t.TrainingSession)
+                                .OrderBy( t => t.Start)
                                 .ToListAsync();
             List<TrainingWithTimezone> withTimezone = new List<TrainingWithTimezone>();
             foreach( var tr in trainings){
