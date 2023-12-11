@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Kers.Models.Entities.KERScore;
+using Kers.Models.Entities.KERSmain;
 using Kers.Models.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -165,9 +166,106 @@ namespace Kers.Controllers
 
         [HttpGet("migrate")]
         public async Task<IActionResult> Migrate( ){
-            var oldEntries = this._reportingContext.zCesTaxExemptEntity;
+            var entities = this._context.TaxExempt.ToList();
+            var oldEntries = this._reportingContext.zCesTaxExemptEntity.Where( e => e.planningUnitID == "21067");
+            var oEnt = await oldEntries.Where( e => !entities.Select( n => n.LegacyId).Contains(e.rID) ).Take(1).ToListAsync();
+            var PlanningUnits = await this._context.PlanningUnit.ToListAsync();
+            var FinancialYears = await this._context.TaxExemptFinancialYear.ToListAsync();
+            var oPlanningUnits = await this._mainContext.zzPlanningUnits.ToListAsync();
+            var ProgramCategores = await this._context.TaxExemptProgramCategory.ToListAsync();
+            var oFinYear = await this._reportingContext.zCesTaxExemptFinancialYearLookup.ToListAsync();
+            var oFundsHndl = await this._reportingContext.zCesTaxExemptHowFundsHandledLookup.ToListAsync();
+            foreach( var oE in oEnt){
+                TaxExempt nE = new TaxExempt();
+                nE.Name = oE.eName;
+                var unit = this.FindUnit(oE, PlanningUnits, oPlanningUnits);
+                nE.UnitId = unit != null ? unit.Id : 0;
+                nE.LegacyId = oE.rID;
+                nE.ById = FindUserId(oE);
+                nE.Ein = oE.eID;
+                nE.BankName = oE.eBankName;
+                nE.BankAccountName = oE.eBankAcct;
+                nE.TaxExemptProgramCategories = this.FindProgramCategories( oE, ProgramCategores);
+                nE.DonorsReceivedAck = oE.DonorsReceivedAck;
+                nE.HandledId = oE.eTaxStatusDerivedFromID??1;
+                nE.DistrictName = oE.eTaxExemptSrcExtDist_DistName;
+                nE.DistrictEin = oE.eTaxExemptSrcExtDist_EIN;
+                nE.OrganizationName = oE.eTaxExemptSrc501c_orgName;
+                nE.OrganizationEin = oE.ein501c;
+                nE.OrganizationResidesId = this.FindResides(oE, PlanningUnits, oPlanningUnits);
+                nE.AnnBudget = oE.dtDocAnnBudget;
+                nE.AnnFinancialRpt = oE.dtDocAnnFinancialRpt;
+                nE.AnnAuditRpt = oE.dtDocAnnAuditRpt;
+                nE.AnnInvRpt = oE.dtDocAnnInvRpt;
+                nE.OrganizationLetterDate = oE.dtDocIRSLOD;
+                nE.OrganizationSignedDate = oE.dtDocMOU;
+                nE.OrganizationAppropriate = oE.dtDocIRS990;
+                var year = FinancialYears.Where( y => y.Name == oE.eFinancialYear ).FirstOrDefault();
+                nE.TaxExemptFinancialYearId = year == null ? 1 : year.Id;
+                nE.Created = nE.Updated = oE.rDT;
+                this._context.Add(nE);
+            }
+            this._context.SaveChanges();
+            return new OkObjectResult(oEnt);
+        }
 
-            return new OkObjectResult(await oldEntries.ToListAsync());
+        private PlanningUnit FindUnit(zCesTaxExemptEntity OldEntity, List<PlanningUnit> Units, List<zzPlanningUnit> oUnits){
+            var oUnit = oUnits.Where( u => u.planningUnitID == OldEntity.planningUnitID).FirstOrDefault();
+            return Units.Where( n => n.Name == oUnit.planningUnitName).FirstOrDefault();
+        }
+
+        private int? FindResides(zCesTaxExemptEntity OldEntity, List<PlanningUnit> Units, List<zzPlanningUnit> oUnits){
+            if(OldEntity.eTaxExemptSrc501cResidesFIPs == null || OldEntity.eTaxExemptSrc501cResidesFIPs == 0 ) return null;
+            var oUnit = oUnits.Where( u => u.planningUnitID == (OldEntity.eTaxExemptSrc501cResidesFIPs??0).ToString()).FirstOrDefault();
+            var unit = Units.Where( n => n.Name == oUnit.planningUnitName).FirstOrDefault();
+            return unit == null ? null : unit.Id;
+        }
+
+        private int FindUserId(zCesTaxExemptEntity OldEntity){
+            var user = this._context.KersUser.Where( u => u.RprtngProfile.PersonId == OldEntity.rBY).FirstOrDefault();
+            return user == null ? 0 : user.Id;
+        }
+        
+        private List<TaxExemptProgramCategoryConnection> FindProgramCategories( zCesTaxExemptEntity OldEntity, List<TaxExemptProgramCategory> programCategories){
+            var Cats = new List<TaxExemptProgramCategoryConnection>();
+            if( OldEntity.eProgANR == true ){
+                var AnrCat = programCategories.Where( c => c.Name == "ANR").FirstOrDefault();
+                var AnrConnection = new TaxExemptProgramCategoryConnection();
+                AnrConnection.TaxExemptProgramCategory = AnrCat;
+                Cats.Add(AnrConnection);
+            }
+            if( OldEntity.eProgHORT == true ){
+                var HortCat = programCategories.Where( c => c.Name == "HORT").FirstOrDefault();
+                var HortConnection = new TaxExemptProgramCategoryConnection();
+                HortConnection.TaxExemptProgramCategory = HortCat;
+                Cats.Add(HortConnection);
+            }
+            if( OldEntity.eProgFCS == true ){
+                var FcsCat = programCategories.Where( c => c.Name == "FCS").FirstOrDefault();
+                var FcsConnection = new TaxExemptProgramCategoryConnection();
+                FcsConnection.TaxExemptProgramCategory = FcsCat;
+                Cats.Add(FcsConnection);
+            }
+            if( OldEntity.eProg4HYD == true ){
+                var HydCat = programCategories.Where( c => c.Name == "4-HYD").FirstOrDefault();
+                var HydConnection = new TaxExemptProgramCategoryConnection();
+                HydConnection.TaxExemptProgramCategory = HydCat;
+                Cats.Add(HydConnection);
+            }
+            if( OldEntity.eProgCED == true ){
+                var CedCat = programCategories.Where( c => c.Name == "CED").FirstOrDefault();
+                var CedConnection = new TaxExemptProgramCategoryConnection();
+                CedConnection.TaxExemptProgramCategory = CedCat;
+                Cats.Add(CedConnection);
+            }
+            if( OldEntity.eProgFA == true ){
+                var FaCat = programCategories.Where( c => c.Name == "FA").FirstOrDefault();
+                var FaConnection = new TaxExemptProgramCategoryConnection();
+                FaConnection.TaxExemptProgramCategory = FaCat;
+                Cats.Add(FaConnection);
+            }
+            
+            return Cats;
         }
 
 
