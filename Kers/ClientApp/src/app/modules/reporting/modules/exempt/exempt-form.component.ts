@@ -17,9 +17,6 @@ import { number } from 'echarts';
 })
 export class ExemptFormComponent implements OnInit {
   
-
-  countyEvent = false;
-
   @Input()exempt:TaxExempt;
 
   ExemptForm:any;
