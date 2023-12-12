@@ -182,33 +182,52 @@ namespace Kers.Controllers
                 nE.UnitId = unit != null ? unit.Id : 0;
                 nE.LegacyId = oE.rID;
                 nE.ById = FindUserId(oE);
-                nE.Ein = oE.eID;
-                nE.BankName = oE.eBankName;
-                nE.BankAccountName = oE.eBankAcct;
+                nE.Ein = oE.eID == "NULL" ? "" : oE.eID;
+                nE.BankName = oE.eBankName == "NULL" ? "" : oE.eBankName;
+                nE.BankAccountName = oE.eBankAcct == "NULL" ? "" : oE.eBankAcct;
                 nE.TaxExemptProgramCategories = this.FindProgramCategories( oE, ProgramCategores);
-                nE.DonorsReceivedAck = oE.DonorsReceivedAck;
-                nE.HandledId = oE.eTaxStatusDerivedFromID??1;
-                nE.DistrictName = oE.eTaxExemptSrcExtDist_DistName;
-                nE.DistrictEin = oE.eTaxExemptSrcExtDist_EIN;
-                nE.OrganizationName = oE.eTaxExemptSrc501c_orgName;
-                nE.OrganizationEin = oE.ein501c;
+                nE.DonorsReceivedAck = oE.DonorsReceivedAck == "NULL" ? "" : oE.DonorsReceivedAck;
+                nE.HandledId = oE.eTaxExemptSrcFundsHandledID??1;
+                nE.DistrictName = oE.eTaxExemptSrcExtDist_DistName == "NULL" ? "" : oE.eTaxExemptSrcExtDist_DistName;
+                nE.DistrictEin = oE.eTaxExemptSrcExtDist_EIN == "NULL" ? "" : oE.eTaxExemptSrcExtDist_EIN;
+                nE.OrganizationName = oE.eTaxExemptSrc501c_orgName == "NULL" ? "" : oE.eTaxExemptSrc501c_orgName;
+                nE.OrganizationEin = oE.ein501c == "NULL" ? "" : oE.ein501c;
                 nE.OrganizationResidesId = this.FindResides(oE, PlanningUnits, oPlanningUnits);
-                nE.AnnBudget = oE.dtDocAnnBudget;
-                nE.AnnFinancialRpt = oE.dtDocAnnFinancialRpt;
-                nE.AnnAuditRpt = oE.dtDocAnnAuditRpt;
-                nE.AnnInvRpt = oE.dtDocAnnInvRpt;
-                nE.OrganizationLetterDate = oE.dtDocIRSLOD;
-                nE.OrganizationSignedDate = oE.dtDocMOU;
-                nE.OrganizationAppropriate = oE.dtDocIRS990;
+                nE.AnnBudget = oE.dtDocAnnBudget == "NULL" ? "" : oE.dtDocAnnBudget;
+                nE.AnnFinancialRpt = oE.dtDocAnnFinancialRpt == "NULL" ? "" : oE.dtDocAnnFinancialRpt;
+                nE.AnnAuditRpt = oE.dtDocAnnAuditRpt == "NULL" ? "" : oE.dtDocAnnAuditRpt;
+                nE.AnnInvRpt = oE.dtDocAnnInvRpt == "NULL" ? "" : oE.dtDocAnnInvRpt;
+                nE.OrganizationLetterDate = oE.dtDocIRSLOD == "NULL" ? "" : oE.dtDocIRSLOD;
+                nE.OrganizationSignedDate = oE.dtDocMOU == "NULL" ? "" : oE.dtDocMOU;
+                nE.OrganizationAppropriate = oE.dtDocIRS990 == "NULL" ? "" : oE.dtDocIRS990;
                 var year = FinancialYears.Where( y => y.Name == oE.eFinancialYear ).FirstOrDefault();
                 nE.TaxExemptFinancialYearId = year == null ? 1 : year.Id;
                 nE.Created = nE.Updated = oE.rDT;
+                nE.Areas = GeographicAreas(oE, PlanningUnits, oPlanningUnits);
                 this._context.Add(nE);
             }
             this._context.SaveChanges();
             return new OkObjectResult(oEnt);
         }
 
+
+        private List<TaxExemptArea> GeographicAreas(zCesTaxExemptEntity OldEntity, List<PlanningUnit> Units, List<zzPlanningUnit> oUnits){
+            var areas = new List<TaxExemptArea>();
+            var representations = OldEntity.eEntityGeoRepresentFIPs;
+            var countyIds = representations.Split(", ");
+            foreach( var countyId in countyIds){
+                var oUnit = oUnits.Where( u => u.planningUnitID == countyId).FirstOrDefault();
+                if(oUnit != null){
+                    var unit = Units.Where( n => n.Name == oUnit.planningUnitName).FirstOrDefault();
+                    if(unit != null ){
+                        var area = new TaxExemptArea();
+                        area.UnitId = unit.Id;
+                        areas.Add(area);
+                    }
+                }
+            }
+            return areas;
+        }
         private PlanningUnit FindUnit(zCesTaxExemptEntity OldEntity, List<PlanningUnit> Units, List<zzPlanningUnit> oUnits){
             var oUnit = oUnits.Where( u => u.planningUnitID == OldEntity.planningUnitID).FirstOrDefault();
             return Units.Where( n => n.Name == oUnit.planningUnitName).FirstOrDefault();
