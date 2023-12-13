@@ -167,8 +167,8 @@ namespace Kers.Controllers
         [HttpGet("migrate")]
         public async Task<IActionResult> Migrate( ){
             var entities = this._context.TaxExempt.ToList();
-            var oldEntries = this._reportingContext.zCesTaxExemptEntity.Where( e => e.planningUnitID == "21067");
-            var oEnt = await oldEntries.Where( e => !entities.Select( n => n.LegacyId).Contains(e.rID) ).Take(1).ToListAsync();
+            var oldEntries = this._reportingContext.zCesTaxExemptEntity;
+            var oEnt = await oldEntries.Where( e => !entities.Select( n => n.LegacyId).Contains(e.rID) ).Take(20).ToListAsync();
             var PlanningUnits = await this._context.PlanningUnit.ToListAsync();
             var FinancialYears = await this._context.TaxExemptFinancialYear.ToListAsync();
             var oPlanningUnits = await this._mainContext.zzPlanningUnits.ToListAsync();
