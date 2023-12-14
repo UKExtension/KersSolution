@@ -126,7 +126,7 @@ namespace Kers.Controllers
 						runningY += lineHight;
 						pdfCanvas.DrawText("Counties represented by this entity:", positionX, runningY, getPaint(7.5f));
 						var counties = exempt.Areas.OrderBy( c => c.Unit.order).Select( c => c.Unit.Name.Substring(0, c.Unit.Name.Length - 11)).ToList();
-						counties.Insert(0, exempt.Unit.Name.Substring( 0, exempt.Unit.Name.Length - 11) );
+						//counties.Insert(0, exempt.Unit.Name.Substring( 0, exempt.Unit.Name.Length - 11) );
 						pdfCanvas.DrawText(string.Join(", ", counties), secondRowX, runningY, getPaint(7.5f, 1));
 						pdfCanvas.DrawLine(margin, runningY + lineOffset, margin + trainingsTableLines[5], runningY + lineOffset, thinLinePaint);
 						runningY += lineHight;
@@ -181,11 +181,11 @@ namespace Kers.Controllers
 							pdfCanvas.DrawLine(margin, runningY + lineOffset, margin + trainingsTableLines[5], runningY + lineOffset, thickLinePaint);
 							runningY += lineHight;
 							pdfCanvas.DrawText("Name of 501(c) organization:", positionX, runningY, getPaint(7.5f));
-							pdfCanvas.DrawText(exempt.OrganizationName, secondRowX, runningY, getPaint(7.5f, 1));
+							pdfCanvas.DrawText(exempt.OrganizationName??"", secondRowX, runningY, getPaint(7.5f, 1));
 							pdfCanvas.DrawLine(margin, runningY + lineOffset, margin + trainingsTableLines[5], runningY + lineOffset, thinLinePaint);
 							runningY += lineHight;
 							pdfCanvas.DrawText("EIN of the 501(c):", positionX, runningY, getPaint(7.5f));
-							pdfCanvas.DrawText(exempt.OrganizationEin, secondRowX, runningY, getPaint(7.5f, 1));
+							pdfCanvas.DrawText(exempt.OrganizationEin??"", secondRowX, runningY, getPaint(7.5f, 1));
 							pdfCanvas.DrawLine(margin, runningY + lineOffset, margin + trainingsTableLines[5], runningY + lineOffset, thinLinePaint);
 							runningY += lineHight;
 							pdfCanvas.DrawText("County where the 501(c) resides:", positionX, runningY, getPaint(7.5f));

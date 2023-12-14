@@ -76,7 +76,7 @@ namespace Kers.Controllers
                                 .Include( a => a.TaxExemptProgramCategories).ThenInclude( c => c.TaxExemptProgramCategory)
                                 .Include( a => a.TaxExemptFinancialYear)
                                 .Include( a => a.Areas).ThenInclude( r => r.Unit)
-                                .OrderByDescending(r => r.Created);
+                                .OrderByDescending(r => r.Updated);
             return new OkObjectResult(await yrs.ToListAsync());
         }
 
