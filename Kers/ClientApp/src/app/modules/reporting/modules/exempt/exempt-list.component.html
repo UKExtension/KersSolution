@@ -1,0 +1,22 @@
+<div>
+    <div class="text-right">
+        <a class="btn btn-info btn-xs" *ngIf="!newExempt" (click)="newExempt=!newExempt">+ new tax exempt entity</a>
+    </div>
+    <exempt-form *ngIf="newExempt" (onFormCancel)="newExempt=!newExempt" (onFormSubmit)="onExemptUpdate()"></exempt-form>
+</div>
+<div *ngIf="exempts$">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Entity Name</th>
+            <th>CES Program Area(s)</th>
+            <th>Record Last Updated</th>
+            <th>Financial Year</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+              <tr *ngFor="let exempt of exempts$ | async" [exempt-list-detail]="exempt" (onExemptUpdated)="onExemptUpdate()" (onExemptDeleted)="onExemptUpdate()" ></tr>
+        </tbody>               
+    </table>            
+</div>

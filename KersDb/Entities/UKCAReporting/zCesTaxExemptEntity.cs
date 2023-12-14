@@ -12,7 +12,6 @@ namespace Kers.Models.Entities.UKCAReporting
         [Column(Order = 0)]
         public int rID { get; set; }
 
-        [Key]
         [Column(Order = 1)]
         public DateTime rDT { get; set; }
 

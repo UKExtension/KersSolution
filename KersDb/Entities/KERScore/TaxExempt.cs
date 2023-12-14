@@ -11,7 +11,9 @@ namespace Kers.Models.Entities.KERScore
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public KersUser By {get;set;}
+        public int ById {get;set;}
         public PlanningUnit Unit {get;set;}
+        public int UnitId {get;set;}
         public string Name {get;set;}
         public string Ein {get;set;}
         public string BankName {get;set;}
@@ -29,7 +31,7 @@ namespace Kers.Models.Entities.KERScore
         public List<TaxExemptArea> Areas {get;set;}
         public TaxExemptFinancialYear TaxExemptFinancialYear {get;set;}
         public int? TaxExemptFinancialYearId {get;set;}
-        public List<TaxExemptProgramCategory> TaxExemptProgramCategories {get;set;}
+        public List<TaxExemptProgramCategoryConnection> TaxExemptProgramCategories {get;set;}
         public int HandledId {get;set;}
         public TaxExemptFundsHandled Handled {get;set;}
 
@@ -46,5 +48,6 @@ namespace Kers.Models.Entities.KERScore
         public string OrganizationAppropriate {get;set;}
         public DateTime Created {get;set;}
         public DateTime Updated {get;set;}
+        public int LegacyId {get;set;}
     }
 }

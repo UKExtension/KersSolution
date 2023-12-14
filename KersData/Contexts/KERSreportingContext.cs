@@ -31,6 +31,9 @@ namespace Kers.Models.Contexts
         public virtual DbSet<zInServiceTrainingEnrollment> zInServiceTrainingEnrollment {get;set;}
         public virtual DbSet<zCesEvent> zCesEvent {get;set;}
         public virtual DbSet<zCesCountyEvent> zCesCountyEvent {get; set;}
+        public virtual DbSet<zCesTaxExemptEntity> zCesTaxExemptEntity {get;set;}
+        public virtual DbSet<zCesTaxExemptHowFundsHandledLookup> zCesTaxExemptHowFundsHandledLookup {get;set;}
+        public virtual DbSet<zCesTaxExemptFinancialYearLookup> zCesTaxExemptFinancialYearLookup {get;set;}
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

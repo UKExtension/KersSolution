@@ -151,11 +151,13 @@ const reportingRoutes: Routes = [
             path: '',
             component: ReportingWidgetsComponent
           },
+          { path: 'exempt', loadChildren: () => import('./modules/exempt/exempt.module').then(m => m.ExemptModule) },
           { path: 'help', loadChildren: () => import('./modules/help/help.module').then(m => m.HelpModule) }
         ]
       }
     ]
   },
+  
   
   
 ];

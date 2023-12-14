@@ -94,7 +94,6 @@ export class CountyEventFormComponent implements OnInit {
 
   ngOnInit() {
     if(this.countyEvent){
-      console.log( this.countyEvent);
       this.countyEventForm.patchValue(this.countyEvent);
       var start = new Date( this.countyEvent.start);
       this.countyEventForm.patchValue({
