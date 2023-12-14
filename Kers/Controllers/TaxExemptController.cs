@@ -163,7 +163,7 @@ namespace Kers.Controllers
                 return new StatusCodeResult(500);
             }
         }
-
+/*
         [HttpGet("migrate")]
         public async Task<IActionResult> Migrate( ){
             var entities = this._context.TaxExempt.ToList();
@@ -181,7 +181,7 @@ namespace Kers.Controllers
                 var unit = this.FindUnit(oE, PlanningUnits, oPlanningUnits);
                 nE.UnitId = unit != null ? unit.Id : 0;
                 nE.LegacyId = oE.rID;
-                nE.ById = FindUserId(oE);
+                nE.ById = FindUserId(oE)??2;
                 nE.Ein = oE.eID == "NULL" ? "" : oE.eID;
                 nE.BankName = oE.eBankName == "NULL" ? "" : oE.eBankName;
                 nE.BankAccountName = oE.eBankAcct == "NULL" ? "" : oE.eBankAcct;
@@ -214,6 +214,7 @@ namespace Kers.Controllers
         private List<TaxExemptArea> GeographicAreas(zCesTaxExemptEntity OldEntity, List<PlanningUnit> Units, List<zzPlanningUnit> oUnits){
             var areas = new List<TaxExemptArea>();
             var representations = OldEntity.eEntityGeoRepresentFIPs;
+            if( representations == null ) return areas;
             var countyIds = representations.Split(", ");
             foreach( var countyId in countyIds){
                 var oUnit = oUnits.Where( u => u.planningUnitID == countyId).FirstOrDefault();
@@ -240,9 +241,9 @@ namespace Kers.Controllers
             return unit == null ? null : unit.Id;
         }
 
-        private int FindUserId(zCesTaxExemptEntity OldEntity){
+        private int? FindUserId(zCesTaxExemptEntity OldEntity){
             var user = this._context.KersUser.Where( u => u.RprtngProfile.PersonId == OldEntity.rBY).FirstOrDefault();
-            return user == null ? 0 : user.Id;
+            return user == null ? null : user.Id;
         }
         
         private List<TaxExemptProgramCategoryConnection> FindProgramCategories( zCesTaxExemptEntity OldEntity, List<TaxExemptProgramCategory> programCategories){
@@ -288,88 +289,9 @@ namespace Kers.Controllers
         }
 
 
+*/
 
 
-
-/* 
-[HttpPost()]
-        [Authorize]
-        public IActionResult AddStory( [FromBody] StoryRevision story){
-            
-            if(story != null){
-
-                
-                var user = this.CurrentUser();
-                var str = new Story();
-                str.KersUser = user;
-                str.Created = DateTime.Now;
-                str.Updated = DateTime.Now;
-                str.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
-                story.Created = DateTime.Now;
-                story.MajorProgram = this.context.MajorProgram.Where( m => m.Id == story.MajorProgramId)
-                                            .Include(m => m.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
-                                            .FirstOrDefault();
-                str.MajorProgramId = story.MajorProgramId;
-                str.Revisions = new List<StoryRevision>();
-                str.Revisions.Add(story);
-                str.HasImages = story.StoryImages.Count > 0;
-                context.Add(str); 
-                this.Log(str,"Story", "Success Story Added.");
-                context.SaveChanges();
-                return new OkObjectResult(story);
-            }else{
-                this.Log( story ,"StoryRevision", "Not Found Success Story in an adding attempt.", "Success Story", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
-
-
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateStory( int id, [FromBody] StoryRevision story){
-            var entity = context.StoryRevision.Find(id);
-            var stEntity = context.Story.Find(entity.StoryId);
-
-            if(story != null && stEntity != null){
-                story.Created = DateTime.Now;
-                story.MajorProgram = this.context.MajorProgram.Where( m => m.Id == story.MajorProgramId)
-                                            .Include(m => m.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
-                                            .FirstOrDefault();
-                stEntity.MajorProgramId = story.MajorProgramId;
-                stEntity.HasImages = story.StoryImages.Count > 0;
-                stEntity.Revisions.Add(story);
-                stEntity.Updated = DateTime.Now;
-                context.SaveChanges();
-                this.Log( story ,"StoryRevision", "Success Story Updated.");
-                return new OkObjectResult(story);
-            }else{
-                this.Log( story ,"StoryRevision", "Not Found Success Story in an update attempt.", "Success Story", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteStory( int id ){
-            var entity = context.StoryRevision.Find(id);
-            var acEntity = context.Story.Where(a => a.Id == entity.StoryId).
-                                Include(e=>e.Revisions).
-                                FirstOrDefault();
-            
-            if(acEntity != null){
-                
-                context.Story.Remove(acEntity);
-                context.SaveChanges();
-                
-                this.Log(acEntity,"SuccessStory", "Success Story Deleted.");
-
-                return new OkResult();
-            }else{
-                this.Log( id ,"StoryRevision", "Not Found Success Story in a delete attempt.", "Success Story", "Error");
-                return new StatusCodeResult(500);
-            }
-        }
-
- */
 
     
 
