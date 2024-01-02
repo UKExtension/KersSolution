@@ -224,7 +224,7 @@ namespace Kers.Controllers
             if( stage == null || stage.LadderStageRoles == null ) return;
             List<zEmpRoleType> roles = stage.LadderStageRoles.Select( l => l.zEmpRoleType).ToList();
             var usersWithStageRoles = this._context.zEmpProfileRoles
-                                    .Where( l => roles.Select( r => r.Id).Contains( l.zEmpRoleTypeId))
+                                    .Where( l => roles.Select( r => r.Id).Contains( l.zEmpRoleTypeId) && l.User.RprtngProfile.enabled)
                                     .Include( l => l.User )
                                         .ThenInclude( u => u.RprtngProfile)
                                         .ThenInclude( p => p.PlanningUnit)
