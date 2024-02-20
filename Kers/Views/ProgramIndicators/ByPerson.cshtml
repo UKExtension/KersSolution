@@ -1,0 +1,49 @@
+@model List<Kers.Models.Entities.KERScore.ProgramIndicatorValue>
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    
+    ViewData["Subtitle"] = "Kentucky Extension Reports";
+    var fy = ViewData["fy"] as string;
+    if( fy == "0"){
+      fy = "2023";
+    }
+    ViewData["Title"] = "Program Indicators per person for FY" + fy;
+    var ReportingCountiesPerProgram = ViewData["ReportingCountiesPerProgram"] as List<Kers.Controllers.Reports.ReportingCountiesPerProgram>;
+    var id = ViewData["id"] as int?;
+}
+
+
+<div class="text-right">
+        <a asp-controller="ProgramIndicators"  asp-action="Countylist" class="btn btn-default btn-xs"  asp-route-fy="@fy">Back to the County List</a><br>
+</div>
+
+        <table class="table">
+            <thead>
+                <th>County</th>
+                <th>Name</th>
+                <th>Major Program</th>
+                <th>Program Indicator</th>
+                <th>Value</th>
+            </thead>
+            <tbody>
+@foreach(var intv in Model){       
+    <tr>
+        <td>
+            @intv.PlanningUnit.Name
+        </td>
+        <td>
+            @intv.KersUser.RprtngProfile.Name
+        </td>
+        <td>
+            @intv.ProgramIndicator.MajorProgram.Name
+        </td>
+        <td>
+            @Html.Raw(@intv.ProgramIndicator.Question)
+        </td>
+        <td>
+            @intv.Value
+        </td>
+    </tr>      
+}
+ </tbody>
+        </table>
