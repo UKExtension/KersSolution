@@ -2,7 +2,7 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = "Success Story";
-    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    ViewData["Subtitle"] = Model.Title;
     var fy = ViewData["fy"] as string;
     var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
 }
