@@ -368,7 +368,7 @@ namespace Kers.Controllers.Soil
         {
             var exists = false;
             var sNum = SampleNumber.CoSamNum.PadLeft(5, '0');
-            var dateToCompare = DateTime.Now.AddDays(-200);
+            var dateToCompare = DateTime.Now.AddDays(-100);
             CountyCode CountyCode = this.CurrentCountyCode();
             exists = _context.SoilReportBundle
                         .Where(
