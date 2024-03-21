@@ -10,8 +10,12 @@ const routes: Routes = [
     path:'',
     component: DemoComponent,
     children:[{
+      path: 'story/:id',
+      component: StoryDemoComponent,
+    },
+    {
       path: 'story',
-      component: StoryDemoComponent
+      component: StoryDemoComponent,
     },
     {
       path: 'indicators',

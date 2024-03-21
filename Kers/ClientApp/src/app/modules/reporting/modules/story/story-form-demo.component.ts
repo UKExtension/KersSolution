@@ -18,6 +18,7 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 export class StoryFormDemoComponent implements OnInit{ 
 
     @Input() story = null;
+    @Input() help_sections = 1;
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<Story>();

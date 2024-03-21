@@ -6,7 +6,8 @@
 <fiscal-year-switcher *ngIf="fiscalYearSwitcher" [initially]="'previous'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
 <loading *ngIf="loading"></loading>
 <div class="row" *ngIf="!loading">
-    <div><reporting-display-help id="4"></reporting-display-help></div>
+    <div *ngIf="help_sections == 1"><reporting-display-help id="25"></reporting-display-help></div>
+    <div *ngIf="help_sections != 1"><reporting-display-help id="26"></reporting-display-help></div>
     <div class="col-sm-offset-3 col-sm-9">
         <h2 *ngIf="!story">New Success Story <span *ngIf="fiscalYear"> for FY{{fiscalYear.name}}</span></h2>
         <h2 *ngIf="story">Edit Success Story</h2><br>
@@ -78,7 +79,7 @@
                 
             
         </div>
-        <div class="form-group" *ngIf="indicators != null && indicators.length > 0">
+        <div class="form-group" *ngIf="false">
             <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Related Program Indicators:</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <div *ngFor="let indicator of indicators">
@@ -111,7 +112,8 @@
         </div>
          
         <div class="form-group" *ngIf="editorOptionsLoaded">
-            <div><reporting-display-help id="23"></reporting-display-help></div>
+            <div *ngIf="help_sections == 1"><reporting-display-help id="23"></reporting-display-help></div>
+            <div *ngIf="help_sections != 1"><reporting-display-help id="24"></reporting-display-help></div>
             <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12">Success Story:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!storyForm.controls.story.valid">
                 <textarea [froalaEditor]="options" class="form-control col-xs-12">
