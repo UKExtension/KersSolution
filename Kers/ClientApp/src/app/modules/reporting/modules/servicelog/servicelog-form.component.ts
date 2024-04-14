@@ -11,6 +11,7 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
 import {Location} from '@angular/common';
 import { UserService, User } from '../user/user.service';
 import { SignupService } from '../signup/signup.service';
+import { ExtensionEventLocation } from '../events/extension-event';
 
 
 @Component({
@@ -46,6 +47,11 @@ export class ServicelogFormComponent implements OnInit{
 
     fiscalYear:FiscalYear;
     currentUser:User;
+
+
+
+    snapDirectLoc:ExtensionEventLocation;
+    snapDirectlocationBrowser:boolean = true;
 
     snapEligable = false;
     hasIndirect = false;
@@ -123,6 +129,11 @@ export class ServicelogFormComponent implements OnInit{
         
 
 
+    }
+
+    locationSelected(event:any){
+        this.snapDirectLoc = <ExtensionEventLocation> event.extensionEventLocation;
+        this.snapDirectlocationBrowser = false;
     }
 
     ngOnInit(){

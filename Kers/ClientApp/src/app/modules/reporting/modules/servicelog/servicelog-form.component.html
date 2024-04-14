@@ -200,13 +200,59 @@
                                     <option *ngFor="let site of snapdirectdeliverysite | async" [value]="site.id">{{site.name}}</option>
                                 </select>
                             </div>
-                        </div>    
+                        </div>  <br><br><br><br>--------------------------------------------------------------------------------------------------------   Option A --------------------------<br><br>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Name:</label>
                             <div class="col-md-9 col-sm-9 col-xs-12">
                                     <input type="text" [class.snapError]="activityForm.hasError('nospecificSite')" name="siteName" id="siteName" formControlName="siteName" class="form-control col-md-7 col-xs-12">
+                                    
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Address:</label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                    <input type="text" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site City:</label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                    <input type="text" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site State:</label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                    <input type="text" value="KY" class="form-control col-md-4 col-xs-6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Zip Code:</label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                    <input type="text" class="form-control col-md-4 col-xs-6">
+                            </div>
+                        </div><br><br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--------------------------------------------------------------------------------------------------------   Option B --------------------------<br><br>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Address:</label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                                <div *ngIf="snapDirectlocationBrowser" style="padding: 10px;">
+                                    <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
+                                </div>
+                                <div *ngIf="!snapDirectlocationBrowser && snapDirectLoc!=null" style="padding: 10px;">
+                                    <h5>{{snapDirectLoc.address.building}}<strong *ngIf="snapDirectLoc.displayName != null && snapDirectLoc.displayName != ''"> ({{snapDirectLoc.displayName}})</strong></h5>
+                                    <h5>{{snapDirectLoc.address.street}}</h5>
+                                    <h5>{{snapDirectLoc.address.city}} {{snapDirectLoc.address.state != ""?", "+snapDirectLoc.address.state:""}} {{snapDirectLoc.address.postalCode}}</h5>
+                                    <a (click)="snapDirectlocationBrowser = true" class="btn btn-info btn-xs">change</a>
+                                    
+                                </div>
+
+
+
+                                   
+                            </div>
+                        </div>
+                        <br><br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----------------------------------------------------------------------------------------------------------------------------------<br><br>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="snapDirectSessionTypeId">Session Type: </label>
                             <div class="col-md-9 col-sm-9 col-xs-12">

@@ -26,6 +26,7 @@ import { ServicelogSnapedStatsRowComponent } from './snap-ed/servicelog-snaped-s
 import { ActivityModule } from '../activity/activity.module';
 import { SnapEdModule } from '../snap-ed/snap-ed.module';
 import { SignupModule } from '../signup/signup.module';
+import { LocationModule } from '../events/location/location.module';
 
 
 
@@ -35,7 +36,8 @@ import { SignupModule } from '../signup/signup.module';
                   ServicelogRoutingModule,
                   ActivityModule,
                   SnapEdModule,
-                  SignupModule
+                  SignupModule,
+                  LocationModule
                 ],
   declarations: [ 
                     ServicelogHomeComponent,
