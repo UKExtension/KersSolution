@@ -200,42 +200,9 @@
                                     <option *ngFor="let site of snapdirectdeliverysite | async" [value]="site.id">{{site.name}}</option>
                                 </select>
                             </div>
-                        </div>  <br><br><br><br>--------------------------------------------------------------------------------------------------------   Option A --------------------------<br><br>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Name:</label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                    <input type="text" [class.snapError]="activityForm.hasError('nospecificSite')" name="siteName" id="siteName" formControlName="siteName" class="form-control col-md-7 col-xs-12">
-                                    
-                            </div>
-                        </div>
-                        <div class="form-group">
+                        </div>  <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Address:</label>
                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                    <input type="text" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site City:</label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                    <input type="text" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site State:</label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                    <input type="text" value="KY" class="form-control col-md-4 col-xs-6">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Zip Code:</label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                    <input type="text" class="form-control col-md-4 col-xs-6">
-                            </div>
-                        </div><br><br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--------------------------------------------------------------------------------------------------------   Option B --------------------------<br><br>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Address:</label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-
                                 <div *ngIf="snapDirectlocationBrowser" style="padding: 10px;">
                                     <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
                                 </div>
@@ -245,15 +212,10 @@
                                     <h5>{{snapDirectLoc.address.city}} {{snapDirectLoc.address.state != ""?", "+snapDirectLoc.address.state:""}} {{snapDirectLoc.address.postalCode}}</h5>
                                     <a (click)="snapDirectlocationBrowser = true" class="btn btn-info btn-xs">change</a>
                                     
-                                </div>
-
-
-
-                                   
+                                </div>  
                             </div>
-                        </div>
-                        <br><br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----------------------------------------------------------------------------------------------------------------------------------<br><br>
-                        <div class="form-group">
+                      </div>
+                      <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="snapDirectSessionTypeId">Session Type: </label>
                             <div class="col-md-9 col-sm-9 col-xs-12">
                                 <select name="snapDirectSessionTypeId" [class.snapError]="activityForm.hasError('nosession')" id="snapDirectSessionTypeId" formControlName="snapDirectSessionTypeId" class="form-control col-md-7 col-xs-12" >
@@ -328,36 +290,7 @@
                         </div>
                     </div>
                 </div>
-        </div>
-<!--
-        <div [hidden]="!snapEligable || !( hasIndirect || (numParticipants() > 0) ) || isAdmin">
-            <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="snapCopies">Printed Paper Copies for this Activity:</label>
-                <div class="col-md-5 col-sm-8 col-xs-10">
-                    
-                    <div class="row">
-                        <div class="col-sm-6">
-                            Color:<br>
-                            <input type="number" name="snapCopies" id="snapCopies" formControlName="snapCopies" class="form-control col-md-7 col-xs-12">
-                        </div>
-                        <div class="col-sm-6">
-                            Black and White:<br>
-                            <input type="number" name="snapCopiesBW" id="snapCopiesBW" formControlName="snapCopiesBW" class="form-control col-md-7 col-xs-12">
-                        </div>
-                    </div>
-                    
-                    <input type="number" name="snapCopies" id="snapCopies" formControlName="snapCopies" class="form-control col-md-7 col-xs-12"><br>
-                    
-                        <small>*Only enter if requesting to be reimbursed from SNAP-Ed funds.<br>(Current rate = $0.20 a page)</small>
-
-                        
-                </div>
-            </div>
-        </div>
--->
-<!--
-        <p>Form value: {{ activityForm.value | json }}</p>
--->      
+        </div>   
         <div *ngIf="attendiesOpen">
             <div class="ln_solid"></div>
             <div class="text-right">
