@@ -6,12 +6,13 @@ import {    ActivityOption, ActivityOptionNumber,
         } from '../activity/activity.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from 'rxjs';
-import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectDeliverySite, SnapIndirectReached, SnapDirectSessionLength } from "./servicelog.service";
+import { ServicelogService, Servicelog, SnapDirectSessionType, SnapDirectDeliverySite, SnapIndirectReached, SnapDirectSessionLength, SnapIndirectAudienceTargeted } from "./servicelog.service";
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import {Location} from '@angular/common';
 import { UserService, User } from '../user/user.service';
 import { SignupService } from '../signup/signup.service';
 import { ExtensionEventLocation } from '../events/extension-event';
+import {ExtensionEventLocationConnection} from '../events/location/location.service';
 
 
 @Component({
@@ -51,6 +52,7 @@ export class ServicelogFormComponent implements OnInit{
 
 
     snapDirectLoc:ExtensionEventLocation;
+    snapDirectLocId:number;
     snapDirectlocationBrowser:boolean = true;
 
     snapEligable = false;
@@ -76,6 +78,7 @@ export class ServicelogFormComponent implements OnInit{
     // Snap Indirect
 
     snapindirectreached:Observable<SnapIndirectReached[]>
+    snapIndirectAudienceTargeted: Observable<SnapIndirectAudienceTargeted[]>;
 
     // Snap Policy
     snapPolicy = false;
@@ -126,14 +129,23 @@ export class ServicelogFormComponent implements OnInit{
         // Snap Indirect
 
         this.snapindirectreached = this.service.snapindirectreached();
+        this.snapIndirectAudienceTargeted = this.service.snapIndirectAudienceTargeted();
         
 
 
     }
 
-    locationSelected(event:any){
-        this.snapDirectLoc = <ExtensionEventLocation> event.extensionEventLocation;
+    locationSelected(evnt:ExtensionEventLocationConnection){
+        this.snapDirectLoc = evnt.extensionEventLocation;
+        this.snapDirectLocId = evnt.extensionEventLocationId;
+        this.activityForm.controls.snapDirect.patchValue({еxtensionEventLocation:this.snapDirectLoc});
         this.snapDirectlocationBrowser = false;
+    }
+
+    locationToBeChanged(){
+        this.activityForm.controls.snapDirect.patchValue({еxtensionEventLocation:null});
+        this.snapDirectlocationBrowser = true;
+        this.snapDirectLoc = null;
     }
 
     ngOnInit(){
@@ -157,10 +169,6 @@ export class ServicelogFormComponent implements OnInit{
                             thisObject.activityImages.push(im);
                         },
                         'froalaEditor.image.beforeRemove':function (image){
-                            //var o = <ImageResponse>JSON.parse(response);
-                            //var im = <StoryImage>{uploadImageId: o.imageId}
-                            //thisObject.storyImages.push(im);
-                            //console.log(image);
                         }
                     } 
                 }
@@ -414,13 +422,15 @@ export class ServicelogFormComponent implements OnInit{
                 snapDirect: this.fb.group({
                         siteName: [""],
                         snapDirectDeliverySiteId: [""],
+                        еxtensionEventLocation: [""],
                         snapDirectSessionTypeId: [""],
                         snapDirectSessionLengthId: [""],
                         snapDirectAgesAudienceValues:[[]]
                 }),
                 snapIndirect: this.fb.group({
                     snapIndirectMethodSelections:[[]],
-                    snapIndirectReachedValues:[[]]
+                    snapIndirectReachedValues:[[]],
+                    snapIndirectAudienceTargetedId:[""]
                 }),
                 snapPolicy: this.fb.group({
                     purpose: "",
@@ -435,8 +445,6 @@ export class ServicelogFormComponent implements OnInit{
         );
         this.myDatePickerOptions.disableSince = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() + 1};
         this.myDatePickerOptions.disableUntil = {year: 2023, month: 6, day: 30};
-        //this.myDatePickerOptions.editableDateField = false;
-        //this.myDatePickerOptions.showClearDateBtn = false;
         
         
         if(this.isNewDirect || this.isNewIndirect){
@@ -462,17 +470,7 @@ export class ServicelogFormComponent implements OnInit{
 
             if(this.activityDate != null){
                 this.activityForm.patchValue({activityDate: {
-                    
                         isRange: false, singleDate: {jsDate: this.activityDate}
-
-/* 
-date: { 
-                        year: this.activityDate.getFullYear(),
-                        month: this.activityDate.getMonth() + 1,
-                        day: this.activityDate.getDate()}
- */
-
-
                     }});
             }
 
@@ -528,24 +526,19 @@ date: {
         
         this.activityForm.patchValue({activityOptionSelections:opArray});
         this.activityForm.patchValue({activityDate: 
-            
-            
             {
                 isRange: false, singleDate: {jsDate: date}
-               
-               /* 
-                date: {
-                    year: date.getFullYear(),
-                    month: date.getMonth() + 1,
-                    day: date.getDate()}
-
-
- */
-
-                }});
+            }});
         if(this.activity.isSnap){
             this.snapEligable = true;
-
+            if(this.activity.snapDirect){
+                if(this.activity.snapDirect.extensionEventLocation){
+                    this.snapDirectLoc = this.activity.snapDirect.extensionEventLocation;
+                    this.snapDirectLocId = this.activity.snapDirect.еxtensionEventLocationId;
+                    this.activityForm.controls.snapDirect.patchValue({еxtensionEventLocation:this.snapDirectLoc});
+                    this.snapDirectlocationBrowser = false;
+                }
+            }
         }
         
         if(this.activity.activityOptionNumbers.filter(n => n.activityOptionNumberId == 3)[0].value > 0){
@@ -565,14 +558,8 @@ date: {
         this.logLoading = true;
         var dateValue = this.activityForm.value.activityDate.singleDate.jsDate;
         var d = new Date(Date.UTC(dateValue.getFullYear(), dateValue.getMonth(), dateValue.getDate(), 8, 5, 12));
-        /*
-        d.setMonth(dateValue.month - 1);
-        d.setDate(dateValue.day);
-        d.setFullYear(dateValue.year);
-        */
         var val = this.activityForm.value;
         val.activityDate = d;
-
         var actOpt = val.activityOptionSelections;
         val.activityOptionSelections = actOpt.filter(x => x.selected).map(x => { return { activityOptionId: x.activityOptionId }; });
         
@@ -591,6 +578,9 @@ date: {
             }else{
                 val.snapAdmin = false;
             }
+            if(val.snapDirect != undefined){
+                val.snapDirect.extensionEventLocation = this.snapDirectLoc;
+            }
         }else{
             this.isAdmin = false;
             val.snapAdmin = false;
@@ -604,7 +594,6 @@ date: {
                 }
             );
         }else{
-            
             
             if(val.isSnap){
                 if(val.snapAdmin){
@@ -762,73 +751,63 @@ export const snapValidator = (control: AbstractControl): {[key: string]: boolean
     if (isSnap.value === false) return null;
     let male = control.get('male');
     let female = control.get('female');
-
-    if(parseInt(male.value) + parseInt(female.value) <= 0 ){
-        return null;
-    }
-
-    if(control.get('snapAdmin').value) return null;
-
-    if(control.get('isPolicy').value){
-
-        let purpose = control.get('snapPolicy').get('purpose');
-        let result = control.get('snapPolicy').get('result');
-        if(!purpose.value && !result.value){
-            return { nopurpose: true, noresult: true };
-        }else if(!purpose.value){
-            return { nopurpose: true };
-        }else if(!result.value){
-            return { noresult: true };
-        }
-
-        return null;
-    }
-
-
-    let site = control.get('snapDirect').get('snapDirectDeliverySiteId');
-    let session = control.get('snapDirect').get('snapDirectSessionTypeId');
-    let length = control.get('snapDirect').get('snapDirectSessionLengthId');
-    let specificSite = control.get('snapDirect').get('siteName');
-
     var error = {};
     var hasError = false;
+    if(control.get('activityOptionNumbers').value.filter(n => n.activityOptionNumberId == 3)[0].value > 0) {
+        if(control.get('snapAdmin').value) return null;
+        let audienceTargeted = control.get('snapIndirect').get('snapIndirectAudienceTargetedId');
+        if(audienceTargeted.value == ""){
+            error["audienceTargeted"] = true;
+            hasError = true;
+        }
+    }
+   
+    if(parseInt(male.value) + parseInt(female.value) > 0 ){
+       
 
-    if(!site.value){
-        error["nosite"] = true;
-        hasError = true;
-    }
-    if(!session.value){
-        error["nosession"] = true;
-        hasError = true;
-    }
-    if(!length.value){
-        error["nolength"] = true;
-        hasError = true;
-    }
-    if(!specificSite.value){
-        error["nospecificSite"] = true;
-        hasError = true;
-    }
-    if(hasError) return error;
+        if(control.get('snapAdmin').value) return null;
+
+        if(control.get('isPolicy').value){
+
+            let purpose = control.get('snapPolicy').get('purpose');
+            let result = control.get('snapPolicy').get('result');
+            if(!purpose.value && !result.value){
+                return { nopurpose: true, noresult: true };
+            }else if(!purpose.value){
+                return { nopurpose: true };
+            }else if(!result.value){
+                return { noresult: true };
+            }
+
+            return null;
+        }
 
 
-/* 
-    if(!site.value && !session.value && !specificSite.value){
-        return { nosite: true, nosession: true, nospecificSite: true };
-    }else if(!site.value && !session.value){
-        return { nosession: true, nosite: true };
-    }else if(!site.value && !specificSite.value){
-        return { nosite: true, nospecificSite: true };
-    }else if(!session.value && !specificSite.value){
-        return { nosession: true, nospecificSite: true };
-    }else if(!session.value){
-        return { nosession: true };
-    }else if(!site.value){
-        return { nosite: true };
-    }else if(!specificSite.value){
-        return { nospecificSite: true };
+        let site = control.get('snapDirect').get('snapDirectDeliverySiteId');
+        let session = control.get('snapDirect').get('snapDirectSessionTypeId');
+        let length = control.get('snapDirect').get('snapDirectSessionLengthId');
+        let specificSite = control.get('snapDirect').get('еxtensionEventLocation');
+
+        if(!site.value){
+            error["nosite"] = true;
+            hasError = true;
+        }
+        if(!session.value){
+            error["nosession"] = true;
+            hasError = true;
+        }
+        if(!length.value){
+            error["nolength"] = true;
+            hasError = true;
+        }
+
+        if(!specificSite.value){
+            error["nospecificSite"] = true;
+            hasError = true;
+        }
     }
     
- */
+    if(hasError) return error;
+
     return null;
 };

@@ -14,6 +14,8 @@ namespace Kers.Models.Entities.KERScore
         public string SiteName {get;set;}
         public int SnapDirectDeliverySiteId {get;set;}
         public SnapDirectDeliverySite SnapDirectDeliverySite {get;set;}
+        public ExtensionEventLocation ExtensionEventLocation {get; set;}
+        public int ExtensionEventLocationId {get; set;}
         public int SnapDirectSessionTypeId {get;set;}
         public SnapDirectSessionType SnapDirectSessionType {get;set;}
         public SnapDirectSessionLength SnapDirectSessionLength {get;set;}

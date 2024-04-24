@@ -200,17 +200,18 @@
                                     <option *ngFor="let site of snapdirectdeliverysite | async" [value]="site.id">{{site.name}}</option>
                                 </select>
                             </div>
-                        </div>  <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="siteName">Specific Site Address:</label>
+                        </div>  
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Specific Site Address:</label>
                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                <div *ngIf="snapDirectlocationBrowser" style="padding: 10px;">
+                                <div *ngIf="snapDirectlocationBrowser" style="padding: 10px;" [class.snapError]="snapDirectLoc==null">
                                     <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
                                 </div>
                                 <div *ngIf="!snapDirectlocationBrowser && snapDirectLoc!=null" style="padding: 10px;">
                                     <h5>{{snapDirectLoc.address.building}}<strong *ngIf="snapDirectLoc.displayName != null && snapDirectLoc.displayName != ''"> ({{snapDirectLoc.displayName}})</strong></h5>
                                     <h5>{{snapDirectLoc.address.street}}</h5>
                                     <h5>{{snapDirectLoc.address.city}} {{snapDirectLoc.address.state != ""?", "+snapDirectLoc.address.state:""}} {{snapDirectLoc.address.postalCode}}</h5>
-                                    <a (click)="snapDirectlocationBrowser = true" class="btn btn-info btn-xs">change</a>
+                                    <a (click)="locationToBeChanged()" class="btn btn-info btn-xs">change</a>
                                     
                                 </div>  
                             </div>
@@ -277,6 +278,15 @@
                         <h2>SNAP Ed Indirect Contacts Record
                             <br><br>
                         </h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="snapIndirectAudienceTargetedId">Which best describes audience targeted or messaging focus:</label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <select name="snapIndirectAudienceTargetedId" formControlName="snapIndirectAudienceTargetedId" [class.snapError]="activityForm.hasError('audienceTargeted')" class="form-control col-md-7 col-xs-12" >
+                                <option value="">--- select ---</option>
+                                <option *ngFor="let targeted of snapIndirectAudienceTargeted | async" [value]="targeted.id">{{targeted.name}}</option>                                
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" >Estimated Number Reached: </label>

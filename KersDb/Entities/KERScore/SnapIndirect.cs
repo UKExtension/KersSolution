@@ -11,6 +11,8 @@ namespace Kers.Models.Entities.KERScore
     {
         [Key]
         public int Id { get; set; }
+        public SnapIndirectAudienceTargeted SnapIndirectAudienceTargeted {get;set;}
+        public int SnapIndirectAudienceTargetedId {get;set;}
         public List<SnapIndirectMethodSelection> SnapIndirectMethodSelections {get;set;}
         public List<SnapIndirectReachedValue> SnapIndirectReachedValues {get;set;}
 

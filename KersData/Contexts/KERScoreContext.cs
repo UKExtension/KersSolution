@@ -152,6 +152,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<SnapPolicyAimedSelection> SnapPolicyAimedSelection {get;set;}
         public virtual DbSet<SnapPolicyPartner> SnapPolicyPartner {get;set;}
         public virtual DbSet<SnapPolicyPartnerValue> SnapPolicyPartnerValue {get;set;}
+        public virtual DbSet<SnapIndirectAudienceTargeted> SnapIndirectAudienceTargeted {get;set;}
         
         /***************************************/
         //  Snap Ed Budget

@@ -6,6 +6,7 @@ import { catchError, tap } from 'rxjs/operators';
 import {MajorProgram } from '../admin/programs/programs.service';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { ActivityImage } from '../activity/activity.service';
+import { ExtensionEventLocation } from '../events/extension-event';
 
 
 @Injectable()
@@ -166,6 +167,13 @@ export class ServicelogService {
         return this.http.get<SnapIndirectMethod[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('snapindirectmethod', []))
+            );
+    }
+    snapIndirectAudienceTargeted():Observable<SnapIndirectAudienceTargeted[]>{
+        var url = this.baseUrl + 'SnapIndirectAudienceTargeted';
+        return this.http.get<SnapIndirectAudienceTargeted[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('SnapIndirectAudienceTargeted', []))
             );
     }
 
@@ -344,6 +352,8 @@ export interface SnapDirect{
     siteName: string;
     snapDirectDeliverySiteId:number;
     snapDirectDeliverySite: SnapDirectDeliverySite;
+    еxtensionEventLocationId: number;
+    extensionEventLocation: ExtensionEventLocation;
     snapDirectSessionTypeId:number;
     snapDirectSessionType:SnapDirectSessionType;
     snapDirectSessionLengthId: number;
@@ -393,6 +403,7 @@ export interface SnapDirectSessionType{
 
 export interface SnapIndirect{
     id: number;
+    snapIndirectAudienceTargetedId:number;
     snapIndirectMethodSelections:SnapIndirectMethodSelection[];
     snapIndirectReachedValues:SnapIndirectReachedValue[];
 }
@@ -406,6 +417,11 @@ export interface SnapIndirectMethodSelection{
     id:number;
     snapIndirectMethodId:number;
     snapIndirectMethod:SnapIndirectMethod;
+}
+
+export interface SnapIndirectAudienceTargeted{
+    id:number;
+    name:string;
 }
 
 export interface SnapIndirectReached{

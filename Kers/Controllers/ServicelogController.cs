@@ -49,6 +49,7 @@ namespace Kers.Controllers
                                 Include(e=>e.Revisions).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAges).
+                                Include(e=>e.Revisions).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.ExtensionEventLocation).ThenInclude(r => r.Address).
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
                                 Include(e=>e.Revisions).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
@@ -98,6 +99,7 @@ namespace Kers.Controllers
                                 Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAges).
+                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.ExtensionEventLocation).ThenInclude(r => r.Address).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
@@ -175,6 +177,11 @@ namespace Kers.Controllers
                         activity.SnapDirect = null;
                     }else{
                         activity.SnapPolicy = null;
+                    }
+                    if(activity.SnapDirect != null){
+                        if(activity.SnapDirect.ExtensionEventLocation != null){
+                            activity.SnapDirect.ExtensionEventLocation.Id = 0;
+                        }
                     }
                 }
                 activity.RaceEthnicityValues = activity.RaceEthnicityValues.Where( a => a.Amount != 0).ToList();
@@ -515,6 +522,11 @@ namespace Kers.Controllers
         [HttpGet("snapindirectmethod")]
         public IActionResult SnapIndirectMethod(){
             var sst = this.context.SnapIndirectMethod.Where(o => o.Active).OrderBy(o => o.order);
+            return new OkObjectResult(sst);
+        }
+        [HttpGet("SnapIndirectAudienceTargeted")]
+        public IActionResult SnapIndirectAudienceTargeted(){
+            var sst = this.context.SnapIndirectAudienceTargeted.Where(o => o.Active).OrderBy(o => o.order);
             return new OkObjectResult(sst);
         }
         [HttpGet("snapindirectreached")]
