@@ -170,7 +170,7 @@ export class ServicelogService {
             );
     }
     snapIndirectAudienceTargeted():Observable<SnapIndirectAudienceTargeted[]>{
-        var url = this.baseUrl + 'SnapIndirectAudienceTargeted';
+        var url = this.baseUrl + 'snapindirectaudiencetargeted';
         return this.http.get<SnapIndirectAudienceTargeted[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('SnapIndirectAudienceTargeted', []))
