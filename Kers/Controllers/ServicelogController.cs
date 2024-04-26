@@ -526,7 +526,7 @@ namespace Kers.Controllers
         }
         [HttpGet("snapindirectaudiencetargeted")]
         public IActionResult SnapIndirectAudienceTargeted(){
-            var sst = this.context.SnapIndirectAudienceTargeted.Where(o => o.Active).OrderBy(o => o.order);
+            var sst = this.context.SnapIndirectAudienceTargeted.Where(o => o.Active == 1).OrderBy(o => o.order);
             return new OkObjectResult(sst);
         }
         [HttpGet("snapindirectreached")]

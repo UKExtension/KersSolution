@@ -12,6 +12,6 @@ namespace Kers.Models.Entities.KERScore
         public int Id { get; set; }
         public int order { get; set; }
         public string Name {get;set;}
-        public Boolean Active {get;set;}
+        public int Active {get;set;}
     }
 }
