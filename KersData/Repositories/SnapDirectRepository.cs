@@ -1108,8 +1108,13 @@ namespace Kers.Models.Repositories
                     row +=  string.Concat("\"", StripHTML(lastRevision.Description.Replace("\"", "")), "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Male, "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Female, "\"")  + ",";
-                    if( lastRevision.SnapDirect.SnapDirectDeliverySite != null && lastRevision.SnapDirect.SnapDirectDeliverySite.Name != ""){
+                    if( lastRevision.SnapDirect.SnapDirectDeliverySite != null ){
                         row += string.Concat("\"", lastRevision.SnapDirect.SnapDirectDeliverySite.Name, "\"") + ",";
+                    }else{
+                        row += ",";  
+                    }
+                    if(lastRevision.SnapDirect.SiteName != null && lastRevision.SnapDirect.SiteName != ""){
+                        row += string.Concat("\"",lastRevision.SnapDirect.SiteName, "\"") + ",";
                     }else{
                         if( lastRevision.SnapDirect.ExtensionEventLocation != null){
                             row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.DisplayName, "\"") + ",";
@@ -1117,7 +1122,7 @@ namespace Kers.Models.Repositories
                             row += ",";  
                         }
                     }
-                    row += string.Concat("\"",lastRevision.SnapDirect.SiteName, "\"") + ",";
+                    
                     if(lastRevision.SnapDirect.ExtensionEventLocation != null && lastRevision.SnapDirect.ExtensionEventLocation.Address != null){
                         row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.Address.Street, "\"") + ",";
                         row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.Address.City, "\"") + ",";
