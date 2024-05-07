@@ -1108,10 +1108,14 @@ namespace Kers.Models.Repositories
                     row +=  string.Concat("\"", StripHTML(lastRevision.Description.Replace("\"", "")), "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Male, "\"")  + ",";
                     row +=  string.Concat("\"", lastRevision.Female, "\"")  + ",";
-                    if( lastRevision.SnapDirect.SnapDirectDeliverySite != null){
+                    if( lastRevision.SnapDirect.SnapDirectDeliverySite != null && lastRevision.SnapDirect.SnapDirectDeliverySite.Name != ""){
                         row += string.Concat("\"", lastRevision.SnapDirect.SnapDirectDeliverySite.Name, "\"") + ",";
                     }else{
-                        row += ",";
+                        if( lastRevision.SnapDirect.ExtensionEventLocation != null){
+                            row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.DisplayName, "\"") + ",";
+                        }else{
+                            row += ",";  
+                        }
                     }
                     row += string.Concat("\"",lastRevision.SnapDirect.SiteName, "\"") + ",";
                     if(lastRevision.SnapDirect.ExtensionEventLocation != null && lastRevision.SnapDirect.ExtensionEventLocation.Address != null){
