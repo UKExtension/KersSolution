@@ -1072,6 +1072,10 @@ namespace Kers.Models.Repositories
                 keys.Add("Female");
                 keys.Add("DirectDeliverySiteName");
                 keys.Add("DirectSpecificSiteName");
+                keys.Add("Address");
+                keys.Add("City");
+                keys.Add("State");
+                keys.Add("ZipCode");
 
                 var snapDirectAudience = this.context.SnapDirectAudience.Where(a => a.Active).OrderBy(a => a.order);
                 
@@ -1087,6 +1091,7 @@ namespace Kers.Models.Repositories
                                                 .ActivityRevision.Where( r => r.Id == rw.Revision.Id )
                                                 .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectAgesAudienceValues)
                                                 .Include( r => r.SnapDirect ).ThenInclude( d => d.SnapDirectDeliverySite)
+                                                .Include( r => r.SnapDirect).ThenInclude( d => d.ExtensionEventLocation).ThenInclude( l => l.Address)                                
                                                 .OrderBy( r => r.Created).LastOrDefault();
                     var row = rw.Revision.ActivityDate.ToString("yyyyMM") + ",";
                     row += rw.Revision.ActivityDate.ToString( "yyyy-MMM") + ",";
@@ -1109,7 +1114,14 @@ namespace Kers.Models.Repositories
                         row += ",";
                     }
                     row += string.Concat("\"",lastRevision.SnapDirect.SiteName, "\"") + ",";
-
+                    if(lastRevision.SnapDirect.ExtensionEventLocation != null && lastRevision.SnapDirect.ExtensionEventLocation.Address != null){
+                        row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.Address.Street, "\"") + ",";
+                        row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.Address.City, "\"") + ",";
+                        row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.Address.State, "\"") + ",";
+                        row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.Address.PostalCode, "\"") + ",";
+                    }else{
+                        row += ",,,,";
+                    }
                     foreach( var audnc in snapDirectAudience){
                         var s = lastRevision.SnapDirect.SnapDirectAgesAudienceValues.Where( v => v.SnapDirectAudienceId == audnc.Id).Sum( v => v.Value);
                         row += s.ToString() + ",";
