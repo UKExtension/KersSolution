@@ -1116,8 +1116,8 @@ namespace Kers.Models.Repositories
                     if(lastRevision.SnapDirect.SiteName != null && lastRevision.SnapDirect.SiteName != ""){
                         row += string.Concat("\"",lastRevision.SnapDirect.SiteName, "\"") + ",";
                     }else{
-                        if( lastRevision.SnapDirect.ExtensionEventLocation != null){
-                            row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.DisplayName, "\"") + ",";
+                        if( lastRevision.SnapDirect.ExtensionEventLocation != null && lastRevision.SnapDirect.ExtensionEventLocation.Address != null){
+                            row += string.Concat("\"", lastRevision.SnapDirect.ExtensionEventLocation.Address.Building, "\"") + ",";
                         }else{
                             row += ",";  
                         }
