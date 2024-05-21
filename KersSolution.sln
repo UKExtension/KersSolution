@@ -1,13 +1,13 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KersDb", "KersDb\KersDb.csproj", "{338B4EB0-47BC-4BDF-ABE6-0647D8C3DA47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KersDb", "KersDb\KersDb.csproj", "{338B4EB0-47BC-4BDF-ABE6-0647D8C3DA47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kers", "Kers\Kers.csproj", "{E0AC1BB7-7CA8-42D0-BF52-9B389B501C9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kers", "Kers\Kers.csproj", "{E0AC1BB7-7CA8-42D0-BF52-9B389B501C9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KersData", "KersData\KersData.csproj", "{5BB7C8A3-DEFD-4D53-ABBE-42045E485894}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KersData", "KersData\KersData.csproj", "{5BB7C8A3-DEFD-4D53-ABBE-42045E485894}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
