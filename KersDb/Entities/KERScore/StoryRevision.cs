@@ -22,6 +22,9 @@ namespace Kers.Models.Entities.KERScore
         public string Title {get;set;}
         [Column(TypeName = "text")]
         public string Story {get;set;}
+        public int Reach {get;set;}
+        public string AudienceOther {get;set;}
+        public List<StoryAudienceConnection> StoryAudienceConnections {get;set;}
         public bool IsSnap {get;set;}
 
     }
