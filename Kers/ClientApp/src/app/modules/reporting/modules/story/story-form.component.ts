@@ -4,7 +4,7 @@ import {Location} from '@angular/common';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from "rxjs";
 import {UserService, User} from '../user/user.service';
-import {StoryService, Story, StoryImage, StoryOutcome} from './story.service';
+import {StoryService, Story, StoryImage, StoryOutcome, StoryAudienceType} from './story.service';
 import {PlansofworkService, PlanOfWork} from '../plansofwork/plansofwork.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 import { Indicator, IndicatorsService } from '../indicators/indicators.service';
@@ -35,6 +35,7 @@ export class StoryFormComponent implements OnInit{
     editorOptionsLoaded = false;
     initiatives:StrategicInitiative[];
     plans: Observable<PlanOfWork[]>;
+    audience: Observable<StoryAudienceType[]>;
 
     indicators:Indicator[];
 
@@ -60,7 +61,7 @@ export class StoryFormComponent implements OnInit{
         if( !this.fiscalYearSwitcher){
             this.getFiscalYear();
         }
-        
+        this.audience = this.service.audiencetype();
         this.outcome = this.service.outcome();
         this.userService.current().subscribe(
             res => {

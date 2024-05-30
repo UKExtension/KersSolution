@@ -71,6 +71,14 @@ export class StoryService {
                 );
     }
 
+    audiencetype():Observable<StoryAudienceType[]>{
+        var url = this.baseUrl + 'audiencetype';
+        return this.http.get<StoryAudienceType[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    catchError(this.handleError('StoryAudienceType', []))
+                );
+    }
+
     latestByUser(userId:number, amount:number = 23, fiscalYearName="0"):Observable<Story[]>{
         var url = this.baseUrl + 'latestbyuser/'+ userId + '/' + amount + '/' + fiscalYearName;
         return this.http.get<Story[]>(this.location.prepareExternalUrl(url))
@@ -139,6 +147,7 @@ export interface Story{
     storyOutcomeId:number;
     storyOutcome:StoryOutcome;
     storyImages:StoryImage[];
+    storyAudienceConnections:StoryAudienceConnection[];
     created: Date;
 }
 
@@ -156,4 +165,18 @@ export interface File{
 export interface StoryOutcome{
     id:number;
     name:string;
+}
+export interface StoryAudienceType{
+    id:number;
+    name:string;
+    order:number;
+    IsItOther:boolean;
+}
+
+export interface StoryAudienceConnection{
+    id:number;
+    storyAudienceTypeId:number;
+    storyAudienceType: StoryAudienceType;
+    storyRevisionId:number;
+    storyRevision:Story;
 }

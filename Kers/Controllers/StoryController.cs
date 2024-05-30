@@ -381,6 +381,11 @@ namespace Kers.Controllers
             var outs = this.context.StoryOutcome.OrderBy(o => o.Order);
             return new OkObjectResult(outs);
         }
+        [HttpGet("audiencetype")]
+        public IActionResult AudienceType(){
+            var outs = this.context.StoryAudienceType.Where(a => a.Active).OrderBy(o => o.Order);
+            return new OkObjectResult(outs);
+        }
 
         private void Log(   object obj, 
                             string objectType = "SuccessStory",
