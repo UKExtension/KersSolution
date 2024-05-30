@@ -41,6 +41,19 @@ export class StoryFormComponent implements OnInit{
 
     outcome: Observable<StoryOutcome[]>;
 
+
+
+    selectedCar: number;
+
+    cars = [
+        { id: 1, name: 'Volvo' },
+        { id: 2, name: 'Saab' },
+        { id: 3, name: 'Opel' },
+        { id: 4, name: 'Audi' },
+    ];
+
+
+
     constructor( 
         private fb: FormBuilder,
         private programsService:ProgramsService,
@@ -89,6 +102,7 @@ export class StoryFormComponent implements OnInit{
                     this.storyForm = this.fb.group(
                         {
                             title: ["", Validators.required],
+                            specialties: [],
                             story: ["The problem<br><br>The educational program response<br><br>The participants/target audience<br><br>Other partners (if applicable)<br><br>Program impact or participant response.", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
