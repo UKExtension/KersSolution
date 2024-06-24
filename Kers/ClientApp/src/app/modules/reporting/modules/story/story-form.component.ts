@@ -36,21 +36,14 @@ export class StoryFormComponent implements OnInit{
     initiatives:StrategicInitiative[];
     plans: Observable<PlanOfWork[]>;
     audience: Observable<StoryAudienceType[]>;
+    otherAudienceSelected:boolean = false;
 
     indicators:Indicator[];
 
     outcome: Observable<StoryOutcome[]>;
 
+    audienceTypes = [];
 
-
-    selectedCar: number;
-
-    cars = [
-        { id: 1, name: 'Volvo' },
-        { id: 2, name: 'Saab' },
-        { id: 3, name: 'Opel' },
-        { id: 4, name: 'Audi' },
-    ];
 
 
 
@@ -74,7 +67,18 @@ export class StoryFormComponent implements OnInit{
         if( !this.fiscalYearSwitcher){
             this.getFiscalYear();
         }
-        this.audience = this.service.audiencetype();
+        this.service.audiencetype().subscribe(
+            res => {
+                var auds = <StoryAudienceType[]> res;
+                var au = Array<any>();
+                auds.forEach(function(element){
+                    au.push(
+                        {value: element.id, label: element.name, isItOther: element.isItOther}
+                    );
+                });
+                this.audienceTypes = au;
+            }
+        );
         this.outcome = this.service.outcome();
         this.userService.current().subscribe(
             res => {
@@ -102,7 +106,9 @@ export class StoryFormComponent implements OnInit{
                     this.storyForm = this.fb.group(
                         {
                             title: ["", Validators.required],
-                            specialties: [],
+                            storyAudienceConnections: [],
+                            audienceOther: "",
+                            reach:"",
                             story: ["The problem<br><br>The educational program response<br><br>The participants/target audience<br><br>Other partners (if applicable)<br><br>Program impact or participant response.", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
@@ -133,6 +139,14 @@ export class StoryFormComponent implements OnInit{
             err => this.errorMessage = <any> err
         )
         
+    }
+    AudienceChanged(event:[]){
+        var a = event.filter( a => a["isItOther"] == true);
+        if(a.length > 0){
+            this.otherAudienceSelected = true;
+        }else{
+            this.otherAudienceSelected = false;
+        }
     }
 
     getFiscalYear(){

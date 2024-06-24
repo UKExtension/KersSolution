@@ -148,6 +148,8 @@ export interface Story{
     storyOutcome:StoryOutcome;
     storyImages:StoryImage[];
     storyAudienceConnections:StoryAudienceConnection[];
+    audienceOther:string;
+    reach:number;
     created: Date;
 }
 
@@ -170,7 +172,7 @@ export interface StoryAudienceType{
     id:number;
     name:string;
     order:number;
-    IsItOther:boolean;
+    isItOther:boolean;
 }
 
 export interface StoryAudienceConnection{
