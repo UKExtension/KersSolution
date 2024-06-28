@@ -213,14 +213,9 @@
             <div class="text-right" >
                 <ul class="pagination" style="margin-top:0">
                     <li class="paginate_button previous @prevDisabled" id="datatable-keytable_previous">
-                        <a asp-action="Index"
-                            asp-route-sortOrder="@ViewData["CurrentSort"]"
-                            asp-route-length="@ViewData["CurrentLength"]"
-                            asp-route-page="@(Model.PageIndex - 1)"
-                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                            asp-route-planningUnitId=@currUnit
-                            asp-route-programId=@currProgram
-                            class="">Previous</a>
+
+                        <a href="~/Reports/Story?sortOrder=@ViewData["CurrentSort"]&fy=@fy&length=@ViewData["CurrentLength"]&page=@(Model.PageIndex - 1)&planningUnitId=@currUnit&programId=@currProgram&currentFilter=@ViewData["CurrentFilter"]">
+                            Previous</a>
                     </li>
                     @{
                         var start = Math.Max(1, Model.PageIndex - 6);
@@ -229,25 +224,16 @@
                     @for( var i = start; i <= end; i++ )
                     {
                         active = Model.PageIndex == i ? "active" : "";
-                        <li class="paginate_button @active"><a 
-                            asp-action="Index"
-                            asp-route-sortOrder="@ViewData["CurrentSort"]"
-                            asp-route-length="@ViewData["CurrentLength"]"
-                            asp-route-page="@i"
-                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                            asp-route-planningUnitId=@currUnit
-                            asp-route-programId=@currProgram
-                        >@i</a></li>
+                        <li class="paginate_button @active">  
+                        <a href="~/Reports/Story?sortOrder=@ViewData["CurrentSort"]&fy=@fy&length=@ViewData["CurrentLength"]&page=@i&planningUnitId=@currUnit&programId=@currProgram&currentFilter=@ViewData["CurrentFilter"]">
+                           @i</a></li>
                     }
                     <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
-                        <a  asp-action="Index"
-                            asp-route-sortOrder="@ViewData["CurrentSort"]"
-                            asp-route-length="@ViewData["CurrentLength"]"
-                            asp-route-page="@(Model.PageIndex + 1)"
-                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                            asp-route-planningUnitId=@currUnit
-                            asp-route-programId=@currProgram
-                            class="" >Next</a></li>
+                            
+                            
+                            <a href="~/Reports/Story?sortOrder=@ViewData["CurrentSort"]&fy=@fy&length=@ViewData["CurrentLength"]&page=@(Model.PageIndex + 1)&planningUnitId=@currUnit&programId=@currProgram&currentFilter=@ViewData["CurrentFilter"]">
+                            
+                            Next</a></li>
                 </ul>
             </div>
         </div>
