@@ -79,6 +79,8 @@
             </div>
         </div>
         <div class="form-group" *ngIf="editorOptionsLoaded">
+            <div><reporting-display-help [label]="'Writing Effective Success Stories (with Examples)'" id="23"></reporting-display-help></div>
+          <!--   Writing Effective Success Stories (with Examples) -->
             <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12">Success Story:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!storyForm.controls.story.valid">
                 <textarea [froalaEditor]="options" name="story" formControlName="story" id="story" class="form-control col-xs-12"></textarea>

@@ -4,7 +4,7 @@ import {Location} from '@angular/common';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from "rxjs";
 import {UserService, User} from '../user/user.service';
-import {StoryService, Story, StoryImage, StoryOutcome, StoryAudienceType} from './story.service';
+import {StoryService, Story, StoryImage, StoryOutcome, StoryAudienceType, StoryAudienceConnection} from './story.service';
 import {PlansofworkService, PlanOfWork} from '../plansofwork/plansofwork.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 import { Indicator, IndicatorsService } from '../indicators/indicators.service';
@@ -106,9 +106,9 @@ export class StoryFormComponent implements OnInit{
                     this.storyForm = this.fb.group(
                         {
                             title: ["", Validators.required],
-                            storyAudienceConnections: [],
+                            storyAudienceConnections: [[],Validators.required],
                             audienceOther: "",
-                            reach:"",
+                            reach:["", Validators.required],
                             story: ["The problem<br><br>The educational program response<br><br>The participants/target audience<br><br>Other partners (if applicable)<br><br>Program impact or participant response.", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
@@ -222,6 +222,14 @@ export class StoryFormComponent implements OnInit{
         for( var im of val.storyImages){
             delete im.id;
         }
+        var connections = val.storyAudienceConnections;
+        var StoryAudienceConnections = [];
+        for( var cn of connections){
+            StoryAudienceConnections.push({storyAudienceTypeId:cn["value"]});
+        }
+        val.storyAudienceConnections = StoryAudienceConnections;
+        console.log(val);
+        
         if(this.story == null){
             this.service.add(val).subscribe(
                 res => {
@@ -239,7 +247,7 @@ export class StoryFormComponent implements OnInit{
                 err => this.errorMessage = <any>err
             );
         }
-
+ 
     }
 
     onCancel(){
