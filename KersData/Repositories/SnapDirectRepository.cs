@@ -431,7 +431,7 @@ namespace Kers.Models.Repositories
 
 
 
-        public string SpecificSiteNamesDetails(FiscalYear fiscalYear, Boolean refreshCache = false){
+        public string SpecificSiteNamesDetails(FiscalYear fiscalYear, Boolean refreshCache = true){
 
             string result;
             var cacheKey = CacheKeys.SnapSpecificSiteNamesDetails + fiscalYear.Name;
@@ -451,11 +451,13 @@ namespace Kers.Models.Repositories
 
 
                 result = string.Join(",", keys.ToArray()) + "\n";
-                var perPerson = this.SnapData(fiscalYear).Where( d => d.Revision.SnapDirect != null).Select( s => new {
+                var perPerson = this.SnapData(fiscalYear, refreshCache)
+                                .Where( d => d.Revision.SnapDirect != null)
+                                .Select( s => new {
                                         Last = s.Revision,
                                         Snap = s.Revision.SnapDirect,
-                                        DeliverSite = s.Revision.SnapDirect.SnapDirectDeliverySite.Name,
-                                        SiteName = s.Revision.SnapDirect.SiteName != "" ? s.Revision.SnapDirect.SiteName : s.Revision.SnapDirect.ExtensionEventLocation.Address.Building,
+                                        DeliverSite = s.Revision.SnapDirect.SnapDirectDeliverySite != null ? s.Revision.SnapDirect.SnapDirectDeliverySite.Name : "",
+                                        SiteName = s.Revision.SnapDirect.SiteName != "" ? s.Revision.SnapDirect.SiteName : (s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Building : ""),
                                         SiteAddress = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Street : ""
                                     }).ToList();
                 

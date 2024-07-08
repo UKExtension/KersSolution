@@ -56,6 +56,8 @@ namespace Kers.Models.Repositories
                                         .FirstOrDefault();
                         var revision = context.ActivityRevision.Where( r => r.Id == rev.Id)
                                             .Include( s => s.SnapDirect).ThenInclude( d => d.SnapDirectAgesAudienceValues )
+                                            .Include( s => s.SnapDirect).ThenInclude( d => d.SnapDirectDeliverySite )
+                                            .Include( s => s.SnapDirect).ThenInclude( d => d.ExtensionEventLocation ).ThenInclude( d => d.Address )
                                             .Include( s => s.SnapIndirect).ThenInclude( i => i.SnapIndirectReachedValues)
                                             .Include( s => s.SnapPolicy)
                                             .Include( s => s.RaceEthnicityValues)
