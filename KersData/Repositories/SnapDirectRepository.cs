@@ -398,11 +398,12 @@ namespace Kers.Models.Repositories
                 result = string.Join(",", keys.ToArray()) + "\n";
                 var perPerson = this.SnapData(fiscalYear).Where( d => d.Revision.SnapDirect != null).Select( s => new {
                                         Last = s.Revision,
-                                        Snap = s.Revision.SnapDirect
+                                        Snap = s.Revision.SnapDirect,
+                                        SiteName = s.Revision.SnapDirect.SiteName != "" ? s.Revision.SnapDirect.SiteName : s.Revision.SnapDirect.ExtensionEventLocation.Address.Building
                                     }).ToList();
                 
                 var grouped = perPerson.Where( r => r.Snap!= null)
-                                .GroupBy( p => p.Snap.SiteName)
+                                .GroupBy( p => p.SiteName)
                                 .Select( s => new {
                                     SiteName = s.Key,
                                     Dt = s.OrderBy(l => l.Last.Id).First().Last.ActivityDate,
@@ -425,6 +426,73 @@ namespace Kers.Models.Repositories
             }
             return result;
         }
+
+
+
+
+
+        public string SpecificSiteNamesDetails(FiscalYear fiscalYear, Boolean refreshCache = false){
+
+            string result;
+            var cacheKey = CacheKeys.SnapSpecificSiteNamesDetails + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+                var keys = new List<string>();
+
+                keys.Add("Type of Delivery Site");
+                keys.Add("Specific Site Name");
+                keys.Add("Site address");
+                keys.Add("# of KERS entries using this location");
+                keys.Add("# of Audience");
+
+
+
+
+                result = string.Join(",", keys.ToArray()) + "\n";
+                var perPerson = this.SnapData(fiscalYear).Where( d => d.Revision.SnapDirect != null).Select( s => new {
+                                        Last = s.Revision,
+                                        Snap = s.Revision.SnapDirect,
+                                        DeliverSite = s.Revision.SnapDirect.SnapDirectDeliverySite.Name,
+                                        SiteName = s.Revision.SnapDirect.SiteName != "" ? s.Revision.SnapDirect.SiteName : s.Revision.SnapDirect.ExtensionEventLocation.Address.Building,
+                                        SiteAddress = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Street : ""
+                                    }).ToList();
+                
+                var grouped = perPerson.Where( r => r.Snap!= null)
+                                .GroupBy( p => new {p.SiteName, p.DeliverSite, p.SiteAddress})
+                                .Select( s => new {
+                                    SiteName = s.Key.SiteName,
+                                    DeliverySite = s.Key.DeliverSite,
+                                    SiteAddress = s.Key.SiteAddress,
+                                    Audience = s.Sum(l => l.Last.Male + l.Last.Female),
+                                    Count = s.Count()
+                                });
+
+
+                foreach( var k in grouped){
+                    var row = string.Concat( "\"", k.DeliverySite , "\"") + ",";
+                    row += string.Concat( "\"", k.SiteName , "\"") + ",";
+                    row += string.Concat( "\"", k.SiteAddress , "\"") + ",";
+                    row += k.Count.ToString() + ",";
+                    row += k.Audience.ToString() + ",";
+                    result += row + "\n";
+                }
+
+
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
+                    }); 
+            }
+            return result;
+        }
+
+
+
+
+
+
 
         public string NumberofDeliverySitesbyTypeofSetting(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
