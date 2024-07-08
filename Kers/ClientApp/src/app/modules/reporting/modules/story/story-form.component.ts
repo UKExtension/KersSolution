@@ -13,7 +13,12 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 
 @Component({
     selector: 'story-form',
-    templateUrl: 'story-form.component.html'
+    templateUrl: 'story-form.component.html',
+    styles: [`
+    ng-select.ng-invalid{
+        border: 1px solid red;
+    }
+    `]
 })
 export class StoryFormComponent implements OnInit{ 
 
@@ -77,6 +82,31 @@ export class StoryFormComponent implements OnInit{
                     );
                 });
                 this.audienceTypes = au;
+
+
+
+                if(this.story != null){
+                    if(this.story.storyAudienceConnections != undefined && this.story.storyAudienceConnections.length > 0){
+                        var aud = [];
+                        var isOther = false;
+                        for( var ad of this.story.storyAudienceConnections){
+                            if(ad.storyAudienceType != undefined && ad.storyAudienceType.name != undefined ){
+                                aud.push( {value: ad.storyAudienceType.id, label: ad.storyAudienceType.name} );
+                                if(ad.storyAudienceType.name == "Other") isOther = true;
+                            }else{
+                                var at = auds.filter( t => t.id == ad.storyAudienceTypeId);
+                                aud.push({value: at[0].id, label: at[0].name}  );
+                                if(at[0].name == "Other") isOther = true;
+                            }   
+                        }
+                        this.storyForm.patchValue({storyAudienceConnections:aud});
+                        if(isOther) this.otherAudienceSelected = true;
+                    }
+                }
+
+
+
+
             }
         );
         this.outcome = this.service.outcome();
@@ -227,9 +257,7 @@ export class StoryFormComponent implements OnInit{
         for( var cn of connections){
             StoryAudienceConnections.push({storyAudienceTypeId:cn["value"]});
         }
-        val.storyAudienceConnections = StoryAudienceConnections;
-        console.log(val);
-        
+        val.storyAudienceConnections = StoryAudienceConnections;        
         if(this.story == null){
             this.service.add(val).subscribe(
                 res => {
