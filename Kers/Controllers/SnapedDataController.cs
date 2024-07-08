@@ -163,7 +163,7 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = snapDirectRepo.SpecificSiteNamesDetails(fiscalYear);
+            var result = snapDirectRepo.SpecificSiteNamesDetails(fiscalYear, true);
             return Ok(result);
         }
 
