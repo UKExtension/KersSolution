@@ -206,7 +206,7 @@ namespace Kers
                 services.AddSingleton<IScheduledTask, ActivityPerMajorProgramTask>();
                 services.AddSingleton<IScheduledTask, ActivityContactsByCountyByMajorProgramTask>();
                 services.AddSingleton<IScheduledTask, ActivityPerEmployeeReportsTask>();
-                //services.AddSingleton<IScheduledTask, InServiceQualtricsTask>();
+                services.AddSingleton<IScheduledTask, SnapSpecificSiteNameDetailsTask>();
                 services.AddSingleton<IScheduledTask, GetActivitiesAndContactsTask>();
                 services.AddSingleton<IScheduledTask, SnapPartnersOfACountyTask>();
                 services.AddSingleton<IScheduledTask, MessageProcessingTask>();
