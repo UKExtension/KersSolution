@@ -79,7 +79,7 @@ namespace Kers.Models.Repositories
         public static string IndirectByEmployee = "IndirectByEmployee";
         public static string PartnersOfACounty = "PartnersOfACounty";
         public static string AudienceAgeCategory = "AudienceAgeCategory";
-        public static string SnapSpecificSiteNamesDetails = "public static string ";
+        public static string SnapSpecificSiteNamesDetails = "SnapSpecificSiteNamesDetails";
 
     }
 }
