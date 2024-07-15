@@ -141,7 +141,7 @@
                     {{enr.attended == true ? "Yes" : "No"}}
                 </td>
                 <td align="center">
-                    {{enr.training.iHour.iHourValue}}
+                    {{enr.training.iHour != undefined ? enr.training.iHour.iHourValue : ""}}
                 </td>
                 <td align="left">
                     {{enr.training.subject}}

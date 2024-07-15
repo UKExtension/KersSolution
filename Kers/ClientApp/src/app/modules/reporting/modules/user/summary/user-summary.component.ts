@@ -133,7 +133,7 @@ export class UserSummaryComponent {
                 this.inServiceEnrolment = res;
                 this.hoursAttended = 0;
                 for( let el of this.inServiceEnrolment){
-                    if(el.attended) this.hoursAttended += el.training.iHour.iHourValue;
+                    if(el.attended && el.training.iHour != undefined) this.hoursAttended += el.training.iHour.iHourValue;
                 }
             }
         )
