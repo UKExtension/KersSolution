@@ -138,10 +138,11 @@ namespace Kers.Controllers
 
             
             var lastStories = context.Story.
-                                Where(e=>e.KersUser.Id == userid).
+                                Where(e=>e.KersUser.Id == userid && e.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear).
                                 Include(s => s.Revisions).ThenInclude(r => r.StoryImages).ThenInclude(i => i.UploadImage).ThenInclude(f => f.UploadFile).
                                 Include( s => s.Revisions).ThenInclude( r => r.MajorProgram ).ThenInclude( p => p.StrategicInitiative ).ThenInclude( i => i.FiscalYear ).
                                 Include( s => s.Revisions).ThenInclude( r => r.StoryAudienceConnections).
+                                Take(amount).
                                 OrderByDescending(e=>e.Updated);
             
             var revs = new List<StoryRevision>();
