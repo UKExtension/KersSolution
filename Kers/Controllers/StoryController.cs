@@ -82,6 +82,7 @@ namespace Kers.Controllers
                                 Where(e=>e.KersUser == this.CurrentUser()).
                                 Include(s => s.Revisions).ThenInclude(r => r.StoryImages).
                                 Include( s => s.Revisions).ThenInclude( r => r.MajorProgram ).ThenInclude( p => p.StrategicInitiative ).ThenInclude( i => i.FiscalYear ).
+                                Include( s => s.Revisions).ThenInclude( r => r.StoryAudienceConnections).ThenInclude( a => a.StoryAudienceType).
                                 OrderByDescending(e=>e.Updated).
                                 Skip(skip).
                                 Take(amount);
@@ -140,6 +141,7 @@ namespace Kers.Controllers
                                 Where(e=>e.KersUser.Id == userid).
                                 Include(s => s.Revisions).ThenInclude(r => r.StoryImages).ThenInclude(i => i.UploadImage).ThenInclude(f => f.UploadFile).
                                 Include( s => s.Revisions).ThenInclude( r => r.MajorProgram ).ThenInclude( p => p.StrategicInitiative ).ThenInclude( i => i.FiscalYear ).
+                                Include( s => s.Revisions).ThenInclude( r => r.StoryAudienceConnections).
                                 OrderByDescending(e=>e.Updated);
             
             var revs = new List<StoryRevision>();
@@ -379,6 +381,11 @@ namespace Kers.Controllers
         [HttpGet("outcome")]
         public IActionResult Outcome(){
             var outs = this.context.StoryOutcome.OrderBy(o => o.Order);
+            return new OkObjectResult(outs);
+        }
+        [HttpGet("audiencetype")]
+        public IActionResult AudienceType(){
+            var outs = this.context.StoryAudienceType.Where(a => a.Active).OrderBy(o => o.Order);
             return new OkObjectResult(outs);
         }
 

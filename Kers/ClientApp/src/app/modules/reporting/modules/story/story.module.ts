@@ -21,10 +21,12 @@ import { StoryDisplayComponent } from './reports/story-display.component';
 import {StoryReportsDisplayListSyncComponent} from './reports/story-reports-display-list-sync.component';
 import { StoryShortComponent } from './reports/story-short.component';
 import { StoryFormDemoComponent } from './story-form-demo.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports:      [ SharedModule,
-                  StoryRoutingModule
+                  StoryRoutingModule,
+                  NgSelectModule
                 ],
   exports: [
     StoryFormDemoComponent
