@@ -138,7 +138,7 @@ export class StoryFormComponent implements OnInit{
                             title: ["", Validators.required],
                             storyAudienceConnections: [[],Validators.required],
                             audienceOther: "",
-                            reach:["", Validators.required],
+                            reach:["", this.isPositiveInt],
                             story: ["The problem<br><br>The educational program response<br><br>The participants/target audience<br><br>Other partners (if applicable)<br><br>Program impact or participant response.", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
@@ -152,7 +152,7 @@ export class StoryFormComponent implements OnInit{
                             title: ["", Validators.required],
                             storyAudienceConnections: [[],Validators.required],
                             audienceOther: "",
-                            reach:["", Validators.required],
+                            reach:["", this.isPositiveInt],
                             story: ["The problem<br><br>The educational program response<br><br>The participants/target audience<br><br>Other partners (if applicable)<br><br>Program impact or participant response.", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
@@ -283,6 +283,16 @@ export class StoryFormComponent implements OnInit{
 
     onCancel(){
         this.onFormCancel.emit();
+    }
+
+
+    //validator
+    isPositiveInt(control:FormControl){
+        
+        if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
+            return null;
+        }
+        return {"notInt":true};
     }
 }
 
