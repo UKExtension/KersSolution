@@ -84,7 +84,7 @@ export class ServicelogFormComponent implements OnInit{
     snapPolicy = false;
 
     isPastSnapFiscalYear = false;
-    previousFiscalYear = 2023;
+    previousFiscalYear = 2024;
 
     signupOpen = false;
 
