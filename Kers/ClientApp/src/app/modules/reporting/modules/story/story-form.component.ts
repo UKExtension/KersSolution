@@ -150,7 +150,10 @@ export class StoryFormComponent implements OnInit{
                     this.storyForm = this.fb.group(
                         {
                             title: ["", Validators.required],
-                            story: ["", Validators.required],
+                            storyAudienceConnections: [[],Validators.required],
+                            audienceOther: "",
+                            reach:["", Validators.required],
+                            story: ["The problem<br><br>The educational program response<br><br>The participants/target audience<br><br>Other partners (if applicable)<br><br>Program impact or participant response.", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
                             planOfWorkId: [""],
