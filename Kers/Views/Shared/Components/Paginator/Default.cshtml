@@ -29,7 +29,7 @@
 <ul class="pagination" style="margin-top:0">
     <li class="paginate_button previous @prevDisabled" id="datatable-keytable_previous">
 
-        <a href="@UrlString&page="@(PageIndex - 1)">
+        <a href="~/@UrlString&page=@(PageIndex - 1)">
             Previous</a>
     </li>
     @{
@@ -40,13 +40,13 @@
     {
         active = PageIndex == i ? "active" : "";
         <li class="paginate_button @active">  
-        <a href="@UrlString&length=@PageSize&page=@i">
+        <a href="~/@UrlString&length=@PageSize&page=@i">
             @i</a></li>
     }
     <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
             
             
-            <a href="@UrlString&length=@PageSize&page=@(PageIndex + 1)">
+            <a href="~/@UrlString&length=@PageSize&page=@(PageIndex + 1)">
             
             Next</a></li>
 </ul>Start: @start, End: @end, PageIndex: @PageIndex, Total Items: @TotalItems, Page Size: @PageSize Total Pages: @Pges
