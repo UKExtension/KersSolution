@@ -1,0 +1,52 @@
+@{
+    string UrlString = ViewData["composedString"] as string;
+
+    string hasPreviousString = ViewData["HasPreviousPage"].ToString().ToLower();
+    string hasNextString = ViewData["HasNextPage"].ToString().ToLower();
+    bool hasPrevious = true;
+    bool hasNext = true;
+    if( hasPreviousString == "false") hasPrevious = false;
+    if( hasNextString == "false") hasNext = false;
+    
+
+    int TotalItems = Int32.Parse( ViewData["TotalItems"].ToString() );
+    int PageIndex = Int32.Parse( ViewData["PageIndex"].ToString() );
+    int PageSize = Int32.Parse( ViewData["PageSize"].ToString() );
+
+    float Pges = (float) TotalItems / PageSize;
+
+    var TotalPages = Math.Ceiling( Pges );
+
+    var prevDisabled = hasPrevious ? "" : "disabled";
+    var nextDisabled = hasNext ? "" : "disabled";
+    var active = "";
+
+
+
+}
+
+
+<ul class="pagination" style="margin-top:0">
+    <li class="paginate_button previous @prevDisabled" id="datatable-keytable_previous">
+
+        <a href="@UrlString&page="@(PageIndex - 1)">
+            Previous</a>
+    </li>
+    @{
+        var start = Math.Max(1, PageIndex - 6);
+        var end = Math.Min(PageIndex + 6, TotalPages );
+    }
+    @for( var i = start; i <= end; i++ )
+    {
+        active = PageIndex == i ? "active" : "";
+        <li class="paginate_button @active">  
+        <a href="@UrlString&length=@PageSize&page=@i">
+            @i</a></li>
+    }
+    <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
+            
+            
+            <a href="@UrlString&length=@PageSize&page=@(PageIndex + 1)">
+            
+            Next</a></li>
+</ul>Start: @start, End: @end, PageIndex: @PageIndex, Total Items: @TotalItems, Page Size: @PageSize Total Pages: @Pges

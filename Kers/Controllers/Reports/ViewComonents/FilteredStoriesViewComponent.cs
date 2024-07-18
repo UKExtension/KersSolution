@@ -42,6 +42,8 @@ namespace Kers.Controllers.Reports.ViewComponents
                     ViewData["Title"] += " by " + stories.First().MajorProgram.Name;
                 }else if( filter == FilterKeys.PlanningUnit){
                     ViewData["Title"] += " by " + stories.First().PlanningUnit.Name;
+                }else if( filter == FilterKeys.KSU ){
+                    ViewData["Title"] += " by KSU";
                 }
             }
             
