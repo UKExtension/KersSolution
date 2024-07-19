@@ -25,13 +25,15 @@ namespace Kers.Controllers.Reports.ViewComponents
         {
  
              ViewData["composedString"] = UrlString + "?";
+             bool firstParameter = true;
              foreach(KeyValuePair<string, string> ele in GetParameters)
                 {
-                    var combo = "&" + ele.Key + "=" + ele.Value; 
+                    var combo = (firstParameter ? "": "&") + ele.Key + "=" + ele.Value; 
                     ViewData["composedString"] += combo;
+                    firstParameter = false;
                 }
             ViewData["HasPreviousPage"] = PageIndex == 1 ? false : true;
-            var ItemsSoFar = PageIndex * (PageSize - 1) + ItemsCount;
+            var ItemsSoFar = PageIndex * (PageSize - 1);
             ViewData["HasNextPage"] = TotalItems > ItemsSoFar;
 
 
