@@ -40,8 +40,6 @@ namespace Kers.Controllers.Reports.ViewComponents
             ViewData["TotalItems"] = TotalItems;
             ViewData["PageIndex"] = PageIndex;
             ViewData["PageSize"] = PageSize;
-    
-
 
             return View();
         }

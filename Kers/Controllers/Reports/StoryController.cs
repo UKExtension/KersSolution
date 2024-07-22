@@ -64,7 +64,11 @@ namespace Kers.Controllers.Reports
             }else{
                 searchString = currentFilter;
             }
-
+            if(page == null)  page = 1;
+            if( fy == "0"){
+                var fiscalYear = this.GetFYByName(fy);
+                fy = fiscalYear.Name;
+            }
             ViewData["CurrentFilter"] = searchString;
 
             var stories = from s in context.Story

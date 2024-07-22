@@ -204,11 +204,6 @@
                 </label>
             </div>
         </div>
-        @{
-            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-            var active = "";
-        }
         <div class="col-sm-5">
             <div class="text-right" >
                  @await Component.InvokeAsync("Paginator", new {
@@ -226,30 +221,7 @@
                     PageSize = Model.PageSize,
                 }) 
 
-                <ul class="pagination" style="margin-top:0">
-                    <li class="paginate_button previous @prevDisabled" id="datatable-keytable_previous">
-
-                        <a href="~/Reports/Story?sortOrder=@ViewData["CurrentSort"]&fy=@fy&length=@ViewData["CurrentLength"]&page=@(Model.PageIndex - 1)&planningUnitId=@currUnit&programId=@currProgram&currentFilter=@ViewData["CurrentFilter"]">
-                            Previous</a>
-                    </li>
-                    @{
-                        var start = Math.Max(1, Model.PageIndex - 6);
-                        var end = Math.Min(Model.PageIndex + 6, Model.TotalPages );
-                    }
-                    @for( var i = start; i <= end; i++ )
-                    {
-                        active = Model.PageIndex == i ? "active" : "";
-                        <li class="paginate_button @active">  
-                        <a href="~/Reports/Story?sortOrder=@ViewData["CurrentSort"]&fy=@fy&length=@ViewData["CurrentLength"]&page=@i&planningUnitId=@currUnit&programId=@currProgram&currentFilter=@ViewData["CurrentFilter"]">
-                           @i</a></li>
-                    }
-                    <li class="paginate_button next @nextDisabled" id="datatable-keytable_next">
-                            
-                            
-                            <a href="~/Reports/Story?sortOrder=@ViewData["CurrentSort"]&fy=@fy&length=@ViewData["CurrentLength"]&page=@(Model.PageIndex + 1)&planningUnitId=@currUnit&programId=@currProgram&currentFilter=@ViewData["CurrentFilter"]">
-                            
-                            Next</a></li>
-                </ul>
+                
             </div>
         </div>
     </div>
