@@ -44,6 +44,15 @@ namespace Kers.Controllers.Reports
             ViewData["fy"] = fy;
             return View();
         }
+
+
+        [HttpGet]
+        [Route("ksu/{fy?}")]
+        public IActionResult Ksu(string fy="0")
+        {
+            ViewData["fy"] = fy;
+            return View();
+        }
         
         [HttpGet]
         [Route("qltrx")]
