@@ -99,13 +99,6 @@ namespace Kers.Controllers.Reports
                     stories = stories.OrderByDescending(s => s.Updated);
                     break;
             }
-/* 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                stories = stories.Where(s => s.PersonalProfile.LastName.Contains(searchString)
-                                    || s.PersonalProfile.FirstName.Contains(searchString));
-            }
- */
             int pageSize = length;
             stories = stories.Include( u => u.Revisions ).ThenInclude( p => p.StoryImages).ThenInclude( p => p.UploadImage).ThenInclude( i => i.UploadFile )
                         .Include(u => u.KersUser.PersonalProfile)
@@ -161,7 +154,9 @@ namespace Kers.Controllers.Reports
                         select s;
             
 
-            stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy);
+            stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy
+                                            && s.KersUser.RprtngProfile.Institution.Name == "Kentucky State University"
+                );
 
             if(programId != 0 ){
                 stories = stories.Where( u => u.MajorProgramId == programId );
