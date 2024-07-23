@@ -1,0 +1,36 @@
+@model List<Kers.Controllers.Reports.StrategicInitiativeIndicatorsViewModel>
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    
+    ViewData["Subtitle"] = "Kentucky Extension Reports";
+    var fy = ViewData["fy"] as string;
+    if( fy == "0"){
+      fy = "2018";
+    }
+    ViewData["Title"] = "KSU Program Indicators for FY" + fy;
+}
+@foreach(var intv in Model){
+    <h2>@intv.Title</h2>
+    @foreach( var prgrm in intv.Indicators){
+        <table class="table">
+            <thead>
+                <th colspan="3">@prgrm.Code.ToString() - @prgrm.Title</th>
+            </thead>
+            <tbody>
+                @foreach( var indctr in prgrm.Indicators){
+                    <tr>
+                        <td>
+                            @prgrm.Code.ToString().@indctr.Code)
+                        </td>
+                        <td>
+                            @indctr.Amount
+                        </td>
+                        <td>
+                            @Html.Raw(@indctr.Description)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
