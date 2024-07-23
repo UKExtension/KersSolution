@@ -209,12 +209,11 @@
                  @await Component.InvokeAsync("Paginator", new {
                     GetParameters = new Dictionary<string, string>() {
                             { "sortOrder",  @ViewData["CurrentSort"] as string },
-                            { "fy", @fy},
                             {"length", @ViewData["CurrentLength"] as string},
                             {"planningUnitId", @currUnit.ToString()},
                             { "programId", @currProgram.ToString()}
                         }, 
-                    UrlString = "Reports/Story",
+                    UrlString = "Reports/Story/"+fy,
                     TotalItems = @Model.TotalItems,
                     ItemsCount = @Model.Count(),
                     PageIndex = Model.PageIndex,
