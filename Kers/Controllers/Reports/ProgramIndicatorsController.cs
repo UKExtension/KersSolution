@@ -308,6 +308,28 @@ namespace Kers.Controllers.Reports
         }
 
 
+
+        [HttpGet("bypersonksu/{fy?}")]
+        public async Task<IActionResult> ByPersonKSU(string fy="0"){
+            FiscalYear fiscalYear = GetFYByName(fy);
+            var data = await context.ProgramIndicatorValue
+                            .Where( v => v.ProgramIndicator.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear 
+                                            && v.Value != 0
+                                            && v.KersUser.RprtngProfile.Institution.Name == "Kentucky State University"
+                                            )
+                            .Include( v => v.PlanningUnit)
+                            .Include( v => v.KersUser).ThenInclude( u => u.RprtngProfile)
+                            .Include( v => v.ProgramIndicator).ThenInclude( i => i.MajorProgram)
+                            .OrderBy( v => v.PlanningUnit.Name)
+                            .ToListAsync();
+            ViewData["fy"] = fiscalYear.Name;
+            return View(data);
+        }
+
+
+
+
+
         [HttpGet("byperson/{fy?}")]
         public async Task<IActionResult> ByPerson(string fy="0"){
             FiscalYear fiscalYear = GetFYByName(fy);
