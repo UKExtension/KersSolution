@@ -9,66 +9,182 @@ namespace Kers.Tasks.Cron
     /// <summary>
     /// Represents a schedule initialized from the crontab expression.
     /// </summary>
-    [Serializable]
-    public sealed class CrontabSchedule
+
+    // ReSharper disable once PartialTypeWithSinglePart
+
+    public sealed partial class CrontabSchedule
     {
-        private static readonly char[] Separators = { ' ' };
-        private readonly CrontabField _days;
-        private readonly CrontabField _daysOfWeek;
-        private readonly CrontabField _hours;
-        private readonly CrontabField _minutes;
-        private readonly CrontabField _months;
+        readonly CrontabField _seconds;
+        readonly CrontabField _minutes;
+        readonly CrontabField _hours;
+        readonly CrontabField _days;
+        readonly CrontabField _months;
+        readonly CrontabField _daysOfWeek;
 
-        private CrontabSchedule(string expression)
+        static readonly CrontabField SecondZero = CrontabField.Seconds("0");
+
+        // ReSharper disable once PartialTypeWithSinglePart
+
+        public sealed partial class ParseOptions
         {
-            Debug.Assert(expression != null);
+            public bool IncludingSeconds { get; set; }
+        }
 
-            var fields = expression.Split((char[]) Separators, StringSplitOptions.RemoveEmptyEntries);
+        //
+        // Crontab expression format:
+        //
+        // * * * * *
+        // - - - - -
+        // | | | | |
+        // | | | | +----- day of week (0 - 6) (Sunday=0)
+        // | | | +------- month (1 - 12)
+        // | | +--------- day of month (1 - 31)
+        // | +----------- hour (0 - 23)
+        // +------------- min (0 - 59)
+        //
+        // Star (*) in the value field above means all legal values as in
+        // braces for that column. The value column can have a * or a list
+        // of elements separated by commas. An element is either a number in
+        // the ranges shown above or two numbers in the range separated by a
+        // hyphen (meaning an inclusive range).
+        //
+        // Source: http://www.adminschoice.com/docs/crontab.htm
+        //
 
-            if (fields.Length != 5)
+        // Six-part expression format:
+        //
+        // * * * * * *
+        // - - - - - -
+        // | | | | | |
+        // | | | | | +--- day of week (0 - 6) (Sunday=0)
+        // | | | | +----- month (1 - 12)
+        // | | | +------- day of month (1 - 31)
+        // | | +--------- hour (0 - 23)
+        // | +----------- min (0 - 59)
+        // +------------- sec (0 - 59)
+        //
+        // The six-part expression behaves similarly to the traditional
+        // crontab format except that it can denotate more precise schedules
+        // that use a seconds component.
+        //
+
+        public static CrontabSchedule Parse(string expression) => Parse(expression, null);
+
+        public static CrontabSchedule Parse(string expression, ParseOptions options) =>
+            TryParse(expression, options, v => v, e => { throw e(); });
+
+        public static CrontabSchedule TryParse(string expression) => TryParse(expression, null);
+
+        public static CrontabSchedule TryParse(string expression, ParseOptions options) =>
+            TryParse(expression, options, v => v, _ => null);
+
+        public static T TryParse<T>(string expression, Func<CrontabSchedule, T> valueSelector, Func<ExceptionProvider, T> errorSelector) =>
+            TryParse(expression, null, valueSelector, errorSelector);
+
+        public static T TryParse<T>(string expression, ParseOptions options, Func<CrontabSchedule, T> valueSelector, Func<ExceptionProvider, T> errorSelector)
+        {
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
+
+            var tokens = expression.Split(StringSeparatorStock.Space, StringSplitOptions.RemoveEmptyEntries);
+
+            var includingSeconds = options != null && options.IncludingSeconds;
+            var expectedTokenCount = includingSeconds ? 6 : 5;
+            if (tokens.Length < expectedTokenCount || tokens.Length > expectedTokenCount)
             {
-                throw new FormatException(string.Format(
-                    "'{0}' is not a valid crontab expression. It must contain at least 5 components of a schedule "
-                    + "(in the sequence of minutes, hours, days, months, days of week).",
-                    expression));
+                return errorSelector(() =>
+                {
+                    var components =
+                        includingSeconds
+                        ? "6 components of a schedule in the sequence of seconds, minutes, hours, days, months, and days of week"
+                        : "5 components of a schedule in the sequence of minutes, hours, days, months, and days of week";
+                    return new CrontabException($"'{expression}' is an invalid crontab expression. It must contain {components}.");
+                });
             }
 
-            _minutes = CrontabField.Minutes(fields[0]);
-            _hours = CrontabField.Hours(fields[1]);
-            _days = CrontabField.Days(fields[2]);
-            _months = CrontabField.Months(fields[3]);
-            _daysOfWeek = CrontabField.DaysOfWeek(fields[4]);
-        }
+            var fields = new CrontabField[6];
 
-        private static Calendar Calendar
-        {
-            get { return CultureInfo.InvariantCulture.Calendar; }
-        }
-
-        public static CrontabSchedule Parse(string expression)
-        {
-            if (expression == null)
+            var offset = includingSeconds ? 0 : 1;
+            for (var i = 0; i < tokens.Length; i++)
             {
-                throw new ArgumentNullException(nameof(expression));
+                var kind = (CrontabFieldKind) i + offset;
+                var field = CrontabField.TryParse(kind, tokens[i], v => new { ErrorProvider = (ExceptionProvider) null, Value = v },
+                                                                   e => new { ErrorProvider = e, Value = (CrontabField) null });
+                if (field.ErrorProvider != null)
+                    return errorSelector(field.ErrorProvider);
+                fields[i + offset] = field.Value;
             }
 
-            return new CrontabSchedule(expression);
+            return valueSelector(new CrontabSchedule(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5]));
         }
+
+        CrontabSchedule(
+            CrontabField seconds,
+            CrontabField minutes, CrontabField hours,
+            CrontabField days, CrontabField months,
+            CrontabField daysOfWeek)
+        {
+            Debug.Assert(minutes != null);
+            Debug.Assert(hours != null);
+            Debug.Assert(days != null);
+            Debug.Assert(months != null);
+            Debug.Assert(daysOfWeek != null);
+
+            _seconds = seconds;
+            _minutes = minutes;
+            _hours = hours;
+            _days = days;
+            _months = months;
+            _daysOfWeek = daysOfWeek;
+        }
+
+        /// <summary>
+        /// Enumerates all the occurrences of this schedule starting with a
+        /// base time and up to an end time limit. This method uses deferred
+        /// execution such that the occurrences are only calculated as they
+        /// are enumerated.
+        /// </summary>
+        /// <remarks>
+        /// This method does not return the value of <paramref name="baseTime"/>
+        /// itself if it falls on the schedule. For example, if <paramref name="baseTime" />
+        /// is midnight and the schedule was created from the expression <c>* * * * *</c>
+        /// (meaning every minute) then the next occurrence of the schedule
+        /// will be at one minute past midnight and not midnight itself.
+        /// The method returns the <em>next</em> occurrence <em>after</em>
+        /// <paramref name="baseTime"/>. Also, <param name="endTime" /> is
+        /// exclusive.
+        /// </remarks>
 
         public IEnumerable<DateTime> GetNextOccurrences(DateTime baseTime, DateTime endTime)
         {
             for (var occurrence = GetNextOccurrence(baseTime, endTime);
-                occurrence < endTime;
-                occurrence = GetNextOccurrence(occurrence, endTime))
+                 occurrence < endTime;
+                 occurrence = GetNextOccurrence(occurrence, endTime))
             {
                 yield return occurrence;
             }
         }
 
-        public DateTime GetNextOccurrence(DateTime baseTime)
-        {
-            return GetNextOccurrence(baseTime, DateTime.MaxValue);
-        }
+        /// <summary>
+        /// Gets the next occurrence of this schedule starting with a base time.
+        /// </summary>
+
+        public DateTime GetNextOccurrence(DateTime baseTime) =>
+            GetNextOccurrence(baseTime, DateTime.MaxValue);
+
+        /// <summary>
+        /// Gets the next occurrence of this schedule starting with a base
+        /// time and up to an end time limit.
+        /// </summary>
+        /// <remarks>
+        /// This method does not return the value of <paramref name="baseTime"/>
+        /// itself if it falls on the schedule. For example, if <paramref name="baseTime" />
+        /// is midnight and the schedule was created from the expression <c>* * * * *</c>
+        /// (meaning every minute) then the next occurrence of the schedule
+        /// will be at one minute past midnight and not midnight itself.
+        /// The method returns the <em>next</em> occurrence <em>after</em>
+        /// <paramref name="baseTime"/>. Also, <param name="endTime" /> is
+        /// exclusive.
+        /// </remarks>
 
         public DateTime GetNextOccurrence(DateTime baseTime, DateTime endTime)
         {
@@ -79,6 +195,7 @@ namespace Kers.Tasks.Cron
             var baseDay = baseTime.Day;
             var baseHour = baseTime.Hour;
             var baseMinute = baseTime.Minute;
+            var baseSecond = baseTime.Second;
 
             var endYear = endTime.Year;
             var endMonth = endTime.Month;
@@ -88,7 +205,21 @@ namespace Kers.Tasks.Cron
             var month = baseMonth;
             var day = baseDay;
             var hour = baseHour;
-            var minute = baseMinute + 1;
+            var minute = baseMinute;
+            var second = baseSecond + 1;
+
+            //
+            // Second
+            //
+
+            var seconds = _seconds ?? SecondZero;
+            second = seconds.Next(second);
+
+            if (second == nil)
+            {
+                second = seconds.GetFirst();
+                minute++;
+            }
 
             //
             // Minute
@@ -129,6 +260,7 @@ namespace Kers.Tasks.Cron
 
             if (day == nil)
             {
+                second = seconds.GetFirst();
                 minute = _minutes.GetFirst();
                 hour = _hours.GetFirst();
                 day = _days.GetFirst();
@@ -136,6 +268,7 @@ namespace Kers.Tasks.Cron
             }
             else if (day > baseDay)
             {
+                second = seconds.GetFirst();
                 minute = _minutes.GetFirst();
                 hour = _hours.GetFirst();
             }
@@ -148,6 +281,7 @@ namespace Kers.Tasks.Cron
 
             if (month == nil)
             {
+                second = seconds.GetFirst();
                 minute = _minutes.GetFirst();
                 hour = _hours.GetFirst();
                 day = _days.GetFirst();
@@ -156,6 +290,7 @@ namespace Kers.Tasks.Cron
             }
             else if (month > baseMonth)
             {
+                second = seconds.GetFirst();
                 minute = _minutes.GetFirst();
                 hour = _hours.GetFirst();
                 day = _days.GetFirst();
@@ -189,7 +324,7 @@ namespace Kers.Tasks.Cron
                 goto RetryDayMonth;
             }
 
-            var nextTime = new DateTime(year, month, day, hour, minute, 0, 0, baseTime.Kind);
+            var nextTime = new DateTime(year, month, day, hour, minute, second, 0, baseTime.Kind);
 
             if (nextTime >= endTime)
                 return endTime;
@@ -198,27 +333,35 @@ namespace Kers.Tasks.Cron
             // Day of week
             //
 
-            if (_daysOfWeek.Contains((int)nextTime.DayOfWeek))
+            if (_daysOfWeek.Contains((int) nextTime.DayOfWeek))
                 return nextTime;
 
-            return GetNextOccurrence(new DateTime(year, month, day, 23, 59, 0, 0, baseTime.Kind), endTime);
+            return GetNextOccurrence(new DateTime(year, month, day, 23, 59, 59, 0, baseTime.Kind), endTime);
         }
+
+        /// <summary>
+        /// Returns a string in crontab expression (expanded) that represents
+        /// this schedule.
+        /// </summary>
 
         public override string ToString()
         {
             var writer = new StringWriter(CultureInfo.InvariantCulture);
 
-            _minutes.Format(writer, true);
-            writer.Write(' ');
-            _hours.Format(writer, true);
-            writer.Write(' ');
-            _days.Format(writer, true);
-            writer.Write(' ');
-            _months.Format(writer, true);
-            writer.Write(' ');
+            if (_seconds != null)
+            {
+                _seconds.Format(writer, true);
+                writer.Write(' ');
+            }
+            _minutes.Format(writer, true); writer.Write(' ');
+            _hours.Format(writer, true); writer.Write(' ');
+            _days.Format(writer, true); writer.Write(' ');
+            _months.Format(writer, true); writer.Write(' ');
             _daysOfWeek.Format(writer, true);
 
             return writer.ToString();
         }
+
+        static Calendar Calendar => CultureInfo.InvariantCulture.Calendar;
     }
 }

@@ -8,40 +8,98 @@ namespace Kers.Tasks.Cron
     /// <summary>
     /// Represents a single crontab field.
     /// </summary>
-    [Serializable]
-    public sealed class CrontabField
-    {
-        private readonly BitArray _bits;
-        private readonly CrontabFieldImpl _impl;
-        private /* readonly */ int _maxValueSet;
-        private /* readonly */ int _minValueSet;
 
-        private CrontabField(CrontabFieldImpl impl, string expression)
+    // ReSharper disable once PartialTypeWithSinglePart
+
+    public sealed partial class CrontabField : ICrontabField
+    {
+        readonly BitArray _bits;
+        /* readonly */ int _minValueSet;
+        /* readonly */ int _maxValueSet;
+        readonly CrontabFieldImpl _impl;
+
+        /// <summary>
+        /// Parses a crontab field expression given its kind.
+        /// </summary>
+
+        public static CrontabField Parse(CrontabFieldKind kind, string expression) =>
+            TryParse(kind, expression, v => v, e => { throw e(); });
+
+        public static CrontabField TryParse(CrontabFieldKind kind, string expression) =>
+            TryParse(kind, expression, v => v, _ => null);
+
+        public static T TryParse<T>(CrontabFieldKind kind, string expression, Func<CrontabField, T> valueSelector, Func<ExceptionProvider, T> errorSelector)
         {
-            _impl = impl ?? throw new ArgumentNullException(nameof(impl));
+            var field = new CrontabField(CrontabFieldImpl.FromKind(kind));
+            var error = field._impl.TryParse(expression, field.Accumulate, null, e => e);
+            return error == null ? valueSelector(field) : errorSelector(error);
+        }
+
+        /// <summary>
+        /// Parses a crontab field expression representing seconds.
+        /// </summary>
+
+        public static CrontabField Seconds(string expression) =>
+            Parse(CrontabFieldKind.Second, expression);
+
+        /// <summary>
+        /// Parses a crontab field expression representing minutes.
+        /// </summary>
+
+        public static CrontabField Minutes(string expression) =>
+            Parse(CrontabFieldKind.Minute, expression);
+
+        /// <summary>
+        /// Parses a crontab field expression representing hours.
+        /// </summary>
+
+        public static CrontabField Hours(string expression) =>
+            Parse(CrontabFieldKind.Hour, expression);
+
+        /// <summary>
+        /// Parses a crontab field expression representing days in any given month.
+        /// </summary>
+
+        public static CrontabField Days(string expression) =>
+            Parse(CrontabFieldKind.Day, expression);
+
+        /// <summary>
+        /// Parses a crontab field expression representing months.
+        /// </summary>
+
+        public static CrontabField Months(string expression) =>
+            Parse(CrontabFieldKind.Month, expression);
+
+        /// <summary>
+        /// Parses a crontab field expression representing days of a week.
+        /// </summary>
+
+        public static CrontabField DaysOfWeek(string expression) =>
+            Parse(CrontabFieldKind.DayOfWeek, expression);
+
+        CrontabField(CrontabFieldImpl impl)
+        {
+            if (impl == null) throw new ArgumentNullException(nameof(impl));
+
+            _impl = impl;
             _bits = new BitArray(impl.ValueCount);
 
             _bits.SetAll(false);
             _minValueSet = int.MaxValue;
             _maxValueSet = -1;
-
-            _impl.Parse(expression, Accumulate);
         }
-
-        #region ICrontabField Members
 
         /// <summary>
         /// Gets the first value of the field or -1.
         /// </summary>
-        public int GetFirst()
-        {
-            return _minValueSet < int.MaxValue ? _minValueSet : -1;
-        }
+
+        public int GetFirst() => _minValueSet < int.MaxValue ? _minValueSet : -1;
 
         /// <summary>
-        /// Gets the next value of the field that occurs after the given 
+        /// Gets the next value of the field that occurs after the given
         /// start value or -1 if there is no next value available.
         /// </summary>
+
         public int Next(int start)
         {
             if (start < _minValueSet)
@@ -59,73 +117,14 @@ namespace Kers.Tasks.Cron
             return -1;
         }
 
+        int IndexToValue(int index) => index + _impl.MinValue;
+        int ValueToIndex(int value) => value - _impl.MinValue;
+
         /// <summary>
         /// Determines if the given value occurs in the field.
         /// </summary>
-        public bool Contains(int value)
-        {
-            return _bits[ValueToIndex(value)];
-        }
 
-        #endregion
-
-        /// <summary>
-        /// Parses a crontab field expression given its kind.
-        /// </summary>
-        public static CrontabField Parse(CrontabFieldKind kind, string expression)
-        {
-            return new CrontabField(CrontabFieldImpl.FromKind(kind), expression);
-        }
-
-        /// <summary>
-        /// Parses a crontab field expression representing minutes.
-        /// </summary>
-        public static CrontabField Minutes(string expression)
-        {
-            return new CrontabField(CrontabFieldImpl.Minute, expression);
-        }
-
-        /// <summary>
-        /// Parses a crontab field expression representing hours.
-        /// </summary>
-        public static CrontabField Hours(string expression)
-        {
-            return new CrontabField(CrontabFieldImpl.Hour, expression);
-        }
-
-        /// <summary>
-        /// Parses a crontab field expression representing days in any given month.
-        /// </summary>
-        public static CrontabField Days(string expression)
-        {
-            return new CrontabField(CrontabFieldImpl.Day, expression);
-        }
-
-        /// <summary>
-        /// Parses a crontab field expression representing months.
-        /// </summary>
-        public static CrontabField Months(string expression)
-        {
-            return new CrontabField(CrontabFieldImpl.Month, expression);
-        }
-
-        /// <summary>
-        /// Parses a crontab field expression representing days of a week.
-        /// </summary>
-        public static CrontabField DaysOfWeek(string expression)
-        {
-            return new CrontabField(CrontabFieldImpl.DayOfWeek, expression);
-        }
-
-        private int IndexToValue(int index)
-        {
-            return index + _impl.MinValue;
-        }
-
-        private int ValueToIndex(int value)
-        {
-            return value - _impl.MinValue;
-        }
+        public bool Contains(int value) => _bits[ValueToIndex(value)];
 
         /// <summary>
         /// Accumulates the given range (start to end) and interval of values
@@ -136,7 +135,8 @@ namespace Kers.Tasks.Cron
         /// set <param name="start" /> and <param name="end" /> to -1 and
         /// <param name="interval" /> to 1.
         /// </remarks>
-        private void Accumulate(int start, int end, int interval)
+
+        T Accumulate<T>(int start, int end, int interval, T success, Func<ExceptionProvider, T> errorSelector)
         {
             var minValue = _impl.MinValue;
             var maxValue = _impl.MaxValue;
@@ -154,7 +154,7 @@ namespace Kers.Tasks.Cron
                         _minValueSet = minValue;
                         _maxValueSet = maxValue;
                         _bits.SetAll(true);
-                        return;
+                        return success;
                     }
 
                     start = minValue;
@@ -167,18 +167,10 @@ namespace Kers.Tasks.Cron
                     //
 
                     if (start < minValue)
-                    {
-                        throw new FormatException(string.Format(
-                            "'{0} is lower than the minimum allowable value for this field. Value must be between {1} and {2} (all inclusive).",
-                            start, _impl.MinValue, _impl.MaxValue));
-                    }
+                        return OnValueBelowMinError(start, errorSelector);
 
                     if (start > maxValue)
-                    {
-                        throw new FormatException(string.Format(
-                            "'{0} is higher than the maximum allowable value for this field. Value must be between {1} and {2} (all inclusive).",
-                            end, _impl.MinValue, _impl.MaxValue));
-                    }
+                        return OnValueAboveMaxError(start, errorSelector);
                 }
             }
             else
@@ -196,26 +188,14 @@ namespace Kers.Tasks.Cron
                 }
 
                 if (start < 0)
-                {
                     start = minValue;
-                }
                 else if (start < minValue)
-                {
-                    throw new FormatException(string.Format(
-                        "'{0} is lower than the minimum allowable value for this field. Value must be between {1} and {2} (all inclusive).",
-                        start, _impl.MinValue, _impl.MaxValue));
-                }
+                    return OnValueBelowMinError(start, errorSelector);
 
                 if (end < 0)
-                {
                     end = maxValue;
-                }
                 else if (end > maxValue)
-                {
-                    throw new FormatException(string.Format(
-                        "'{0} is higher than the maximum allowable value for this field. Value must be between {1} and {2} (all inclusive).",
-                        end, _impl.MinValue, _impl.MaxValue));
-                }
+                    return OnValueAboveMaxError(end, errorSelector);
             }
 
             if (interval < 1)
@@ -244,12 +224,23 @@ namespace Kers.Tasks.Cron
 
             if (_maxValueSet < i)
                 _maxValueSet = i;
+
+            return success;
         }
 
-        public override string ToString()
-        {
-            return ToString(null);
-        }
+        T OnValueAboveMaxError<T>(int value, Func<ExceptionProvider, T> errorSelector) =>
+            errorSelector(
+                () => new CrontabException(
+                    $"{value} is higher than the maximum allowable value for the [{_impl.Kind}] field. " +
+                    $"Value must be between {_impl.MinValue} and {_impl.MaxValue} (all inclusive)."));
+
+        T OnValueBelowMinError<T>(int value, Func<ExceptionProvider, T> errorSelector) =>
+            errorSelector(
+                () => new CrontabException(
+                    $"{value} is lower than the minimum allowable value for the [{_impl.Kind}] field. " +
+                    $"Value must be between {_impl.MinValue} and {_impl.MaxValue} (all inclusive)."));
+
+        public override string ToString() => ToString(null);
 
         public string ToString(string format)
         {
@@ -271,14 +262,35 @@ namespace Kers.Tasks.Cron
             return writer.ToString();
         }
 
-        public void Format(TextWriter writer)
-        {
-            Format(writer, false);
-        }
+        public void Format(TextWriter writer) => Format(writer, false);
 
-        public void Format(TextWriter writer, bool noNames)
-        {
+        public void Format(TextWriter writer, bool noNames) =>
             _impl.Format(this, writer, noNames);
-        }
+    }
+    public interface ICrontabField
+    {
+        int GetFirst();
+        int Next(int start);
+        bool Contains(int value);
+    }
+
+    public delegate Exception ExceptionProvider();
+
+    public partial class CrontabException : Exception
+    {
+        public CrontabException() :
+            base("Crontab error.") {} // TODO: Fix message and add it to resource.
+
+        public CrontabException(string message) :
+            base(message) {}
+
+        public CrontabException(string message, Exception innerException) :
+            base(message, innerException) {}
+    }
+
+    static class StringSeparatorStock
+    {
+        public static readonly char[] Space = { ' ' };
+        public static readonly char[] Comma = { ',' };
     }
 }
