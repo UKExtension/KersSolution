@@ -147,7 +147,7 @@ namespace Kers.Models.Repositories
         public List<Training> RoosterReminders(){
             List<Training> trainings = this.context.Training
                         .Where( t => 
-                                t.tStatus == "A"
+                                t.tStatus == "A"  && t.Start.Year > 2017
                             )
                         .Include( t => t.Enrollment)
                                 .ThenInclude( e => e.Attendie)
