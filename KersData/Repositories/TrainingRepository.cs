@@ -44,7 +44,7 @@ namespace Kers.Models.Repositories
         /***********************************************/
 
         public List<Training> Set3DaysReminders(){
-            List<Training> trainings = this.context.Training.Where( t =>  t.tStatus == "A")
+            List<Training> trainings = this.context.Training.Where( t =>  t.tStatus == "A" && t.Start.Year > 2017)
                                                     .Include( t => t.TrainingSession)
                                                     .Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ToList();
             trainings = trainings.Where(  t => t.Start.AddDays(-3).ToString("MMddyyyy") == DateTimeOffset.Now.ToString("MMddyyyy")).ToList();
@@ -53,7 +53,7 @@ namespace Kers.Models.Repositories
         }
 
         public List<Training> Set7DaysReminders(){
-            List<Training> trainings = this.context.Training.Where( t =>  t.tStatus == "A")
+            List<Training> trainings = this.context.Training.Where( t =>  t.tStatus == "A"  && t.Start.Year > 2017)
                                                     .Include( t => t.TrainingSession)
                                                     .Include(t => t.Enrollment).ThenInclude( e => e.Attendie).ToList();
             trainings = trainings.Where( t => t.Start.AddDays(-7).ToString("MMddyyyy") == DateTimeOffset.Now.ToString("MMddyyyy")).ToList();
