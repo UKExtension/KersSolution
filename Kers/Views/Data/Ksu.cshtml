@@ -1,6 +1,6 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    ViewData["Title"] = "KSU Reports";
+    ViewData["Title"] = "Kentucky State University Reports";
     var fy = ViewData["fy"];
 }
 
@@ -22,13 +22,13 @@
       <li>
         <a asp-controller="ProgramIndicators"  asp-action="Ksu" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
-          <span class="glyphicon-class">Program Indicators pre Major Program</span>
+          <span class="glyphicon-class">Program Indicators by Major Program</span>
         </a>
       </li>
       <li>
         <a asp-controller="ProgramIndicators"  asp-action="ByPersonKSU" asp-route-fy="@fy">
           <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
-          <span class="glyphicon-class">Program Indicators pre Employee</span>
+          <span class="glyphicon-class">Program Indicators by Employee</span>
         </a>
       </li>
       <li>
