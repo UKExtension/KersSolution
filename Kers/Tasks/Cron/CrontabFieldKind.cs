@@ -5,10 +5,11 @@ namespace Kers.Tasks.Cron
     [Serializable]
     public enum CrontabFieldKind
     {
-        Minute,
-        Hour,
-        Day,
-        Month,
-        DayOfWeek
+        Second    = 0, // Keep in order of appearance in expression
+        Minute    = 1,
+        Hour      = 2,
+        Day       = 3,
+        Month     = 4,
+        DayOfWeek = 5
     }
 }

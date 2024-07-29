@@ -4,7 +4,7 @@ import {Location} from '@angular/common';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from "rxjs";
 import {UserService, User} from '../user/user.service';
-import {StoryService, Story, StoryImage, StoryOutcome} from './story.service';
+import {StoryService, Story, StoryImage, StoryOutcome, StoryAudienceType, StoryAudienceConnection} from './story.service';
 import {PlansofworkService, PlanOfWork} from '../plansofwork/plansofwork.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 import { Indicator, IndicatorsService } from '../indicators/indicators.service';
@@ -13,7 +13,12 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 
 @Component({
     selector: 'story-form',
-    templateUrl: 'story-form.component.html'
+    templateUrl: 'story-form.component.html',
+    styles: [`
+    ng-select.ng-invalid{
+        border: 1px solid red;
+    }
+    `]
 })
 export class StoryFormComponent implements OnInit{ 
 
@@ -35,10 +40,17 @@ export class StoryFormComponent implements OnInit{
     editorOptionsLoaded = false;
     initiatives:StrategicInitiative[];
     plans: Observable<PlanOfWork[]>;
+    audience: Observable<StoryAudienceType[]>;
+    otherAudienceSelected:boolean = false;
 
     indicators:Indicator[];
 
     outcome: Observable<StoryOutcome[]>;
+
+    audienceTypes = [];
+
+
+
 
     constructor( 
         private fb: FormBuilder,
@@ -60,7 +72,43 @@ export class StoryFormComponent implements OnInit{
         if( !this.fiscalYearSwitcher){
             this.getFiscalYear();
         }
-        
+        this.service.audiencetype().subscribe(
+            res => {
+                var auds = <StoryAudienceType[]> res;
+                var au = Array<any>();
+                auds.forEach(function(element){
+                    au.push(
+                        {value: element.id, label: element.name, isItOther: element.isItOther}
+                    );
+                });
+                this.audienceTypes = au;
+
+
+
+                if(this.story != null){
+                    if(this.story.storyAudienceConnections != undefined && this.story.storyAudienceConnections.length > 0){
+                        var aud = [];
+                        var isOther = false;
+                        for( var ad of this.story.storyAudienceConnections){
+                            if(ad.storyAudienceType != undefined && ad.storyAudienceType.name != undefined ){
+                                aud.push( {value: ad.storyAudienceType.id, label: ad.storyAudienceType.name} );
+                                if(ad.storyAudienceType.name == "Other") isOther = true;
+                            }else{
+                                var at = auds.filter( t => t.id == ad.storyAudienceTypeId);
+                                aud.push({value: at[0].id, label: at[0].name}  );
+                                if(at[0].name == "Other") isOther = true;
+                            }   
+                        }
+                        this.storyForm.patchValue({storyAudienceConnections:aud});
+                        if(isOther) this.otherAudienceSelected = true;
+                    }
+                }
+
+
+
+
+            }
+        );
         this.outcome = this.service.outcome();
         this.userService.current().subscribe(
             res => {
@@ -88,7 +136,10 @@ export class StoryFormComponent implements OnInit{
                     this.storyForm = this.fb.group(
                         {
                             title: ["", Validators.required],
-                            story: ["The problem<br><br>The educational program response<br><br>The participants/target audience<br><br>Other partners (if applicable)<br><br>Program impact or participant response.", Validators.required],
+                            storyAudienceConnections: [[],Validators.required],
+                            audienceOther: "",
+                            reach:["", this.isPositiveInt],
+                            story: ["Describe the Issue or Situation.<br><br>Describe the Outreach or Educational Program Response (and Partners, if applicable).<br><br>Provide the Number and Description(s) of Participants/Target Audience.<br><br>Provide a Statement of Outcomes or Program Impact. <em>Please note that the outcomes statement must use evaluation data to describe the change(s) that occurred in individuals, groups, families, businesses, or in the community because of the program/outreach.</em>", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
                             planOfWorkId: ["", Validators.required],
@@ -99,7 +150,10 @@ export class StoryFormComponent implements OnInit{
                     this.storyForm = this.fb.group(
                         {
                             title: ["", Validators.required],
-                            story: ["", Validators.required],
+                            storyAudienceConnections: [[],Validators.required],
+                            audienceOther: "",
+                            reach:["", this.isPositiveInt],
+                            story: ["Describe the Issue or Situation.<br><br>Describe the Outreach or Educational Program Response (and Partners, if applicable).<br><br>Provide the Number and Description(s) of Participants/Target Audience.<br><br>Provide a Statement of Outcomes or Program Impact. <em>Please note that the outcomes statement must use evaluation data to describe the change(s) that occurred in individuals, groups, families, businesses, or in the community because of the program/outreach.</em>", Validators.required],
                             isSnap: [false, Validators.required],
                             majorProgramId: ["", Validators.required],
                             planOfWorkId: [""],
@@ -118,6 +172,14 @@ export class StoryFormComponent implements OnInit{
             err => this.errorMessage = <any> err
         )
         
+    }
+    AudienceChanged(event:[]){
+        var a = event.filter( a => a["isItOther"] == true);
+        if(a.length > 0){
+            this.otherAudienceSelected = true;
+        }else{
+            this.otherAudienceSelected = false;
+        }
     }
 
     getFiscalYear(){
@@ -193,6 +255,12 @@ export class StoryFormComponent implements OnInit{
         for( var im of val.storyImages){
             delete im.id;
         }
+        var connections = val.storyAudienceConnections;
+        var StoryAudienceConnections = [];
+        for( var cn of connections){
+            StoryAudienceConnections.push({storyAudienceTypeId:cn["value"]});
+        }
+        val.storyAudienceConnections = StoryAudienceConnections;        
         if(this.story == null){
             this.service.add(val).subscribe(
                 res => {
@@ -210,11 +278,21 @@ export class StoryFormComponent implements OnInit{
                 err => this.errorMessage = <any>err
             );
         }
-
+ 
     }
 
     onCancel(){
         this.onFormCancel.emit();
+    }
+
+
+    //validator
+    isPositiveInt(control:FormControl){
+        
+        if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
+            return null;
+        }
+        return {"notInt":true};
     }
 }
 

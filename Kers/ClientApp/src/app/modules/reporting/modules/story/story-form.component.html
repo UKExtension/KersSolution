@@ -8,14 +8,44 @@
 <div class="row" *ngIf="!loading">
     <div><reporting-display-help id="4"></reporting-display-help></div>
     <div class="col-sm-offset-3 col-sm-9">
-        <h2 *ngIf="!story">New Success Story <span *ngIf="fiscalYear"> for FY{{fiscalYear.name}}</span></h2>
-        <h2 *ngIf="story">Edit Success Story</h2>
+        <h2 *ngIf="!story">New Success Story Submission Form <span *ngIf="fiscalYear"> for FY{{fiscalYear.name}}</span></h2>
+        <h2 *ngIf="story">Edit Success Story Submission Form</h2>
     </div>
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="storyForm">
         <div class="form-group">
             <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Title:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <input type="text" name="title" formControlName="title" id="title" class="form-control col-xs-12" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Audience Type:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <ng-select
+                    id="audienceTypes"
+                    formControlName="storyAudienceConnections"
+                    [items]="audienceTypes"
+                    [multiple]="true"
+                    [closeOnSelect]="false"
+                    [hideSelected]="true"
+                    (change)="AudienceChanged($event)"
+                    placeholder = "(select any/all that apply)">
+                    <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                        <input id="item-{{index}}" type="checkbox"/> {{item.label}}
+                    </ng-template>
+                </ng-select>
+            </div>
+        </div>
+        <div *ngIf="otherAudienceSelected" class="form-group">
+            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Other Audience Type:</label>           
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="text" name="audienceOther" formControlName="audienceOther" id="audienceOther" class="form-control col-xs-12" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Reach:<br><small>(i.e., number of program participants or attendees)</small></label>           
+            <div class="col-md-4 col-sm-4 col-xs-6">
+                <input type="number" name="reach" formControlName="reach" id="reach" class="form-control col-xs-12" />
             </div>
         </div>
         <div class="form-group">
@@ -49,6 +79,8 @@
             </div>
         </div>
         <div class="form-group" *ngIf="editorOptionsLoaded">
+            <div><reporting-display-help [label]="'Writing Effective Success Stories (with Examples)'" id="23"></reporting-display-help></div>
+          <!--   Writing Effective Success Stories (with Examples) -->
             <label for="story" class="control-label col-md-3 col-sm-3 col-xs-12">Success Story:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!storyForm.controls.story.valid">
                 <textarea [froalaEditor]="options" name="story" formControlName="story" id="story" class="form-control col-xs-12"></textarea>

@@ -186,6 +186,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<Story> Story {get;set;}
         public virtual DbSet<StoryRevision> StoryRevision {get;set;}
         public virtual DbSet<StoryOutcome> StoryOutcome {get;set;}
+        public virtual DbSet<StoryAudienceType> StoryAudienceType {get;set;}
         public virtual DbSet <StoryImage> StoryImage {get;set;}
 
         

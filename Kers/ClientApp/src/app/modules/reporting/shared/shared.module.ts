@@ -2,7 +2,7 @@ import { NgModule }            from '@angular/core';
 import { CommonModule }        from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule }         from '@angular/forms';
-//https://github.com/basvandenberg/ng-select
+//https://github.com/ng-select/ng-select
 import { NgSelectModule } from '@ng-select/ng-select';
 
 import { ReportingDisplayHelpComponent } from '../components/reporting-help/reporting-display-help.component';

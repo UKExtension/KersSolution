@@ -186,6 +186,100 @@ namespace Kers.Controllers.Reports
             return View(indicators);
         }
 
+
+
+
+
+
+
+
+
+
+
+
+        [HttpGet]
+        [Route("ksu/{fy?}")]
+        public async Task<IActionResult> Ksu(string fy="0")
+        {
+            FiscalYear fiscalYear = GetFYByName(fy);
+            if(fiscalYear == null){
+                return new StatusCodeResult(500);
+            }
+            ViewData["county"] = "KSU";
+            List<StrategicInitiativeIndicatorsViewModel> indicators;
+            indicators = new List<StrategicInitiativeIndicatorsViewModel>();
+            var initiatives = await context.StrategicInitiative.Where(s => s.FiscalYear == fiscalYear)
+                                    .Include( s => s.ProgramCategory)
+                                    .Include( s => s.MajorPrograms)
+                                    .OrderBy( s => s.order)
+                                    .ToListAsync();
+            var indicatorsThisFiscalYear = await context.ProgramIndicator.Where( i => i.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear).ToListAsync();
+            
+            var indicatorsPerProgram = indicatorsThisFiscalYear
+                                                .GroupBy( p => p.MajorProgramId )
+                                                .Select( g => new {
+                                                    MajorProgramId = g.Key,
+                                                    Indicators = g.Select( d => d )
+                                                }).ToList();
+            foreach( var initiative in initiatives){
+                initiative.MajorPrograms = initiative.MajorPrograms.OrderBy( m => m.order).ToList();
+                var intv = new StrategicInitiativeIndicatorsViewModel();
+                intv.Title = initiative.ProgramCategory.ShortName + " " + initiative.Name;
+                intv.Code = initiative.PacCode;
+                intv.Indicators = new List<MajorProgramIndicatorsViewModel>();
+                foreach(var program in initiative.MajorPrograms){
+                    var programViewModel = new MajorProgramIndicatorsViewModel();
+                    programViewModel.Title = program.Name;
+                    programViewModel.Code = program.PacCode;
+                    programViewModel.Indicators = new List<IndicatorViewModel>();
+                    var indicatorsPerThisProgram = indicatorsPerProgram.Where( n => n.MajorProgramId == program.Id).FirstOrDefault();
+                    if( indicatorsPerThisProgram != null ){
+                        var i = 1;
+                        foreach( var indctr in indicatorsPerThisProgram.Indicators.OrderBy( d => d.order)){
+                            var ind = new IndicatorViewModel();
+                            ind.Description = indctr.Question;
+                            ind.Code = i;
+
+                                ind.Amount = context.ProgramIndicatorValue
+                                                            .Where( v => 
+                                                                        v.ProgramIndicatorId == indctr.Id 
+                                                                            &&
+                                                                        v.KersUser.RprtngProfile.Institution.Name=="Kentucky State University"
+                                                                        )
+                                                            .Sum( d => d.Value);
+                            i++;
+                            programViewModel.Indicators.Add( ind );
+                        }
+                    }
+                    intv.Indicators.Add(programViewModel);
+                }
+
+                indicators.Add( intv );
+            }
+            ViewData["fy"] = fiscalYear.Name;
+            return View(indicators);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpGet("countylist/{fy?}")]
         public async Task<IActionResult> Countylist(string fy="0"){
 
@@ -212,6 +306,28 @@ namespace Kers.Controllers.Reports
             ViewData["fy"] = fy;
             return View(counties);
         }
+
+
+
+        [HttpGet("bypersonksu/{fy?}")]
+        public async Task<IActionResult> ByPersonKSU(string fy="0"){
+            FiscalYear fiscalYear = GetFYByName(fy);
+            var data = await context.ProgramIndicatorValue
+                            .Where( v => v.ProgramIndicator.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear 
+                                            && v.Value != 0
+                                            && v.KersUser.RprtngProfile.Institution.Name == "Kentucky State University"
+                                            )
+                            .Include( v => v.PlanningUnit)
+                            .Include( v => v.KersUser).ThenInclude( u => u.RprtngProfile)
+                            .Include( v => v.ProgramIndicator).ThenInclude( i => i.MajorProgram)
+                            .OrderBy( v => v.PlanningUnit.Name)
+                            .ToListAsync();
+            ViewData["fy"] = fiscalYear.Name;
+            return View(data);
+        }
+
+
+
 
 
         [HttpGet("byperson/{fy?}")]

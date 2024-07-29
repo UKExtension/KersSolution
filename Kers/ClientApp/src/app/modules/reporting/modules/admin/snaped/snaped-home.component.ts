@@ -61,6 +61,11 @@ import { saveAs } from 'file-saver';
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'personnelhourdetails'" [filename]="'PersonnelHourDetails'" [label]="'Personnel Hour Details'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'individualcontacttotals'" [filename]="'IndividualContactTotals'" [label]="'Individual Contact Totals'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'specificsitenamesbymonth'" [filename]="'SpecificSitenamesbyMonth'" [label]="'Specific Site Names By Month'"></snaped-download-button><br>
+    
+    <snaped-download-button [fiscalYear]="fiscalYear" [location]="'specificsitedetails'" [filename]="'SpecificSiteDetails'" [label]="'Specific Site Details'"></snaped-download-button><br>
+    
+    
+    
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'directbypersonbymonth'" [filename]="'DirectByPersonPerMonth'" [label]="'Direct Sites By Person, By Month - including number of contacts'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'indirectbyemployee'" [filename]="'IndirectByEmployee'" [label]="'Indirects per Person per Number Reached'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'audienceagecategory'" [filename]="'AudienceAgeCategory'" [label]="'Audience Age and Category Totals'"></snaped-download-button><br>

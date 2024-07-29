@@ -1,0 +1,193 @@
+@model KersData.Models.PaginatedList<Kers.Models.Entities.KERScore.Story>
+
+@{
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    ViewData["Title"] = "Success Stories by Kentukcy State University";
+    ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var lngth = Convert.ToString(ViewData["CurrentLength"]);
+    var srt = Convert.ToString(ViewData["CurrentSort"]);
+    var fy = ViewData["fy"] as string;
+    var srch = Convert.ToString(ViewData["CurrentFilter"]);
+    var units = ViewData["Units"] as List<Kers.Models.Entities.KERScore.PlanningUnit>;
+    var programs = ViewData["Program"] as List<Kers.Models.Entities.KERScore.MajorProgram>;
+    //var positions = ViewData["Position"] as List<Kers.Models.Entities.KERScore.ExtensionPosition>;
+    int currUnit = (int) ViewBag.CurrentUnit;
+    int currProgram = (int) ViewBag.CurrentProgram;
+    
+}
+
+<style>
+.search-filters{
+    padding-bottom: 2em;
+}
+.search-filters label{
+    font-weight: normal;
+}
+@@media (min-width: 1200px) {
+    .story-brief{
+        min-height: 290px;
+    }
+}
+</style>
+<form asp-controller="Story" asp-action="Ksu" method="get" class="form-inline">
+    <div class="search-filters">
+        <div class="form-group">
+            <label for="programId">&nbsp;&nbsp;&nbsp;Major Program</label>
+            <select class="form-control" name="programId" onchange="this.form.submit()" style="max-width: 300px;">
+                <option value="0">-- Select --</option>
+                @foreach( var program in programs )
+                {
+                    if(program.Id == @currProgram)
+                    {
+                        <option value="@program.Id" selected="selected">@program.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@program.Id">@program.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group" style="float: right">
+            <label>
+                Order By: 
+                <div class="btn-group" data-toggle="buttons">
+                        
+                        @if(srt == "newest")
+                        {
+                        <label class="btn btn-default active" onclick="document.getElementById('newest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="newest" value="newest" checked="checked"> Newest
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('newest').checked=true; this.form.submit();">
+                                <input type="radio" name="SortOrder" id="newest" value="newest"> Newest
+                        </label>
+                        }
+
+                        @if(srt == "oldest")
+                        {  
+                        <label class="btn btn-default active" onclick="document.getElementById('oldest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="oldest" value="oldest"  checked="checked"> Oldest
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('oldest').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="oldest" value="oldest"> Oldest
+                        </label>  
+                        }
+                        @if(srt == "author")
+                        {  
+                        <label class="btn btn-default active" onclick="document.getElementById('author').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="author" value="author"  checked="checked"> Author
+                        </label>
+                        }
+                        else
+                        {
+                        <label class="btn btn-default" onclick="document.getElementById('author').checked=true; this.form.submit();">
+                            <input type="radio" name="SortOrder" id="author" value="author"> Author
+                        </label>
+                        }
+                    </div>
+            </label>
+        </div>
+    </div>
+        <div id="datatable-keytable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+            
+            <div class="row">
+            
+                            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                                
+                            </div>
+
+                            <div class="clearfix"></div>
+
+                            @foreach( var story in Model)
+                                {
+                                    @await Html.PartialAsync("StoryBriefPartial", story)
+                                }
+
+            </div>
+            <div class="row">
+                @{
+                    var from = (Model.PageIndex - 1) * Model.PageSize + 1;
+                    var to = from + Model.Count() - 1;
+                }
+                <div class="col-sm-4">
+                    <div class="dataTables_info" id="datatable-keytable_info" role="status" aria-live="polite">Showing @from to @to of @Model.TotalItems entries</div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Show
+                            <select name="length" 
+                                    class="form-control input-sm"
+                                    id="length"
+                                    onchange="this.form.submit()"
+                                    >
+                                
+                                @if( lngth == "18")
+                                {
+                                        <option value="18" selected="selected" >18</option>
+                                }
+                                else
+                                {
+                                    <option value="18" >18</option>
+                                }
+                                @if( lngth == "36")
+                                {
+                                        <option value="36" selected="selected" >36</option>
+                                }
+                                else
+                                {
+                                    <option value="36" >36</option>
+                                }
+
+                                @if( lngth == "72")
+                                {
+                                        <option value="72" selected="selected" >72</option>
+                                }
+                                else
+                                {
+                                    <option value="72" >72</option>
+                                }
+                                
+                                @if( lngth == "144")
+                                {
+                                        <option value="144" selected="selected" >144</option>
+                                }
+                                else
+                                {
+                                    <option value="144" >144</option>
+                                }
+                            </select> entries
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="text-right" >
+                        @await Component.InvokeAsync("Paginator", new {
+                            GetParameters = new Dictionary<string, string>() {
+                                    { "sortOrder",  @ViewData["CurrentSort"] as string },
+                                    {"length", @ViewData["CurrentLength"] as string},
+                                    {"planningUnitId", @currUnit.ToString()},
+                                    { "programId", @currProgram.ToString()}
+                                }, 
+                            UrlString = "Reports/Story/ksu/"+fy,
+                            TotalItems = @Model.TotalItems,
+                            ItemsCount = @Model.Count(),
+                            PageIndex = Model.PageIndex,
+                            PageSize = Model.PageSize,
+                        }) 
+
+                        
+                        </div>
+                    </div>
+                </div>
+            
+        
+            </div>
+        </div>             
+    </div>
+</form>
