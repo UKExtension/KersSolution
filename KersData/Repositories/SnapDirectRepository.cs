@@ -1045,7 +1045,7 @@ namespace Kers.Models.Repositories
                                         ).ToList();
                                         
                 var filteredCommitments = context.SnapEd_Commitment
-                                        .Where( c => c.FiscalYear == fiscalYear)
+                                        .Where( c => c.FiscalYear == fiscalYear && c.KersUser.RprtngProfile.Institution.Name.Equals("University of Kentucky") )
                                         .Include( c => c.KersUser)
                                         .ToList();
                 var commitmentst = filteredCommitments
