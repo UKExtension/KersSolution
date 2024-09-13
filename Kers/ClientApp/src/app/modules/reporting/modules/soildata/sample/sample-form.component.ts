@@ -75,7 +75,7 @@ export class SampleFormComponent implements OnInit {
             isRange: false, singleDate: {jsDate: date}
                       }, Validators.required],
           billingTypeId: [1],
-          coSamnum: ["", [Validators.maxLength(4), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample, this.isThisACopy)],
+          coSamnum: ["", [Validators.maxLength(5), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample, this.isThisACopy)],
           optionalTests: '',
           acres: [""],
           optionalInfo: [""],
