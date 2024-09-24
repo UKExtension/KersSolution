@@ -570,6 +570,63 @@ namespace Kers.Controllers.Reports
             return View(table);
         }
 
+        [HttpGet]
+        [Route("icsfile")]
+        public FileResult DownloadFile(){
+            using (MemoryStream stream = new MemoryStream())
+            {
+                StreamWriter objstreamwriter = new StreamWriter(stream);
+
+
+                var text = "BEGIN:VCALENDAR\n"+
+"VERSION:2.0\n"+
+"PRODID:-//ical.marudot.com//iCal Event Maker\n"+
+"CALSCALE:GREGORIAN\n"+
+"BEGIN:VTIMEZONE\n"+
+"TZID:America/Chicago\n"+
+"TZURL:http://tzurl.org/zoneinfo-outlook/America/Chicago\n"+
+"X-LIC-LOCATION:America/Chicago\n"+
+"BEGIN:DAYLIGHT\n"+
+"TZOFFSETFROM:-0600\n"+
+"TZOFFSETTO:-0500\n"+
+"TZNAME:CDT\n"+
+"DTSTART:19700308T020000\n"+
+"RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU\n"+
+"END:DAYLIGHT\n"+
+"BEGIN:STANDARD\n"+
+"TZOFFSETFROM:-0500\n"+
+"TZOFFSETTO:-0600\n"+
+"TZNAME:CST\n"+
+"DTSTART:19701101T020000\n"+
+"RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU\n"+
+"END:STANDARD\n"+
+"END:VTIMEZONE\n"+
+"BEGIN:VEVENT\n"+
+"DTSTAMP:20210114T163918Z\n"+
+"UID:20210114T163918Z-1385374703@marudot.com\n"+
+"DTSTART;TZID=America/Chicago:20220112T120000\n"+
+"DTEND;TZID=America/Chicago:\n"+
+"SUMMARY:Welcome to the Motorway\n"+
+"URL:https://en.wikipedia.org/wiki/Gridlock_(Doctor_Who)\n"+
+"DESCRIPTION:Learn all about the rules of the Motorway and how to access the fast lane. \n"+
+"LOCATION:New Earth\n"+
+"TRANSP:OPAQUE\n"+
+"X-MICROSOFT-CDO-BUSYSTATUS:BUSY\n"+
+"BEGIN:VALARM\n"+
+"ACTION:DISPLAY\n"+
+"DESCRIPTION:Welcome to the Motorway\n"+
+"TRIGGER:-PT15M\n"+
+"END:VALARM\n"+
+"END:VEVENT\n"+
+"END:VCALENDAR";
+
+                objstreamwriter.Write(text);
+                objstreamwriter.Flush();
+                objstreamwriter.Close(); 
+                return File(stream.ToArray(), "text/calendar", "ExtensionTraining.ics");
+            }
+            
+        }
 
         [HttpGet]
         [Route("facultystories/{year?}")]
