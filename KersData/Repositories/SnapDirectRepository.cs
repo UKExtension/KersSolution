@@ -1292,6 +1292,64 @@ namespace Kers.Models.Repositories
 
 
 
+        public string IndirectByProject(FiscalYear fiscalYear, bool refreshCache = false){
+
+            string result;
+            var cacheKey = CacheKeys.IndirectByProject + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+                
+                
+
+                var reached = this.context.SnapIndirectAudienceTargeted.OrderBy( r => r.order).ToList();
+
+
+                var SnapData = this.SnapData( fiscalYear);
+
+                var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate < fiscalYear.End && s.Revision.ActivityDate > fiscalYear.Start);
+
+                var rows = new List<List<string>>();
+
+                keys.Add("Indirect Method");
+                foreach( var r in reached){
+                    keys.Add(r.Name);
+                }
+                result = string.Join(", ", keys.ToArray()) + "\n";
+
+                
+
+                var projects = this.context.SnapIndirectReached.OrderBy( r => r.order );
+                
+                foreach( var project in projects){
+                    var row = new List<string>();
+                    row.Add(project.Name);
+                    
+                    foreach( var rch in reached){
+                        var data = indirectSnapData.
+                                    Where( s => s.Revision.SnapIndirect.SnapIndirectAudienceTargetedId.Equals(project.Id)).
+                                    Select( 
+                                        l => l.Revision.SnapIndirect.SnapIndirectReachedValues.Where(v => v.SnapIndirectReachedId == rch.Id).Sum( t => t.Value)
+                                    ).Sum( p => p);
+                        row.Add(data.ToString());
+                    }
+
+                    result += string.Join(", ", row.ToArray()) + "\n";
+                }
+
+                
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
+                    }); 
+                
+            }
+            return result;
+        }
+
 
     }
 

@@ -36,11 +36,11 @@ import { saveAs } from 'file-saver';
   <br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'summarybyplanningunit'" [filename]="'CommitmentSummaryByPlanningUnit'" [label]="'Summary By Planning Unit'"></snaped-download-button>| 
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'summarybyplanningunitnotassistants'" [filename]="'CommitmentSummaryByPlanningUnitNotNEPAssistants'" [label]="'Summary By Planning Unit (Excludes NEP Assistants)'"></snaped-download-button> 
-    <br>
+    /* <br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'reinforcementitems'" [filename]="'ReinforcementItems'" [label]="'Reinforcement Items'"></snaped-download-button>|
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'reinforcementitemspercounty'" [filename]="'ReinforcementItemsPerCounty'" [label]="'Reinforcement Items Per County'"></snaped-download-button>|
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'suggestedincentiveitems'" [filename]="'SuggestedIncentiveItems'" [label]="'Suggested Incentive Items'"></snaped-download-button> 
-    <br>
+    <br> */
   <div *ngIf="fiscalYear.start.getTime() < currentDate.getTime() ">
     <h5>Reimbursement Year-To-Date Totals: </h5>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'reimbursementnepassistants'" [filename]="'ReimbursementNepAssistants'" [label]="'NEP Assistants'"></snaped-download-button>|
@@ -68,6 +68,7 @@ import { saveAs } from 'file-saver';
     
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'directbypersonbymonth'" [filename]="'DirectByPersonPerMonth'" [label]="'Direct Sites By Person, By Month - including number of contacts'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'indirectbyemployee'" [filename]="'IndirectByEmployee'" [label]="'Indirects per Person per Number Reached'"></snaped-download-button><br>
+    <snaped-download-button [fiscalYear]="fiscalYear" [location]="'indirectbyproject'" [filename]="'IndirectByProject'" [label]="'Indirect by Project'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'audienceagecategory'" [filename]="'AudienceAgeCategory'" [label]="'Audience Age and Category Totals'"></snaped-download-button><br>
     <br><br>
     <button class="btn btn-success btn-xs" routerLink="/reporting/admin/snaped/reports">Custom Reports</button>

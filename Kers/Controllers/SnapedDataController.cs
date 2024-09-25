@@ -554,6 +554,26 @@ namespace Kers.Controllers
         }
 
 
+
+
+
+        [HttpGet]
+        [Route("indirectbyproject/{fy}/data.csv")]
+        [Authorize]
+        public IActionResult IndirectByProject(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Indirect by Project Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+
+            return Ok(this.snapDirectRepo.IndirectByProject(fiscalYear));
+        }
+
+
+
         [HttpGet]
         [Route("partnersofacounty/{unitid}/{fy}/data.csv")]
         [Authorize]

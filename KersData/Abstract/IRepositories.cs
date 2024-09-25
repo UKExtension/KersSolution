@@ -159,6 +159,7 @@ namespace Kers.Models.Abstract
         string IndividualContactTotals(FiscalYear fiscalYear, Boolean refreshCache = false);
         string EstimatedSizeofAudiencesReached(FiscalYear fiscalYear, Boolean refreshCache = false);
         string IndirectByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
+        string IndirectByProject(FiscalYear fiscalYear, bool refreshCache = false);
         string SessionTypebyMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
         string AudienceAgeCategory(FiscalYear fiscalYear, Boolean refreshCache = false);
         

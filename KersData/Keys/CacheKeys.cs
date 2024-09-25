@@ -77,6 +77,7 @@ namespace Kers.Models.Repositories
         public static string SnapCommitmentReinforcementItemsPerCounty = "SnapCommitmentReinforcementItemsPerCounty";
         public static string SnapCommitmentSuggestedIncentiveItems = "SnapCommitmentSuggestedIncentiveItems";
         public static string IndirectByEmployee = "IndirectByEmployee";
+        public static string IndirectByProject = "IndirectByProject";
         public static string PartnersOfACounty = "PartnersOfACounty";
         public static string AudienceAgeCategory = "AudienceAgeCategory";
         public static string SnapSpecificSiteNamesDetails = "SnapSpecificSiteNamesDetails";
