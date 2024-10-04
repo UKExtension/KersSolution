@@ -1000,11 +1000,13 @@ namespace Kers.Models.Repositories
 
         public string PersonalHourDetails(FiscalYear fiscalYear, bool refreshCache = false){
             string result;
+            /*
             var cacheKey = CacheKeys.PersonalHourDetails + fiscalYear.Name;
             var cacheString = _cache.GetString(cacheKey);
             if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
                 result = cacheString;
             }else{
+            */
                 var keys = new List<string>();
                 keys.Add("Area");
                 keys.Add("PlanningUnit");
@@ -1110,11 +1112,11 @@ namespace Kers.Models.Repositories
                     row += committed.ToString() + ",";
                     row += (totalHours - committed).ToString();
                     result += row + "\n";
-                    _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+               /*     _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                         });
-                }
+                }*/
             }
             return result;
         }

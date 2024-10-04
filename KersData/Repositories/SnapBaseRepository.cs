@@ -42,11 +42,12 @@ namespace Kers.Models.Repositories
                 SnapData = new List<UserRevisionData>();
                 foreach( var rev in snapEligible ){
                     var cacheKey = CacheKeys.UserRevisionWithSnapData + rev.Id.ToString();
-                    var cacheString = _cache.GetString(cacheKey);
+                    //var cacheString = _cache.GetString(cacheKey);
                     UserRevisionData data;
-                    if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
+                 /*   if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
                         data = JsonConvert.DeserializeObject<UserRevisionData>(cacheString);
                     }else{
+                    */
                         data = new UserRevisionData();
                         var activity = context.Activity.Where( a => a.Id == rev.ActivityId )
                                         .Include( a => a.KersUser ).ThenInclude( u => u.RprtngProfile).ThenInclude( p => p.PlanningUnit).ThenInclude( u => u.ExtensionArea)
@@ -70,12 +71,12 @@ namespace Kers.Models.Repositories
                             expiration = 1;
                         }
 
-                        var serialized = JsonConvert.SerializeObject(data);
+                      /*  var serialized = JsonConvert.SerializeObject(data);
                         _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                             {
                                 AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( expiration )
                             }); 
-                    }      
+                    }      */
                     SnapData.Add(data);
                 }
  
@@ -93,12 +94,12 @@ namespace Kers.Models.Repositories
 
         protected List<int> LastActivityRevisionIds( FiscalYear fiscalYear, bool refreshCache = false ){
             var cacheKey = CacheKeys.ActivityLastRevisionIdsPerFiscalYear + fiscalYear.Name + fiscalYear.Type;
-            var cacheString = _cache.GetString(cacheKey);
+           // var cacheString = _cache.GetString(cacheKey);
             List<int> ids;
-            if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
+          /*  if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
                 ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
             }else{
-                /* 
+                
                 ids = new List<int>();
                 var activities = context.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End)
@@ -115,11 +116,11 @@ namespace Kers.Models.Repositories
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End).
                     Select( a => a.LastRevisionId).ToList();                    
                 var serialized = JsonConvert.SerializeObject(ids);
-                _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+               /* _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
                     });
-            }
+            } */
             return ids;
         }
 

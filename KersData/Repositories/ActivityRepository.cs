@@ -142,12 +142,13 @@ namespace Kers.Models.Repositories
 
         public List<int> LastActivityRevisionIds( FiscalYear fiscalYear, IDistributedCache _cache){
             var cacheKey = "ActivityLastRevisionIdsPerFiscalYear" + fiscalYear.Name;
-            var cacheString = _cache.GetString(cacheKey);
+            //var cacheString = _cache.GetString(cacheKey);
             List<int> ids;
+            /*
             if (!string.IsNullOrEmpty(cacheString)){
                 ids = JsonConvert.DeserializeObject<List<int>>(cacheString);
             }else{
-                ids = new List<int>();
+        */        ids = new List<int>();
                 ids = coreContext.Activity.
                     Where(r => r.ActivityDate > fiscalYear.Start && r.ActivityDate < fiscalYear.End).
                     Select( r => r.LastRevisionId).ToList();
@@ -161,12 +162,12 @@ namespace Kers.Models.Repositories
                     ids.Add(last.Id);
                 }
                 */
-                var serialized = JsonConvert.SerializeObject(ids);
+                /*var serialized = JsonConvert.SerializeObject(ids);
                 _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
-                    });
-            }
+                    });*/
+           // }
             return ids;
         }
 
