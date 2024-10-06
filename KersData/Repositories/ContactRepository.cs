@@ -1437,11 +1437,15 @@ namespace Kers.Models.Repositories
                             Include(a => a.RaceEthnicityValues).
                             AsSplitQuery().
                             OrderBy(a => a.Created).LastOrDefault();
-                        var serialized = JsonConvert.SerializeObject(lstrvsn);
-                        _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
-                            });
+                        // Save into cache only recent activities
+                        if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+                          
+                            var serialized = JsonConvert.SerializeObject(lstrvsn);
+                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                                {
+                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                });
+                        } 
                     }
                     if(lstrvsn != null){
                         GroupRevisions.Add(lstrvsn);

@@ -797,11 +797,17 @@ namespace Kers.Models.Repositories
                             Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                             Include(a => a.RaceEthnicityValues).
                             OrderBy(a => a.Created).Last();
-                        var serialized = JsonConvert.SerializeObject(lstrvsn);
-                        _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
-                            });
+
+
+                        // Save into cache only recent activities
+                        if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+                          
+                            var serialized = JsonConvert.SerializeObject(lstrvsn);
+                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                                {
+                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                });
+                        } 
                     }
                     unitRevisions.Add(lstrvsn);
                     OptionNumbers.AddRange(lstrvsn.ActivityOptionNumbers);
@@ -845,11 +851,15 @@ namespace Kers.Models.Repositories
                             Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                             Include(a => a.RaceEthnicityValues).
                             OrderBy(a => a.Created).Last();
-                        var serialized = JsonConvert.SerializeObject(lstrvsn);
-                        _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
-                            });
+                        // Save into cache only recent activities
+                        if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+                          
+                            var serialized = JsonConvert.SerializeObject(lstrvsn);
+                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                                {
+                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                });
+                        } 
                     }
                     unitRevisions.Add(lstrvsn);
                     OptionNumbers.AddRange(lstrvsn.ActivityOptionNumbers);
@@ -899,11 +909,15 @@ namespace Kers.Models.Repositories
                             Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                             Include(a => a.RaceEthnicityValues).
                             OrderBy(a => a.Created).Last();
-                        var serialized = JsonConvert.SerializeObject(lstrvsn);
-                        _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
-                            {
-                                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
-                            });
+                        // Save into cache only recent activities
+                        if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+                          
+                            var serialized = JsonConvert.SerializeObject(lstrvsn);
+                            _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
+                                {
+                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                });
+                        } 
                     }
                     unitRevisions.Add(lstrvsn);
                     OptionNumbers.AddRange(lstrvsn.ActivityOptionNumbers);
