@@ -480,11 +480,14 @@ namespace Kers.Controllers
                             Include( a => a.ActivityImages).
                             OrderBy(a => a.Created).Last();
                             lstrvsn.ActivityImages = context.Activity.Where( a => a.Id == rev).Include( a => a.ActivityImages).First().ActivityImages;
-                            var revSerialized = JsonConvert.SerializeObject(lstrvsn);
-                            _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
-                                {
-                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
-                                });
+                            //Store revision only if it is recent
+                            if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+                                var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                                _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                    });
+                            }
                     }
 
 
@@ -569,11 +572,14 @@ namespace Kers.Controllers
                             Include(a => a.RaceEthnicityValues).
                             AsSplitQuery().
                             OrderBy(a => a.Created).Last();
-                            var revSerialized = JsonConvert.SerializeObject(lstrvsn);
-                            _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
-                                {
-                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
-                                });
+                            //Store revision only if it is recent
+                            if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+                                var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                                _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                    });
+                            }
                     }
                     contactsThisMonth.Males += lstrvsn.Male;
                     contactsThisMonth.Females += lstrvsn.Female;
@@ -738,11 +744,14 @@ namespace Kers.Controllers
                                 Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                                 Include(a => a.RaceEthnicityValues).
                                 OrderBy(a => a.Created).Last();
+                                //Store revision only if it is recent
+                            if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
                                 var revSerialized = JsonConvert.SerializeObject(lstrvsn);
                                 _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
                                     {
-                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                                     });
+                            }
                         }
 
 
@@ -848,11 +857,14 @@ namespace Kers.Controllers
                                 Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                                 Include(a => a.RaceEthnicityValues).
                                 OrderBy(a => a.Created).Last();
+                                //Store revision only if it is recent
+                            if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
                                 var revSerialized = JsonConvert.SerializeObject(lstrvsn);
                                 _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
                                     {
                                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                                     });
+                            }
                         }
                         perProgramContacts.Males += lstrvsn.Male;
                         perProgramContacts.Females += lstrvsn.Female;
