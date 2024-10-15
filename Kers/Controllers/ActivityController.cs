@@ -838,16 +838,17 @@ namespace Kers.Controllers
                         var revCacheString = _distributedCache.GetString(revCacheKey);
 
                         ActivityRevision lstrvsn;
+                        
                         if (!string.IsNullOrEmpty(revCacheString)){
                             lstrvsn = JsonConvert.DeserializeObject<ActivityRevision>(revCacheString);
-                        }else{
+                        }else{ 
                             lstrvsn = context.ActivityRevision.
                                 AsNoTracking().
                                 Where(r => r.ActivityId == rev).
                                 Include(a => a.ActivityOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                                 Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                                 Include(a => a.RaceEthnicityValues).
-                                OrderBy(a => a.Created).Last();
+                                OrderBy(a => a.Created).AsSplitQuery().Last(); 
                                 var revSerialized = JsonConvert.SerializeObject(lstrvsn);
                                 _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
                                     {

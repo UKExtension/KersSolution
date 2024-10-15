@@ -65,7 +65,7 @@ namespace Kers.Controllers.Reports
                 return new StatusCodeResult(500);
             }
             if( type == 0 ){
-               ViewData["Title"] = this.context.District.Find( id ).Name;
+               ViewData["Title"] = this.context.District.Find( id ) != null ? this.context.District.Find( id ).Name : "";
             }else if( type == 1 ){
                 ViewData["Title"] = this.context.PlanningUnit.Find( id ).Name;
             }else if( type == 2) {
