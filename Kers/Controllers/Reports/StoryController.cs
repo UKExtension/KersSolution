@@ -297,6 +297,7 @@ namespace Kers.Controllers.Reports
                                             .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
                                                 .ThenInclude( m => m.StrategicInitiative)
                                                 .ThenInclude( i => i.FiscalYear)
+                                            .AsSplitQuery()
                                             .FirstOrDefaultAsync();
 
             if(story == null){

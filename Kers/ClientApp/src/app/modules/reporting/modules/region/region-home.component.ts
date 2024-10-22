@@ -18,7 +18,7 @@ import { RegionService } from './region.service';
 
 
 
-  <county-list [type]="'region'" [regionId]="0"></county-list> 
+  <county-list [type]="'region'" [regionId]="regionId"></county-list> 
   
   <div class="col-xs-12">
         <div class="x_panel">

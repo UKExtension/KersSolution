@@ -16,7 +16,7 @@ import { AreaService } from './area.service';
     
     </div>
     <div *ngIf="!noArrea">
-        <county-list [type]="'area'" [areaId]="0"></county-list> 
+        <county-list [type]="'area'" [areaId]="areaId"></county-list> 
         <div class="col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
