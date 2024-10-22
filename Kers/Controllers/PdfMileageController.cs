@@ -396,7 +396,7 @@ namespace Kers.Controllers
 		List<MileageLogTableData> pages = new List<MileageLogTableData>();
 	
 		public string[] UKSourceNames = new string[]{"State", "Federal"};
-		public string[] countySourceNames = new string[]{"County Travel (Reimbursed to Employee)"};
+		public string[] countySourceNames = new string[]{"County"};
 		public string[] professionalDevelopmentNames = new string[]{"Professional Improvement (Reimbursed to Employee)"};
 
 
