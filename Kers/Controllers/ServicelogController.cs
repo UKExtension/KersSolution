@@ -395,7 +395,7 @@ namespace Kers.Controllers
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(10));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, ops, cacheEntryOptions);
@@ -419,7 +419,7 @@ namespace Kers.Controllers
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(10));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, ops, cacheEntryOptions);
@@ -443,7 +443,7 @@ namespace Kers.Controllers
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(10));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, rcs, cacheEntryOptions);
@@ -466,7 +466,7 @@ namespace Kers.Controllers
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(10));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, rcs, cacheEntryOptions);
