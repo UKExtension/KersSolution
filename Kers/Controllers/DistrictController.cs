@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -30,19 +31,22 @@ namespace Kers.Controllers
         KERSmainContext mainContext;
         IKersUserRepository userRepo;
         ILogRepository logRepo;
+        IMemoryCache memoryCache;
         IFiscalYearRepository fiscalYearRepo;
         public DistrictController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
-                    IFiscalYearRepository fiscalYearRepo
+                    IFiscalYearRepository fiscalYearRepo,
+                    IMemoryCache memoryCache
             ){
            this.context = context;
            this.mainContext = mainContext;
            this.userRepo = userRepo;
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
+           this.memoryCache = memoryCache;
         }
 
  
@@ -75,7 +79,7 @@ namespace Kers.Controllers
             List<KersUser> districtEmployees;
             if( filter == "area" ){
                 if( includePairings){
-                    var areaController = new ExtensionAreaController(mainContext,context, userRepo);
+                    var areaController = new ExtensionAreaController(mainContext,context, userRepo, memoryCache);
                     var area = this.context.ExtensionArea.Find(id);
                     var pairings = areaController.FindContainingPair(area.Name);
                     districtEmployees = await context.KersUser

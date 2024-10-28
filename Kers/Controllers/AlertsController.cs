@@ -23,6 +23,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.Data;
 using Kers.Models.ViewModels;
 using System.Web;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers.Reports
 {
@@ -35,9 +36,10 @@ namespace Kers.Controllers.Reports
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
-                    ILogRepository logRepo
+                    ILogRepository logRepo,
+                    IMemoryCache memoryCache
                     
-            ):base(mainContext, context, userRepo){
+            ):base(mainContext, context, userRepo, memoryCache){
            this.context = context;
            this.mainContext = mainContext;
            this.userRepo = userRepo;

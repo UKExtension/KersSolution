@@ -49,8 +49,9 @@ namespace Kers.Controllers
                     ISnapDirectRepository snapDirectRepo,
                     ISnapPolicyRepository snapPolicyRepo,
                     ISnapFinancesRepository snapFinancesRepo,
-                    ISnapCommitmentRepository snapCommitmentRepo
-            ):base(mainContext, context, userRepo){
+                    ISnapCommitmentRepository snapCommitmentRepo,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
                 this.fiscalRepo = fiscalRepo;
                 this._cache = _cache;
                 this.activityRepo = activityRepo;

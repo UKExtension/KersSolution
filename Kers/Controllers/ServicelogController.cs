@@ -27,7 +27,7 @@ namespace Kers.Controllers
                     IKersUserRepository userRepo,
                     IFiscalYearRepository fiscalYearRepo,
                     IMemoryCache memoryCache
-            ):base(mainContext, context, userRepo){
+            ):base(mainContext, context, userRepo, memoryCache){
 
            this.fiscalYearRepo = fiscalYearRepo;
            _cache = memoryCache;

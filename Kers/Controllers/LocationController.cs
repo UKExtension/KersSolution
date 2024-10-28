@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Contexts;
 using Kers.Models.Entities.UKCAReporting;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -35,8 +36,9 @@ namespace Kers.Controllers
                     ILogRepository logRepo,
                     ITrainingRepository trainingRepo,
                     IFiscalYearRepository fiscalYearRepo,
-                    IWebHostEnvironment env
-            ):base(mainContext, context, userRepo){
+                    IWebHostEnvironment env,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
            this._context = context;
            this._mainContext = mainContext;
            this._reportingContext = _reportingContext;

@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
 
 
 namespace Kers.Controllers
@@ -31,8 +32,9 @@ namespace Kers.Controllers
         public ExtensionRegionController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
-                    IKersUserRepository userRepo
-            ):base(mainContext, context, userRepo){
+                    IKersUserRepository userRepo,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
                 _context = context;
         }
 

@@ -39,7 +39,7 @@ namespace Kers.Controllers
                     IDistributedCache _cache,
                     IMemoryCache _memoryCache,
                     IKersUserRepository userRepo
-            ):base(mainContext, context, userRepo){
+            ):base(mainContext, context, userRepo, _memoryCache){
            
                 this._cache = _cache;
                 this._memoryCache = _memoryCache;

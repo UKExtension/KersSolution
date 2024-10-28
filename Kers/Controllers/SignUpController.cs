@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Kers.Models.Contexts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 
 
 namespace Kers.Controllers
@@ -27,8 +28,9 @@ namespace Kers.Controllers
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     KERSreportingContext reportingContext,
-                    IWebHostEnvironment env
-            ):base(mainContext, context, userRepo){
+                    IWebHostEnvironment env,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
                 _context = context;
                 _reportingContext = reportingContext;
                 this.environment = env;

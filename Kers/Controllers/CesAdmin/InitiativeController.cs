@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Kers.Models.Entities;
 using Kers.Models.Contexts;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers.Admin
 {
@@ -23,14 +24,17 @@ namespace Kers.Controllers.Admin
     {
         KERScoreContext coreContext;
         IInitiativeRepository repo;
+        private IMemoryCache _memoryCache;
         public InitiativeController( 
               KERSmainContext mainContext,
               KERScoreContext coreContext,
               IKersUserRepository userRepo,
+              IMemoryCache _memoryCache,
               IInitiativeRepository repo
-            ):base(mainContext, coreContext, userRepo){
+            ):base(mainContext, coreContext, userRepo, _memoryCache){
             this.repo = repo;
             this.coreContext = coreContext;
+            this._memoryCache = _memoryCache;
         }
 
         [HttpGet()]
@@ -48,15 +52,23 @@ namespace Kers.Controllers.Admin
         [HttpGet("All/{fy?}")]
         public IActionResult All(string fy = "0"){
 
-
+            List<StrategicInitiative> all;
             var fiscalYear = this.GetFYByName(fy, FiscalYearType.ServiceLog);
+            var initiativesListCacheKey = "initiativesList"+fiscalYear.Name;
+            if (!_memoryCache.TryGetValue(initiativesListCacheKey, out all)){
+                all = this.coreContext.StrategicInitiative.
+                                Where( i => i.FiscalYear == fiscalYear).
+                                Include(i=>i.MajorPrograms).
+                                Include(i=>i.ProgramCategory).
+                                OrderBy(i=>i.order).ToList();
+                all.ForEach(i=>i.MajorPrograms = i.MajorPrograms.OrderBy(p=>p.order).ToList());
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                // Keep in cache for this time, reset time if accessed.
+                .SetAbsoluteExpiration(TimeSpan.FromHours(5));
+                // Save data in cache.
+                _memoryCache.Set(initiativesListCacheKey, all, cacheEntryOptions);
+            }
 
-            var all = this.coreContext.StrategicInitiative.
-                                    Where( i => i.FiscalYear == fiscalYear).
-                                    Include(i=>i.MajorPrograms).
-                                    Include(i=>i.ProgramCategory).
-                                    OrderBy(i=>i.order).ToList();
-            all.ForEach(i=>i.MajorPrograms = i.MajorPrograms.OrderBy(p=>p.order).ToList());
             return new OkObjectResult(all);
         }
 

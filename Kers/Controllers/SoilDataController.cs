@@ -28,7 +28,7 @@ namespace Kers.Controllers
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
                     IMemoryCache _memoryCache
-            ):base(mainContext, context, userRepo){
+            ):base(mainContext, context, userRepo, _memoryCache){
            this._context = context;
            this._userRepo = userRepo;
            this.logRepo = logRepo;

@@ -12,6 +12,7 @@ using Kers.Models.Contexts;
 using Kers.Models.Entities.UKCAReporting;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -27,6 +28,7 @@ namespace Kers.Controllers
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
         IWebHostEnvironment environment;
+        IMemoryCache memoryCache;
         public TaxExemptController( 
                     KERSmainContext mainContext,
                     KERSreportingContext _reportingContext,
@@ -36,8 +38,9 @@ namespace Kers.Controllers
                     ILogRepository logRepo,
                     ITrainingRepository trainingRepo,
                     IFiscalYearRepository fiscalYearRepo,
+                    IMemoryCache memoryCache,
                     IWebHostEnvironment env
-            ):base(mainContext, context, userRepo){
+            ):base(mainContext, context, userRepo, memoryCache){
 
            this._context = context;
            this._mainContext = mainContext;
@@ -47,6 +50,7 @@ namespace Kers.Controllers
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
            this.environment = env;
+           this.memoryCache = memoryCache;
         }
 
 
