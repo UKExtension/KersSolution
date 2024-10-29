@@ -23,8 +23,8 @@ export class ProgramsService {
 
 
 
-    listInitiatives(fy:string = "0"):Observable<StrategicInitiative[]>{
-        var url = this.baseUrl + "All/" + fy;
+    listInitiatives(fy:string = "0", useCache:boolean = true):Observable<StrategicInitiative[]>{
+        var url = this.baseUrl + "All/" + fy + "/" + useCache;
         return this.http.get<StrategicInitiative[]>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('listInitiatives', []))

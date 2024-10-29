@@ -49,13 +49,13 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(section);
         }
 
-        [HttpGet("All/{fy?}")]
-        public IActionResult All(string fy = "0"){
+        [HttpGet("All/{fy?}/{useCache?}")]
+        public IActionResult All(string fy = "0", Boolean useCache = true){
 
             List<StrategicInitiative> all;
             var fiscalYear = this.GetFYByName(fy, FiscalYearType.ServiceLog);
             var initiativesListCacheKey = "initiativesList"+fiscalYear.Name;
-            if (!_memoryCache.TryGetValue(initiativesListCacheKey, out all)){
+            if (!_memoryCache.TryGetValue(initiativesListCacheKey, out all) || !useCache){
                 all = this.coreContext.StrategicInitiative.
                                 Where( i => i.FiscalYear == fiscalYear).
                                 Include(i=>i.MajorPrograms).
