@@ -4,6 +4,7 @@ import { DemoComponent } from './demo.component';
 import { components } from 'knockout';
 import { StoryDemoComponent } from './story-demo.component';
 import { IndicatorsDemoComponent } from './indicators-demo.component';
+import { PlansofworkFormDemoComponent } from './plansofwork-form-demo.component';
 
 const routes: Routes = [
   {
@@ -20,7 +21,11 @@ const routes: Routes = [
     {
       path: 'indicators',
       component: IndicatorsDemoComponent
-    }]
+    },
+  {
+    path: 'plans',
+    component: PlansofworkFormDemoComponent
+  }]
   }
 ];
 

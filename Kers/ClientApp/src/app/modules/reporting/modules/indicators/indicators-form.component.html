@@ -14,7 +14,8 @@ To enter/adjust data for another Major Program, just select the Major Program fr
 <br>
 <loading *ngIf="initiatives == null"></loading>
 <div *ngIf="initiatives != null">
-    Select the Major Program from the dropdown list to access/enter your Program Indicator numbers:<br>
+    <div *ngIf="demoMode">Select the Concentration from the dropdown list to access/enter your Program Indicator numbers:</div>
+    <div *ngIf="!demoMode">Select the Major Program from the dropdown list to access/enter your Program Indicator numbers:</div><br>
     <select name="mp3" id="mp3" class="form-control col-md-7 col-xs-12" (change)="onChange($event.target.value)">
         <option value="">--- select ---</option>
         <optgroup  *ngFor="let initiative of initiatives" label="{{initiative.name}}">
@@ -51,6 +52,7 @@ To enter/adjust data for another Major Program, just select the Major Program fr
             </form>
 
         </div>
-        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0">There are no indicators available for selected Major Program</div>
+        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0 && !demoMode">There are no indicators available for selected Major Program</div>
+        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0 && demoMode">There are no indicators available for selected Concentration</div>
     </div>
 </div>

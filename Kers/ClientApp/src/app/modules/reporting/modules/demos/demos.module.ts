@@ -7,19 +7,29 @@ import { StoryDemoComponent } from './story-demo.component';
 import { IndicatorsDemoComponent } from './indicators-demo.component';
 import { StoryModule } from '../story/story.module';
 import { SharedModule } from '../../shared/shared.module';
+import { IndicatorsModule } from '../indicators/indicators.module';
+import { PlansofworkFormDemoComponent } from './plansofwork-form-demo.component';
+import { ProgramsService } from '../admin/programs/programs.service';
+import { PlansofworkService } from '../plansofwork/plansofwork.service';
 
 
 @NgModule({
   declarations: [
     DemoComponent,
     StoryDemoComponent,
-    IndicatorsDemoComponent
+    IndicatorsDemoComponent,
+    PlansofworkFormDemoComponent
   ],
   imports: [
     SharedModule,
     CommonModule,
     DemosRoutingModule,
-    StoryModule
+    StoryModule,
+    IndicatorsModule,
+  ],
+  providers: [
+    PlansofworkService,
+    ProgramsService
   ],
   entryComponents: [
     DemoComponent
