@@ -34,7 +34,26 @@ export class ActivityStatsMonthComponent {
         this.optionNumbers = this.service.optionnumbers();
     }
 
+
+    getRows(start:number, end:number){
+
+    }
+
+    getNumRows(fiscalYear:FiscalYear){
+        
+        this.service.numberActivitiesPerYear(fiscalYear.id, (this.user == null ? 0 : this.user.id)).subscribe(
+            res => {
+                console.log(res);
+            }
+        )
+    }
+
+
+
+
     fiscalYearSwitched(event:FiscalYear){
+        console.log('requested');
+        this.getNumRows(event);
         if(this.user == null){
             this.activities = this.service.summaryPerMonth(0,event.name);
         }else{

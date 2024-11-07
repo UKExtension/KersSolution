@@ -163,6 +163,17 @@ export class ActivityService {
             );
     }
 
+    numberActivitiesPerYear(fiscalYaerId:number, userId:number):Observable<number>{
+
+    
+        var url = this.baseUrl + 'numberActivitiesPerYear/' + fiscalYaerId + "/" + userId;
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('num', 0))
+            );
+
+    }
+
     pdf(year:number, month:number, id:number = 0): Observable<Blob>{
         return this.http.get(this.location.prepareExternalUrl('/api/PdfActivity/activities/' + year + '/' + month + '/' + id ), {responseType: 'blob'})
 

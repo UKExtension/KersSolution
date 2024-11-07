@@ -1331,6 +1331,35 @@ namespace Kers.Controllers
             return new OkObjectResult(rcs);
         }
 
+
+
+        /*******************************************/
+        // Stats Per Month
+        /*******************************************/
+
+
+
+        [HttpGet("numberActivitiesPerYear/{FiscalYearId}/{UserId}")]
+        public IActionResult NumberActivitiesPerYear(int FiscalYearId, int UserId){
+            if( UserId == 0 ) UserId = this.CurrentUser().Id;
+
+            var NumActivities = context.Activity.Where( a => a.KersUserId == UserId && a.MajorProgram.StrategicInitiative.FiscalYear.Id == FiscalYearId).Count();
+
+            return new OkObjectResult(NumActivities);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         private void Log(   object obj, 
                             string objectType = "ActivityRevision",
                             string description = "Submitted Activity Revision", 
