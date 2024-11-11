@@ -1349,6 +1349,26 @@ namespace Kers.Controllers
         }
 
 
+        [HttpGet("GetActivitiesBatch/{start}/{amount}/{FiscalYearId}/{UserId}")]
+        public IActionResult GetActivitiesBatch(int start, int amount, int FiscalYearId, int UserId){
+            if( UserId == 0 ) UserId = this.CurrentUser().Id;
+            var Activities = context.Activity.Where( a => a.KersUserId == UserId && a.MajorProgram.StrategicInitiative.FiscalYear.Id == FiscalYearId).OrderBy( a => a.Id).Skip(start).Take(amount);
+            List<ActivityRevision> revs = new List<ActivityRevision>();
+            foreach( var act in Activities){
+                var rev = context.ActivityRevision.Where( a => a.Id == act.LastRevisionId)
+                            .Include( a => a.RaceEthnicityValues)
+                            .Include( a => a.ActivityOptionNumbers)
+                            .Include( a => a.ActivityOptionSelections)
+                            .FirstOrDefault();
+                revs.Add(rev);
+            }
+            return new OkObjectResult(revs);
+        }
+
+
+
+
+
 
 
 

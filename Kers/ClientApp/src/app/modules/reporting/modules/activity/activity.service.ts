@@ -69,6 +69,9 @@ export class ActivityService {
             );
     }
 
+
+
+    
     activitiesPerMonth(month:number, year:number = 2017, userid:number = 0, orderBy:string = "desc", isSnap:boolean = false) : Observable<Activity[]>{
         var url = this.baseUrl + 'permonth/' + year + '/' + month + '/' + userid + '/' + orderBy + '/' + isSnap;
         return this.http.get<Activity[]>(this.location.prepareExternalUrl(url))
@@ -163,16 +166,61 @@ export class ActivityService {
             );
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     numberActivitiesPerYear(fiscalYaerId:number, userId:number):Observable<number>{
 
     
         var url = this.baseUrl + 'numberActivitiesPerYear/' + fiscalYaerId + "/" + userId;
         return this.http.get<number>(this.location.prepareExternalUrl(url))
             .pipe(
-                catchError(this.handleError('num', 0))
+                catchError(this.handleError('numberActivitiesPerYear', 0))
             );
 
     }
+
+
+    GetActivitiesBatch(start:number, amount:number, fiscalYaerId:number, userId:number):Observable<Activity[]>{
+
+    
+        var url = this.baseUrl + 'GetActivitiesBatch/' + start + '/' + amount + '/' + fiscalYaerId + "/" + userId;
+        return this.http.get<Activity[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('GetActivitiesBatch', []))
+            );
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     pdf(year:number, month:number, id:number = 0): Observable<Blob>{
         return this.http.get(this.location.prepareExternalUrl('/api/PdfActivity/activities/' + year + '/' + month + '/' + id ), {responseType: 'blob'})
