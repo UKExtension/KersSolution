@@ -81,7 +81,9 @@ namespace Kers.Controllers
                 var simpleListCacheKey = CacheKeys.CountiesList;
                 if (!_memoryCache.TryGetValue(simpleListCacheKey, out counties)){
                     counties = this.context.PlanningUnit.
-                                Where(c=>c.District != null).ToList();
+                                Where(c=>c.District != null)
+                                .OrderBy( c => c.order)
+                                .ToList();
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
                     .SetAbsoluteExpiration(TimeSpan.FromHours(5));
