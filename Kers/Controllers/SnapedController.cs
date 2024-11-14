@@ -92,7 +92,7 @@ namespace Kers.Controllers
             }
             var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
             var committed = context.SnapEd_Commitment.
-                                Where(e =>  e.KersUserId == user.classicReportingProfileId 
+                                Where(e =>  e.KersUserId1 == user.Id 
                                             &&
                                             e.SnapEd_ActivityType.Measurement == "Hour"
                                             &&
@@ -114,7 +114,7 @@ namespace Kers.Controllers
             }
             var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
             var committed = context.SnapEd_Commitment.
-                                Where(e=>   e.KersUserId == user.classicReportingProfileId 
+                                Where(e=>   e.KersUserId1 == user.Id 
                                             &&
                                             e.SnapEd_ActivityType.Measurement == "Hour"
                                             &&
