@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber, Ethnicity } from '../activity.service';
+import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber, Ethnicity, PerMonthActivities } from '../activity.service';
 
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
@@ -18,7 +18,7 @@ export class ActivityStatsMonthComponent {
 
     errorMessage: string;
 
-    activities:Observable<{}[]>;
+    activities:PerMonthActivities[] = [];
     races:Observable<Race[]>;
     optionNumbers:Observable<ActivityOptionNumber[]> 
 
@@ -71,6 +71,7 @@ export class ActivityStatsMonthComponent {
                     this.getBatch( fiscalYaerId );
                 }else{
                     this.processActivities();
+                    console.log( this.activities );
                 }
             }
         )
@@ -79,9 +80,30 @@ export class ActivityStatsMonthComponent {
     processActivities(){
         console.log(this.allActivities);
         for( let act of this.allActivities){
-            var dt = new Date(act.activityDate);
-            console.log( dt.getFullYear() + "-" + dt.getMonth() + "-" + dt.getDate());
+            this.addTheActivity(act);
+            
+            
         }
+    }
+    addTheActivity(activity:Activity){
+        var dt = new Date(activity.activityDate);
+        var year = dt.getFullYear();
+        var month = dt.getMonth();
+        // find if row exists
+        var filteredRow = this.activities.filter( a => a.month == month && a.year == year);
+        if(filteredRow.length > 0){
+            filteredRow[0].revisions.push(activity);
+            filteredRow[0].audience += (activity.male + activity.female);
+            filteredRow[0].hours += activity.hours;
+        }else{
+            var actvt = new PerMonthActivities;
+            actvt.month = month;
+            actvt.year = year;
+            actvt.audience = activity.male + activity.female;
+            actvt.hours = activity.hours;
+            actvt.revisions.push(activity);
+        }
+
     }
 
 

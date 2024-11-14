@@ -383,3 +383,10 @@ export class ActivitySeearchResultsWithCount{
     results:ActivitySearchResult[];
     resultsCount:number;
 }
+export class PerMonthActivities{
+    revisions:Activity[];
+    hours:number;
+    audience:number;
+    month:number;
+    year:number;
+}
