@@ -103,6 +103,7 @@ export class ActivityStatsMonthComponent {
             actvt.hours = activity.hours;
             actvt.revisions = [];
             actvt.revisions.push(activity);
+            this.activities.push(actvt);
         }
 
     }
