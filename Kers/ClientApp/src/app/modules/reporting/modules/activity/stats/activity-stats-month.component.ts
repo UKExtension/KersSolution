@@ -101,6 +101,7 @@ export class ActivityStatsMonthComponent {
             actvt.year = year;
             actvt.audience = activity.male + activity.female;
             actvt.hours = activity.hours;
+            actvt.revisions = [];
             actvt.revisions.push(activity);
         }
 
