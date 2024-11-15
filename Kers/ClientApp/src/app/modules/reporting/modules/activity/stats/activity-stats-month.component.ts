@@ -77,11 +77,8 @@ export class ActivityStatsMonthComponent {
     }
 
     processActivities(){
-        console.log(this.allActivities);
         for( let act of this.allActivities){
             this.addTheActivity(act);
-            
-            
         }
     }
     addTheActivity(activity:Activity){
