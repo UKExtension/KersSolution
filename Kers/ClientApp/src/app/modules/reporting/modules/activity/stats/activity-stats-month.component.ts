@@ -71,7 +71,6 @@ export class ActivityStatsMonthComponent {
                     this.getBatch( fiscalYaerId );
                 }else{
                     this.processActivities();
-                    console.log( this.activities );
                 }
             }
         )

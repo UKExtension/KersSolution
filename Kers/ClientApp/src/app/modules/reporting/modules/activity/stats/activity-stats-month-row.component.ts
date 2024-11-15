@@ -48,7 +48,8 @@ export class ActivityStatsMonthRow implements OnInit {
     }
     ethnicity(ethnct:number){
         var val = 0;
-        var valse = this.activity.raceEthnicityValues.filter(v => v.ethnicityId == ethnct);
+        var valse = [];
+        if(this.activity.raceEthnicityValues != null )  valse = this.activity.raceEthnicityValues.filter(v => v.ethnicityId == ethnct);
         for(var v of valse){
             val += v.amount;
         }
