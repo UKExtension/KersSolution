@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Component({
     selector: '[activityStatsMonthRow]',
     template: `
-        <td nowrap>{{activity.year}}-{{activity.month}}</td>
+        <td nowrap>{{activity.year}}-{{activity.month + 1  | number: '2.0' }}</td>
         <td>{{activity.hours}}</td>
         <td>{{activity.multistate}}</td>
         <td>{{activity.females+activity.males}}</td>

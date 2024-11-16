@@ -64,6 +64,7 @@ export class ActivityStatsMonthComponent {
         this.numActivities = 0;
         this.currentBarch = 0;
         this.allActivities = [];
+        this.activities = [];
     }
 
     getBatch(fiscalYaerId:number){
