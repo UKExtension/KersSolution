@@ -1358,7 +1358,7 @@ namespace Kers.Controllers
                 var rev = context.ActivityRevision.Where( a => a.Id == act.LastRevisionId)
                             .Include( a => a.RaceEthnicityValues)
                             .Include( a => a.ActivityOptionNumbers)
-                            .Include( a => a.ActivityOptionSelections)
+                            .Include( a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption)
                             .FirstOrDefault();
                 revs.Add(rev);
             }

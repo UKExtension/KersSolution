@@ -21,8 +21,8 @@
         </div>
         
         <div class="col-xs-12">
-            <div *ngIf="(activities | async)?.length == 0">No Statistical contact records.</div>
-            <div class="table-responsive" *ngIf="(activities | async)?.length != 0">
+            <div *ngIf="(activities)?.length == 0">No Statistical contact records.</div>
+            <div class="table-responsive" *ngIf="(activities)?.length != 0">
 
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -31,30 +31,30 @@
                             <th>Hours</th>
                             <th>Multi-State</th>
                             <th>Total Contacts</th>
-                            <th *ngFor="let race of races | async">{{race.name}}</th>
+                            <th *ngFor="let race of races">{{race.name}}</th>
                             <th>Hispanic</th>
                             <th>Female</th>
                             <th>Male</th>
-                            <th *ngFor="let opt of optionNumbers | async">{{opt.name}}</th>
+                            <th *ngFor="let opt of optionNumbers">{{opt.name}}</th>
                         </tr>
                     </thead>
                     
                     <tbody>
                         <tr *ngFor="let activity of activities" [activityStatsMonthRow]="activity"></tr>
-                        <tr *ngIf="activities | async as actvts">
+                        <tr *ngIf="activities as actvts">
                             <td><strong>Total</strong></td>
                             <td><strong>{{totalHours(actvts)}}</strong></td>
                             <td><strong>{{totalMultistate( actvts)}}</strong></td>
                             <td><strong>{{totalContacts(actvts)}}</strong></td>
-                            <td *ngFor="let race of races | async"><strong>{{raceValue(race, actvts)}}</strong></td>
+                            <td *ngFor="let race of races"><strong>{{raceValue(race, actvts)}}</strong></td>
                             <td><strong>{{ethnicityValue(2, actvts)}}</strong></td>
                             <td><strong>{{totalFemales( actvts)}}</strong></td>
                             <td><strong>{{totalMales( actvts)}}</strong></td>
-                            <td *ngFor="let opt of optionNumbers | async"><strong>{{optionNumberValue(opt, actvts)}}</strong></td>
+                            <td *ngFor="let opt of optionNumbers"><strong>{{optionNumberValue(opt, actvts)}}</strong></td>
                         </tr>
                     </tbody>
                 </table>
-                <loading *ngIf="!(activities | async)"></loading>
+                <loading *ngIf="!(activities)"></loading>
             </div>
 
         </div>

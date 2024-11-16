@@ -390,3 +390,14 @@ export class PerMonthActivities{
     month:number;
     year:number;
 }
+
+export class PerMonthContacts{
+    raceEthnicityValues:RaceEthnicityValue[];
+    optionNumberValues:ActivityOptionNumberValue[];
+    hours:number;
+    multistate:number;
+    males:number;
+    females:number;
+    month:number;
+    year:number;
+}

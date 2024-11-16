@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber, Ethnicity, PerMonthActivities } from '../activity.service';
+import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber, Ethnicity, PerMonthActivities, PerMonthContacts } from '../activity.service';
 
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { User } from "../../user/user.service";
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
+//import { arch } from 'os';
 
 
 @Component({
@@ -18,9 +19,9 @@ export class ActivityStatsMonthComponent {
 
     errorMessage: string;
 
-    activities:PerMonthActivities[] = [];
-    races:Observable<Race[]>;
-    optionNumbers:Observable<ActivityOptionNumber[]> 
+    activities:PerMonthContacts[] = [];
+    races:Race[];
+    optionNumbers:ActivityOptionNumber[];
 
     allActivities:Activity[] = [];
 
@@ -38,8 +39,12 @@ export class ActivityStatsMonthComponent {
 
     ngOnInit(){
         
-        this.races = this.service.races();
-        this.optionNumbers = this.service.optionnumbers();
+         this.service.races().subscribe(
+            res => this.races = res
+        );
+        this.service.optionnumbers().subscribe(
+            res => this.optionNumbers =  res
+        );
     }
 
 
@@ -66,21 +71,68 @@ export class ActivityStatsMonthComponent {
             res => {
                 console.log( res )
                 this.allActivities = this.allActivities.concat(res);
+                this.processBatch(res);
                 if( this.currentBarch < this.numActivities ){
                     this.currentBarch += this.amountPerBatch;
                     this.getBatch( fiscalYaerId );
                 }else{
-                    this.processActivities();
+                    //this.processActivities();
+                    console.log(this.activities);
                 }
             }
         )
     }
 
+    processBatch( batch:Activity[]){
+        for( let a of batch ) this.addTheActivity( a );
+    }
+
+    addTheActivity( activity:Activity ){
+        var dt = new Date(activity.activityDate);
+        var year = dt.getFullYear();
+        var month = dt.getMonth();
+        // find if row exists
+        var filteredRow = this.activities.filter( a => a.month == month && a.year == year);
+        if(filteredRow.length > 0){
+            var row = filteredRow[0];
+            row.hours += activity.hours;
+            if( activity.activityOptionSelections.filter( n => n.activityOption.name == "Multistate effort?").length > 0 ){
+                row.multistate += activity.hours;
+            }
+            row.males += activity.male;
+            row.females += activity.female;
+            row.raceEthnicityValues = row.raceEthnicityValues.concat(activity.raceEthnicityValues);
+            row.optionNumberValues = row.optionNumberValues.concat(activity.activityOptionNumbers);
+        }else{
+            var row = new PerMonthContacts;
+            row.month = month;
+            row.year = year;
+            row.hours = activity.hours;
+            row.males = activity.male;
+            row.females = activity.female;
+            if( activity.activityOptionSelections.filter( n => n.activityOption.name == "Multistate effort?").length > 0 ){
+                row.multistate += activity.hours;
+            }else{
+                row.multistate = 0;
+            }
+            row.raceEthnicityValues = activity.raceEthnicityValues;
+            row.optionNumberValues = activity.activityOptionNumbers;
+            this.activities.push(row);
+
+        }
+
+    }
+
+
+
+/* 
     processActivities(){
         for( let act of this.allActivities){
             this.addTheActivity(act);
         }
     }
+
+
     addTheActivity(activity:Activity){
         var dt = new Date(activity.activityDate);
         var year = dt.getFullYear();
@@ -103,10 +155,9 @@ export class ActivityStatsMonthComponent {
         }
 
     }
-
+ */
 
     fiscalYearSwitched(event:FiscalYear){
-        console.log('requested');
         this.getNumRows(event);
         if(this.user == null){
             //this.activities = this.service.summaryPerMonth(0,event.name);
