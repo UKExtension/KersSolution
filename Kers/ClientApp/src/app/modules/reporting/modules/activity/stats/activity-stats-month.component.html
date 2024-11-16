@@ -21,9 +21,9 @@
         </div>
         
         <div class="col-xs-12">
-            <div *ngIf="(activities)?.length == 0">No Statistical contact records.</div>
+            <div *ngIf="(activities)?.length == 0 && !loading">No Statistical contact records.</div>
             <div class="table-responsive" *ngIf="(activities)?.length != 0">
-
+                <div *ngIf="loading" style="position: absolute; top: 0; left:0; width: 100%;height: 100%; background-color: aquamarine; opacity: 50%;"></div>
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -54,7 +54,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <loading *ngIf="!(activities)"></loading>
             </div>
 
         </div>

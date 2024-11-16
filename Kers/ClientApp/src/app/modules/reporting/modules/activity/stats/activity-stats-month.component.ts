@@ -29,6 +29,8 @@ export class ActivityStatsMonthComponent {
     numActivities:number = 0;
     amountPerBatch: number = 3;
     currentBarch:number = 0;
+    loading:boolean = true;
+    timePerBatch = 100;
 
 
     constructor( 
@@ -53,10 +55,8 @@ export class ActivityStatsMonthComponent {
         this.resetRequest();
         this.service.numberActivitiesPerYear(fiscalYear.id, (this.user == null ? 0 : this.user.id)).subscribe(
             res => {
-                console.log(res);
                 this.numActivities = res;
                 this.getBatch(fiscalYear.id);
-
             }
         )
     }
@@ -68,17 +68,24 @@ export class ActivityStatsMonthComponent {
     }
 
     getBatch(fiscalYaerId:number){
+        this.loading = true;
+        var startTime = new Date();
         this.service.GetActivitiesBatch(this.currentBarch, this.amountPerBatch,fiscalYaerId, this.user == null ? 0 : this.user.id ).subscribe(
             res => {
-                console.log( res )
+                var endTime = new Date();
+                this.timePerBatch = endTime.getTime() - startTime.getTime();
                 this.allActivities = this.allActivities.concat(res);
                 this.processBatch(res);
                 if( this.currentBarch < this.numActivities ){
                     this.currentBarch += this.amountPerBatch;
                     this.getBatch( fiscalYaerId );
                 }else{
-                    //this.processActivities();
-                    console.log(this.activities);
+                    this.activities.sort(
+                        function( a, b ){
+                            return (a.year - b.year) * 100 + ( a.month - b.month)
+                        }
+                    );
+                    this.loading = false;
                 }
             }
         )
@@ -112,14 +119,13 @@ export class ActivityStatsMonthComponent {
             row.males = activity.male;
             row.females = activity.female;
             if( activity.activityOptionSelections.filter( n => n.activityOption.name == "Multistate effort?").length > 0 ){
-                row.multistate += activity.hours;
+                row.multistate = activity.hours;
             }else{
                 row.multistate = 0;
             }
             row.raceEthnicityValues = activity.raceEthnicityValues;
             row.optionNumberValues = activity.activityOptionNumbers;
             this.activities.push(row);
-
         }
 
     }

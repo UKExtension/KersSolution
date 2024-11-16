@@ -41,7 +41,6 @@ export class ActivityStatsMonthRow implements OnInit {
     raceValue(race:Race){
         var val = 0;
         var valse = [];
-        console.log(this.activity.raceEthnicityValues);
         if(this.activity.raceEthnicityValues) valse = this.activity.raceEthnicityValues.filter(v => v.raceId == race.id);
         for(var v of valse){
             val += v.amount;
