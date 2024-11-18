@@ -65,6 +65,7 @@ export class ActivityStatsMonthComponent {
         this.numActivities = 0;
         this.currentBarch = 0;
         this.allActivities = [];
+        this.activities = undefined;
         this.activities = [];
     }
 
@@ -77,7 +78,6 @@ export class ActivityStatsMonthComponent {
                 var seconds = (endTime.getTime() - startTime.getTime()) / 1000;
                 this.averageBatchTime = (this.averageBatchTime == 0 ? seconds : (this.averageBatchTime + seconds) /2)
                 this.timePerBatch = endTime.getTime() - startTime.getTime();
-                this.allActivities = this.allActivities.concat(res);
                 this.processBatch(res);
                 if( this.currentBarch < this.numActivities ){
                     this.currentBarch += this.amountPerBatch;

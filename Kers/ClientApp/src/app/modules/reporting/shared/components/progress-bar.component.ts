@@ -3,8 +3,7 @@ import {  Component, Input } from '@angular/core';
 @Component({
     selector: 'progress-bar',
     template: `
-<div class="download-overlay" *ngIf="csvInitiated">
-  <div class="text-right"><button class="btn btn-info btn-xs" (click)="csvInitiated=false">cancel</button></div>
+<div class="download-overlay">
 <br>
 <br>
   <h4>Generating Report</h4>
