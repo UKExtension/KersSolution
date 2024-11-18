@@ -31,6 +31,7 @@ export class ActivityStatsMonthComponent {
     currentBarch:number = 0;
     loading:boolean = true;
     timePerBatch = 100;
+    averageBatchTime = 0;
 
 
     constructor( 
@@ -73,6 +74,8 @@ export class ActivityStatsMonthComponent {
         this.service.GetActivitiesBatch(this.currentBarch, this.amountPerBatch,fiscalYaerId, this.user == null ? 0 : this.user.id ).subscribe(
             res => {
                 var endTime = new Date();
+                var seconds = (endTime.getTime() - startTime.getTime()) / 1000;
+                this.averageBatchTime = (this.averageBatchTime == 0 ? seconds : (this.averageBatchTime + seconds) /2)
                 this.timePerBatch = endTime.getTime() - startTime.getTime();
                 this.allActivities = this.allActivities.concat(res);
                 this.processBatch(res);
