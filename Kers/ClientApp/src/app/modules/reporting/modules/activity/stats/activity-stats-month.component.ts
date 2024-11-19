@@ -29,9 +29,12 @@ export class ActivityStatsMonthComponent {
     numActivities:number = 0;
     amountPerBatch: number = 3;
     currentBarch:number = 0;
-    loading:boolean = true;
+    loading:boolean = false;
     timePerBatch = 100;
     averageBatchTime = 0;
+
+    yearSwitched:boolean = false;
+    fiscalYear:FiscalYear;
 
 
     constructor( 
@@ -52,12 +55,12 @@ export class ActivityStatsMonthComponent {
 
 
 
-    getNumRows(fiscalYear:FiscalYear){
+    getNumRows(){
         this.resetRequest();
-        this.service.numberActivitiesPerYear(fiscalYear.id, (this.user == null ? 0 : this.user.id)).subscribe(
+        this.service.numberActivitiesPerYear(this.fiscalYear.id, (this.user == null ? 0 : this.user.id)).subscribe(
             res => {
                 this.numActivities = res;
-                this.getBatch(fiscalYear.id);
+                this.getBatch(this.fiscalYear.id);
             }
         )
     }
@@ -79,7 +82,10 @@ export class ActivityStatsMonthComponent {
                 this.averageBatchTime = (this.averageBatchTime == 0 ? seconds : (this.averageBatchTime + seconds) /2)
                 this.timePerBatch = endTime.getTime() - startTime.getTime();
                 this.processBatch(res);
-                if( this.currentBarch < this.numActivities ){
+                if(this.yearSwitched){
+                    this.yearSwitched = false;
+                    this.getNumRows();
+                }else if( this.currentBarch <= this.numActivities ){
                     this.currentBarch += this.amountPerBatch;
                     this.getBatch( fiscalYaerId );
                 }else{
@@ -168,12 +174,14 @@ export class ActivityStatsMonthComponent {
  */
 
     fiscalYearSwitched(event:FiscalYear){
-        this.getNumRows(event);
-        if(this.user == null){
-            //this.activities = this.service.summaryPerMonth(0,event.name);
+        this.fiscalYear = event;
+        if(this.loading){
+            this.yearSwitched = true;
         }else{
-            //this.activities = this.service.summaryPerMonth(this.user.id, event.name);
+            this.getNumRows();
         }
+        
+        //this.getNumRows(event);
     }
 
     totalHours( actvts:Activity[]){

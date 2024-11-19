@@ -19,7 +19,6 @@
         <div class="col-xs-12">
             <fiscal-year-switcher [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher><br>
         </div>
-        
         <div class="col-xs-12">
             <div *ngIf="(activities)?.length == 0 && !loading">No Statistical contact records.</div>
             <div class="table-responsive" *ngIf="(activities)?.length != 0">
