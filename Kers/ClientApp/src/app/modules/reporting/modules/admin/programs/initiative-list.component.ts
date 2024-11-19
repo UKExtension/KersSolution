@@ -65,7 +65,7 @@ export class InitiativeListComponent implements OnInit{
 
     getList(){
         
-        this.service.listInitiatives(this.selectedFiscalYear.name).subscribe(
+        this.service.listInitiatives(this.selectedFiscalYear.name, false).subscribe(
             i => this.initiatives = i,
             error =>  this.errorMessage = <any>error
         );
