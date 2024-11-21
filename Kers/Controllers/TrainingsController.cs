@@ -403,13 +403,15 @@ namespace Kers.Controllers
                             .FirstOrDefault();
             if(training != null && trn != null ){
                 var isMovedToCatalog = false;
-                trn.TrainingSession = new List<TrainingSession>();
-                foreach( var s in training.TrainingSessionWithTimes){
-                    trn.TrainingSession.Add( s.GetSession(training.Etimezone));
+                if(training.TrainingSessionWithTimes.First().Date.Year > 2000 ){
+                    trn.TrainingSession = new List<TrainingSession>();
+                    foreach( var s in training.TrainingSessionWithTimes){
+                        trn.TrainingSession.Add( s.GetSession(training.Etimezone));
+                    }
+                    var sortedSessions = trn.TrainingSession.OrderBy( s => s.Start);
+                    trn.Start = sortedSessions.First().Start;
+                    trn.End = sortedSessions.Last().End;
                 }
-                var sortedSessions = trn.TrainingSession.OrderBy( s => s.Start);
-                trn.Start = sortedSessions.First().Start;
-                trn.End = sortedSessions.Last().End;
                 trn.Subject = training.Subject;
                 trn.Body = training.Body;
                 trn.tLocation = training.tLocation;
