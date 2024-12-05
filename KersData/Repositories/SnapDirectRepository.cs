@@ -1338,9 +1338,9 @@ namespace Kers.Models.Repositories
                     
                     foreach( var rch in reached){
                         var data = indirectSnapData.
-                                    Where( s => s.Revision.SnapIndirect.SnapIndirectAudienceTargetedId.Equals(project.Id)).
+                                    Where( s => s.Revision.SnapIndirect.SnapIndirectAudienceTargetedId.Equals(rch.Id)).
                                     Select( 
-                                        l => l.Revision.SnapIndirect.SnapIndirectReachedValues.Where(v => v.SnapIndirectReachedId == rch.Id).Sum( t => t.Value)
+                                        l => l.Revision.SnapIndirect.SnapIndirectReachedValues.Where(v => v.SnapIndirectReachedId == project.Id).Sum( t => t.Value)
                                     ).Sum( p => p);
                         row.Add(data.ToString());
                     }
