@@ -287,11 +287,11 @@ namespace Kers.Models.Repositories
         public List<TrainingEnrollment> trainingsPerPersonPerYear( int userId, int year){
             var trainings = new List<TrainingEnrollment>();
             
-            /* context.TrainingEnrollment
+            trainings = context.TrainingEnrollment
                             .Where( e => e.Training.Start.Year == year && e.Training.tStatus == "A" && e.AttendieId == userId)
                             .Include( e => e.Training).ThenInclude( t => t.iHour)
                             .OrderBy( e => e.Training.Start)
-                            .ToList(); */
+                            .ToList();
             return trainings;
         }
 
