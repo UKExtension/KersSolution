@@ -1,11 +1,21 @@
 $(document).ready(function () {
-        console.log('loaded');
-    $("div.mobile-navigation__menu-tab-quick .button").on('click',function(event){
+    var isLateralOpen = false;
+    $(".expand-lateral-menu").on('click',function(event){
         event.preventDefault();
-        console.log('clicked');
-        $(".mobile_main").show();
+        if(isLateralOpen){
+            $(".lateral-navigation").css("display", "none");
+            $("#main-content").css('transform', 'translateX(0px)');
+        }else{
+            $(".lateral-navigation").css("display", "block");
+            $("#main-content").css('transform', 'translateX(-350px)');
+        }
+        isLateralOpen = !isLateralOpen;
     });
-
+    $(".lateral-navigation__closer").css("cursor","pointer").on("click",function(){
+        $(".lateral-navigation").css("display", "none");
+        $("#main-content").css('transform', 'translateX(0px)');
+        isLateralOpen = false;
+    })
 
 
 
