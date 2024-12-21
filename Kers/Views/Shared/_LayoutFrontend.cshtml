@@ -37,6 +37,16 @@
     <link rel="icon" sizes="128x128" href="~/assets/images/site_icons/icon-normal.png" />
 
 
+    <link rel="stylesheet" href="~/assets/reporting/custom.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/assets/reporting/font-awesome.min.css">
+    <link rel="stylesheet" href="~/assets/reporting/styles.css">
+    
+    <link rel="stylesheet" href="~/assets/reporting/froala_style.min.css" asp-append-version="true" />
+    @RenderSection("stylesheet", required: false)
+
+
 
 
 <link rel="stylesheet" media="all" href="~/assets/front/css_hTnlx6AK5NXPvU-r0Tw-8htXTpB360qvld7yLPnANwc.css">
@@ -52,24 +62,7 @@
 
 
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/assets/reporting/font-awesome.min.css">
-    <link rel="stylesheet" href="~/assets/reporting/custom.min.css">
-    <link rel="stylesheet" href="~/assets/reporting/styles.css">
-    <link rel="stylesheet" href="~/assets/reporting/froala_style.min.css" asp-append-version="true" />
-    @RenderSection("stylesheet", required: false)
-    <!--[if lt IE 8]>
-        <environment names="Development">
-            <link href="/assets/reporting/bootstrap-ie7fix.min.css" rel="stylesheet">
-            <script src="/assets/reporting/html5shiv.min.js"></script>
-        </environment>
-        <environment names="Staging,Production">
-            <link href="/core/assets/reporting/bootstrap-ie7fix.min.css" rel="stylesheet">
-            <script src="/core/assets/reporting/html5shiv.min.js"></script>
-        </environment>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <![endif]-->
+    
 
 
       <link rel="icon" type="image/png" href="https://extension.ca.uky.edu/themes/custom/commonwealth/images/favicon-16.png" sizes="16x16">
@@ -157,7 +150,7 @@
       <header id="main-header">
         <div class="l-constrain-logo">
 
-                      <div class="lockup__wrapper">
+            <div class="lockup__wrapper">
               <a href="https://extension.ca.uky.edu/" class="lockup">
                 <div class="lockup__main">
                   <div class="lockup__logo">
@@ -381,11 +374,6 @@
 
       <main>
                   
-<div class="l-content">
-      <div class="l-constrain">
-        
-  <h1 class="visually-hidden"><span>Mission and Values</span>
-</h1>
 
 
 
@@ -416,7 +404,7 @@
 
 
 
-
+<div class="row">
 
                 <div class="text-right fiscal-year-switcher" style="clear:both;">
                   <br><br>
@@ -427,7 +415,7 @@
                 
                 </div>
 
-           
+     </div>      
 
 
     
