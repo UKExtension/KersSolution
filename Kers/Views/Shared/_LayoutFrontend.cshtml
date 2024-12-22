@@ -208,168 +208,60 @@
             <div id="upper-nav__mobile-menu-trigger" style="height: 178.75px;">
               <span class="upper-nav__menu-text">Menu</span>
             </div>
-            
-                    </div>
-
+            <hr class="hr--header">
+          </div>
+        <div class="affiliated-site-name__desktop">
+            <div class="l-constrain">
+              <span>Impacts</span>
+            </div>
+          </div>
         
-              </header>
+        </header>
       
-      <div class="navigation-visibility__main"><nav role="navigation">
-  <h2 class="visually-hidden"></h2>
+    <div class="navigation-visibility__main">
+    <nav role="navigation">
+      <h2 class="visually-hidden"></h2>
       <nav role="navigation">
-  <h2 class="visually-hidden">Main Menu</h2>
-      
-<div class="main-menu-slab">
-  <div class="l-constrain">
-    
-                                      <ul class="menu menu--main" role="menubar">
-        
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://extension.ca.uky.edu/" class="menu__link" data-drupal-link-system-path="&lt;front&gt;" tabindex="0">Home</a>
-              </li>
-    
-            
-                                                                                                            
-      
-      
-      <li class="menu__item has-subnav is-active-trail is-expanded">
-        <a href="" class="menu__link has-subnav is-active-trail is-expanded" aria-haspopup="true" tabindex="-1">About</a>
-                                <ul class="menu menu__subnav" role="menu">
-        
-            
-                                                                
-      
-      
-      <li class="menu__item is-active-trail">
-        <a href="https://extension.ca.uky.edu/about/mission-and-values" class="menu__link is-active-trail is-active" data-drupal-link-system-path="node/41">Mission and Values</a>
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://extension.ca.uky.edu/about/programming" class="menu__link" data-drupal-link-system-path="node/32">Programming</a>
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="http://www2.ca.uky.edu/agcomm/pubs.asp" class="menu__link">Publications</a>
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://urbanextension.ca.uky.edu/" class="menu__link">Urban Extension</a>
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://psd.ca.uky.edu/" class="menu__link">Program and Staff Development</a>
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://kers.ca.uky.edu/core/Reports/" class="menu__link">Impacts</a>
-              </li>
-        </ul>
-  
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://extension.ca.uky.edu/county" class="menu__link" data-drupal-link-system-path="node/2" tabindex="-1">Counties</a>
-              </li>
-    
-            
-                                                                                      
-      
-      
-      <li class="menu__item has-subnav is-expanded">
-        <a href="" class="menu__link has-subnav is-expanded" aria-haspopup="true" tabindex="-1">Contact Us</a>
-                                <ul class="menu menu__subnav" role="menu">
-        
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://extension.ca.uky.edu/contact-us/hiring" class="menu__link" data-drupal-link-system-path="node/5">Hiring</a>
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://directory.ca.uky.edu/" class="menu__link">Field Directory</a>
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://regions.ca.uky.edu/" class="menu__link">Extension Regions</a>
-              </li>
-        </ul>
-  
-              </li>
-    
-            
-                                          
-      
-      
-      <li class="menu__item">
-        <a href="https://extension.ca.uky.edu/community-assessment" class="menu__link" data-drupal-link-system-path="node/40" tabindex="-1">Community Assessment</a>
-              </li>
-        </ul>
-  
-
-  </div>
-</div>
-
-  </nav>
-
-  </nav>
-</div>
-
-    
-
-
-
-      
-      
-
-      
-
-      
-
-      
-  
-    <div class="l-preface">
-        <div class="l-constrain">
-              <div data-drupal-messages-fallback="" class="hidden"></div>
+        <h2 class="visually-hidden">Main Menu</h2>
+        <div class="main-menu-slab">
+          <div class="l-constrain">
+            <ul class="menu menu--main" role="menubar"> 
+              
+               <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
+                    <a class="menu__link" asp-controller="Reports" asp-action="Index" asp-route-fy="@fy">Home</a>
+                </li>
+                <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "People" ? "active" : "")">
+                    <a class="menu__link" asp-controller="People" asp-action="Index" asp-route-fy="@fy">People</a>
+                </li>
+                <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Counties" ? "active" : "")">
+                    <a class="menu__link" asp-controller="Reports" asp-action="Counties" asp-route-fy="@fy">Counties</a>
+                </li>
+                <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "MajorProgram" ? "active" : "")">
+                    <a class="menu__link" asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy">Programs</a>
+                </li>
+                
+                <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
+                    <a class="menu__link" asp-controller="Data" asp-action="Index" asp-route-fy="@fy">Data</a>
+                </li>
+            </ul>
+          </div>
         </div>
-    </div>
+      </nav>
+    </nav>
+</div>
+
+    
+
+
+
+      
+      
+
+      
+
+      
+
+      
 
 
       <main>
@@ -404,50 +296,25 @@
 
 
 
-<div class="row">
 
-                <div class="text-right fiscal-year-switcher" style="clear:both;">
-                  <br><br>
+
+                <div class="text-right fiscal-year-switcher">
+                  <br><br><br>
                   @await Component.InvokeAsync("FiscalYearSwitcher", new { selected = @ViewData["fy"], showNext = false, showDetails = true })
                 
-                  <br><br>
+                  <br>
                 
                 
                 </div>
-
-     </div>      
-
-
-    
 
 
 
     <div class="container-fluid" style="padding: 0 40px;">
         <div class="x_title"><br>
             <h2>@ViewData["Title"]<small>@ViewData["Subtitle"]</small></h2>
-            <ul class="nav navbar-right panel_toolbox">
-                
-                <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
-                    <a asp-controller="Reports" asp-action="Index" asp-route-fy="@fy">Home</a>
-                </li>
-                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "People" ? "active" : "")">
-                    <a asp-controller="People" asp-action="Index" asp-route-fy="@fy">People</a>
-                </li>
-                <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Counties" ? "active" : "")">
-                    <a asp-controller="Reports" asp-action="Counties" asp-route-fy="@fy">Counties</a>
-                </li>
-                <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "MajorProgram" ? "active" : "")">
-                    <a asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy">Programs</a>
-                </li>
-                
-                <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
-                    <a asp-controller="Data" asp-action="Index" asp-route-fy="@fy">Data</a>
-                </li>
-            </ul>
             
             <div class="clearfix"></div>
         </div>
-        Frontend layout
         @RenderBody()
     </div>
 
