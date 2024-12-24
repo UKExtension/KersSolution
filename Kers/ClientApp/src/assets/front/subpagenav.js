@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var isLateralOpen = false;
+    var isMobileOpen = false;
     $(".expand-lateral-menu").on('click',function(event){
         event.preventDefault();
         if(isLateralOpen){
@@ -17,6 +18,18 @@ $(document).ready(function () {
         isLateralOpen = false;
     })
 
+    $("#upper-nav__mobile-menu-trigger").on('click',function(event){
+        if(isMobileOpen){
+            $(".mobile-navigation").css("display", "none");
+        }else{
+            $(".mobile-navigation").css("display", "block");
+        }
+        isMobileOpen = !isMobileOpen;
+    });
+    $( window ).on( "resize", function() {
+        $(".mobile-navigation").css("display", "none");
+        isMobileOpen =false;
+      } );
 
 
     $("div.subpagenav__link").click(function () {
