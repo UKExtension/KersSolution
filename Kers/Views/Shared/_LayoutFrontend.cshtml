@@ -273,105 +273,33 @@
 
                             <div class="l-mobile-main">
                                 <div class="l-constrain">
-
                                     <div class="mobile_main">
-
                                         <ul id="subpagenav__accordion" class="subpagenav__accordion" }}>
-
-                                            <li>
+                                            <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
                                                 <div class="subpagenav__link">
-                                                    <a href="/">Home</a>
+                                                  <a class="menu__link" asp-controller="Reports" asp-action="Index" asp-route-fy="@fy">Home</a>
                                                 </div>
                                             </li>
-                                            <li>
+                                            <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "People" ? "active" : "")">
                                                 <div class="subpagenav__link">
-                                                    <a href="/publications">Publications</a>
+                                                  <a class="menu__link" asp-controller="People" asp-action="Index" asp-route-fy="@fy">People</a>
                                                 </div>
                                             </li>
-                                            <li>
+                                            <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Counties" ? "active" : "")">
                                                 <div class="subpagenav__link">
-                                                    <a href="/videos">Videos</a>
+                                                 <a class="menu__link" asp-controller="Reports" asp-action="Counties" asp-route-fy="@fy">Counties</a>
                                                 </div>
                                             </li>
-                                            <li>
+                                            <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "MajorProgram" ? "active" : "")">
                                                 <div class="subpagenav__link">
-                                                    <a href="/community-engagement">Community Engagement</a>
+                                                  <a class="menu__link" asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy">Programs</a>
                                                 </div>
                                             </li>
-                                            <li>
+                                            
+                                            <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
                                                 <div class="subpagenav__link">
-                                                    <a href="/about-us">About</a>
+                                                  <a class="menu__link" asp-controller="Data" asp-action="Index" asp-route-fy="@fy">Data</a>
                                                 </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="/faculty">UEI Faculty</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="/uei-fellows-program">UEI Fellows Program</a>
-                                                    <i class="fas fa-angle-double-right"></i>
-                                                </div>
-                                                <ul class="subpagenav__sub">
-
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="/uei-fellows-program/cohort-one">UEI Fellows Program: Cohort One</a>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="/uei-fellows-program/uei-fellows-program-cohort-two">UEI Fellows Program: Cohort Two</a>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="/uei-fellows-program/uei-fellows-program-cohort-three">UEI Fellows Program: Cohort Three</a>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="/uei-fellows-program/uei-fellows-program-cohort-four">UEI Fellows Program: Cohort Four</a>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="https://urbanextension.ca.uky.edu/cohort-projects">UEI Projects</a>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="https://urbanextension.ca.uky.edu/sites/urbanextension.ca.uky.edu/files/uei_fellows_leadership_program_guidelines_1.pdf">Program Guidelines</a>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://urbanextension.ca.uky.edu/national-region-urban-extension-leaders">NUEL</a>
-                                                    <i class="fas fa-angle-double-right"></i>
-                                                </div>
-                                                <ul class="subpagenav__sub">
-
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="https://urbanextension.ca.uky.edu/national-region-urban-extension-leaders">National Region Urban Extension Leaders</a>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="https://urbanextension.ca.uky.edu/nuel/southern-region-national-urban-extension-leaders">Southern Region National Urban Extension Leaders</a>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="subpagenav__sub-child-link">
-                                                            <a href="https://urbanextension.ca.uky.edu/nuel/southern-region-national-urban-extension-leaders/southern-region-nuel-zoom-recordings">Southern Region NUEL Zoom Recordings</a>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-
                                             </li>
                                         </ul>
 
