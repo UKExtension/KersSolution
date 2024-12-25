@@ -125,27 +125,6 @@
               class="details__POC-item-inner">laura.stephenson@uky.edu</span></a></span></p>
     </div>
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div id="main-content">
       <header id="main-header">
         <div class="l-constrain-logo">
@@ -204,20 +183,18 @@
                 </li>
               </ul>
             </nav>
-
             <div id="upper-nav__mobile-menu-trigger">
               <span class="upper-nav__menu-text">Menu</span>
             </div>
             <hr class="hr--header">
           </div>
         <div class="affiliated-site-name__desktop">
-            <div class="l-constrain">
-              <span>Impacts</span>
-            </div>
+          <div class="l-constrain">
+            <span>Impacts</span>
           </div>
+        </div>
         
         </header>
-      
     <div class="navigation-visibility__main">
     <nav role="navigation">
       <h2 class="visually-hidden"></h2>
@@ -249,263 +226,191 @@
       </nav>
     </nav>
   </div>
+  <div class="mobile-navigation">
+    <div class="mobile-navigation__menu-tabs">
+        <div class="row clearfix">
+            <div class="mobile-navigation__menu-tab col-xs-6 mobile-navigation__menu-tab-main">
+                <a class="button button--ghost mobile-navigation__menu-tab-hover">Main Menu</a>
+            </div>
+            <div class="mobile-navigation__menu-tab col-xs-6 mobile-navigation__menu-tab-quick">
+                <a class="button button--ghost">Resources</a>
+            </div>
+        </div>
+    </div>
 
+    <div class="mobile-naviation__main-menu">
 
-
-
-
-
-
-
-                      <div class="mobile-navigation">
-                        <div class="mobile-navigation__menu-tabs">
-                            <div class="row clearfix">
-                                <div class="mobile-navigation__menu-tab col-xs-6 mobile-navigation__menu-tab-main">
-                                    <a class="button button--ghost mobile-navigation__menu-tab-hover">Main Menu</a>
-                                </div>
-                                <div class="mobile-navigation__menu-tab col-xs-6 mobile-navigation__menu-tab-quick">
-                                    <a class="button button--ghost">Resources</a>
-                                </div>
+        <div class="l-mobile-main">
+            <div class="l-constrain">
+                <div class="mobile_main">
+                    <ul id="subpagenav__accordion" class="subpagenav__accordion" }}>
+                        <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
+                            <div class="subpagenav__link">
+                              <a class="menu__link" asp-controller="Reports" asp-action="Index" asp-route-fy="@fy">Home</a>
                             </div>
-                        </div>
-
-                        <div class="mobile-naviation__main-menu">
-
-                            <div class="l-mobile-main">
-                                <div class="l-constrain">
-                                    <div class="mobile_main">
-                                        <ul id="subpagenav__accordion" class="subpagenav__accordion" }}>
-                                            <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Reports" ? "active" : "")">
-                                                <div class="subpagenav__link">
-                                                  <a class="menu__link" asp-controller="Reports" asp-action="Index" asp-route-fy="@fy">Home</a>
-                                                </div>
-                                            </li>
-                                            <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "People" ? "active" : "")">
-                                                <div class="subpagenav__link">
-                                                  <a class="menu__link" asp-controller="People" asp-action="Index" asp-route-fy="@fy">People</a>
-                                                </div>
-                                            </li>
-                                            <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Counties" ? "active" : "")">
-                                                <div class="subpagenav__link">
-                                                 <a class="menu__link" asp-controller="Reports" asp-action="Counties" asp-route-fy="@fy">Counties</a>
-                                                </div>
-                                            </li>
-                                            <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "MajorProgram" ? "active" : "")">
-                                                <div class="subpagenav__link">
-                                                  <a class="menu__link" asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy">Programs</a>
-                                                </div>
-                                            </li>
-                                            
-                                            <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
-                                                <div class="subpagenav__link">
-                                                  <a class="menu__link" asp-controller="Data" asp-action="Index" asp-route-fy="@fy">Data</a>
-                                                </div>
-                                            </li>
-                                        </ul>
-
-                                    </div>
-
-                                </div>
+                        </li>
+                        <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "People" ? "active" : "")">
+                            <div class="subpagenav__link">
+                              <a class="menu__link" asp-controller="People" asp-action="Index" asp-route-fy="@fy">People</a>
                             </div>
-                        </div>
-                        <div class="mobile-naviation__quick-links">
-
-                            <div class="l-mobile-quick">
-                                <div class="l-constrain">
-
-                                    <div class="mobile_quick">
-                                        <h3 class="mobile_quick__header">College Resources</h3>
-
-                                        <ul id="subpagenav__accordion" class="subpagenav__accordion" }}>
-
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://students.ca.uky.edu">Academics</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://administration.ca.uky.edu">Administration</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://alumni.ca.uky.edu">Alumni &amp; Giving</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://news.ca.uky.edu">College News</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://www2.ca.uky.edu/agcomm/pubs.asp">Publications</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://www.ca.uky.edu/deptunits">Departments &amp; Units</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://extension.ca.uky.edu">Extension</a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="subpagenav__link">
-                                                    <a href="https://research.ca.uky.edu">Research</a>
-                                                </div>
-                                            </li>
-                                        </ul>
-
-                                    </div>
-
-                                </div>
+                        </li>
+                        <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Counties" ? "active" : "")">
+                            <div class="subpagenav__link">
+                              <a class="menu__link" asp-controller="Reports" asp-action="Counties" asp-route-fy="@fy">Counties</a>
                             </div>
-                        </div>
-
-                        <div class="mobile-navigation__menu-closers">
-                            <div class="row clearfix">
-                                <div class="mobile-navigation__menu-closer col-xs-6">
-                                    <a class="button button--ghost" href="https://myuk.uky.edu" title="Log into the myUK portal">
-
-                                        <div class="my-uk-logo__header">
-                                            <svg focusable="false" aria-hidden="true" viewBox="0 0 61 27" xmlns="http://www.w3.org/2000/svg">
-                                                <g fill="currentColor" fill-rule="evenodd">
-                                                    <path d="M57.878 24.676c0-.174.034-.337.1-.49a1.29 1.29 0 0 1 .668-.669c.152-.067.315-.1.488-.1s.336.033.488.1a1.29 1.29 0 0 1 .668.67c.066.152.1.315.1.49 0 .174-.034.336-.1.488a1.284 1.284 0 0 1-.668.671c-.152.067-.315.101-.488.101s-.336-.034-.488-.1a1.289 1.289 0 0 1-.668-.672 1.215 1.215 0 0 1-.1-.489zm.182 0a1.103 1.103 0 0 0 .314.763c.098.097.211.174.341.23.13.056.27.085.42.085a1.053 1.053 0 0 0 .758-.315c.096-.098.173-.211.23-.343.056-.13.084-.27.084-.42a1.06 1.06 0 0 0-.314-.761 1.053 1.053 0 0 0-.759-.316 1.054 1.054 0 0 0-.76.316 1.099 1.099 0 0 0-.314.761zm.8.722h-.182v-1.453h.557c.164 0 .281.034.352.103.068.069.104.168.104.3 0 .068-.01.125-.03.173a.358.358 0 0 1-.196.197.635.635 0 0 1-.138.043l.43.637h-.205l-.432-.637h-.26v.637zm0-.799h.233c.05 0 .1-.002.149-.005a.426.426 0 0 0 .133-.031.246.246 0 0 0 .097-.075.235.235 0 0 0 .037-.14.226.226 0 0 0-.029-.118.225.225 0 0 0-.075-.072.32.32 0 0 0-.104-.038.566.566 0 0 0-.117-.012h-.323v.491zm-46.745-6.412c0-.346.068-.833.162-1.227l.744-4c.326-1.782.187-2.591-1.07-2.591-.72 0-1.325.254-2.279.786l-1.371 8.142H5.952l1.071-6.338c.301-1.804.232-2.59-1-2.59-.744 0-1.326.254-2.28.786l-1.371 8.142H0l1.465-8.582L0 9.767v-.232l3.953-1.156.093.07-.326 2.15.094.07C5.394 9.235 6.65 8.518 7.79 8.518c1.278 0 1.814.925 1.836 2.105l.093.07c1.558-1.435 2.86-2.175 4.023-2.175 1.604 0 2.116 1.457 1.675 3.793l-.907 4.742c-.164.926.046 1.204 2.116 1.25l.068.162c-1.046.647-2.208 1.087-3.115 1.087-1.07 0-1.464-.578-1.464-1.365"></path>
-                                                    <path d="M15.13 22.333c0-.754.44-1.416 1.188-1.416.945 0 1.451 1.028 1.407 2.284.968-.548 2.068-1.919 2.816-3.358-.616-3.265-1.672-6.988-2.31-8.587-.243-.594-.462-.822-.88-.822-.264 0-.704.092-1.364.343l-.132-.183c.858-1.096 1.848-2.033 2.75-2.033.77 0 1.166.389 1.54 1.142.572 1.097 1.386 4.134 1.826 7.217h.109a71.802 71.802 0 0 0 1.98-8.542h.176l2.023 1.006c-1.957 4.658-4.31 10.985-6.774 13.475-.858.867-1.606 1.347-2.486 1.347-1.165 0-1.87-.868-1.87-1.873m19.511-9.431h-1.71v-9.16h1.711V1.454h-7.983v2.29h1.71v9.16l2.281 2.29h3.992zm5.703 2.29h3.991l2.282-2.29V3.744h1.71v-2.29h-7.983v2.29h1.71v9.158h-1.71z"></path>
-                                                    <path d="M48.469 17.339l4.99-5.01h2.28V10.04h-8.554v2.29h.856l-3.421 3.434h-4.847V12.33h1.71v-2.29H33.5v2.29h1.71v10.303H33.5v2.29h7.984v-2.29h-1.71V19.2h4.847l3.42 3.434h-.855v2.29h8.554v-2.29h-1.996z"></path>
-                                                    <path d="M39.201.308v4.58h1.711v4.007H34.07V4.888h1.712V.308H25.516v4.58h1.711v8.587l2.85 2.862h3.992v5.152h-1.71v4.58h10.264v-4.58h-1.71v-1.146h3.136l1.996 2.005v3.721H56.88v-4.58h-2.567l-4.133-4.15 3.848-3.864h2.852v-4.58h-9.124V4.888h1.71V.308H39.2zm.571.573h9.125v3.435h-1.711v5.152h9.123v3.434h-2.565l-4.42 4.437 4.705 4.722h2.28v3.436h-9.693V22.06l-2.282-2.29h-3.991v2.29h1.71v3.436h-9.125V22.06h1.712v-6.297h-4.278l-2.566-2.576V4.316h-1.711V.88h9.124v3.435H33.5v5.152h7.985V4.316h-1.712V.88z"></path>
-                                                </g>
-                                            </svg>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                <div class="mobile-navigation__menu-closer col-xs-6">
-                                    <a class="button button--ghost open-search-block" href="#">
-                                        <span class="mobile-navigation__search-text">Search</span>
-                                    </a>
-                                </div>
-
+                        </li>
+                        <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "MajorProgram" ? "active" : "")">
+                            <div class="subpagenav__link">
+                              <a class="menu__link" asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy">Programs</a>
                             </div>
-
-                            <div class="mobile-navigation__content">
-                                <h4 class="mobile-navigation__header">Contact Information</h4>
-
-                                <h5 class="details__contact_name-title">
-                                    Jeff Young, Ph.D.
-                                    <br>
-                                    Director, Urban Extension
-                                </h5>
-
-                                <p>
-                                    <span class="details__POC-item">
-                                        <i class="fas fa-map-marker-alt poc-circular-icon"></i>
-                                        <span class="details__POC-item-inner">712 Garrigus Building</span>
-                                    </span>
-                                    <span class="details__POC-indent">Lexington, KY 40546-0215</span>
-                                </p>
-
-                                <p>
-                                    <span class="details__POC-item">
-                                        <i class="fas fa-mobile-alt poc-circular-icon"></i>
-                                        <a href="tel:+1 (502) 492-0985">
-                                            <span class="details__POC-item-inner">+1 (502) 492-0985</span>
-                                        </a>
-                                    </span>
-                                </p>
-                                <p>
-                                    <span class="details__POC-item">
-                                        <i class="fas fa-envelope poc-circular-icon"></i>
-                                        <a href="mailto:jyoung@uky.edu">
-                                            <span class="details__POC-item-inner">jyoung@uky.edu</span>
-                                        </a>
-                                    </span>
-                                </p>
-
+                        </li>
+                        
+                        <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
+                            <div class="subpagenav__link">
+                              <a class="menu__link" asp-controller="Data" asp-action="Index" asp-route-fy="@fy">Data</a>
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-      
-      
-
-      
-
-      
-
-      
-
-
-      <main>
-                  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <div class="text-right fiscal-year-switcher">
-                  <br><br><br>
-                  @await Component.InvokeAsync("FiscalYearSwitcher", new { selected = @ViewData["fy"], showNext = false, showDetails = true })
-                
-                  <br>
-                
-                
                 </div>
 
+            </div>
+        </div>
+    </div>
+    <div class="mobile-naviation__quick-links">
 
+        <div class="l-mobile-quick">
+            <div class="l-constrain">
+
+                <div class="mobile_quick">
+                    <h3 class="mobile_quick__header">College Resources</h3>
+
+                    <ul id="subpagenav__accordion" class="subpagenav__accordion" }}>
+
+                        <li>
+                            <div class="subpagenav__link">
+                                <a href="https://students.ca.uky.edu">Academics</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="subpagenav__link">
+                                <a href="https://administration.ca.uky.edu">Administration</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="subpagenav__link">
+                                <a href="https://alumni.ca.uky.edu">Alumni &amp; Giving</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="subpagenav__link">
+                                <a href="https://news.ca.uky.edu">College News</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="subpagenav__link">
+                                <a href="https://www2.ca.uky.edu/agcomm/pubs.asp">Publications</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="subpagenav__link">
+                                <a href="https://www.ca.uky.edu/deptunits">Departments &amp; Units</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="subpagenav__link">
+                                <a href="https://extension.ca.uky.edu">Extension</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="subpagenav__link">
+                                <a href="https://research.ca.uky.edu">Research</a>
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-navigation__menu-closers">
+        <div class="row clearfix">
+            <div class="mobile-navigation__menu-closer col-xs-6">
+                <a class="button button--ghost" href="https://myuk.uky.edu" title="Log into the myUK portal">
+
+                    <div class="my-uk-logo__header">
+                        <svg focusable="false" aria-hidden="true" viewBox="0 0 61 27" xmlns="http://www.w3.org/2000/svg">
+                            <g fill="currentColor" fill-rule="evenodd">
+                                <path d="M57.878 24.676c0-.174.034-.337.1-.49a1.29 1.29 0 0 1 .668-.669c.152-.067.315-.1.488-.1s.336.033.488.1a1.29 1.29 0 0 1 .668.67c.066.152.1.315.1.49 0 .174-.034.336-.1.488a1.284 1.284 0 0 1-.668.671c-.152.067-.315.101-.488.101s-.336-.034-.488-.1a1.289 1.289 0 0 1-.668-.672 1.215 1.215 0 0 1-.1-.489zm.182 0a1.103 1.103 0 0 0 .314.763c.098.097.211.174.341.23.13.056.27.085.42.085a1.053 1.053 0 0 0 .758-.315c.096-.098.173-.211.23-.343.056-.13.084-.27.084-.42a1.06 1.06 0 0 0-.314-.761 1.053 1.053 0 0 0-.759-.316 1.054 1.054 0 0 0-.76.316 1.099 1.099 0 0 0-.314.761zm.8.722h-.182v-1.453h.557c.164 0 .281.034.352.103.068.069.104.168.104.3 0 .068-.01.125-.03.173a.358.358 0 0 1-.196.197.635.635 0 0 1-.138.043l.43.637h-.205l-.432-.637h-.26v.637zm0-.799h.233c.05 0 .1-.002.149-.005a.426.426 0 0 0 .133-.031.246.246 0 0 0 .097-.075.235.235 0 0 0 .037-.14.226.226 0 0 0-.029-.118.225.225 0 0 0-.075-.072.32.32 0 0 0-.104-.038.566.566 0 0 0-.117-.012h-.323v.491zm-46.745-6.412c0-.346.068-.833.162-1.227l.744-4c.326-1.782.187-2.591-1.07-2.591-.72 0-1.325.254-2.279.786l-1.371 8.142H5.952l1.071-6.338c.301-1.804.232-2.59-1-2.59-.744 0-1.326.254-2.28.786l-1.371 8.142H0l1.465-8.582L0 9.767v-.232l3.953-1.156.093.07-.326 2.15.094.07C5.394 9.235 6.65 8.518 7.79 8.518c1.278 0 1.814.925 1.836 2.105l.093.07c1.558-1.435 2.86-2.175 4.023-2.175 1.604 0 2.116 1.457 1.675 3.793l-.907 4.742c-.164.926.046 1.204 2.116 1.25l.068.162c-1.046.647-2.208 1.087-3.115 1.087-1.07 0-1.464-.578-1.464-1.365"></path>
+                                <path d="M15.13 22.333c0-.754.44-1.416 1.188-1.416.945 0 1.451 1.028 1.407 2.284.968-.548 2.068-1.919 2.816-3.358-.616-3.265-1.672-6.988-2.31-8.587-.243-.594-.462-.822-.88-.822-.264 0-.704.092-1.364.343l-.132-.183c.858-1.096 1.848-2.033 2.75-2.033.77 0 1.166.389 1.54 1.142.572 1.097 1.386 4.134 1.826 7.217h.109a71.802 71.802 0 0 0 1.98-8.542h.176l2.023 1.006c-1.957 4.658-4.31 10.985-6.774 13.475-.858.867-1.606 1.347-2.486 1.347-1.165 0-1.87-.868-1.87-1.873m19.511-9.431h-1.71v-9.16h1.711V1.454h-7.983v2.29h1.71v9.16l2.281 2.29h3.992zm5.703 2.29h3.991l2.282-2.29V3.744h1.71v-2.29h-7.983v2.29h1.71v9.158h-1.71z"></path>
+                                <path d="M48.469 17.339l4.99-5.01h2.28V10.04h-8.554v2.29h.856l-3.421 3.434h-4.847V12.33h1.71v-2.29H33.5v2.29h1.71v10.303H33.5v2.29h7.984v-2.29h-1.71V19.2h4.847l3.42 3.434h-.855v2.29h8.554v-2.29h-1.996z"></path>
+                                <path d="M39.201.308v4.58h1.711v4.007H34.07V4.888h1.712V.308H25.516v4.58h1.711v8.587l2.85 2.862h3.992v5.152h-1.71v4.58h10.264v-4.58h-1.71v-1.146h3.136l1.996 2.005v3.721H56.88v-4.58h-2.567l-4.133-4.15 3.848-3.864h2.852v-4.58h-9.124V4.888h1.71V.308H39.2zm.571.573h9.125v3.435h-1.711v5.152h9.123v3.434h-2.565l-4.42 4.437 4.705 4.722h2.28v3.436h-9.693V22.06l-2.282-2.29h-3.991v2.29h1.71v3.436h-9.125V22.06h1.712v-6.297h-4.278l-2.566-2.576V4.316h-1.711V.88h9.124v3.435H33.5v5.152h7.985V4.316h-1.712V.88z"></path>
+                            </g>
+                        </svg>
+                    </div>
+                </a>
+            </div>
+
+            <div class="mobile-navigation__menu-closer col-xs-6">
+                <a class="button button--ghost open-search-block" href="#">
+                    <span class="mobile-navigation__search-text">Search</span>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="mobile-navigation__content">
+            <h4 class="lateral_quick__header">Contact Information</h4>
+            <h5 class="details__contact_name-title">Laura Stephenson, Ph.D.<br>Associate Dean for Extension</h5>
+            <p><span class="details__POC-item"><i class="fas fa-map-marker-alt poc-circular-icon"></i><span
+                  class="details__POC-item-inner">S-107 Ag. Science Center North</span></span>
+              <span class="details__POC-indent">Lexington, KY 40546-0091</span>
+            </p>
+            <p><span class="details__POC-item"><i class="fas fa-mobile-alt poc-circular-icon"></i><a
+                  href="tel:+1 (859) 257-4302"><span class="details__POC-item-inner">+1 (859) 257-4302</span></a></span></p>
+            <p><span class="details__POC-item"><i class="fas fa-envelope poc-circular-icon"></i><a
+                  href="mailto:laura.stephenson@uky.edu"><span
+                    class="details__POC-item-inner">laura.stephenson@uky.edu</span></a></span></p>
+          </div>
+
+        </div>
+    </div>
+
+<div class="search-block">
+    <div class="l-constrain">
+        <span class="search-block__close-icon">
+            <i class="far fa-times-circle fa-2x"></i>
+        </span>
+        <form class="form-item form-sitem--search search-block__form" id="searchbox_003398099011942252124:gmpps7ysdwm" action="https://www.ca.uky.edu/search" method="get" role="search">
+            <label class="form-item__label search-block__label" for="edit-search">
+                <h3>Search the Martin-Gatton College of Agriculture, Food and Environment</h3>
+            </label>
+            <input name="cx" type="hidden" value="003398099011942252124:gmpps7ysdwm"/>
+            <input name="cof" type="hidden" value="FORID:11"/>
+            <input name="siteurl" type="hidden" value="www2.ca.uky.edu/"/>
+            <input name="ref" type="hidden" value=""/>
+            <input name="ss" type="hidden" value="208j25472j4"/>
+            <input class="form-item__search search-block__search-field" id="search-block__search-field" type="search" name="q" aria-label="Enter a keyword that matches what you're looking for" placeholder="Search the Martin-Gatton College of Agriculture, Food and Environment" autofocus>
+            <a href="javascript:{}" onclick="document.getElementById('searchbox_003398099011942252124:gmpps7ysdwm').submit();" class="button search-block__search-button">
+                <span>Search</span>
+            </a>
+            <div class="form-item__description search-block__directions">Enter a keyword in the field above, then press the search button to see matching results from our college.</div>
+        </form>
+    </div>
+</div>
+
+  <main>
+
+    <div class="text-right fiscal-year-switcher">
+      <br><br><br>
+      @await Component.InvokeAsync("FiscalYearSwitcher", new { selected = @ViewData["fy"], showNext = false, showDetails = true })
+    
+      <br>
+    
+    
+    </div>
 
     <div class="container-fluid" style="padding: 0 40px;">
         <div class="x_title"><br>
@@ -515,17 +420,6 @@
         </div>
         @RenderBody()
     </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
     <div class="cafe-footer">

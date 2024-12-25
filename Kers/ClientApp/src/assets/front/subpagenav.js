@@ -1,9 +1,12 @@
 $(document).ready(function () {
     $(".mobile-naviation__quick-links").css("display", "none");
+    $("#upper-nav__mobile-menu-trigger").height($("#main-header").height());
+    $(".search-block__close-icon").css("cursor", "pointer");
     var isLateralOpen = false;
     var isMobileOpen = false;
     var isMobileMainOpen = true;
     var isMobileResourcesOpen = false;
+    var isSearchOpen = false;
     $(".expand-lateral-menu").on('click',function(event){
         event.preventDefault();
         if(isLateralOpen){
@@ -32,6 +35,7 @@ $(document).ready(function () {
     $( window ).on( "resize", function() {
         $(".mobile-navigation").css("display", "none");
         isMobileOpen =false;
+        $("#upper-nav__mobile-menu-trigger").height($("#main-header").height());
       } );
 
 
@@ -55,6 +59,25 @@ $(document).ready(function () {
             isMobileResourcesOpen=false;
         }
     });
+    $(".open-search-block").on("click", function(event){
+        event.preventDefault();
+        if(isSearchOpen){
+            $(".search-block").css("display", "none");
+        }else{
+            $(".search-block").css("display", "block");
+            if(isMobileOpen){
+                $(".mobile-navigation").css("display", "none");
+                isMobileOpen = false;
+            }
+        }
+        isSearchOpen = !isSearchOpen;
+    });
+    $(".search-block__close-icon").on("click", function(){
+        $(".search-block").css("display", "none");
+        isSearchOpen = false;
+    });
+    
+    
 
 
 
