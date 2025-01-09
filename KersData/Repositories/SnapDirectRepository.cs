@@ -242,6 +242,14 @@ namespace Kers.Models.Repositories
                 foreach( var age in ages){
                     keys.Add(string.Concat( "\"", age.Name, "\""));
                 }
+                var races = this.context.Race.ToList();
+                var ethnicities = this.context.Ethnicity.ToList();
+
+                foreach(var race in races){
+                    foreach( var ethn in ethnicities){
+                        keys.Add( race.Name + ethn.Name);
+                    }
+                }
 
                 result = string.Join(",", keys.ToArray()) + "\n";
 
@@ -250,16 +258,25 @@ namespace Kers.Models.Repositories
 
                 var vals = revs.Where(r => r.SnapDirect != null).Select( r => r.SnapDirect.SnapDirectAgesAudienceValues);
 
+
+                var categories = context.SnapDirectAudience.Where(m => m.Active).OrderBy( m => m.order);
+
+                var RaceValues = GetRaceValuesPerProject(revs, categories, races, ethnicities );
+
                 var data = vals.SelectMany( i => i);
 
 
-                var categories = context.SnapDirectAudience.Where(m => m.Active).OrderBy( m => m.order);
+                
                 foreach( var category in categories){
                     var row = string.Concat( "\"", category.Name, "\",");
                     foreach( var a in ages){
                         row += data.Where( d => d.SnapDirectAgesId == a.Id && d.SnapDirectAudienceId == category.Id).Sum( r => r.Value).ToString() + ",";
                     }
-
+                    foreach(var race in races){
+                        foreach( var ethn in ethnicities){
+                            row += RaceValues[getAudienceDictionaryCode(category.Id, race.Id, ethn.Id)] + ",";
+                        }
+                    }
                     result += row + "\n";
                 }
                 result += "Updated: " + DateTime.Now.ToString();
@@ -277,6 +294,58 @@ namespace Kers.Models.Repositories
 
             return result;
         }
+
+        private Dictionary<string, float> GetRaceValuesPerProject(
+                                                IEnumerable<ActivityRevision> revs, 
+                                                IOrderedQueryable<SnapDirectAudience> Categories, 
+                                                List<Race> Races, List<Ethnicity> Ethnicities )
+        {
+
+            var Results = new Dictionary<string, float>();
+            foreach( var c in Categories){
+                foreach ( var r in Races){
+                    foreach( var e in Ethnicities){
+                        Results.Add( getAudienceDictionaryCode(c.Id,r.Id,e.Id), 0);
+                    }
+                }
+            }
+            foreach( var rev in revs){
+                var AudiencePerProject = this.GetAudiencePerProject( rev, Categories);
+                if( AudiencePerProject.Count() > 0 ){
+                    var totalAud = AudiencePerProject.Sum(a => a.Value);
+                    foreach( var au in AudiencePerProject){
+                        foreach( var rv in rev.RaceEthnicityValues){
+                            Results[getAudienceDictionaryCode(au.Key,rv.RaceId,rv.EthnicityId)] += rv.Amount * au.Value / totalAud;
+                        }
+                    }
+                    
+                }
+            }
+            return Results;
+        }
+
+        private Dictionary<int,int> GetAudiencePerProject(ActivityRevision rev, IOrderedQueryable<SnapDirectAudience> Categories){
+            var Results = new Dictionary<int, int>();
+            var PVals = rev.SnapDirect.SnapDirectAgesAudienceValues;
+            if( PVals.Count > 0 ){
+                foreach( var c in Categories){
+                    var catVals = PVals.Where( x => x.SnapDirectAudienceId == c.Id ).Sum(x => x.Value);
+                    if( catVals > 0 ) Results.Add( c.Id, catVals );
+                }
+
+            }
+            return Results;
+        }
+
+
+        private string getAudienceDictionaryCode(int CategoryId, int RaceId, int EthnicityId){
+            string catId = string.Format("{0:D2}", CategoryId);
+            string racId = string.Format("{0:D2}", RaceId);
+            string ethId = string.Format("{0:D2}", EthnicityId);
+            return catId+racId+ethId;
+        }
+
+       
 
         public string SessionTypebyMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
