@@ -1,7 +1,7 @@
 @{
     var fy = ViewData["fy"] as string;
     if( fy == "0"){
-      fy = "2018";
+      fy = "2024";
     }
 }
 <!DOCTYPE html>
@@ -46,54 +46,21 @@
     <link rel="stylesheet" href="~/assets/reporting/froala_style.min.css" asp-append-version="true" />
     @RenderSection("stylesheet", required: false)
 
+    <link rel="stylesheet" media="all" href="~/assets/front/css_hTnlx6AK5NXPvU-r0Tw-8htXTpB360qvld7yLPnANwc.css">
+    <link rel="stylesheet" media="all" href="~/assets/front/all.min.css">
+    <link rel="stylesheet" media="all" href="~/assets/front/v4-shims.css">
+    <link rel="stylesheet" media="all" href="~/assets/front/css_VOcNrmiNq5qPkiQkR5DOO7jbt7J7GD1q842GvcnbpCI.css">
+    <link rel="stylesheet" media="all" href="~/assets/front/css_u9T2CyuQk4JviA7TahHiBl27XUx74Dtx_6bs0W1lrW4.css">
 
-
-
-<link rel="stylesheet" media="all" href="~/assets/front/css_hTnlx6AK5NXPvU-r0Tw-8htXTpB360qvld7yLPnANwc.css">
-<link rel="stylesheet" media="all" href="~/assets/front/all.min.css">
-<link rel="stylesheet" media="all" href="~/assets/front/v4-shims.css">
-<link rel="stylesheet" media="all" href="~/assets/front/css_VOcNrmiNq5qPkiQkR5DOO7jbt7J7GD1q842GvcnbpCI.css">
-<link rel="stylesheet" media="all" href="~/assets/front/css_u9T2CyuQk4JviA7TahHiBl27XUx74Dtx_6bs0W1lrW4.css">
-
-
-
-
-
-
-
-
+    <link rel="icon" type="image/png" href="https://extension.ca.uky.edu/themes/custom/commonwealth/images/favicon-16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="https://extension.ca.uky.edu/themes/custom/commonwealth/images/favicon-32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://extension.ca.uky.edu/themes/custom/commonwealth/images/favicon-96.png" sizes="96x96">
     
-
-
-      <link rel="icon" type="image/png" href="https://extension.ca.uky.edu/themes/custom/commonwealth/images/favicon-16.png" sizes="16x16">
-      <link rel="icon" type="image/png" href="https://extension.ca.uky.edu/themes/custom/commonwealth/images/favicon-32.png" sizes="32x32">
-      <link rel="icon" type="image/png" href="https://extension.ca.uky.edu/themes/custom/commonwealth/images/favicon-96.png" sizes="96x96">
-      
-      
-
-          <script src="~/assets/front/jquery.min.js"></script>
-          <script src="~/assets/front/jquery.once.min.js"></script>
-          <script src="~/assets/front/subpagenav.js"></script>
-
-
-
-
-
-
-
-
-
-  </head>
-  <body>
-
-
-
-
-
-
-
-
-
+    <script src="~/assets/front/jquery.min.js"></script>
+    <script src="~/assets/front/jquery.once.min.js"></script>
+    <script src="~/assets/front/subpagenav.js"></script>
+</head>
+<body>
   <div class="lateral-navigation">
     <div class="lateral-navigation__closer">
       <a class="lateral-navigation__close-block"><span class="lateral-navigation__close-text">Close Resources</span></a>
@@ -113,7 +80,10 @@
     </div>
     <div class="lateral_quick">
       <h4 class="lateral_quick__header">Contact Information</h4>
-      <h5 class="details__contact_name-title">Laura Stephenson, Ph.D.<br>Associate Dean for Extension</h5>
+      <h5 class="details__contact_name-title">Craig Wood, Ph.D<br>
+              Acting Associate Dean & Director<br>
+              UK Cooperative Extension Service
+      </h5>
       <p><span class="details__POC-item"><i class="fas fa-map-marker-alt poc-circular-icon"></i><span
             class="details__POC-item-inner">S-107 Ag. Science Center North</span></span>
         <span class="details__POC-indent">Lexington, KY 40546-0091</span>
@@ -121,14 +91,13 @@
       <p><span class="details__POC-item"><i class="fas fa-mobile-alt poc-circular-icon"></i><a
             href="tel:+1 (859) 257-4302"><span class="details__POC-item-inner">+1 (859) 257-4302</span></a></span></p>
       <p><span class="details__POC-item"><i class="fas fa-envelope poc-circular-icon"></i><a
-            href="mailto:laura.stephenson@uky.edu"><span
-              class="details__POC-item-inner">laura.stephenson@uky.edu</span></a></span></p>
+            href="mailto:craig.wood@uky.edu"><span
+              class="details__POC-item-inner">craig.wood@uky.edu</span></a></span></p>
     </div>
   </div>
-<div id="main-content">
+  <div id="main-content">
       <header id="main-header">
         <div class="l-constrain-logo">
-
             <div class="lockup__wrapper">
               <a href="https://extension.ca.uky.edu/" class="lockup">
                 <div class="lockup__main">
@@ -150,9 +119,7 @@
                   </div>
                 </div>
                 </a><div class="lockup__unit"><a href="https://extension.ca.uky.edu/" class="lockup"></a><a href="https://www.ca.uky.edu/">Martin-Gatton College of Agriculture, Food and Environment</a></div>
-              
             </div>
-          
             <nav class="functional-menu">
               <ul>
                 <li class="upper-nav__myUK">
@@ -216,7 +183,6 @@
                 <li class="menu__item @(ViewContext.RouteData.Values["Controller"].ToString() == "MajorProgram" ? "active" : "")">
                     <a class="menu__link" asp-controller="MajorProgram" asp-action="Index" asp-route-fy="@fy">Programs</a>
                 </li>
-                
                 <li class="menu__item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Data" ? "active" : "")">
                     <a class="menu__link" asp-controller="Data" asp-action="Index" asp-route-fy="@fy">Data</a>
                 </li>
@@ -363,7 +329,10 @@
 
         <div class="mobile-navigation__content">
             <h4 class="lateral_quick__header">Contact Information</h4>
-            <h5 class="details__contact_name-title">Laura Stephenson, Ph.D.<br>Associate Dean for Extension</h5>
+            <h5 class="details__contact_name-title">Craig Wood, Ph.D<br>
+              Acting Associate Dean & Director<br>
+              UK Cooperative Extension Service
+            </h5>
             <p><span class="details__POC-item"><i class="fas fa-map-marker-alt poc-circular-icon"></i><span
                   class="details__POC-item-inner">S-107 Ag. Science Center North</span></span>
               <span class="details__POC-indent">Lexington, KY 40546-0091</span>
@@ -371,8 +340,8 @@
             <p><span class="details__POC-item"><i class="fas fa-mobile-alt poc-circular-icon"></i><a
                   href="tel:+1 (859) 257-4302"><span class="details__POC-item-inner">+1 (859) 257-4302</span></a></span></p>
             <p><span class="details__POC-item"><i class="fas fa-envelope poc-circular-icon"></i><a
-                  href="mailto:laura.stephenson@uky.edu"><span
-                    class="details__POC-item-inner">laura.stephenson@uky.edu</span></a></span></p>
+                  href="mailto:craig.wood@uky.edu"><span
+                    class="details__POC-item-inner">craig.wood@uky.edu</span></a></span></p>
           </div>
 
         </div>
@@ -443,7 +412,7 @@
       </div>
       <div class="contact-details">
                     <ul>
-          <li><span>Director — Laura Stephenson, Ph.D.&nbsp;</span></li>
+          <li><span>Acting Associate Dean & Director — Craig Wood, Ph.D.&nbsp;</span></li>
           <li><span>S107 Ag. Science Center North</span></li>
           <li><span>Lexington, KY 40546-0091</span></li>
           <li><span><a href="tel:18592574302">+1 (859) 257-4302</a></span></li>
