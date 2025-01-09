@@ -232,13 +232,6 @@ h3 {
   }
 }
 
-h4 {
-  color: #000;
-  font-family: "Usual", sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.45;
-}
 
 @media (max-width: 40em) {
   h4 {
@@ -405,15 +398,6 @@ sup {
   top: -0.5em;
 }
 
-blockquote {
-  background: #dae4f2;
-  color: #000;
-  font-size: 1em;
-  font-style: italic;
-  margin: 1em 0;
-  padding: 1em 1em 1em 3em;
-  position: relative;
-}
 
 blockquote::before {
   color: #0071eb;
@@ -6231,7 +6215,7 @@ h3.mobile_quick__header {
   margin-left: 0;
   padding-left: 0;
 }
-
+/*
 .message {
   background-color: #dae4f2;
   border: 1px solid #DCDDDE;
@@ -6255,7 +6239,7 @@ h3.mobile_quick__header {
   transform: rotate(-20deg);
   width: 3.25em;
 }
-
+*/
 @media print {
   .message::before {
       display: none !important;
