@@ -69,10 +69,14 @@ namespace Kers.Controllers.Reports
                                 .Include( e => e.ProgramCategories).ThenInclude( c => c.ProgramCategory)
                                 .Include( e => e.ExtensionEventImages)
                                 .FirstOrDefaultAsync();
-            int cntId =  (countyId != 0 ? countyId : evnt.Units.First().PlanningUnitId);
-            ViewData["unit"] = await this.context.PlanningUnit
+             
+            if( evnt != null){
+                int cntId =  countyId != 0 ? countyId : (evnt.Units.First() != null ? evnt.Units.First().PlanningUnitId : 86);
+                ViewData["unit"] = await context.PlanningUnit
                                         .Where( u => u.Id == cntId )
                                         .FirstOrDefaultAsync();
+            }
+             
             return View(evnt);
         }
 
