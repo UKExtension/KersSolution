@@ -161,6 +161,7 @@ namespace Kers.Models.Abstract
         string IndirectByEmployee(FiscalYear fiscalYear, bool refreshCache = false);
         string IndirectByProject(FiscalYear fiscalYear, bool refreshCache = false);
         string SessionTypebyMonth(FiscalYear fiscalYear, Boolean refreshCache = false);
+        string SessionTypebyProject(FiscalYear fiscalYear, Boolean refreshCache = false);
         string AudienceAgeCategory(FiscalYear fiscalYear, Boolean refreshCache = false);
         
     }

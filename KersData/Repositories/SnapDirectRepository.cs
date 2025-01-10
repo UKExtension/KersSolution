@@ -400,6 +400,63 @@ namespace Kers.Models.Repositories
             }
             return result;
         }
+
+
+        public string SessionTypebyProject(FiscalYear fiscalYear, Boolean refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapSessionTypebyProject + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+    
+                keys.Add("Project Name");
+                var types = context.SnapDirectSessionType.Where(m => m.Active).OrderBy( m => m.order);
+                foreach( var met in types){
+                    keys.Add(string.Concat( "\"", met.Name, " Number Delivered\""));
+                    keys.Add(string.Concat( "\"", met.Name, " Min Minutes\""));
+                    keys.Add(string.Concat( "\"", met.Name, " Max Minutes\""));
+                }
+                keys.Add("Total");
+                result = string.Join(",", keys.ToArray()) + "\n";
+                var projects = this.context.SnapIndirectReached.OrderBy( r => r.order );
+                var actvts = SnapData(fiscalYear).Where( a => a.Revision.SnapDirect != null);
+                foreach( var project in projects){
+                    var byProjectActivities = actvts.Where( a => a.Revision.SnapDirect.SnapDirectAgesAudienceValues.Where(a => a.SnapDirectAudienceId == project.Id).Sum(a => a.Value) > 0 );
+                    var row = project.Name + ",";
+                    var ByProjectTotal = 0;
+                    foreach( var type in types){
+                        var byType = byProjectActivities.Where( r => r.Revision.SnapDirect.SnapDirectSessionTypeId == type.Id);
+                        var cnt = byType.Count();
+                        ByProjectTotal += cnt;
+                        row += cnt.ToString() + ",";
+                        if( cnt == 0){
+                            row += ",,";
+                        }else{
+                            row += (byType.Min( t => t.Revision.Hours) * 60).ToString() + ",";
+                            row += (byType.Max( t => t.Revision.Hours) * 60).ToString() + ",";
+                        }
+                    }
+                    row += ByProjectTotal.ToString();
+                    result += row + "\n";
+                }
+
+                result += "Updated: " + DateTime.Now.ToString();
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
+                    }); 
+            }
+            return result;
+        }
+
+
+
+
+
+
         public string MethodsUsedRecordCount(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
             var cacheKey = CacheKeys.SnapMethodsUsedRecordCount + fiscalYear.Name;

@@ -140,6 +140,8 @@ namespace Kers.Models.Repositories
                     UKRevisions.Add( rev );
                 }
             }
+            //Check if revision is duplicate
+            //var groupedByActivity = UKRevisions.GroupBy( r => r.ActivityId).Where( r => r.Count() > 1 ).ToList();
 
 
             return UKRevisions;

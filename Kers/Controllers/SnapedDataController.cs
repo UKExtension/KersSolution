@@ -265,7 +265,22 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = this.snapDirectRepo.SessionTypebyMonth(fiscalYear, true);
+            var result = this.snapDirectRepo.SessionTypebyMonth(fiscalYear);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("sessiontypebyproject/{fy}/data.csv")]
+        [Authorize]
+        public IActionResult SessionTypebyProject(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = this.snapDirectRepo.SessionTypebyProject(fiscalYear, true);
             return Ok(result);
         }
 
