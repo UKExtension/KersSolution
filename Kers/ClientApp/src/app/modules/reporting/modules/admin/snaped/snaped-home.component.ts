@@ -56,6 +56,8 @@ import { saveAs } from 'file-saver';
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'agentcommunityeventdetail'" [filename]="'AgentCommunityEventDetail'" [label]="'Agent Community Event Detail Report'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'numberofdeliverysitesbytypeofsetting'" [filename]="'NumberofDeliverySitesbyTypeofSetting'" [label]="'Number of Delivery Sites by Type of Setting'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'sessiontypebymonth'" [filename]="'SessionTypebyMonth'" [label]="'Session Type by Month'"></snaped-download-button><br>
+    <snaped-download-button [fiscalYear]="fiscalYear" [location]="'sessiontypebyproject'" [filename]="'SessionTypebyProject'" [label]="'Session Type by Project'"></snaped-download-button><br>
+    
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'estimatedsizeofaudiencesreached'" [filename]="'EstimatedSizeofAudiencesReached'" [label]="'Estimated Size of Audiences Reached - Communication/Events'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'methodsusedrecordcount'" [filename]="'MethodsUsedRecordCount'" [label]="'Methods Used - Record Count'"></snaped-download-button><br>
     <snaped-download-button [fiscalYear]="fiscalYear" [location]="'personnelhourdetails'" [filename]="'PersonnelHourDetails'" [label]="'Personnel Hour Details'"></snaped-download-button><br>
