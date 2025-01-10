@@ -254,7 +254,7 @@ namespace Kers.Models.Repositories
                 result = string.Join(",", keys.ToArray()) + "\n";
 
 
-                var revs = SnapData( fiscalYear).Select( a => a.Revision);
+                var revs = SnapData( fiscalYear).Where( r => r.Revision.SnapDirect != null).Select( a => a.Revision);
 
                 var vals = revs.Where(r => r.SnapDirect != null).Select( r => r.SnapDirect.SnapDirectAgesAudienceValues);
 
