@@ -421,7 +421,7 @@ namespace Kers.Models.Repositories
                 }
                 keys.Add("Total");
                 result = string.Join(",", keys.ToArray()) + "\n";
-                var projects = this.context.SnapIndirectReached.OrderBy( r => r.order );
+                var projects = this.context.SnapDirectAudience.OrderBy( r => r.order );
                 var actvts = SnapData(fiscalYear).Where( a => a.Revision.SnapDirect != null);
                 foreach( var project in projects){
                     var byProjectActivities = actvts.Where( a => a.Revision.SnapDirect.SnapDirectAgesAudienceValues.Where(a => a.SnapDirectAudienceId == project.Id).Sum(a => a.Value) > 0 );
