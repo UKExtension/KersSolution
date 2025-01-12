@@ -273,14 +273,29 @@ namespace Kers.Models.Repositories
                 keys.Add("EventDate");
                 keys.Add("Hours");
 
-
-                var types = context.SnapPolicyAimed.Where(m => m.Active && m.FiscalYear == fiscalYear).OrderBy( m => m.order);
-                foreach( var met in types){
-                    keys.Add(string.Concat( "\"", met.Name, "\""));
-                }
                 keys.Add("PurposeGoal");
                 keys.Add("ResultImpact");
+                var types = context.SnapPolicyAimed.Where(m => m.Active).OrderBy( m => m.order);
+                foreach( var met in types){
+                    keys.Add(string.Concat( "\"Aimed: ", met.Name, "\""));
+                }
+                
+
+
+                var partners = context.SnapPolicyPartner.Where(m => m.Active).OrderBy( m => m.order);
+                foreach( var par in partners){
+                    keys.Add(string.Concat( "\"Partners: ", par.Name, "\""));
+                }
+
                 result = string.Join(",", keys.ToArray()) + "\n";
+
+
+
+
+
+
+
+
                 var activitiesThisFiscalYear = context.Activity.Where( a => 
                                                                             a.ActivityDate > fiscalYear.Start 
                                                                             && 
@@ -327,7 +342,12 @@ namespace Kers.Models.Repositories
                         row += prgrms + ",";
                         row += meeting.ActivityDate.ToString("MM/dd/yyy") + ",";
                         row += meeting.Hours.ToString() + ",";
-                        var aimed = context.SnapPolicy.Where( p => p.Id == LastRevision.SnapPolicyId).Include( s => s.SnapPolicyAimedSelections).FirstOrDefault();
+                        var aimed = context.SnapPolicy.Where( p => p.Id == LastRevision.SnapPolicyId)
+                                        .Include( s => s.SnapPolicyAimedSelections)
+                                        .Include( s => s.SnapPolicyPartnerValue)
+                                        .FirstOrDefault();
+                        row += string.Concat( "\"", StripHTML(aimed.Purpose), "\"") + ",";
+                        row += string.Concat( "\"", StripHTML(aimed.Result), "\",") ;
                         foreach( var tp in types){
                             if( aimed.SnapPolicyAimedSelections == null){
                                 row += ",";
@@ -340,8 +360,20 @@ namespace Kers.Models.Repositories
                                 }
                             }
                         }
-                        row += string.Concat( "\"", StripHTML(aimed.Purpose), "\"") + ",";
-                        row += string.Concat( "\"", StripHTML(aimed.Result), "\"") ;
+
+                        foreach( var par in partners){
+                            if( aimed.SnapPolicyPartnerValue == null){
+                                row += ",";
+                            }else{
+                                var sels = aimed.SnapPolicyPartnerValue.Where( a => a.SnapPolicyPartnerId == par.Id).FirstOrDefault();
+                                if( sels != null ){
+                                    row += sels.Value.ToString() + ",";
+                                }else{
+                                    row += ",";
+                                }
+                            }
+                        }
+                        
                         
                         result += row + "\n";
                     }
