@@ -363,7 +363,7 @@ namespace Kers.Models.Repositories
 
                         foreach( var par in partners){
                             if( aimed.SnapPolicyPartnerValue == null){
-                                row += ",";
+                                row += "0,";
                             }else{
                                 var sels = aimed.SnapPolicyPartnerValue.Where( a => a.SnapPolicyPartnerId == par.Id).FirstOrDefault();
                                 if( sels != null ){
