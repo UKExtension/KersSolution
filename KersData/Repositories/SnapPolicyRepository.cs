@@ -334,7 +334,7 @@ namespace Kers.Models.Repositories
                             row += string.Concat( "\"", meeting.Position, "\"") + ",";
                         }
                         row += meeting.PlanningUnit.Name + ",";
-                        row += meeting.PlanningUnit.ExtensionArea == null ? "" : meeting.PlanningUnit.ExtensionArea.Name + ",";
+                        row += meeting.PlanningUnit.ExtensionArea == null ? "," : meeting.PlanningUnit.ExtensionArea.Name + ",";
                         var prgrms = "";
                         foreach( var program in meeting.Programs){
                             prgrms += specialties.Where( s => s.Id == program.SpecialtyId).FirstOrDefault() ?.Code + " "??"";
@@ -379,7 +379,7 @@ namespace Kers.Models.Repositories
                     }
                     
                 }
-
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
