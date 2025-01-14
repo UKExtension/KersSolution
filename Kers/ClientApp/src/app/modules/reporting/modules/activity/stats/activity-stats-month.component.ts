@@ -180,10 +180,12 @@ export class ActivityStatsMonthComponent {
 
     contactOptionsNumbersToActivityNumbers(nums:ContactOptionNumberValue[]):ActivityOptionNumberValue[]{
         var aNums:ActivityOptionNumberValue[] = [];
-        for( let cntctOption of nums){
-            aNums.push({id:cntctOption.id, activityOptionNumberId:cntctOption.activityOptionNumberId, value:cntctOption.value, activityOptionNumber:null })
+        if(nums != null ){
+            for( let cntctOption of nums){
+                aNums.push({id:cntctOption.id, activityOptionNumberId:cntctOption.activityOptionNumberId, value:cntctOption.value, activityOptionNumber:null })
+            }
         }
-        return nums;
+        return aNums;
     }
 
     addTheActivity( activity:Activity ){
