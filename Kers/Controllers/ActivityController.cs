@@ -1349,6 +1349,17 @@ namespace Kers.Controllers
         }
 
 
+        [HttpGet("numberContactsPerYear/{FiscalYearId}/{UserId}")]
+        public IActionResult NumberContactsPerYear(int FiscalYearId, int UserId){
+            if( UserId == 0 ) UserId = this.CurrentUser().Id;
+
+            var NumActivities = context.Contact.Where( a => a.KersUserId == UserId && a.MajorProgram.StrategicInitiative.FiscalYear.Id == FiscalYearId).Count();
+            
+            return new OkObjectResult(NumActivities);
+        }
+
+
+
         [HttpGet("GetActivitiesBatch/{start}/{amount}/{FiscalYearId}/{UserId}")]
         public IActionResult GetActivitiesBatch(int start, int amount, int FiscalYearId, int UserId){
             if( UserId == 0 ) UserId = this.CurrentUser().Id;
@@ -1359,6 +1370,22 @@ namespace Kers.Controllers
                             .Include( a => a.RaceEthnicityValues)
                             .Include( a => a.ActivityOptionNumbers)
                             .Include( a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption)
+                            .FirstOrDefault();
+                revs.Add(rev);
+            }
+            return new OkObjectResult(revs);
+        }
+
+
+        [HttpGet("GetContactsBatch/{start}/{amount}/{FiscalYearId}/{UserId}")]
+        public IActionResult GetContactsBatch(int start, int amount, int FiscalYearId, int UserId){
+            if( UserId == 0 ) UserId = this.CurrentUser().Id;
+            var Activities = context.Contact.Where( a => a.KersUserId == UserId && a.MajorProgram.StrategicInitiative.FiscalYear.Id == FiscalYearId).OrderBy( a => a.Id).Skip(start).Take(amount);
+            List<ContactRevision> revs = new List<ContactRevision>();
+            foreach( var act in Activities){
+                var rev = context.ContactRevision.Where( a => a.Id == act.LastRevisionId)
+                            .Include( a => a.ContactRaceEthnicityValues)
+                            .Include( a => a.ContactRaceEthnicityValues)
                             .FirstOrDefault();
                 revs.Add(rev);
             }

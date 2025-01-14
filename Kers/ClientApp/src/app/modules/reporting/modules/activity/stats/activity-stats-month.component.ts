@@ -1,10 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber, Ethnicity, PerMonthActivities, PerMonthContacts } from '../activity.service';
+import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber, Ethnicity, PerMonthActivities, PerMonthContacts, ActivityOptionNumberValue } from '../activity.service';
 
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { User } from "../../user/user.service";
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
+import { number } from 'echarts';
+import { Contact, ContactOptionNumberValue } from '../../contact/contact.service';
 //import { arch } from 'os';
 
 
@@ -27,6 +29,9 @@ export class ActivityStatsMonthComponent {
 
 
     numActivities:number = 0;
+
+    numContacts:number = 0;
+
     amountPerBatch: number = 3;
     currentBarch:number = 0;
     loading:boolean = false;
@@ -60,17 +65,55 @@ export class ActivityStatsMonthComponent {
         this.service.numberActivitiesPerYear(this.fiscalYear.id, (this.user == null ? 0 : this.user.id)).subscribe(
             res => {
                 this.numActivities = res;
-                this.getBatch(this.fiscalYear.id);
+                this.service.numberContactsPerYear(this.fiscalYear.id, (this.user == null ? 0 : this.user.id)).subscribe(
+                    res=>{
+                        this.numContacts = res;
+                        if( this.numActivities > 0) this.getBatch(this.fiscalYear.id);
+                        if( this.numContacts > 0 ) this.GetContactsBatch(this.fiscalYear.id);
+                    }
+                );
             }
         )
     }
     resetRequest(){
         this.numActivities = 0;
+        this.numContacts = 0;
         this.currentBarch = 0;
         this.allActivities = [];
         this.activities = undefined;
         this.activities = [];
     }
+
+    GetContactsBatch(fiscalYaerId:number){
+        this.loading = true;
+        var startTime = new Date();
+        this.service.GetContactsBatch(this.currentBarch, this.amountPerBatch,fiscalYaerId, this.user == null ? 0 : this.user.id ).subscribe(
+            res => {
+                var endTime = new Date();
+                var seconds = (endTime.getTime() - startTime.getTime()) / 1000;
+                this.averageBatchTime = (this.averageBatchTime == 0 ? seconds : (this.averageBatchTime + seconds) /2)
+                this.timePerBatch = endTime.getTime() - startTime.getTime();
+                this.processContactsBatch(res);
+                if(this.yearSwitched){
+                    this.yearSwitched = false;
+                    this.getNumRows();
+                }else if( this.currentBarch <= this.numActivities ){
+                    this.currentBarch += this.amountPerBatch;
+                    this.getBatch( fiscalYaerId );
+                }else{
+                    this.activities.sort(
+                        function( a, b ){
+                            return (a.year - b.year) * 100 + ( a.month - b.month)
+                        }
+                    );
+                    this.loading = false;
+                }
+
+
+            }
+        );
+    }
+    
 
     getBatch(fiscalYaerId:number){
         this.loading = true;
@@ -99,9 +142,48 @@ export class ActivityStatsMonthComponent {
             }
         )
     }
-
+    processContactsBatch(batch:Contact[]){
+        for( let a of batch ) this.addTheContact( a );
+    }
     processBatch( batch:Activity[]){
         for( let a of batch ) this.addTheActivity( a );
+    }
+
+    addTheContact( activity:Contact ){
+        var dt = new Date(activity.contactDate);
+        var year = dt.getFullYear();
+        var month = dt.getMonth();
+        // find if row exists
+        var filteredRow = this.activities.filter( a => a.month == month && a.year == year);
+        if(filteredRow.length > 0){
+            var row = filteredRow[0];
+            row.hours += activity.days * 8;
+            row.males += activity.male;
+            row.multistate += activity.multistate * 8;
+            row.females += activity.female;
+            row.raceEthnicityValues = row.raceEthnicityValues.concat(activity.contactRaceEthnicityValues);
+            row.optionNumberValues = row.optionNumberValues.concat(this.contactOptionsNumbersToActivityNumbers(activity.contactOptionNumbers));
+        }else{
+            var row = new PerMonthContacts;
+            row.month = month;
+            row.year = year;
+            row.hours = activity.days * 8;
+            row.males = activity.male;
+            row.females = activity.female;
+            row.multistate += activity.multistate * 8;
+            row.raceEthnicityValues = activity.contactRaceEthnicityValues;
+            row.optionNumberValues = this.contactOptionsNumbersToActivityNumbers(activity.contactOptionNumbers);
+            this.activities.push(row);
+        }
+
+    }
+
+    contactOptionsNumbersToActivityNumbers(nums:ContactOptionNumberValue[]):ActivityOptionNumberValue[]{
+        var aNums:ActivityOptionNumberValue[] = [];
+        for( let cntctOption of nums){
+            aNums.push({id:cntctOption.id, activityOptionNumberId:cntctOption.activityOptionNumberId, value:cntctOption.value, activityOptionNumber:null })
+        }
+        return nums;
     }
 
     addTheActivity( activity:Activity ){

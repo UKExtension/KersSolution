@@ -7,6 +7,7 @@ import {MajorProgram } from '../admin/programs/programs.service';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { User, PlanningUnit } from '../user/user.service';
 import { Servicelog } from '../servicelog/servicelog.service';
+import { Contact } from '../contact/contact.service';
 
 
 @Injectable()
@@ -203,6 +204,28 @@ export class ActivityService {
 
     }
 
+
+    numberContactsPerYear(fiscalYaerId:number, userId:number):Observable<number>{
+
+    
+        var url = this.baseUrl + 'numberContactsPerYear/' + fiscalYaerId + "/" + userId;
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('numberContactsPerYear', 0))
+            );
+
+    }
+
+    GetContactsBatch(start:number, amount:number, fiscalYaerId:number, userId:number):Observable<Contact[]>{
+
+    
+        var url = this.baseUrl + 'GetContactsBatch/' + start + '/' + amount + '/' + fiscalYaerId + "/" + userId;
+        return this.http.get<Contact[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('GetContactsBatch', []))
+            );
+
+    }
 
 
 
