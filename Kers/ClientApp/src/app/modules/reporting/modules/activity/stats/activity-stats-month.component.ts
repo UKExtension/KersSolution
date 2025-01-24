@@ -170,7 +170,7 @@ export class ActivityStatsMonthComponent {
             row.hours = activity.days * 8;
             row.males = activity.male;
             row.females = activity.female;
-            row.multistate += activity.multistate * 8;
+            row.multistate = activity.multistate * 8;
             row.raceEthnicityValues = activity.contactRaceEthnicityValues;
             row.optionNumberValues = this.contactOptionsNumbersToActivityNumbers(activity.contactOptionNumbers);
             this.activities.push(row);
@@ -307,11 +307,15 @@ export class ActivityStatsMonthComponent {
     }
 
     optionNumberValue( optionNumber:ActivityOptionNumber, actvts){
-
-        var filtered = actvts.map( a => a.optionNumberValues );
-        filtered = [].concat.apply([], filtered);
-        filtered = filtered.filter( a => a.activityOptionNumberId== optionNumber.id);
-        var total = filtered.map( r => r.value).reduce( (one, two) => one + two);
+        var total = 0;
+        if(actvts != 0 && actvts.length > 0){
+            var filtered = actvts.map( a => a.optionNumberValues );
+            filtered = [].concat.apply([], filtered);
+            if(filtered.length > 0){
+                filtered = filtered.filter( a => a.activityOptionNumberId== optionNumber.id);
+                total = filtered.map( r => r.value).reduce( (one, two) => one + two);
+            }
+        }
         return total;
     }
 
