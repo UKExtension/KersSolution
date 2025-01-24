@@ -296,7 +296,7 @@ namespace Kers.Models.Repositories
                     }else if(filter == FilterKeys.Region){
                         activities = await RegionEmployeeGroupppedActivities(id, start, end);
                     }else{
-                        activities = await AllEmployeeGroupppedActivities(start, end);
+                        activities = await AllEmployeeGroupppedActivities(start, end, refreshCache);
                     }
                 }else{
                     if(filter == FilterKeys.District){
@@ -312,7 +312,7 @@ namespace Kers.Models.Repositories
                     }else if(filter == FilterKeys.UK){
                         activities = await UKProgramGroupppedActivities(start, end);
                     }else{
-                        activities = await AllProgramGroupppedActivities(start, end);
+                        activities = await AllProgramGroupppedActivities(start, end, refreshCache);
                     }
                 }
                 
@@ -324,7 +324,7 @@ namespace Kers.Models.Repositories
 
 
             }
-            var result = ProcessGrouppedActivities(activities);
+            var result = ProcessGrouppedActivities(activities, refreshCache);
 
             List<ContactGrouppedResult> contacts;
 
@@ -368,7 +368,7 @@ namespace Kers.Models.Repositories
                         contacts = await AllProgramGroupppedContacts(start, end);
                     }
                 }
-                result = ProcessGrouppedContacts(contacts, result);
+                result = ProcessGrouppedContacts(contacts, result, refreshCache);
                 var serializedContacts = JsonConvert.SerializeObject(contacts);
                 
                 
@@ -987,8 +987,8 @@ namespace Kers.Models.Repositories
             return contacts;
         }
 
-        private async Task<List<ActivityGrouppedResult>> AllEmployeeGroupppedActivities(DateTime start, DateTime end){
-            var AllActivities = await ActivitiesPerPeriod( start, end);
+        private async Task<List<ActivityGrouppedResult>> AllEmployeeGroupppedActivities(DateTime start, DateTime end, bool refreshCache = false){
+            var AllActivities = await ActivitiesPerPeriod( start, end, refreshCache);
             var activities = AllActivities
                                             .GroupBy(e => new {
                                                 KersUser = e.KersUser
@@ -1363,8 +1363,8 @@ namespace Kers.Models.Repositories
             return contacts;
         }
 
-        private async Task<List<ActivityGrouppedResult>> AllProgramGroupppedActivities(DateTime start, DateTime end){
-            var AllActivities = await ActivitiesPerPeriod( start, end);
+        private async Task<List<ActivityGrouppedResult>> AllProgramGroupppedActivities(DateTime start, DateTime end, bool refreshCache = false){
+            var AllActivities = await ActivitiesPerPeriod( start, end, refreshCache);
             var activities = AllActivities
                                                     .Where( a => 
                                                                 a.ActivityDate < end 
@@ -1414,7 +1414,7 @@ namespace Kers.Models.Repositories
             return contacts;
         }
 
-        public List<PerGroupActivities> ProcessGrouppedActivities(List<ActivityGrouppedResult> activities){
+        public List<PerGroupActivities> ProcessGrouppedActivities(List<ActivityGrouppedResult> activities, bool refreshCache = false){
             var result = new List<PerGroupActivities>();
             foreach( var group in activities){
                 var GroupRevisions = new List<ActivityRevision>();
@@ -1427,7 +1427,7 @@ namespace Kers.Models.Repositories
                     var cacheString = _cache.GetString(cacheKey);
 
                     ActivityRevision lstrvsn;
-                    if (!string.IsNullOrEmpty(cacheString)){
+                    if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
                         lstrvsn = JsonConvert.DeserializeObject<ActivityRevision>(cacheString);
                     }else{
                         lstrvsn = coreContext.ActivityRevision.
@@ -1470,7 +1470,7 @@ namespace Kers.Models.Repositories
         }
 
 
-        public List<PerGroupActivities> ProcessGrouppedContacts(List<ContactGrouppedResult> contacts, List<PerGroupActivities> result){
+        public List<PerGroupActivities> ProcessGrouppedContacts(List<ContactGrouppedResult> contacts, List<PerGroupActivities> result, bool refreshCache = false){
             foreach( var contactGroup in contacts ){
                 var GroupRevisions = new List<ContactRevision>();
                 var OptionNumbers = new List<IOptionNumberValue>();
@@ -1482,7 +1482,7 @@ namespace Kers.Models.Repositories
                     var cacheString = _cache.GetString(cacheKey);
                 
                     ContactRevision lstrvsn;
-                    if (!string.IsNullOrEmpty(cacheString)){
+                    if (!string.IsNullOrEmpty(cacheString) && !refreshCache){
                         lstrvsn = JsonConvert.DeserializeObject<ContactRevision>(cacheString);
                     }else{
                         lstrvsn = coreContext.ContactRevision.
@@ -1629,10 +1629,10 @@ namespace Kers.Models.Repositories
         }
 
 
-        private async Task<List<Activity>> ActivitiesPerPeriod( DateTime start, DateTime end ){
-            List<Activity> ActivityData;
+        private async Task<List<Activity>> ActivitiesPerPeriod( DateTime start, DateTime end, bool refreshCache = false){
+            List<Activity> ActivityData = new List<Activity>();
             var cacheKeyData = CacheKeys.ActivitiesPerPeriod + start.ToString() + end.ToString();
-            if (!_memoryCache.TryGetValue(cacheKeyData, out ActivityData)){
+            if (!_memoryCache.TryGetValue(cacheKeyData, out ActivityData) || refreshCache){
                 ActivityData = await this.coreContext.Activity
                                     .Where(a => a.ActivityDate < end && a.ActivityDate > start)
                                     .Include( a => a.LastRevision)
