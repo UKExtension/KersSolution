@@ -77,7 +77,7 @@ namespace Kers.Controllers.Reports
 
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
-            var table = await contactRepo.DataByEmployee(fiscalYear, 4);
+            var table = await contactRepo.DataByEmployee(fiscalYear, 4,0, true);
             return View(table);
         }
 
