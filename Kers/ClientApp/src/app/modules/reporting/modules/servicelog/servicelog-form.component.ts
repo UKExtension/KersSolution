@@ -748,11 +748,24 @@ interface ImageResponse{
 
 export const snapValidator = (control: AbstractControl): {[key: string]: boolean} => {
     const isSnap = control.get('isSnap');
+    var error = {};
+    var hasError = false;
+
+    var revalues = control.get('raceEthnicityValues').value;
+    var totalREvalues = revalues.reduce((n:number, {amount}) => n + amount, 0);
+
+    if( totalREvalues != (parseInt(control.get('male').value) + parseInt(control.get('female').value) )){
+        error["raceDoesntMatch"] = true;
+        hasError = true;
+    }
+
+    if(hasError) return error;
+
+
+
     if (isSnap.value === false) return null;
     let male = control.get('male');
     let female = control.get('female');
-    var error = {};
-    var hasError = false;
     if(control.get('activityOptionNumbers').value.filter(n => n.activityOptionNumberId == 3)[0].value > 0) {
         if(control.get('snapAdmin').value) return null;
         let audienceTargeted = control.get('snapIndirect').get('snapIndirectAudienceTargetedId');
@@ -762,8 +775,7 @@ export const snapValidator = (control: AbstractControl): {[key: string]: boolean
         }
     }
    
-    if(parseInt(male.value) + parseInt(female.value) > 0 ){
-       
+    if(parseInt(male.value) + parseInt(female.value) > 0 ){       
 
         if(control.get('snapAdmin').value) return null;
 
