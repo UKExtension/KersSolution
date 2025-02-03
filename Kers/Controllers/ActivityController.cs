@@ -1385,7 +1385,7 @@ namespace Kers.Controllers
             foreach( var act in Activities){
                 var rev = context.ContactRevision.Where( a => a.Id == act.LastRevisionId)
                             .Include( a => a.ContactRaceEthnicityValues)
-                            .Include( a => a.ContactRaceEthnicityValues)
+                            .Include( a => a.ContactOptionNumbers)
                             .FirstOrDefault();
                 revs.Add(rev);
             }
