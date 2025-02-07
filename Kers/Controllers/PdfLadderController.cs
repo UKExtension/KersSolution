@@ -360,9 +360,9 @@ namespace Kers.Controllers
             
             trainings = trainings.Where( t => t.Start > Start && t.Start < End);
             
-            trainings = trainings.Include( t => t.Enrollment).Include(t => t.iHour)
-            			.Include( t => t.SurveyResults);
-            var tnngs = trainings.OrderBy(t => t.Start).ToList();
+            var tr = trainings.Include( t => t.Enrollment).Include(t => t.iHour)
+            			.Include( t => t.SurveyResults).AsSplitQuery().ToList();
+            var tnngs = tr.OrderBy(t => t.Start).ToList();
 			return tnngs;
 
 		}
