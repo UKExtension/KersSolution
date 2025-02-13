@@ -16,6 +16,8 @@ namespace Kers.Models.Entities.KERScore
         public int order {get; set;}
         public int MajorProgramId {get; set;}
         public MajorProgram MajorProgram {get; set;}
+        public int IsYouth {get; set;}
+        public int Identifier {get; set;}
 
     }
 }
