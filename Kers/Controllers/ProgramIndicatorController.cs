@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Kers.Controllers
 {
@@ -114,6 +115,20 @@ namespace Kers.Controllers
             
         }
 
+        [HttpGet("indicatorsnextorder/{MajorProgramId}")]
+        public IActionResult NextOrder(int MajorProgramId){
+            var program = this.context.MajorProgram.Find(MajorProgramId);
+            if(program==null){
+                return new OkObjectResult(1);
+            }
+            var indicators = this.context.ProgramIndicator.
+                            Where(p=>p.MajorProgram == program).OrderBy(o=>o.order);
+
+            if(indicators.Count() == 0) return new OkObjectResult(1); 
+            return new OkObjectResult(indicators.LastOrDefault().order + 2);
+            
+        }
+
 
         [HttpPost("{programId}")]
         [Authorize]
@@ -142,6 +157,7 @@ namespace Kers.Controllers
 
                 entity.order = indicator.order;
                 entity.Question = indicator.Question;
+                entity.IsYouth = indicator.IsYouth;
 
                 context.SaveChanges();
 

@@ -7,8 +7,6 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
   template: `
   <div><reporting-display-help id="12"></reporting-display-help></div>
   <div *ngIf="fiscalYear">
-    <plansofwork-maps [fy]="fiscalYear"></plansofwork-maps>
-    <hr />
     <plansofwork [fy]="fiscalYear"></plansofwork>
   </div>  
 

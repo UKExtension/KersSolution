@@ -6,15 +6,29 @@
         </div>
     </div>
     <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="planofworkForm">
-
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">County Emphasis: </label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">MAP: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <select name="map" id="map" formControlName="map" class="form-control col-md-7 col-xs-12" >
+                    <option value="">--- select ---</option>
+                    <option *ngFor="let map of maps" [value]="map.id">{{map.title}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Title: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <input type="text" name="title" id="title" formControlName="title" class="form-control col-md-7 col-xs-12" >
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Concentration 1: </label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Agents Involved: </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <input type="agentsInvolved" name="agentsInvolved" id="agentsInvolved" formControlName="agentsInvolved" class="form-control col-md-7 col-xs-12" >
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Major Program 1: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <select name="title" id="mp1" formControlName="mp1" class="form-control col-md-7 col-xs-12" >
                     <option value="">--- select ---</option>
@@ -25,7 +39,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Concentration 2: </label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Major Program 2: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <select name="mp2" id="mp2" formControlName="mp2" class="form-control col-md-7 col-xs-12" >
                     <option value="">--- select ---</option>
@@ -36,7 +50,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Concentration 3: </label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Major Program 3: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <select name="mp3" id="mp3" formControlName="mp3" class="form-control col-md-7 col-xs-12" >
                     <option value="">--- select ---</option>
@@ -47,7 +61,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Concentration 4: </label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Major Program 4: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <select name="mp4" id="mp4" formControlName="mp4" class="form-control col-md-7 col-xs-12" >
                     <option value="">--- select ---</option>
@@ -63,15 +77,6 @@
                 <textarea [froalaEditor]="options" name="situation" formControlName="situation" id="situation" class="form-control col-xs-12"></textarea>
                 <p><small>Briefly describe the situation or issue which led to the development of this program. 
                     When appropriate, identify information sources where situational data was obtained. 
-                    Also, describe how advisory councils were involved in the development of this program.</small></p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="activityDescription" class="control-label col-md-3 col-sm-3 col-xs-12">County Situation:</label>           
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <textarea [froalaEditor]="options" name="situation" id="countySituation" class="form-control col-xs-12"></textarea>
-                <p><small>Briefly describe county situation or issue which led to the development of this program. 
-                    When appropriate, identify information sources where county situational data was obtained. 
                     Also, describe how advisory councils were involved in the development of this program.</small></p>
             </div>
         </div>
@@ -101,15 +106,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="activityDescription" class="control-label col-md-3 col-sm-3 col-xs-12">Learning Opportunities:</label>           
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <textarea [froalaEditor]="options" name="learning" formControlName="learning" id="learning" class="form-control col-xs-12"></textarea>
-                <p><small>Indicate the audience you intend to reach and the learning opportunities that will be provided. 
-                    First, describe the project or activity. Then, describe the content that will be delivered or the curriculum used. Next, indicate the inputs or resources used to conduct the program (e.g., volunteers, paid staff, facilities, grant funds, etc.). 
-                    Finally, tell when the project/activity will occur.</small></p>
-            </div>
-        </div>
-        <div class="form-group">
             <label for="activityDescription" class="control-label col-md-3 col-sm-3 col-xs-12">Evaluation:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <textarea [froalaEditor]="options" name="evaluation" formControlName="evaluation" id="evaluation" class="form-control col-xs-12"></textarea>
@@ -118,18 +114,13 @@
                     Then tell when evaluation activities will occur.</small></p>
             </div>
         </div>
-        <div class="form-group" *ngIf="dataSources">
-            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Data Source(s):</label>           
+        <div class="form-group">
+            <label for="activityDescription" class="control-label col-md-3 col-sm-3 col-xs-12">Learning:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <ng-select
-                    id="dataSource"
-                    formControlName="planOfWorkDataSourceSelections"
-                    [items]="dataSources"
-                    [multiple]="true"
-                    [closeOnSelect]="true"
-                    [hideSelected]="true"
-                    placeholder = "(select any/all that apply)">
-                </ng-select>
+                <textarea [froalaEditor]="options" name="learning" formControlName="learning" id="learning" class="form-control col-xs-12"></textarea>
+                <p><small>Indicate the audience you intend to reach and the learning opportunities that will be provided. 
+                    First, describe the project or activity. Then, describe the content that will be delivered or the curriculum used. Next, indicate the inputs or resources used to conduct the program (e.g., volunteers, paid staff, facilities, grant funds, etc.). 
+                    Finally, tell when the project/activity will occur.</small></p>
             </div>
         </div>
         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">

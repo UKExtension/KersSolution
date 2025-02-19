@@ -41,6 +41,7 @@ namespace Kers.Models.Entities.KERScore
 
         public int PlanOfWorkId { get; set; }
         public PlanOfWork PlanOfWork { get; set; }
+        public List<PlanOfWorkDataSourceSelection> PlanOfWorkDataSourceSelections {get; set;}
 
     }
 }

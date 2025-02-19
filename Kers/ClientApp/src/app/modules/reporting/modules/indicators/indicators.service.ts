@@ -48,6 +48,14 @@ export class IndicatorsService {
             );
     }
 
+    indicatorsnextorder(programId:number):Observable<number>{
+        var url = this.baseUrl + "indicatorsnextorder/" + programId;
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('indicatorsforprogram', 1))
+            );
+    }
+
     indicatorValues(program:MajorProgram):Observable<IndicatorValue[]>{
             var url = this.baseUrl + "indicatorvalues/" + program.id;
             return this.http.get<IndicatorValue[]>(this.location.prepareExternalUrl(url))
@@ -95,6 +103,9 @@ export interface Indicator{
     id:number;
     question:string;
     order:number;
+    isYouth:number;
+    identifier:number;
+    majorProgramId:number;
 }
 
 export interface IndicatorValue{

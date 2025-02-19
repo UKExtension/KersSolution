@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { PlansofworkService, Map, PlanOfWork } from './plansofwork.service';
+import { PlansofworkService, Map, PlanOfWork, PlanOfWorkDataSource } from './plansofwork.service';
 import { FormBuilder, Validators }   from '@angular/forms';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
-import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
+import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
@@ -21,6 +21,7 @@ export class PlansofworkFormComponent implements OnInit{
     initiatives:StrategicInitiative[];
     programs: MajorProgram[];
     maps: Map[];
+    dataSources:any[];
 
     @Output() onFormCancel = new EventEmitter<void>();
     @Output() onFormSubmit = new EventEmitter<void>();
@@ -28,7 +29,8 @@ export class PlansofworkFormComponent implements OnInit{
     constructor( 
         private plansofworkService: PlansofworkService,
         private service:ProgramsService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private fiscalYearService: FiscalyearService,
     ){
         this.programs = [];
         this.options = { 
@@ -42,9 +44,7 @@ export class PlansofworkFormComponent implements OnInit{
 
         this.planofworkForm = fb.group(
             {
-              map: ['', Validators.required],
               title: ['', Validators.required],
-              agentsInvolved: [''],
               mp1: ['', Validators.required],
               mp2: [''],
               mp3: [''],
@@ -54,7 +54,8 @@ export class PlansofworkFormComponent implements OnInit{
               intermediateOutcomes: '',
               initialOutcomes: '',
               learning: 'Audience:<br />Project or Activity:<br />Content or Curriculum:<br />Inputs:<br />Date:<br /><br />Audience:<br />Project or Activity:<br />Content or Curriculum: <br />Inputs:<br />Date:<br /><br />Audience:<br />Project or Activity:<br />Content or Curriculum:<br />Inputs:<br />Date: ',
-              evaluation: 'Initial Outcome:<br />Indicator:<br />Method:<br />Timeline:<br />Intermediate Outcome:<br />Indicator:<br />Method:<br />Timeline:<br /><br />Long-term Outcome:<br />Indicator:<br />Method:<br />Timeline:'
+              evaluation: 'Initial Outcome:<br />Indicator:<br />Method:<br />Timeline:<br /><br />Intermediate Outcome:<br />Indicator:<br />Method:<br />Timeline:<br /><br />Long-term Outcome:<br />Indicator:<br />Method:<br />Timeline:',
+              planOfWorkDataSourceSelections: []
             }
         );
 
@@ -62,33 +63,67 @@ export class PlansofworkFormComponent implements OnInit{
    
     ngOnInit(){
 
-        this.plansofworkService.listMaps(this.fiscalYear.name).subscribe(
-            m => this.maps = m,
-            error =>  this.errorMessage = <any>error
-        );
-        var prgrms = [];
-        this.service.listInitiatives(this.fiscalYear.name).subscribe(
-            i => {
-                this.initiatives = i;
+        
+
+        this.plansofworkService.dataSources().subscribe(
+                    res => {
+                        var auds = <PlanOfWorkDataSource[]> res;
+                        var au = Array<any>();
+                        auds.forEach(function(element){
+                            au.push(
+                                {value: element.id, label: element.name}
+                            );
+                        })
+                        this.dataSources = au;
+         });
+        
+        
+        
+
+
+
+
+        this.fiscalYearService.next("serviceLog", true).subscribe(
+            res => {
                 
-                i.forEach(
-                    function(initiative) {
+                this.fiscalYear = res;
+/* 
+                this.plansofworkService.listMaps(this.fiscalYear.name).subscribe(
+                    m => this.maps = m,
+                    error =>  this.errorMessage = <any>error
+                ); */
+                var prgrms = [];
+
+
+
+                this.service.listInitiatives(this.fiscalYear.name).subscribe(
+                    i => {
+                        this.initiatives = i;
                         
-                        initiative.majorPrograms.forEach(
-                            function(program){
-                                prgrms.push(program);
+                        i.forEach(
+                            function(initiative) {
+                                
+                                initiative.majorPrograms.forEach(
+                                    function(program){
+                                        prgrms.push(program);
+                                    }
+                                )
                             }
+                            
                         )
-                    }
-                    
-                )
-                this.programs = prgrms;
-            },
-            error =>  this.errorMessage = <any>error
+                        this.programs = prgrms;
+                    },
+                    error =>  this.errorMessage = <any>error
+                );
+                
+            }
         );
+        
         if(this.planofwork){
+            console.log(this.planofwork);
+
            this.planofworkForm.patchValue(this.planofwork);
-           this.planofworkForm.patchValue({map:this.planofwork.map.id})
+           //this.planofworkForm.patchValue({map:this.planofwork.map.id})
            if(this.planofwork.mp1 != null){
                this.planofworkForm.patchValue({mp1:this.planofwork.mp1.id})
            }
@@ -101,6 +136,7 @@ export class PlansofworkFormComponent implements OnInit{
            if(this.planofwork.mp4 != null){
                this.planofworkForm.patchValue({mp4:this.planofwork.mp4.id})
            }
+           this.planofworkForm.patchValue({ planOfWorkDataSourceSelections: this.planofwork.planOfWorkDataSourceSelections.map(({ planOfWorkDataSource }) => ({value: planOfWorkDataSource.id, label: planOfWorkDataSource.name }))}); 
         }
         
     }
@@ -124,7 +160,8 @@ export class PlansofworkFormComponent implements OnInit{
         if(this.planofworkForm.value.mp4 != null){
             i.mp4 = this.programs.find(p=>p.id == this.planofworkForm.value.mp4);
         }
-      
+        i.planOfWorkDataSourceSelections = this.planofworkForm.value.planOfWorkDataSourceSelections.map( ({ value, label }) => ({planOfWorkDataSourceId: value}));
+
 
         if(this.planofwork){
             this.plansofworkService.updatePlan(this.planofwork.id, this.planofworkForm.value).
@@ -143,7 +180,6 @@ export class PlansofworkFormComponent implements OnInit{
                 res => {
                     this.onFormSubmit.emit();
                     this.loading = false;
-                    //console.log(res.json());
                 }
             );
             

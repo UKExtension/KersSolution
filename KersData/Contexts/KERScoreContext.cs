@@ -67,6 +67,8 @@ namespace Kers.Models.Contexts
         /***************************************/
         public virtual DbSet<PlanOfWork> PlanOfWork {get; set;}
         public virtual DbSet<PlanOfWorkRevision> PlanOfWorkRevision {get; set;}
+        public virtual DbSet<PlanOfWorkDataSource> PlanOfWorkDataSource {get; set;}
+        public virtual DbSet<PlanOfWorkDataSourceSelection> PlanOfWorkDataSourceSelections {get; set;}
         public virtual DbSet<Map> Map {get; set;}
         /***************************************/
         //  Help Content

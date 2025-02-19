@@ -138,11 +138,12 @@ namespace Kers.Controllers
             var lastRevisions = new List<PlanOfWorkRevision>();
             var plans = this.context.
                             PlanOfWork.Where( m=>m.PlanningUnit == unit && m.FiscalYear == fiscalYear).
-                            Include(p=>p.Revisions).ThenInclude(r=>r.Map).
+                            //Include(p=>p.Revisions).ThenInclude(r=>r.Map).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp1).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp2).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp3).
-                            Include(p=>p.Revisions).ThenInclude(r=>r.Mp4)
+                            Include(p=>p.Revisions).ThenInclude(r=>r.Mp4).
+                            Include(p=>p.Revisions).ThenInclude( r => r.PlanOfWorkDataSourceSelections).ThenInclude(r=>r.PlanOfWorkDataSource)
                             ;
             foreach(var plan in plans){
                 lastRevisions.Add(plan.Revisions.OrderBy( r=>r.Created ).Last());
@@ -207,6 +208,16 @@ namespace Kers.Controllers
             return new OkObjectResult(has);
         }
 
+        [HttpGet("datasources")]
+        [Authorize]
+        public IActionResult DataSources(){
+
+            var sources = context.PlanOfWorkDataSource.
+                        Where(r => r.Active ).OrderBy(r => r.Order);
+
+            return new OkObjectResult(sources);
+        }
+
         /***************************************************/
         /*               Plan CRUD operations               */
         /***************************************************/
@@ -229,7 +240,7 @@ namespace Kers.Controllers
 
                 plan.Created = DateTime.Now;
                 plan.By = this.CurrentUser();
-                plan.Map = this.context.Map.Find(plan.Map.Id);
+                //plan.Map = this.context.Map.Find(plan.Map.Id);
                 if(plan.Mp1 != null){
                     var mp1 = this.context.MajorProgram.Find(plan.Mp1.Id);
                     plan.Mp1 = mp1;

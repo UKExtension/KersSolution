@@ -11,6 +11,7 @@ import { IndicatorsModule } from '../indicators/indicators.module';
 import { PlansofworkFormDemoComponent } from './plansofwork-form-demo.component';
 import { ProgramsService } from '../admin/programs/programs.service';
 import { PlansofworkService } from '../plansofwork/plansofwork.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { PlansofworkService } from '../plansofwork/plansofwork.service';
     DemosRoutingModule,
     StoryModule,
     IndicatorsModule,
+    NgSelectModule
   ],
   providers: [
     PlansofworkService,
