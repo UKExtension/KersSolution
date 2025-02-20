@@ -14,6 +14,7 @@ export class ServicelogHomeComponent implements OnInit {
     latest = [];
     numbActivities = 0;
     byMonth:ServicelogMonth[] = [];
+    loading:boolean = false;
 
     errorMessage:string;
     fiscalyearid:string | null = null;
@@ -97,6 +98,7 @@ export class ServicelogHomeComponent implements OnInit {
 
     loadMore(){
         var lt = this.latest;
+        this.loading = true;
         this.service.latest(this.latest.length, 5).subscribe(
             res=>{
                     var batch = <Servicelog[]>res; 
@@ -105,6 +107,7 @@ export class ServicelogHomeComponent implements OnInit {
                     });
                     this.byMonth = [];
                     this.populateByMonth();
+                    this.loading = false;
                 },
             err => this.errorMessage = <any>err
         );
