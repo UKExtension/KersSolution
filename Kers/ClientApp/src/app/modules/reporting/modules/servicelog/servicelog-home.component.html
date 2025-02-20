@@ -13,5 +13,5 @@
     <div *ngIf="latest.length < numbActivities && !loading" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
             load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
     </div>
-    <loading [type]="bars" *ngIf="loading"></loading>
+    <loading type="bars" *ngIf="loading"></loading>
 </div>
