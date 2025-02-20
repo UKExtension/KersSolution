@@ -120,8 +120,7 @@ export class PlansofworkFormComponent implements OnInit{
         );
         
         if(this.planofwork){
-            console.log(this.planofwork);
-
+            
            this.planofworkForm.patchValue(this.planofwork);
            //this.planofworkForm.patchValue({map:this.planofwork.map.id})
            if(this.planofwork.mp1 != null){
@@ -147,7 +146,7 @@ export class PlansofworkFormComponent implements OnInit{
 
         var i = <PlanOfWork> this.planofworkForm.value;
         
-        i.map = this.maps.find(c=>c.id = this.planofworkForm.value.map);
+        //i.map = this.maps.find(c=>c.id = this.planofworkForm.value.map);
 
         i.mp1 = this.programs.find(p=>p.id == this.planofworkForm.value.mp1);
 

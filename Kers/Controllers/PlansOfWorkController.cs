@@ -302,7 +302,7 @@ namespace Kers.Controllers
 
                 plan.Created = DateTime.Now;
                 plan.By = this.CurrentUser();
-                plan.Map = this.context.Map.Find(plan.Map.Id);
+                //plan.Map = this.context.Map.Find(plan.Map.Id);
                 if(plan.Mp1 != null){
                     var mp1 = this.context.MajorProgram.Find(plan.Mp1.Id);
                     plan.Mp1 = mp1;
