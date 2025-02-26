@@ -165,6 +165,7 @@ export class FiscalYear{
         public availableAt: Date,
         public extendedTo: Date,
         public type: string,
-        public name: string
+        public name: string,
+        public epoch: number
     ){}
 }

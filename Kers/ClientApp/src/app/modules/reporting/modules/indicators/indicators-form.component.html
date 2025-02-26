@@ -38,7 +38,12 @@ To enter/adjust data for another Major Program, just select the Major Program fr
                                     <input class="form-control" type="number" id="firstName" formControlName="value" />
                                 
                             </div>
-                            <div class="col-xs-9" [innerHTML]="selectedIndicators[i].question"></div>
+                            <div class="col-xs-9" >
+                                <div style="display: inline; float: right; padding-left: 4px; font-size: 0.9 em;">{{( selectedIndicators[i].isYouth==1 ? childIcon : adultIcon)}}</div>
+                                <span [ngStyle]="{'color': (selectedIndicators[i].isYouth==1) ? '#4f71a9' : '#6c757d'}" [innerHTML]="selectedIndicators[i].question"></span>
+
+
+                            </div>
                         
                     </div>
                 </div> 

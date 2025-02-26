@@ -167,15 +167,20 @@ namespace Kers.Controllers
             var lastRevisions = new List<PlanOfWorkRevision>();
             var plans = this.context.
                             PlanOfWork.Where( m=>m.PlanningUnit.Id == id && m.FiscalYear == fiscalYear).
-                            Include(p=>p.Revisions).ThenInclude(r=>r.Map).
+                            //Include(p=>p.Revisions).ThenInclude(r=>r.Map).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp1).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp2).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp3).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp4).
-                            Include(p=>p.Revisions).ThenInclude(r=>r.By)
+                            Include(p=>p.Revisions).ThenInclude(r=>r.By).
+                            Include(p=>p.Revisions).ThenInclude( r => r.PlanOfWorkDataSourceSelections).ThenInclude(s=>s.PlanOfWorkDataSource)
                             ;
             foreach(var plan in plans){
-                lastRevisions.Add(plan.Revisions.OrderBy( r=>r.Created ).Last());
+                var lastRevision = plan.Revisions.OrderBy( r=>r.Created ).Last();
+                if(lastRevision.MapId != 0){
+                    lastRevision.Map = this.context.Map.Find(lastRevision.MapId);
+                }
+                lastRevisions.Add(lastRevision);
             }
             return new OkObjectResult(lastRevisions);
         }

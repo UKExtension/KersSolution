@@ -19,6 +19,8 @@ export class IndicatorsFormComponent implements OnInit {
   programs: MajorProgram[];
   selectedProgram: MajorProgram;
   selectedIndicators: Indicator[];
+  childIcon:string = '(Youth)';
+  adultIcon:string = '(Adult)';
 
   loading = false;
 
