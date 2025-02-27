@@ -39,7 +39,7 @@ To enter/adjust data for another Major Program, just select the Major Program fr
                                 
                             </div>
                             <div class="col-xs-9" >
-                                <div style="display: inline; float: right; padding-left: 4px; font-size: 0.9 em;">{{( selectedIndicators[i].isYouth==1 ? childIcon : adultIcon)}}</div>
+                                <div *ngIf="fiscalYear.epoch > 0" style="display: inline; float: right; padding-left: 4px; font-size: 0.9 em;">{{( selectedIndicators[i].isYouth==1 ? childIcon : adultIcon)}}</div>
                                 <span [ngStyle]="{'color': (selectedIndicators[i].isYouth==1) ? '#4f71a9' : '#6c757d'}" [innerHTML]="selectedIndicators[i].question"></span>
 
 
