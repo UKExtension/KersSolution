@@ -12,6 +12,7 @@ import { PlansofworkFormDemoComponent } from './plansofwork-form-demo.component'
 import { ProgramsService } from '../admin/programs/programs.service';
 import { PlansofworkService } from '../plansofwork/plansofwork.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { PlansofworkFormDemo1Component } from './plansofwork-form-demo1.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     DemoComponent,
     StoryDemoComponent,
     IndicatorsDemoComponent,
-    PlansofworkFormDemoComponent
+    PlansofworkFormDemoComponent,
+    PlansofworkFormDemo1Component
   ],
   imports: [
     SharedModule,
