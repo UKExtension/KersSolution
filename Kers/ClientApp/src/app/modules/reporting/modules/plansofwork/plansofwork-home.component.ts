@@ -43,6 +43,12 @@ export class PlansofworkHomeComponent {
     }
 
     defaultTitle(){
-        this.reportingService.setTitle("Plans of Work for FY "+this.fiscalYear.name);
+        this.reportingService.setTitle("Plan of Work for FY "+this.fiscalYear.name);
+        this.reportingService.setSubtitle("Each county is limited to a single Plan of Work, with a maximum of four county emphases, each containing up to four concentrations.");
     }
+    
+    ngOnDestroy(){
+        this.reportingService.setTitle("Kentucky Extension Reporting System");
+        this.reportingService.setSubtitle("");
+      }
 }

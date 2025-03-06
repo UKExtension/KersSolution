@@ -1,7 +1,6 @@
-<h4>PLANS OF WORK</h4>
 <div>
     <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newPlan" (click)="newPlanofworkOpen()">+ new plan of work</a>
+        <a class="btn btn-info btn-xs" *ngIf="!newPlan" (click)="newPlanofworkOpen()">+ new county emphasis</a>
     </div>
     <planofwork-form *ngIf="newPlan" (onFormCancel)="newPlanofworkCancelled()" (onFormSubmit)="newPlanofworkSubmitted()" [fiscalYear]="fy"></planofwork-form>
 </div>
@@ -9,7 +8,7 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>County Emphasis</th>
+            <th>County Emphases</th>
             <th></th>
         </tr>
         </thead>

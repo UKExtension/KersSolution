@@ -9,7 +9,6 @@ import { ReportingService } from '../../components/reporting/reporting.service';
     <a [routerLink]="['/reporting/demos/indicators']" routerLinkActive="active" class="btn btn-round btn-success"  [routerLinkActiveOptions]="{exact:
       true}">Program Indicators</a>
     <a [routerLink]="['/reporting/demos/plans']" routerLinkActive="active" class="btn btn-round btn-success">Plan of Work</a>
-    <a [routerLink]="['/reporting/demos/plans1']" routerLinkActive="active" class="btn btn-round btn-success">Plan of Work 1</a>
     <router-outlet></router-outlet>
   `,
   styles: [
