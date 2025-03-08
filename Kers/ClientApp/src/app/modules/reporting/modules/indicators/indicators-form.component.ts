@@ -21,6 +21,7 @@ export class IndicatorsFormComponent implements OnInit {
   selectedIndicators: Indicator[];
   childIcon:string = '(Youth)';
   adultIcon:string = '(Adult)';
+  volunteersIcon:string = '(Volunteers)';
 
   loading = false;
 
