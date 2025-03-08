@@ -1,6 +1,6 @@
 <div>
     <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newPlan && plans.length < 4" (click)="newPlanofworkOpen()">+ new county emphasis</a>
+        <a class="btn btn-info btn-xs" *ngIf="!newPlan && (plans | async).length < 4" (click)="newPlanofworkOpen()">+ new county emphasis</a>
     </div>
     <planofwork-form *ngIf="newPlan" (onFormCancel)="newPlanofworkCancelled()" (onFormSubmit)="newPlanofworkSubmitted()" [fiscalYear]="fy"></planofwork-form>
 </div>
