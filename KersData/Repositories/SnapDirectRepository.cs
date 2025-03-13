@@ -53,6 +53,7 @@ namespace Kers.Models.Repositories
                 keys.Add("PositionTitle");
                 keys.Add("Program(s)");
                 keys.Add("PlanningUnit");
+                keys.Add("Area");
                 keys.Add("HoursReported");
                 keys.Add("Indirect");
                 keys.Add("Direct");
@@ -120,6 +121,7 @@ namespace Kers.Models.Repositories
                     var theUser = this.context.KersUser.Where( u => u == k.User )
                                         .Include( u => u.RprtngProfile)
                                             .ThenInclude( p => p.PlanningUnit)
+                                            .ThenInclude( p => p.ExtensionArea)
                                         .Include( u => u.ExtensionPosition)
                                         .Include( u => u.Specialties)
                                             .ThenInclude( s => s.Specialty)
@@ -138,6 +140,7 @@ namespace Kers.Models.Repositories
                     }
                     row += string.Concat( "\"", spclt, "\"") + ",";
                     row += string.Concat( "\"", theUser.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                    row += string.Concat( "\"", ( theUser.RprtngProfile.PlanningUnit.ExtensionArea != null ? theUser.RprtngProfile.PlanningUnit.ExtensionArea.Name : "") , "\"") + ",";
                     row += k.Revs.Sum( r => r.Hours).ToString() + ",";
 
 
