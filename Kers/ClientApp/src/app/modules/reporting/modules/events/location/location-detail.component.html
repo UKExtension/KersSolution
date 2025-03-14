@@ -8,7 +8,7 @@
     <h4 *ngIf="purpose=='CountyEvents'">{{location.extensionEventLocation.address.building}}</h4>
     <h5 *ngIf="purpose=='Mileage'">{{location.extensionEventLocation.address.building}}<strong *ngIf="purpose=='Mileage' && location.extensionEventLocation.displayName != null && location.extensionEventLocation.displayName != '' "> ({{location.extensionEventLocation.displayName}})</strong></h5>
     <h5>{{location.extensionEventLocation.address.street}}</h5>
-    <h5 *ngIf="location.extensionEventLocation.address.city != null && location.extensionEventLocation.address.city != '' && location.extensionEventLocation.address.city != 'NULL'">{{location.extensionEventLocation.address.city}}{{location.extensionEventLocation.address.state != "" ? ", "+location.extensionEventLocation.address.state:""}} {{purpose=='CountyEvents'?location.extensionEventLocation.address.postalCode:''}}</h5>
+    <h5 *ngIf="location.extensionEventLocation.address.city != null && location.extensionEventLocation.address.city != '' && location.extensionEventLocation.address.city != 'NULL'">{{location.extensionEventLocation.address.city}}{{location.extensionEventLocation.address.state != "" ? ", "+location.extensionEventLocation.address.state:""}} {{purpose=='CountyEvents' || showZip ?location.extensionEventLocation.address.postalCode:''}}</h5>
     <a class="btn btn-info btn-xs" (click)="selection()">select</a>
 
 </div>
@@ -17,7 +17,7 @@
       <location-form 
               *ngIf="purpose=='Mileage'"
                     [location]="location"  
-                      [showZip]="false" 
+                      [showZip]="showZip" 
                       [isItBuilding]="false"
                       [showState]="true"
                       [isNameRequired]="true"
