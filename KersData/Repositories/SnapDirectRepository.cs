@@ -573,6 +573,10 @@ namespace Kers.Models.Repositories
                 keys.Add("Type of Delivery Site");
                 keys.Add("Specific Site Name");
                 keys.Add("Site address");
+                keys.Add("Site City");
+                keys.Add("Site State");
+                keys.Add("Site Zip Code");
+
                 keys.Add("# of KERS entries using this location");
                 keys.Add("# of Audience");
 
@@ -587,15 +591,21 @@ namespace Kers.Models.Repositories
                                         Snap = s.Revision.SnapDirect,
                                         DeliverSite = s.Revision.SnapDirect.SnapDirectDeliverySite != null ? s.Revision.SnapDirect.SnapDirectDeliverySite.Name : "",
                                         SiteName = s.Revision.SnapDirect.SiteName != "" ? s.Revision.SnapDirect.SiteName : (s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Building : ""),
-                                        SiteAddress = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Street : ""
+                                        SiteAddress = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Street : "",
+                                        SiteCity =s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.City : "",
+                                        SiteState = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.State : "",
+                                        SiteZip = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.PostalCode : ""
                                     }).ToList();
                 
                 var grouped = perPerson.Where( r => r.Snap!= null)
-                                .GroupBy( p => new {p.SiteName, p.DeliverSite, p.SiteAddress})
+                                .GroupBy( p => new {p.SiteName, p.DeliverSite, p.SiteAddress, p.SiteCity, p.SiteState, p.SiteZip})
                                 .Select( s => new {
                                     SiteName = s.Key.SiteName,
                                     DeliverySite = s.Key.DeliverSite,
                                     SiteAddress = s.Key.SiteAddress,
+                                    SiteCity = s.Key.SiteCity,
+                                    SiteState = s.Key.SiteState,
+                                    SiteZip = s.Key.SiteZip,
                                     Audience = s.Sum(l => l.Last.Male + l.Last.Female),
                                     Count = s.Count()
                                 });
@@ -605,6 +615,9 @@ namespace Kers.Models.Repositories
                     var row = string.Concat( "\"", k.DeliverySite , "\"") + ",";
                     row += string.Concat( "\"", k.SiteName , "\"") + ",";
                     row += string.Concat( "\"", k.SiteAddress , "\"") + ",";
+                    row += string.Concat( "\"", k.SiteCity , "\"") + ",";
+                    row += string.Concat( "\"", k.SiteState , "\"") + ",";
+                    row += string.Concat( "\"", k.SiteZip , "\"") + ",";
                     row += k.Count.ToString() + ",";
                     row += k.Audience.ToString() + ",";
                     result += row + "\n";
