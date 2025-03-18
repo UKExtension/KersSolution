@@ -32,13 +32,13 @@ To enter/adjust data for another Major Program, just select the Major Program fr
                 
                 <div formArrayName="indicatorsGroup" *ngIf="!loading">
                     
-                        <div *ngFor="let indicator of indicatorsForm.controls.indicatorsGroup.controls; let i=index" [formGroupName]="i" class="form-group">
+                        <div *ngFor="let indicator of indicatorsForm.controls.indicatorsGroup.controls; let i=index" [formGroupName]="i" class="form-group" style="padding: 4px 0;" [style.background-color]="(i % 2 === 0) ? '#ededec' : '#ffffff'">
                             <div class="col-xs-3">
                                 
                                     <input class="form-control" type="number" id="firstName" formControlName="value" />
                                 
                             </div>
-                            <div class="col-xs-9" >
+                            <div class="col-xs-9">
                                 <div *ngIf="fiscalYear.epoch > 0" style="display: inline; float: right; padding-left: 4px; font-size: 0.9 em;">{{
                                 ( selectedIndicators[i].isYouth==1 
                                     ? 
@@ -57,7 +57,7 @@ To enter/adjust data for another Major Program, just select the Major Program fr
                                         
                                         )
                                     )
-                                }}</div>
+                                }}</div><div style="display: inline; float: left;">{{selectedProgram.pacCode}}.{{i+1}})&nbsp;</div>
                                 <span [ngStyle]="{'color': (selectedIndicators[i].isYouth==1) ? '#4f71a9' : '#6c757d'}" [innerHTML]="selectedIndicators[i].question"></span>
 
 

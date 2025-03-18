@@ -1,13 +1,14 @@
 @model List<Kers.Controllers.Reports.StrategicInitiativeIndicatorsViewModel>
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    
+    var Designation = "";
     ViewData["Subtitle"] = "Kentucky Extension Reports";
     string county = ViewData["county"] as string;
     var fy = ViewData["fy"] as string;
     if( fy == "0"){
       fy = "2018";
     }
+    var FiscalYear = ViewData["fiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
     ViewData["Title"] = "Program Indicators for FY" + fy;
     var ReportingCountiesPerProgram = ViewData["ReportingCountiesPerProgram"] as List<Kers.Controllers.Reports.ReportingCountiesPerProgram>;
     var id = ViewData["id"] as int?;
@@ -19,13 +20,14 @@
         <a asp-controller="ProgramIndicators"  asp-action="Countylist" class="btn btn-default btn-xs"  asp-route-fy="@fy">Back to the County List</a><br>
 </div>
 
+    using Kers.Models.Entities.KERScore;
 
 @foreach(var intv in Model){
     <h2>@intv.Title</h2>
     @foreach( var prgrm in intv.Indicators){
         <table class="table">
             <thead>
-                <th colspan="3">@prgrm.Code.ToString() - @prgrm.Title</th>
+                <th colspan="4">@prgrm.Code.ToString() - @prgrm.Title</th>
             </thead>
             <tbody>
                 @foreach( var indctr in prgrm.Indicators){
@@ -38,6 +40,20 @@
                         </td>
                         <td>
                             @Html.Raw(@indctr.Description)
+                        </td>
+                        <td>
+                            @if(FiscalYear.Epoch > 0){
+                                @if(indctr.IsYouth == 1){
+                                    Designation = "(Youth)";
+                                }else if( indctr.IsYouth == 0 ){
+                                    Designation = "(Adult)";
+                                }else if( indctr.IsYouth == 2 ){
+                                    Designation = "(Volunteers)";
+                                }else{
+                                    Designation = "";
+                                }
+                            }
+                            @Designation
                         </td>
                     </tr>
                 }
