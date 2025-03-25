@@ -579,6 +579,7 @@ namespace Kers.Models.Repositories
 
                 keys.Add("# of KERS entries using this location");
                 keys.Add("# of Audience");
+                keys.Add("By");
 
 
 
@@ -594,7 +595,8 @@ namespace Kers.Models.Repositories
                                         SiteAddress = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Street : "",
                                         SiteCity =s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.City : "",
                                         SiteState = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.State : "",
-                                        SiteZip = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.PostalCode : ""
+                                        SiteZip = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.PostalCode : "",
+                                        User = s.User.RprtngProfile
                                     }).ToList();
                 
                 var grouped = perPerson.Where( r => r.Snap!= null)
@@ -607,7 +609,8 @@ namespace Kers.Models.Repositories
                                     SiteState = s.Key.SiteState,
                                     SiteZip = s.Key.SiteZip,
                                     Audience = s.Sum(l => l.Last.Male + l.Last.Female),
-                                    Count = s.Count()
+                                    Count = s.Count(),
+                                    Users = s.Select(l => new {l.User})
                                 });
 
 
@@ -620,6 +623,8 @@ namespace Kers.Models.Repositories
                     row += string.Concat( "\"", k.SiteZip , "\"") + ",";
                     row += k.Count.ToString() + ",";
                     row += k.Audience.ToString() + ",";
+                    var u = String.Join(", ", k.Users.Select( u => u.User.Email).ToArray());
+                    row += u;
                     result += row + "\n";
                 }
 
