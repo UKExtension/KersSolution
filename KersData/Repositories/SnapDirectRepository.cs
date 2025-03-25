@@ -623,8 +623,9 @@ namespace Kers.Models.Repositories
                     row += string.Concat( "\"", k.SiteZip , "\"") + ",";
                     row += k.Count.ToString() + ",";
                     row += k.Audience.ToString() + ",";
-                    var u = String.Join(", ", k.Users.Select( u => u.User.Email).ToArray());
-                    row += u;
+                    var groupedUsers = k.Users.GroupBy(l => l.User).Select( u => u.Key.Email + ", " + u.Key.Name + ", " + u.Key.PlanningUnit.Name).ToList();
+                    var u = String.Join("; ", groupedUsers);
+                    row += string.Concat( "\"",u, "\"");
                     result += row + "\n";
                 }
 
