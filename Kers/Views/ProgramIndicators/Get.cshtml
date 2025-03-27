@@ -20,8 +20,6 @@
         <a asp-controller="ProgramIndicators"  asp-action="Countylist" class="btn btn-default btn-xs"  asp-route-fy="@fy">Back to the County List</a><br>
 </div>
 
-    using Kers.Models.Entities.KERScore;
-
 @foreach(var intv in Model){
     <h2>@intv.Title</h2>
     @foreach( var prgrm in intv.Indicators){
