@@ -68,8 +68,14 @@ namespace Kers.Controllers
                 var user = this.CurrentUser();
                 userId = user.Id;
             }
+            var fiscalYear = this.GetFYByName("0", FiscalYearType.SnapEd);
             var hours = context.Activity.
-                                Where(e=>e.KersUser.Id == userId ).
+                                Where(e=>e.KersUser.Id == userId  
+                                        &&
+                                        e.ActivityDate < fiscalYear.End
+                                        &&
+                                        e.ActivityDate > fiscalYear.Start
+                                ).
                                 Include( s => s.Revisions).ToList();
             var hrs = hours.Where( e => e.Revisions.OrderBy(r => r.Created).Last().isSnap);
             var sum = 0;
@@ -77,6 +83,31 @@ namespace Kers.Controllers
                 sum += sn.Revisions.OrderBy( r => r.Created).Last().SnapCopies;
             }
                                 //Sum( h => h.Revisions.OrderBy(r => r.Created).Last().SnapCopies);
+            return new OkObjectResult(sum);
+            
+        }
+        [HttpGet("reach/{userId?}")]
+        [Authorize]
+        public IActionResult Reach(int userId = 0){
+            if(userId == 0){
+                var user = this.CurrentUser();
+                userId = user.Id;
+            }
+            var fiscalYear = this.GetFYByName("0", FiscalYearType.SnapEd);
+            var reach = context.Activity.
+                                Where(e=>e.KersUser.Id == userId 
+                                        &&
+                                        e.ActivityDate < fiscalYear.End
+                                        &&
+                                        e.ActivityDate > fiscalYear.Start
+                                
+                                ).
+                                Include( s => s.Revisions).ToList();
+            var hrs = reach.Where( e => e.Revisions.OrderBy(r => r.Created).Last().isSnap);
+            var sum = 0;
+            foreach( var sn in hrs){
+                sum += sn.Revisions.OrderBy( r => r.Created).Last().Female + sn.Revisions.OrderBy( r => r.Created).Last().Male;
+            } 
             return new OkObjectResult(sum);
             
         }

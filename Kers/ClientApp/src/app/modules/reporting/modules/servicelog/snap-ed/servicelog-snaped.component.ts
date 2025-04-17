@@ -73,7 +73,7 @@ export class ServicelogSnapedComponent implements OnInit {
 
                 this.hours = <number> res;
                 
-                this.service.copies().subscribe(
+                this.service.reach().subscribe(
                     res => {
                         this.copies = <number>res;
                         this.service.committedhours().subscribe(
@@ -162,10 +162,10 @@ export class ServicelogSnapedComponent implements OnInit {
         </div>
         <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
           <div class="tile-stats">
-            <div class="icon"><i class="fa fa-print"></i></div>
+            <div class="icon"><i class="fa fa-arrows-h"></i></div>
             <div class="count">` + this.copies + `</div>
-            <h3>Copies</h3>
-            <p>Printed.</p>
+            <h3>Direct Ed</h3>
+            <p>Reach.</p>
           </div>
         </div>
       </div>
