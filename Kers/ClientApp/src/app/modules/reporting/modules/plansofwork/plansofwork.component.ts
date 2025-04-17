@@ -11,7 +11,8 @@ export class PlansofworkComponent implements OnInit{
 
     @Input() fy:FiscalYear;
 
-    plans:Observable<PlanOfWork[]>;
+    plans$:Observable<PlanOfWork[]>;
+    plans:PlanOfWork[];
     newPlan = false;
 
     errorMessage: string;
@@ -24,8 +25,9 @@ export class PlansofworkComponent implements OnInit{
                 }
    
     ngOnInit(){
-        console.log(this.fy);
-        this.plans = this.plansofworkService.listPlans(this.fy.name);
+         this.plansofworkService.listPlans(this.fy.name).subscribe(
+            res => this.plans = res
+        );
     }
 
     newPlanofworkOpen(){
@@ -38,11 +40,15 @@ export class PlansofworkComponent implements OnInit{
 
     newPlanofworkSubmitted(){
         this.newPlan = false;
-        this.plans = this.plansofworkService.listPlans(this.fy.name);
+        this.plansofworkService.listPlans(this.fy.name).subscribe(
+            res => this.plans = res
+        );
     }
 
     onPlanofworkUpdate(){
-        this.plans = this.plansofworkService.listPlans(this.fy.name);
+        this.plansofworkService.listPlans(this.fy.name).subscribe(
+            res => this.plans = res
+        );
     }
     
 

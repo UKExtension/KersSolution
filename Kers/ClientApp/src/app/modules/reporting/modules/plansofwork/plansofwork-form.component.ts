@@ -159,7 +159,12 @@ export class PlansofworkFormComponent implements OnInit{
         if(this.planofworkForm.value.mp4 != null){
             i.mp4 = this.programs.find(p=>p.id == this.planofworkForm.value.mp4);
         }
-        i.planOfWorkDataSourceSelections = this.planofworkForm.value.planOfWorkDataSourceSelections.map( ({ value, label }) => ({planOfWorkDataSourceId: value}));
+        if(this.planofworkForm.value.planOfWorkDataSourceSelections == null){
+            i.planOfWorkDataSourceSelections = [];
+        }else{
+            i.planOfWorkDataSourceSelections = this.planofworkForm.value.planOfWorkDataSourceSelections.map( ({ value, label }) => ({planOfWorkDataSourceId: value}));
+        }
+        
 
 
         if(this.planofwork){
