@@ -157,7 +157,7 @@ export class ServicelogSnapedComponent implements OnInit {
             <div class="icon"><i class="fa fa-bookmark-o"></i></div>
             <div class="count">` + percent + `</div>
             <h3>Percent</h3>
-            <p>Commitment Fulfilled..</p>
+            <p>Commitment Fulfilled.</p>
           </div>
         </div>
         <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
