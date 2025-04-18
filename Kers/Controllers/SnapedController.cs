@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
+using Kers.Controllers.Reports.ViewComponents;
 
 namespace Kers.Controllers
 {
@@ -106,7 +107,13 @@ namespace Kers.Controllers
             var hrs = reach.Where( e => e.Revisions.OrderBy(r => r.Created).Last().isSnap);
             var sum = 0;
             foreach( var sn in hrs){
-                sum += sn.Revisions.OrderBy( r => r.Created).Last().Female + sn.Revisions.OrderBy( r => r.Created).Last().Male;
+                var lastRev = sn.Revisions.OrderBy( r => r.Created).Last();
+                if(lastRev.SnapDirectId > 0){
+                    var rev =  context.ActivityRevision.Where(e => e.Id == lastRev.Id )
+                                    .Include( s => s.SnapDirect).ThenInclude( s => s.SnapDirectAgesAudienceValues)
+                                    .FirstOrDefault();
+                    sum += rev.SnapDirect.SnapDirectAgesAudienceValues.Sum( s => s.Value);
+                }
             } 
             return new OkObjectResult(sum);
             
