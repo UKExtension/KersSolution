@@ -51,6 +51,7 @@ export class PlansofworkFormComponent implements OnInit{
               mp4: [''],
               situation: 'Copy and paste state situations that correspond to concentrations',
               longTermOutcomes: 'Copy and paste from the provided logic models that correspond to the concentrations',
+              countySituation: '',
               intermediateOutcomes: 'Copy and paste from the provided logic models that correspond to the concentrations',
               initialOutcomes: 'Copy and paste from the provided logic models that correspond to the concentrations',
               learning: 'Audience:<br />Project or Activity:<br />Content or Curriculum:<br />Inputs:<br />Date:<br /><br />Audience:<br />Project or Activity:<br />Content or Curriculum: <br />Inputs:<br />Date:<br /><br />Audience:<br />Project or Activity:<br />Content or Curriculum:<br />Inputs:<br />Date: ',

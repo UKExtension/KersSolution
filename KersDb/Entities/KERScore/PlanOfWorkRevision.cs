@@ -24,6 +24,8 @@ namespace Kers.Models.Entities.KERScore
         [Column(TypeName="text")]
         public string Situation {get; set;}
         [Column(TypeName="text")]
+        public string CountySituation {get; set;}
+        [Column(TypeName="text")]
         public string LongTermOutcomes {get; set;}
         [Column(TypeName="text")]
         public string IntermediateOutcomes {get; set;}
