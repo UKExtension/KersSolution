@@ -5,13 +5,13 @@
 </div><br>
 <p><strong>RECORD DATE STAMP:</strong> {{plan.created | date:'medium'}}</p>
 <p *ngIf="fiscalYear != undefined && fiscalYear.epoch == 0"><strong>MAP:</strong> {{plan.map.title}}</p>
-<p><strong>PROGRAM PLAN:</strong> {{plan.title}}</p>
+<p><strong>COUNTY EMPHASIS:</strong> {{plan.title}}</p>
 
 <p *ngIf="fiscalYear != undefined && fiscalYear.epoch == 0"><strong>AGENTS INVOLVED:</strong> {{plan.agentsInvolved}}</p><br>
 <p *ngIf="plan.mp1 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 1:</strong> {{plan.mp1.name}}</p>
 <p *ngIf="plan.mp2 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 2:</strong> {{plan.mp2.name}}</p>
 <p *ngIf="plan.mp3 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 3:</strong> {{plan.mp3.name}}</p>
-<p *ngIf="plan.mp4"><strong>MAJOR PROGRAM 4:</strong> {{plan.mp4.name}}</p>
+<p *ngIf="plan.mp4 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 4:</strong> {{plan.mp4.name}}</p>
 
 
 <p *ngIf="plan.mp1 && fiscalYear.epoch == 1"><strong>CONCENTRATION 1:</strong> {{plan.mp1.name}}</p>
