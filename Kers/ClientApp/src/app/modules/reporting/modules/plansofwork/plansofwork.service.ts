@@ -164,6 +164,7 @@ export class PlanOfWork{
         public mp3:MajorProgram,
         public mp4:MajorProgram,
         public situation:string,
+        public countySituation:string,
         public longTermOutcomes:string,
         public intermediateOutcomes:string,
         public initialOutcomes:string,

@@ -60,7 +60,7 @@ export class ServicelogFormComponent implements OnInit{
     hasDirect = false;
 
     //adminPrograms = [36, 37, 236, 206];
-    adminProgramsCodes = [7001, 7002];
+    adminProgramsCodes = [7001, 7002, 901, 902];
     isAdmin = false;
 
     raceEthnicityIndex = 0;
