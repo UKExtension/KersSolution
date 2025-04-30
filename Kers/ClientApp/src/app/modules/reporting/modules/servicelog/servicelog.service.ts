@@ -444,6 +444,8 @@ export interface SnapPolicy{
     id:number;
     purpose:string;
     result:string;
+    affectedSite:string;
+    numberImpactedPeople:number;
     snapPolicyAimedSelections: SnapPolicyAimedSelection[];
     snapPolicyPartnerValue: SnapPolicyPartnerValue[];
 }

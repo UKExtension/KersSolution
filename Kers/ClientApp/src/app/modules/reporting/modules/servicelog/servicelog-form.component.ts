@@ -89,6 +89,8 @@ export class ServicelogFormComponent implements OnInit{
     signupOpen = false;
 
     options:object;
+    goalOptions:object;
+    impactOptions:object;
     errorMessage:string;
 
     public cond = false;
@@ -172,6 +174,10 @@ export class ServicelogFormComponent implements OnInit{
                         }
                     } 
                 }
+                this.goalOptions = Object.create(this.options);
+                this.goalOptions["placeholderText"] = "Goal or Purpose of this group/ Long Term Impact Expected.";
+                this.impactOptions = Object.create(this.options);
+                this.impactOptions["placeholderText"] = "Meeting Result from today or so far.  Also please include any unexpected impacts that have occurred.";
             }
         );
         if( this.activity != null){
@@ -399,14 +405,7 @@ export class ServicelogFormComponent implements OnInit{
             
                 activityDate: [{
                     isRange: false, singleDate: {jsDate: date}
-
-                    /* 
-                                date: {
-                                    year: date.getFullYear(),
-                                    month: date.getMonth() + 1,
-                                    day: date.getDate()} */
                                 }, Validators.required],
-                
                 title: ["", Validators.required],
                 description: ["", Validators.required],
                 majorProgramId: ["", Validators.required],
@@ -435,6 +434,8 @@ export class ServicelogFormComponent implements OnInit{
                 snapPolicy: this.fb.group({
                     purpose: "",
                     result: "",
+                    affectedSite: "",
+                    numberImpactedPeople: "",
                     snapPolicyAimedSelections: [[]],
                     snapPolicyPartnerValue: [[]]
                 }),
