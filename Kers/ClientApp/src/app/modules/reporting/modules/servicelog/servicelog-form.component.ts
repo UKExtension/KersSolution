@@ -784,14 +784,27 @@ export const snapValidator = (control: AbstractControl): {[key: string]: boolean
 
             let purpose = control.get('snapPolicy').get('purpose');
             let result = control.get('snapPolicy').get('result');
-            if(!purpose.value && !result.value){
-                return { nopurpose: true, noresult: true };
-            }else if(!purpose.value){
-                return { nopurpose: true };
-            }else if(!result.value){
-                return { noresult: true };
-            }
+            let impacted = control.get('snapPolicy').get('numberImpactedPeople');
 
+/*             affectedSite: "",
+                    numberImpactedPeople: "", */
+
+            if(impacted.value!="" && !((parseFloat(impacted.value)) && +impacted.value >= 0)){
+                error['noimpacted'] = true;
+                hasError = true;
+            }
+            if(!purpose.value && !result.value){
+                error['nopurpose'] = true;
+                error['noresult']  = true ;
+                hasError = true;
+            }else if(!purpose.value){
+                error['nopurpose'] = true;
+                hasError = true;
+            }else if(!result.value){
+                error['noresult']  = true ;
+                hasError = true;
+            }
+            if(hasError) return error;
             return null;
         }
 
