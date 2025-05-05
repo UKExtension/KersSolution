@@ -272,7 +272,8 @@ namespace Kers.Models.Repositories
                 keys.Add("Program(s)");
                 keys.Add("EventDate");
                 keys.Add("Hours");
-
+                keys.Add("# to be impacted");
+                keys.Add("PSE Site Address");
                 keys.Add("PurposeGoal");
                 keys.Add("ResultImpact");
                 var types = context.SnapPolicyAimed.Where(m => m.Active).OrderBy( m => m.order);
@@ -342,10 +343,13 @@ namespace Kers.Models.Repositories
                         row += prgrms + ",";
                         row += meeting.ActivityDate.ToString("MM/dd/yyy") + ",";
                         row += meeting.Hours.ToString() + ",";
+                        
                         var aimed = context.SnapPolicy.Where( p => p.Id == LastRevision.SnapPolicyId)
                                         .Include( s => s.SnapPolicyAimedSelections)
                                         .Include( s => s.SnapPolicyPartnerValue)
                                         .FirstOrDefault();
+                        row += aimed.NumberImpactedPeople.ToString() + ",";
+                        row += string.Concat( "\"", aimed.AffectedSite, "\"") + ",";
                         row += string.Concat( "\"", StripHTML(aimed.Purpose), "\"") + ",";
                         row += string.Concat( "\"", StripHTML(aimed.Result), "\",") ;
                         foreach( var tp in types){
