@@ -197,7 +197,9 @@
                             <div class="col-md-9 col-sm-9 col-xs-12">
                                 <select name="snapDirectDeliverySiteId" [class.snapError]="activityForm.hasError('nosite')" id="snapDirectDeliverySiteId" formControlName="snapDirectDeliverySiteId" class="form-control col-md-7 col-xs-12" >
                                     <option value="">--- select ---</option>
-                                    <option *ngFor="let site of snapdirectdeliverysite | async" [value]="site.id">{{site.name}}</option>
+                                    <optgroup  *ngFor="let siteCategory of snapdirectdeliverysite | async" label="{{siteCategory.name}}">
+                                        <option *ngFor="let site of siteCategory.snapDirectDeliverySites" [value]="site.id">{{site.name}}</option>
+                                    </optgroup>
                                 </select>
                             </div>
                         </div>  

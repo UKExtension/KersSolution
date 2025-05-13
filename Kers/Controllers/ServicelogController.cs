@@ -504,6 +504,13 @@ namespace Kers.Controllers
             var sst = this.context.SnapDirectDeliverySite.Where(o => o.Active).OrderBy(o => o.order);
             return new OkObjectResult(sst);
         }
+        [HttpGet("snapdirectdeliverysitecategory")]
+        public IActionResult SnapDirectDeliverySiteCategory(){
+            var sst = this.context.SnapDirectDeliverySiteCategory.Where(o => o.Active)
+                        .Include(o => o.SnapDirectDeliverySites)
+                        .OrderBy(o => o.order);
+            return new OkObjectResult(sst);
+        }
 
         
         [HttpGet("getsnapdirect/{id}")]

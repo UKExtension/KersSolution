@@ -126,7 +126,7 @@ export class ServicelogFormComponent implements OnInit{
         // Snap Direct
         this.sessiontypes = this.service.sessiontypes();
         this.sessionlengths = this.service.sessionlengths();
-        this.snapdirectdeliverysite = this.service.snapdirectdeliverysite();
+        this.snapdirectdeliverysite = this.service.snapdirectdeliverysitecategory();
 
         // Snap Indirect
 
