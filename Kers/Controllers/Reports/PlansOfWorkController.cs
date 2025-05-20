@@ -141,14 +141,27 @@ namespace Kers.Controllers.Reports
                     new Exception("No Fiscal Year with Provided Identifier.");
                 }
             }
-            ViewData["fy"] = fiscalYear.Name;
-            var plansofwork = await this.context.PlanOfWork
+            ViewData["fy"] = fiscalYear;
+            List<PlanOfWork> plansofwork;
+            if(fiscalYear.Epoch < 1){
+                plansofwork = await this.context.PlanOfWork
                                         .Where( p =>    p.PlanningUnit.Id == id
                                                         && 
                                                         p.FiscalYear == fiscalYear)
                                         .Include( p => p.PlanningUnit)
                                         .Include( p => p.Revisions ).ThenInclude( r => r.Map)
                                         .ToListAsync();
+
+            }else{
+                plansofwork = await this.context.PlanOfWork
+                                        .Where( p =>    p.PlanningUnit.Id == id
+                                                        && 
+                                                        p.FiscalYear == fiscalYear)
+                                        .Include( p => p.PlanningUnit)
+                                        .Include( p => p.Revisions )
+                                        .ToListAsync();
+            }
+            
 
             List<PlanOfWorkViewModel> plans = new List<PlanOfWorkViewModel>();
             foreach( var plan in plansofwork){
