@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.Data;
 using Kers.Models.ViewModels;
+using Kers.Controllers.Reports.ViewComponents;
 
 namespace Kers.Controllers.Reports
 {
@@ -141,7 +142,8 @@ namespace Kers.Controllers.Reports
                     new Exception("No Fiscal Year with Provided Identifier.");
                 }
             }
-            ViewData["fy"] = fiscalYear;
+            ViewData["FiscalYear"] = fiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
             List<PlanOfWork> plansofwork;
             if(fiscalYear.Epoch < 1){
                 plansofwork = await this.context.PlanOfWork
@@ -244,18 +246,38 @@ namespace Kers.Controllers.Reports
         }
 
         private  async Task<PlanOfWorkViewModel> PlanFull(int id){
-            var plan = await this.context.PlanOfWork.Where( p => p.Id == id)
-                                        .Include( p => p.PlanningUnit)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Map)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Mp1)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Mp2)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Mp3)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Mp4)
+
+            var fiscalYear = await this.context.PlanOfWorkRevision.Where( r => r.PlanOfWorkId == id).Select( r => r.Mp1.StrategicInitiative.FiscalYear).FirstOrDefaultAsync();
+            PlanOfWork plan;
+            if (fiscalYear.Epoch < 1)
+            {
+                plan = await this.context.PlanOfWork.Where(p => p.Id == id)
+                                        .Include(p => p.PlanningUnit)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Map)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp1).ThenInclude(m => m.StrategicInitiative).ThenInclude(i => i.FiscalYear)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp2)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp3)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp4)
                                         .FirstOrDefaultAsync();
+
+            }
+            else
+            {
+                 plan = await this.context.PlanOfWork.Where(p => p.Id == id)
+                                        .Include(p => p.PlanningUnit)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp1)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp2)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp3)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp4)
+                                        .FirstOrDefaultAsync();
+            }
+
+            
             var pow = new PlanOfWorkViewModel();
             pow.Id = plan.Id;
             pow.PlanningUnit = plan.PlanningUnit;
             pow.LastRevision = plan.Revisions.OrderBy( r => r.Created).Last();
+            pow.FiscalYear = fiscalYear;
             var storyIds = await this.context.StoryRevision
                                         .Where( s => plan.Revisions.Select( r => r.Id).ToList().Contains(s.PlanOfWorkId) )
                                         .Select( s => s.StoryId)

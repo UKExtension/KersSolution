@@ -671,7 +671,10 @@ namespace Kers.Models.Repositories
                 }while(i < difference);
 
                     result = string.Join(",", keys.ToArray()) + "\n";
-                    var settings = this.context.SnapDirectDeliverySite.Where( d => d.Active).OrderBy(d => d.order).ToList();
+                    var settings = this.context.SnapDirectDeliverySite.Where(d => d.Active)
+                                .Include(d => d.SnapDirectDeliverySiteCategory)
+                                .OrderBy(d => d.SnapDirectDeliverySiteCategory.order).ThenBy(x => x.Name)
+                                .ToList();
                     
                     var snapPerMonth = new List<int>[difference];
                     for( i = 0; i< difference; i++){
@@ -696,7 +699,7 @@ namespace Kers.Models.Repositories
                     
                     foreach( var setting in settings){
                         var row = fiscalYear.Name + ",";
-                        row +=    string.Concat("\"", setting.Name, "\"") + ",";
+                        row +=    string.Concat("\"", setting.SnapDirectDeliverySiteCategory != null ? setting.SnapDirectDeliverySiteCategory.Name : "", " - ", setting.Name, "\"") + ",";
                         for( i = 0; i< difference; i++){
                                 var directs = context.SnapDirect.Where(s => snapPerMonth[i].Contains(s.Id) );
                                 row +=  directs.Where( s => s.SnapDirectDeliverySiteId == setting.Id).Count().ToString() + ",";
