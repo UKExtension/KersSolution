@@ -1,31 +1,35 @@
 @model Kers.Models.ViewModels.PlanOfWorkViewModel
 <h3>@Model.PlanningUnit.Name</h3>
-<h5>Title:</h5>
+<h5>@(Model.FiscalYear.Epoch < 1 ? "Title:" : "County Emphasis:")</h5>
 <blockquote>@Model.LastRevision.Title</blockquote>
 @if(Model.FiscalYear.Epoch < 1){
 <h5>MAP:</h5>
 <blockquote>@Model.LastRevision.Map.Title</blockquote>
-}
 <h5>Agents Involved:</h5>
 <blockquote>@Model.LastRevision.AgentsInvolved</blockquote>
+}
 @if(@Model.LastRevision.Mp1 != null){
-<h5>MAJOR PROGRAM 1:</h5>
+<h5>@(Model.FiscalYear.Epoch < 1 ? "MAJOR PROGRAM 1:" : "Concentration 1:")</h5>
 <blockquote>@Model.LastRevision.Mp1.Name</blockquote>
 }
 @if(@Model.LastRevision.Mp2 != null){
-    <h5>MAJOR PROGRAM 2:</h5>
+    <h5>@(Model.FiscalYear.Epoch < 1 ? "MAJOR PROGRAM 2:" : "Concentration 2:")</h5>
     <blockquote>@Model.LastRevision.Mp2.Name</blockquote>
 }
 @if(@Model.LastRevision.Mp3 != null){
-    <h5>MAJOR PROGRAM 3:</h5>
+    <h5>@(Model.FiscalYear.Epoch < 1 ? "MAJOR PROGRAM 3:" : "Concentration 3:")</h5>
     <blockquote>@Model.LastRevision.Mp3.Name</blockquote>
 }
 @if(@Model.LastRevision.Mp4 != null){
-    <h5>MAJOR PROGRAM 4:</h5>
+    <h5>@(Model.FiscalYear.Epoch < 1 ? "MAJOR PROGRAM 4:" : "Concentration 4:")</h5>
     <blockquote>@Model.LastRevision.Mp4.Name</blockquote>
 }
 <h5>Situation:</h5>
 <blockquote>@Html.Raw(@Model.LastRevision.Situation)</blockquote>
+@if(Model.FiscalYear.Epoch > 0){
+<h5>County Situation:</h5>
+<blockquote>@Html.Raw(@Model.LastRevision.CountySituation)</blockquote>
+}
 <h5>Long-Term Outcomes: </h5>
 <blockquote>@Html.Raw(@Model.LastRevision.LongTermOutcomes)</blockquote>
 <h5>Intermediate Outcomes: </h5>
@@ -36,7 +40,10 @@
 <blockquote>@Html.Raw(@Model.LastRevision.Evaluation)</blockquote>
 <h5>Learning Opportunities:</h5>
 <blockquote>@Html.Raw(@Model.LastRevision.Learning)</blockquote>
-
+@if(Model.FiscalYear.Epoch > 0){
+<h5>Evaluation:</h5>
+<blockquote>@Html.Raw(@Model.LastRevision.Evaluation)</blockquote>
+}
 @if(@Model.Stories.Count()>0){
     <br><br>
     <h2>Success Stories</h2>
