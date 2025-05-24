@@ -3,6 +3,7 @@
     ViewData["Title"] = "Plans of Work By Major Program";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
     int? programId = ViewData["ProgramId"] as int?;
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
     var fy = ViewData["fy"] as string;
 }
 @model List<Kers.Models.ViewModels.PlanOfWorkViewModel>
@@ -20,8 +21,8 @@
                 <th></th>
                 <th>FY</th>
                 <th>Planning Unit</th>
-                <th>MAP Title</th>
-                <th>Program Plan</th>
+                <th>@(FiscalYear.Epoch < 1 ? "MAP Title" : "")</th>
+                <th>@(FiscalYear.Epoch < 1 ? "Plan of Work" : "Emphasis")</th>
             </thead>
             <tbody>
             @foreach( var plan in Model){
@@ -29,7 +30,7 @@
                     <td><a asp-controller="PlansOfWork"  asp-action="PlanFullProgram" asp-route-id=@plan.Id asp-route-programid=@programId class="btn btn-info btn-xs">Select</a></td>
                     <td>@plan.FiscalYear.Name</td>
                     <td>@plan.PlanningUnit.Name</td>
-                    <td>@plan.LastRevision.Map.Title</td>
+                    <td>@(FiscalYear.Epoch < 1 ? plan.LastRevision.Map.Title : "")</td>
                     <td>@plan.LastRevision.Title</td>
                 </tr>
             }

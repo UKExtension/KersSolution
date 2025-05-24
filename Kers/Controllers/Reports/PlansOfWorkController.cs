@@ -192,7 +192,16 @@ namespace Kers.Controllers.Reports
                                         .Where( p => p.FiscalYear == fiscalYear);
             List<PlanOfWorkRevision> LastRevisions = new List<PlanOfWorkRevision>();
             foreach( var plan in FyPlansOfWork){
-                var r = this.context.PlanOfWorkRevision.Where( v => v.PlanOfWorkId == plan.Id).Include( v => v.Map).OrderBy( v => v.Created ).Last();
+                PlanOfWorkRevision r;
+                if (fiscalYear.Epoch < 1)
+                {
+                    r = this.context.PlanOfWorkRevision.Where(v => v.PlanOfWorkId == plan.Id).Include(v => v.Map).OrderBy(v => v.Created).Last();
+                }
+                else
+                {
+                    r = this.context.PlanOfWorkRevision.Where( v => v.PlanOfWorkId == plan.Id).OrderBy( v => v.Created ).Last();
+                }
+                
                 if( 
                     r.Mp1Id == id 
                     ||
@@ -222,6 +231,7 @@ namespace Kers.Controllers.Reports
             }
             ViewData["ProgramId"] = id;
             ViewData["fy"] = fiscalYear.Name;
+            ViewData["FiscalYear"] = fiscalYear;
             return View(plans);
         }
 
