@@ -120,6 +120,7 @@ namespace Kers.Controllers.Reports
                     new Exception("No Fiscal Year with Provided Identifier.");
                 }
             }
+            ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
             programs = await this.context.MajorProgram.
                                 Where(m => m.StrategicInitiative.FiscalYear == fiscalYear).
@@ -251,7 +252,10 @@ namespace Kers.Controllers.Reports
         [HttpGet("planfullprogram/{id}/{programid}")]
         public async Task<IActionResult> PlanFullProgram(int id, int programid){
             var plan = await this.PlanFull(id);
+            FiscalYear fiscalYear = plan.FiscalYear;
             ViewData["ProgramId"] = programid;
+            ViewData["fy"] = fiscalYear.Name;
+            ViewData["FiscalYear"] = fiscalYear;
             return View(plan);
         }
 

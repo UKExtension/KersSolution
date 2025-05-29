@@ -4,12 +4,14 @@
     ViewData["Title"] = Model.LastRevision.Title;
     ViewData["Subtitle"] = "Plan of Work";
     int? programid = ViewData["ProgramId"] as int?;
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    var fy = ViewData["fy"] as string;
 }
-
+@fy
 <div class="text-right">
-        <a asp-controller="PlansOfWork"  asp-action="PlansByProgram" asp-route-id=@programid class="btn btn-default btn-xs">Back to the Program</a><br>
+        <a asp-controller="PlansOfWork"  asp-action="PlansByProgram" asp-route-id=@programid class="btn btn-default btn-xs">Back to the @(FiscalYear.Epoch < 1 ? "Program" : "Concentration")</a><br>
 </div>
 @await Html.PartialAsync("PlanFullPartial")
 <div class="text-right">
-        <a asp-controller="PlansOfWork"  asp-action="PlansByProgram" asp-route-id=@programid class="btn btn-default btn-xs">Back to the Program</a><br>
+        <a asp-controller="PlansOfWork"  asp-action="PlansByProgram" asp-route-id=@programid class="btn btn-default btn-xs">Back to the @(FiscalYear.Epoch < 1 ? "Program" : "Concentration")</a><br>
 </div>
