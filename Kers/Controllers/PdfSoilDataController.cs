@@ -467,7 +467,7 @@ namespace Kers.Controllers
 				SKPaint skPaint = new SKPaint()
 				{
 					Style = SKPaintStyle.Fill,
-					Color = SKColors.Orange,
+					Color = SKColors.Green,
 					StrokeWidth = 10,
 					IsAntialias = true,
 				};
@@ -512,7 +512,7 @@ namespace Kers.Controllers
 				SKPaint skPaint = new SKPaint()
 				{
 					Style = SKPaintStyle.Fill,
-					Color = SKColors.Green,
+					Color = SKColors.Orange,
 					StrokeWidth = 10,
 					IsAntialias = true,
 				};
