@@ -231,6 +231,7 @@ namespace Kers.Controllers.Reports
                 plans.Add(pow);
             }
             ViewData["ProgramId"] = id;
+            ViewData["ProgramName"] = program.Name;
             ViewData["fy"] = fiscalYear.Name;
             ViewData["FiscalYear"] = fiscalYear;
             return View(plans);

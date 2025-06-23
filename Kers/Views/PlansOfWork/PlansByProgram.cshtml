@@ -3,6 +3,7 @@
     
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
     int? programId = ViewData["ProgramId"] as int?;
+    string programName = ViewData["ProgramName"] as string;
     var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
     ViewData["Title"] = "Plans of Work By " + (FiscalYear.Epoch < 1 ? "Major Program" : "Concentration");
     var fy = ViewData["fy"] as string;
@@ -16,6 +17,7 @@
 @if(Model.Count() == 0){
     <p>No Plans of Work for this Fiscal Year.</p>
 }else{
+    <h3>@programName</h3>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
