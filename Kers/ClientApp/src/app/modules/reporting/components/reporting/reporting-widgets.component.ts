@@ -17,6 +17,7 @@ import { Vehicle } from '../../modules/expense/vehicle/vehicle.service';
   </div>
   <div class="row" *ngIf="user">
     <widget-activities-agent [enabledVehicles]="enabledVehicles" *ngIf="isAgent"></widget-activities-agent>
+    <widget-program-assistant [enabledVehicles]="enabledVehicles" *ngIf="isProgramAssistant"></widget-program-assistant>
     <widget-staff-assistant *ngIf="isStaffAssistant"></widget-staff-assistant>
     <widget-dd-assistant *ngIf="isDDAssistant"></widget-dd-assistant>
     <widget-dd *ngIf="isDD"></widget-dd>
@@ -43,6 +44,7 @@ export class ReportingWidgetsComponent implements OnInit {
   isAgent = false;
   isSepcialist = false;
   isStaffAssistant = false;
+  isProgramAssistant = false;
   currentPlanningUnit:PlanningUnit;
   enabledVehicles:Vehicle[];
 
@@ -88,6 +90,7 @@ export class ReportingWidgetsComponent implements OnInit {
   }
 
   check(){  
+    
     if(this.hasRole("DD")){
       this.isDD = true;
       this.isAny = true;
@@ -97,14 +100,19 @@ export class ReportingWidgetsComponent implements OnInit {
     }else if(!this.isAny && 
                 (
                   this.user.extensionPosition.code == "AGENT"
-                  ||
-                  this.user.extensionPosition.code == "EXTPROGASSIST"
                 )
               
               ){
       this.isAgent = true;
       this.isAny = true;
-    }
+    }else if(!this.isAny && 
+                (
+                  this.user.extensionPosition.code == "EXTPROGASSIST"
+                )
+              ){
+      this.isProgramAssistant = true;
+      this.isAny = true;
+    } 
 
     if( !this.isAny 
         && 
