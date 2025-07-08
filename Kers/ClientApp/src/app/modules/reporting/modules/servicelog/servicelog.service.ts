@@ -149,6 +149,17 @@ export class ServicelogService {
                 catchError(this.handleError('snapdirectdeliverysite', []))
             );
     }
+    snapdirectdeliverysitecategory():Observable<SnapDirectDeliverySiteCategory[]>{
+        var url = this.baseUrl + 'snapdirectdeliverysitecategory';
+        return this.http.get<SnapDirectDeliverySiteCategory[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('snapdirectdeliverysitecategory', []))
+            );
+    }
+
+    
+
+
 
     /*****************************/
     // Snap Ed InDirect
@@ -391,6 +402,12 @@ export interface SnapDirectDeliverySite{
     name:string;
 }
 
+export interface SnapDirectDeliverySiteCategory{
+    id:number;
+    name:string;
+    snapDirectDeliverySites:SnapDirectDeliverySite[];
+}
+
 export interface SnapDirectSessionType{
     id:number;
     name:string;
@@ -444,6 +461,8 @@ export interface SnapPolicy{
     id:number;
     purpose:string;
     result:string;
+    affectedSite:string;
+    numberImpactedPeople:number;
     snapPolicyAimedSelections: SnapPolicyAimedSelection[];
     snapPolicyPartnerValue: SnapPolicyPartnerValue[];
 }

@@ -4,18 +4,38 @@
 <p><strong>RECORD ID:</strong> {{thePlan.id}}</p>
 </div><br>
 <p><strong>RECORD DATE STAMP:</strong> {{plan.created | date:'medium'}}</p>
-<p><strong>MAP:</strong> {{plan.map.title}}</p>
-<p><strong>PROGRAM PLAN:</strong> {{plan.title}}</p>
-<p><strong>AGENTS INVOLVED:</strong> {{plan.agentsInvolved}}</p><br>
-<p *ngIf="plan.mp1"><strong>MAJOR PROGRAM 1:</strong> {{plan.mp1.name}}</p>
-<p *ngIf="plan.mp2"><strong>MAJOR PROGRAM 2:</strong> {{plan.mp2.name}}</p>
-<p *ngIf="plan.mp3"><strong>MAJOR PROGRAM 3:</strong> {{plan.mp3.name}}</p>
-<p *ngIf="plan.mp4"><strong>MAJOR PROGRAM 4:</strong> {{plan.mp4.name}}</p><br>
+<p *ngIf="fiscalYear != undefined && fiscalYear.epoch == 0"><strong>MAP:</strong> {{plan.map.title}}</p>
+<p><strong>COUNTY EMPHASIS:</strong> {{plan.title}}</p>
+
+<p *ngIf="fiscalYear != undefined && fiscalYear.epoch == 0"><strong>AGENTS INVOLVED:</strong> {{plan.agentsInvolved}}</p><br>
+<p *ngIf="plan.mp1 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 1:</strong> {{plan.mp1.name}}</p>
+<p *ngIf="plan.mp2 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 2:</strong> {{plan.mp2.name}}</p>
+<p *ngIf="plan.mp3 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 3:</strong> {{plan.mp3.name}}</p>
+<p *ngIf="plan.mp4 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 4:</strong> {{plan.mp4.name}}</p>
+
+
+<p *ngIf="plan.mp1 && fiscalYear.epoch == 1"><strong>CONCENTRATION 1:</strong> {{plan.mp1.name}}</p>
+<p *ngIf="plan.mp2 && fiscalYear.epoch == 1"><strong>CONCENTRATION 2:</strong> {{plan.mp2.name}}</p>
+<p *ngIf="plan.mp3 && fiscalYear.epoch == 1"><strong>CONCENTRATION 3:</strong> {{plan.mp3.name}}</p>
+<p *ngIf="plan.mp4 && fiscalYear.epoch == 1"><strong>CONCENTRATION 4:</strong> {{plan.mp4.name}}</p>
+
+<br>
 <strong>SITUATION:</strong> <div [innerHTML]="plan.situation"></div><br><br>
+<strong>COUNTY SITUATION:</strong> <div [innerHTML]="plan.countySituation"></div><br><br>
 <strong>LONG-TERM OUTCOMES:</strong> <div [innerHTML]="plan.longTermOutcomes"></div><br><br>
 <strong>INTERMEDIATE OUTCOMES:</strong> <div [innerHTML]="plan.intermediateOutcomes"></div><br><br>
 <strong>INITIAL OUTCOMES:</strong> <div [innerHTML]="plan.initialOutcomes"></div><br><br>
 <strong>LEARNING OPPORTUNITIES:</strong> <div [innerHTML]="plan.learning"></div><br><br>
+<strong>EVALUATION:</strong> <div [innerHTML]="plan.evaluation"></div><br><br>
+<div *ngIf="fiscalYear.epoch == 1">
+    <strong>DATA SOURCES(s)</strong>
+    
+    <ul>
+        <li *ngFor="let source of plan.planOfWorkDataSourceSelections">{{source.planOfWorkDataSource.name}}</li>
+    </ul>
+
+
+</div><br><br>
 <div *ngIf="thePlan" class="fontawesome-icon-list">
     <div class="fa-hover">
         <a (click)="history=!history" style="padding-left: 0"><i class="fa fa-chevron-circle-right"></i>Revisions</a>

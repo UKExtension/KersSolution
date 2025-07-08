@@ -19,10 +19,11 @@ import {PlansofworkService} from './plansofwork.service';
 
 
 import {ProgramsService} from '../admin/programs/programs.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
-  imports:      [ SharedModule, PlansofworkRoutingModule ],
+  imports:      [ SharedModule, PlansofworkRoutingModule, NgSelectModule ],
   declarations: [ PlansofworkHomeComponent, 
                   PlansofworkMapsComponent,
                   PlansofworkMapFormComponent,

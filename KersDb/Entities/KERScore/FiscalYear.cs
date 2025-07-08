@@ -18,5 +18,6 @@ namespace Kers.Models.Entities.KERScore
         public DateTime ExtendedTo {get;set;}
         public String Type {get;set;}
         public String Name {get; set;}
+        public int Epoch {get;set;}
     }
 }

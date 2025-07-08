@@ -49,8 +49,9 @@ namespace Kers.Controllers
                     ISnapDirectRepository snapDirectRepo,
                     ISnapPolicyRepository snapPolicyRepo,
                     ISnapFinancesRepository snapFinancesRepo,
-                    ISnapCommitmentRepository snapCommitmentRepo
-            ):base(mainContext, context, userRepo){
+                    ISnapCommitmentRepository snapCommitmentRepo,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
                 this.fiscalRepo = fiscalRepo;
                 this._cache = _cache;
                 this.activityRepo = activityRepo;
@@ -264,7 +265,22 @@ namespace Kers.Controllers
                 this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
                 return new StatusCodeResult(500);
             }
-            var result = this.snapDirectRepo.SessionTypebyMonth(fiscalYear, true);
+            var result = this.snapDirectRepo.SessionTypebyMonth(fiscalYear);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("sessiontypebyproject/{fy}/data.csv")]
+        [Authorize]
+        public IActionResult SessionTypebyProject(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Total By Month Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+            var result = this.snapDirectRepo.SessionTypebyProject(fiscalYear, true);
             return Ok(result);
         }
 
@@ -552,6 +568,26 @@ namespace Kers.Controllers
 
             return Ok(this.snapDirectRepo.IndirectByEmployee(fiscalYear));
         }
+
+
+
+
+
+        [HttpGet]
+        [Route("indirectbyproject/{fy}/data.csv")]
+        [Authorize]
+        public IActionResult IndirectByProject(string fy){
+
+            FiscalYear fiscalYear = GetFYByName(fy);
+
+            if(fiscalYear == null){
+                this.Log( fy ,"string", "Invalid Fiscal Year Idetifyer in Indirect by Project Snap Ed CSV Data Request.", LogType, "Error");
+                return new StatusCodeResult(500);
+            }
+
+            return Ok(this.snapDirectRepo.IndirectByProject(fiscalYear));
+        }
+
 
 
         [HttpGet]

@@ -17,6 +17,7 @@ import { IndicatorsDemoComponent } from './indicators-demo.component';
         ],
   declarations: [ 
                   IndicatorsHomeComponent, IndicatorsFormComponent, IndicatorsDemoComponent
-                ]
+                ],
+                exports: [IndicatorsFormComponent]
 })
 export class IndicatorsModule { }

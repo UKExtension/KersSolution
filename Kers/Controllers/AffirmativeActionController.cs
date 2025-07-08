@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -31,6 +32,7 @@ namespace Kers.Controllers
         IKersUserRepository userRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
+        IMemoryCache memoryCache;
         IAffirmativeActionPlanRevisionRepository repo;
         public AffirmativeActionController( 
                     KERSmainContext mainContext,
@@ -38,7 +40,8 @@ namespace Kers.Controllers
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
                     IFiscalYearRepository fiscalYearRepo,
-                    IAffirmativeActionPlanRevisionRepository repo
+                    IAffirmativeActionPlanRevisionRepository repo,
+                    IMemoryCache memoryCache
             ){
            this.context = context;
            this.mainContext = mainContext;
@@ -46,6 +49,7 @@ namespace Kers.Controllers
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
            this.repo = repo;
+           this.memoryCache = memoryCache;
         }
 
         [HttpGet("{unit?}/{fy?}")]
@@ -109,7 +113,7 @@ namespace Kers.Controllers
                 if(type == "area"){
                     // Find the area
                     var area = this.context.ExtensionArea.Where( a => a.Id == id ).FirstOrDefault();
-                    var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                    var AreaController = new ExtensionAreaController(mainContext,context,userRepo,memoryCache);
                     var pairing = AreaController.FindContainingPair( area.Name );
                     plansPerFiscalYear = plansPerFiscalYear
                                             .Where( p => pairing.Contains(p.PlanningUnit.ExtensionArea.Name)).ToList();
@@ -164,7 +168,7 @@ namespace Kers.Controllers
                     // Find the area
                     var area = this.context.ExtensionArea.Where( a => a.Id == id ).FirstOrDefault();
                     if( area != null ){
-                        var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                        var AreaController = new ExtensionAreaController(mainContext,context,userRepo, memoryCache);
                         var pairing = AreaController.FindContainingPair( area.Name );
                         counties = context.PlanningUnit.Where( c => pairing.Contains(c.ExtensionArea.Name) ).ToList();
                     }

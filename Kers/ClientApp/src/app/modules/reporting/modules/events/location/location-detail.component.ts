@@ -10,6 +10,7 @@ import { ExtensionEventLocationConnection, LocationService } from './location.se
 export class LocationDetailComponent implements OnInit {
   @Input() location:ExtensionEventLocationConnection;
   @Input() purpose:string = "CountyEvents";
+  @Input() showZip:boolean = false;
   @Output() onSelected = new EventEmitter<ExtensionEventLocationConnection>();
   @Output() onDeleted = new EventEmitter<ExtensionEventLocationConnection>();
   

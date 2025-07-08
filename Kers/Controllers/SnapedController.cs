@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
+using Kers.Controllers.Reports.ViewComponents;
 
 namespace Kers.Controllers
 {
@@ -35,8 +36,9 @@ namespace Kers.Controllers
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
-                    IFiscalYearRepository fiscalYearRepo
-            ):base(mainContext, context, userRepo){
+                    IFiscalYearRepository fiscalYearRepo,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
                 this.fiscalYearRepo = fiscalYearRepo;
         }
 
@@ -67,8 +69,14 @@ namespace Kers.Controllers
                 var user = this.CurrentUser();
                 userId = user.Id;
             }
+            var fiscalYear = this.GetFYByName("0", FiscalYearType.SnapEd);
             var hours = context.Activity.
-                                Where(e=>e.KersUser.Id == userId ).
+                                Where(e=>e.KersUser.Id == userId  
+                                        &&
+                                        e.ActivityDate < fiscalYear.End
+                                        &&
+                                        e.ActivityDate > fiscalYear.Start
+                                ).
                                 Include( s => s.Revisions).ToList();
             var hrs = hours.Where( e => e.Revisions.OrderBy(r => r.Created).Last().isSnap);
             var sum = 0;
@@ -76,6 +84,37 @@ namespace Kers.Controllers
                 sum += sn.Revisions.OrderBy( r => r.Created).Last().SnapCopies;
             }
                                 //Sum( h => h.Revisions.OrderBy(r => r.Created).Last().SnapCopies);
+            return new OkObjectResult(sum);
+            
+        }
+        [HttpGet("reach/{userId?}")]
+        [Authorize]
+        public IActionResult Reach(int userId = 0){
+            if(userId == 0){
+                var user = this.CurrentUser();
+                userId = user.Id;
+            }
+            var fiscalYear = this.GetFYByName("0", FiscalYearType.SnapEd);
+            var reach = context.Activity.
+                                Where(e=>e.KersUser.Id == userId 
+                                        &&
+                                        e.ActivityDate < fiscalYear.End
+                                        &&
+                                        e.ActivityDate > fiscalYear.Start
+                                
+                                ).
+                                Include( s => s.Revisions).ToList();
+            var hrs = reach.Where( e => e.Revisions.OrderBy(r => r.Created).Last().isSnap);
+            var sum = 0;
+            foreach( var sn in hrs){
+                var lastRev = sn.Revisions.OrderBy( r => r.Created).Last();
+                if(lastRev.SnapDirectId > 0){
+                    var rev =  context.ActivityRevision.Where(e => e.Id == lastRev.Id )
+                                    .Include( s => s.SnapDirect).ThenInclude( s => s.SnapDirectAgesAudienceValues)
+                                    .FirstOrDefault();
+                    sum += rev.SnapDirect.SnapDirectAgesAudienceValues.Sum( s => s.Value);
+                }
+            } 
             return new OkObjectResult(sum);
             
         }
@@ -91,7 +130,7 @@ namespace Kers.Controllers
             }
             var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
             var committed = context.SnapEd_Commitment.
-                                Where(e =>  e.KersUserId == user.classicReportingProfileId 
+                                Where(e =>  e.KersUserId1 == user.Id 
                                             &&
                                             e.SnapEd_ActivityType.Measurement == "Hour"
                                             &&
@@ -113,7 +152,7 @@ namespace Kers.Controllers
             }
             var fiscalYear = this.GetFYByName(fy, FiscalYearType.SnapEd);
             var committed = context.SnapEd_Commitment.
-                                Where(e=>   e.KersUserId == user.classicReportingProfileId 
+                                Where(e=>   e.KersUserId1 == user.Id 
                                             &&
                                             e.SnapEd_ActivityType.Measurement == "Hour"
                                             &&

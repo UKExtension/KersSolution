@@ -30,7 +30,8 @@ export class ProgramindicatorsFormComponent{
         this.indicatorForm = fb.group(
             {
               question: ['', Validators.required],
-              order: [1]
+              order: [1],
+              isYouth: 0
             }
         );
         this.options = { 
@@ -45,6 +46,10 @@ export class ProgramindicatorsFormComponent{
     ngOnInit(){
         if(this.indicator!=null){
             this.indicatorForm.patchValue(this.indicator);
+        }else{
+            this.service.indicatorsnextorder(this.majorProgram.id).subscribe(
+                res => this.indicatorForm.patchValue({order:res})
+            );
         }
         
     }

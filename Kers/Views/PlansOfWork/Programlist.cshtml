@@ -1,7 +1,9 @@
 @{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    ViewData["Title"] = "Plans of Work By Major Program";
     ViewData["Subtitle"] = "Kentucky Extension Reporting System";
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    ViewData["Title"] = "Plans of Work By " + (FiscalYear.Epoch < 1 ? "Major Program" : "Concentration");
+    var fy = ViewData["fy"] as string;
 }
 @model List<Kers.Models.Entities.KERScore.MajorProgram>
 

@@ -125,6 +125,14 @@ export class SnapedService {
             );
     }
 
+    reach():Observable<number>{
+        var url = this.baseUrl + 'reach';
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('reach', 0))
+            );
+    }
+
     num():Observable<number>{
         var url = this.baseUrl + 'numb';
         return this.http.get<number>(this.location.prepareExternalUrl(url))

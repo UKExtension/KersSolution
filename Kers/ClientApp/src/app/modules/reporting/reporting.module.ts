@@ -30,6 +30,7 @@ import {ReportingService} from './components/reporting/reporting.service';
 import {ReportingRoutingModule} from './reporting-routing.module';
 import { ReportingHelpHomeComponent } from './components/reporting-help/reporting-help-home.component';
 import { WidgetActivitiesAgentComponent } from './components/reporting-home/widgets/widget-activities-agent.component';
+import { WidgetActivitiesProgramAssistantComponent } from './components/reporting-home/widgets/widget-activities-program-assistant.component';
 import { WidgetDDAssistantComponent } from './components/reporting-home/widgets/widget-dd-assistant.component';
 import { WidgetDDComponent } from './components/reporting-home/widgets/widget-dd.component';
 import { WidgetMyInfoComponent } from './components/reporting-home/widgets/widget-my-info.component';
@@ -60,6 +61,7 @@ import {JwtInterceptor} from './core/helpers/jwt.interceptor';
         ReportingProfileEditComponent,
         ReportingHelpHomeComponent,
         WidgetActivitiesAgentComponent,
+        WidgetActivitiesProgramAssistantComponent,
         WidgetDDAssistantComponent,
         WidgetDDComponent,
         WidgetMyInfoComponent,

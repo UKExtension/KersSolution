@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="majorProgramId">Major Program: </label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="majorProgramId">{{((fiscalYear != null && fiscalYear.epoch < 1) ? "Major Program":"Concentration Area")}}: </label>
             <div class="col-md-9 col-sm-9 col-xs-12">
                 <select name="majorProgramId" id="majorProgramId" formControlName="majorProgramId" class="form-control col-md-7 col-xs-12" (change)="checkIfAdmin($event)">
                     <option value="">--- select ---</option>
@@ -183,7 +183,7 @@
                                 <input type="radio" name="isPolicy" formControlName="isPolicy" [value]="false"> SNAP Ed Direct Contacts Record
                               </label>
                               <label class="btn btn-default" [class.active]="snapPolicy" (click)="isPolicy(true)">
-                                <input type="radio" name="isPolicy" formControlName="isPolicy" [value]="true"> Community/Policy System Environment
+                                <input type="radio" name="isPolicy" formControlName="isPolicy" [value]="true"> PSE: Policy, Systems, or Environmental Change
                               </label>
                             </div>
                           </div>
@@ -197,7 +197,9 @@
                             <div class="col-md-9 col-sm-9 col-xs-12">
                                 <select name="snapDirectDeliverySiteId" [class.snapError]="activityForm.hasError('nosite')" id="snapDirectDeliverySiteId" formControlName="snapDirectDeliverySiteId" class="form-control col-md-7 col-xs-12" >
                                     <option value="">--- select ---</option>
-                                    <option *ngFor="let site of snapdirectdeliverysite | async" [value]="site.id">{{site.name}}</option>
+                                    <optgroup  *ngFor="let siteCategory of snapdirectdeliverysite | async" label="{{siteCategory.name}}">
+                                        <option *ngFor="let site of siteCategory.snapDirectDeliverySites" [value]="site.id">{{site.name}}</option>
+                                    </optgroup>
                                 </select>
                             </div>
                         </div>  
@@ -205,7 +207,7 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">Specific Site Address:</label>
                             <div class="col-md-9 col-sm-9 col-xs-12">
                                 <div *ngIf="snapDirectlocationBrowser" style="padding: 10px;" [class.snapError]="snapDirectLoc==null">
-                                    <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
+                                    <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [showZip]="true" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
                                 </div>
                                 <div *ngIf="!snapDirectlocationBrowser && snapDirectLoc!=null" style="padding: 10px;">
                                     <h5>{{snapDirectLoc.address.building}}<strong *ngIf="snapDirectLoc.displayName != null && snapDirectLoc.displayName != ''"> ({{snapDirectLoc.displayName}})</strong></h5>
@@ -248,21 +250,34 @@
                     </div>
                     <div [hidden]="!snapPolicy" formGroupName="snapPolicy" >
                         <div class="form-group">
-                            <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Meeting Purpose or Overall Goal:</label>           
+                            <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Meeting Purpose/Goal:</label>           
                             <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="activityForm.hasError('nopurpose')">
-                                <textarea [froalaEditor]="options" name="purpose" formControlName="purpose" id="purpose" class="form-control col-xs-12"></textarea>
+                                <textarea [froalaEditor]="goalOptions" name="purpose" formControlName="purpose" id="purpose" class="form-control col-xs-12"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Meeting Result or Long Term Impact:</label>           
+                            <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Meeting Result/Impact:</label>           
                             <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="activityForm.hasError('noresult')" >
-                                <textarea [froalaEditor]="options" name="result" formControlName="result" id="result" class="form-control col-xs-12"></textarea>
+                                <textarea [froalaEditor]="impactOptions" name="result" formControlName="result" id="result" class="form-control col-xs-12"></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
+                       <!--  <div class="form-group">
                             <label for="description" class="control-label col-md-3 col-sm-3 col-xs-12">Aimed towards Improvement in: (check all that apply)</label>           
                             <div class="col-md-9 col-sm-9 col-xs-12" >
                                 <snap-policy-aimed formControlName="snapPolicyAimedSelections"></snap-policy-aimed>
+                            </div>
+                        </div> -->
+                        <div class="form-group">
+                            <label for="affectedSite" class="control-label col-md-3 col-sm-3 col-xs-12">Site to be affected/Impacted:</label>           
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" name="affectedSite" formControlName="affectedSite" id="affectedSite" class="form-control col-xs-12" />
+                                <br><small>Name and Address (Street Address, City, State, Zip)</small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="numberImpactedPeople" class="control-label col-md-3 col-sm-3 col-xs-12">Estimated # of people to benefit/be impacted:</label>           
+                            <div class="col-md-5 col-sm-4 col-xs-8">
+                                <input [class.ng-invalid]="activityForm.hasError('noimpacted')" type="text" name="numberImpactedPeople" formControlName="numberImpactedPeople" id="numberImpactedPeople" class="form-control col-xs-12" />
                             </div>
                         </div>
                         <div class="form-group">

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { PlansofworkService, PlanOfWork, Plan, PlanningUnit } from './plansofwork.service';
+import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'plansofwork-view',
@@ -11,6 +12,7 @@ export class PlansofworkViewComponent{
 
     public thePlan: Plan
     errorMessage: string;
+    fiscalYear:FiscalYear;
 
     constructor(
         private service:PlansofworkService
@@ -22,7 +24,8 @@ export class PlansofworkViewComponent{
         
         this.service.planForRevision(this.plan.id).subscribe(
             res=>{
-                this.thePlan = <Plan>res;                
+                this.thePlan = <Plan>res;
+                this.fiscalYear = this.thePlan.fiscalYear;               
                 },
             error => this.errorMessage = <any>error
         );

@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -30,15 +31,18 @@ namespace Kers.Controllers
 
 
         private IDistributedCache _cache;
+        private IMemoryCache _memoryCache;
 
         public CountyController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IDistributedCache _cache,
+                    IMemoryCache _memoryCache,
                     IKersUserRepository userRepo
-            ):base(mainContext, context, userRepo){
+            ):base(mainContext, context, userRepo, _memoryCache){
            
                 this._cache = _cache;
+                this._memoryCache = _memoryCache;
         }
 
 
@@ -71,6 +75,24 @@ namespace Kers.Controllers
         public async Task<IActionResult> Countylist(int? DistrictId = null){
 
             List<PlanningUnit> counties;
+
+
+            if(DistrictId == null ){
+                var simpleListCacheKey = CacheKeys.CountiesList;
+                if (!_memoryCache.TryGetValue(simpleListCacheKey, out counties)){
+                    counties = this.context.PlanningUnit.
+                                Where(c=>c.District != null)
+                                .OrderBy( c => c.order)
+                                .ToList();
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    // Keep in cache for this time, reset time if accessed.
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(5));
+                    // Save data in cache.
+                    _memoryCache.Set(simpleListCacheKey, counties, cacheEntryOptions);
+                }
+            
+                return new OkObjectResult(counties);
+            }
 
            var CurrentPlanningUnit = this.CurrentPlanningUnit();
             

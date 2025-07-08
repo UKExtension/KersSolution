@@ -60,7 +60,7 @@ export class ServicelogFormComponent implements OnInit{
     hasDirect = false;
 
     //adminPrograms = [36, 37, 236, 206];
-    adminProgramsCodes = [7001, 7002];
+    adminProgramsCodes = [7001, 7002, 901, 902];
     isAdmin = false;
 
     raceEthnicityIndex = 0;
@@ -89,6 +89,8 @@ export class ServicelogFormComponent implements OnInit{
     signupOpen = false;
 
     options:object;
+    goalOptions:object;
+    impactOptions:object;
     errorMessage:string;
 
     public cond = false;
@@ -124,7 +126,7 @@ export class ServicelogFormComponent implements OnInit{
         // Snap Direct
         this.sessiontypes = this.service.sessiontypes();
         this.sessionlengths = this.service.sessionlengths();
-        this.snapdirectdeliverysite = this.service.snapdirectdeliverysite();
+        this.snapdirectdeliverysite = this.service.snapdirectdeliverysitecategory();
 
         // Snap Indirect
 
@@ -172,6 +174,10 @@ export class ServicelogFormComponent implements OnInit{
                         }
                     } 
                 }
+                this.goalOptions = Object.create(this.options);
+                this.goalOptions["placeholderText"] = "Goal or Purpose of this group/ Long Term Impact Expected.";
+                this.impactOptions = Object.create(this.options);
+                this.impactOptions["placeholderText"] = "Meeting Result from today or so far.  Also please include any unexpected impacts that have occurred.";
             }
         );
         if( this.activity != null){
@@ -399,14 +405,7 @@ export class ServicelogFormComponent implements OnInit{
             
                 activityDate: [{
                     isRange: false, singleDate: {jsDate: date}
-
-                    /* 
-                                date: {
-                                    year: date.getFullYear(),
-                                    month: date.getMonth() + 1,
-                                    day: date.getDate()} */
                                 }, Validators.required],
-                
                 title: ["", Validators.required],
                 description: ["", Validators.required],
                 majorProgramId: ["", Validators.required],
@@ -435,6 +434,8 @@ export class ServicelogFormComponent implements OnInit{
                 snapPolicy: this.fb.group({
                     purpose: "",
                     result: "",
+                    affectedSite: "",
+                    numberImpactedPeople: "",
                     snapPolicyAimedSelections: [[]],
                     snapPolicyPartnerValue: [[]]
                 }),
@@ -748,11 +749,24 @@ interface ImageResponse{
 
 export const snapValidator = (control: AbstractControl): {[key: string]: boolean} => {
     const isSnap = control.get('isSnap');
+    var error = {};
+    var hasError = false;
+
+    var revalues = control.get('raceEthnicityValues').value;
+    var totalREvalues = revalues.reduce((n:number, {amount}) => n + amount, 0);
+
+    if( totalREvalues != (parseInt(control.get('male').value) + parseInt(control.get('female').value) )){
+        error["raceDoesntMatch"] = true;
+        hasError = true;
+    }
+
+    if(hasError) return error;
+
+
+
     if (isSnap.value === false) return null;
     let male = control.get('male');
     let female = control.get('female');
-    var error = {};
-    var hasError = false;
     if(control.get('activityOptionNumbers').value.filter(n => n.activityOptionNumberId == 3)[0].value > 0) {
         if(control.get('snapAdmin').value) return null;
         let audienceTargeted = control.get('snapIndirect').get('snapIndirectAudienceTargetedId');
@@ -762,8 +776,7 @@ export const snapValidator = (control: AbstractControl): {[key: string]: boolean
         }
     }
    
-    if(parseInt(male.value) + parseInt(female.value) > 0 ){
-       
+    if(parseInt(male.value) + parseInt(female.value) > 0 ){       
 
         if(control.get('snapAdmin').value) return null;
 
@@ -771,14 +784,27 @@ export const snapValidator = (control: AbstractControl): {[key: string]: boolean
 
             let purpose = control.get('snapPolicy').get('purpose');
             let result = control.get('snapPolicy').get('result');
-            if(!purpose.value && !result.value){
-                return { nopurpose: true, noresult: true };
-            }else if(!purpose.value){
-                return { nopurpose: true };
-            }else if(!result.value){
-                return { noresult: true };
-            }
+            let impacted = control.get('snapPolicy').get('numberImpactedPeople');
 
+/*             affectedSite: "",
+                    numberImpactedPeople: "", */
+
+            if(impacted.value!="" && !((parseFloat(impacted.value)) && +impacted.value >= 0)){
+                error['noimpacted'] = true;
+                hasError = true;
+            }
+            if(!purpose.value && !result.value){
+                error['nopurpose'] = true;
+                error['noresult']  = true ;
+                hasError = true;
+            }else if(!purpose.value){
+                error['nopurpose'] = true;
+                hasError = true;
+            }else if(!result.value){
+                error['noresult']  = true ;
+                hasError = true;
+            }
+            if(hasError) return error;
             return null;
         }
 

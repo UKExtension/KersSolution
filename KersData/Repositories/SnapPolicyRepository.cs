@@ -110,7 +110,7 @@ namespace Kers.Models.Repositories
                         result += row + "\n";
                     }
                 }
-            
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -183,7 +183,7 @@ namespace Kers.Models.Repositories
                         result += row + "\n";
                     }
                 }
-
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -239,7 +239,7 @@ namespace Kers.Models.Repositories
 
                 
 
-
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -272,15 +272,31 @@ namespace Kers.Models.Repositories
                 keys.Add("Program(s)");
                 keys.Add("EventDate");
                 keys.Add("Hours");
-
-
-                var types = context.SnapPolicyAimed.Where(m => m.Active && m.FiscalYear == fiscalYear).OrderBy( m => m.order);
-                foreach( var met in types){
-                    keys.Add(string.Concat( "\"", met.Name, "\""));
-                }
+                keys.Add("# to be impacted");
+                keys.Add("PSE Site Address");
                 keys.Add("PurposeGoal");
                 keys.Add("ResultImpact");
+                var types = context.SnapPolicyAimed.Where(m => m.Active).OrderBy( m => m.order);
+                foreach( var met in types){
+                    keys.Add(string.Concat( "\"Aimed: ", met.Name, "\""));
+                }
+                
+
+
+                var partners = context.SnapPolicyPartner.Where(m => m.Active).OrderBy( m => m.order);
+                foreach( var par in partners){
+                    keys.Add(string.Concat( "\"Partners: ", par.Name, "\""));
+                }
+
                 result = string.Join(",", keys.ToArray()) + "\n";
+
+
+
+
+
+
+
+
                 var activitiesThisFiscalYear = context.Activity.Where( a => 
                                                                             a.ActivityDate > fiscalYear.Start 
                                                                             && 
@@ -319,7 +335,7 @@ namespace Kers.Models.Repositories
                             row += string.Concat( "\"", meeting.Position, "\"") + ",";
                         }
                         row += meeting.PlanningUnit.Name + ",";
-                        row += meeting.PlanningUnit.ExtensionArea == null ? "" : meeting.PlanningUnit.ExtensionArea.Name + ",";
+                        row += meeting.PlanningUnit.ExtensionArea == null ? "," : meeting.PlanningUnit.ExtensionArea.Name + ",";
                         var prgrms = "";
                         foreach( var program in meeting.Programs){
                             prgrms += specialties.Where( s => s.Id == program.SpecialtyId).FirstOrDefault() ?.Code + " "??"";
@@ -327,7 +343,15 @@ namespace Kers.Models.Repositories
                         row += prgrms + ",";
                         row += meeting.ActivityDate.ToString("MM/dd/yyy") + ",";
                         row += meeting.Hours.ToString() + ",";
-                        var aimed = context.SnapPolicy.Where( p => p.Id == LastRevision.SnapPolicyId).Include( s => s.SnapPolicyAimedSelections).FirstOrDefault();
+                        
+                        var aimed = context.SnapPolicy.Where( p => p.Id == LastRevision.SnapPolicyId)
+                                        .Include( s => s.SnapPolicyAimedSelections)
+                                        .Include( s => s.SnapPolicyPartnerValue)
+                                        .FirstOrDefault();
+                        row += aimed.NumberImpactedPeople.ToString() + ",";
+                        row += string.Concat( "\"", aimed.AffectedSite, "\"") + ",";
+                        row += string.Concat( "\"", StripHTML(aimed.Purpose), "\"") + ",";
+                        row += string.Concat( "\"", StripHTML(aimed.Result), "\",") ;
                         foreach( var tp in types){
                             if( aimed.SnapPolicyAimedSelections == null){
                                 row += ",";
@@ -340,14 +364,26 @@ namespace Kers.Models.Repositories
                                 }
                             }
                         }
-                        row += string.Concat( "\"", StripHTML(aimed.Purpose), "\"") + ",";
-                        row += string.Concat( "\"", StripHTML(aimed.Result), "\"") ;
+
+                        foreach( var par in partners){
+                            if( aimed.SnapPolicyPartnerValue == null){
+                                row += "0,";
+                            }else{
+                                var sels = aimed.SnapPolicyPartnerValue.Where( a => a.SnapPolicyPartnerId == par.Id).FirstOrDefault();
+                                if( sels != null ){
+                                    row += sels.Value.ToString() + ",";
+                                }else{
+                                    row += "0,";
+                                }
+                            }
+                        }
+                        
                         
                         result += row + "\n";
                     }
                     
                 }
-
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )

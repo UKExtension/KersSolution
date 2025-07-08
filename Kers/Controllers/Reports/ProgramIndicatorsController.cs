@@ -69,7 +69,7 @@ namespace Kers.Controllers.Reports
                 
                 return new StatusCodeResult(500);
             }
-            
+            ViewData["fiscalYear"] = fiscalYear;
             if( id != 0){
                 var county = context.PlanningUnit.Find(id);
                 if(county == null){
@@ -149,6 +149,7 @@ namespace Kers.Controllers.Reports
                             foreach( var indctr in indicatorsPerThisProgram.Indicators.OrderBy( d => d.order)){
                                 var ind = new IndicatorViewModel();
                                 ind.Description = indctr.Question;
+                                ind.IsYouth = indctr.IsYouth;
                                 ind.Code = i;
                                 if( id == 0){
                                     ind.Amount = context.ProgramIndicatorValue.Where( v => v.ProgramIndicatorId == indctr.Id ).Sum( d => d.Value);
@@ -389,7 +390,8 @@ namespace Kers.Controllers.Reports
                                                 .Select( s => new IndicatorViewModel{
                                                     Code = s.Key.order,
                                                     Description = s.Key.Question,
-                                                    Amount = s.Sum(l => l.Value)
+                                                    Amount = s.Sum(l => l.Value),
+                                                    IsYouth = s.Key.IsYouth,
                                                 }).ToList();
                     
                     MajorProgramIndicatorsViewModel indicatorsPerMajorProgram = new MajorProgramIndicatorsViewModel();
@@ -486,6 +488,7 @@ namespace Kers.Controllers.Reports
         public int Code;
         public int Amount;
         public string Description;
+        public int IsYouth;
 
     }
 

@@ -203,6 +203,7 @@ namespace Kers
                 services.AddSingleton<IScheduledTask, SnapEstimatedSizeofAudiencesReachedTask>();
                 services.AddSingleton<IScheduledTask, SnapSessionTypebyMonthTask>();
                 services.AddSingleton<IScheduledTask, SnapIndirectByEmployeeTask>();
+                services.AddSingleton<IScheduledTask, SnapIndirectByProjectTask>();
                 services.AddSingleton<IScheduledTask, ActivityPerMajorProgramTask>();
                 services.AddSingleton<IScheduledTask, ActivityContactsByCountyByMajorProgramTask>();
                 services.AddSingleton<IScheduledTask, ActivityPerEmployeeReportsTask>();

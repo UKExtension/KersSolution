@@ -22,6 +22,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Kers.Services;
 using Kers.Services.FroalaWisiwyg;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -33,18 +34,21 @@ namespace Kers.Controllers
         KERScoreContext _context;
         IFiscalYearRepository fiscalYearRepo;
         IMessageRepository messageRepository;
+        IMemoryCache memoryCache;
         public LadderController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     IWebHostEnvironment hostingEnvironment,
                     IFiscalYearRepository fiscalYearRepo,
-                    IMessageRepository _messageRepository
-            ):base(mainContext, context, userRepo){
+                    IMessageRepository _messageRepository,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
                 _context = context;
                 _hostingEnvironment = hostingEnvironment;
                 this.fiscalYearRepo = fiscalYearRepo;
                 this.messageRepository = _messageRepository;
+                this.memoryCache = memoryCache;
         }
 
 
@@ -113,7 +117,7 @@ namespace Kers.Controllers
                     }else if( stage.Restriction == LadderStageRestrictionKeys.Area ){
                         if( area != null ){
 
-                            var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                            var AreaController = new ExtensionAreaController(mainContext,context,userRepo, memoryCache);
                             var pairing = AreaController.FindContainingPair( area.Name );
 
                             apps = context.LadderApplication
@@ -243,7 +247,7 @@ namespace Kers.Controllers
                 ExtensionArea countyArea = _context.PlanningUnit.Where( p => p.Id == userCountyId && p.ExtensionArea != null )
                                         .Select( u =>  u.ExtensionArea ).FirstOrDefault();
 
-                var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                var AreaController = new ExtensionAreaController(mainContext,context,userRepo, memoryCache);
                 var pairing = AreaController.FindContainingPair( countyArea.Name );
 
                 usersWithStageRoles = usersWithStageRoles

@@ -67,6 +67,8 @@ namespace Kers.Models.Contexts
         /***************************************/
         public virtual DbSet<PlanOfWork> PlanOfWork {get; set;}
         public virtual DbSet<PlanOfWorkRevision> PlanOfWorkRevision {get; set;}
+        public virtual DbSet<PlanOfWorkDataSource> PlanOfWorkDataSource {get; set;}
+        public virtual DbSet<PlanOfWorkDataSourceSelection> PlanOfWorkDataSourceSelections {get; set;}
         public virtual DbSet<Map> Map {get; set;}
         /***************************************/
         //  Help Content
@@ -142,6 +144,7 @@ namespace Kers.Models.Contexts
         public virtual DbSet<SnapDirectAudience> SnapDirectAudience {get;set;}
         public virtual DbSet<SnapDirectAgesAudienceValue> SnapDirectAgesAudienceValue {get;set;}
         public virtual DbSet<SnapDirectDeliverySite> SnapDirectDeliverySite {get;set;}
+        public virtual DbSet<SnapDirectDeliverySiteCategory> SnapDirectDeliverySiteCategory {get;set;}
         public virtual DbSet<SnapDirectSessionType> SnapDirectSessionType {get;set;}
         public virtual DbSet<SnapDirectSessionLength> SnapDirectSessionLength {get;set;}
         public virtual DbSet<SnapIndirectMethod> SnapIndirectMethod {get;set;}

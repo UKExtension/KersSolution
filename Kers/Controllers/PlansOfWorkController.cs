@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -31,18 +32,21 @@ namespace Kers.Controllers
         IKersUserRepository userRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
+        IMemoryCache memoryCache;
         public PlansOfWorkController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
-                    IFiscalYearRepository fiscalYearRepo
+                    IFiscalYearRepository fiscalYearRepo,
+                    IMemoryCache memoryCache
             ){
            this.context = context;
            this.mainContext = mainContext;
            this.userRepo = userRepo;
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
+           this.memoryCache = memoryCache;
         }
 
         [HttpGet()]
@@ -84,7 +88,7 @@ namespace Kers.Controllers
                 if(type == "area"){
                     // Find the area
                     var area = this.context.ExtensionArea.Where( a => a.Id == Id ).FirstOrDefault();
-                    var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                    var AreaController = new ExtensionAreaController(mainContext,context,userRepo, memoryCache);
                     var pairing = AreaController.FindContainingPair( area.Name );
                     plansOfWorkPerFiscalYear = plansOfWorkPerFiscalYear.Where( p => pairing.Contains(p.PlanningUnit.ExtensionArea.Name));
                 }else if(type == "region"){
@@ -134,11 +138,12 @@ namespace Kers.Controllers
             var lastRevisions = new List<PlanOfWorkRevision>();
             var plans = this.context.
                             PlanOfWork.Where( m=>m.PlanningUnit == unit && m.FiscalYear == fiscalYear).
-                            Include(p=>p.Revisions).ThenInclude(r=>r.Map).
+                            //Include(p=>p.Revisions).ThenInclude(r=>r.Map).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp1).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp2).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp3).
-                            Include(p=>p.Revisions).ThenInclude(r=>r.Mp4)
+                            Include(p=>p.Revisions).ThenInclude(r=>r.Mp4).
+                            Include(p=>p.Revisions).ThenInclude( r => r.PlanOfWorkDataSourceSelections).ThenInclude(r=>r.PlanOfWorkDataSource)
                             ;
             foreach(var plan in plans){
                 lastRevisions.Add(plan.Revisions.OrderBy( r=>r.Created ).Last());
@@ -162,15 +167,20 @@ namespace Kers.Controllers
             var lastRevisions = new List<PlanOfWorkRevision>();
             var plans = this.context.
                             PlanOfWork.Where( m=>m.PlanningUnit.Id == id && m.FiscalYear == fiscalYear).
-                            Include(p=>p.Revisions).ThenInclude(r=>r.Map).
+                            //Include(p=>p.Revisions).ThenInclude(r=>r.Map).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp1).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp2).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp3).
                             Include(p=>p.Revisions).ThenInclude(r=>r.Mp4).
-                            Include(p=>p.Revisions).ThenInclude(r=>r.By)
+                            Include(p=>p.Revisions).ThenInclude(r=>r.By).
+                            Include(p=>p.Revisions).ThenInclude( r => r.PlanOfWorkDataSourceSelections).ThenInclude(s=>s.PlanOfWorkDataSource)
                             ;
             foreach(var plan in plans){
-                lastRevisions.Add(plan.Revisions.OrderBy( r=>r.Created ).Last());
+                var lastRevision = plan.Revisions.OrderBy( r=>r.Created ).Last();
+                if(lastRevision.MapId != 0){
+                    lastRevision.Map = this.context.Map.Find(lastRevision.MapId);
+                }
+                lastRevisions.Add(lastRevision);
             }
             return new OkObjectResult(lastRevisions);
         }
@@ -203,6 +213,16 @@ namespace Kers.Controllers
             return new OkObjectResult(has);
         }
 
+        [HttpGet("datasources")]
+        [Authorize]
+        public IActionResult DataSources(){
+
+            var sources = context.PlanOfWorkDataSource.
+                        Where(r => r.Active ).OrderBy(r => r.Order);
+
+            return new OkObjectResult(sources);
+        }
+
         /***************************************************/
         /*               Plan CRUD operations               */
         /***************************************************/
@@ -225,7 +245,7 @@ namespace Kers.Controllers
 
                 plan.Created = DateTime.Now;
                 plan.By = this.CurrentUser();
-                plan.Map = this.context.Map.Find(plan.Map.Id);
+                //plan.Map = this.context.Map.Find(plan.Map.Id);
                 if(plan.Mp1 != null){
                     var mp1 = this.context.MajorProgram.Find(plan.Mp1.Id);
                     plan.Mp1 = mp1;
@@ -287,7 +307,7 @@ namespace Kers.Controllers
 
                 plan.Created = DateTime.Now;
                 plan.By = this.CurrentUser();
-                plan.Map = this.context.Map.Find(plan.Map.Id);
+                //plan.Map = this.context.Map.Find(plan.Map.Id);
                 if(plan.Mp1 != null){
                     var mp1 = this.context.MajorProgram.Find(plan.Mp1.Id);
                     plan.Mp1 = mp1;

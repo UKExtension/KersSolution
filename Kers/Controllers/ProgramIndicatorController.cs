@@ -19,6 +19,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Kers.Controllers
 {
@@ -31,18 +33,21 @@ namespace Kers.Controllers
         IKersUserRepository userRepo;
         ILogRepository logRepo;
         IFiscalYearRepository fiscalYearRepo;
+        IMemoryCache memoryCache;
         public ProgramIndicatorController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
-                    IFiscalYearRepository fiscalYearRepo
+                    IFiscalYearRepository fiscalYearRepo,
+                    IMemoryCache memoryCache
             ){
            this.context = context;
            this.mainContext = mainContext;
            this.userRepo = userRepo;
            this.logRepo = logRepo;
            this.fiscalYearRepo = fiscalYearRepo;
+           this.memoryCache = memoryCache;
         }
 
         [HttpGet()]
@@ -67,7 +72,7 @@ namespace Kers.Controllers
                 if(type == "area"){
                     // Find the area
                     var area = this.context.ExtensionArea.Where( a => a.Id == id ).FirstOrDefault();
-                    var AreaController = new ExtensionAreaController(mainContext,context,userRepo);
+                    var AreaController = new ExtensionAreaController(mainContext,context,userRepo, memoryCache);
                     var pairing = AreaController.FindContainingPair( area.Name );
                     counties = context.PlanningUnit.Where( c => pairing.Contains(c.ExtensionArea.Name) ).ToList();
                     counties = counties.Where( u => u.Name.Substring(u.Name.Count() - 3) == "CES").ToList();
@@ -110,6 +115,20 @@ namespace Kers.Controllers
             
         }
 
+        [HttpGet("indicatorsnextorder/{MajorProgramId}")]
+        public IActionResult NextOrder(int MajorProgramId){
+            var program = this.context.MajorProgram.Find(MajorProgramId);
+            if(program==null){
+                return new OkObjectResult(1);
+            }
+            var indicators = this.context.ProgramIndicator.
+                            Where(p=>p.MajorProgram == program).OrderBy(o=>o.order);
+
+            if(indicators.Count() == 0) return new OkObjectResult(1); 
+            return new OkObjectResult(indicators.LastOrDefault().order + 2);
+            
+        }
+
 
         [HttpPost("{programId}")]
         [Authorize]
@@ -138,6 +157,7 @@ namespace Kers.Controllers
 
                 entity.order = indicator.order;
                 entity.Question = indicator.Question;
+                entity.IsYouth = indicator.IsYouth;
 
                 context.SaveChanges();
 

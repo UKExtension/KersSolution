@@ -35,8 +35,9 @@ namespace Kers.Controllers
                     KERSmainContext mainContext,
                     KERScoreContext context,
                     IKersUserRepository userRepo,
-                    IFiscalYearRepository fiscalYearRepo
-            ):base(mainContext, context, userRepo){
+                    IFiscalYearRepository fiscalYearRepo,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
                 this.fiscalYearRepo = fiscalYearRepo;
         }
 

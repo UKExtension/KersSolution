@@ -14,6 +14,8 @@ namespace Kers.Models.Entities.KERScore
         public FiscalYear FiscalYear{ get; set; }
         public int order { get; set; }
         public string Name {get;set;}
+        public int SnapDirectDeliverySiteCategoryId { get;set;}
+        public SnapDirectDeliverySiteCategory SnapDirectDeliverySiteCategory { get; set; }
         public Boolean Active {get;set;}
     }
 }

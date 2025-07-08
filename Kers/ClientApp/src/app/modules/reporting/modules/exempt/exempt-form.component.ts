@@ -72,7 +72,7 @@ export class ExemptFormComponent implements OnInit {
             bankName:"",
             bankAccountName:'',
             areas: '',
-            taxExemptFinancialYearId:'',
+            taxExemptFinancialYearId:["", Validators.required],
             taxExemptProgramCategories:this.fb.array(opArray),
             donorsReceivedAck:"",
             annBudget:"",
@@ -168,7 +168,6 @@ export class ExemptFormComponent implements OnInit {
     exmpt.areas = countiesSelection.map( u => ({unitId: u.value}));
     var categoriesSelection = this.ExemptForm.value.taxExemptProgramCategories;
     exmpt.taxExemptProgramCategories = categoriesSelection.filter(c => c.selected == true).map( c => ({taxExemptProgramCategoryId:c.taxExemptProgramCategoryId}))
-    console.log(exmpt);
     if(this.exempt){
       this.service.update(this.exempt.id, exmpt).subscribe(
         res => {

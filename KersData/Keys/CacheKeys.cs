@@ -69,6 +69,7 @@ namespace Kers.Models.Repositories
         public static string SnapIndividualContactTotals = "SnapIndividualContactTotals";
         public static string SnapEstimatedSizeofAudiencesReached = "SnapEstimatedSizeofAudiencesReached";
         public static string SnapSessionTypebyMonth = "SnapSessionTypebyMonth";
+        public static string SnapSessionTypebyProject = "SnapSessionTypebyProject";
         public static string SnapCommitmentSummary = "SnapCommitmentSummary";
         public static string SnapCommitmentHoursDetail = "SnapCommitmentHoursDetail";
         public static string SnapAgentsWithoutCommitment = "SnapAgentsWithoutCommitment";
@@ -77,6 +78,7 @@ namespace Kers.Models.Repositories
         public static string SnapCommitmentReinforcementItemsPerCounty = "SnapCommitmentReinforcementItemsPerCounty";
         public static string SnapCommitmentSuggestedIncentiveItems = "SnapCommitmentSuggestedIncentiveItems";
         public static string IndirectByEmployee = "IndirectByEmployee";
+        public static string IndirectByProject = "IndirectByProject";
         public static string PartnersOfACounty = "PartnersOfACounty";
         public static string AudienceAgeCategory = "AudienceAgeCategory";
         public static string SnapSpecificSiteNamesDetails = "SnapSpecificSiteNamesDetails";

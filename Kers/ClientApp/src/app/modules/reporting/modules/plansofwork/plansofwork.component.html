@@ -1,7 +1,6 @@
-<h4>PLANS OF WORK</h4>
 <div>
     <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newPlan" (click)="newPlanofworkOpen()">+ new plan of work</a>
+        <a class="btn btn-info btn-xs" *ngIf="!newPlan && plans != null && plans.length < 4" (click)="newPlanofworkOpen()">+ new county emphasis</a>
     </div>
     <planofwork-form *ngIf="newPlan" (onFormCancel)="newPlanofworkCancelled()" (onFormSubmit)="newPlanofworkSubmitted()" [fiscalYear]="fy"></planofwork-form>
 </div>
@@ -9,12 +8,12 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Title</th>
+            <th>County Emphases</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-              <tr *ngFor="let planofwork of plans | async" [planofworkDetail]="planofwork" (onPlanofworkUpdated)="onPlanofworkUpdate()" (onPlanofworkDeleted)="onPlanofworkUpdate()" ></tr>
+              <tr *ngFor="let planofwork of plans" [planofworkDetail]="planofwork" (onPlanofworkUpdated)="onPlanofworkUpdate()" (onPlanofworkDeleted)="onPlanofworkUpdate()" ></tr>
         </tbody>               
     </table>            
 </div>

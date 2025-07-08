@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from "@angular/forms";
+import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
 import {    ContactService, Contact, 
             ContactOptionNumberValue,
             ContactRaceEthnicityValue
@@ -234,7 +234,7 @@ export class ContactFormComponent implements OnInit{
                 female:[0, this.isPositiveInt],
                 male:0,
                 contactOptionNumbers:this.fb.array(opNumArray)
-            }
+            }, { validator: contactValidator }
         );
         
 
@@ -337,4 +337,22 @@ export class ContactFormComponent implements OnInit{
 interface ContactMonth{
     date:Date;
     id:number;
+}
+
+export const contactValidator = (control: AbstractControl): {[key: string]: boolean} => {
+    var error = {};
+    var hasError = false;
+
+    var revalues = control.get('contactRaceEthnicityValues').value;
+    var totalREvalues = revalues.reduce((n:number, {amount}) => n + amount, 0);
+
+    if( totalREvalues != (parseInt(control.get('male').value) + parseInt(control.get('female').value) )){
+        error["raceDoesntMatch"] = true;
+        hasError = true;
+    }
+
+    if(hasError) return error;
+
+
+    return null;
 }

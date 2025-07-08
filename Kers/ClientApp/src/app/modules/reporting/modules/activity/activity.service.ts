@@ -7,6 +7,7 @@ import {MajorProgram } from '../admin/programs/programs.service';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { User, PlanningUnit } from '../user/user.service';
 import { Servicelog } from '../servicelog/servicelog.service';
+import { Contact } from '../contact/contact.service';
 
 
 @Injectable()
@@ -69,6 +70,9 @@ export class ActivityService {
             );
     }
 
+
+
+    
     activitiesPerMonth(month:number, year:number = 2017, userid:number = 0, orderBy:string = "desc", isSnap:boolean = false) : Observable<Activity[]>{
         var url = this.baseUrl + 'permonth/' + year + '/' + month + '/' + userid + '/' + orderBy + '/' + isSnap;
         return this.http.get<Activity[]>(this.location.prepareExternalUrl(url))
@@ -162,6 +166,84 @@ export class ActivityService {
                 catchError(this.handleError('num', 0))
             );
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    numberActivitiesPerYear(fiscalYaerId:number, userId:number):Observable<number>{
+
+    
+        var url = this.baseUrl + 'numberActivitiesPerYear/' + fiscalYaerId + "/" + userId;
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('numberActivitiesPerYear', 0))
+            );
+
+    }
+
+
+    GetActivitiesBatch(start:number, amount:number, fiscalYaerId:number, userId:number):Observable<Activity[]>{
+
+    
+        var url = this.baseUrl + 'GetActivitiesBatch/' + start + '/' + amount + '/' + fiscalYaerId + "/" + userId;
+        return this.http.get<Activity[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('GetActivitiesBatch', []))
+            );
+
+    }
+
+
+    numberContactsPerYear(fiscalYaerId:number, userId:number):Observable<number>{
+
+    
+        var url = this.baseUrl + 'numberContactsPerYear/' + fiscalYaerId + "/" + userId;
+        return this.http.get<number>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('numberContactsPerYear', 0))
+            );
+
+    }
+
+    GetContactsBatch(start:number, amount:number, fiscalYaerId:number, userId:number):Observable<Contact[]>{
+
+    
+        var url = this.baseUrl + 'GetContactsBatch/' + start + '/' + amount + '/' + fiscalYaerId + "/" + userId;
+        return this.http.get<Contact[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('GetContactsBatch', []))
+            );
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     pdf(year:number, month:number, id:number = 0): Observable<Blob>{
         return this.http.get(this.location.prepareExternalUrl('/api/PdfActivity/activities/' + year + '/' + month + '/' + id ), {responseType: 'blob'})
@@ -323,4 +405,22 @@ export class ActivitySearchResult{
 export class ActivitySeearchResultsWithCount{
     results:ActivitySearchResult[];
     resultsCount:number;
+}
+export class PerMonthActivities{
+    revisions:Activity[];
+    hours:number;
+    audience:number;
+    month:number;
+    year:number;
+}
+
+export class PerMonthContacts{
+    raceEthnicityValues:RaceEthnicityValue[];
+    optionNumberValues:ActivityOptionNumberValue[];
+    hours:number;
+    multistate:number;
+    males:number;
+    females:number;
+    month:number;
+    year:number;
 }

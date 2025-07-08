@@ -480,11 +480,14 @@ namespace Kers.Controllers
                             Include( a => a.ActivityImages).
                             OrderBy(a => a.Created).Last();
                             lstrvsn.ActivityImages = context.Activity.Where( a => a.Id == rev).Include( a => a.ActivityImages).First().ActivityImages;
-                            var revSerialized = JsonConvert.SerializeObject(lstrvsn);
-                            _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
-                                {
-                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
-                                });
+                            //Store revision only if it is recent
+                            if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+                                var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                                _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                    });
+                            }
                     }
 
 
@@ -569,11 +572,14 @@ namespace Kers.Controllers
                             Include(a => a.RaceEthnicityValues).
                             AsSplitQuery().
                             OrderBy(a => a.Created).Last();
-                            var revSerialized = JsonConvert.SerializeObject(lstrvsn);
-                            _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
-                                {
-                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
-                                });
+                            //Store revision only if it is recent
+                            if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+                                var revSerialized = JsonConvert.SerializeObject(lstrvsn);
+                                _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                                    });
+                            }
                     }
                     contactsThisMonth.Males += lstrvsn.Male;
                     contactsThisMonth.Females += lstrvsn.Female;
@@ -738,11 +744,14 @@ namespace Kers.Controllers
                                 Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                                 Include(a => a.RaceEthnicityValues).
                                 OrderBy(a => a.Created).Last();
+                                //Store revision only if it is recent
+                            if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
                                 var revSerialized = JsonConvert.SerializeObject(lstrvsn);
                                 _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
                                     {
-                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                                     });
+                            }
                         }
 
 
@@ -848,11 +857,14 @@ namespace Kers.Controllers
                                 Include(a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption).
                                 Include(a => a.RaceEthnicityValues).
                                 OrderBy(a => a.Created).Last();
+                                //Store revision only if it is recent
+                            if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
                                 var revSerialized = JsonConvert.SerializeObject(lstrvsn);
                                 _distributedCache.SetString(revCacheKey, revSerialized, new DistributedCacheEntryOptions
                                     {
                                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
                                     });
+                            }
                         }
                         perProgramContacts.Males += lstrvsn.Male;
                         perProgramContacts.Females += lstrvsn.Female;
@@ -1318,6 +1330,82 @@ namespace Kers.Controllers
 
             return new OkObjectResult(rcs);
         }
+
+
+
+        /*******************************************/
+        // Stats Per Month
+        /*******************************************/
+
+
+
+        [HttpGet("numberActivitiesPerYear/{FiscalYearId}/{UserId}")]
+        public IActionResult NumberActivitiesPerYear(int FiscalYearId, int UserId){
+            if( UserId == 0 ) UserId = this.CurrentUser().Id;
+
+            var NumActivities = context.Activity.Where( a => a.KersUserId == UserId && a.MajorProgram.StrategicInitiative.FiscalYear.Id == FiscalYearId).Count();
+
+            return new OkObjectResult(NumActivities);
+        }
+
+
+        [HttpGet("numberContactsPerYear/{FiscalYearId}/{UserId}")]
+        public IActionResult NumberContactsPerYear(int FiscalYearId, int UserId){
+            if( UserId == 0 ) UserId = this.CurrentUser().Id;
+
+            var NumActivities = context.Contact.Where( a => a.KersUserId == UserId && a.MajorProgram.StrategicInitiative.FiscalYear.Id == FiscalYearId).Count();
+            
+            return new OkObjectResult(NumActivities);
+        }
+
+
+
+        [HttpGet("GetActivitiesBatch/{start}/{amount}/{FiscalYearId}/{UserId}")]
+        public IActionResult GetActivitiesBatch(int start, int amount, int FiscalYearId, int UserId){
+            if( UserId == 0 ) UserId = this.CurrentUser().Id;
+            var Activities = context.Activity.Where( a => a.KersUserId == UserId && a.MajorProgram.StrategicInitiative.FiscalYear.Id == FiscalYearId).OrderBy( a => a.Id).Skip(start).Take(amount);
+            List<ActivityRevision> revs = new List<ActivityRevision>();
+            foreach( var act in Activities){
+                var rev = context.ActivityRevision.Where( a => a.Id == act.LastRevisionId)
+                            .Include( a => a.RaceEthnicityValues)
+                            .Include( a => a.ActivityOptionNumbers)
+                            .Include( a => a.ActivityOptionSelections).ThenInclude( s => s.ActivityOption)
+                            .FirstOrDefault();
+                revs.Add(rev);
+            }
+            return new OkObjectResult(revs);
+        }
+
+
+        [HttpGet("GetContactsBatch/{start}/{amount}/{FiscalYearId}/{UserId}")]
+        public IActionResult GetContactsBatch(int start, int amount, int FiscalYearId, int UserId){
+            if( UserId == 0 ) UserId = this.CurrentUser().Id;
+            var Activities = context.Contact.Where( a => a.KersUserId == UserId && a.MajorProgram.StrategicInitiative.FiscalYear.Id == FiscalYearId).OrderBy( a => a.Id).Skip(start).Take(amount);
+            List<ContactRevision> revs = new List<ContactRevision>();
+            foreach( var act in Activities){
+                var rev = context.ContactRevision.Where( a => a.Id == act.LastRevisionId)
+                            .Include( a => a.ContactRaceEthnicityValues)
+                            .Include( a => a.ContactOptionNumbers)
+                            .FirstOrDefault();
+                revs.Add(rev);
+            }
+            return new OkObjectResult(revs);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private void Log(   object obj, 
                             string objectType = "ActivityRevision",

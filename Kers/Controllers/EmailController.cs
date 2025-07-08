@@ -24,6 +24,7 @@ using MailKit.Net.Smtp;
 using MailKit;
 using MimeKit;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -37,8 +38,9 @@ namespace Kers.Controllers
             KERSmainContext mainContext,
             IKersUserRepository userRepo,
             KERScoreContext _context,
-            IConfiguration _configuration
-        ):base(mainContext, _context, userRepo)
+            IConfiguration _configuration,
+            IMemoryCache memoryCache
+        ):base(mainContext, _context, userRepo, memoryCache)
         {
             this._context = _context;
             this._configuration = _configuration;

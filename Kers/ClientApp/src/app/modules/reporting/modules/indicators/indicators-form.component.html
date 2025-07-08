@@ -14,7 +14,8 @@ To enter/adjust data for another Major Program, just select the Major Program fr
 <br>
 <loading *ngIf="initiatives == null"></loading>
 <div *ngIf="initiatives != null">
-    Select the Major Program from the dropdown list to access/enter your Program Indicator numbers:<br>
+    <div *ngIf="demoMode">Select the Concentration from the dropdown list to access/enter your Program Indicator numbers:</div>
+    <div *ngIf="!demoMode">Select the Major Program from the dropdown list to access/enter your Program Indicator numbers:</div><br>
     <select name="mp3" id="mp3" class="form-control col-md-7 col-xs-12" (change)="onChange($event.target.value)">
         <option value="">--- select ---</option>
         <optgroup  *ngFor="let initiative of initiatives" label="{{initiative.name}}">
@@ -31,13 +32,36 @@ To enter/adjust data for another Major Program, just select the Major Program fr
                 
                 <div formArrayName="indicatorsGroup" *ngIf="!loading">
                     
-                        <div *ngFor="let indicator of indicatorsForm.controls.indicatorsGroup.controls; let i=index" [formGroupName]="i" class="form-group">
+                        <div *ngFor="let indicator of indicatorsForm.controls.indicatorsGroup.controls; let i=index" [formGroupName]="i" class="form-group" style="padding: 4px 0;" [style.background-color]="(i % 2 === 0) ? '#ededec' : '#ffffff'">
                             <div class="col-xs-3">
                                 
                                     <input class="form-control" type="number" id="firstName" formControlName="value" />
                                 
                             </div>
-                            <div class="col-xs-9" [innerHTML]="selectedIndicators[i].question"></div>
+                            <div class="col-xs-9">
+                                <div *ngIf="fiscalYear.epoch > 0" style="display: inline; float: right; padding-left: 4px; font-size: 0.9 em;">{{
+                                ( selectedIndicators[i].isYouth==1 
+                                    ? 
+                                    childIcon 
+                                    :
+                                        (selectedIndicators[i].isYouth== 0
+                                        ?
+                                        adultIcon
+                                        :
+                                            (selectedIndicators[i].isYouth== 2
+                                            ?
+                                            volunteersIcon
+                                            :
+                                            ""
+                                            )
+                                        
+                                        )
+                                    )
+                                }}</div><div style="display: inline; float: left;">{{selectedProgram.pacCode}}.{{i+1}})&nbsp;</div>
+                                <span [ngStyle]="{'color': (selectedIndicators[i].isYouth==1) ? '#4f71a9' : '#6c757d'}" [innerHTML]="selectedIndicators[i].question"></span>
+
+
+                            </div>
                         
                     </div>
                 </div> 
@@ -51,6 +75,7 @@ To enter/adjust data for another Major Program, just select the Major Program fr
             </form>
 
         </div>
-        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0">There are no indicators available for selected Major Program</div>
+        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0 && !demoMode">There are no indicators available for selected Major Program</div>
+        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0 && demoMode">There are no indicators available for selected Concentration</div>
     </div>
 </div>

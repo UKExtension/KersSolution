@@ -53,6 +53,7 @@ namespace Kers.Models.Repositories
                 keys.Add("PositionTitle");
                 keys.Add("Program(s)");
                 keys.Add("PlanningUnit");
+                keys.Add("Area");
                 keys.Add("HoursReported");
                 keys.Add("Indirect");
                 keys.Add("Direct");
@@ -120,6 +121,7 @@ namespace Kers.Models.Repositories
                     var theUser = this.context.KersUser.Where( u => u == k.User )
                                         .Include( u => u.RprtngProfile)
                                             .ThenInclude( p => p.PlanningUnit)
+                                            .ThenInclude( p => p.ExtensionArea)
                                         .Include( u => u.ExtensionPosition)
                                         .Include( u => u.Specialties)
                                             .ThenInclude( s => s.Specialty)
@@ -138,6 +140,7 @@ namespace Kers.Models.Repositories
                     }
                     row += string.Concat( "\"", spclt, "\"") + ",";
                     row += string.Concat( "\"", theUser.RprtngProfile.PlanningUnit.Name, "\"") + ",";
+                    row += string.Concat( "\"", ( theUser.RprtngProfile.PlanningUnit.ExtensionArea != null ? theUser.RprtngProfile.PlanningUnit.ExtensionArea.Name : "") , "\"") + ",";
                     row += k.Revs.Sum( r => r.Hours).ToString() + ",";
 
 
@@ -164,7 +167,7 @@ namespace Kers.Models.Repositories
                     result += row + "\n";
                     
                 }
-                
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -215,6 +218,7 @@ namespace Kers.Models.Repositories
 
                     result += row + "\n";
                 }
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -241,30 +245,44 @@ namespace Kers.Models.Repositories
                 foreach( var age in ages){
                     keys.Add(string.Concat( "\"", age.Name, "\""));
                 }
+                var races = this.context.Race.ToList();
+                var ethnicities = this.context.Ethnicity.ToList();
+
+                foreach(var race in races){
+                    foreach( var ethn in ethnicities){
+                        keys.Add( race.Name + ethn.Name);
+                    }
+                }
 
                 result = string.Join(",", keys.ToArray()) + "\n";
 
 
-                var revs = SnapData( fiscalYear).Select( a => a.Revision);
+                var revs = SnapData( fiscalYear).Where( r => r.Revision.SnapDirect != null).Select( a => a.Revision);
 
                 var vals = revs.Where(r => r.SnapDirect != null).Select( r => r.SnapDirect.SnapDirectAgesAudienceValues);
+
+
+                var categories = context.SnapDirectAudience.Where(m => m.Active).OrderBy( m => m.order);
+
+                var RaceValues = GetRaceValuesPerProject(revs, categories, races, ethnicities );
 
                 var data = vals.SelectMany( i => i);
 
 
-                var categories = context.SnapDirectAudience.Where(m => m.Active).OrderBy( m => m.order);
+                
                 foreach( var category in categories){
                     var row = string.Concat( "\"", category.Name, "\",");
                     foreach( var a in ages){
                         row += data.Where( d => d.SnapDirectAgesId == a.Id && d.SnapDirectAudienceId == category.Id).Sum( r => r.Value).ToString() + ",";
                     }
-
+                    foreach(var race in races){
+                        foreach( var ethn in ethnicities){
+                            row += RaceValues[getAudienceDictionaryCode(category.Id, race.Id, ethn.Id)] + ",";
+                        }
+                    }
                     result += row + "\n";
                 }
-
-
-
-
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -279,6 +297,58 @@ namespace Kers.Models.Repositories
 
             return result;
         }
+
+        private Dictionary<string, float> GetRaceValuesPerProject(
+                                                IEnumerable<ActivityRevision> revs, 
+                                                IOrderedQueryable<SnapDirectAudience> Categories, 
+                                                List<Race> Races, List<Ethnicity> Ethnicities )
+        {
+
+            var Results = new Dictionary<string, float>();
+            foreach( var c in Categories){
+                foreach ( var r in Races){
+                    foreach( var e in Ethnicities){
+                        Results.Add( getAudienceDictionaryCode(c.Id,r.Id,e.Id), 0);
+                    }
+                }
+            }
+            foreach( var rev in revs){
+                var AudiencePerProject = this.GetAudiencePerProject( rev, Categories);
+                if( AudiencePerProject.Count() > 0 ){
+                    var totalAud = AudiencePerProject.Sum(a => a.Value);
+                    foreach( var au in AudiencePerProject){
+                        foreach( var rv in rev.RaceEthnicityValues){
+                            Results[getAudienceDictionaryCode(au.Key,rv.RaceId,rv.EthnicityId)] += rv.Amount * au.Value / totalAud;
+                        }
+                    }
+                    
+                }
+            }
+            return Results;
+        }
+
+        private Dictionary<int,int> GetAudiencePerProject(ActivityRevision rev, IOrderedQueryable<SnapDirectAudience> Categories){
+            var Results = new Dictionary<int, int>();
+            var PVals = rev.SnapDirect.SnapDirectAgesAudienceValues;
+            if( PVals.Count > 0 ){
+                foreach( var c in Categories){
+                    var catVals = PVals.Where( x => x.SnapDirectAudienceId == c.Id ).Sum(x => x.Value);
+                    if( catVals > 0 ) Results.Add( c.Id, catVals );
+                }
+
+            }
+            return Results;
+        }
+
+
+        private string getAudienceDictionaryCode(int CategoryId, int RaceId, int EthnicityId){
+            string catId = string.Format("{0:D2}", CategoryId);
+            string racId = string.Format("{0:D2}", RaceId);
+            string ethId = string.Format("{0:D2}", EthnicityId);
+            return catId+racId+ethId;
+        }
+
+       
 
         public string SessionTypebyMonth(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
@@ -325,6 +395,7 @@ namespace Kers.Models.Repositories
                     row += MonthlyTotal.ToString();
                     result += row + "\n";
                 }
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -332,6 +403,63 @@ namespace Kers.Models.Repositories
             }
             return result;
         }
+
+
+        public string SessionTypebyProject(FiscalYear fiscalYear, Boolean refreshCache = false){
+            string result;
+            var cacheKey = CacheKeys.SnapSessionTypebyProject + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+    
+                keys.Add("Project Name");
+                var types = context.SnapDirectSessionType.Where(m => m.Active).OrderBy( m => m.order);
+                foreach( var met in types){
+                    keys.Add(string.Concat( "\"", met.Name, " Number Delivered\""));
+                    keys.Add(string.Concat( "\"", met.Name, " Min Minutes\""));
+                    keys.Add(string.Concat( "\"", met.Name, " Max Minutes\""));
+                }
+                keys.Add("Total");
+                result = string.Join(",", keys.ToArray()) + "\n";
+                var projects = this.context.SnapDirectAudience.OrderBy( r => r.order );
+                var actvts = SnapData(fiscalYear).Where( a => a.Revision.SnapDirect != null);
+                foreach( var project in projects){
+                    var byProjectActivities = actvts.Where( a => a.Revision.SnapDirect.SnapDirectAgesAudienceValues.Where(a => a.SnapDirectAudienceId == project.Id).Sum(a => a.Value) > 0 );
+                    var row = project.Name + ",";
+                    var ByProjectTotal = 0;
+                    foreach( var type in types){
+                        var byType = byProjectActivities.Where( r => r.Revision.SnapDirect.SnapDirectSessionTypeId == type.Id);
+                        var cnt = byType.Count();
+                        ByProjectTotal += cnt;
+                        row += cnt.ToString() + ",";
+                        if( cnt == 0){
+                            row += ",,";
+                        }else{
+                            row += (byType.Min( t => t.Revision.Hours) * 60).ToString() + ",";
+                            row += (byType.Max( t => t.Revision.Hours) * 60).ToString() + ",";
+                        }
+                    }
+                    row += ByProjectTotal.ToString();
+                    result += row + "\n";
+                }
+
+                result += "Updated: " + DateTime.Now.ToString();
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
+                    }); 
+            }
+            return result;
+        }
+
+
+
+
+
+
         public string MethodsUsedRecordCount(FiscalYear fiscalYear, Boolean refreshCache = false){
             string result;
             var cacheKey = CacheKeys.SnapMethodsUsedRecordCount + fiscalYear.Name;
@@ -374,6 +502,7 @@ namespace Kers.Models.Repositories
                         result += row + "\n";
                     }
                 }
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -418,7 +547,7 @@ namespace Kers.Models.Repositories
                     result += row + "\n";
                 }
 
-
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -444,8 +573,13 @@ namespace Kers.Models.Repositories
                 keys.Add("Type of Delivery Site");
                 keys.Add("Specific Site Name");
                 keys.Add("Site address");
+                keys.Add("Site City");
+                keys.Add("Site State");
+                keys.Add("Site Zip Code");
+
                 keys.Add("# of KERS entries using this location");
                 keys.Add("# of Audience");
+                keys.Add("By");
 
 
 
@@ -458,17 +592,25 @@ namespace Kers.Models.Repositories
                                         Snap = s.Revision.SnapDirect,
                                         DeliverSite = s.Revision.SnapDirect.SnapDirectDeliverySite != null ? s.Revision.SnapDirect.SnapDirectDeliverySite.Name : "",
                                         SiteName = s.Revision.SnapDirect.SiteName != "" ? s.Revision.SnapDirect.SiteName : (s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Building : ""),
-                                        SiteAddress = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Street : ""
+                                        SiteAddress = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.Street : "",
+                                        SiteCity =s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.City : "",
+                                        SiteState = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.State : "",
+                                        SiteZip = s.Revision.SnapDirect.ExtensionEventLocation != null ? s.Revision.SnapDirect.ExtensionEventLocation.Address.PostalCode : "",
+                                        User = s.User.RprtngProfile
                                     }).ToList();
                 
                 var grouped = perPerson.Where( r => r.Snap!= null)
-                                .GroupBy( p => new {p.SiteName, p.DeliverSite, p.SiteAddress})
+                                .GroupBy( p => new {p.SiteName, p.DeliverSite, p.SiteAddress, p.SiteCity, p.SiteState, p.SiteZip})
                                 .Select( s => new {
                                     SiteName = s.Key.SiteName,
                                     DeliverySite = s.Key.DeliverSite,
                                     SiteAddress = s.Key.SiteAddress,
+                                    SiteCity = s.Key.SiteCity,
+                                    SiteState = s.Key.SiteState,
+                                    SiteZip = s.Key.SiteZip,
                                     Audience = s.Sum(l => l.Last.Male + l.Last.Female),
-                                    Count = s.Count()
+                                    Count = s.Count(),
+                                    Users = s.Select(l => new {l.User})
                                 });
 
 
@@ -476,12 +618,18 @@ namespace Kers.Models.Repositories
                     var row = string.Concat( "\"", k.DeliverySite , "\"") + ",";
                     row += string.Concat( "\"", k.SiteName , "\"") + ",";
                     row += string.Concat( "\"", k.SiteAddress , "\"") + ",";
+                    row += string.Concat( "\"", k.SiteCity , "\"") + ",";
+                    row += string.Concat( "\"", k.SiteState , "\"") + ",";
+                    row += string.Concat( "\"", k.SiteZip , "\"") + ",";
                     row += k.Count.ToString() + ",";
                     row += k.Audience.ToString() + ",";
+                    var groupedUsers = k.Users.GroupBy(l => l.User).Select( u => u.Key.Email + ", " + u.Key.Name + ", " + u.Key.PlanningUnit.Name).ToList();
+                    var u = String.Join("; ", groupedUsers);
+                    row += string.Concat( "\"",u, "\"");
                     result += row + "\n";
                 }
 
-
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -523,7 +671,10 @@ namespace Kers.Models.Repositories
                 }while(i < difference);
 
                     result = string.Join(",", keys.ToArray()) + "\n";
-                    var settings = this.context.SnapDirectDeliverySite.Where( d => d.Active).OrderBy(d => d.order).ToList();
+                    var settings = this.context.SnapDirectDeliverySite.Where(d => d.Active)
+                                .Include(d => d.SnapDirectDeliverySiteCategory)
+                                .OrderBy(d => d.SnapDirectDeliverySiteCategory.order).ThenBy(x => x.Name)
+                                .ToList();
                     
                     var snapPerMonth = new List<int>[difference];
                     for( i = 0; i< difference; i++){
@@ -548,13 +699,14 @@ namespace Kers.Models.Repositories
                     
                     foreach( var setting in settings){
                         var row = fiscalYear.Name + ",";
-                        row +=    string.Concat("\"", setting.Name, "\"") + ",";
+                        row +=    string.Concat("\"", setting.SnapDirectDeliverySiteCategory != null ? setting.SnapDirectDeliverySiteCategory.Name : "", " - ", setting.Name, "\"") + ",";
                         for( i = 0; i< difference; i++){
                                 var directs = context.SnapDirect.Where(s => snapPerMonth[i].Contains(s.Id) );
                                 row +=  directs.Where( s => s.SnapDirectDeliverySiteId == setting.Id).Count().ToString() + ",";
                         }
                         result += row + "\n";
                 }
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -670,7 +822,7 @@ namespace Kers.Models.Repositories
                     row += indirects.ToString();
                     result += row + "\n";
                 }
-                
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -785,6 +937,7 @@ namespace Kers.Models.Repositories
                     row += indirects.ToString();
                     result += row + "\n";
                 }
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -913,6 +1066,7 @@ namespace Kers.Models.Repositories
                     row += indirects.ToString();
                     result += row + "\n";
                 }
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -989,6 +1143,7 @@ namespace Kers.Models.Repositories
                         result += row + "\n";
                     }
                 }
+                result += "Updated: " + DateTime.Now.ToString();
                 _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
@@ -1045,7 +1200,7 @@ namespace Kers.Models.Repositories
                                         ).ToList();
                                         
                 var filteredCommitments = context.SnapEd_Commitment
-                                        .Where( c => c.FiscalYear == fiscalYear)
+                                        .Where( c => c.FiscalYear == fiscalYear && c.KersUser.RprtngProfile.Institution.Name.Equals("University of Kentucky") )
                                         .Include( c => c.KersUser)
                                         .ToList();
                 var commitmentst = filteredCommitments
@@ -1110,11 +1265,12 @@ namespace Kers.Models.Repositories
                     row += committed.ToString() + ",";
                     row += (totalHours - committed).ToString();
                     result += row + "\n";
-                    _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                }
+                result += "Updated: " + DateTime.Now.ToString();
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                         });
-                }
             }
             return result;
         }
@@ -1207,11 +1363,13 @@ namespace Kers.Models.Repositories
                     }
 
                     result += row + "\n";
-                    _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                }
+                result += "Updated: " + DateTime.Now.ToString();
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                         }); 
-                }
+                
             }
             return result;
         }
@@ -1280,17 +1438,76 @@ namespace Kers.Models.Repositories
                         row += reachedData.Where( d => d.SnapIndirectReachedId == r.Id).Sum( l => l.Value).ToString() + ",";
                     }
                     result += row + "\n";
-                    _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                }
+                result += "Updated: " + DateTime.Now.ToString();
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
                         {
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
                         }); 
-                }
             }
             return result;
         }
 
 
 
+
+        public string IndirectByProject(FiscalYear fiscalYear, bool refreshCache = false){
+
+            string result;
+            var cacheKey = CacheKeys.IndirectByProject + fiscalYear.Name;
+            var cacheString = _cache.GetString(cacheKey);
+            if (!string.IsNullOrEmpty(cacheString) && !refreshCache ){
+                result = cacheString;
+            }else{
+
+                var keys = new List<string>();
+                
+                
+
+                var reached = this.context.SnapIndirectAudienceTargeted.OrderBy( r => r.order).ToList();
+
+
+                var SnapData = this.SnapData( fiscalYear);
+
+                var indirectSnapData = SnapData.Where( s => s.Revision.SnapIndirect != null && s.Revision.ActivityDate < fiscalYear.End && s.Revision.ActivityDate > fiscalYear.Start);
+
+                var rows = new List<List<string>>();
+
+                keys.Add("Indirect Method");
+                foreach( var r in reached){
+                    keys.Add(r.Name);
+                }
+                result = string.Join(", ", keys.ToArray()) + "\n";
+
+                
+
+                var projects = this.context.SnapIndirectReached.OrderBy( r => r.order );
+                
+                foreach( var project in projects){
+                    var row = new List<string>();
+                    row.Add(project.Name);
+                    
+                    foreach( var rch in reached){
+                        var data = indirectSnapData.
+                                    Where( s => s.Revision.SnapIndirect.SnapIndirectAudienceTargetedId.Equals(rch.Id)).
+                                    Select( 
+                                        l => l.Revision.SnapIndirect.SnapIndirectReachedValues.Where(v => v.SnapIndirectReachedId == project.Id).Sum( t => t.Value)
+                                    ).Sum( p => p);
+                        row.Add(data.ToString());
+                    }
+
+                    result += string.Join(", ", row.ToArray()) + "\n";
+                }
+
+                result += "Updated: " + DateTime.Now.ToString();
+                _cache.SetString(cacheKey, result, new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays( this.getCacheSpan(fiscalYear) )
+                    }); 
+                
+            }
+            return result;
+        }
 
 
     }

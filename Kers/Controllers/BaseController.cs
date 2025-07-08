@@ -30,14 +30,17 @@ namespace Kers.Controllers
         public KERScoreContext context;
         public KERSmainContext mainContext;
         public IKersUserRepository userRepo;
+        IMemoryCache memoryCache;
         public BaseController( 
                     KERSmainContext mainContext,
                     KERScoreContext context,
-                    IKersUserRepository userRepo
+                    IKersUserRepository userRepo,
+                    IMemoryCache memoryCache
             ){
            this.context = context;
            this.mainContext = mainContext;
            this.userRepo = userRepo;
+           this.memoryCache = memoryCache;
         }
 
 
@@ -119,17 +122,25 @@ namespace Kers.Controllers
 
         public FiscalYear GetFYByName(string fy, string type = "snapEd"){
             FiscalYear fiscalYear;
-            if(fy == "0"){
-                var current = this.context.
-                        FiscalYear.
-                        Where(y => y.Start < DateTime.Now && y.End > DateTime.Now && y.Type == type).
-                        FirstOrDefault();
-                if(current == null){
-                    current = this.context.FiscalYear.Where( y => y.Name=="2018" && y.Type== type).FirstOrDefault();
+            var fiscalYearCacheKey = "fiscalYearCacheKey"+fy+type;
+            if (!memoryCache.TryGetValue(fiscalYearCacheKey, out fiscalYear)){
+                if(fy == "0"){
+                    var current = this.context.
+                            FiscalYear.
+                            Where(y => y.Start < DateTime.Now && y.End > DateTime.Now && y.Type == type).
+                            FirstOrDefault();
+                    if(current == null){
+                        current = this.context.FiscalYear.Where( y => y.Name=="2025" && y.Type== type).FirstOrDefault();
+                    }
+                    fiscalYear = current;
+                }else{
+                    fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
                 }
-                fiscalYear = current;
-            }else{
-                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                // Keep in cache for this time, reset time if accessed.
+                .SetAbsoluteExpiration(TimeSpan.FromHours(5));
+                // Save data in cache.
+                memoryCache.Set(fiscalYearCacheKey, fiscalYear, cacheEntryOptions);
             }
             return fiscalYear;
         }

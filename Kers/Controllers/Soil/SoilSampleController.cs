@@ -23,6 +23,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Kers.Models.Data;
 using Kers.Models.ViewModels;
 using Kers.Models.Entities.SoilData;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers.Soil
 {
@@ -32,13 +33,15 @@ namespace Kers.Controllers.Soil
     {
         KERScoreContext _coreContext;
         SoilDataContext _context;
+    
 
         public SoilSampleController( 
                     KERSmainContext mainContext,
                     IKersUserRepository userRepo,
                     SoilDataContext _context,
-                    KERScoreContext _coreContext
-            ):base(mainContext, _coreContext, userRepo){
+                    KERScoreContext _coreContext,
+                    IMemoryCache memoryCache
+            ):base(mainContext, _coreContext, userRepo, memoryCache){
                 this._context = _context;
                 this._coreContext = _coreContext;
 

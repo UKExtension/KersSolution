@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Component({
     selector: '[activityStatsMonthRow]',
     template: `
-        <td nowrap>{{activity.year}}-{{activity.month}}</td>
+        <td nowrap>{{activity.year}}-{{activity.month + 1  | number: '2.0' }}</td>
         <td>{{activity.hours}}</td>
         <td>{{activity.multistate}}</td>
         <td>{{activity.females+activity.males}}</td>
@@ -40,7 +40,8 @@ export class ActivityStatsMonthRow implements OnInit {
 
     raceValue(race:Race){
         var val = 0;
-        var valse = this.activity.raceEthnicityValues.filter(v => v.raceId == race.id);
+        var valse = [];
+        if(this.activity.raceEthnicityValues) valse = this.activity.raceEthnicityValues.filter(v => v.raceId == race.id);
         for(var v of valse){
             val += v.amount;
         }
@@ -48,7 +49,8 @@ export class ActivityStatsMonthRow implements OnInit {
     }
     ethnicity(ethnct:number){
         var val = 0;
-        var valse = this.activity.raceEthnicityValues.filter(v => v.ethnicityId == ethnct);
+        var valse = [];
+        if(this.activity.raceEthnicityValues != null )  valse = this.activity.raceEthnicityValues.filter(v => v.ethnicityId == ethnct);
         for(var v of valse){
             val += v.amount;
         }
@@ -56,7 +58,8 @@ export class ActivityStatsMonthRow implements OnInit {
     }
     optionValue(op:ActivityOptionNumber){
         var val = 0;
-        var valse = this.activity.optionNumberValues.filter(v => v.activityOptionNumberId == op.id);
+        var valse =[]
+        if(this.activity.optionNumberValues != null ) valse = this.activity.optionNumberValues.filter(v => v.activityOptionNumberId == op.id);
         for(var v of valse){
             val += v.value;
         }

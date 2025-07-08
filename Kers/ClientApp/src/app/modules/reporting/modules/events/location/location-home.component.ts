@@ -18,7 +18,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
       <location-form *ngIf="newLocation && purpose=='CountyEvents'" [county]="county" [user]="user" (onFormCancel)="newLocation=false" (onFormSubmit)="newLocationSubmitted($event)"></location-form>
       <location-form 
               *ngIf="newLocation && purpose=='Mileage'" 
-                      [showZip]="false" 
+                      [showZip]="showZip" 
                       [isItBuilding]="false"
                       [showState]="true"
                       [isNameRequired]="true"
@@ -54,7 +54,7 @@ Order by:&nbsp;
       <loading *ngIf="loading"></loading>      
       <div class="row" *ngIf="!loading">
         <div *ngFor="let locationConnection of countyLocations.results">
-          <location-detail [location]="locationConnection" [purpose]="purpose" (onSelected)="locationSelected($event)" (onDeleted)="deleted($event)"></location-detail>
+          <location-detail [showZip]="showZip" [location]="locationConnection" [purpose]="purpose" (onSelected)="locationSelected($event)" (onDeleted)="deleted($event)"></location-detail>
         </div>
         <div class="col-xs-12"><br><br>
           <div *ngIf="countyLocations.count != 0" class="text-center">
@@ -74,6 +74,7 @@ export class LocationHomeComponent implements OnInit {
   @Input() user:User;
   @Input() includeCountyOffice:boolean = false;
   @Input() purpose:string = "CountyEvents";
+  @Input() showZip:boolean = false;
 
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off

@@ -15,6 +15,8 @@ namespace Kers.Models.Entities.KERScore
         public string Purpose {get;set;}
         [Column(TypeName = "text")]
         public string Result {get;set;}
+        public string AffectedSite {get;set;}
+        public int NumberImpactedPeople {get;set;}
         public List<SnapPolicyAimedSelection> SnapPolicyAimedSelections {get;set;}
         public List<SnapPolicyPartnerValue> SnapPolicyPartnerValue {get;set;}
 

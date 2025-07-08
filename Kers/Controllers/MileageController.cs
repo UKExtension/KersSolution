@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kers.Controllers
 {
@@ -37,8 +38,9 @@ namespace Kers.Controllers
                     IKersUserRepository userRepo,
                     ILogRepository logRepo,
                     IExpenseRepository expenseRepo,
-                    IFiscalYearRepository fiscalYearRepo
-            ):base(mainContext, context, userRepo){
+                    IFiscalYearRepository fiscalYearRepo,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
            this.context = context;
            this.mainContext = mainContext;
            this.userRepo = userRepo;

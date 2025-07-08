@@ -27,7 +27,7 @@ namespace Kers.Controllers
                     IKersUserRepository userRepo,
                     IFiscalYearRepository fiscalYearRepo,
                     IMemoryCache memoryCache
-            ):base(mainContext, context, userRepo){
+            ):base(mainContext, context, userRepo, memoryCache){
 
            this.fiscalYearRepo = fiscalYearRepo;
            _cache = memoryCache;
@@ -395,7 +395,7 @@ namespace Kers.Controllers
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(10));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, ops, cacheEntryOptions);
@@ -419,7 +419,7 @@ namespace Kers.Controllers
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(10));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, ops, cacheEntryOptions);
@@ -443,7 +443,7 @@ namespace Kers.Controllers
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(10));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, rcs, cacheEntryOptions);
@@ -466,7 +466,7 @@ namespace Kers.Controllers
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Keep in cache for this time, reset time if accessed.
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(10));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, rcs, cacheEntryOptions);
@@ -502,6 +502,13 @@ namespace Kers.Controllers
         [HttpGet("snapdirectdeliverysite")]
         public IActionResult SnapDirectDeliverySite(){
             var sst = this.context.SnapDirectDeliverySite.Where(o => o.Active).OrderBy(o => o.order);
+            return new OkObjectResult(sst);
+        }
+        [HttpGet("snapdirectdeliverysitecategory")]
+        public IActionResult SnapDirectDeliverySiteCategory(){
+            var sst = this.context.SnapDirectDeliverySiteCategory.Where(o => o.Active)
+                        .Include(o => o.SnapDirectDeliverySites.OrderBy(s => s.Name))
+                        .OrderBy(o => o.order);
             return new OkObjectResult(sst);
         }
 

@@ -35,6 +35,14 @@ export class PlansofworkService {
                     catchError(this.handleError('listPlans', []))
                 );
     }
+
+    dataSources():Observable<PlanOfWorkDataSource[]>{
+        var url = this.baseUrl + "datasources";
+        return this.http.get<PlanOfWorkDataSource[]>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('listPlans', []))
+            );
+}
     listPlansDetails(fy:string = "0", planningUnitId:number = 0):Observable<PlanOfWork[]>{
             var url = this.baseUrl + "AllDetails/" + planningUnitId  + "/" + fy;
             return this.http.get<PlanOfWork[]>(this.location.prepareExternalUrl(url))
@@ -156,15 +164,30 @@ export class PlanOfWork{
         public mp3:MajorProgram,
         public mp4:MajorProgram,
         public situation:string,
+        public countySituation:string,
         public longTermOutcomes:string,
         public intermediateOutcomes:string,
         public initialOutcomes:string,
         public learning:string,
         public evaluation:string,
         public map:Map,
-        public created:Date
+        public created:Date,
+        public planOfWorkDataSourceSelections:PlanOfWorkDataSourceSelection[]
     ){}
 }
+
+export interface PlanOfWorkDataSource{
+    id:number,
+    name:string,
+    order:number,
+    active:boolean
+}
+
+export interface PlanOfWorkDataSourceSelection{
+    planOfWorkDataSourceId:number,
+    planOfWorkRevisionId:number
+}
+
 export class Plan{
     constructor(
         public id:number,

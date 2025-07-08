@@ -42,6 +42,7 @@ import {CopyClipboardDirective} from './directives/copy-clipboard.directive';
 import { TimeFormat } from './pipes/convertTimeFrom24To12Hours';
 import { AlertWidgetComponent } from './components/alert-widget.component';
 import { AlertBannerComponent } from './components/alert-banner.component';
+import { ProgressBarComponent } from './components/progress-bar.component';
 
 
 
@@ -60,6 +61,7 @@ import { AlertBannerComponent } from './components/alert-banner.component';
                   
   declarations: [ 
                   LoadingComponent,
+                  ProgressBarComponent,
                   echartsDirective,
                   TiimepickerComponent,
                   ReportingDisplayHelpComponent,
@@ -83,6 +85,7 @@ import { AlertBannerComponent } from './components/alert-banner.component';
       FroalaEditorModule,
       FroalaViewModule,
       LoadingComponent,
+      ProgressBarComponent,
       echartsDirective,
       SafeHtmlPipe,
       TiimepickerComponent,

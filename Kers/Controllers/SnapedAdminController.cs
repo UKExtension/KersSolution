@@ -39,8 +39,9 @@ namespace Kers.Controllers
                     IKersUserRepository userRepo,
                     IFiscalYearRepository fiscalRepo,
                     IDistributedCache _cache,
-                    IActivityRepository activityRepo
-            ):base(mainContext, context, userRepo){
+                    IActivityRepository activityRepo,
+                    IMemoryCache memoryCache
+            ):base(mainContext, context, userRepo, memoryCache){
                 this.fiscalRepo = fiscalRepo;
                 this._cache = _cache;
                 this.activityRepo = activityRepo;
