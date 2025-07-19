@@ -115,7 +115,7 @@ namespace Kers.Controllers.Reports
                 foreach( var initiative in initiatives){
                     initiative.MajorPrograms = initiative.MajorPrograms.OrderBy( m => m.order).ToList();
                     var intv = new StrategicInitiativeIndicatorsViewModel();
-                    intv.Title = initiative.ProgramCategory.ShortName + " " + initiative.Name;
+                    intv.Title = /*initiative.ProgramCategory.ShortName + " " + */initiative.Name;
                     intv.Code = initiative.PacCode;
                     intv.Indicators = new List<MajorProgramIndicatorsViewModel>();
                     foreach(var program in initiative.MajorPrograms){
