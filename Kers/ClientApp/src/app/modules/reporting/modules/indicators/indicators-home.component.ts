@@ -40,6 +40,6 @@ export class IndicatorsHomeComponent {
     
 
     defaultTitle(){
-        this.reportingService.setTitle("Program Indicators for FY"+this.fiscalYear.name);
+        this.reportingService.setTitle("Indicators for FY"+this.fiscalYear.name);
     }
 }
