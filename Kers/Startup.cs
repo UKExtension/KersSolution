@@ -286,7 +286,10 @@ namespace Kers
 
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
+
+                var isItLocalStaging = Configuration["localStaging"];
+
+                if (env.IsDevelopment() || (env.IsStaging() && isItLocalStaging != null))
                 {
                     spa.UseAngularCliServer(npmScript: "start");
                 }
