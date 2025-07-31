@@ -15,6 +15,7 @@ using System.Diagnostics;
 using Kers.Models.Entities;
 using Kers.Models.Contexts;
 using Microsoft.AspNetCore.Http;
+using IdentityServer4.Extensions;
 
 namespace Kers.Controllers.Admin
 {
@@ -29,61 +30,73 @@ namespace Kers.Controllers.Admin
         KersUser user;
 
         IHttpContextAccessor _httpContextAccessor;
-        public NavController( 
-              INavSectionRepository repo ,
+        public NavController(
+              INavSectionRepository repo,
               IKersUserRepository userRepo,
               KERSmainContext mainContext,
               KERScoreContext context,
               IHttpContextAccessor _httpContextAccessor
-            ){
-           this.repo = repo;
-           this.userRepo = userRepo;
-           this.mainContext = mainContext;
-           this.context = context;
-           this._httpContextAccessor = _httpContextAccessor;
+            )
+        {
+            this.repo = repo;
+            this.userRepo = userRepo;
+            this.mainContext = mainContext;
+            this.context = context;
+            this._httpContextAccessor = _httpContextAccessor;
         }
 
         [HttpGet()]
-        public IActionResult Get(){
-            return NotFound(new {Error = "not found"});
+        public IActionResult Get()
+        {
+            return NotFound(new { Error = "not found" });
         }
 
         [HttpGet("{id}")]
         [Authorize]
-        public IActionResult Get(int id){
+        public IActionResult Get(int id)
+        {
             var section = repo.GetSingle(id);
             return new OkObjectResult(section);
         }
 
         [HttpGet("All")]
-        public IActionResult All(){
+        public IActionResult All()
+        {
 
             var all = this.repo
                 .AllIncludingQuery(s => s.groups)
-                .Include(g=> g.groups).ThenInclude(s => s.items)
-                .OrderBy(s=>s.order);
+                .Include(g => g.groups).ThenInclude(s => s.items)
+                .OrderBy(s => s.order);
             return new OkObjectResult(all);
         }
         [HttpGet("user")]
-        public IActionResult NavForCurrentUser(){
+        [Authorize]
+        public IActionResult NavForCurrentUser()
+        {
 
             List<NavSection> result = new List<NavSection>();
 
 
             List<NavSection> all = this.repo
                 .AllIncludingQuery(s => s.groups)
-                .Include(g=> g.groups).ThenInclude(s => s.items)
-                .OrderBy(s=>s.order).ToList();
-            foreach(NavSection section in all){
-                if(this.isCurrentUserAuthorized(section)){
+                .Include(g => g.groups).ThenInclude(s => s.items)
+                .OrderBy(s => s.order).ToList();
+            foreach (NavSection section in all)
+            {
+                if (this.isCurrentUserAuthorized(section))
+                {
                     List<NavGroup> resultGroups = new List<NavGroup>();
                     var g = section.groups.OrderBy(gr => gr.order).ToList();
-                    foreach(NavGroup group in g){
-                        if(this.isCurrentUserAuthorized(group)){
+                    foreach (NavGroup group in g)
+                    {
+                        if (this.isCurrentUserAuthorized(group))
+                        {
                             List<NavItem> resultItems = new List<NavItem>();
                             var i = group.items.OrderBy(it => it.order).ToList();
-                            foreach(NavItem item in i){
-                                if(this.isCurrentUserAuthorized(item)){
+                            foreach (NavItem item in i)
+                            {
+                                if (this.isCurrentUserAuthorized(item))
+                                {
                                     resultItems.Add(item);
                                 }
                             }
@@ -98,34 +111,54 @@ namespace Kers.Controllers.Admin
             return new OkObjectResult(result);
         }
 
-        private bool isCurrentUserAuthorized(IEntityCredentials entity){
+        private bool isCurrentUserAuthorized(IEntityCredentials entity)
+        {
             var result = true;
             KersUser usr = this.CurrentUser();
-            if( !(entity.EmployeePositionId == null || entity.EmployeePositionId == 0) ){
-                if(!(usr.ExtensionPositionId == entity.EmployeePositionId)){
+            if (!(entity.EmployeePositionId == null || entity.EmployeePositionId == 0))
+            {
+                if (!(usr.ExtensionPositionId == entity.EmployeePositionId))
+                {
                     result = false;
                 }
-                
+
             }
-            if( !(entity.zEmpRoleTypeId == null || entity.zEmpRoleTypeId == 0) ){
-                if( usr.Roles.Where(r => r.zEmpRoleTypeId == entity.zEmpRoleTypeId).FirstOrDefault() == null){
+            if (!(entity.zEmpRoleTypeId == null || entity.zEmpRoleTypeId == 0))
+            {
+                if (usr.Roles.Where(r => r.zEmpRoleTypeId == entity.zEmpRoleTypeId).FirstOrDefault() == null)
+                {
                     result = false;
                 }
-                
+
             }
-            if(!(entity.isContyStaff == null || entity.isContyStaff == 0)){
-               if( entity.isContyStaff == 1 ){
-                   if(usr.RprtngProfile.PlanningUnit.District == null){
-                       return false;
-                   }
-               }else if(entity.isContyStaff == 2){
-                    if(usr.RprtngProfile.PlanningUnit.District != null){
-                       return false;
-                   }
-               }
+            if (!(entity.isContyStaff == null || entity.isContyStaff == 0))
+            {
+                if (entity.isContyStaff == 1)
+                {
+                    if (usr.RprtngProfile.PlanningUnit.District == null)
+                    {
+                        return false;
+                    }
+                }
+                else if (entity.isContyStaff == 2)
+                {
+                    if (usr.RprtngProfile.PlanningUnit.District != null)
+                    {
+                        return false;
+                    }
+                }
             }
-             
+
             return result;
+        }
+
+        [HttpPost("checktoken")]
+        public IActionResult CheckToken([FromBody] CheckToken tok)
+        {
+            bool result = false;
+            var usr = User;
+            if (usr.IsAuthenticated()) result = true;
+            return new OkObjectResult(result);
         }
 
         /***************************************************/
@@ -133,53 +166,68 @@ namespace Kers.Controllers.Admin
         /***************************************************/
 
         [HttpPost("section")]
-        public IActionResult AddSection( [FromBody] NavSection section){
+        public IActionResult AddSection([FromBody] NavSection section)
+        {
 
-            if(section != null){
-                var last = this.repo.GetAll().OrderByDescending(s=>s.order).FirstOrDefault();
-                if(section != null){
+            if (section != null)
+            {
+                var last = this.repo.GetAll().OrderByDescending(s => s.order).FirstOrDefault();
+                if (section != null)
+                {
                     section.order = last.order + 1;
-                }else{
+                }
+                else
+                {
                     section.order = 1;
-                }              
+                }
 
                 this.repo.Add(section);
                 this.repo.Commit();
-                
+
                 return new OkObjectResult(section);
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
 
 
         [HttpPut("section/{id}")]
-        public IActionResult UpdateSection( int id, [FromBody] NavSection section){
+        public IActionResult UpdateSection(int id, [FromBody] NavSection section)
+        {
             var entity = repo.GetSingle(id);
 
-            if(section != null){
+            if (section != null)
+            {
                 entity.name = section.name;
                 entity.EmployeePositionId = section.EmployeePositionId;
                 entity.zEmpRoleTypeId = section.zEmpRoleTypeId;
                 entity.isContyStaff = section.isContyStaff;
                 this.repo.Commit();
                 return new OkObjectResult(entity);
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
 
         [HttpDelete("section/{id}")]
-        public IActionResult Delete( int id){
+        public IActionResult Delete(int id)
+        {
             var entity = repo.GetSingle(s => s.Id == id, s => s.groups);
 
-            if(entity != null){
-                
+            if (entity != null)
+            {
+
                 this.repo.Delete(entity);
                 this.repo.Commit();
-                
+
                 return new OkResult();
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
@@ -189,33 +237,43 @@ namespace Kers.Controllers.Admin
         /***************************************************/
 
         [HttpPost("group/{sectionId}")]
-        public IActionResult AddGroup(int sectionId, [FromBody] NavGroup group){
+        public IActionResult AddGroup(int sectionId, [FromBody] NavGroup group)
+        {
 
-            if(group != null){
-                if(group.order == 0){
-                    var last = this.repo.GetSingle(s => s.Id == sectionId, s => s.groups).groups.OrderByDescending(s=>s.order).FirstOrDefault();
-                    if(last != null){
+            if (group != null)
+            {
+                if (group.order == 0)
+                {
+                    var last = this.repo.GetSingle(s => s.Id == sectionId, s => s.groups).groups.OrderByDescending(s => s.order).FirstOrDefault();
+                    if (last != null)
+                    {
                         group.order = last.order + 1;
-                    }else{
+                    }
+                    else
+                    {
                         group.order = 1;
                     }
                 }
                 this.repo.GetSingle(s => s.Id == sectionId, s => s.groups).groups.Add(group);
                 this.repo.Commit();
-                
+
                 return new OkObjectResult(group);
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
 
 
         [HttpPut("group/{id}")]
-        public IActionResult UpdateGroup( int id, [FromBody] NavGroup group){
-            var entity = repo.groupWithId( id );
+        public IActionResult UpdateGroup(int id, [FromBody] NavGroup group)
+        {
+            var entity = repo.groupWithId(id);
 
-            if(group != null){
-                
+            if (group != null)
+            {
+
                 entity.name = group.name;
                 entity.EmployeePositionId = group.EmployeePositionId;
                 entity.zEmpRoleTypeId = group.zEmpRoleTypeId;
@@ -224,22 +282,28 @@ namespace Kers.Controllers.Admin
                 entity.order = group.order;
                 this.repo.Commit();
                 return new OkObjectResult(group);
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
 
         [HttpDelete("group/{id}")]
-        public IActionResult DeleteGroup( int id){
+        public IActionResult DeleteGroup(int id)
+        {
             var entity = repo.groupWithIdWithItems(id);
 
-            if(entity != null){
-                
+            if (entity != null)
+            {
+
                 this.repo.deleteEntity(entity);
                 this.repo.Commit();
-                
+
                 return new OkResult();
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
@@ -249,33 +313,43 @@ namespace Kers.Controllers.Admin
         /***************************************************/
 
         [HttpPost("item/{groupId}")]
-        public IActionResult AddItem(int groupId, [FromBody] NavItem item){
+        public IActionResult AddItem(int groupId, [FromBody] NavItem item)
+        {
 
-            if(item != null){
-                if(item.order == 0){
-                    var last = repo.groupWithIdWithItems(groupId).items.OrderByDescending(s=>s.order).FirstOrDefault();
-                    if(last != null){
+            if (item != null)
+            {
+                if (item.order == 0)
+                {
+                    var last = repo.groupWithIdWithItems(groupId).items.OrderByDescending(s => s.order).FirstOrDefault();
+                    if (last != null)
+                    {
                         item.order = last.order + 1;
-                    }else{
+                    }
+                    else
+                    {
                         item.order = 1;
                     }
                 }
                 this.repo.groupWithIdWithItems(groupId).items.Add(item);
                 this.repo.Commit();
-                
+
                 return new OkObjectResult(item);
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
 
 
         [HttpPut("item/{id}")]
-        public IActionResult UpdateItem( int id, [FromBody] NavItem item){
-            var entity = repo.itemWithId( id );
+        public IActionResult UpdateItem(int id, [FromBody] NavItem item)
+        {
+            var entity = repo.itemWithId(id);
 
-            if(item != null){
-                
+            if (item != null)
+            {
+
                 entity.name = item.name;
                 entity.EmployeePositionId = item.EmployeePositionId;
                 entity.zEmpRoleTypeId = item.zEmpRoleTypeId;
@@ -285,22 +359,28 @@ namespace Kers.Controllers.Admin
                 entity.order = item.order;
                 this.repo.Commit();
                 return new OkObjectResult(entity);
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
 
         [HttpDelete("item/{id}")]
-        public IActionResult DeleteItem( int id){
+        public IActionResult DeleteItem(int id)
+        {
             var entity = repo.itemWithId(id);
 
-            if(entity != null){
-                
+            if (entity != null)
+            {
+
                 this.repo.deleteEntity(entity);
                 this.repo.Commit();
-                
+
                 return new OkResult();
-            }else{
+            }
+            else
+            {
                 return new StatusCodeResult(500);
             }
         }
@@ -308,25 +388,28 @@ namespace Kers.Controllers.Admin
 
 
 
-        private string CurrentUserId(){
+        private string CurrentUserId()
+        {
             //var usr = _httpContextAccessor.HttpContext.User;
             //var nm = usr.FindFirst(ClaimTypes.NameIdentifier).Value;
             //var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var nm = User;
             var val = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            
-            
+
+
             return val;
         }
 
-        private KersUser CurrentUser(){
-            if(this.user == null){
+        private KersUser CurrentUser()
+        {
+            if (this.user == null)
+            {
                 var linkBlueId = this.CurrentUserId();
                 this.user = this.context.KersUser.
-                            Where( u => u.RprtngProfile.LinkBlueId == linkBlueId).
+                            Where(u => u.RprtngProfile.LinkBlueId == linkBlueId).
                             Include(u => u.RprtngProfile).ThenInclude(p => p.PlanningUnit).ThenInclude(u => u.District).
                             Include(u => u.ExtensionPosition).
-                            Include( u => u.Roles).
+                            Include(u => u.Roles).
                             FirstOrDefault();
 
             }
@@ -334,5 +417,8 @@ namespace Kers.Controllers.Admin
 
         }
 
+    }
+    public class CheckToken
+    {
     }
 }

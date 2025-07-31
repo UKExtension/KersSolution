@@ -53,14 +53,33 @@ export class ReportingComponent implements OnInit {
     }
 
     ngOnInit(){
-        this.navService.nav().subscribe(
+        
+        /* 
+        this.navService.checktoken().subscribe(
             res => {
-                    
-                    this.navigation =  res;
-                    
-                },
+                if(res == true){
+
+
+ */
+                    this.navService.nav().subscribe(
+                    res => {
+                            
+                            this.navigation =  res;
+                            
+                        },
             error =>  this.errorMessage = <any>error
         );
+
+
+/* 
+
+                }else{
+                    console.log('logout user');
+                }
+            },
+            error =>  this.errorMessage = <any>error
+        )
+         */
         
         /*
         this.profileService.currentUser().subscribe(
