@@ -8,7 +8,8 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 @Component({
   template: `
 
-
+<div><reporting-display-help id="27"></reporting-display-help></div>
+    
     These numbers are to be kept up to date PER INDIVIDUAL (YOU) - NOT THE COUNTY.<br>
 Simply update the numbers as needed throughout the fiscal year.<br>
 <strong>ENTER WHOLE NUMBERS ONLY.</strong><br>
