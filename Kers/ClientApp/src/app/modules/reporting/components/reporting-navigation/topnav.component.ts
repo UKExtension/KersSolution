@@ -5,6 +5,7 @@ import {AuthenticationService} from '../../../authentication/authentication.serv
 import {Router} from "@angular/router";
 import { PlanningunitService } from '../../modules/planningunit/planningunit.service';
 import { Observable } from 'rxjs';
+import { NavigationService } from './navigation.service';
 
 @Component({
     selector: 'top-nav-menu',
@@ -36,6 +37,7 @@ export class TopNavComponent implements OnInit{
 
     constructor( 
                     private auth: AuthenticationService,
+                    private navService: NavigationService,
                     private userService: UserService,
                     private countyService: PlanningunitService,
                     public router: Router,
@@ -54,15 +56,38 @@ export class TopNavComponent implements OnInit{
  */
         this.counties = this.countyService.counties();
         this.isShared = this.userService.currentUserHasAnyOfTheRoles(['SHAGNT']);
-        this.userService.current().subscribe(
-            res=> {
-                this.user = <User>res;
-                if(this.user.personalProfile.uploadImage){
-                    this.profilePicSrc = this.location.prepareExternalUrl('/image/crop/60/60/' + this.user.personalProfile.uploadImage.uploadFile.name);
+        this.navService.checktoken().subscribe(
+            res => {
+                if(res == true){
+
+
+
+                    this.userService.current().subscribe(
+                            res=> {
+                                this.user = <User>res;
+                                if(this.user.personalProfile.uploadImage){
+                                    this.profilePicSrc = this.location.prepareExternalUrl('/image/crop/60/60/' + this.user.personalProfile.uploadImage.uploadFile.name);
+                                }
+                            },
+                            err => this.errorMessage = <any>err
+                    )
+
+
+
+
+
+
+
+
+                }else{
+                    console.log('logout user');
+                    this.auth.logout();
+                    this.router.navigate(['/login2fa']);
                 }
             },
-            err => this.errorMessage = <any>err
+            error =>  this.errorMessage = <any>error
         )
+        
     }
 
 

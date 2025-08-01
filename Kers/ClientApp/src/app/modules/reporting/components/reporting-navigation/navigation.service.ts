@@ -30,6 +30,14 @@ export class NavigationService {
                 catchError(this.handleError('nav', []))
             );
     }
+    checktoken():Observable<boolean>{
+        var url =  "/api/nav/checktoken";
+        return this.http.post<boolean>(this.location.prepareExternalUrl(url), {})
+            .pipe(
+                catchError(this.handleError('check token', false))
+            );
+
+    }
 
     
 }
