@@ -62,7 +62,7 @@ export class Login2faComponent implements OnInit {
       loginPath += "?" + httpParams.toString();
     }
     this.loginUrl = this.location.prepareExternalUrl(loginPath);
-    console.log(window.location.href );
+    //console.log(window.location.href );
     this.route.queryParams
       .subscribe(params => {
         if(params.errormessage != undefined){

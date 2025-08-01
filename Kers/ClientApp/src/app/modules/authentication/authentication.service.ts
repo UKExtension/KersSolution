@@ -43,7 +43,7 @@ export class AuthenticationService {
                   }
                 }
               ),
-          catchError(this.handleError('byId'))
+          catchError(this.handleError('GetAuthToken'))
       );
     
     
