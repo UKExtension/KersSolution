@@ -15,7 +15,6 @@ using System.Diagnostics;
 using Kers.Models.Entities;
 using Kers.Models.Contexts;
 using Microsoft.AspNetCore.Http;
-using IdentityServer4.Extensions;
 
 namespace Kers.Controllers.Admin
 {
@@ -157,7 +156,7 @@ namespace Kers.Controllers.Admin
         {
             bool result = false;
             var usr = User;
-            if (usr.IsAuthenticated()) result = true;
+            //if (usr.IsAuthenticated()) result = true;
             return new OkObjectResult(result);
         }
 
