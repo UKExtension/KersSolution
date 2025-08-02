@@ -156,7 +156,7 @@ namespace Kers.Controllers.Admin
         {
             bool result = false;
             var usr = User;
-            //if (usr.IsAuthenticated()) result = true;
+            if (usr.Identity.IsAuthenticated) result = true;
             return new OkObjectResult(result);
         }
 
