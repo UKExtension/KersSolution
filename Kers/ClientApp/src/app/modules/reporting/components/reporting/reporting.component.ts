@@ -5,6 +5,7 @@ import {ProfileService, Profile} from '../reporting-profile/profile.service';
 import {ReportingService} from './reporting.service';
 import {GoogleAnalyticsEventsService} from "../../core/google-analytics-events.service";
 import {Router, NavigationEnd} from "@angular/router";
+import {AuthenticationService} from '../../../authentication/authentication.service';
 declare let ga:Function;
 
 if (typeof window != 'undefined') {
@@ -28,6 +29,7 @@ export class ReportingComponent implements OnInit {
     logo:string;
 
     constructor( 
+                private auth: AuthenticationService,
                 private navService: NavigationService, 
                 private profileService : ProfileService,
                 private reportingService: ReportingService,
@@ -61,14 +63,27 @@ export class ReportingComponent implements OnInit {
 
 
  */
+       this.navService.checktoken().subscribe(
+            res => {
+                if(res == true){
+
                     this.navService.nav().subscribe(
                     res => {
                             
                             this.navigation =  res;
                             
                         },
+                            error =>  this.errorMessage = <any>error
+                        );
+        
+
+                }else{
+                    this.auth.logout();
+                    this.router.navigate(['/login2fa']);
+                }
+            },
             error =>  this.errorMessage = <any>error
-        );
+        )
 
 
 /* 

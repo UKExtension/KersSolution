@@ -5,6 +5,7 @@ import {UserService, User, PlanningUnit} from '../../modules/user/user.service';
 import {RolesService, Role } from '../../modules/admin/roles/roles.service';
 import { PlanningunitService } from '../../modules/planningunit/planningunit.service';
 import { Vehicle } from '../../modules/expense/vehicle/vehicle.service';
+import { NavigationService } from '../reporting-navigation/navigation.service';
 
 
 
@@ -59,12 +60,24 @@ export class ReportingWidgetsComponent implements OnInit {
         private reportingService: ReportingService,
         private userService:UserService,
         private rolesService:RolesService,
-        private planningUnitService: PlanningunitService
+        private planningUnitService: PlanningunitService,
+        private navService: NavigationService
         ) 
     {}
 
 
   ngOnInit(){
+
+
+this.navService.checktoken().subscribe(
+            res => {
+                if(res == true){
+
+
+
+
+
+
     this.userService.current().subscribe(
       res=> { 
           
@@ -86,6 +99,19 @@ export class ReportingWidgetsComponent implements OnInit {
       },
       error => this.errorMessage = <any>error
     );
+
+
+
+                }
+            },
+            error =>  this.errorMessage = <any>error
+        )
+
+
+
+
+
+
     this.reportingService.setTitle("Welcome to Kentucky Extension Reporting System");
   }
 

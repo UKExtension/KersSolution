@@ -80,7 +80,7 @@ export class TopNavComponent implements OnInit{
 
 
                 }else{
-                    console.log('logout user');
+                    //console.log('logout user');
                     this.auth.logout();
                     this.router.navigate(['/login2fa']);
                 }
