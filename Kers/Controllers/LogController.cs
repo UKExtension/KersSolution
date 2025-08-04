@@ -128,7 +128,7 @@ namespace Kers.Controllers
             if( rangeStart.Year != 1 && rangeEnd.Year != 1){
                 logs = logs.Where( i => i.Time > rangeStart && i.Time < rangeEnd );
             }
-            if( type != null ){
+            if( type != null && type != "" ){
                 logs = logs.Where( i => i.Type == type );
             }
             logs = logs.
