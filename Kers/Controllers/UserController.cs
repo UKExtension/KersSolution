@@ -287,8 +287,8 @@ namespace Kers.Controllers
                 }
                 this._context.KersUser.Add(user);
                 this._context.SaveChanges();
-                //var rprtProfile = _service.RefreshRptProfile(user);
-                //user.classicReportingProfileId = rprtProfile.Id;
+                var rprtProfile = _service.RefreshRptProfile(user);
+                user.classicReportingProfileId = rprtProfile.Id;
                 user.PersonalProfile = new PersonalProfile();
                 this.populatePersonalProfileName(user.PersonalProfile, user.RprtngProfile.Name);
                 if( user.RprtngProfile.PlanningUnit != null) user.PersonalProfile.TimeZoneId = user.RprtngProfile.PlanningUnit.TimeZoneId;
@@ -395,12 +395,12 @@ namespace Kers.Controllers
                 }
                 entity.Updated = DateTime.Now;
                 this._context.SaveChanges();
-                /* 
+                 
                 if (user.RprtngProfile != null)
                 {
                     _service.RefreshRptProfile(entity);
                 }
-                 */
+                 
                 var currentUserId = CurrentUserId();
                 if( entity.RprtngProfile.LinkBlueId != currentUserId ){
                     var currentUser = this._context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == currentUserId).FirstOrDefault();

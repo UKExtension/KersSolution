@@ -53,7 +53,7 @@ namespace Kers.Models.Contexts
                 .HasKey(zzCESregion_district => new { zzCESregion_district.rID, zzCESregion_district.dID });
         
         
-            modelBuilder.Entity<zEmpRptProfile>()
+            modelBuilder.Entity<zEmpRptProfile>().ToTable(tb => tb.UseSqlOutputClause(false))
                 .HasOne(s => s.zzExtensionPosition)
                 .WithMany(c => c.zEmpRptProfiles)
                 .HasForeignKey(s => s.positionID)
