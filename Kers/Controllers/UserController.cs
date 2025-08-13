@@ -395,12 +395,12 @@ namespace Kers.Controllers
                 }
                 entity.Updated = DateTime.Now;
                 this._context.SaveChanges();
-                /* 
+                 
                 if (user.RprtngProfile != null)
                 {
                     _service.RefreshRptProfile(entity);
                 }
-                 */
+                 
                 var currentUserId = CurrentUserId();
                 if( entity.RprtngProfile.LinkBlueId != currentUserId ){
                     var currentUser = this._context.KersUser.Where( u => u.RprtngProfile.LinkBlueId == currentUserId).FirstOrDefault();
