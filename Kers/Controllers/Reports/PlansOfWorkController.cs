@@ -28,6 +28,7 @@ namespace Kers.Controllers.Reports
 {
 
     [Route("reports/[controller]")]
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class PlansOfWorkController : Controller
     {
         KERScoreContext context;
@@ -36,19 +37,20 @@ namespace Kers.Controllers.Reports
         IActivityRepository activityRepo;
         IContactRepository contactRepo;
         private FiscalYear currentFiscalYear;
-        public PlansOfWorkController( 
+        public PlansOfWorkController(
                     KERScoreContext context,
                     IDistributedCache _cache,
                     IFiscalYearRepository fiscalYearRepository,
                     IActivityRepository activityRepo,
                     IContactRepository contactRepo
-            ){
-           this.context = context;
-           this._cache = _cache;
-           this.fiscalYearRepository = fiscalYearRepository;
-           this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
-           this.activityRepo = activityRepo;
-           this.contactRepo = contactRepo;
+            )
+        {
+            this.context = context;
+            this._cache = _cache;
+            this.fiscalYearRepository = fiscalYearRepository;
+            this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
+            this.activityRepo = activityRepo;
+            this.contactRepo = contactRepo;
         }
 
 
@@ -66,57 +68,67 @@ namespace Kers.Controllers.Reports
         {
 
             var planofwork = await this.context.PlanOfWork
-                                        .Where( p =>    p.Id == id)
-                                        .Include( p => p.PlanningUnit)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Map)
+                                        .Where(p => p.Id == id)
+                                        .Include(p => p.PlanningUnit)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Map)
                                         .FirstOrDefaultAsync();
-            if( planofwork == null){
+            if (planofwork == null)
+            {
                 new Exception("No Plan of Work with Provided Identifier.");
             }
             PlanOfWorkViewModel plan;
             plan = new PlanOfWorkViewModel();
             plan.Id = id;
             plan.PlanningUnit = planofwork.PlanningUnit;
-            plan.LastRevision = planofwork.Revisions.OrderBy( r => r.Created).Last();
-                
+            plan.LastRevision = planofwork.Revisions.OrderBy(r => r.Created).Last();
+
             return View(plan);
         }
 
         [HttpGet("countylist/{fy?}")]
-        public async Task<IActionResult> Countylist(string fy = "0"){
+        public async Task<IActionResult> Countylist(string fy = "0")
+        {
 
             List<PlanningUnit> counties;
             var cacheKey = "CountiesList";
             var cached = _cache.GetString(cacheKey);
 
-            if (!string.IsNullOrEmpty(cached)){
+            if (!string.IsNullOrEmpty(cached))
+            {
                 counties = JsonConvert.DeserializeObject<List<PlanningUnit>>(cached);
-            }else{
+            }
+            else
+            {
                 counties = await this.context.PlanningUnit.
-                                Where(c=>c.District != null).
+                                Where(c => c.District != null).
                                 OrderBy(c => c.Name).ToListAsync();
-                
-                counties = counties.Where( c => c.Name.Substring(c.Name.Count() - 3) == "CES" ).ToList();
+
+                counties = counties.Where(c => c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
                 var serializedCounties = JsonConvert.SerializeObject(counties);
                 _cache.SetString(cacheKey, serializedCounties, new DistributedCacheEntryOptions
-                        {
-                            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
-                        });
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(10)
+                });
             }
             ViewData["fy"] = fy;
             return View(counties);
         }
 
         [HttpGet("programlist/{fy?}")]
-        public async Task<IActionResult> Programlist(string fy = "0"){
+        public async Task<IActionResult> Programlist(string fy = "0")
+        {
 
             List<MajorProgram> programs;
             FiscalYear fiscalYear;
-            if(fy == "0"){
+            if (fy == "0")
+            {
                 fiscalYear = currentFiscalYear;
-            }else{
-                fiscalYear = await this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "serviceLog").FirstOrDefaultAsync();
-                if( fiscalYear == null){
+            }
+            else
+            {
+                fiscalYear = await this.context.FiscalYear.Where(f => f.Name == fy && f.Type == "serviceLog").FirstOrDefaultAsync();
+                if (fiscalYear == null)
+                {
                     new Exception("No Fiscal Year with Provided Identifier.");
                 }
             }
@@ -131,48 +143,57 @@ namespace Kers.Controllers.Reports
 
 
 
-        
+
         [HttpGet("plansbycounty/{id}/{fy?}")]
-        public async Task<IActionResult> PlansByCounty(int id, string fy = "0"){
+        public async Task<IActionResult> PlansByCounty(int id, string fy = "0")
+        {
             FiscalYear fiscalYear;
-            if(fy == "0"){
+            if (fy == "0")
+            {
                 fiscalYear = currentFiscalYear;
-            }else{
-                fiscalYear = await this.context.FiscalYear.Where( f => f.Name == fy && f.Type == "serviceLog").FirstOrDefaultAsync();
-                if( fiscalYear == null){
+            }
+            else
+            {
+                fiscalYear = await this.context.FiscalYear.Where(f => f.Name == fy && f.Type == "serviceLog").FirstOrDefaultAsync();
+                if (fiscalYear == null)
+                {
                     new Exception("No Fiscal Year with Provided Identifier.");
                 }
             }
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
             List<PlanOfWork> plansofwork;
-            if(fiscalYear.Epoch < 1){
+            if (fiscalYear.Epoch < 1)
+            {
                 plansofwork = await this.context.PlanOfWork
-                                        .Where( p =>    p.PlanningUnit.Id == id
-                                                        && 
+                                        .Where(p => p.PlanningUnit.Id == id
+                                                        &&
                                                         p.FiscalYear == fiscalYear)
-                                        .Include( p => p.PlanningUnit)
-                                        .Include( p => p.Revisions ).ThenInclude( r => r.Map)
+                                        .Include(p => p.PlanningUnit)
+                                        .Include(p => p.Revisions).ThenInclude(r => r.Map)
                                         .ToListAsync();
 
-            }else{
+            }
+            else
+            {
                 plansofwork = await this.context.PlanOfWork
-                                        .Where( p =>    p.PlanningUnit.Id == id
-                                                        && 
+                                        .Where(p => p.PlanningUnit.Id == id
+                                                        &&
                                                         p.FiscalYear == fiscalYear)
-                                        .Include( p => p.PlanningUnit)
-                                        .Include( p => p.Revisions )
+                                        .Include(p => p.PlanningUnit)
+                                        .Include(p => p.Revisions)
                                         .ToListAsync();
             }
-            
+
 
             List<PlanOfWorkViewModel> plans = new List<PlanOfWorkViewModel>();
-            foreach( var plan in plansofwork){
+            foreach (var plan in plansofwork)
+            {
                 var pow = new PlanOfWorkViewModel();
                 pow.Id = plan.Id;
                 pow.FiscalYear = fiscalYear;
                 pow.PlanningUnit = plan.PlanningUnit;
-                pow.LastRevision = plan.Revisions.OrderBy( r => r.Created).Last();
+                pow.LastRevision = plan.Revisions.OrderBy(r => r.Created).Last();
                 plans.Add(pow);
             }
             return View(plans);
@@ -181,18 +202,20 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet("plansbyprogram/{id}/{fy?}")]
-        public async Task<IActionResult> PlansByProgram(int id, string fy = "0"){
-                
-            var program = await context.MajorProgram.Where( p => p.Id == id )
-                                .Include( p => p.StrategicInitiative ).ThenInclude( i => i.FiscalYear)
+        public async Task<IActionResult> PlansByProgram(int id, string fy = "0")
+        {
+
+            var program = await context.MajorProgram.Where(p => p.Id == id)
+                                .Include(p => p.StrategicInitiative).ThenInclude(i => i.FiscalYear)
                                 .FirstOrDefaultAsync();
 
             FiscalYear fiscalYear = program.StrategicInitiative.FiscalYear;
 
             var FyPlansOfWork = this.context.PlanOfWork
-                                        .Where( p => p.FiscalYear == fiscalYear);
+                                        .Where(p => p.FiscalYear == fiscalYear);
             List<PlanOfWorkRevision> LastRevisions = new List<PlanOfWorkRevision>();
-            foreach( var plan in FyPlansOfWork){
+            foreach (var plan in FyPlansOfWork)
+            {
                 PlanOfWorkRevision r;
                 if (fiscalYear.Epoch < 1)
                 {
@@ -200,33 +223,36 @@ namespace Kers.Controllers.Reports
                 }
                 else
                 {
-                    r = this.context.PlanOfWorkRevision.Where( v => v.PlanOfWorkId == plan.Id).OrderBy( v => v.Created ).Last();
+                    r = this.context.PlanOfWorkRevision.Where(v => v.PlanOfWorkId == plan.Id).OrderBy(v => v.Created).Last();
                 }
-                
-                if( 
-                    r.Mp1Id == id 
+
+                if (
+                    r.Mp1Id == id
                     ||
                     r.Mp2Id == id
                     ||
                     r.Mp3Id == id
                     ||
                     r.Mp4Id == id
-                ){
-                    LastRevisions.Add( r );
+                )
+                {
+                    LastRevisions.Add(r);
                 }
             }
 
             List<PlanOfWorkViewModel> plans = new List<PlanOfWorkViewModel>();
-            foreach( var plan in LastRevisions){
+            foreach (var plan in LastRevisions)
+            {
                 var pow = new PlanOfWorkViewModel();
                 pow.Id = plan.PlanOfWorkId;
                 pow.FiscalYear = fiscalYear;
 
-                var planOfWork = await this.context.PlanOfWork.Where( p => p.Id == plan.PlanOfWorkId).Include( r => r.PlanningUnit).FirstOrDefaultAsync();
-                if(planOfWork != null && planOfWork.PlanningUnit != null){
+                var planOfWork = await this.context.PlanOfWork.Where(p => p.Id == plan.PlanOfWorkId).Include(r => r.PlanningUnit).FirstOrDefaultAsync();
+                if (planOfWork != null && planOfWork.PlanningUnit != null)
+                {
                     pow.PlanningUnit = planOfWork.PlanningUnit;
                 }
-                
+
                 pow.LastRevision = plan;
                 plans.Add(pow);
             }
@@ -241,7 +267,8 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet("planfullcounty/{id}")]
-        public async Task<IActionResult> PlanFullCounty(int id){
+        public async Task<IActionResult> PlanFullCounty(int id)
+        {
             var plan = await this.PlanFull(id);
             return View(plan);
         }
@@ -251,7 +278,8 @@ namespace Kers.Controllers.Reports
 
 
         [HttpGet("planfullprogram/{id}/{programid}")]
-        public async Task<IActionResult> PlanFullProgram(int id, int programid){
+        public async Task<IActionResult> PlanFullProgram(int id, int programid)
+        {
             var plan = await this.PlanFull(id);
             FiscalYear fiscalYear = plan.FiscalYear;
             ViewData["ProgramId"] = programid;
@@ -260,9 +288,10 @@ namespace Kers.Controllers.Reports
             return View(plan);
         }
 
-        private  async Task<PlanOfWorkViewModel> PlanFull(int id){
+        private async Task<PlanOfWorkViewModel> PlanFull(int id)
+        {
 
-            var fiscalYear = await this.context.PlanOfWorkRevision.Where( r => r.PlanOfWorkId == id).Select( r => r.Mp1.StrategicInitiative.FiscalYear).FirstOrDefaultAsync();
+            var fiscalYear = await this.context.PlanOfWorkRevision.Where(r => r.PlanOfWorkId == id).Select(r => r.Mp1.StrategicInitiative.FiscalYear).FirstOrDefaultAsync();
             PlanOfWork plan;
             if (fiscalYear.Epoch < 1)
             {
@@ -278,30 +307,30 @@ namespace Kers.Controllers.Reports
             }
             else
             {
-                 plan = await this.context.PlanOfWork.Where(p => p.Id == id)
-                                        .Include(p => p.PlanningUnit)
-                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp1)
-                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp2)
-                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp3)
-                                        .Include(p => p.Revisions).ThenInclude(r => r.Mp4)
-                                        .FirstOrDefaultAsync();
+                plan = await this.context.PlanOfWork.Where(p => p.Id == id)
+                                       .Include(p => p.PlanningUnit)
+                                       .Include(p => p.Revisions).ThenInclude(r => r.Mp1)
+                                       .Include(p => p.Revisions).ThenInclude(r => r.Mp2)
+                                       .Include(p => p.Revisions).ThenInclude(r => r.Mp3)
+                                       .Include(p => p.Revisions).ThenInclude(r => r.Mp4)
+                                       .FirstOrDefaultAsync();
             }
 
-            
+
             var pow = new PlanOfWorkViewModel();
             pow.Id = plan.Id;
             pow.PlanningUnit = plan.PlanningUnit;
-            pow.LastRevision = plan.Revisions.OrderBy( r => r.Created).Last();
+            pow.LastRevision = plan.Revisions.OrderBy(r => r.Created).Last();
             pow.FiscalYear = fiscalYear;
             var storyIds = await this.context.StoryRevision
-                                        .Where( s => plan.Revisions.Select( r => r.Id).ToList().Contains(s.PlanOfWorkId) )
-                                        .Select( s => s.StoryId)
+                                        .Where(s => plan.Revisions.Select(r => r.Id).ToList().Contains(s.PlanOfWorkId))
+                                        .Select(s => s.StoryId)
                                         .ToListAsync();
             pow.Stories = this.context.Story
-                            .Where( s => storyIds.Contains( s.Id ))
-                            .Include( s => s.KersUser).ThenInclude( u => u.PersonalProfile)
-                            .Include( s => s.MajorProgram)
-                            .Include( s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
+                            .Where(s => storyIds.Contains(s.Id))
+                            .Include(s => s.KersUser).ThenInclude(u => u.PersonalProfile)
+                            .Include(s => s.MajorProgram)
+                            .Include(s => s.Revisions).ThenInclude(r => r.StoryImages).ThenInclude(i => i.UploadImage).ThenInclude(m => m.UploadFile)
                             .ToList();
             return pow;
         }

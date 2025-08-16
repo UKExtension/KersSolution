@@ -53,13 +53,13 @@ namespace Kers
                 options.UseSqlite( connString   ));
  */
             services.AddDatabaseDeveloperPageExceptionFilter();
-/* 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            /* 
+                        services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                            .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
- */
+                        services.AddIdentityServer()
+                            .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+             */
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwtBearerOptions =>
                 {
@@ -73,7 +73,13 @@ namespace Kers
                         ValidAudience = "KersUsers",
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Secret:JWTKey"]))
                     };
-                });
+                })
+                .AddCookie("Cookies", options =>
+                    {
+                        options.ExpireTimeSpan = System.TimeSpan.FromDays(40);
+                        options.SlidingExpiration = true;
+                        options.LoginPath = "/login2fa";
+                    });
             services.AddHttpContextAccessor();
             services.AddMvc(
                 options =>

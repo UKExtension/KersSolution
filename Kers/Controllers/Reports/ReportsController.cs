@@ -24,6 +24,7 @@ namespace Kers.Controllers.Reports
 {
 
     [Route("[controller]")]
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class ReportsController : Controller
     {
         KERScoreContext context;
@@ -32,13 +33,14 @@ namespace Kers.Controllers.Reports
         IFiscalYearRepository fiscalYearRepo;
         IContactRepository contactRepo;
 
-        public ReportsController( 
+        public ReportsController(
                     KERScoreContext context,
                     IStoryRepository storyRepo,
                     IContactRepository contactRepo,
                     IActivityRepository activityRepo,
                     IFiscalYearRepository fiscalYearRepo
-            ){
+            )
+        {
             this.context = context;
             this.storyRepo = storyRepo;
             this.contactRepo = contactRepo;
@@ -48,11 +50,12 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("{fy?}")]
-        public async Task<IActionResult> Index(string fy="0")
+        public async Task<IActionResult> Index(string fy = "0")
         {
 
             FiscalYear fiscalYear = GetFYByName(fy);
-            if(fiscalYear == null){
+            if (fiscalYear == null)
+            {
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
@@ -62,9 +65,9 @@ namespace Kers.Controllers.Reports
             float[] SummariesArray = fiscalYearSummaries.ToArray();
 
             ViewData["totalHours"] = SummariesArray[0];
-            ViewData["totalContacts"] = (int) SummariesArray[1];
+            ViewData["totalContacts"] = (int)SummariesArray[1];
             ViewData["totalMultistate"] = SummariesArray[2];
-            ViewData["totalActivities"] = (int) SummariesArray[3];
+            ViewData["totalActivities"] = (int)SummariesArray[3];
 
 
 
@@ -72,65 +75,68 @@ namespace Kers.Controllers.Reports
             var StatsLastMonth = await contactRepo.StatsPerMonth();
             ViewData["StatsLastMonth"] = StatsLastMonth;
             DateTime ago = DateTime.Now.AddMonths(-2);
-            var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month );
+            var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth(ago.Year, ago.Month);
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
             var TopPrograms = await activityRepo.TopProgramsPerFiscalYear(fiscalYear);
             ViewData["TopPrograms"] = TopPrograms;
-            var sum = TopPrograms.Sum( a => a.DirectContacts );
+            var sum = TopPrograms.Sum(a => a.DirectContacts);
             ViewData["TopProgramsAudienceSum"] = sum;
             return View();
         }
         [HttpGet]
         [Route("counties/{fy?}")]
-        public IActionResult Counties(string fy="0")
+        public IActionResult Counties(string fy = "0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
-            if(fiscalYear == null){
+            if (fiscalYear == null)
+            {
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
 
             var filteredCounties = this.context.PlanningUnit.
-                                Where(c=>c.ExtensionArea != null)
-                                .Include( c => c.ExtensionArea).ThenInclude( a => a.ExtensionRegion)
+                                Where(c => c.ExtensionArea != null)
+                                .Include(c => c.ExtensionArea).ThenInclude(a => a.ExtensionRegion)
                                 .ToList();
 
-            filteredCounties = filteredCounties.Where( c =>  c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
-            var counties =  filteredCounties.
-                                GroupBy( c => c.ExtensionArea.ExtensionRegion )
-                                .Select( g => new DistrictViewModel{
-                                                District = g.Key,
-                                                Counties = g.Select( a => a).OrderBy( c => c.Name).ToList()
-                                            }
+            filteredCounties = filteredCounties.Where(c => c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+            var counties = filteredCounties.
+                                GroupBy(c => c.ExtensionArea.ExtensionRegion)
+                                .Select(g => new DistrictViewModel
+                                {
+                                    District = g.Key,
+                                    Counties = g.Select(a => a).OrderBy(c => c.Name).ToList()
+                                }
                                         )
                                 .OrderBy(c => c.District.Name).ToList();
 
 
-/* 
+            /* 
 
-            var filteredCounties = this.context.PlanningUnit.
-                                Where(c=>c.District != null)
-                                .Include( c => c.District)
-                                .ToList();
-            filteredCounties = filteredCounties.Where( c =>  c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
-            var counties =  filteredCounties.
-                                GroupBy( c => c.District )
-                                .Select( g => new DistrictViewModel{
-                                                District = g.Key,
-                                                Counties = g.Select( a => a).OrderBy( c => c.Name).ToList()
-                                            }
-                                        )
-                                .OrderBy(c => c.District.Name).ToList(); */
+                        var filteredCounties = this.context.PlanningUnit.
+                                            Where(c=>c.District != null)
+                                            .Include( c => c.District)
+                                            .ToList();
+                        filteredCounties = filteredCounties.Where( c =>  c.Name.Substring(c.Name.Count() - 3) == "CES").ToList();
+                        var counties =  filteredCounties.
+                                            GroupBy( c => c.District )
+                                            .Select( g => new DistrictViewModel{
+                                                            District = g.Key,
+                                                            Counties = g.Select( a => a).OrderBy( c => c.Name).ToList()
+                                                        }
+                                                    )
+                                            .OrderBy(c => c.District.Name).ToList(); */
             return View(counties);
         }
 
         [HttpGet]
         [Route("county/{id}/{fy?}")]
-        public async Task<IActionResult> County(int id, string fy="0")
+        public async Task<IActionResult> County(int id, string fy = "0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
-            if(fiscalYear == null){
+            if (fiscalYear == null)
+            {
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
@@ -141,25 +147,25 @@ namespace Kers.Controllers.Reports
             float[] SummariesArray = fiscalYearSummaries.ToArray();
 
             ViewData["totalHours"] = SummariesArray[0];
-            ViewData["totalContacts"] = (int) SummariesArray[1];
+            ViewData["totalContacts"] = (int)SummariesArray[1];
             ViewData["totalMultistate"] = SummariesArray[2];
-            ViewData["totalActivities"] = (int) SummariesArray[3];
-            
+            ViewData["totalActivities"] = (int)SummariesArray[3];
+
 
             ViewData["County"] = await this.context
-                                .PlanningUnit.Where( p => p.Id == id )
-                                .Include( p => p.District)
+                                .PlanningUnit.Where(p => p.Id == id)
+                                .Include(p => p.District)
                                 .AsNoTracking()
                                 .FirstOrDefaultAsync();
             var lastMonth = DateTime.Now.AddMonths(-1);
-            var StatsLastMonth = await contactRepo.StatsPerMonth(lastMonth.Year,lastMonth.Month,id);
+            var StatsLastMonth = await contactRepo.StatsPerMonth(lastMonth.Year, lastMonth.Month, id);
             ViewData["StatsLastMonth"] = StatsLastMonth;
             DateTime ago = DateTime.Now.AddMonths(-2);
-            var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth( ago.Year, ago.Month, id );
+            var StathsTwoMonthsAgo = await contactRepo.StatsPerMonth(ago.Year, ago.Month, id);
             ViewData["StathsTwoMonthsAgo"] = StathsTwoMonthsAgo;
-            var TopPrograms = await activityRepo.TopProgramsPerFiscalYear( fiscalYear, 5, id );
+            var TopPrograms = await activityRepo.TopProgramsPerFiscalYear(fiscalYear, 5, id);
             ViewData["TopPrograms"] = TopPrograms;
-            var sum = TopPrograms.Sum( a => a.DirectContacts );
+            var sum = TopPrograms.Sum(a => a.DirectContacts);
             ViewData["TopProgramsAudienceSum"] = sum;
             return View();
         }
@@ -168,61 +174,70 @@ namespace Kers.Controllers.Reports
         [Route("[action]/{fy?}/{countyId?}", Name = "AffirmativeAction")]
         public async Task<IActionResult> AffirmativeAction(string fy = "0", int countyId = 0)
         {
-            
+
             FiscalYear fiscalYear = GetFYByName(fy);
             var units = this.context.PlanningUnit.OrderBy(l => l.order).ToListAsync();
             ViewData["Units"] = await units;
-            if(fiscalYear == null){
+            if (fiscalYear == null)
+            {
                 return new StatusCodeResult(500);
             }
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
-            
+
 
             AffirmativeActionPlanRevision model = null;
-            if(countyId != 0){
-                var unit = await this.context.PlanningUnit.Where( u => u.Id == countyId).FirstOrDefaultAsync();
-                if(unit == null ){
+            if (countyId != 0)
+            {
+                var unit = await this.context.PlanningUnit.Where(u => u.Id == countyId).FirstOrDefaultAsync();
+                if (unit == null)
+                {
                     return new StatusCodeResult(500);
                 }
                 ViewData["Unit"] = unit;
-                var plan = await context.AffirmativeActionPlan.Where( p => p.FiscalYear == fiscalYear && p.PlanningUnit == unit ).FirstOrDefaultAsync();
-                if( plan != null){
+                var plan = await context.AffirmativeActionPlan.Where(p => p.FiscalYear == fiscalYear && p.PlanningUnit == unit).FirstOrDefaultAsync();
+                if (plan != null)
+                {
                     var MakeupDiversityGroups = this.context.AffirmativeMakeupDiversityTypeGroup
-                                                        .Where( g => true )
-                                                        .Include( g => g.Types)
-                                                        .OrderBy( g => g.Order ).ToListAsync();
+                                                        .Where(g => true)
+                                                        .Include(g => g.Types)
+                                                        .OrderBy(g => g.Order).ToListAsync();
                     ViewData["MakeupDiversityGroups"] = await MakeupDiversityGroups;
-                    var AdvisoryGroups = this.context.AffirmativeAdvisoryGroupType.Where( t => true ).OrderBy( t => t.Order ).ToListAsync();
+                    var AdvisoryGroups = this.context.AffirmativeAdvisoryGroupType.Where(t => true).OrderBy(t => t.Order).ToListAsync();
                     ViewData["AdvisoryGroups"] = await AdvisoryGroups;
-                    var SummaryDiversityType = this.context.AffirmativeSummaryDiversityType.Where( t => true ).OrderBy( t => t.Order ).ToListAsync();
+                    var SummaryDiversityType = this.context.AffirmativeSummaryDiversityType.Where(t => true).OrderBy(t => t.Order).ToListAsync();
                     ViewData["SummaryDiversityType"] = await SummaryDiversityType;
                     model = await context.AffirmativeActionPlanRevision
-                                    .Where( r => r.AffirmativeActionPlan == plan )
-                                    .Include( r => r.MakeupValues)
-                                    .Include( r => r.SummaryValues)
-                                    .OrderBy( r => r.Created )
+                                    .Where(r => r.AffirmativeActionPlan == plan)
+                                    .Include(r => r.MakeupValues)
+                                    .Include(r => r.SummaryValues)
+                                    .OrderBy(r => r.Created)
                                     .LastOrDefaultAsync();
-                    
-                    
-                    
+
+
+
                 }
             }
 
-            
-            
-            return View( model);
+
+
+            return View(model);
 
 
         }
-        
-        private FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+
+        private FiscalYear GetFYByName(string fy, string type = "serviceLog")
+        {
             FiscalYear fiscalYear;
-            if(fy == "0"){
+            if (fy == "0")
+            {
                 fiscalYear = this.fiscalYearRepo.previoiusFiscalYear(type);
-            }else{
-                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
-                if(fiscalYear == null ){
+            }
+            else
+            {
+                fiscalYear = this.context.FiscalYear.Where(f => f.Name == fy && f.Type == type).FirstOrDefault();
+                if (fiscalYear == null)
+                {
                     fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
                 }
             }

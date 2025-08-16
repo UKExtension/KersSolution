@@ -26,16 +26,18 @@ namespace Kers.Controllers.Reports
 {
 
     [Route("reports/[controller]")]
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class StoryController : Controller
     {
         KERScoreContext context;
         IFiscalYearRepository fiscalYearRepo;
-        public StoryController( 
+        public StoryController(
                     KERScoreContext context,
                     IFiscalYearRepository fiscalYearRepo
-            ){
-           this.context = context;
-           this.fiscalYearRepo = fiscalYearRepo;
+            )
+        {
+            this.context = context;
+            this.fiscalYearRepo = fiscalYearRepo;
         }
 
         [HttpGet]
@@ -48,12 +50,12 @@ namespace Kers.Controllers.Reports
             int planningUnitId = 0,
             int programId = 0,
             int length = 18,
-            string fy="0")
+            string fy = "0")
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentLength"] = length;
-            ViewData["Units"] = this.context.PlanningUnit.OrderBy( u => u.order).ToList();
-            ViewData["Program"] = this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear.Name == fy).OrderBy( u => u.order).ToList();
+            ViewData["Units"] = this.context.PlanningUnit.OrderBy(u => u.order).ToList();
+            ViewData["Program"] = this.context.MajorProgram.Where(p => p.StrategicInitiative.FiscalYear.Name == fy).OrderBy(u => u.order).ToList();
 
             ViewBag.CurrentUnit = planningUnitId;
             ViewBag.CurrentProgram = programId;
@@ -61,29 +63,34 @@ namespace Kers.Controllers.Reports
             if (searchString != null)
             {
                 page = 1;
-            }else{
+            }
+            else
+            {
                 searchString = currentFilter;
             }
-            if(page == null)  page = 1;
-            if( fy == "0"){
+            if (page == null) page = 1;
+            if (fy == "0")
+            {
                 var fiscalYear = this.GetFYByName(fy);
                 fy = fiscalYear.Name;
             }
             ViewData["CurrentFilter"] = searchString;
 
             var stories = from s in context.Story
-                        select s;
-            
+                          select s;
 
-            stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy);
-            if(planningUnitId != 0 ){
-                stories = stories.Where( u => u.PlanningUnitId == planningUnitId );
+
+            stories = stories.Where(s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy);
+            if (planningUnitId != 0)
+            {
+                stories = stories.Where(u => u.PlanningUnitId == planningUnitId);
             }
-            if(programId != 0 ){
-                stories = stories.Where( u => u.MajorProgramId == programId );
+            if (programId != 0)
+            {
+                stories = stories.Where(u => u.MajorProgramId == programId);
             }
-            
-            
+
+
             switch (sortOrder)
             {
 
@@ -100,9 +107,9 @@ namespace Kers.Controllers.Reports
                     break;
             }
             int pageSize = length;
-            stories = stories.Include( u => u.Revisions ).ThenInclude( p => p.StoryImages).ThenInclude( p => p.UploadImage).ThenInclude( i => i.UploadFile )
+            stories = stories.Include(u => u.Revisions).ThenInclude(p => p.StoryImages).ThenInclude(p => p.UploadImage).ThenInclude(i => i.UploadFile)
                         .Include(u => u.KersUser.PersonalProfile)
-                        .Include( u => u.MajorProgram);
+                        .Include(u => u.MajorProgram);
 
             var list = await PaginatedList<Story>.CreateAsync(stories.AsNoTracking(), page ?? 1, pageSize);
             ViewData["fy"] = fy;
@@ -128,12 +135,12 @@ namespace Kers.Controllers.Reports
             int planningUnitId = 0,
             int programId = 0,
             int length = 18,
-            string fy="0")
+            string fy = "0")
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentLength"] = length;
-            ViewData["Units"] = this.context.PlanningUnit.OrderBy( u => u.order).ToList();
-            ViewData["Program"] = this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear.Name == fy).OrderBy( u => u.order).ToList();
+            ViewData["Units"] = this.context.PlanningUnit.OrderBy(u => u.order).ToList();
+            ViewData["Program"] = this.context.MajorProgram.Where(p => p.StrategicInitiative.FiscalYear.Name == fy).OrderBy(u => u.order).ToList();
 
             ViewBag.CurrentUnit = planningUnitId;
             ViewBag.CurrentProgram = programId;
@@ -141,28 +148,32 @@ namespace Kers.Controllers.Reports
             if (searchString != null)
             {
                 page = 1;
-            }else{
+            }
+            else
+            {
                 searchString = currentFilter;
             }
-            if( fy == "0"){
+            if (fy == "0")
+            {
                 var fiscalYear = this.GetFYByName(fy);
                 fy = fiscalYear.Name;
             }
             ViewData["CurrentFilter"] = searchString;
 
             var stories = from s in context.Story
-                        select s;
-            
+                          select s;
 
-            stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy
+
+            stories = stories.Where(s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy
                                             && s.KersUser.RprtngProfile.Institution.Name == "Kentucky State University"
                 );
 
-            if(programId != 0 ){
-                stories = stories.Where( u => u.MajorProgramId == programId );
+            if (programId != 0)
+            {
+                stories = stories.Where(u => u.MajorProgramId == programId);
             }
-            
-            
+
+
             switch (sortOrder)
             {
 
@@ -179,9 +190,9 @@ namespace Kers.Controllers.Reports
                     break;
             }
             int pageSize = length;
-            stories = stories.Include( u => u.Revisions ).ThenInclude( p => p.StoryImages).ThenInclude( p => p.UploadImage).ThenInclude( i => i.UploadFile )
+            stories = stories.Include(u => u.Revisions).ThenInclude(p => p.StoryImages).ThenInclude(p => p.UploadImage).ThenInclude(i => i.UploadFile)
                         .Include(u => u.KersUser.PersonalProfile)
-                        .Include( u => u.MajorProgram);
+                        .Include(u => u.MajorProgram);
 
             var list = await PaginatedList<Story>.CreateAsync(stories.AsNoTracking(), page ?? 1, pageSize);
             ViewData["fy"] = fy;
@@ -215,12 +226,12 @@ namespace Kers.Controllers.Reports
             int planningUnitId = 0,
             int programId = 0,
             int length = 18,
-            string fy="0")
+            string fy = "0")
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentLength"] = length;
-            ViewData["Units"] = this.context.PlanningUnit.OrderBy( u => u.order).ToList();
-            ViewData["Program"] = this.context.MajorProgram.Where( p => p.StrategicInitiative.FiscalYear.Name == fy).OrderBy( u => u.order).ToList();
+            ViewData["Units"] = this.context.PlanningUnit.OrderBy(u => u.order).ToList();
+            ViewData["Program"] = this.context.MajorProgram.Where(p => p.StrategicInitiative.FiscalYear.Name == fy).OrderBy(u => u.order).ToList();
 
             ViewBag.CurrentUnit = planningUnitId;
             ViewBag.CurrentProgram = programId;
@@ -228,25 +239,29 @@ namespace Kers.Controllers.Reports
             if (searchString != null)
             {
                 page = 1;
-            }else{
+            }
+            else
+            {
                 searchString = currentFilter;
             }
 
             ViewData["CurrentFilter"] = searchString;
 
             var stories = from s in context.Story
-                        select s;
-            
+                          select s;
 
-            stories = stories.Where( s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy);
-            if(planningUnitId != 0 ){
-                stories = stories.Where( u => u.PlanningUnitId == planningUnitId );
+
+            stories = stories.Where(s => s.MajorProgram.StrategicInitiative.FiscalYear.Name == fy);
+            if (planningUnitId != 0)
+            {
+                stories = stories.Where(u => u.PlanningUnitId == planningUnitId);
             }
-            if(programId != 0 ){
-                stories = stories.Where( u => u.MajorProgramId == programId );
+            if (programId != 0)
+            {
+                stories = stories.Where(u => u.MajorProgramId == programId);
             }
-            
-            
+
+
             switch (sortOrder)
             {
 
@@ -262,18 +277,18 @@ namespace Kers.Controllers.Reports
                     stories = stories.OrderByDescending(s => s.Updated);
                     break;
             }
-/* 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                stories = stories.Where(s => s.PersonalProfile.LastName.Contains(searchString)
-                                    || s.PersonalProfile.FirstName.Contains(searchString));
-            }
- */
+            /* 
+                        if (!String.IsNullOrEmpty(searchString))
+                        {
+                            stories = stories.Where(s => s.PersonalProfile.LastName.Contains(searchString)
+                                                || s.PersonalProfile.FirstName.Contains(searchString));
+                        }
+             */
             int pageSize = length;
-            stories = stories.Include( u => u.Revisions ).ThenInclude( p => p.StoryImages).ThenInclude( p => p.UploadImage).ThenInclude( i => i.UploadFile )
+            stories = stories.Include(u => u.Revisions).ThenInclude(p => p.StoryImages).ThenInclude(p => p.UploadImage).ThenInclude(i => i.UploadFile)
                         .Include(u => u.KersUser.PersonalProfile)
-                        .Include( u => u.MajorProgram)
-                        .Include( u => u.PlanningUnit);
+                        .Include(u => u.MajorProgram)
+                        .Include(u => u.PlanningUnit);
 
             var list = await PaginatedList<Story>.CreateAsync(stories.AsNoTracking(), page ?? 1, pageSize);
             ViewData["fy"] = fy;
@@ -284,27 +299,29 @@ namespace Kers.Controllers.Reports
 
 
 
-        
+
         [HttpGet]
-        [Route("s/{id}/{fy?}", Name="ReportsFullStory")]
-        public async Task<IActionResult> GetAction(int id, string fy="0"){
-            var story = await this.context.Story.Where( s => s.Id == id)
-                                            .Include(s => s.Revisions).ThenInclude( r => r.StoryImages).ThenInclude( i => i.UploadImage).ThenInclude( m => m.UploadFile)
-                                            .Include(s => s.KersUser).ThenInclude( u => u.PersonalProfile)
-                                            .Include(s => s.KersUser).ThenInclude( u => u.RprtngProfile).ThenInclude(u => u.PlanningUnit)
+        [Route("s/{id}/{fy?}", Name = "ReportsFullStory")]
+        public async Task<IActionResult> GetAction(int id, string fy = "0")
+        {
+            var story = await this.context.Story.Where(s => s.Id == id)
+                                            .Include(s => s.Revisions).ThenInclude(r => r.StoryImages).ThenInclude(i => i.UploadImage).ThenInclude(m => m.UploadFile)
+                                            .Include(s => s.KersUser).ThenInclude(u => u.PersonalProfile)
+                                            .Include(s => s.KersUser).ThenInclude(u => u.RprtngProfile).ThenInclude(u => u.PlanningUnit)
                                             //.Include( s => s.Revisions).ThenInclude( r => r.PlanOfWork).ThenInclude( p => p.Revisions)
-                                            .Include( s => s.Revisions ).ThenInclude( r => r.StoryOutcome)
-                                            .Include( s => s.Revisions).ThenInclude( r => r.MajorProgram)
-                                                .ThenInclude( m => m.StrategicInitiative)
-                                                .ThenInclude( i => i.FiscalYear)
+                                            .Include(s => s.Revisions).ThenInclude(r => r.StoryOutcome)
+                                            .Include(s => s.Revisions).ThenInclude(r => r.MajorProgram)
+                                                .ThenInclude(m => m.StrategicInitiative)
+                                                .ThenInclude(i => i.FiscalYear)
                                             .AsSplitQuery()
                                             .FirstOrDefaultAsync();
 
-            if(story == null){
+            if (story == null)
+            {
                 return StatusCode(500);
             }
             var strViewModel = new StoryViewModel();
-            var lastRevision = story.Revisions.OrderBy( r => r.Created).Last();
+            var lastRevision = story.Revisions.OrderBy(r => r.Created).Last();
             strViewModel.Title = lastRevision.Title;
             strViewModel.Story = lastRevision.Story;
             strViewModel.KersUser = story.KersUser;
@@ -313,30 +330,40 @@ namespace Kers.Controllers.Reports
             strViewModel.StoryOutcome = lastRevision.StoryOutcome;
             strViewModel.StoryId = story.Id;
             strViewModel.Updated = lastRevision.Created;
-            if(lastRevision.PlanOfWorkId != 0){
+            if (lastRevision.PlanOfWorkId != 0)
+            {
                 strViewModel.PlanOfWork = this.context.PlanOfWorkRevision.Find(lastRevision.PlanOfWorkId);
             }
-            var firstImage = lastRevision.StoryImages.OrderBy( i => i.Created).FirstOrDefault();
-            if(firstImage != null){
+            var firstImage = lastRevision.StoryImages.OrderBy(i => i.Created).FirstOrDefault();
+            if (firstImage != null)
+            {
                 strViewModel.ImageName = firstImage.UploadImage.UploadFile.Name;
-            }else{
+            }
+            else
+            {
                 strViewModel.ImageName = "";
             }
-            if( fy == "0"){
+            if (fy == "0")
+            {
                 fy = lastRevision.MajorProgram.StrategicInitiative.FiscalYear.Name;
             }
             ViewData["fy"] = fy;
             ViewData["FiscalYear"] = GetFYByName(fy);
             return View(strViewModel);
         }
-        
-        private FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+
+        private FiscalYear GetFYByName(string fy, string type = "serviceLog")
+        {
             FiscalYear fiscalYear;
-            if(fy == "0"){
+            if (fy == "0")
+            {
                 fiscalYear = this.fiscalYearRepo.previoiusFiscalYear(type);
-            }else{
-                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
-                if(fiscalYear == null ){
+            }
+            else
+            {
+                fiscalYear = this.context.FiscalYear.Where(f => f.Name == fy && f.Type == type).FirstOrDefault();
+                if (fiscalYear == null)
+                {
                     fiscalYear = this.fiscalYearRepo.currentFiscalYear(type);
                 }
             }

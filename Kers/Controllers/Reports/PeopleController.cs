@@ -25,20 +25,22 @@ namespace Kers.Controllers.Reports
 {
 
     [Route("reports/[controller]")]
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class PeopleController : Controller
     {
         KERScoreContext context;
         IKersUserRepository userRepo;
         IStoryRepository storyRepo;
 
-        public PeopleController( 
+        public PeopleController(
                     KERScoreContext context,
                     IKersUserRepository userRepo,
                     IStoryRepository storyRepo
-            ){
-           this.context = context;
-           this.userRepo = userRepo;
-           this.storyRepo = storyRepo;
+            )
+        {
+            this.context = context;
+            this.userRepo = userRepo;
+            this.storyRepo = storyRepo;
         }
 
 
@@ -59,8 +61,8 @@ namespace Kers.Controllers.Reports
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CurrentLength"] = length;
-            ViewData["Units"] = this.context.PlanningUnit.OrderBy( u => u.order).ToList();
-            ViewData["Position"] = this.context.ExtensionPosition.OrderBy( u => u.order).ToList();
+            ViewData["Units"] = this.context.PlanningUnit.OrderBy(u => u.order).ToList();
+            ViewData["Position"] = this.context.ExtensionPosition.OrderBy(u => u.order).ToList();
 
             ViewBag.CurrentUnit = planningUnitId;
             ViewBag.CurrentPosition = extensionPositionId;
@@ -68,7 +70,9 @@ namespace Kers.Controllers.Reports
             if (searchString != null)
             {
                 page = 1;
-            }else{
+            }
+            else
+            {
                 searchString = currentFilter;
             }
 
@@ -76,19 +80,21 @@ namespace Kers.Controllers.Reports
 
             var users = from s in context.KersUser
                         select s;
-            users = users.Where( u =>u.RprtngProfile.enabled);
+            users = users.Where(u => u.RprtngProfile.enabled);
             if (!String.IsNullOrEmpty(searchString))
             {
                 users = users.Where(s => s.PersonalProfile.LastName.Contains(searchString)
                                     || s.PersonalProfile.FirstName.Contains(searchString));
             }
-            if(planningUnitId != 0 ){
-                users = users.Where( u => u.RprtngProfile.PlanningUnitId == planningUnitId );
+            if (planningUnitId != 0)
+            {
+                users = users.Where(u => u.RprtngProfile.PlanningUnitId == planningUnitId);
             }
-            if(extensionPositionId != 0 ){
-                users = users.Where( u => u.ExtensionPositionId == extensionPositionId );
+            if (extensionPositionId != 0)
+            {
+                users = users.Where(u => u.ExtensionPositionId == extensionPositionId);
             }
-            
+
             switch (sortOrder)
             {
 
@@ -99,14 +105,14 @@ namespace Kers.Controllers.Reports
                     users = users.OrderBy(s => s.RprtngProfile.PlanningUnit.Name);
                     break;
                 default:
-                    users = users.OrderBy(s => s.PersonalProfile.FirstName).ThenBy( s => s.PersonalProfile.LastName);
+                    users = users.OrderBy(s => s.PersonalProfile.FirstName).ThenBy(s => s.PersonalProfile.LastName);
                     break;
             }
 
             int pageSize = length;
-            users = users.Include( u => u.PersonalProfile ).ThenInclude( p => p.UploadImage).ThenInclude( i => i.UploadFile )
-                        .Include(u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
-                        .Include( u => u.ExtensionPosition);
+            users = users.Include(u => u.PersonalProfile).ThenInclude(p => p.UploadImage).ThenInclude(i => i.UploadFile)
+                        .Include(u => u.RprtngProfile).ThenInclude(r => r.PlanningUnit)
+                        .Include(u => u.ExtensionPosition);
 
             var list = await PaginatedList<KersUser>.CreateAsync(users.AsNoTracking(), page ?? 1, pageSize);
             ViewData["fy"] = fy;
@@ -116,26 +122,26 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("person/{id}/{fy?}")]
-        public async Task<ActionResult> Person(int id, string fy="0")
+        public async Task<ActionResult> Person(int id, string fy = "0")
         {
-            var person = await context.KersUser.Where( u => u.Id == id)
-                        .Include( u => u.ExtensionPosition)
-                        .Include( u => u.Specialties).ThenInclude( s => s.Specialty)
-                        .Include( u => u.RprtngProfile ).ThenInclude( r => r.PlanningUnit )
-                        .Include( u => u.PersonalProfile).ThenInclude( p => p.UploadImage ).ThenInclude( i => i.UploadFile )
-                        .Include( u => u.PersonalProfile).ThenInclude( p => p.Interests ).ThenInclude( i => i.Interest)
-                        .Include( u => u.PersonalProfile).ThenInclude( p => p.SocialConnections ).ThenInclude( i => i.SocialConnectionType )
+            var person = await context.KersUser.Where(u => u.Id == id)
+                        .Include(u => u.ExtensionPosition)
+                        .Include(u => u.Specialties).ThenInclude(s => s.Specialty)
+                        .Include(u => u.RprtngProfile).ThenInclude(r => r.PlanningUnit)
+                        .Include(u => u.PersonalProfile).ThenInclude(p => p.UploadImage).ThenInclude(i => i.UploadFile)
+                        .Include(u => u.PersonalProfile).ThenInclude(p => p.Interests).ThenInclude(i => i.Interest)
+                        .Include(u => u.PersonalProfile).ThenInclude(p => p.SocialConnections).ThenInclude(i => i.SocialConnectionType)
                         .AsNoTracking()
                         .FirstOrDefaultAsync();
 
-            var stories = await this.storyRepo.LastStoriesByUser( person.Id );
+            var stories = await this.storyRepo.LastStoriesByUser(person.Id);
 
             ViewData["stories"] = stories;
             ViewData["fy"] = fy;
 
             return View(person);
         }
-        
+
 
 
 

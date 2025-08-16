@@ -52,7 +52,8 @@ export class Login2faComponent implements OnInit {
   }
 
   ngOnInit(){
-    	
+    const paramValue = this.route.snapshot.queryParamMap.get('ReturnUrl');
+    if(paramValue) this.authService.logout();
     if(this.authService.isLoggedIn()){
       this.router.navigate(['/reporting']);
     }
@@ -60,6 +61,8 @@ export class Login2faComponent implements OnInit {
     if(this.authService.redirectUrl != null){
       let httpParams = new HttpParams().set('rurl', this.authService.redirectUrl);
       loginPath += "?" + httpParams.toString();
+    }else if(paramValue){
+      loginPath += "?" + paramValue;
     }
     this.loginUrl = this.location.prepareExternalUrl(loginPath);
     //console.log(window.location.href );
@@ -82,6 +85,7 @@ export class Login2faComponent implements OnInit {
     var username = this.loginForm.value.name;
     var password = this.loginForm.value.password;
     this.loading = true;
+    const paramValue = this.route.snapshot.queryParamMap.get('ReturnUrl');
     this.authService.login(username, password) 
       .subscribe( 
         (data) => {
@@ -96,9 +100,13 @@ export class Login2faComponent implements OnInit {
               }else{
                 var auth = this.authService.getAuth();
                 if(this.authService.redirectUrl == undefined){
-                  this.router.navigate(['/reporting']);
+                    this.router.navigate(['/reporting']);
                 }else{
-                  this.router.navigate([this.authService.redirectUrl]);
+                  if( paramValue != null){
+                    window.location.href = paramValue;
+                  }else{
+                    this.router.navigate([this.authService.redirectUrl]);
+                  }
                 }
               }
             }

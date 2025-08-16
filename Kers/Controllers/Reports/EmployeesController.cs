@@ -14,11 +14,13 @@ using Kers.Models.Data;
 using System;
 using System.IO;
 using CsvHelper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Kers.Controllers.Reports
 {
 
     [Route("reports/[controller]")]
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class EmployeesController : Controller
     {
         KERScoreContext context;
@@ -278,13 +280,13 @@ namespace Kers.Controllers.Reports
             "aamc264",
             "mcro237",
             "reru228",
-            "mpsw224",                       
+            "mpsw224",
         };
 
-        string[] types = new string[]{ "District Reports", "Planning Unit Report", "KSU", "UK", "All","","","Extension Area Reports", "Extension Region Report" };
-        public EmployeesController( 
+        string[] types = new string[] { "District Reports", "Planning Unit Report", "KSU", "UK", "All", "", "", "Extension Area Reports", "Extension Region Report" };
+        public EmployeesController(
                     KERScoreContext context,
-                    KERSreportingContext reportingContext ,
+                    KERSreportingContext reportingContext,
                     ITrainingRepository trainingRepo,
                     IFiscalYearRepository fiscalYearRepository,
                     IDistributedCache _cache,
@@ -292,17 +294,18 @@ namespace Kers.Controllers.Reports
                     IContactRepository contactRepo,
                     IExpenseRepository expenseRepo,
                     IConfiguration Configuration
-            ){
-           this.context = context;
-           this.reportingContext = reportingContext;
-           this.trainingRepo = trainingRepo;
-           this.fiscalYearRepository = fiscalYearRepository;
-           this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
-           this._cache = _cache;
-           this.activityRepo = activityRepo;
-           this.contactRepo = contactRepo;
-           this.expensesRepo = expenseRepo;
-           _configuration = Configuration;
+            )
+        {
+            this.context = context;
+            this.reportingContext = reportingContext;
+            this.trainingRepo = trainingRepo;
+            this.fiscalYearRepository = fiscalYearRepository;
+            this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
+            this._cache = _cache;
+            this.activityRepo = activityRepo;
+            this.contactRepo = contactRepo;
+            this.expensesRepo = expenseRepo;
+            _configuration = Configuration;
         }
 
 
@@ -310,11 +313,11 @@ namespace Kers.Controllers.Reports
         [Route("")]
         public IActionResult Index()
         {
-            
+
 
             // Import Areas
             //ImportAreas();
-            
+
 
             /* 
             var fiscalYear = this.fiscalYearRepository.byName("2019", FiscalYearType.ServiceLog);
@@ -347,18 +350,20 @@ namespace Kers.Controllers.Reports
             return View();
         }
 
-        private void UnitAddress(){
-            var cnts = context.PlanningUnit.Where( u => u.GeoFeature != null);
-            foreach( var cnt in cnts){
-               /*  var location = new ExtensionEventLocation();
-                location.DisplayName = "County Extension Office";
-                location.Address = new PhysicalAddress();
-                location.Address.Building = cnt.FullName;
-                location.Address.Street = cnt.Address;
-                location.Address.City = cnt.City;
-                location.Address.PostalCode = cnt.Zip;
-                location.Address.State = "Kentucky";
-                cnt.Location = location; */
+        private void UnitAddress()
+        {
+            var cnts = context.PlanningUnit.Where(u => u.GeoFeature != null);
+            foreach (var cnt in cnts)
+            {
+                /*  var location = new ExtensionEventLocation();
+                 location.DisplayName = "County Extension Office";
+                 location.Address = new PhysicalAddress();
+                 location.Address.Building = cnt.FullName;
+                 location.Address.Street = cnt.Address;
+                 location.Address.City = cnt.City;
+                 location.Address.PostalCode = cnt.Zip;
+                 location.Address.State = "Kentucky";
+                 cnt.Location = location; */
                 var Geography = new PlanningUnitGeography();
                 Geography.GeoFeature = cnt.GeoFeature;
                 Geography.FIPSCode = cnt.FIPSCode;
@@ -367,25 +372,27 @@ namespace Kers.Controllers.Reports
             this.context.SaveChanges();
         }
 
-        
 
-        private List<ProgramIndicator> moveIndicators( string fromFYName, string toFYName){
+
+        private List<ProgramIndicator> moveIndicators(string fromFYName, string toFYName)
+        {
             var indicators = new List<ProgramIndicator>();
 
-            
-            var vals = this.context.ProgramIndicatorValue
-                        .Where( v => v.ProgramIndicator.MajorProgram.StrategicInitiative.FiscalYear.Name == fromFYName)
-                        .Include( v => v.ProgramIndicator);
 
-            foreach( var val in vals){
+            var vals = this.context.ProgramIndicatorValue
+                        .Where(v => v.ProgramIndicator.MajorProgram.StrategicInitiative.FiscalYear.Name == fromFYName)
+                        .Include(v => v.ProgramIndicator);
+
+            foreach (var val in vals)
+            {
 
                 var replacement = this.context.ProgramIndicator
-                                    .Where( i => i.MajorProgram.StrategicInitiative.FiscalYear.Name == toFYName
+                                    .Where(i => i.MajorProgram.StrategicInitiative.FiscalYear.Name == toFYName
                                                 &&
                                                 i.Question == val.ProgramIndicator.Question)
                                     .FirstOrDefault();
-                if( replacement != null ) val.ProgramIndicator = replacement;
-                indicators.Add( val.ProgramIndicator);
+                if (replacement != null) val.ProgramIndicator = replacement;
+                indicators.Add(val.ProgramIndicator);
             }
 
             this.context.SaveChanges();
@@ -393,34 +400,38 @@ namespace Kers.Controllers.Reports
             return indicators;
         }
 
-        private List<Story> moveStories( string fromFYName, string toFYName){
+        private List<Story> moveStories(string fromFYName, string toFYName)
+        {
             var strs = new List<Story>();
 
             var stories = this.context.Story
-                            .Where( s => 
-                                s.MajorProgram.StrategicInitiative.FiscalYear.Name == fromFYName 
-                                && 
+                            .Where(s =>
+                                s.MajorProgram.StrategicInitiative.FiscalYear.Name == fromFYName
+                                &&
                                 s.MajorProgram.StrategicInitiative.FiscalYear.Type == FiscalYearType.ServiceLog)
-                            .Include( r => r.Revisions)
-                            .Include( r => r.MajorProgram);
+                            .Include(r => r.Revisions)
+                            .Include(r => r.MajorProgram);
 
-            foreach( var str in stories){
+            foreach (var str in stories)
+            {
                 var replacement = this.context.MajorProgram.Where(
-                    m => 
+                    m =>
                         m.StrategicInitiative.FiscalYear.Name == toFYName
                         &&
                         m.StrategicInitiative.FiscalYear.Type == FiscalYearType.ServiceLog
                         &&
                         m.PacCode == str.MajorProgram.PacCode
                 ).FirstOrDefault();
-                if(replacement != null){
-                    foreach( var rev in str.Revisions){
+                if (replacement != null)
+                {
+                    foreach (var rev in str.Revisions)
+                    {
                         rev.MajorProgram = replacement;
                         rev.PlanOfWorkId = 0;
                     }
                     str.MajorProgram = replacement;
                 }
-                strs.Add( str );
+                strs.Add(str);
             }
 
             this.context.SaveChanges();
@@ -432,7 +443,7 @@ namespace Kers.Controllers.Reports
         [Route("facultydata/{year?}")]
         public async Task<IActionResult> FacultyData(string year = "2024")
         {
-            
+
 
 
             var fiscalYear = this.GetFYByName(year);
@@ -449,31 +460,35 @@ namespace Kers.Controllers.Reports
 
 
             var filteredContacts = context.Contact
-                                .Where( a =>    a.ContactDate < fiscalYear.End && a.ContactDate > fiscalYear.Start 
+                                .Where(a => a.ContactDate < fiscalYear.End && a.ContactDate > fiscalYear.Start
                                                 &&
                                                 faculty.Contains(a.KersUser.RprtngProfile.LinkBlueId)).ToList();
 
             var Contacts = filteredContacts
-                                .GroupBy( a => a.KersUserId)
-                                .Select( c => new {
-                                                Ids = c.Select(s => s.Id).ToList(),
-                                                UserID = c.Key
-                                            }
+                                .GroupBy(a => a.KersUserId)
+                                .Select(c => new
+                                {
+                                    Ids = c.Select(s => s.Id).ToList(),
+                                    UserID = c.Key
+                                }
                                 );
 
 
-            foreach( var contactGroup in Contacts ){
+            foreach (var contactGroup in Contacts)
+            {
                 var GroupRevisions = new List<ContactRevision>();
                 var OptionNumbersValues = new List<IOptionNumberValue>();
                 var RaceEthnicities = new List<IRaceEthnicityValue>();
-                foreach( var rev in contactGroup.Ids){
-                
+                foreach (var rev in contactGroup.Ids)
+                {
+
                     var lstrvsn = context.ContactRevision.
                                 Where(r => r.ContactId == rev).
                                 Include(a => a.ContactOptionNumbers).ThenInclude(o => o.ActivityOptionNumber).
                                 Include(a => a.ContactRaceEthnicityValues).
                                 OrderBy(a => a.Created).LastOrDefault();
-                    if(lstrvsn != null ){
+                    if (lstrvsn != null)
+                    {
                         GroupRevisions.Add(lstrvsn);
                     }
                     OptionNumbersValues.AddRange(lstrvsn.ContactOptionNumbers);
@@ -482,10 +497,10 @@ namespace Kers.Controllers.Reports
                 var actvts = new PerGroupActivities();
                 actvts.RaceEthnicityValues = RaceEthnicities;
                 actvts.OptionNumberValues = OptionNumbersValues;
-                actvts.Hours = GroupRevisions.Sum( r => r.Days) * 8;
-                actvts.Audience = GroupRevisions.Sum( r => r.Male) + GroupRevisions.Sum( r => r.Female);
-                actvts.Male = GroupRevisions.Sum( r => r.Male);
-                actvts.Female = GroupRevisions.Sum( r => r.Female);
+                actvts.Hours = GroupRevisions.Sum(r => r.Days) * 8;
+                actvts.Audience = GroupRevisions.Sum(r => r.Male) + GroupRevisions.Sum(r => r.Female);
+                actvts.Male = GroupRevisions.Sum(r => r.Male);
+                actvts.Female = GroupRevisions.Sum(r => r.Female);
                 actvts.GroupId = contactGroup.UserID;
                 actvts.Multistate = GroupRevisions.Sum(r => r.Multistate) * 8;
                 data.Add(actvts);
@@ -500,50 +515,58 @@ namespace Kers.Controllers.Reports
                             };
 
             var Races = this.context.Race.OrderBy(r => r.Order);
-            var Ethnicities = this.context.Ethnicity.OrderBy( e => e.Order);
-            var OptionNumbers = this.context.ActivityOptionNumber.OrderBy( n => n.Order);
-            foreach( var race in Races){
+            var Ethnicities = this.context.Ethnicity.OrderBy(e => e.Order);
+            var OptionNumbers = this.context.ActivityOptionNumber.OrderBy(n => n.Order);
+            foreach (var race in Races)
+            {
                 table.Header.Add(race.Name);
             }
-            foreach( var ethn in Ethnicities){
+            foreach (var ethn in Ethnicities)
+            {
                 table.Header.Add(ethn.Name);
             }
             table.Header.Add("Male");
             table.Header.Add("Female");
-            foreach( var opnmb in OptionNumbers){
+            foreach (var opnmb in OptionNumbers)
+            {
                 table.Header.Add(opnmb.Name);
             }
             table.Header.Add("Success Stories Count");
             var Rows = new List<List<string>>();
 
 
-            foreach( var d in data){
+            foreach (var d in data)
+            {
                 var user = await this.context.KersUser.Where(u => u.Id == d.GroupId)
-                                .Include( u => u.RprtngProfile).ThenInclude( r => r.PlanningUnit)
+                                .Include(u => u.RprtngProfile).ThenInclude(r => r.PlanningUnit)
                                 .FirstOrDefaultAsync();
-                if( user != null && faculty.Contains(user.RprtngProfile.LinkBlueId) ){
+                if (user != null && faculty.Contains(user.RprtngProfile.LinkBlueId))
+                {
                     var row = new List<string>();
                     row.Add(user.RprtngProfile.PlanningUnit.Name);
-                    row.Add( user.RprtngProfile.LinkBlueId);
-                    row.Add( user.RprtngProfile.Name);
-                    row.Add( (d.Hours / 8 ).ToString());
-                    row.Add( (d.Multistate / 8 ).ToString());
-                    row.Add( d.Audience.ToString());
-                    foreach( var race in Races){
-                        var raceAmount = d.RaceEthnicityValues.Where( v => v.RaceId == race.Id).Sum( r => r.Amount);
+                    row.Add(user.RprtngProfile.LinkBlueId);
+                    row.Add(user.RprtngProfile.Name);
+                    row.Add((d.Hours / 8).ToString());
+                    row.Add((d.Multistate / 8).ToString());
+                    row.Add(d.Audience.ToString());
+                    foreach (var race in Races)
+                    {
+                        var raceAmount = d.RaceEthnicityValues.Where(v => v.RaceId == race.Id).Sum(r => r.Amount);
                         row.Add(raceAmount.ToString());
                     }
-                    foreach( var et in Ethnicities){
-                        var ethnAmount = d.RaceEthnicityValues.Where( v => v.EthnicityId == et.Id).Sum( r => r.Amount);
+                    foreach (var et in Ethnicities)
+                    {
+                        var ethnAmount = d.RaceEthnicityValues.Where(v => v.EthnicityId == et.Id).Sum(r => r.Amount);
                         row.Add(ethnAmount.ToString());
                     }
                     row.Add(d.Male.ToString());
                     row.Add(d.Female.ToString());
-                    foreach( var opnmb in OptionNumbers){
-                        var optNmbAmount = d.OptionNumberValues.Where( o => o.ActivityOptionNumberId == opnmb.Id).Sum( s => s.Value);
-                        row.Add( optNmbAmount.ToString());
+                    foreach (var opnmb in OptionNumbers)
+                    {
+                        var optNmbAmount = d.OptionNumberValues.Where(o => o.ActivityOptionNumberId == opnmb.Id).Sum(s => s.Value);
+                        row.Add(optNmbAmount.ToString());
                     }
-                    row.Add( context.Story.Where(s => s.KersUser == user && s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear).Count().ToString() );
+                    row.Add(context.Story.Where(s => s.KersUser == user && s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear).Count().ToString());
                     Rows.Add(row);
                 }
             }
@@ -554,60 +577,61 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("icsfile")]
-        public FileResult DownloadFile(){
+        public FileResult DownloadFile()
+        {
             using (MemoryStream stream = new MemoryStream())
             {
                 StreamWriter objstreamwriter = new StreamWriter(stream);
 
 
-                var text = "BEGIN:VCALENDAR\n"+
-"VERSION:2.0\n"+
-"PRODID:-//ical.marudot.com//iCal Event Maker\n"+
-"CALSCALE:GREGORIAN\n"+
-"BEGIN:VTIMEZONE\n"+
-"TZID:America/Chicago\n"+
-"TZURL:http://tzurl.org/zoneinfo-outlook/America/Chicago\n"+
-"X-LIC-LOCATION:America/Chicago\n"+
-"BEGIN:DAYLIGHT\n"+
-"TZOFFSETFROM:-0600\n"+
-"TZOFFSETTO:-0500\n"+
-"TZNAME:CDT\n"+
-"DTSTART:19700308T020000\n"+
-"RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU\n"+
-"END:DAYLIGHT\n"+
-"BEGIN:STANDARD\n"+
-"TZOFFSETFROM:-0500\n"+
-"TZOFFSETTO:-0600\n"+
-"TZNAME:CST\n"+
-"DTSTART:19701101T020000\n"+
-"RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU\n"+
-"END:STANDARD\n"+
-"END:VTIMEZONE\n"+
-"BEGIN:VEVENT\n"+
-"DTSTAMP:20210114T163918Z\n"+
-"UID:20210114T163918Z-1385374703@marudot.com\n"+
-"DTSTART;TZID=America/Chicago:20220112T120000\n"+
-"DTEND;TZID=America/Chicago:\n"+
-"SUMMARY:Welcome to the Motorway\n"+
-"URL:https://en.wikipedia.org/wiki/Gridlock_(Doctor_Who)\n"+
-"DESCRIPTION:Learn all about the rules of the Motorway and how to access the fast lane. \n"+
-"LOCATION:New Earth\n"+
-"TRANSP:OPAQUE\n"+
-"X-MICROSOFT-CDO-BUSYSTATUS:BUSY\n"+
-"BEGIN:VALARM\n"+
-"ACTION:DISPLAY\n"+
-"DESCRIPTION:Welcome to the Motorway\n"+
-"TRIGGER:-PT15M\n"+
-"END:VALARM\n"+
-"END:VEVENT\n"+
+                var text = "BEGIN:VCALENDAR\n" +
+"VERSION:2.0\n" +
+"PRODID:-//ical.marudot.com//iCal Event Maker\n" +
+"CALSCALE:GREGORIAN\n" +
+"BEGIN:VTIMEZONE\n" +
+"TZID:America/Chicago\n" +
+"TZURL:http://tzurl.org/zoneinfo-outlook/America/Chicago\n" +
+"X-LIC-LOCATION:America/Chicago\n" +
+"BEGIN:DAYLIGHT\n" +
+"TZOFFSETFROM:-0600\n" +
+"TZOFFSETTO:-0500\n" +
+"TZNAME:CDT\n" +
+"DTSTART:19700308T020000\n" +
+"RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU\n" +
+"END:DAYLIGHT\n" +
+"BEGIN:STANDARD\n" +
+"TZOFFSETFROM:-0500\n" +
+"TZOFFSETTO:-0600\n" +
+"TZNAME:CST\n" +
+"DTSTART:19701101T020000\n" +
+"RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU\n" +
+"END:STANDARD\n" +
+"END:VTIMEZONE\n" +
+"BEGIN:VEVENT\n" +
+"DTSTAMP:20210114T163918Z\n" +
+"UID:20210114T163918Z-1385374703@marudot.com\n" +
+"DTSTART;TZID=America/Chicago:20220112T120000\n" +
+"DTEND;TZID=America/Chicago:\n" +
+"SUMMARY:Welcome to the Motorway\n" +
+"URL:https://en.wikipedia.org/wiki/Gridlock_(Doctor_Who)\n" +
+"DESCRIPTION:Learn all about the rules of the Motorway and how to access the fast lane. \n" +
+"LOCATION:New Earth\n" +
+"TRANSP:OPAQUE\n" +
+"X-MICROSOFT-CDO-BUSYSTATUS:BUSY\n" +
+"BEGIN:VALARM\n" +
+"ACTION:DISPLAY\n" +
+"DESCRIPTION:Welcome to the Motorway\n" +
+"TRIGGER:-PT15M\n" +
+"END:VALARM\n" +
+"END:VEVENT\n" +
 "END:VCALENDAR";
 
                 objstreamwriter.Write(text);
                 objstreamwriter.Flush();
-                objstreamwriter.Close(); 
+                objstreamwriter.Close();
                 return File(stream.ToArray(), "text/calendar", "ExtensionTraining.ics");
             }
-            
+
         }
 
         [HttpGet]
@@ -618,28 +642,31 @@ namespace Kers.Controllers.Reports
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
             var stories = new List<StoryViewModel>();
-            foreach( var LinkBlueId in faculty){
-                var user = await this.context.KersUser.Where( r => r.RprtngProfile.LinkBlueId == LinkBlueId).FirstOrDefaultAsync();
-                if( user != null){
-                    var userStories =  await this.context.Story
-                                        .Where( s => s.KersUser == user && s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear)
-                                        .Include( s => s.Revisions)
-                                        .Include( s => s.MajorProgram)
-                                        .Include( s => s.PlanningUnit)
-                                        .Include( s => s.KersUser).ThenInclude( u => u.PersonalProfile)
-                                        .OrderBy( s => s.KersUserId)
+            foreach (var LinkBlueId in faculty)
+            {
+                var user = await this.context.KersUser.Where(r => r.RprtngProfile.LinkBlueId == LinkBlueId).FirstOrDefaultAsync();
+                if (user != null)
+                {
+                    var userStories = await this.context.Story
+                                        .Where(s => s.KersUser == user && s.MajorProgram.StrategicInitiative.FiscalYear == fiscalYear)
+                                        .Include(s => s.Revisions)
+                                        .Include(s => s.MajorProgram)
+                                        .Include(s => s.PlanningUnit)
+                                        .Include(s => s.KersUser).ThenInclude(u => u.PersonalProfile)
+                                        .OrderBy(s => s.KersUserId)
                                         .ToListAsync();
-                    foreach( var story in userStories ){
+                    foreach (var story in userStories)
+                    {
                         var storyModel = new StoryViewModel();
                         storyModel.KersUser = user;
                         storyModel.MajorProgram = story.MajorProgram;
                         storyModel.PlanningUnit = story.PlanningUnit;
                         storyModel.StoryId = story.Id;
-                        var lastRevision = story.Revisions.OrderBy( s => s.Created).Last();
+                        var lastRevision = story.Revisions.OrderBy(s => s.Created).Last();
                         storyModel.Story = lastRevision.Story;
                         storyModel.Title = lastRevision.Title;
                         storyModel.Updated = lastRevision.Created;
-                        stories.Add( storyModel);
+                        stories.Add(storyModel);
                     }
                 }
             }
@@ -648,10 +675,10 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("expenses/{districtid?}/{month?}/{year?}")]
-        public IActionResult Expenses(int districtid=4, int month = 8, int year = 2018)
+        public IActionResult Expenses(int districtid = 4, int month = 8, int year = 2018)
         {
 
-            var ret = new List<List<ExpenseSummary>>();   
+            var ret = new List<List<ExpenseSummary>>();
 
             /* 
             var allSummaries = new List<ExpenseSummary>();
@@ -677,27 +704,30 @@ namespace Kers.Controllers.Reports
             ViewData["total"] = BySource(allSummaries);
             
  */
-            
+
 
             return View(ret);
         }
 
-        private List<ExpenseSummary> BySource( List<ExpenseSummary> mixed ){
+        private List<ExpenseSummary> BySource(List<ExpenseSummary> mixed)
+        {
             var sources = this.context.ExpenseFundingSource;
             var bySource = new List<ExpenseSummary>();
-            foreach( var src in sources ){
-                var sumrs = mixed.Where( s => s.fundingSource == src);
-                var smr = new ExpenseSummary{
+            foreach (var src in sources)
+            {
+                var sumrs = mixed.Where(s => s.fundingSource == src);
+                var smr = new ExpenseSummary
+                {
                     fundingSource = src,
-                    miles = sumrs.Sum( s => s.miles),
-                    mileageCost = sumrs.Sum( s => s.mileageCost),
-                    meals = sumrs.Sum( s => s.meals),
-                    lodging = sumrs.Sum( s => s.lodging),
-                    registration = sumrs.Sum( s => s.registration),
-                    other = sumrs.Sum( s => s.other),
-                    total = sumrs.Sum( s => s.total)
+                    miles = sumrs.Sum(s => s.miles),
+                    mileageCost = sumrs.Sum(s => s.mileageCost),
+                    meals = sumrs.Sum(s => s.meals),
+                    lodging = sumrs.Sum(s => s.lodging),
+                    registration = sumrs.Sum(s => s.registration),
+                    other = sumrs.Sum(s => s.other),
+                    total = sumrs.Sum(s => s.total)
                 };
-                bySource.Add( smr );
+                bySource.Add(smr);
 
             }
 
@@ -708,15 +738,16 @@ namespace Kers.Controllers.Reports
         [HttpGet]
         [Route("[action]/{type}/{id?}/{fy?}")]
         // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 7 Area, 8 Region
-        public async Task<IActionResult> Data(int type, int id = 0, string fy="0")
+        public async Task<IActionResult> Data(int type, int id = 0, string fy = "0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
 
-            if(fiscalYear == null){
-                
+            if (fiscalYear == null)
+            {
+
                 return new StatusCodeResult(500);
             }
-            
+
             // filter: 0 District, 1 Planning Unit, 2 KSU, 3 UK, 4 All, 7 Area, 8 Region
             var table = await contactRepo.DataByEmployee(fiscalYear, type, id);
 
@@ -724,34 +755,45 @@ namespace Kers.Controllers.Reports
             ViewData["FiscalYear"] = fiscalYear;
             ViewData["fy"] = fiscalYear.Name;
             ViewData["Subtitle"] = types[type];
-            if(type == 0){
+            if (type == 0)
+            {
                 ViewData["Title"] = this.context.District.Find(id).Name;
-            }else if(type == 1){
+            }
+            else if (type == 1)
+            {
                 ViewData["Title"] = this.context.PlanningUnit.Find(id).Name;
-            }else if(type == 7){
+            }
+            else if (type == 7)
+            {
                 ViewData["Title"] = this.context.ExtensionArea.Find(id).Name;
-            }else if(type == 8){
+            }
+            else if (type == 8)
+            {
                 ViewData["Title"] = this.context.ExtensionRegion.Find(id).Name;
             }
-            
+
 
             return View(table);
         }
 
 
-        public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+        public FiscalYear GetFYByName(string fy, string type = "serviceLog")
+        {
             FiscalYear fiscalYear;
-            if(fy == "0"){
+            if (fy == "0")
+            {
                 fiscalYear = this.fiscalYearRepository.currentFiscalYear(type);
-            }else{
-                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            else
+            {
+                fiscalYear = this.context.FiscalYear.Where(f => f.Name == fy && f.Type == type).FirstOrDefault();
             }
             return fiscalYear;
         }
-        
 
-        
-       
+
+
+
     }
 
 }

@@ -27,6 +27,7 @@ namespace Kers.Controllers.Reports
 {
 
     [Route("reports/[controller]")]
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class MajorProgramController : Controller
     {
         KERScoreContext context;
@@ -34,17 +35,18 @@ namespace Kers.Controllers.Reports
         IContactRepository contactRepo;
         IInitiativeRepository initiativeRepo;
         private FiscalYear currentFiscalYear;
-        public MajorProgramController( 
+        public MajorProgramController(
                     KERScoreContext context,
                     IFiscalYearRepository fiscalYearRepository,
                     IContactRepository contactRepo,
                     IInitiativeRepository initiativeRepo
-            ){
-           this.context = context;
-           this.fiscalYearRepository = fiscalYearRepository;
-           this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
-           this.contactRepo = contactRepo;
-           this.initiativeRepo = initiativeRepo;
+            )
+        {
+            this.context = context;
+            this.fiscalYearRepository = fiscalYearRepository;
+            this.currentFiscalYear = this.fiscalYearRepository.currentFiscalYear("serviceLog");
+            this.contactRepo = contactRepo;
+            this.initiativeRepo = initiativeRepo;
         }
 
 
@@ -54,11 +56,11 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> Index(string fy = "0")
         {
             FiscalYear fiscalYear = GetFYByName(fy);
-            
+
 
             ViewData["fy"] = fiscalYear.Name;
-            var initiatives = await context.StrategicInitiative.Where( i => i.FiscalYear == fiscalYear)
-                                .Include( i => i.MajorPrograms )
+            var initiatives = await context.StrategicInitiative.Where(i => i.FiscalYear == fiscalYear)
+                                .Include(i => i.MajorPrograms)
                                 .ToListAsync();
 
 
@@ -69,29 +71,38 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> Program(int id, string fy = "0")
         {
             var Program = await context.MajorProgram
-                                .Where( m => m.Id == id)
-                                .Include( m => m.StrategicInitiative).ThenInclude( i => i.FiscalYear)
+                                .Where(m => m.Id == id)
+                                .Include(m => m.StrategicInitiative).ThenInclude(i => i.FiscalYear)
                                 .FirstOrDefaultAsync();
-            if( Program != null ){
+            if (Program != null)
+            {
 
-                
-                ViewData["Indicators"] = await initiativeRepo.IndicatorSumPerMajorProgram( id );
+
+                ViewData["Indicators"] = await initiativeRepo.IndicatorSumPerMajorProgram(id);
                 FiscalYear fiscalYear = Program.StrategicInitiative.FiscalYear;
 
-                if( fy == "0"){
+                if (fy == "0")
+                {
                     ViewData["fy"] = fiscalYear.Name;
-                }else{ 
+                }
+                else
+                {
 
-                    if( fy != fiscalYear.Name ){
+                    if (fy != fiscalYear.Name)
+                    {
                         var toFY = GetFYByName(fy);
-                        if( toFY != null ){
-                            var programWithTheSameName = await context.MajorProgram.Where( p => p.Name == Program.Name && p.StrategicInitiative.FiscalYear == toFY ).FirstOrDefaultAsync();
-                            if(programWithTheSameName != null ){
-                                return RedirectToAction("Program", new {id=programWithTheSameName.Id});
+                        if (toFY != null)
+                        {
+                            var programWithTheSameName = await context.MajorProgram.Where(p => p.Name == Program.Name && p.StrategicInitiative.FiscalYear == toFY).FirstOrDefaultAsync();
+                            if (programWithTheSameName != null)
+                            {
+                                return RedirectToAction("Program", new { id = programWithTheSameName.Id });
                             }
-                            return RedirectToAction("Index", "Reports", new {fy=toFY.Name});
-                        }else{
-                            return RedirectToAction("Index", "Reports", new {fy=fy});
+                            return RedirectToAction("Index", "Reports", new { fy = toFY.Name });
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Reports", new { fy = fy });
                         }
                     }
                 }
@@ -102,26 +113,30 @@ namespace Kers.Controllers.Reports
                 float[] SummariesArray = fiscalYearSummaries.ToArray();
 
                 ViewData["totalHours"] = SummariesArray[0];
-                ViewData["totalContacts"] = (int) SummariesArray[1];
+                ViewData["totalContacts"] = (int)SummariesArray[1];
                 ViewData["totalMultistate"] = SummariesArray[2];
-                ViewData["totalActivities"] = (int) SummariesArray[3];
+                ViewData["totalActivities"] = (int)SummariesArray[3];
 
 
             }
-            return View( Program );
+            return View(Program);
         }
-        
-        public FiscalYear GetFYByName(string fy, string type = "serviceLog"){
+
+        public FiscalYear GetFYByName(string fy, string type = "serviceLog")
+        {
             FiscalYear fiscalYear;
-            if(fy == "0"){
+            if (fy == "0")
+            {
                 fiscalYear = this.fiscalYearRepository.currentFiscalYear(type);
-            }else{
-                fiscalYear = this.context.FiscalYear.Where( f => f.Name == fy && f.Type == type).FirstOrDefault();
+            }
+            else
+            {
+                fiscalYear = this.context.FiscalYear.Where(f => f.Name == fy && f.Type == type).FirstOrDefault();
             }
             return fiscalYear;
         }
 
-        
+
 
 
     }
