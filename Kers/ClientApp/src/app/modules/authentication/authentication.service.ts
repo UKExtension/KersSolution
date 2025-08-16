@@ -77,7 +77,7 @@ setAuth(auth: any):boolean{
     localStorage.setItem(this.authKey, JSON.stringify(auth));
   }else{
     localStorage.removeItem(this.authKey);
-    document.cookie = ".AspNetCore.Cookies=0;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/";
+    document.cookie = ".AspNetCore.Cookies=0;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/core/";
   }
   return true;
 }

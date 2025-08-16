@@ -117,8 +117,6 @@ namespace Kers.Controllers
                     lastname = samlResponse.GetCustomAttribute("LastName");
                        
 
-
-            
                     KersUser usr;
                     SAP_HR_ACTIVE noProfileUser = null;
 
@@ -138,8 +136,6 @@ namespace Kers.Controllers
                             var reedirecturl = redirect + builder;
 
                             return Redirect(reedirecturl);
-                            //return Redirect("/core/login2fa");
-                            //return Ok(new {error = errorMessage});
                         }                    
                     }else{
                         if( usr.RprtngProfile.enabled == false ){
@@ -148,12 +144,9 @@ namespace Kers.Controllers
                             var reedirecturl = redirect + builder;
                             return Redirect(reedirecturl);
                             
-                            //return Ok(new {error = errorMessage});
                         }
                     }
                     
-
-
 
                     List<Claim> claims = new List<Claim>();
                     claims.Add( new Claim(JwtRegisteredClaimNames.Sub, username) );
@@ -221,42 +214,13 @@ namespace Kers.Controllers
                     claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     var authProperties = new AuthenticationProperties
-                    {
-                        //AllowRefresh = <bool>,
-                        // Refreshing the authentication session should be allowed.
-
-                        //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                        // The time at which the authentication ticket expires. A 
-                        // value set here overrides the ExpireTimeSpan option of 
-                        // CookieAuthenticationOptions set with AddCookie.
-
-                        //IsPersistent = true,
-                        // Whether the authentication session is persisted across 
-                        // multiple requests. When used with cookies, controls
-                        // whether the cookie's lifetime is absolute (matching the
-                        // lifetime of the authentication ticket) or session-based.
-
-                        //IssuedUtc = <DateTimeOffset>,
-                        // The time at which the authentication ticket was issued.
-
-                        //RedirectUri = <string>
-                        // The full path or absolute URI to be used as an http 
-                        // redirect response value.
-                    };
-
-
+                      {
+                      };
 
                     await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
-
-
-
-
-
-
-
 
 
                     return Redirect(url);
