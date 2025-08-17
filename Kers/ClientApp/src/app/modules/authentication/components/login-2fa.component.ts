@@ -59,7 +59,7 @@ export class Login2faComponent implements OnInit {
     }
     var loginPath = '/loginsso';
     if(paramValue){
-      loginPath += "?" + paramValue;
+      loginPath += "?rurl=" + paramValue;
     }else if(this.authService.redirectUrl != null){
       let httpParams = new HttpParams().set('rurl', this.authService.redirectUrl);
       loginPath += "?" + httpParams.toString();
