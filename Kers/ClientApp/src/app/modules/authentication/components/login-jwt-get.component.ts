@@ -84,10 +84,10 @@ export class LoginJwtGetComponent implements OnInit {
               )
             }else{
               this.authService.setAuth( { newUser: this.newUser, access_token: this.token });
-              console.log(this.redirectURL);
+              //console.log(this.redirectURL);
               if(this.redirectURL != "" && this.redirectURL != null){
                 if(this.redirectURL.includes('reports')){
-                  console.log('navigate to reports')
+                  //console.log('navigate to reports')
                   window.location.href = this.redirectURL;
                 }else{
                   this.router.navigate([this.redirectURL]);
