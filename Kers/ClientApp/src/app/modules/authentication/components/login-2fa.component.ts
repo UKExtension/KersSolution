@@ -58,14 +58,13 @@ export class Login2faComponent implements OnInit {
       this.router.navigate(['/reporting']);
     }
     var loginPath = '/loginsso';
-    if(this.authService.redirectUrl != null){
+    if(paramValue){
+      loginPath += "?" + paramValue;
+    }else if(this.authService.redirectUrl != null){
       let httpParams = new HttpParams().set('rurl', this.authService.redirectUrl);
       loginPath += "?" + httpParams.toString();
-    }else if(paramValue){
-      loginPath += "?" + paramValue;
     }
     this.loginUrl = this.location.prepareExternalUrl(loginPath);
-    //console.log(window.location.href );
     this.route.queryParams
       .subscribe(params => {
         if(params.errormessage != undefined){
