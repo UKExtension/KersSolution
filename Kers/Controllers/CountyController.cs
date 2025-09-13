@@ -245,7 +245,7 @@ namespace Kers.Controllers
         public IActionResult VehicleTrips(int vehicleId)
         {
             var trips = context.Expense.Where(r => r.LastRevision != null && r.LastRevision.CountyVehicleId == vehicleId)
-                            .Include(r => r.LastRevision).ThenInclude( l => l.ProgramCategory)
+                            .Include(r => r.LastRevision).ThenInclude( l => l.Segments)
                             .ToList();
 
             return new OkObjectResult(trips);
