@@ -79,6 +79,8 @@ import { switchMap } from 'rxjs/operators';
         </div>
     </div>
 
+<county-vehicles-reports [county]="county"></county-vehicles-reports>
+
 
     <div class="row">
         <div class="col-md-12">
@@ -123,25 +125,6 @@ import { switchMap } from 'rxjs/operators';
   </div>
 
     
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
 
 
 

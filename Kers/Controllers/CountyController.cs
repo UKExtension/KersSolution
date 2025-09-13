@@ -240,14 +240,30 @@ namespace Kers.Controllers
         }
 
 
-        private KersUser userByLinkBlueId(string linkBlueId){
+        [HttpGet("vehicletrips/{vehicleId}")]
+        [Authorize]
+        public IActionResult VehicleTrips(int vehicleId)
+        {
+            var trips = context.Expense.Where(r => r.LastRevision != null && r.LastRevision.CountyVehicleId == vehicleId)
+                            .Include(r => r.LastRevision).ThenInclude( l => l.ProgramCategory)
+                            .ToList();
+
+            return new OkObjectResult(trips);
+        }
+
+
+
+        private KersUser userByLinkBlueId(string linkBlueId)
+        {
             var profile = mainContext.zEmpRptProfiles.
-                            Where(p=> p.linkBlueID == linkBlueId).
+                            Where(p => p.linkBlueID == linkBlueId).
                             FirstOrDefault();
             KersUser user = null;
-            if(profile != null){
+            if (profile != null)
+            {
                 user = userRepo.findByProfileID(profile.Id);
-                if(user == null){
+                if (user == null)
+                {
                     user = userRepo.createUserFromProfile(profile);
                 }
             }

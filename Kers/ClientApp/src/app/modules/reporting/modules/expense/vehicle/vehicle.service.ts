@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
+import { Expense } from '../expense.service';
 
 @Injectable()
 export class VehicleService {
@@ -36,6 +37,15 @@ export class VehicleService {
         catchError(this.handleError('update', vehicle))
     );
   }
+
+  trips(vehicle:Vehicle):Observable<Expense[]>{
+    return this.http.get<Expense[]>(this.location.prepareExternalUrl("/api/county/vehicletrips/"+vehicle.id))
+      .pipe(
+        catchError(this.handleError('trips', []))
+    );
+  }
+
+
 
 
 }
