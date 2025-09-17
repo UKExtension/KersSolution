@@ -242,13 +242,28 @@ namespace Kers.Controllers
 
         [HttpGet("vehicletrips/{vehicleId}")]
         [Authorize]
-        public IActionResult VehicleTrips(int vehicleId)
+        public IActionResult VehicleTrips(int vehicleId, [FromQuery] DateTime start, [FromQuery] DateTime end)
         {
-            var trips = context.Expense.Where(r => r.LastRevision != null && r.LastRevision.CountyVehicleId == vehicleId)
-                            .Include(r => r.LastRevision).ThenInclude( l => l.Segments)
+            start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
+            end = new DateTime(end.Year, end.Month, end.Day, 23, 59, 59);
+
+            List<Expense> trips = context.Expense.Where(r =>
+                                r.LastRevision != null
+                                &&
+                                r.LastRevision.CountyVehicleId == vehicleId
+                                &&
+                                r.ExpenseDate >= start
+                                &&
+                                r.ExpenseDate <= end
+                        )
+                            .Include(r => r.LastRevision).ThenInclude(l => l.Segments).ThenInclude(s => s.Location).ThenInclude(l => l.Address)
+                            .Include(r => r.LastRevision).ThenInclude(l => l.Segments).ThenInclude(s => s.ProgramCategory)
+                            .Include( r => r.LastRevision).ThenInclude( r => r.StartingLocation).ThenInclude(l => l.Address)
+                            .Include(l => l.KersUser).ThenInclude(l => l.RprtngProfile)
+                            .Include( l =>l.LastRevision).ThenInclude(l => l.CountyVehicle) 
                             .ToList();
 
-            return new OkObjectResult(trips);
+            return new OkObjectResult( trips);
         }
 
 
