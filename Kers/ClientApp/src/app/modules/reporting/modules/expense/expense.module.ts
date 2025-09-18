@@ -30,6 +30,12 @@ import { ExpenseReportsDetailsItemComponent } from './reports/expense-reports-de
 import { MileageReportsDetailsItemComponent } from './reports/mileage-reports-details-item.component';
 import { VehicleAreaComponent } from './vehicle/vehicle-area.component';
 import { VehicleRegionComponent } from './vehicle/vehicle-region.component';
+import { CountyVehiclesReportComponent } from './vehicle/county-reports/county-vehicles-report.component';
+import { VehicleReportsComponent } from './vehicle/county-reports/vehicle-reports.component';
+import { CountyVehicleTripComponent } from './vehicle/county-reports/county-vehicle-trip.component';
+import { TripDetailsComponent } from './vehicle/county-reports/trip-details.component';
+import { AddressDetailsComponent } from './vehicle/county-reports/address-details.component';
+import { TripSegmentComponent } from './vehicle/county-reports/trip-segment.component';
 
 @NgModule({
   imports:      [ SharedModule,
@@ -93,7 +99,13 @@ import { VehicleRegionComponent } from './vehicle/vehicle-region.component';
                   ExpenseReportsDetailsItemComponent,
                   MileageReportsDetailsItemComponent,
                   VehicleAreaComponent,
-                  VehicleRegionComponent
+                  VehicleRegionComponent,
+                  CountyVehiclesReportComponent,
+                  VehicleReportsComponent,
+                  CountyVehicleTripComponent,
+                  TripDetailsComponent,
+                  AddressDetailsComponent,
+                  TripSegmentComponent
                 ],
   providers:    [ 
                     ExpenseService,
@@ -102,7 +114,9 @@ import { VehicleRegionComponent } from './vehicle/vehicle-region.component';
   exports:      [
                   ExpenseListComponent,
                   ExpenseReportsHomeComponent,
-                  ExpenseFormComponent
+                  ExpenseFormComponent,
+                  CountyVehiclesReportComponent,
+                  VehicleReportsComponent
                 ]
 })
 export class ExpenseModule { }

@@ -1,6 +1,7 @@
 import { ProgramCategory } from '../admin/programs/programs.service';
 import { ExtensionEventLocation } from '../events/extension-event';
 import { ExpenseFundingSource } from '../expense/expense.service';
+import { User } from '../user/user.service';
 
 export interface Mileage{
     id:number,
@@ -28,6 +29,19 @@ export interface Mileage{
     segments:MileageSegment[]
 
 
+}
+
+export interface MileageBundle{
+    id:number,
+    kersUserId:number,
+    kersUser:User,
+    expenseDate:Date,
+    vehicleType:number,
+    revisions:Mileage[],
+    lastRevisionId:number,
+    lastRevision:Mileage,
+    created:Date,
+    updated:Date
 }
 export interface MileageSegment{
     id:number,

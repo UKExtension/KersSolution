@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { ExtensionEventLocation } from '../events/extension-event';
 import { MileageSegment } from '../mileage/mileage';
+import { User } from '../user/user.service';
 
 
 @Injectable({
@@ -173,6 +174,7 @@ export class ExpenseService {
 
 export interface Expense{
     id:number,
+    kersUser:User
     expenseDate:Date,
     expenseId:number,
     startingLocationType:number,

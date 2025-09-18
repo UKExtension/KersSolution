@@ -12,6 +12,7 @@ import { AffirmativeModule } from "../affirmative/affirmative.module";
 import { UnitHomeComponent } from './unit-home.component';
 import { KsuHomeComponent } from './ksu-home.component';
 import { DistrictModule } from '../district/district.module';
+import { ExpenseModule } from '../expense/expense.module';
 
 
 
@@ -22,7 +23,8 @@ import { DistrictModule } from '../district/district.module';
                     PlansofworkModule,
                     AffirmativeModule,
                     UserModule,
-                    DistrictModule
+                    DistrictModule,
+                    ExpenseModule
                     ],
   declarations: [ CountyHomeComponent,
                   UnitHomeComponent,

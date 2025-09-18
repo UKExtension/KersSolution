@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../../core/services/http-error-handler.service';
+import { Expense } from '../expense.service';
+import { MileageBundle } from '../../mileage/mileage';
 
 @Injectable()
 export class VehicleService {
@@ -37,6 +39,21 @@ export class VehicleService {
     );
   }
 
+  trips(vehicle:Vehicle, searchParams?:{}):Observable<MileageBundle[]>{
+    return this.http.get<MileageBundle[]>(this.location.prepareExternalUrl("/api/county/vehicletrips/"+vehicle.id), this.addParams(searchParams))
+      .pipe(
+        catchError(this.handleError('trips', []))
+    );
+  }
+
+  private addParams(params:{}){
+        let searchParams = {};
+        for(let p in params){
+            searchParams[p] = params[p];
+        }
+        return  {params: searchParams};
+    }
+
 
 }
 
@@ -62,3 +79,9 @@ export interface Vehicle{
   datePurchased?:Date,
   dateDispossed?:Date
 }
+
+export class TripsSearchCriteria{
+    start: string;
+    end: string;
+    
+  }
