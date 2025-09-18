@@ -270,6 +270,9 @@ namespace Kers.Controllers.Reports
         public async Task<IActionResult> PlanFullCounty(int id)
         {
             var plan = await this.PlanFull(id);
+            FiscalYear fiscalYear = plan.FiscalYear;
+            ViewData["fy"] = fiscalYear.Name;
+            ViewData["FiscalYear"] = fiscalYear;
             return View(plan);
         }
 

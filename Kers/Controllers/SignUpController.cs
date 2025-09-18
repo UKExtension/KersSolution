@@ -128,7 +128,7 @@ namespace Kers.Controllers
                 keys.Add("Email");
                 keys.Add("Race");
                 keys.Add("Ethnicity");
-                keys.Add("Gender");
+                keys.Add("Sex");
                 result += string.Join(",", keys.ToArray()) + "\n";
 
                 var attendies = this._context.ActivitySignUpEntry

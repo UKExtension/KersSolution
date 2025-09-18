@@ -3,6 +3,8 @@
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
     ViewData["Title"] = Model.LastRevision.Title;
     ViewData["Subtitle"] = "Plan of Work";
+    var FiscalYear = ViewData["FiscalYear"] as Kers.Models.Entities.KERScore.FiscalYear;
+    string fy = ViewData["fy"] as string;
 }
 <div class="text-right">
         <a asp-controller="PlansOfWork"  asp-action="PlansByCounty" asp-route-id=@Model.PlanningUnit.Id class="btn btn-default btn-xs">Back to Plans for the County</a><br>
