@@ -258,9 +258,10 @@ namespace Kers.Controllers
                         )
                             .Include(r => r.LastRevision).ThenInclude(l => l.Segments).ThenInclude(s => s.Location).ThenInclude(l => l.Address)
                             .Include(r => r.LastRevision).ThenInclude(l => l.Segments).ThenInclude(s => s.ProgramCategory)
-                            .Include( r => r.LastRevision).ThenInclude( r => r.StartingLocation).ThenInclude(l => l.Address)
+                            .Include(r => r.LastRevision).ThenInclude(r => r.StartingLocation).ThenInclude(l => l.Address)
                             .Include(l => l.KersUser).ThenInclude(l => l.RprtngProfile)
-                            .Include( l =>l.LastRevision).ThenInclude(l => l.CountyVehicle) 
+                            .Include(l => l.LastRevision).ThenInclude(l => l.CountyVehicle) 
+                            .OrderByDescending( l => l.ExpenseDate)
                             .ToList();
 
             return new OkObjectResult( trips);

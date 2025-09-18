@@ -16,10 +16,10 @@ import { MileageBundle } from '../../../mileage/mileage';
           Driven by: <br><strong>{{expense.kersUser.rprtngProfile.name}}</strong>
           </div>
           <div class="col-xs-10 col-sm-5">
-            <p><span style="font-size:1.5em;font-weight:bold;">{{totalMiles}}</span> miles</p>
+            <p><span style="font-size:1.5em;font-weight:bold;">{{totalMiles | number}}</span> miles</p>
           </div>
           <div class="col-xs-2 text-right">
-            <button *ngIf="!showDetails" type="button" class="btn btn-secondary btn-sm" (click)="showDetails = !showDetails"><span style="color:white;">trip details</span></button>
+            <button *ngIf="!showDetails" type="button" class="btn btn-secondary btn-sm" (click)="showDetails = !showDetails">trip details</button>
           </div>
           
         </div>
@@ -30,7 +30,7 @@ import { MileageBundle } from '../../../mileage/mileage';
         <trip-details [trip]="expense.lastRevision"></trip-details>
       </div>
       <div class="col-xs-2 text-right">
-        <button type="button" class="btn btn-secondary btn-sm" (click)="showDetails = !showDetails"><span style="color:white;">close</span></button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="showDetails = !showDetails">close</button>
       </div>
     </div>
   `,
