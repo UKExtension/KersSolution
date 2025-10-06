@@ -541,8 +541,7 @@ export class ServicelogFormComponent implements OnInit{
                 }
             }
         }
-        
-        if(this.activity.activityOptionNumbers.filter(n => n.activityOptionNumberId == 3)[0].value > 0){
+        if(this.activity.activityOptionNumbers.length > 0 &&  this.activity.activityOptionNumbers.filter(n => n.activityOptionNumberId == 3)[0].value > 0){
             this.hasIndirect = true;
         }
         if(this.activity.isPolicy){
