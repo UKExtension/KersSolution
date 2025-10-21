@@ -92,6 +92,7 @@ namespace Kers.Controllers
             }
             var lastActivities = context.Activity.
                                 Where(e=>e.KersUser.Id == userId).
+                                AsNoTracking().
                                 OrderByDescending(e=>e.ActivityDate).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).
                                 Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).
