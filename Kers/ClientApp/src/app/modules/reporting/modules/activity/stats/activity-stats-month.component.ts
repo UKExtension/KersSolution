@@ -97,9 +97,9 @@ export class ActivityStatsMonthComponent {
                 if(this.yearSwitched){
                     this.yearSwitched = false;
                     this.getNumRows();
-                }else if( this.currentBarch <= this.numActivities ){
+                }else if( this.currentBarch <= this.numContacts ){
                     this.currentBarch += this.amountPerBatch;
-                    this.getBatch( fiscalYaerId );
+                    this.GetContactsBatch( fiscalYaerId );
                 }else{
                     this.activities.sort(
                         function( a, b ){
