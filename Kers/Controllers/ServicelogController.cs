@@ -94,25 +94,32 @@ namespace Kers.Controllers
                                 Where(e=>e.KersUser.Id == userId).
                                 AsNoTracking().
                                 OrderByDescending(e=>e.ActivityDate).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionSelections).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.ActivityOptionNumbers).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAges).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapDirect).ThenInclude(r => r.ExtensionEventLocation).ThenInclude(r => r.Address).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
-                                Include(e=>e.LastRevision).ThenInclude(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner).
                                 AsSplitQuery().
                                 Skip(skip).
                                 Take(amount);
             
             var revs = new List<ActivityRevision>();
             //if(lastActivities != null){
+
                 foreach(var activity in lastActivities){
-                    revs.Add( activity.LastRevision );
+                    revs.Add( 
+
+                        context.ActivityRevision.Where(r => r.Id == activity.LastRevisionId).
+                                Include(r => r.ActivityOptionSelections).
+                                Include(r => r.ActivityOptionNumbers).
+                                Include(r => r.RaceEthnicityValues).ThenInclude(r => r.Race).
+                                Include(r => r.RaceEthnicityValues).ThenInclude(r => r.Ethnicity).
+                                Include(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAudience).
+                                Include(r => r.SnapDirect).ThenInclude(r => r.SnapDirectAgesAudienceValues).ThenInclude(r => r.SnapDirectAges).
+                                Include(r => r.SnapDirect).ThenInclude(r => r.ExtensionEventLocation).ThenInclude(r => r.Address).
+                                Include(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectMethodSelections).
+                                Include(r => r.SnapIndirect).ThenInclude( r => r.SnapIndirectReachedValues).
+                                Include(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyAimedSelections).
+                                Include(r => r.SnapPolicy).ThenInclude( r => r.SnapPolicyPartnerValue).ThenInclude( r => r.SnapPolicyPartner).
+                                AsSplitQuery().FirstOrDefault()
+
+
+                     );
                 }
                 foreach( var a in revs){
                     a.RaceEthnicityValues = a.RaceEthnicityValues.
