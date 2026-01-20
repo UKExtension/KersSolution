@@ -392,6 +392,7 @@ namespace Kers.Controllers
                             .FirstOrDefault();
 
             if(LadderApplication != null ){
+                entity.Track = LadderApplication.Track;
                 entity.LadderLevelId = LadderApplication.LadderLevelId;
                 entity.PositionNumber = LadderApplication.PositionNumber;
                 entity.ProgramOfStudy = LadderApplication.ProgramOfStudy;
