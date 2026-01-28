@@ -423,7 +423,7 @@ namespace Kers.Models.Repositories
 
 
                 table.Header = new List<string>{
-                                "Planning Unit", "Employee", "Days", "Multistate", "Total Contacts"
+                                "Planning Unit", "Congressional District", "Region", "Area", "Employee", "Program Area", "Days", "Multistate", "Total Contacts"
                             };
                 var Races = this.coreContext.Race.OrderBy(r => r.Order);
                 var Ethnicities = this.coreContext.Ethnicity.OrderBy( e => e.Order);
@@ -452,12 +452,27 @@ namespace Kers.Models.Repositories
                 foreach(var res in userResult){
                     TotalHours += res.Hours;
                     TotalAudience += res.Audience;
-                    TotalMale += res.Male;
+                    TotalMale += res.Male; 
                     TotalFemale += res.Female;
                     TotalMultistate += res.Multistate;
+                    res.KersUser.RprtngProfile.PlanningUnit = this.coreContext.PlanningUnit
+                            .Where(u=>  u.Id == res.KersUser.RprtngProfile.PlanningUnitId)
+                            .Include( u => u.CongressionalDistrictUnit).ThenInclude( c => c.CongressionalDistrict)
+                            .Include( u => u.ExtensionArea).ThenInclude( a => a.ExtensionRegion)
+                            .FirstOrDefault();
                     var Row = new List<string>();
                     Row.Add(res.KersUser.RprtngProfile.PlanningUnit.Name);
+                    Row.Add(res.KersUser.RprtngProfile.PlanningUnit.CongressionalDistrictUnit == null?"":res.KersUser.RprtngProfile.PlanningUnit.CongressionalDistrictUnit.CongressionalDistrict.Name);
+                    Row.Add(res.KersUser.RprtngProfile.PlanningUnit.ExtensionArea == null?"":res.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.ExtensionRegion.Name);
+                    Row.Add(res.KersUser.RprtngProfile.PlanningUnit.ExtensionArea == null?"":res.KersUser.RprtngProfile.PlanningUnit.ExtensionArea.Name);
                     Row.Add( res.KersUser.PersonalProfile.FirstName + " " + res.KersUser.PersonalProfile.LastName);
+                    List<string> ProgramAreas = await coreContext.KersUserSpecialty.Where( s => s.KersUserId == res.KersUser.Id).
+                                                Select( e =>
+                                                e.Specialty.Code.Substring(0, 4) == "prog"?e.Specialty.Code.Substring(4):e.Specialty.Code
+                                                ).
+                                                ToListAsync();
+                    
+                    Row.Add(string.Join( ", ", ProgramAreas));
                     Row.Add((res.Hours / 8).ToString());
                     Row.Add((res.Multistate / 8).ToString());
                     Row.Add(res.Audience.ToString());
