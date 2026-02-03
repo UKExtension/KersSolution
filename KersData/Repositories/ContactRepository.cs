@@ -503,7 +503,7 @@ namespace Kers.Models.Repositories
                 }
                 table.Rows = Rows;
                 table.Foother = new List<string>{
-                            "Total", "", (TotalHours / 8).ToString(), (TotalMultistate / 8).ToString(), TotalAudience.ToString()
+                            "Total", "","", "", (TotalHours / 8).ToString(), (TotalMultistate / 8).ToString(), TotalAudience.ToString()
                         };
                 i = 0;
                 foreach( var race in Races){
