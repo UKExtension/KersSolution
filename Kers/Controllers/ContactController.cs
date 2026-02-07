@@ -19,6 +19,9 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using AutoMapper.Internal.Mappers;
 
 namespace Kers.Controllers
 {
@@ -164,6 +167,111 @@ namespace Kers.Controllers
 
 
 
+        [HttpGet("lastmonthsofksudata")]
+        [Authorize]
+        public IActionResult LastMonthsOfKSUData()
+        {
+            string table = "<table class='table'><tr><th>Name</th><th>Position</th><th>Planning Unit</th>";
+            
+
+            // Number of months to output
+            var n = 3;
+            List<DateTime> lastMonths = new List<DateTime>();
+            DateTime today = DateTime.Today;
+
+            for(var i = 0; i < n; i++){
+                var theDate = today.AddMonths(-i);
+                lastMonths.Add(theDate);
+            }
+
+
+            foreach( var d in lastMonths)
+            {
+                table += "<th colspan=2 align='center'>"+d.ToString("MMMM yyyy")+"</th>";
+                
+            }
+
+            table +="</tr><tr><td></td><td></td><td></td>";
+             for(var i = 0; i < n; i++)
+            {
+                table += "<td>Direct</td><td>Indirect</td>";
+            }
+            table += "</tr>";
+
+
+
+            var people = context.KersUser.
+                        Where( r => r.RprtngProfile.Institution.Code == "21000-1890" && r.RprtngProfile.enabled).
+                        Include( r => r.RprtngProfile).ThenInclude( u => u.PlanningUnit).
+                        Include( r => r.ExtensionPosition).
+                        OrderBy( r => r.ExtensionPosition.Title).ThenBy( r => r.RprtngProfile.PlanningUnit.Name).
+                        ToList();
+
+            foreach( var person in people)
+            {
+                table += "<tr><td>"+person.RprtngProfile.Name+"</td><td>"+person.ExtensionPosition.Title+"</td><td>"+person.RprtngProfile.PlanningUnit.Name+"</td>";
+                foreach (var month in lastMonths)
+                {
+                   table += "<td>";
+                   var contacts = this.JustContactsPerUserPerMonth(month.Year, month.Month, person.Id);
+                   table += contacts[0].ToString() + "</td><td>"+contacts[1].ToString()+"</td>";
+                }
+                table += "</tr>";
+            }
+
+
+
+            table += "</table>";
+
+            return new OkObjectResult( new {  table } );
+        }
+
+
+
+        private int[] JustContactsPerUserPerMonth(int year, int month, int userid = 0)
+        {
+             if(userid == 0){
+                userid = this.CurrentUser().Id;
+            }
+            var activities = context.Activity.
+                    Include( a => a.LastRevision).ThenInclude( l => l.ActivityOptionNumbers).ThenInclude( n => n.ActivityOptionNumber).
+                    Where( a => a.ActivityDate.Year == year && a.ActivityDate.Month == month && a.KersUserId ==userid);
+
+            var activitiesDirect = activities.Sum( s => s.Audience);
+            var activitiesIndirect = 0;
+            foreach( var act in activities)
+            {
+                foreach( var nmb in act.LastRevision.ActivityOptionNumbers)
+                {
+                    if( nmb.ActivityOptionNumber.Name == "Number of Indirect Contacts") activitiesIndirect+=nmb.Value;
+                }
+                
+            }
+
+                    
+            var contacts = context.Contact.
+                Include( c => c.LastRevision).ThenInclude( l => l.ContactOptionNumbers).ThenInclude( n => n.ActivityOptionNumber).
+                Where( a => a.ContactDate.Year == year && a.ContactDate.Month == month && a.KersUserId ==userid );
+
+            var contactsDirect = contacts.Sum( c => c.Audience);
+
+
+            var contactsIndirect = 0;
+            foreach( var act in contacts)
+            {
+                foreach( var nmb in act.LastRevision.ContactOptionNumbers)
+                {
+                    if( nmb.ActivityOptionNumber.Name == "Number of Indirect Contacts") contactsIndirect+=nmb.Value;
+                }
+                
+            }
+
+   
+            return new[]{ activitiesDirect+contactsDirect, activitiesIndirect+contactsIndirect};
+        }
+
+
+
 
 
         [HttpGet("summaryPerProgram/{userid?}")]
@@ -212,6 +320,10 @@ namespace Kers.Controllers
                                 OrderBy( s => s.Program.First().Progr.Name);
             return new OkObjectResult(numPerMonth);
         }
+
+       
+
+
 
 
 

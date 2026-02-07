@@ -13,6 +13,7 @@ import { UnitHomeComponent } from './unit-home.component';
 import { KsuHomeComponent } from './ksu-home.component';
 import { DistrictModule } from '../district/district.module';
 import { ExpenseModule } from '../expense/expense.module';
+import { ContactModule } from '../contact/contact.module';
 
 
 
@@ -24,7 +25,8 @@ import { ExpenseModule } from '../expense/expense.module';
                     AffirmativeModule,
                     UserModule,
                     DistrictModule,
-                    ExpenseModule
+                    ExpenseModule,
+                    ContactModule
                     ],
   declarations: [ CountyHomeComponent,
                   UnitHomeComponent,

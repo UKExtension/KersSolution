@@ -48,6 +48,16 @@ export class ContactService {
             );
     }
 
+
+
+    LastMonthsKSUData():Observable<{}>{
+        var url = this.baseUrl + 'lastmonthsofksudata/';
+        return this.http.get<{}>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('KSU Data', {}))
+            );
+    }
+
     
     optionnumbers():Observable<ActivityOptionNumber[]>{
         var url = this.baseUrl + 'optionnumbers';
