@@ -5,7 +5,7 @@ import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { SoilReportBundle } from '../soildata.report';
-import { FarmerAddress } from '../soildata.service';
+import { CountyCode, FarmerAddress } from '../soildata.service';
 import { BillingType, OptionalTest, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
@@ -32,6 +32,12 @@ export class SampleFormComponent implements OnInit {
   @Input() sample:SoilReportBundle;
   @Input() isThisACopy:boolean = false;
   @Input() isThisAltCrop:boolean = false;
+  @Input() countyId:number = 0;
+
+
+
+  countyCode:CountyCode;
+
   soilSampleForm:any;
 
   loading = false;
@@ -67,6 +73,12 @@ export class SampleFormComponent implements OnInit {
 
   ngOnInit(): void {
     let date = new Date();
+    if( this.countyId != 0){
+      this.service.getcountycode(this.countyId).subscribe(
+        res => this.countyCode = res
+      );
+    }
+    
     this.soilSampleForm = this.fb.group(
       { 
           farmerAddress: [null, Validators.required],
@@ -75,7 +87,7 @@ export class SampleFormComponent implements OnInit {
             isRange: false, singleDate: {jsDate: date}
                       }, Validators.required],
           billingTypeId: [1],
-          coSamnum: ["", [Validators.maxLength(5), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample, this.isThisACopy)],
+          coSamnum: ["", [Validators.maxLength(5), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample, this.isThisACopy, this.countyCode.id)],
           optionalTests: '',
           acres: [""],
           optionalInfo: [""],
@@ -247,6 +259,8 @@ export class SampleFormComponent implements OnInit {
     SampleDataToSubmit.optionalTests = undefined;
     
     if( !this.sample ){
+      if(this.countyCode != null ) SampleDataToSubmit.planningUnit = this.countyCode;
+      
       this.service.addsample(SampleDataToSubmit).subscribe(
         res => {
           window.scrollTo(0,0);
@@ -275,7 +289,7 @@ export class SampleFormComponent implements OnInit {
 
 
 export class SampleNumberValidator {
-  static createValidator( service: SoilSampleService, sample:SoilReportBundle, isItCopy:boolean ): AsyncValidatorFn {
+  static createValidator( service: SoilSampleService, sample:SoilReportBundle, isItCopy:boolean, countyCodeId:number = 0 ): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       if(sample == null){
         return service

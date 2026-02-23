@@ -35,7 +35,7 @@ import { SoilSampleService } from './soil-sample.service';
                       <a class="pull-right" (click)="addressSelectionCanceled()" style="cursor:pointer;">X</a>
                     </div>
                     <h4>Select client from the list or enter a new one</h4><br>   
-                    <soildata-address-browser [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+                    <soildata-address-browser [countyid]="countyid" [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
                 </div>
 
 
@@ -56,6 +56,7 @@ import { SoilSampleService } from './soil-sample.service';
                 ]
 })
 export class AddressBrowserFormElementComponent extends BaseControlValueAccessor<FarmerAddress> implements ControlValueAccessor, OnInit { 
+    @Input() countyid:number = 0;
     selectedAddress:FarmerAddress;
     addressBrowserOpen = true;
     disabled = false;

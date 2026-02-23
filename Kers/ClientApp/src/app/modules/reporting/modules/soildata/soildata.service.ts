@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults, SoilReportSearchCriteria, TypeForm, SoilReportStatus, FarmerAddressSearchCriteria } from './soildata.report';
+import { PlanningUnit } from '../plansofwork/plansofwork.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,9 @@ export class SoildataService {
 
   private baseUrl = '/api/Soildata/';
   private statuses:SoilReportStatus[];
+
+  public selectedCounty:PlanningUnit = null;
+  selectedCountyChange: Subject<PlanningUnit> = new Subject<PlanningUnit>();
 
   private handleError: HandleError;
 
@@ -30,6 +34,11 @@ export class SoildataService {
             .pipe(
                 catchError(this.handleError('addresses', []))
             );
+      }
+
+      changePlanningUnitTo(unit:PlanningUnit) {
+        this.selectedCounty = unit;
+        this.selectedCountyChange.next(this.selectedCounty);
       }
       
       addaddress( address:FarmerAddress ):Observable<FarmerAddress>{
@@ -176,23 +185,23 @@ export class SoildataService {
             );
       }
 
-      getCustom(searchParams:SoilReportSearchCriteria):Observable<SoilReportBundle[]>{
-        var url = this.baseUrl + "GetCustom/";
+      getCustom(searchParams:SoilReportSearchCriteria, countyId:number = 0):Observable<SoilReportBundle[]>{
+        var url = this.baseUrl + "GetCustom/false/" + countyId;
         return this.http.post<SoilReportBundle[]>(this.location.prepareExternalUrl(url), searchParams)
             .pipe(
                 catchError(this.handleError('getCustom', []))
             );
       }
 
-      getCustomStatuses(searchParams:SoilReportSearchCriteria):Observable<SoilReportStatus[]>{
-        var url = this.baseUrl + "GetStatuses/";
+      getCustomStatuses(searchParams:SoilReportSearchCriteria, countyId:number = 0):Observable<SoilReportStatus[]>{
+        var url = this.baseUrl + "GetStatuses/false/"+countyId;
         return this.http.post<SoilReportStatus[]>(this.location.prepareExternalUrl(url), searchParams)
             .pipe(
                 catchError(this.handleError('getCustomStatuses', []))
             );
       }
-      getCustomFormTypes(searchParams:SoilReportSearchCriteria):Observable<TypeForm[]>{
-        var url = this.baseUrl + "GetTypes/";
+      getCustomFormTypes(searchParams:SoilReportSearchCriteria, countyId:number = 0):Observable<TypeForm[]>{
+        var url = this.baseUrl + "GetTypes/false/"+countyId;
         return this.http.post<TypeForm[]>(this.location.prepareExternalUrl(url), searchParams)
             .pipe(
                 catchError(this.handleError('getCustomFormTypes', []))
@@ -200,8 +209,8 @@ export class SoildataService {
       }
 
 
-      getCustomAddresses(searchParams:FarmerAddressSearchCriteria):Observable<FarmerAddressSearchResult>{
-        var url = this.baseUrl + "GetCustomFarmerAddress/";
+      getCustomAddresses(searchParams:FarmerAddressSearchCriteria, countyid:number = 0):Observable<FarmerAddressSearchResult>{
+        var url = this.baseUrl + "GetCustomFarmerAddress/false/"+countyid;
         return this.http.post<FarmerAddressSearchResult>(this.location.prepareExternalUrl(url), searchParams)
             .pipe(
                 catchError(this.handleError('getCustomAddress', <FarmerAddressSearchResult>{}))

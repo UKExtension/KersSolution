@@ -78,6 +78,12 @@ namespace Kers.Controllers.Soil
             return new OkObjectResult(types);
         }
 
+        [HttpGet("getcountycode/{planningUnitId}")]
+        public IActionResult GetCountyCode(int planningUnitId){
+            var countyCode = this._context.CountyCodes.Where( c => c.PlanningUnitId == planningUnitId).FirstOrDefault();
+            return new OkObjectResult(countyCode);
+        }
+
 
 
         [HttpGet("lastsamplenum/{CountyCodeId?}")]
@@ -366,17 +372,22 @@ namespace Kers.Controllers.Soil
             return row;
         }
 
-        [HttpPost("checksamnum")]
-		public IActionResult CheckSampleNumber([FromBody] CoSamNumCheck SampleNumber)
+        [HttpPost("checksamnum/{countyCodeId?}")]
+		public IActionResult CheckSampleNumber([FromBody] CoSamNumCheck SampleNumber, int countyCodeId = 0)
         {
             var exists = false;
             var sNum = SampleNumber.CoSamNum.PadLeft(5, '0');
             var dateToCompare = DateTime.Now.AddDays(-100);
-            CountyCode CountyCode = this.CurrentCountyCode();
+            if( countyCodeId == 0)
+            {
+                CountyCode CountyCode = this.CurrentCountyCode();
+                countyCodeId = CountyCode.Id;
+            }
+            
             exists = _context.SoilReportBundle
                         .Where(
                             b =>
-                                b.PlanningUnit == CountyCode
+                                b.PlanningUnitId == countyCodeId
                                 &&
                                 b.CoSamnum == sNum
                                 &&
