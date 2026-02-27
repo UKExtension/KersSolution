@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { SoilReportSearchCriteria, SoilReportBundle, TypeForm, SoilReportStatus } from '../soildata.report';
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
-import { SoildataService } from '../soildata.service';
+import { CountyCode, SoildataService } from '../soildata.service';
 import { startWith, tap, mergeMap, map, scan } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
@@ -28,7 +28,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
   reportsExist = false;
   samplesExist = false;
 
-  selectedCounty:PlanningUnit = null;
+  selectedCounty:CountyCode = null;
 
   
   @Input() criteria:SoilReportSearchCriteria;
@@ -109,7 +109,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
         if(this.selectedCounty != null){
           this.refresh = new Subject();
           
-          this.service.getCustom(this.criteria,this.selectedCounty.id).subscribe(
+          this.service.getCustom(this.criteria,this.selectedCounty.planningUnitId).subscribe(
             res =>{
               this.reportsByDateRange = res;
               this.filteredReports = this.reportsByDateRange;
@@ -119,10 +119,6 @@ export class SoildataReportsCatalogComponent implements OnInit {
             } 
           )
         }
-          
-
-
-
       } 
     );
     
@@ -171,7 +167,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     
     this.statusesCheckboxes = [];
     this.criteria.status = [];
-    this.service.getCustomStatuses(this.criteria, this.selectedCounty.id).subscribe(
+    this.service.getCustomStatuses(this.criteria, this.selectedCounty.planningUnitId).subscribe(
       res => {
         this.availableStatuses = res;
         for(let status of res){
@@ -186,7 +182,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
   }
   getFormTypes(){
     this.typesCheckboxes = [];
-    this.service.getCustomFormTypes(this.criteria, this.selectedCounty.id).subscribe(
+    this.service.getCustomFormTypes(this.criteria, this.selectedCounty.planningUnitId).subscribe(
       res => {
         for(let type of res){
           this.criteria.formType.push(type.id);

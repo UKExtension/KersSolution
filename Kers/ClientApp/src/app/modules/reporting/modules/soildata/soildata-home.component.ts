@@ -3,7 +3,7 @@ import { ReportingService } from '../../components/reporting/reporting.service';
 import { PlanningunitService } from '../planningunit/planningunit.service';
 import { Observable } from 'rxjs';
 import { PlanningUnit } from '../plansofwork/plansofwork.service';
-import { SoildataService } from './soildata.service';
+import { CountyCode, SoildataService } from './soildata.service';
 import { UserService } from '../user/user.service';
 import { init } from 'echarts';
 
@@ -42,6 +42,7 @@ export class SoildataHomeComponent implements OnInit {
 
   units:Observable<PlanningUnit[]>;
   selectedUnit: PlanningUnit;
+  selectedCountyInfo:CountyCode;
   isUserAnAdmin: boolean = false;
 
   constructor(
@@ -58,7 +59,13 @@ export class SoildataHomeComponent implements OnInit {
       this.userServide.current().subscribe(
         res => {
           this.selectedUnit = res.rprtngProfile.planningUnit;
-          this.service.selectedCountyChange.next(this.selectedUnit);
+          this.service.countyInfo(this.selectedUnit.id).subscribe(
+            res => {
+              this.selectedCountyInfo = res;
+              this.service.selectedCountyChange.next(this.selectedCountyInfo);
+            } 
+          )
+          
         }
       )
     }
@@ -75,13 +82,12 @@ export class SoildataHomeComponent implements OnInit {
     this.reportingService.setSubtitle("");
   }
   countySelection(unitId:number){
-    this.unitService.id(unitId).subscribe(
-      res =>{
-        this.service.selectedCountyChange.next(res);
-        this.service.selectedCounty = res;
-      }
-    );
-    
+    this.service.countyInfo(unitId).subscribe(
+            res => {
+              this.selectedCountyInfo = res;
+              this.service.selectedCountyChange.next(this.selectedCountyInfo);
+            } 
+          );    
   }
 
 }

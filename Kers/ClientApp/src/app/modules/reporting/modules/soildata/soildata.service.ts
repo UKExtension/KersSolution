@@ -16,7 +16,8 @@ export class SoildataService {
   private statuses:SoilReportStatus[];
 
   public selectedCounty:PlanningUnit = null;
-  selectedCountyChange: Subject<PlanningUnit> = new Subject<PlanningUnit>();
+  public selectedCountyCode:CountyCode = null;
+  selectedCountyChange: Subject<CountyCode> = new Subject<CountyCode>();
 
   private handleError: HandleError;
 
@@ -38,7 +39,13 @@ export class SoildataService {
 
       changePlanningUnitTo(unit:PlanningUnit) {
         this.selectedCounty = unit;
-        this.selectedCountyChange.next(this.selectedCounty);
+        this.countyInfo(this.selectedCounty.id).subscribe(
+            res => {
+                this.selectedCountyCode = res;
+                this.selectedCountyChange.next(this.selectedCountyCode);
+            }
+        )
+        
       }
       
       addaddress( address:FarmerAddress ):Observable<FarmerAddress>{
