@@ -8,7 +8,7 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
   selector: 'soildata-address-browser',
   template: `
     <div *ngIf="close" class="ln_solid"></div>
-
+{{countyid}}
     <div class="row" *ngIf="addresses$ | async as addresses">
       <div *ngIf="close" class="col-xs-12" style="margin-bottom: 30px;">
         <a class="btn btn-info btn-xs pull-right" (click)="canceled()">close</a>

@@ -80,30 +80,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     if( this.endDate == null ){
       this.endDate = new Date();
     }
-
-    this.service.selectedCountyChange.subscribe(
-      res => {
-        this.selectedCounty = res;
-        
-        this.refresh = new Subject();
-        this.getStatuses();
-        this.getFormTypes();
-        this.service.getCustom(this.criteria,this.selectedCounty.id).subscribe(
-          res =>{
-            this.reportsByDateRange = res;
-            this.filteredReports = this.reportsByDateRange;
-            this.loading = false;
-          } 
-        )
-
-
-
-      } 
-    );
-    
-    
-    
-    this.criteria = {
+     this.criteria = {
       start: this.startDate.toISOString(),
       end: this.endDate.toISOString(),
       search: "",
@@ -125,6 +102,29 @@ export class SoildataReportsCatalogComponent implements OnInit {
         }
       }
     }
+
+    this.service.selectedCountyChange.subscribe(
+      res => {
+        this.selectedCounty = res;
+        if(this.selectedCounty != null){
+          this.refresh = new Subject();
+          
+          this.service.getCustom(this.criteria,this.selectedCounty.id).subscribe(
+            res =>{
+              this.reportsByDateRange = res;
+              this.filteredReports = this.reportsByDateRange;
+              this.loading = false;
+              this.getStatuses();
+              this.getFormTypes();
+            } 
+          )
+        }
+          
+
+
+
+      } 
+    );
     
   }
 
@@ -276,6 +276,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.reportsExist = false;
     this.samplesExist = false;
     this.loading = true; // Turn on the spinner.
+    console.log('spinner')
     this.service.getCustom(this.criteria, this.selectedCounty.id).subscribe(
       res =>{
         this.reportsByDateRange = res;

@@ -11,13 +11,15 @@ import { init } from 'echarts';
   selector: 'app-soildata-home',
   template: `
 
-  <div class="row" *ngIf="selectedUnit">
-    <div class="col-xs-12 form-group" style="margin-top: 3px; margin-bottom: 60px;">
-    <label>County</label>
-      <select [(ngModel)]="selectedUnit.id" class="form-control" (change)="countySelection($event.target.value)">
-        <option>Select</option>
-        <option *ngFor="let unit of units | async" [value]="unit.id">{{unit.name}}</option>
-      </select>
+  <div *ngIf="isUserAnAdmin">
+    <div class="row" *ngIf="selectedUnit">
+      <div class="col-xs-12 form-group" style="margin-top: 3px; margin-bottom: 60px;">
+        <label>County</label>
+        <select [(ngModel)]="selectedUnit.id" class="form-control" (change)="countySelection($event.target.value)">
+          <option>Select</option>
+          <option *ngFor="let unit of units | async" [value]="unit.id">{{unit.name}}</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -40,6 +42,7 @@ export class SoildataHomeComponent implements OnInit {
 
   units:Observable<PlanningUnit[]>;
   selectedUnit: PlanningUnit;
+  isUserAnAdmin: boolean = false;
 
   constructor(
     private reportingService: ReportingService,
@@ -59,6 +62,9 @@ export class SoildataHomeComponent implements OnInit {
         }
       )
     }
+    this.userServide.currentUserHasAnyOfTheRoles(['STLA']).subscribe(
+      res => this.isUserAnAdmin = res
+    )
   }
   defaultTitle(){
     this.reportingService.setTitle("Soil Testing");
