@@ -104,6 +104,7 @@ export class SoildataSigneesComponent implements OnInit {
     this.service.selectedCountyChange.subscribe(
       res => {
         this.selectedCounty = res;
+        this.initialieForm();
       }
     );
     if(this.selectedCounty == null ){
