@@ -78,9 +78,17 @@ namespace Kers.Controllers.Soil
             return new OkObjectResult(types);
         }
 
+        // County Info from KERSCore PlanningUnit Id
         [HttpGet("getcountycode/{planningUnitId}")]
         public IActionResult GetCountyCode(int planningUnitId){
             var countyCode = this._context.CountyCodes.Where( c => c.PlanningUnitId == planningUnitId).FirstOrDefault();
+            return new OkObjectResult(countyCode);
+        }
+
+        // County Info from SOILDATA CountyCodes Id
+        [HttpGet("getcountycodebyid/{id}")]
+        public IActionResult GetCountyCodeById(int id){
+            var countyCode = this._context.CountyCodes.Where( c => c.Id == id).FirstOrDefault();
             return new OkObjectResult(countyCode);
         }
 
@@ -148,8 +156,17 @@ namespace Kers.Controllers.Soil
                     smpl.PurposeId = 1;
                     sample.TypeFormId = smpl.TypeFormId;
                 }
-                var contCode = this.CurrentCountyCode();
-                sample.PlanningUnit = contCode;
+                if(sample.PlanningUnit == null)
+                {
+                    var contCode = this.CurrentCountyCode();
+                    sample.PlanningUnitId = contCode.Id;
+                }
+                else
+                {
+                    sample.PlanningUnitId = sample.PlanningUnit.Id;
+                    sample.PlanningUnit = null;
+                }
+                
                 sample.UniqueCode = Guid.NewGuid().ToString();
                 var cntId = sample.CoSamnum;
                 var now = DateTime.Now;
@@ -162,7 +179,7 @@ namespace Kers.Controllers.Soil
                                                     now.Second) ;
                 int i = 0; 
                 if( int.TryParse(cntId, out i) ){
-                    var NumRecord = this._context.CountyAutoCoSamNum.Where( c => c.CountyCodeId == contCode.Id).FirstOrDefault();
+                    var NumRecord = this._context.CountyAutoCoSamNum.Where( c => c.CountyCodeId == sample.PlanningUnitId).FirstOrDefault();
                     NumRecord.LastSampleNumber = i;
                 }
                 if( sample.FarmerAddress != null ){

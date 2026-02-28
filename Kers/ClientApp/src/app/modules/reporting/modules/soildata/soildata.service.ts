@@ -184,8 +184,18 @@ export class SoildataService {
             );
       }
 
+      //Get county info from PlanningUnit.id
       countyInfo( id:number = 0 ):Observable<CountyCode>{
         var url = this.baseUrl + "countyinfo/" + id;
+        return this.http.get<CountyCode>(this.location.prepareExternalUrl(url))
+            .pipe(
+                catchError(this.handleError('County Info', <CountyCode>{}))
+            );
+      }
+
+      //Get county info from CountyCodes.id
+      getCountyInfo( id:number = 0 ):Observable<CountyCode>{
+        var url = this.baseUrl + "getcountyinfo/" + id;
         return this.http.get<CountyCode>(this.location.prepareExternalUrl(url))
             .pipe(
                 catchError(this.handleError('County Info', <CountyCode>{}))

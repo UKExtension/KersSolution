@@ -226,7 +226,8 @@ namespace Kers.Controllers
             }else{
                 addresses = addresses.OrderBy( s => s.Last).ThenBy( s => s.First);
             }
-            return new OkObjectResult( new {count = addresses.Count(), data = addresses.Take(criteria.Amount)} );
+            var adr = addresses.ToList();
+            return new OkObjectResult( new {count = adr.Count(), data = adr.Take(criteria.Amount)} );
         }
 
         public bool isUpdateRunning(){
@@ -660,12 +661,26 @@ namespace Kers.Controllers
             var FormTypes = this._soilDataContext.TypeForm.OrderBy( t => t.Code).ToListAsync();
             return new OkObjectResult(await FormTypes);
         }
+
+        //County info from KERSCore PlanningUnit Id
         [HttpGet("countyinfo/{countyid?}")]
         public async Task<IActionResult> CountyInfo(int countyid = 0){
             if( countyid == 0 ){
                 countyid = this.CurrentUser().RprtngProfile.PlanningUnitId;
             }
             var CurrentCountyCode = await this._soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == countyid).FirstOrDefaultAsync();
+            if( CurrentCountyCode == null) return new StatusCodeResult(500);
+            return new OkObjectResult(CurrentCountyCode);
+        }
+
+        // County Info from SOILDATA CountyCodes Id
+        [HttpGet("getcountyinfo/{id?}")]
+        public async Task<IActionResult> GetCountyInfo(int id = 0){
+            if( id == 0 ){
+                var unit = this.CurrentUser().RprtngProfile.PlanningUnitId;
+                return new OkObjectResult(await this._soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == unit).FirstOrDefaultAsync());
+            }
+            var CurrentCountyCode = await this._soilDataContext.CountyCodes.Where( c => c.Id == id).FirstOrDefaultAsync();
             if( CurrentCountyCode == null) return new StatusCodeResult(500);
             return new OkObjectResult(CurrentCountyCode);
         }

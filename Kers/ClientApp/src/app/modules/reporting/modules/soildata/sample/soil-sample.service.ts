@@ -70,9 +70,17 @@ export class SoilSampleService {
           );
     }
 
-
+    // County Info from KERSCore PlanningUnit Id
     getcountycode(planningUnitId:number):Observable<CountyCode>{
       var url = this.baseUrl + "getcountycode/" + planningUnitId;
+      return this.http.get<CountyCode>(this.location.prepareExternalUrl(url))
+          .pipe(
+              catchError(this.handleError('get county code', null))
+          );
+    }
+    // County Info from SOILDATA CountyCodes Id
+    getcountycodebyid(id:number):Observable<CountyCode>{
+      var url = this.baseUrl + "getcountycodebyid/" + id;
       return this.http.get<CountyCode>(this.location.prepareExternalUrl(url))
           .pipe(
               catchError(this.handleError('get county code', null))

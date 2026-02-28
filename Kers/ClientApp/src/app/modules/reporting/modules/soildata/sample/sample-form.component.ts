@@ -32,11 +32,8 @@ export class SampleFormComponent implements OnInit {
   @Input() sample:SoilReportBundle;
   @Input() isThisACopy:boolean = false;
   @Input() isThisAltCrop:boolean = false;
-  @Input() countyId:number = 0;
+  @Input() countyCode:CountyCode;
 
-
-
-  countyCode:CountyCode;
 
   soilSampleForm:any;
 
@@ -72,28 +69,28 @@ export class SampleFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
     if(this.sample){
-      this.initializeForm(this.sample.planningUnitId);
-      this.countyId = this.sample.planningUnitId;
-      this.loading = false;
-    }else{
-      if( this.countyId != 0){
-        this.service.getcountycode(this.countyId).subscribe(
+      this.service.getcountycodebyid(this.sample.planningUnitId).subscribe(
           res =>{
             this.countyCode = res;
+            console.log(this.countyCode);
+            this.initializeForm(this.sample.planningUnitId);
             this.loading = false;
-            this.initializeForm(this.countyCode.id);
-
-            
-            this.viewportScroller.scrollToAnchor("topOfTheForm");
-
-          } 
-        );
-      }
+          }
+        )
+        
+      }else{
+      
+          this.loading = false;
+          this.initializeForm(this.countyCode.id);
+          this.viewportScroller.scrollToAnchor("topOfTheForm");
+        } 
+      
     }
 
 
-  }
+  
 
 
 
@@ -290,7 +287,7 @@ export class SampleFormComponent implements OnInit {
     
     if( !this.sample ){
       if(this.countyCode != null ) SampleDataToSubmit.planningUnit = this.countyCode;
-      
+      console.log(SampleDataToSubmit);
       this.service.addsample(SampleDataToSubmit).subscribe(
         res => {
           window.scrollTo(0,0);
