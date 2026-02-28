@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SoildataService } from '../soildata.service';
+import { CountyCode, SoildataService } from '../soildata.service';
 import { Observable } from 'rxjs';
 import { FormTypeSignees } from '../soildata.report';
 import { FormArray, FormGroup, FormBuilder } from '@angular/forms';
@@ -83,6 +83,7 @@ export class SoildataSigneesComponent implements OnInit {
   signeesForm: FormGroup;
   signeesFormArray: FormArray;
   loading = true;
+  selectedCounty:CountyCode; 
 
   signees:Observable<FormTypeSignees[]>;
 
@@ -100,19 +101,33 @@ export class SoildataSigneesComponent implements OnInit {
       invoiceEmail: "",
       reportEmail: ""
     });
-    this.service.countyInfo().subscribe(
+    this.service.selectedCountyChange.subscribe(
       res => {
-        this.signeesForm.patchValue({
-          invoiceEmail:res.invoiceEmail, reportEmail:res.reportEmail
-        })
-      }
-    )
-    this.service.signeesByCounty().subscribe(
-      res => {
-        for( let item of res ) this.addItem(item);
-        this.loading = false;
+        this.selectedCounty = res;
       }
     );
+    if(this.selectedCounty == null ){
+      this.selectedCounty = this.service.selectedCountyCode;
+      this.initialieForm();
+    }
+
+
+    
+  }
+
+
+  initialieForm(){
+    this.service.signeesByCounty(this.selectedCounty.planningUnitId).subscribe(
+          res => {
+            this.signeesFormArray = this.signeesForm.get('signees') as FormArray;
+            this.signeesFormArray.clear();
+            for( let item of res ) this.addItem(item);
+            this.loading = false;
+          }
+        );
+        this.signeesForm.patchValue({
+          invoiceEmail:this.selectedCounty.invoiceEmail, reportEmail:this.selectedCounty.reportEmail
+        });
   }
 
   addItem(item:FormTypeSignees): void {
@@ -132,10 +147,10 @@ export class SoildataSigneesComponent implements OnInit {
 
   onSubmit(){
     var si = this.signeesForm.value;
-    this.service.updateSignees(this.signeesForm.value).subscribe(
+    this.service.updateSignees(this.signeesForm.value, this.selectedCounty.planningUnitId).subscribe(
           _ => {
             this.reportingService.setAlert("Report Signees Updated");
-            this.router.navigate(['../reports'], {relativeTo: this.route});
+            //this.router.navigate(['../reports'], {relativeTo: this.route});
           }
       );
   }

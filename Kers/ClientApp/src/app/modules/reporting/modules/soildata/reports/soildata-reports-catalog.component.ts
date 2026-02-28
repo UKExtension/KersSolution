@@ -106,8 +106,18 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.service.selectedCountyChange.subscribe(
       res => {
         this.selectedCounty = res;
-        if(this.selectedCounty != null){
-          this.refresh = new Subject();
+        this.initializeSubject();
+      } 
+    );
+    if(this.selectedCounty == null ){
+      this.selectedCounty = this.service.selectedCountyCode;
+      this.initializeSubject();
+    }
+    
+  }
+
+  initializeSubject(){
+    this.refresh = new Subject();
           
           this.service.getCustom(this.criteria,this.selectedCounty.planningUnitId).subscribe(
             res =>{
@@ -118,10 +128,6 @@ export class SoildataReportsCatalogComponent implements OnInit {
               this.getFormTypes();
             } 
           )
-        }
-      } 
-    );
-    
   }
 
 

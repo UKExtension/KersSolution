@@ -62,6 +62,7 @@ export class SoildataHomeComponent implements OnInit {
           this.service.countyInfo(this.selectedUnit.id).subscribe(
             res => {
               this.selectedCountyInfo = res;
+              this.service.selectedCountyCode = this.selectedCountyInfo;
               this.service.selectedCountyChange.next(this.selectedCountyInfo);
             } 
           )
@@ -85,6 +86,7 @@ export class SoildataHomeComponent implements OnInit {
     this.service.countyInfo(unitId).subscribe(
             res => {
               this.selectedCountyInfo = res;
+              this.service.selectedCountyCode = this.selectedCountyInfo;
               this.service.selectedCountyChange.next(this.selectedCountyInfo);
             } 
           );    
