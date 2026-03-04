@@ -66,7 +66,7 @@ namespace Kers.Controllers
 											.Include( b => b.TypeForm)
 											.Include( b => b.FarmerForReport)
 											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
-											.OrderBy( b => b.CoSamnum)
+											.OrderBy( b => b.CoSamnum).AsSplitQuery()
 											.ToList();
 					foreach( var sample in samples){
 						if( sample != null){
@@ -175,7 +175,7 @@ namespace Kers.Controllers
 											.Include( b => b.PlanningUnit)
 											.Include( b => b.TypeForm)
 											.Include( b => b.FarmerForReport)
-											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus).AsSplitQuery()
 											.FirstOrDefault();
 					if( sample != null){
 						foreach( var report in sample.Reports){
@@ -909,7 +909,7 @@ namespace Kers.Controllers
 											.Include( b => b.FarmerForReport)
 											.Include( b => b.OptionalTestSoilReportBundles).ThenInclude( o => o.OptionalTest)
 											.Include( b => b.LastStatus)
-											.OrderBy( b => b.CoSamnum)
+											.OrderBy( b => b.CoSamnum).AsSplitQuery()
 											.ToList();
 
 

@@ -109,7 +109,7 @@ namespace Kers.Controllers
                         .Include( b => b.TypeForm)
                         .Include( b => b.FarmerAddress)
                         .Include( b => b.SampleInfoBundles).ThenInclude( i => i.SampleAttributeSampleInfoBundles)
-                        .Include( b => b.OptionalTestSoilReportBundles);
+                        .Include( b => b.OptionalTestSoilReportBundles).AsSplitQuery();
             IOrderedQueryable<SoilReportBundle> orderedBundles;
             if(criteria.Order == "smpl"){
                 orderedBundles = bundles.OrderByDescending( s => s.CoSamnum);
