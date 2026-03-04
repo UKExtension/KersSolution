@@ -10,6 +10,7 @@ export class SoilReportBundle{
     dataProcessed:Date;
     agentReviewed:Date;
     coSamnum:string;
+    planningUnitId:number;
     planningUnit:CountyCode;
     farmerForReport:FarmerForReport;
     farmerAddressId?:number;

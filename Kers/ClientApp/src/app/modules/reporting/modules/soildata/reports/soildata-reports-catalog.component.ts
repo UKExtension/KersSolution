@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { SoilReportSearchCriteria, SoilReportBundle, TypeForm, SoilReportStatus } from '../soildata.report';
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
-import { SoildataService } from '../soildata.service';
+import { CountyCode, SoildataService } from '../soildata.service';
 import { startWith, tap, mergeMap, map, scan } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
+import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 
 @Component({
   selector: 'soildata-reports-catalog',
@@ -27,6 +28,9 @@ export class SoildataReportsCatalogComponent implements OnInit {
   reportsExist = false;
   samplesExist = false;
 
+  selectedCounty:CountyCode = null;
+
+  
   @Input() criteria:SoilReportSearchCriteria;
   @Input() startDate:Date;
   @Input() endDate:Date;
@@ -76,9 +80,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     if( this.endDate == null ){
       this.endDate = new Date();
     }
-    
-    
-    this.criteria = {
+     this.criteria = {
       start: this.startDate.toISOString(),
       end: this.endDate.toISOString(),
       search: "",
@@ -100,16 +102,32 @@ export class SoildataReportsCatalogComponent implements OnInit {
         }
       }
     }
-    this.refresh = new Subject();
-    this.getStatuses();
-    this.getFormTypes();
-    this.service.getCustom(this.criteria).subscribe(
-      res =>{
-        this.reportsByDateRange = res;
-        this.filteredReports = this.reportsByDateRange;
-        this.loading = false;
+
+    this.service.selectedCountyChange.subscribe(
+      res => {
+        this.selectedCounty = res;
+        this.initializeSubject();
       } 
-    )
+    );
+    if(this.selectedCounty == null ){
+      this.selectedCounty = this.service.selectedCountyCode;
+      this.initializeSubject();
+    }
+    
+  }
+
+  initializeSubject(){
+    this.refresh = new Subject();
+          
+          this.service.getCustom(this.criteria,this.selectedCounty.planningUnitId).subscribe(
+            res =>{
+              this.reportsByDateRange = res;
+              this.filteredReports = this.reportsByDateRange;
+              this.loading = false;
+              this.getStatuses();
+              this.getFormTypes();
+            } 
+          )
   }
 
 
@@ -155,7 +173,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     
     this.statusesCheckboxes = [];
     this.criteria.status = [];
-    this.service.getCustomStatuses(this.criteria).subscribe(
+    this.service.getCustomStatuses(this.criteria, this.selectedCounty.planningUnitId).subscribe(
       res => {
         this.availableStatuses = res;
         for(let status of res){
@@ -170,7 +188,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
   }
   getFormTypes(){
     this.typesCheckboxes = [];
-    this.service.getCustomFormTypes(this.criteria).subscribe(
+    this.service.getCustomFormTypes(this.criteria, this.selectedCounty.planningUnitId).subscribe(
       res => {
         for(let type of res){
           this.criteria.formType.push(type.id);
@@ -260,7 +278,8 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.reportsExist = false;
     this.samplesExist = false;
     this.loading = true; // Turn on the spinner.
-    this.service.getCustom(this.criteria).subscribe(
+    console.log('spinner')
+    this.service.getCustom(this.criteria, this.selectedCounty.id).subscribe(
       res =>{
         this.reportsByDateRange = res;
         this.filteredReports = this.reportsByDateRange;

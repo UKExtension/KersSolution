@@ -8,7 +8,7 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
   selector: 'soildata-address-browser',
   template: `
     <div *ngIf="close" class="ln_solid"></div>
-
+{{countyid}}
     <div class="row" *ngIf="addresses$ | async as addresses">
       <div *ngIf="close" class="col-xs-12" style="margin-bottom: 30px;">
         <a class="btn btn-info btn-xs pull-right" (click)="canceled()">close</a>
@@ -65,7 +65,7 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
   styles: []
 })
 export class SoildataAddressBrowserComponent implements OnInit {
-
+  @Input() countyid:number = 0;
 
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
@@ -98,7 +98,7 @@ export class SoildataAddressBrowserComponent implements OnInit {
     this.addresses$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        mergeMap(_ => this.service.getCustomAddresses(this.criteria)), // Get some items
+        mergeMap(_ => this.service.getCustomAddresses(this.criteria, this.countyid)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
   }
