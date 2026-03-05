@@ -111,7 +111,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     );
     if(this.selectedCounty == null ){
       this.selectedCounty = this.service.selectedCountyCode;
-      this.initializeSubject();
+      if(this.selectedCounty != null) this.initializeSubject();
     }
     
   }
@@ -278,8 +278,7 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.reportsExist = false;
     this.samplesExist = false;
     this.loading = true; // Turn on the spinner.
-    console.log('spinner')
-    this.service.getCustom(this.criteria, this.selectedCounty.id).subscribe(
+    this.service.getCustom(this.criteria, this.selectedCounty.planningUnitId).subscribe(
       res =>{
         this.reportsByDateRange = res;
         this.filteredReports = this.reportsByDateRange;
