@@ -5,7 +5,7 @@ import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { SoilReportBundle } from '../soildata.report';
-import { FarmerAddress } from '../soildata.service';
+import { CountyCode, FarmerAddress } from '../soildata.service';
 import { BillingType, OptionalTest, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
@@ -32,9 +32,12 @@ export class SampleFormComponent implements OnInit {
   @Input() sample:SoilReportBundle;
   @Input() isThisACopy:boolean = false;
   @Input() isThisAltCrop:boolean = false;
+  @Input() countyCode:CountyCode;
+
+
   soilSampleForm:any;
 
-  loading = false;
+  loading = true;
   addressBrowserOpen = true;
   testTypes:Array<any>;
   selectedAddress:FarmerAddress;
@@ -66,99 +69,135 @@ export class SampleFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
+    if(this.sample){
+      this.service.getcountycodebyid(this.sample.planningUnitId).subscribe(
+          res =>{
+            this.countyCode = res;
+            console.log(this.countyCode);
+            this.initializeForm(this.sample.planningUnitId);
+            this.loading = false;
+          }
+        )
+        
+      }else{
+      
+          this.loading = false;
+          this.initializeForm(this.countyCode.id);
+          this.viewportScroller.scrollToAnchor("topOfTheForm");
+        } 
+      
+    }
+
+
+  
+
+
+
+
+
+  initializeForm(countyCodeId:number){
     let date = new Date();
     this.soilSampleForm = this.fb.group(
-      { 
-          farmerAddress: [null, Validators.required],
-          ownerID: [""],
-          sampleLabelCreated: [{
-            isRange: false, singleDate: {jsDate: date}
-                      }, Validators.required],
-          billingTypeId: [1],
-          coSamnum: ["", [Validators.maxLength(5), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample, this.isThisACopy)],
-          optionalTests: '',
-          acres: [""],
-          optionalInfo: [""],
-          privateNote: [""],
-          sampleInfoBundles: this.fb.array([])
-      }
-    );
-    var sampleControl = this.soilSampleForm.get('coSamnum') as FormControl;
-    this.billingTypes$ = this.service.billingtypes();
-    if( this.sample != null && !this.isThisACopy && this.sample.lastStatus.soilReportStatus.name != 'Entered' ) this.soilSampleForm.controls["coSamnum"].disable();
+            { 
+                farmerAddress: [null, Validators.required],
+                ownerID: [""],
+                sampleLabelCreated: [{
+                  isRange: false, singleDate: {jsDate: date}
+                            }, Validators.required],
+                billingTypeId: [1],
+                coSamnum: ["", [Validators.maxLength(5), Validators.required], SampleNumberValidator.createValidator(this.service, this.sample, this.isThisACopy, countyCodeId)],
+                optionalTests: '',
+                acres: [""],
+                optionalInfo: [""],
+                privateNote: [""],
+                sampleInfoBundles: this.fb.array([])
+            }
+          );
+
+
+
+
     
-    this.service.optionaltests().subscribe(
-                          res => {
-                              var tsts = <OptionalTest[]> res;
-                              var ts = Array<any>();
-                              tsts.forEach(function(element){
-                                  ts.push(
-                                      {value: element.id, label: element.name}
-                                  );
-                              });
-                              this.testTypes = ts;
+    
+          var sampleControl = this.soilSampleForm.get('coSamnum') as FormControl;
+          this.billingTypes$ = this.service.billingtypes();
+          if( this.sample != null && !this.isThisACopy && this.sample.lastStatus.soilReportStatus.name != 'Entered' ) this.soilSampleForm.controls["coSamnum"].disable();
+          
+          this.service.optionaltests().subscribe(
+                                res => {
+                                    var tsts = <OptionalTest[]> res;
+                                    var ts = Array<any>();
+                                    tsts.forEach(function(element){
+                                        ts.push(
+                                            {value: element.id, label: element.name}
+                                        );
+                                    });
+                                    this.testTypes = ts;
 
 
 
-                              if( this.sample != null ){
-                                this.soilSampleForm.patchValue(this.sample);
-                                if(this.sample.farmerForReport != null){
-                                  this.selectedAddress = this.sample.farmerForReport;
-                                  this.addressBrowserOpen = false;
-                                }
-                        
-                        
-                                let date = new Date(this.sample.sampleLabelCreated);
-                        
-                                this.soilSampleForm.patchValue({sampleLabelCreated: {
-                                      isRange: false, singleDate: {jsDate: date}
-                                  }});
-                        
-                                var optTsts = [];
-                                for( var tst of this.sample.optionalTestSoilReportBundles){
-                                  optTsts.push(
-                                    {value: tst.optionalTestId, label: tsts.filter(c => c.id == tst.optionalTestId )[0].name}
-                                  );
-                                }
+                                    if( this.sample != null ){
+                                      this.soilSampleForm.patchValue(this.sample);
+                                      if(this.sample.farmerForReport != null){
+                                        this.selectedAddress = this.sample.farmerForReport;
+                                        this.addressBrowserOpen = false;
+                                      }
+                              
+                              
+                                      let date = new Date(this.sample.sampleLabelCreated);
+                              
+                                      this.soilSampleForm.patchValue({sampleLabelCreated: {
+                                            isRange: false, singleDate: {jsDate: date}
+                                        }});
+                              
+                                      var optTsts = [];
+                                      for( var tst of this.sample.optionalTestSoilReportBundles){
+                                        optTsts.push(
+                                          {value: tst.optionalTestId, label: tsts.filter(c => c.id == tst.optionalTestId )[0].name}
+                                        );
+                                      }
 
-                                this.soilSampleForm.patchValue({optionalTests:optTsts});
-                                for( var plant of this.sample.sampleInfoBundles){
-                                  this.addSegment(plant);
-                                }
-                                if(this.isThisACopy){
-                                  this.service.lastsamplenum().subscribe(
-                                    res => {
-                                      var lastNumber:number = res;
-                                      this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
+                                      this.soilSampleForm.patchValue({optionalTests:optTsts});
+                                      for( var plant of this.sample.sampleInfoBundles){
+                                        this.addSegment(plant);
+                                      }
+                                      if(this.isThisACopy){
+                                        this.service.lastsamplenum().subscribe(
+                                          res => {
+                                            var lastNumber:number = res;
+                                            this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
+                                          }
+                                        );
+                                        this.soilSampleForm.patchValue({ acres:"", ownerID:""});
+                                      }
+                                      if( this.isThisAltCrop){
+                                        this.prepereAltCrop();
+                                      }else{
+                                        this.prepereEdit();
+                                      }
+                                    }else{
+                                      this.addSegment(null);
+                                      this.service.lastsamplenum().subscribe(
+                                        res => {
+                                          var lastNumber:number = res;
+                                          this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
+                                        }
+                                      );
                                     }
-                                  );
-                                  this.soilSampleForm.patchValue({ acres:"", ownerID:""});
-                                }
-                                if( this.isThisAltCrop){
-                                  this.prepereAltCrop();
-                                }else{
-                                  this.prepereEdit();
-                                }
-                              }else{
-                                this.addSegment(null);
-                                this.service.lastsamplenum().subscribe(
-                                  res => {
-                                    var lastNumber:number = res;
-                                    this.soilSampleForm.patchValue({coSamnum:(lastNumber + 1)});
-                                  }
-                                );
-                              }
 
 
-                          }
-                      );
-      this.foundSampleNum$ = sampleControl.valueChanges.pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        switchMap(_ => this.service.checkCoSamNum(sampleControl.value as string) ),
-      );
-      this.viewportScroller.scrollToAnchor("topOfTheForm");
+                                }
+                            );
+            this.foundSampleNum$ = sampleControl.valueChanges.pipe(
+              debounceTime(500),
+              distinctUntilChanged(),
+              switchMap(_ => this.service.checkCoSamNum(sampleControl.value as string) ),
+            );
+
   }
+
+
   prepereAltCrop(){
     //this.soilSampleForm.controls["farmerAddress"].disable();
     //this.soilSampleForm.controls["ownerID"].disable();
@@ -247,6 +286,8 @@ export class SampleFormComponent implements OnInit {
     SampleDataToSubmit.optionalTests = undefined;
     
     if( !this.sample ){
+      if(this.countyCode != null ) SampleDataToSubmit.planningUnit = this.countyCode;
+      console.log(SampleDataToSubmit);
       this.service.addsample(SampleDataToSubmit).subscribe(
         res => {
           window.scrollTo(0,0);
@@ -275,7 +316,7 @@ export class SampleFormComponent implements OnInit {
 
 
 export class SampleNumberValidator {
-  static createValidator( service: SoilSampleService, sample:SoilReportBundle, isItCopy:boolean ): AsyncValidatorFn {
+  static createValidator( service: SoilSampleService, sample:SoilReportBundle, isItCopy:boolean, countyCodeId:number = 0 ): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors> => {
       if(sample == null){
         return service

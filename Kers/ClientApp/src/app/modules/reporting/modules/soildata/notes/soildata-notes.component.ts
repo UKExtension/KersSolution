@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CountyNote, SoildataService } from '../soildata.service';
+import { CountyCode, CountyNote, SoildataService } from '../soildata.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -19,13 +19,30 @@ import { Observable } from 'rxjs';
 export class SoildataNotesComponent implements OnInit {
   newNote = false;
   notes:Observable<CountyNote[]>;
+  selectedCounty:CountyCode;
 
   constructor(
     private service:SoildataService
-  ) { }
+  ) { 
+    this.service.selectedCountyChange.subscribe(
+      res => {
+        this.selectedCounty = res;
+        this.notes = this.service.notesByCounty(this.selectedCounty.planningUnitId);
+      }
+    );
+
+
+  }
 
   ngOnInit() {
-    this.notes = this.service.notesByCounty();
+    if(this.selectedCounty == null ){
+      this.selectedCounty = this.service.selectedCountyCode;
+      this.notes = this.service.notesByCounty(this.selectedCounty.planningUnitId);
+    }
+      
+
+    
+    
   }
   newNoteSubmitted(_:CountyNote){
     this.newNote = false;
