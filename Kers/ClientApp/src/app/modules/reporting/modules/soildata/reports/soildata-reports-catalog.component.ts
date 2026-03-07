@@ -113,7 +113,6 @@ export class SoildataReportsCatalogComponent implements OnInit {
       this.selectedCounty = this.service.selectedCountyCode;
       if(this.selectedCounty != null) this.initializeSubject();
     }
-    
   }
 
   initializeSubject(){
