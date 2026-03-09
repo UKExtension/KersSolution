@@ -5,7 +5,7 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'indicators-demo',
+  selector: 'indicators-demo-form',
   template: `
     
 
@@ -137,7 +137,7 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
   styles: [
   ]
 })
-export class IndicatorsDemoComponent implements OnInit {
+export class IndicatorsDemoFormComponent implements OnInit {
 
 
   fiscalYear:FiscalYear;

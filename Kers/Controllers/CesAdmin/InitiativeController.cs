@@ -194,7 +194,7 @@ namespace Kers.Controllers.Admin
                                     .Include( i => i.MajorPrograms).ThenInclude(m => m.ProgramIndicators);
             foreach( var initiative in initiatives){
                 initiative.Id = 0;
-                initiative.FiscalYear = nextFiscalYear;
+                initiative.FiscalYearId = nextFiscalYear.Id;
 
                 initiative.ProgramCategory = this.context.ProgramCategory.Find(initiative.ProgramCategory.Id);
 
