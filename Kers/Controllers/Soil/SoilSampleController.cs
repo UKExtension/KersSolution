@@ -180,7 +180,19 @@ namespace Kers.Controllers.Soil
                 int i = 0; 
                 if( int.TryParse(cntId, out i) ){
                     var NumRecord = this._context.CountyAutoCoSamNum.Where( c => c.CountyCodeId == sample.PlanningUnitId).FirstOrDefault();
-                    NumRecord.LastSampleNumber = i;
+                    if(NumRecord == null)
+                    {
+                        var num = new CountyAutoCoSamNum();
+                        num.CountyCodeId = sample.PlanningUnitId;
+                        num.LastSampleNumber = i;
+                        num.AutoSampleNumber = true;
+                        _context.CountyAutoCoSamNum.Add(num);
+                    }
+                    else
+                    {
+                        NumRecord.LastSampleNumber = i;
+                    }
+                    
                 }
                 if( sample.FarmerAddress != null ){
                     sample.FarmerAddressId = sample.FarmerAddress.Id;
