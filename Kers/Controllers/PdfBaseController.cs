@@ -238,7 +238,7 @@ namespace Kers.Controllers
 		}
 
 
-		public void addBitmap(SKCanvas pdfCanvas, string fileName = "MgRegSign.png", int tl = 280, int tr = 22, int bl = 464, int br = 70){
+		public void addBitmap(SKCanvas pdfCanvas, string fileName = "MgRegSign.png", int tl = 277, int tr = 22, int bl = 464, int br = 70){
 			var dbFile = _context.UploadFile.Where(f => f.Name == fileName).FirstOrDefault();
 			if( dbFile != null){
 				var PngStream = new MemoryStream(dbFile.Content);
