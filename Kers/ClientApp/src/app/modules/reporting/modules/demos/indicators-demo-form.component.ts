@@ -22,7 +22,7 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
       
       
       <div class="form-group">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="majorProgramId">Major Program: </label>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="majorProgramId">Concentration Area: </label>
           <div class="col-md-9 col-sm-9 col-xs-12">
               <select name="majorProgramId" id="majorProgramId" formControlName="majorProgramId" (change)="programChanged($event)" class="form-control col-md-7 col-xs-12" >
                   <option value="">--- select ---</option>
@@ -35,7 +35,7 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 
 
       <div class="form-group" *ngIf="indicators != null && indicators.length > 0">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="indicatorId">Program Indicator: </label>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="indicatorId">Indicator: </label>
           <div class="col-md-9 col-sm-9 col-xs-12">
               <select name="indicatorId" id="indicatorId" formControlName="indicatorId" (change)="indicatorChanged($event)" class="form-control col-md-7 col-xs-12" >
                   <option value="">--- select ---</option>
