@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
-import { catchError, retry, tap } from 'rxjs/operators';
+import { catchError, retry, share, shareReplay, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
 import { FormTypeSignees, SoilReportBundle, SoilReport, TestResults, SoilReportSearchCriteria, TypeForm, SoilReportStatus, FarmerAddressSearchCriteria } from './soildata.report';
 import { PlanningUnit } from '../plansofwork/plansofwork.service';
@@ -13,11 +13,14 @@ import { PlanningUnit } from '../plansofwork/plansofwork.service';
 export class SoildataService {
 
   private baseUrl = '/api/Soildata/';
-  private statuses:SoilReportStatus[];
+  statuses:SoilReportStatus[];
 
   public selectedCounty:PlanningUnit = null;
   public selectedCountyCode:CountyCode = null;
   selectedCountyChange: Subject<CountyCode> = new Subject<CountyCode>();
+
+
+  public synchStatuses$: Observable<SoilReportStatus[]>;
 
   private handleError: HandleError;
 
@@ -27,6 +30,9 @@ export class SoildataService {
       httpErrorHandler: HttpErrorHandler
       ) {
           this.handleError = httpErrorHandler.createHandleError('SoildataService');
+          this.synchStatuses$ = this.createSyncStatusesObservable().pipe(
+            share()
+            );
       }
  
       addresses(planningUnitId:number = 0):Observable<FarmerAddress[]>{
@@ -150,23 +156,60 @@ export class SoildataService {
             );
       }
 
-      reportStatuses():Observable<SoilReportStatus[]>{
+
+
+
+      
+
+
+
+
+      private createSyncStatusesObservable(): Observable<SoilReportStatus[]> {
+            if( this.statuses == null){
+                var url = this.baseUrl + "reportstatus";
+                return this.http.get<SoilReportStatus[]>(this.location.prepareExternalUrl(url))
+                    .pipe(
+                    
+                    tap(
+                        res =>
+                        {
+                            this.statuses = res;
+                        }
+                    ),
+                    catchError(this.handleError('SoilReportStatuses', []))
+                );
+            }else{
+                return of(this.statuses);
+            }
+        }
+
+
+
+
+       public reportStatuses():Observable<SoilReportStatus[]>{
+        
+        return this.synchStatuses$;
+/*         
+        console.log(this.statuses);
         if( this.statuses == null){
             var url = this.baseUrl + "reportstatus";
             return this.http.get<SoilReportStatus[]>(this.location.prepareExternalUrl(url))
                 .pipe(
+                    
                     tap(
                         res =>
                         {
-                            this.statuses = <SoilReportStatus[]>res
+                            this.statuses = res;
+                            console.log(this.statuses);
                         }
                     ),
+                    shareReplay(1),
                     catchError(this.handleError('SoilReportStatuses', []))
                 );
         }else{
             return of(this.statuses);
         }
-       
+        */
       }
 
       changestatus(statusId:number, bundleId:number):Observable<SoilReportStatus>{
