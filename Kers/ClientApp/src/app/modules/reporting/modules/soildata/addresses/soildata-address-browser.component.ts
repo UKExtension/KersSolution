@@ -31,8 +31,8 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
 
       </div>
       <loading *ngIf="loading"></loading>
-      <div *ngIf="!loading">
-        <div class="col-lg-4 col-md-6 col-xs-12" *ngFor="let address of addresses.data"><br>
+      <div *ngIf="!loading" class="flex-container">
+        <div class="flex-item" *ngFor="let address of addresses.data"><br>
           <soildata-list-address [address]="address" [brief]="false" [select]="true" [edit]="true" (onSelected)="selected($event)"></soildata-list-address>
         </div>
       </div>
@@ -61,7 +61,20 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
     
     <div *ngIf="close" class="ln_solid"></div>
   `,
-  styles: []
+  styles: [`
+    .flex-container{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      clear:both;
+      margin: 60px 8px 10px 18px;
+    }
+    .flex-item{
+      min-width: 300px;
+    }
+    
+    
+    `]
 })
 export class SoildataAddressBrowserComponent implements OnInit {
   @Input() countyid:number = 0;
