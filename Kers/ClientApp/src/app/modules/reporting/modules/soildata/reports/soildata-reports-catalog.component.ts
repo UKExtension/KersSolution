@@ -106,6 +106,14 @@ export class SoildataReportsCatalogComponent implements OnInit {
     this.service.selectedCountyChange.subscribe(
       res => {
         this.selectedCounty = res;
+        this.criteria = {
+          start: this.startDate.toISOString(),
+          end: this.endDate.toISOString(),
+          search: "",
+          order: 'dsc',
+          status: [],
+          formType: []
+        }
         this.initializeSubject();
       } 
     );
@@ -113,7 +121,6 @@ export class SoildataReportsCatalogComponent implements OnInit {
       this.selectedCounty = this.service.selectedCountyCode;
       if(this.selectedCounty != null) this.initializeSubject();
     }
-    
   }
 
   initializeSubject(){
