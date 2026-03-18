@@ -70,7 +70,10 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
       margin: 60px 8px 10px 18px;
     }
     .flex-item{
-      min-width: 300px;
+      flex-basis: 300px;
+      flex-grow: 1;
+      flex-shrink: 1;
+      max-width: 350px;
     }
     
     
