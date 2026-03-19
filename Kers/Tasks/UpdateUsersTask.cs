@@ -38,7 +38,7 @@ namespace Kers.Tasks
                     var startTime = DateTime.Now;
                     var _configuration = scope.ServiceProvider.GetService<IConfiguration>();
                     
-                    var userList = context.ReportingProfile.Where( r => r.enabled ).OrderBy(x => Guid.NewGuid()).Take(200);
+                    var userList = context.ReportingProfile.Where( r => r.enabled ).OrderBy(x => Guid.NewGuid()).Take(50);
                     var disabledUsers = new List<ReportingProfile>();
                     
                     foreach( var user in userList)
