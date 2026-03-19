@@ -470,10 +470,10 @@ namespace Kers.Controllers
                     var oldLastRevision = await context.PlanOfWorkRevision
                                             .Where( r => r.PlanOfWork == plan)
                                             .OrderByDescending( r => r.Created)
-                                            .Include( r => r.Map)
+                                            .Include( r => r.PlanOfWorkDataSourceSelections)
                                             .FirstOrDefaultAsync();
                     var newRevision = new PlanOfWorkRevision();
-                    newRevision.Map = this.MatchMap(oldLastRevision.Map, newMaps, county.Id, fiscalYearTo.Id);
+                    //newRevision.Map = this.MatchMap(oldLastRevision.Map, newMaps, county.Id, fiscalYearTo.Id);
                     newRevision.Mp1 = MatchProgram( oldLastRevision.Mp1Id, fiscalYearTo);
                     newRevision.Mp2 = MatchProgram( oldLastRevision.Mp2Id, fiscalYearTo);
                     newRevision.Mp3 = MatchProgram( oldLastRevision.Mp3Id, fiscalYearTo);
@@ -488,6 +488,8 @@ namespace Kers.Controllers
                     newRevision.Evaluation = oldLastRevision.Evaluation;
                     newRevision.Created = DateTime.Now;
                     newRevision.ById = oldLastRevision.ById;
+                    newRevision.PlanOfWorkDataSourceSelections = oldLastRevision.PlanOfWorkDataSourceSelections;
+                    newRevision.CountySituation = oldLastRevision.CountySituation;
                     newPlan.Revisions.Add(newRevision);
                     newPlans.Add(newPlan);
                 }
