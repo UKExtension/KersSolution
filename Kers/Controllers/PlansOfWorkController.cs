@@ -488,7 +488,14 @@ namespace Kers.Controllers
                     newRevision.Evaluation = oldLastRevision.Evaluation;
                     newRevision.Created = DateTime.Now;
                     newRevision.ById = oldLastRevision.ById;
-                    newRevision.PlanOfWorkDataSourceSelections = oldLastRevision.PlanOfWorkDataSourceSelections;
+                    newRevision.PlanOfWorkDataSourceSelections = new List<PlanOfWorkDataSourceSelection>();
+                    foreach( var sel in oldLastRevision.PlanOfWorkDataSourceSelections)
+                    {
+                        var selection = new PlanOfWorkDataSourceSelection();
+                        selection.PlanOfWorkDataSourceId = sel.PlanOfWorkDataSourceId;
+                        newRevision.PlanOfWorkDataSourceSelections.Add(selection);
+                    }
+                    
                     newRevision.CountySituation = oldLastRevision.CountySituation;
                     newPlan.Revisions.Add(newRevision);
                     newPlans.Add(newPlan);
