@@ -249,7 +249,7 @@ namespace Kers.Controllers
 		}
 		public SKDocumentPdfMetadata metadata(string Keywrds = "Kers, Expense Reporting, Expense", string Ttl = "Summary Expense Report", string Sbj = "Summary Expense Report" ){
 			return new SKDocumentPdfMetadata
-			{
+			{	
 				Author = "Ivelin Denev",
 				Creation = DateTime.Now,
 				Creator = "Kentucky Extension Reporting System",
@@ -259,7 +259,8 @@ namespace Kers.Controllers
 				Subject = Sbj,
 				Title = Ttl,
 				RasterDpi = 300,
-				EncodingQuality = 95
+				EncodingQuality = 95, 
+				PdfA = true
 			};
 		}
 
