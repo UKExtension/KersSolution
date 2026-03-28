@@ -97,6 +97,8 @@ namespace Kers.Models.Contexts
         /***************************************/
         public virtual DbSet<ProgramIndicator> ProgramIndicator {get;set;}
         public virtual DbSet<ProgramIndicatorValue> ProgramIndicatorValue {get;set;}
+        public virtual DbSet<ProgramIndicatorValueEntry> ProgramIndicatorValueEntries {get;set;}
+        
         /***************************************/
         //  Expoenses
         /***************************************/

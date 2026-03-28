@@ -214,18 +214,27 @@ namespace Kers.Controllers
             var user = CurrentUser();
             user = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
             foreach(var val in indicatoValues){
-                var v = this.context.
-                            ProgramIndicatorValue.Where(l=>l.KersUser == user && l.PlanningUnitId == user.RprtngProfile.PlanningUnitId && l.ProgramIndicatorId == val.ProgramIndicatorId).
-                            FirstOrDefault();
-                if(v==null){
-                    val.KersUser = user;
-                    val.PlanningUnitId = val.KersUser.RprtngProfile.PlanningUnitId;
-                    val.CreatedDateTime = DateTimeOffset.Now;
-                    val.LastModifiedDateTime = DateTimeOffset.Now;
-                    this.context.ProgramIndicatorValue.Add(val);
-                }else{
-                    v.LastModifiedDateTime = DateTimeOffset.Now;
-                    v.Value = val.Value;
+                if(val.Value != 0){
+                    var v = this.context.
+                                ProgramIndicatorValue.Where(l=>l.KersUser == user && l.PlanningUnitId == user.RprtngProfile.PlanningUnitId && l.ProgramIndicatorId == val.ProgramIndicatorId).
+                                FirstOrDefault();
+                    if(v==null){
+                        val.KersUser = user;
+                        val.PlanningUnitId = val.KersUser.RprtngProfile.PlanningUnitId;
+                        val.CreatedDateTime = DateTimeOffset.Now;
+                        val.LastModifiedDateTime = DateTimeOffset.Now;
+                        this.context.ProgramIndicatorValue.Add(val);
+                    }else{
+                        v.LastModifiedDateTime = DateTimeOffset.Now;
+                        v.Value = val.Value;
+                    }
+                    ProgramIndicatorValueEntry entry = new ProgramIndicatorValueEntry();
+                    entry.KersUser = user;
+                    entry.PlanningUnitId = val.KersUser.RprtngProfile.PlanningUnitId;
+                    entry.ProgramIndicatorId = val.ProgramIndicatorId;
+                    entry.CreatedDateTime = DateTimeOffset.Now;
+                    entry.Value = val.Value;
+                    context.Add(entry);
                 }
             }
             this.context.SaveChanges();
