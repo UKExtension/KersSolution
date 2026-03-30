@@ -18,6 +18,7 @@ namespace Kers.Models.Entities.KERScore
         public int ProgramIndicatorId {get;set;}
         public ProgramIndicator ProgramIndicator {get;set;}
         public int Value {get; set;}
+        public string Note {get;set;}
         public DateTimeOffset? CreatedDateTime { get; set; }
 
     }
