@@ -227,7 +227,15 @@ namespace Kers.Controllers
             var user = CurrentUser();
             user = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
             foreach(var val in indicatoValues){
-                if( val.Value != 0 ){
+                //Check if there is some value that is intended to be changed to zero
+                bool stillWithValue = false;
+                if( val.Value == 0)
+                {
+                  stillWithValue = this.context.
+                                ProgramIndicatorValue.Where(l=>l.KersUser == user && l.PlanningUnitId == user.RprtngProfile.PlanningUnitId && l.ProgramIndicatorId == val.ProgramIndicatorId && l.Value != 0).Any();   
+                }
+                //Process with changing the value
+                if( val.Value != 0 || stillWithValue){
                     var v = this.context.
                                 ProgramIndicatorValue.Where(l=>l.KersUser == user && l.PlanningUnitId == user.RprtngProfile.PlanningUnitId && l.ProgramIndicatorId == val.ProgramIndicatorId).
                                 FirstOrDefault();
@@ -257,8 +265,6 @@ namespace Kers.Controllers
                             v.Value = val.Value;
                         }
                     }
-                    
-                    
                 }
             }
             this.context.SaveChanges();
