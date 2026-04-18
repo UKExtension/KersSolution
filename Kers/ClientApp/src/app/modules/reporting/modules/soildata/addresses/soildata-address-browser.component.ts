@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
-import { FarmerAddress, SoildataService, FarmerAddressSearchResult } from '../soildata.service';
+import { FarmerAddress, SoildataService, FarmerAddressSearchResult, CountyCode } from '../soildata.service';
 import { Observable, Subject } from 'rxjs';
 import { FarmerAddressSearchCriteria } from '../soildata.report';
 import { startWith, mergeMap, tap } from 'rxjs/operators';
@@ -55,7 +55,7 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
       </div>
       <div class="col-xs-12" *ngIf="newAddress">
         <div class="ln_solid"></div>
-        <soildata-farmer-address-form (onFormCancel)="newAddress = false" (onFormSubmit)="selected($event)"></soildata-farmer-address-form>
+        <soildata-farmer-address-form (onFormCancel)="newAddress = false" [selectedCounty]="selectedCounty" (onFormSubmit)="selected($event)"></soildata-farmer-address-form>
       </div>
     </div>
     
@@ -81,6 +81,7 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
 })
 export class SoildataAddressBrowserComponent implements OnInit {
   @Input() countyid:number = 0;
+  @Input() selectedCounty:CountyCode;
 
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off

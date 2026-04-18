@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Valida
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TypeForm } from '../soildata.report';
-import { FarmerAddress } from '../soildata.service';
+import { CountyCode, FarmerAddress } from '../soildata.service';
 import { SampleAttribute, SampleAttributeSampleInfoBundle, SampleAttributeType, SampleInfoBundle } from './SampleInfoBundle';
 import { SoilSampleService } from './soil-sample.service';
 
@@ -35,7 +35,7 @@ import { SoilSampleService } from './soil-sample.service';
                       <a class="pull-right" (click)="addressSelectionCanceled()" style="cursor:pointer;">X</a>
                     </div>
                     <h4>Select client from the list or enter a new one</h4><br>   
-                    <soildata-address-browser [countyid]="countyid" [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+                    <soildata-address-browser [countyid]="countyid" [selectedCounty]="selectedCounty" [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
                 </div>
 
 
@@ -57,6 +57,7 @@ import { SoilSampleService } from './soil-sample.service';
 })
 export class AddressBrowserFormElementComponent extends BaseControlValueAccessor<FarmerAddress> implements ControlValueAccessor, OnInit { 
     @Input() countyid:number = 0;
+    @Input() selectedCounty:CountyCode;
     selectedAddress:FarmerAddress;
     addressBrowserOpen = true;
     disabled = false;

@@ -11,7 +11,7 @@
         <div class="form-group">
             <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Client:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <address-browser-form-element [countyid]="countyCode.planningUnitId" formControlName="farmerAddress"></address-browser-form-element>
+                <address-browser-form-element [selectedCounty]="countyCode" [countyid]="countyCode.planningUnitId" formControlName="farmerAddress"></address-browser-form-element>
             </div>
         </div>
 
