@@ -54,8 +54,8 @@ export class SoildataService {
         
       }
       
-      addaddress( address:FarmerAddress ):Observable<FarmerAddress>{
-        return this.http.post<FarmerAddress>(this.location.prepareExternalUrl(this.baseUrl + 'addaddress/'), address)
+      addaddress( address:FarmerAddress, countyid:number = 0 ):Observable<FarmerAddress>{
+        return this.http.post<FarmerAddress>(this.location.prepareExternalUrl(this.baseUrl + 'addaddress/' + countyid), address)
             .pipe(
                 catchError(this.handleError('add', <FarmerAddress>{}))
             );
@@ -295,8 +295,8 @@ export class SoildataService {
         );
       }
 
-      checkAddress(address:FarmerAddress ):Observable<FarmerAddress | null>{
-        var url = this.baseUrl + "checkaddress";
+      checkAddress(address:FarmerAddress, countyCodeId:number = 0 ):Observable<FarmerAddress | null>{
+        var url = this.baseUrl + "checkaddress/" + countyCodeId;
         return this.http.post<FarmerAddress | null>(this.location.prepareExternalUrl(url), address)
         .pipe(
             catchError(this.handleError('pdf', null))

@@ -433,18 +433,22 @@ namespace Kers.Controllers
             }
         }
 
-        [HttpPost("checkaddress")]
+        [HttpPost("checkaddress/{countyid?}")]
         [Authorize]
-        public IActionResult CheckAddress( [FromBody] FarmerAddress address){
+        public IActionResult CheckAddress( [FromBody] FarmerAddress address, int countyid = 0){
             if(address != null){
-                var user = this.CurrentUser();
-                var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
-                address.CountyCodeId = countyCode.CountyID;
+                if(countyid == 0)
+                {
+                    var user = this.CurrentUser();
+                    var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
+                    countyid = countyCode.CountyID;
+                }
+                address.CountyCodeId = countyid;
                 var found = _soilDataContext.FarmerAddress.Where( a => a.First.ToLower().Trim() == address.First.ToLower().Trim() 
                                                                         && a.Last.ToLower().Trim() == address.Last.ToLower().Trim()
                                                                         && a.First != "" 
                                                                         && a.Last != ""
-                                                                        && a.CountyCodeId == countyCode.CountyID
+                                                                        && a.CountyCodeId == countyid
                                                                 ).FirstOrDefault();
                 return new OkObjectResult(found);
             }else{
@@ -454,13 +458,17 @@ namespace Kers.Controllers
         }
 
 
-        [HttpPost("addaddress")]
+        [HttpPost("addaddress/{countyid?}")]
         [Authorize]
-        public IActionResult AddAddress( [FromBody] FarmerAddress address){
+        public IActionResult AddAddress( [FromBody] FarmerAddress address, int countyid = 0){
             if(address != null){
-                var user = this.CurrentUser();
-                var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
-                address.CountyCodeId = countyCode.CountyID;
+                if(countyid == 0)
+                {
+                    var user = this.CurrentUser();
+                    var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
+                    countyid = countyCode.CountyID;
+                }
+                address.CountyCodeId = countyid;
                 address.FarmerID  = Guid.NewGuid().ToString("N");
                 address.UniqueCode = Guid.NewGuid().ToString();
                 _soilDataContext.Add(address); 

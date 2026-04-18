@@ -12,7 +12,7 @@ import { flatMap, startWith, tap } from 'rxjs/operators';
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newAddress" (click)="newAddress = true">+ new address</a>
     </div>
-    <soildata-farmer-address-form *ngIf="newAddress" (onFormCancel)="newAddress=false" (onFormSubmit)="newAddressSubmitted($event)"></soildata-farmer-address-form>
+    <soildata-farmer-address-form *ngIf="newAddress" [selectedCounty]="selectedCounty" (onFormCancel)="newAddress=false" (onFormSubmit)="newAddressSubmitted($event)"></soildata-farmer-address-form>
     <br><br>
     
     
@@ -53,22 +53,6 @@ import { flatMap, startWith, tap } from 'rxjs/operators';
 
 
     </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
       `,

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FarmerAddress, SoildataService } from '../soildata.service';
+import { CountyCode, FarmerAddress, SoildataService } from '../soildata.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { debounce, debounceTime, distinctUntilChanged, mergeMap, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -96,6 +96,7 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
 
 
   @Input() address:FarmerAddress;
+  @Input() selectedCounty:CountyCode;
   addressForm:any;
   coppied = false;
   loading = false;
@@ -131,11 +132,11 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
     this.foundSameAddress$ = first.valueChanges.pipe(
                 debounceTime(500),
                 distinctUntilChanged(),
-                switchMap(_ => this.service.checkAddress(this.addressForm.value as FarmerAddress) ),
+                switchMap(_ => this.service.checkAddress(this.addressForm.value as FarmerAddress, this.selectedCounty.countyID) ),
                 mergeMap( _ => last.valueChanges.pipe(
                     debounceTime(500),
                     distinctUntilChanged(),
-                    switchMap(_ => this.service.checkAddress(this.addressForm.value as FarmerAddress) )), )
+                    switchMap(_ => this.service.checkAddress(this.addressForm.value as FarmerAddress, this.selectedCounty.countyID) )), )
             );
   }
   onCancel(){
@@ -147,7 +148,7 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
 
         
           var newAddress:FarmerAddress = this.addressForm.value;
-          this.service.addaddress( newAddress ).subscribe(
+          this.service.addaddress( newAddress, this.selectedCounty.countyID ).subscribe(
               res => {
                   this.onFormSubmit.emit(res);
               }
