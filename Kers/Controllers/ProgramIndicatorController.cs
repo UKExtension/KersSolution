@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Collections.Frozen;
 
 namespace Kers.Controllers
 {
@@ -204,8 +205,20 @@ namespace Kers.Controllers
             user = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
             var indicatorValues = this.context.ProgramIndicatorValue.
                             Where(p=>p.ProgramIndicator.MajorProgram == program && p.KersUser == user && p.PlanningUnitId == user.RprtngProfile.PlanningUnitId).
-                            OrderBy(o=>o.ProgramIndicator.order);
-            return new OkObjectResult(indicatorValues);
+                            OrderBy(o=>o.ProgramIndicator.order).ToList();
+            //As zero values are not retained, they have to be recovered as in the form only the order matters
+            var indicators = context.ProgramIndicator.Where( i => i.MajorProgramId == id).OrderBy( i => i.order);
+            var vals = new List<ProgramIndicatorValue>();
+            foreach( var ind in indicators)
+            {
+                var IndVal = indicatorValues.Where( v => v.ProgramIndicatorId == ind.Id).FirstOrDefault();
+                ProgramIndicatorValue val = new ProgramIndicatorValue();
+                val.Value = (IndVal == null ? 0 : IndVal.Value);
+                val.KersUserId = user.Id;
+                val.ProgramIndicatorId = ind.Id;
+                vals.Add(val); 
+            }
+            return new OkObjectResult(vals);
             
         }
         [HttpPut("valuesupdate/{id}")]
@@ -214,27 +227,44 @@ namespace Kers.Controllers
             var user = CurrentUser();
             user = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
             foreach(var val in indicatoValues){
-                if(val.Value != 0){
+                //Check if there is some value that is intended to be changed to zero
+                bool stillWithValue = false;
+                if( val.Value == 0)
+                {
+                  stillWithValue = this.context.
+                                ProgramIndicatorValue.Where(l=>l.KersUser == user && l.PlanningUnitId == user.RprtngProfile.PlanningUnitId && l.ProgramIndicatorId == val.ProgramIndicatorId && l.Value != 0).Any();   
+                }
+                //Process with changing the value
+                if( val.Value != 0 || stillWithValue){
                     var v = this.context.
                                 ProgramIndicatorValue.Where(l=>l.KersUser == user && l.PlanningUnitId == user.RprtngProfile.PlanningUnitId && l.ProgramIndicatorId == val.ProgramIndicatorId).
                                 FirstOrDefault();
+                    
+                    if(v == null || v.Value != val.Value)
+                    {  
+                        ProgramIndicatorValueEntry entry = new ProgramIndicatorValueEntry();
+                        entry.KersUser = user;
+                        entry.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
+                        entry.ProgramIndicatorId = val.ProgramIndicatorId;
+                        entry.CreatedDateTime = DateTimeOffset.Now;
+                        entry.Value = val.Value;
+                        context.Add(entry); 
+                    }
+                    
+                    
                     if(v==null){
                         val.KersUser = user;
-                        val.PlanningUnitId = val.KersUser.RprtngProfile.PlanningUnitId;
+                        val.PlanningUnitId = user.RprtngProfile.PlanningUnitId;
                         val.CreatedDateTime = DateTimeOffset.Now;
                         val.LastModifiedDateTime = DateTimeOffset.Now;
                         this.context.ProgramIndicatorValue.Add(val);
                     }else{
-                        v.LastModifiedDateTime = DateTimeOffset.Now;
-                        v.Value = val.Value;
+                        if(v.Value != val.Value)
+                        {
+                            v.LastModifiedDateTime = DateTimeOffset.Now;
+                            v.Value = val.Value;
+                        }
                     }
-                    ProgramIndicatorValueEntry entry = new ProgramIndicatorValueEntry();
-                    entry.KersUser = user;
-                    entry.PlanningUnitId = val.KersUser.RprtngProfile.PlanningUnitId;
-                    entry.ProgramIndicatorId = val.ProgramIndicatorId;
-                    entry.CreatedDateTime = DateTimeOffset.Now;
-                    entry.Value = val.Value;
-                    context.Add(entry);
                 }
             }
             this.context.SaveChanges();
