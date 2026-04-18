@@ -139,6 +139,7 @@ namespace Kers.Models.Abstract
         List<Message> ProcessMessageQueue(IConfiguration configuration, IWebHostEnvironment environment);
         bool ScheduleTrainingMessage(string type, Training training, KersUser To, DateTimeOffset? ScheduledFor = null);
         public bool ScheduleLadderMessage(string type, LadderApplication application, KersUser To);
+        public bool ScheduleLadderReturnedMessage(string type, LadderApplication application, int ToId, int FromId);
     }
     public interface IFiscalYearRepository: IEntityBaseRepository<FiscalYear>{
         FiscalYear currentFiscalYear(string type, Boolean includeExtendedTo = false, Boolean afterAvailableAt = false);

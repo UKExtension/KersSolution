@@ -204,6 +204,7 @@ namespace Kers.Controllers
                 if( Previous == null ){
                     application.Draft = true;
                     application.LastStageId = null;
+                    this.messageRepository.ScheduleLadderReturnedMessage("LADDERRETURNED", application, application.KersUserId, this.CurrentUser().Id);
                 }else{
                     var NextStage = new LadderApplicationStage();
                     NextStage.LadderStage = Previous;
