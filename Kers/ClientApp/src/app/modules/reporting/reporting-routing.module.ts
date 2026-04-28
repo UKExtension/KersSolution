@@ -126,6 +126,10 @@ const reportingRoutes: Routes = [
             loadChildren: () => import('./modules/soildata/soildata.module').then(m => m.SoildataModule)
           },
           {
+            path: 'hay', 
+            loadChildren: () => import('./modules/hay/hay.module').then(m => m.HayModule)
+          },
+          {
             path: 'activity/:id',
             component: ReportingDetailComponent,
           },
