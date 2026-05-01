@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { HayHomeComponent } from './hay-home.component';
 import { HayRoutingModule } from './hay-routing.module';
 import { HaySampleFormComponent } from './sample/hay-sample-form.component';
+import { SoildataModule } from '../soildata/soildata.module';
+import { HaySampleFormElementComponent } from './sample/hay-sample-form-element.component';
 
 
 
@@ -19,11 +21,13 @@ import { HaySampleFormComponent } from './sample/hay-sample-form.component';
     CommonModule,
     NgSelectModule,
     FormsModule,
-    HayRoutingModule
+    HayRoutingModule,
+    SoildataModule
   ],
   declarations: [
     HayHomeComponent,
-    HaySampleFormComponent
+    HaySampleFormComponent,
+    HaySampleFormElementComponent
   ]
 })
 export class HayModule { }

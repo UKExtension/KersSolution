@@ -7,7 +7,7 @@ import { debounceTime, distinctUntilChanged, map, mergeMap, switchMap, tap } fro
 
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import { SampleInfoBundle } from '../../soildata/sample/SampleInfoBundle';
-import { FarmerAddress } from '../../soildata/soildata.service';
+import { CountyCode, FarmerAddress } from '../../soildata/soildata.service';
 
 @Component({
   selector: 'hay-sample-form',
@@ -28,11 +28,14 @@ import { FarmerAddress } from '../../soildata/soildata.service';
 })
 export class HaySampleFormComponent implements OnInit {
 
-  @Input() isThisACopy:boolean = false;
+  @Input() countyCode:CountyCode;
   @Input() isThisAltCrop:boolean = false;
 
   selectedAddress!: FarmerAddress;
-
+  testTypes:Array<any> = [
+    {value: 1, label: 'DA Mineral analysis ($12)'},
+    {value: 2, label: 'MW Mineral analysis ($17)'}
+  ]
   soilSampleForm:any;
 
   loading = true;
@@ -45,8 +48,8 @@ export class HaySampleFormComponent implements OnInit {
         firstDayOfWeek: 'su'
     };
 
-  get sampleInfoBundles() {
-    return this.soilSampleForm.get('sampleInfoBundles') as FormArray;
+  get haySamples() {
+    return this.soilSampleForm.get('haySamples') as FormArray;
   }
 
  
@@ -88,12 +91,10 @@ export class HaySampleFormComponent implements OnInit {
                   isRange: false, singleDate: {jsDate: date}
                             }, Validators.required],
                 billingTypeId: [1],
-                coSamnum: ["", [Validators.maxLength(5), Validators.required]],
                 optionalTests: '',
-                acres: [""],
                 optionalInfo: [""],
                 privateNote: [""],
-                sampleInfoBundles: this.fb.array([])
+                haySamples: this.fb.array([])
             }
           );
 
@@ -109,17 +110,7 @@ export class HaySampleFormComponent implements OnInit {
 
 
   prepereAltCrop(){
-    //this.soilSampleForm.controls["farmerAddress"].disable();
-    //this.soilSampleForm.controls["ownerID"].disable();
-    this.soilSampleForm.controls["sampleLabelCreated"].disable();
-    this.soilSampleForm.controls["billingTypeId"].disable();
-    this.soilSampleForm.controls["coSamnum"].disable();
-    //this.soilSampleForm.controls["acres"].disable();
-    this.soilSampleForm.controls["optionalTests"].disable();
-    //this.soilSampleForm.controls["optionalInfo"].disable();
-    for( var smple of this.sampleInfoBundles.controls){
-      if(smple.value["purposeId"] != 2) smple.disable();
-    }
+    
   }
   prepereEdit(){
     
@@ -136,12 +127,12 @@ export class HaySampleFormComponent implements OnInit {
         );
      
     
-    this.sampleInfoBundles.push(group);
+    this.haySamples.push(group);
   }
 
 
   cropRemoved(event:number){
-    this.sampleInfoBundles.removeAt(event);
+    this.haySamples.removeAt(event);
   }
 
 
