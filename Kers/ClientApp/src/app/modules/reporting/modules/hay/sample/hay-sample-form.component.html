@@ -3,7 +3,7 @@
 <div class="row" *ngIf="!loading">
     <div *ngIf="!sample"><reporting-display-help id="21"></reporting-display-help></div>
     <div class="col-sm-offset-3 col-sm-9">
-        <h2 *ngIf="!sample">New Soil Sample Info</h2><h2 *ngIf="sample">Update Soil Sample Info</h2><br><br>
+        <h2 *ngIf="!sample">New Hay Sample Info</h2><h2 *ngIf="sample">Update Soil Sample Info</h2><br><br>
     </div>
 
     <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="soilSampleForm">
@@ -29,27 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId">Billing Options:</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <select name="billingTypeId" formControlName="billingTypeId" class="form-control col-md-7 col-xs-12">
-                    <option *ngFor="let billingType of billingTypes$ | async" [value]="billingType.id">{{billingType.name}}</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="optionalTests">Optional Tests:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <ng-select
-                    id="optionalTests"
-                    formControlName="optionalTests"
-                    [items]="testTypes"
-                    [multiple]="true"
-                    [hideSelected]="true"
-                    placeholder = "(select any/all that apply)">
-                </ng-select>
-            </div>
-        </div>
+        
         <div class="form-group">
             <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Optional Info:</label>           
             <div class="col-md-9 col-sm-9 col-xs-12">
@@ -74,6 +54,14 @@
                     <br>
                 </div>
                 <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add sample</a>
+            </div>
+        </div><br><br><br>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId">Billing Options:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <select name="billingTypeId" formControlName="billingTypeId" class="form-control col-md-7 col-xs-12">
+                    <option *ngFor="let billingType of billingTypes$ | async" [value]="billingType.id">{{billingType.name}}</option>
+                </select>
             </div>
         </div>
 

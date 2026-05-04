@@ -32,10 +32,7 @@ export class HaySampleFormComponent implements OnInit {
   @Input() isThisAltCrop:boolean = false;
 
   selectedAddress!: FarmerAddress;
-  testTypes:Array<any> = [
-    {value: 1, label: 'DA Mineral analysis ($12)'},
-    {value: 2, label: 'MW Mineral analysis ($17)'}
-  ]
+
   soilSampleForm:any;
 
   loading = true;
@@ -100,10 +97,7 @@ export class HaySampleFormComponent implements OnInit {
 
 
 
-
-    
-    
-          var sampleControl = this.soilSampleForm.get('coSamnum') as FormControl;
+          this.addSegment();
          
 
   }
