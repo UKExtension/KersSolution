@@ -240,6 +240,44 @@ namespace Kers.Controllers
 				pdfCanvas.DrawLine(29, 80, width - 29, 80, thinLinePaint);
 			}
 			
+			/* 
+			Examples of barcode generation
+			
+			pdfCanvas.DrawText("UPC-A", 100, 12, getPaint(12.0f, 1));
+			var b = new Barcode();
+			b.IncludeLabel = false;
+			var img = b.Encode(BarcodeStandard.Type.UpcA, "000000123456", SKColors.Black, SKColors.White, 190, 80);
+			pdfCanvas.DrawImage(img, 100, 15);
+
+
+			pdfCanvas.DrawText("Code128A", 100, 119, getPaint(12.0f, 1));
+			var b1 = new Barcode();
+			b1.IncludeLabel = false;
+			var img1 = b1.Encode(BarcodeStandard.Type.Code128A, "000000123456", SKColors.Black, SKColors.White, 190, 80);
+			pdfCanvas.DrawImage(img1, 100, 125);
+
+
+			pdfCanvas.DrawText("Codabar", 100, 219, getPaint(12.0f, 1));
+			var b2 = new Barcode();
+			b2.IncludeLabel = false;
+			var img2 = b2.Encode(BarcodeStandard.Type.Codabar, "A0000123456A", SKColors.Black, SKColors.White, 190, 80);
+			pdfCanvas.DrawImage(img1, 100, 225);
+
+
+			pdfCanvas.DrawText("UpcE", 100, 319, getPaint(12.0f, 1));
+			var b3 = new Barcode();
+			b3.IncludeLabel = false;
+			var img3 = b3.Encode(BarcodeStandard.Type.UpcE, "00123456", SKColors.Black, SKColors.White, 190, 80);
+			pdfCanvas.DrawImage(img1, 100, 325);
+
+
+			pdfCanvas.DrawText("It should read: 000000123456", 100, 519, getPaint(14.0f, 1));
+
+			
+			
+			 */
+
+
 		}
 
 		private void PrintPageInfo( SKCanvas pdfCanvas, SoilReport report ){
