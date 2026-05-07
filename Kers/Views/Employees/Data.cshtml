@@ -25,3 +25,5 @@
     
 </div>
 @await Html.PartialAsync("TablePartial")
+<br>
+@if(Model.LastUpdated != null){ <small>Last Updated: @Model.LastUpdated?.ToString("MMMM dd, yyyy hh:mm tt")</small> } 

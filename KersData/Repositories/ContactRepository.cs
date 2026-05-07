@@ -523,7 +523,7 @@ namespace Kers.Models.Repositories
                     i++;
                 }
 
-
+                table.LastUpdated = DateTime.Now;
                 // Save cache for longer period in case of not active fiscal years
                 if(cacheDaysSpan == 0){
                     cacheDaysSpan = 350;
