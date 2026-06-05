@@ -218,6 +218,7 @@ namespace Kers
                 services.AddSingleton<IScheduledTask, SnapPartnersOfACountyTask>();
                 services.AddSingleton<IScheduledTask, MessageProcessingTask>();
                 services.AddSingleton<IScheduledTask,TrainingsRemindersTask>();
+                services.AddSingleton<IScheduledTask,UpdateUsersTask>();
 
             } 
             services.TryAddSingleton<IConfiguration>(Configuration);

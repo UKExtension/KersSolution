@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FarmerAddress } from '../soildata.service';
+import { CountyCode, FarmerAddress } from '../soildata.service';
 
 @Component({
   selector: 'soildata-farmer-address-detail',
@@ -11,7 +11,7 @@ import { FarmerAddress } from '../soildata.service';
             <soildata-list-address [address]="address"></soildata-list-address>
           </ng-container>
           <div class="col-xs-12" *ngIf="rowEdit">
-              <soildata-farmer-address-form [address]="address" (onFormCancel)="default()" (onFormSubmit)="addressSubmitted($event)"></soildata-farmer-address-form>
+              <soildata-farmer-address-form [address]="address" [selectedCounty]="selectedCounty" (onFormCancel)="default()" (onFormSubmit)="addressSubmitted($event)"></soildata-farmer-address-form>
           </div>
 
           
@@ -27,6 +27,7 @@ import { FarmerAddress } from '../soildata.service';
 export class SoildataFarmerAddressDetailComponent implements OnInit {
 
   @Input() address: FarmerAddress;
+  @Input() selectedCounty:CountyCode;
 
   rowDefault = true;
   rowEdit = false;

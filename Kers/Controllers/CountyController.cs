@@ -252,6 +252,8 @@ namespace Kers.Controllers
                                 &&
                                 r.LastRevision.CountyVehicleId == vehicleId
                                 &&
+                                r.LastRevision.VehicleType == 2
+                                &&
                                 r.ExpenseDate >= start
                                 &&
                                 r.ExpenseDate <= end

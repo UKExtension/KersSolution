@@ -40,7 +40,7 @@ import { MileageBundle } from '../../../mileage/mileage';
 export class CountyVehicleTripComponent implements OnInit {
   @Input() expense:MileageBundle;
   showDetails:boolean = false;
-  totalMiles:number = 1;
+  totalMiles:number = 0;
 
   constructor() { }
 

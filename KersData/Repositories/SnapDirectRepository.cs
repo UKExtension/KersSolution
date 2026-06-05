@@ -254,10 +254,18 @@ namespace Kers.Models.Repositories
                     }
                 }
 
+                keys.Add("Male");
+                keys.Add("Female");
+
                 result = string.Join(",", keys.ToArray()) + "\n";
 
 
                 var revs = SnapData( fiscalYear).Where( r => r.Revision.SnapDirect != null).Select( a => a.Revision);
+                double males = revs.Sum( m => m.Male);
+                double females = revs.Sum( m => m.Female);
+                double malesRatio = males / (males + females);
+                double femalesRatio = females / (males + females);
+                
 
                 var vals = revs.Where(r => r.SnapDirect != null).Select( r => r.SnapDirect.SnapDirectAgesAudienceValues);
 
@@ -272,14 +280,19 @@ namespace Kers.Models.Repositories
                 
                 foreach( var category in categories){
                     var row = string.Concat( "\"", category.Name, "\",");
+                    var SummedAudience = 0;
                     foreach( var a in ages){
-                        row += data.Where( d => d.SnapDirectAgesId == a.Id && d.SnapDirectAudienceId == category.Id).Sum( r => r.Value).ToString() + ",";
+                        var val = data.Where( d => d.SnapDirectAgesId == a.Id && d.SnapDirectAudienceId == category.Id).Sum( r => r.Value);
+                        SummedAudience += val;
+                        row += val.ToString() + ",";
                     }
                     foreach(var race in races){
                         foreach( var ethn in ethnicities){
                             row += RaceValues[getAudienceDictionaryCode(category.Id, race.Id, ethn.Id)] + ",";
                         }
                     }
+                    row += ( (SummedAudience * malesRatio)).ToString("F0") + ",";
+                    row += (SummedAudience * femalesRatio).ToString("F0") + ",";
                     result += row + "\n";
                 }
                 result += "Updated: " + DateTime.Now.ToString();
@@ -324,6 +337,14 @@ namespace Kers.Models.Repositories
                     
                 }
             }
+            return Results;
+        }
+
+        private Dictionary<string, float> GetGenderPerProject(
+                                                IEnumerable<ActivityRevision> revs, 
+                                                int CategoryId)
+        {
+            var Results = new Dictionary<string, float>();
             return Results;
         }
 

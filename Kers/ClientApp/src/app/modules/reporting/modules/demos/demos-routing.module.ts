@@ -6,6 +6,7 @@ import { StoryDemoComponent } from './story-demo.component';
 import { IndicatorsDemoComponent } from './indicators-demo.component';
 import { PlansofworkFormDemoComponent } from './plansofwork-form-demo.component';
 import { PlansofworkFormDemo1Component } from './plansofwork-form-demo1.component';
+import { IndicatorsDemoFormComponent } from './indicators-demo-form.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,7 @@ const routes: Routes = [
     },
     {
       path: 'indicators',
-      component: IndicatorsDemoComponent
+      component: IndicatorsDemoFormComponent
     },
   {
     path: 'plans',

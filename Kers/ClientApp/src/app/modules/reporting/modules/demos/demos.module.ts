@@ -5,6 +5,7 @@ import { DemosRoutingModule } from './demos-routing.module';
 import { DemoComponent } from './demo.component';
 import { StoryDemoComponent } from './story-demo.component';
 import { IndicatorsDemoComponent } from './indicators-demo.component';
+import { IndicatorsDemoFormComponent } from './indicators-demo-form.component';
 import { StoryModule } from '../story/story.module';
 import { SharedModule } from '../../shared/shared.module';
 import { IndicatorsModule } from '../indicators/indicators.module';
@@ -20,6 +21,7 @@ import { PlansofworkFormDemo1Component } from './plansofwork-form-demo1.componen
     DemoComponent,
     StoryDemoComponent,
     IndicatorsDemoComponent,
+    IndicatorsDemoFormComponent,
     PlansofworkFormDemoComponent,
     PlansofworkFormDemo1Component
   ],

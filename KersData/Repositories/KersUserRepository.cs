@@ -5,9 +5,7 @@ using Kers.Models.Abstract;
 using Kers.Models.Entities.KERSmain;
 using Kers.Models.Entities.KERScore;
 using Kers.Models.Contexts;
-using System.Text;
-using System;
-using System.Diagnostics;
+using System.DirectoryServices;
 using System.Threading.Tasks;
 using Kers.Models.ViewModels;
 
@@ -56,6 +54,61 @@ namespace Kers.Models.Repositories
             }
             return null;
         }
+
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        public bool IsInAD(string lbid)
+        {
+
+          
+            string domainPath = "LDAP://DC=ad,DC=uky,DC=edu"; // Change to your AD path
+            string userLogonName = lbid; // The sAMAccountName to search for
+
+
+            using (DirectoryEntry entry = new DirectoryEntry(domainPath))
+            using (DirectorySearcher searcher = new DirectorySearcher(entry))
+            {
+                // Filter to find the user by sAMAccountName
+                searcher.Filter = $"(&(objectClass=user)(sAMAccountName={EscapeLdapSearchFilter(userLogonName)}))";
+                searcher.PropertiesToLoad.Add("distinguishedName"); // Load minimal properties for performance
+                searcher.SearchScope = SearchScope.Subtree;
+
+                SearchResult result = searcher.FindOne();
+
+                if (result != null)
+                {
+
+
+                    //Console.WriteLine($"User '{userLogonName}' exists in AD.");
+                    //Console.WriteLine($"DN: {result.Properties["distinguishedName"][0]}");
+
+                    return true;
+
+                }
+                else
+                {
+                    //Console.WriteLine($"User '{userLogonName}' does NOT exist in AD.");
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Escapes special characters in LDAP search filters to prevent injection issues.
+        /// </summary>
+        static string EscapeLdapSearchFilter(string input)
+        {
+            if (input == null) return null;
+            return input
+                .Replace("\\", "\\5c")
+                .Replace("*", "\\2a")
+                .Replace("(", "\\28")
+                .Replace(")", "\\29")
+                .Replace("\0", "\\00");
+        }
+
+
+
 
         public KersUser createUserFromProfile(zEmpRptProfile profile){
             var user = new KersUser();

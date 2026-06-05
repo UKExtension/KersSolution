@@ -66,7 +66,7 @@ namespace Kers.Controllers
 											.Include( b => b.TypeForm)
 											.Include( b => b.FarmerForReport)
 											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
-											.OrderBy( b => b.CoSamnum)
+											.OrderBy( b => b.CoSamnum).AsSplitQuery()
 											.ToList();
 					foreach( var sample in samples){
 						if( sample != null){
@@ -175,7 +175,7 @@ namespace Kers.Controllers
 											.Include( b => b.PlanningUnit)
 											.Include( b => b.TypeForm)
 											.Include( b => b.FarmerForReport)
-											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus)
+											.Include( b => b.LastStatus).ThenInclude( s => s.SoilReportStatus).AsSplitQuery()
 											.FirstOrDefault();
 					if( sample != null){
 						foreach( var report in sample.Reports){
@@ -222,8 +222,8 @@ namespace Kers.Controllers
 		private void ReportHeader(SKCanvas pdfCanvas, SoilReport report, SoilReportBundle bundle){
 			//Page Info
 			PrintPageInfo(pdfCanvas, report);
-			//Logo
-			addBitmap(pdfCanvas);
+			//Logo 384x76 => 192 x 38
+			addBitmap(pdfCanvas, "MgRegSign.png", 207, 37, 399, 75);
 			//Header Right
 			pdfCanvas.DrawText("Soil Test Report", 452, 42, getPaint(17.0f, 1));
 			//if(bundle.LabTestsReady != null){
@@ -232,7 +232,7 @@ namespace Kers.Controllers
 			//County Office Address
 			var unit =  _context.PlanningUnit.Where( u => u.Id == bundle.PlanningUnit.PlanningUnitId).FirstOrDefault();  
 			if( unit != null){
-				pdfCanvas.DrawText(unit.FullName??"", 29, 31, getPaint(12.0f, 1));
+				pdfCanvas.DrawText(unit.FullName??"", 29, 31, getPaint(10.0f, 1));
 				pdfCanvas.DrawText(unit.Address??"", 29, 44, getPaint(10.0f));
 				pdfCanvas.DrawText(unit.City??"" + ", KY " + unit.Zip, 29, 56, getPaint(10.0f));
 				pdfCanvas.DrawText(unit.Phone??"", 29, 68, getPaint(10.0f));
@@ -909,7 +909,7 @@ namespace Kers.Controllers
 											.Include( b => b.FarmerForReport)
 											.Include( b => b.OptionalTestSoilReportBundles).ThenInclude( o => o.OptionalTest)
 											.Include( b => b.LastStatus)
-											.OrderBy( b => b.CoSamnum)
+											.OrderBy( b => b.CoSamnum).AsSplitQuery()
 											.ToList();
 
 

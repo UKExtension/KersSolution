@@ -204,6 +204,9 @@ namespace Kers.Controllers
                 if( Previous == null ){
                     application.Draft = true;
                     application.LastStageId = null;
+                    // Send a message that the application is returned back to the agent
+                    // TO DO: Add functionality to include the meessage of the issue into the email
+                    //this.messageRepository.ScheduleLadderReturnedMessage("LADDERRETURNED", application, application.KersUserId, this.CurrentUser().Id);
                 }else{
                     var NextStage = new LadderApplicationStage();
                     NextStage.LadderStage = Previous;
@@ -392,6 +395,7 @@ namespace Kers.Controllers
                             .FirstOrDefault();
 
             if(LadderApplication != null ){
+                entity.Track = LadderApplication.Track;
                 entity.LadderLevelId = LadderApplication.LadderLevelId;
                 entity.PositionNumber = LadderApplication.PositionNumber;
                 entity.ProgramOfStudy = LadderApplication.ProgramOfStudy;

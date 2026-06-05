@@ -3,7 +3,7 @@ import {Location} from '@angular/common';
 import {NavigationService, NavSection} from '../reporting-navigation/navigation.service';
 import {ProfileService, Profile} from '../reporting-profile/profile.service';
 import {ReportingService} from './reporting.service';
-import {GoogleAnalyticsEventsService} from "../../core/google-analytics-events.service";
+//import {GoogleAnalyticsEventsService} from "../../core/google-analytics-events.service";
 import {Router, NavigationEnd} from "@angular/router";
 import {AuthenticationService} from '../../../authentication/authentication.service';
 declare let ga:Function;
@@ -35,7 +35,7 @@ export class ReportingComponent implements OnInit {
                 private reportingService: ReportingService,
                 private location:Location,
                 public router: Router,
-                public googleAnalyticsEventsService: GoogleAnalyticsEventsService
+                //public googleAnalyticsEventsService: GoogleAnalyticsEventsService
                 ) 
     {
         //navService.getNavigation().then( navigation => this.navigation = navigation );
@@ -43,12 +43,15 @@ export class ReportingComponent implements OnInit {
         this.title = this.reportingService.getTitle();
         this.ukLogoSrc = location.prepareExternalUrl('/assets/images/UK.svg');
         this.profilePicSrc = location.prepareExternalUrl('/assets/images/user.png');
+       /* 
         this.router.events.subscribe(event => {
         if (event instanceof NavigationEnd) {
             ga('set', 'page', event.urlAfterRedirects);
             ga('send', 'pageview');
         }
         }); 
+
+         */
         this.layoutClasses['nav-md'] = true;
         this.layoutClasses['nav-sm'] = false;
         this.logo = location.prepareExternalUrl('/assets/images/UKKSULogos.png');

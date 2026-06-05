@@ -109,7 +109,7 @@ namespace Kers.Controllers
                         .Include( b => b.TypeForm)
                         .Include( b => b.FarmerAddress)
                         .Include( b => b.SampleInfoBundles).ThenInclude( i => i.SampleAttributeSampleInfoBundles)
-                        .Include( b => b.OptionalTestSoilReportBundles);
+                        .Include( b => b.OptionalTestSoilReportBundles).AsSplitQuery();
             IOrderedQueryable<SoilReportBundle> orderedBundles;
             if(criteria.Order == "smpl"){
                 orderedBundles = bundles.OrderByDescending( s => s.CoSamnum);
@@ -226,7 +226,8 @@ namespace Kers.Controllers
             }else{
                 addresses = addresses.OrderBy( s => s.Last).ThenBy( s => s.First);
             }
-            return new OkObjectResult( new {count = addresses.Count(), data = addresses.Take(criteria.Amount)} );
+            var adr = addresses.ToList();
+            return new OkObjectResult( new {count = adr.Count(), data = adr.Take(criteria.Amount)} );
         }
 
         public bool isUpdateRunning(){
@@ -432,18 +433,22 @@ namespace Kers.Controllers
             }
         }
 
-        [HttpPost("checkaddress")]
+        [HttpPost("checkaddress/{countyid?}")]
         [Authorize]
-        public IActionResult CheckAddress( [FromBody] FarmerAddress address){
+        public IActionResult CheckAddress( [FromBody] FarmerAddress address, int countyid = 0){
             if(address != null){
-                var user = this.CurrentUser();
-                var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
-                address.CountyCodeId = countyCode.CountyID;
+                if(countyid == 0)
+                {
+                    var user = this.CurrentUser();
+                    var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
+                    countyid = countyCode.CountyID;
+                }
+                address.CountyCodeId = countyid;
                 var found = _soilDataContext.FarmerAddress.Where( a => a.First.ToLower().Trim() == address.First.ToLower().Trim() 
                                                                         && a.Last.ToLower().Trim() == address.Last.ToLower().Trim()
                                                                         && a.First != "" 
                                                                         && a.Last != ""
-                                                                        && a.CountyCodeId == countyCode.CountyID
+                                                                        && a.CountyCodeId == countyid
                                                                 ).FirstOrDefault();
                 return new OkObjectResult(found);
             }else{
@@ -453,13 +458,17 @@ namespace Kers.Controllers
         }
 
 
-        [HttpPost("addaddress")]
+        [HttpPost("addaddress/{countyid?}")]
         [Authorize]
-        public IActionResult AddAddress( [FromBody] FarmerAddress address){
+        public IActionResult AddAddress( [FromBody] FarmerAddress address, int countyid = 0){
             if(address != null){
-                var user = this.CurrentUser();
-                var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
-                address.CountyCodeId = countyCode.CountyID;
+                if(countyid == 0)
+                {
+                    var user = this.CurrentUser();
+                    var countyCode = _soilDataContext.CountyCodes.FirstOrDefault( c => c.PlanningUnitId == user.RprtngProfile.PlanningUnitId);
+                    countyid = countyCode.CountyID;
+                }
+                address.CountyCodeId = countyid;
                 address.FarmerID  = Guid.NewGuid().ToString("N");
                 address.UniqueCode = Guid.NewGuid().ToString();
                 _soilDataContext.Add(address); 
@@ -660,12 +669,26 @@ namespace Kers.Controllers
             var FormTypes = this._soilDataContext.TypeForm.OrderBy( t => t.Code).ToListAsync();
             return new OkObjectResult(await FormTypes);
         }
+
+        //County info from KERSCore PlanningUnit Id
         [HttpGet("countyinfo/{countyid?}")]
         public async Task<IActionResult> CountyInfo(int countyid = 0){
             if( countyid == 0 ){
                 countyid = this.CurrentUser().RprtngProfile.PlanningUnitId;
             }
             var CurrentCountyCode = await this._soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == countyid).FirstOrDefaultAsync();
+            if( CurrentCountyCode == null) return new StatusCodeResult(500);
+            return new OkObjectResult(CurrentCountyCode);
+        }
+
+        // County Info from SOILDATA CountyCodes Id
+        [HttpGet("getcountyinfo/{id?}")]
+        public async Task<IActionResult> GetCountyInfo(int id = 0){
+            if( id == 0 ){
+                var unit = this.CurrentUser().RprtngProfile.PlanningUnitId;
+                return new OkObjectResult(await this._soilDataContext.CountyCodes.Where( c => c.PlanningUnitId == unit).FirstOrDefaultAsync());
+            }
+            var CurrentCountyCode = await this._soilDataContext.CountyCodes.Where( c => c.Id == id).FirstOrDefaultAsync();
             if( CurrentCountyCode == null) return new StatusCodeResult(500);
             return new OkObjectResult(CurrentCountyCode);
         }

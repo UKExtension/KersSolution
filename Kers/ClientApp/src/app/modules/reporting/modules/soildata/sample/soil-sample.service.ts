@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SoilReportBundle, TypeForm } from '../soildata.report';
 import { BillingType, OptionalTest, SampleAttribute, SampleAttributeType } from './SampleInfoBundle';
+import { CountyCode } from '../soildata.service';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +69,25 @@ export class SoilSampleService {
               catchError(this.handleError('optionaltests', []))
           );
     }
+
+    // County Info from KERSCore PlanningUnit Id
+    getcountycode(planningUnitId:number):Observable<CountyCode>{
+      var url = this.baseUrl + "getcountycode/" + planningUnitId;
+      return this.http.get<CountyCode>(this.location.prepareExternalUrl(url))
+          .pipe(
+              catchError(this.handleError('get county code', null))
+          );
+    }
+    // County Info from SOILDATA CountyCodes Id
+    getcountycodebyid(id:number):Observable<CountyCode>{
+      var url = this.baseUrl + "getcountycodebyid/" + id;
+      return this.http.get<CountyCode>(this.location.prepareExternalUrl(url))
+          .pipe(
+              catchError(this.handleError('get county code', null))
+          );
+    }
+
+
     addsample( sample:SoilReportBundle ):Observable<SoilReportBundle>{
         return this.http.post<SoilReportBundle>(this.location.prepareExternalUrl(this.baseUrl + 'addsample'), sample)
             .pipe(
@@ -75,11 +95,11 @@ export class SoilSampleService {
             );
     }
 
-    checkCoSamNum( val:string ):Observable< boolean | null >{
-        var url = this.baseUrl + "checksamnum";
+    checkCoSamNum( val:string, countyCodeId:number = 0 ):Observable< boolean | null >{
+        var url = this.baseUrl + "checksamnum/" + countyCodeId;
         return this.http.post<boolean | null>(this.location.prepareExternalUrl(url), {coSamNum: val})
         .pipe(
-            catchError(this.handleError('pdf', null))
+            catchError(this.handleError('check county sample number', null))
         );
     }
 

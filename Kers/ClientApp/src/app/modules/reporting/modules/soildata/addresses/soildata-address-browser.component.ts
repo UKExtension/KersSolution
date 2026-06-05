@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
-import { FarmerAddress, SoildataService, FarmerAddressSearchResult } from '../soildata.service';
+import { FarmerAddress, SoildataService, FarmerAddressSearchResult, CountyCode } from '../soildata.service';
 import { Observable, Subject } from 'rxjs';
 import { FarmerAddressSearchCriteria } from '../soildata.report';
 import { startWith, mergeMap, tap } from 'rxjs/operators';
@@ -8,7 +8,6 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
   selector: 'soildata-address-browser',
   template: `
     <div *ngIf="close" class="ln_solid"></div>
-
     <div class="row" *ngIf="addresses$ | async as addresses">
       <div *ngIf="close" class="col-xs-12" style="margin-bottom: 30px;">
         <a class="btn btn-info btn-xs pull-right" (click)="canceled()">close</a>
@@ -32,8 +31,8 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
 
       </div>
       <loading *ngIf="loading"></loading>
-      <div *ngIf="!loading">
-        <div class="col-lg-4 col-md-6 col-xs-12" *ngFor="let address of addresses.data"><br>
+      <div *ngIf="!loading" class="flex-container">
+        <div class="flex-item" *ngFor="let address of addresses.data"><br>
           <soildata-list-address [address]="address" [brief]="false" [select]="true" [edit]="true" (onSelected)="selected($event)"></soildata-list-address>
         </div>
       </div>
@@ -56,16 +55,33 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
       </div>
       <div class="col-xs-12" *ngIf="newAddress">
         <div class="ln_solid"></div>
-        <soildata-farmer-address-form (onFormCancel)="newAddress = false" (onFormSubmit)="selected($event)"></soildata-farmer-address-form>
+        <soildata-farmer-address-form (onFormCancel)="newAddress = false" [selectedCounty]="selectedCounty" (onFormSubmit)="selected($event)"></soildata-farmer-address-form>
       </div>
     </div>
     
     <div *ngIf="close" class="ln_solid"></div>
   `,
-  styles: []
+  styles: [`
+    .flex-container{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      clear:both;
+      margin: 60px 8px 10px 18px;
+    }
+    .flex-item{
+      flex-basis: 300px;
+      flex-grow: 1;
+      flex-shrink: 1;
+      max-width: 350px;
+    }
+    
+    
+    `]
 })
 export class SoildataAddressBrowserComponent implements OnInit {
-
+  @Input() countyid:number = 0;
+  @Input() selectedCounty:CountyCode;
 
   refresh: Subject<string>; // For load/reload
   loading: boolean = true; // Turn spinner on and off
@@ -98,7 +114,7 @@ export class SoildataAddressBrowserComponent implements OnInit {
     this.addresses$ = this.refresh.asObservable()
       .pipe(
         startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        mergeMap(_ => this.service.getCustomAddresses(this.criteria)), // Get some items
+        mergeMap(_ => this.service.getCustomAddresses(this.criteria, this.countyid)), // Get some items
         tap(_ => this.loading = false) // Turn off the spinner
       );
   }

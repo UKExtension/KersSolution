@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FarmerAddress, FarmerAddressSearchResult, SoildataService } from './../soildata.service';
+import { CountyCode, FarmerAddress, FarmerAddressSearchResult, SoildataService } from './../soildata.service';
 import { Observable, Subject } from 'rxjs';
 import { FarmerAddressSearchCriteria } from '../soildata.report';
 import { flatMap, startWith, tap } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { flatMap, startWith, tap } from 'rxjs/operators';
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newAddress" (click)="newAddress = true">+ new address</a>
     </div>
-    <soildata-farmer-address-form *ngIf="newAddress" (onFormCancel)="newAddress=false" (onFormSubmit)="newAddressSubmitted($event)"></soildata-farmer-address-form>
+    <soildata-farmer-address-form *ngIf="newAddress" [selectedCounty]="selectedCounty" (onFormCancel)="newAddress=false" (onFormSubmit)="newAddressSubmitted($event)"></soildata-farmer-address-form>
     <br><br>
     
     
@@ -55,22 +55,6 @@ import { flatMap, startWith, tap } from 'rxjs/operators';
     </div>
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
       `,
   styles: []
 })
@@ -84,6 +68,7 @@ export class SoildataFarmerAddressComponent implements OnInit {
   type="frq";
   criteria:FarmerAddressSearchCriteria;
   
+  selectedCounty:CountyCode;
 
 
 
@@ -96,6 +81,7 @@ export class SoildataFarmerAddressComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
     this.criteria = {
       search: "",
       order: 'frq',
@@ -104,12 +90,31 @@ export class SoildataFarmerAddressComponent implements OnInit {
     
     this.refresh = new Subject();
 
-    this.addresses$ = this.refresh.asObservable()
-      .pipe(
-        startWith('onInit'), // Emit value to force load on page load; actual value does not matter
-        flatMap(_ => this.service.getCustomAddresses(this.criteria)), // Get some items
-        tap(_ => this.loading = false) // Turn off the spinner
-      );
+    this.service.selectedCountyChange.subscribe(
+      res => {
+        this.selectedCounty = res;
+        this.addresses$ = this.refresh.asObservable()
+            .pipe(
+              startWith('onInit'), // Emit value to force load on page load; actual value does not matter
+              flatMap(_ => this.service.getCustomAddresses(this.criteria, this.selectedCounty.planningUnitId)), // Get some items
+              tap(_ => this.loading = false) // Turn off the spinner
+            );
+      }
+    )
+
+    if(this.selectedCounty == null ){
+      this.selectedCounty = this.service.selectedCountyCode;
+      this.addresses$ = this.refresh.asObservable()
+            .pipe(
+              startWith('onInit'), // Emit value to force load on page load; actual value does not matter
+              flatMap(_ => this.service.getCustomAddresses(this.criteria, this.selectedCounty.planningUnitId)), // Get some items
+              tap(_ => this.loading = false) // Turn off the spinner
+            );
+    }
+
+    
+
+    
   }
   newAddressSubmitted(_:FarmerAddress){
     this.newAddress = false;

@@ -238,7 +238,7 @@ namespace Kers.Controllers
 		}
 
 
-		public void addBitmap(SKCanvas pdfCanvas, string fileName = "RegSign.png", int tl = 315, int tr = 17, int bl = 431, int br = 75){
+		public void addBitmap(SKCanvas pdfCanvas, string fileName = "MgRegSign.png", int tl = 277, int tr = 22, int bl = 464, int br = 70){
 			var dbFile = _context.UploadFile.Where(f => f.Name == fileName).FirstOrDefault();
 			if( dbFile != null){
 				var PngStream = new MemoryStream(dbFile.Content);
@@ -249,7 +249,7 @@ namespace Kers.Controllers
 		}
 		public SKDocumentPdfMetadata metadata(string Keywrds = "Kers, Expense Reporting, Expense", string Ttl = "Summary Expense Report", string Sbj = "Summary Expense Report" ){
 			return new SKDocumentPdfMetadata
-			{
+			{	
 				Author = "Ivelin Denev",
 				Creation = DateTime.Now,
 				Creator = "Kentucky Extension Reporting System",
@@ -259,7 +259,8 @@ namespace Kers.Controllers
 				Subject = Sbj,
 				Title = Ttl,
 				RasterDpi = 300,
-				EncodingQuality = 95
+				EncodingQuality = 95, 
+				PdfA = true
 			};
 		}
 
