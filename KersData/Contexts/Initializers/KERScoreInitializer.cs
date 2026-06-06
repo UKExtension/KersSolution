@@ -487,7 +487,7 @@ namespace Kers.Models.Contexts
             db.AddRange(
                     new ExpenseFundingSource{Name = "County (Personal –Reimbursed to Employee)", Order = 1},
                     new ExpenseFundingSource{Name = "County (Credit Card/Check/Prepaid Expense)", Order = 2},
-                    new ExpenseFundingSource{Name = "Professional Improvement (Personal – Reimbursed to Employee)", Order = 3},
+                    new ExpenseFundingSource{Name = "County Professional Improvement", Order = 3},
                     new ExpenseFundingSource{Name = "Professional Improvement (Credit Card/Check/Prepaid Expense)", Order = 4},
                     new ExpenseFundingSource{Name = "State", Order = 5},
                     new ExpenseFundingSource{Name = "Federal", Order = 6}
