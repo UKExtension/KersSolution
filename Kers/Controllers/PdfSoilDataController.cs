@@ -36,7 +36,7 @@ namespace Kers.Controllers
 		private int numPages;
 		private int currentPage;
 
-		private int[] packSlipTableVerticalLines = new int[]{ 29, 50, 180, 240, 280, 360, 480, 586 };
+		private int[] packSlipTableVerticalLines = new int[]{ 29, 50, 180, 258, 298, 360, 480, 586 };
 
 
 		int currentYPosition = 0;
