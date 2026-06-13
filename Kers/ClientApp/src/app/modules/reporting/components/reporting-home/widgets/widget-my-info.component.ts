@@ -19,7 +19,7 @@ import {User} from '../../../modules/user/user.service';
                 <br><br><br>
             </div>
 
-            <p>For questions or assistance, please email:<br><a href="mailto:KERS-HELP@LSV.UKY.EDU">KERS-HELP@LSV.UKY.EDU</a></p>
+            <p>For questions or assistance, please email:<br><a href="mailto:KERS-HELP@uky.edu">KERS-HELP@uky.edu</a></p>
 
 
          </div>
