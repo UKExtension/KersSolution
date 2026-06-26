@@ -171,13 +171,14 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult LastMonthsOfKSUData()
         {
-            string table = "<table class='table'><tr><th>Name</th><th>Position</th><th>Planning Unit</th>";
+            string table = "<table class='table'><tr><th>Name</th><th>Position</th><th>Planning Unit</th><th>Current Fiscal Year</th>";
             
 
             // Number of months to output
             var n = 3;
             List<DateTime> lastMonths = new List<DateTime>();
             DateTime today = DateTime.Today;
+            int[] totals = [];
 
             for(var i = 0; i < n; i++){
                 var theDate = today.AddMonths(-i);
@@ -191,7 +192,7 @@ namespace Kers.Controllers
                 
             }
 
-            table +="</tr><tr><td></td><td></td><td></td>";
+            table +="</tr><tr><td></td><td></td><td></td><td>Direct</td><td>Indirect</td>";
              for(var i = 0; i < n; i++)
             {
                 table += "<td>Direct</td><td>Indirect</td>";
@@ -210,15 +211,28 @@ namespace Kers.Controllers
             foreach( var person in people)
             {
                 table += "<tr><td>"+person.RprtngProfile.Name+"</td><td>"+person.ExtensionPosition.Title+"</td><td>"+person.RprtngProfile.PlanningUnit.Name+"</td>";
+                var fyContacts = this.JustContactsPerUserThisFiscalYear(person.Id); 
+                table += "<td>"+fyContacts[0].ToString()+"</td><td>"+fyContacts[1].ToString()+"</td>";
+                var toatalIndex = 0;
+                totals[toatalIndex++] += fyContacts[0];
+                totals[toatalIndex++] += fyContacts[1];
                 foreach (var month in lastMonths)
                 {
                    table += "<td>";
                    var contacts = this.JustContactsPerUserPerMonth(month.Year, month.Month, person.Id);
                    table += contacts[0].ToString() + "</td><td>"+contacts[1].ToString()+"</td>";
+                   totals[toatalIndex++] += contacts[0];
+                   totals[toatalIndex++] += contacts[1];
                 }
                 table += "</tr>";
             }
-
+            var displayTotalIndex = 0;
+            table +="</tr><tr><td></td><td></td><td></td><td>" + totals[displayTotalIndex++].ToString() + "</td><td>" + totals[displayTotalIndex++].ToString() + "</td>";
+             for(var i = 0; i < n; i++)
+            {
+                table += "<td>"+totals[displayTotalIndex++].ToString()+"</td><td>"+totals[displayTotalIndex++].ToString()+"</td>";
+            }
+            table += "</tr>";
 
 
             table += "</table>";
@@ -268,6 +282,52 @@ namespace Kers.Controllers
 
    
             return new[]{ activitiesDirect+contactsDirect, activitiesIndirect+contactsIndirect};
+        }
+
+        private int[] JustContactsPerUserThisFiscalYear(int userid = 0)
+        {
+            var currengFiscalYear = this.fiscalYearRepo.currentFiscalYear("serviceLog");
+            if(userid == 0){
+                userid = this.CurrentUser().Id;
+            }
+            var activities = context.Activity.
+                    Include( a => a.LastRevision).ThenInclude( l => l.ActivityOptionNumbers).ThenInclude( n => n.ActivityOptionNumber).
+                    Where( a => a.MajorProgram.StrategicInitiative.FiscalYearId.Equals(currengFiscalYear.Id) && a.KersUserId ==userid);
+
+            var activitiesDirect = activities.Sum( s => s.Audience);
+            var activitiesIndirect = 0;
+            foreach( var act in activities)
+            {
+                foreach( var nmb in act.LastRevision.ActivityOptionNumbers)
+                {
+                    if( nmb.ActivityOptionNumber.Name == "Number of Indirect Contacts") activitiesIndirect+=nmb.Value;
+                }
+                
+            }
+
+                    
+            var contacts = context.Contact.
+                Include( c => c.LastRevision).ThenInclude( l => l.ContactOptionNumbers).ThenInclude( n => n.ActivityOptionNumber).
+                Where( a => a.MajorProgram.StrategicInitiative.FiscalYearId.Equals(currengFiscalYear.Id) && a.KersUserId ==userid );
+
+            var contactsDirect = contacts.Sum( c => c.Audience);
+
+
+            var contactsIndirect = 0;
+            foreach( var act in contacts)
+            {
+                foreach( var nmb in act.LastRevision.ContactOptionNumbers)
+                {
+                    if( nmb.ActivityOptionNumber.Name == "Number of Indirect Contacts") contactsIndirect+=nmb.Value;
+                }
+                
+            }
+
+   
+            return new[]{ activitiesDirect+contactsDirect, activitiesIndirect+contactsIndirect};
+
+
+
         }
 
 
