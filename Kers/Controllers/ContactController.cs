@@ -171,14 +171,14 @@ namespace Kers.Controllers
         [Authorize]
         public IActionResult LastMonthsOfKSUData()
         {
-            string table = "<table class='table'><tr><th>Name</th><th>Position</th><th>Planning Unit</th><th>Current Fiscal Year</th>";
+            string table = "<table class='table'><tr><th>Name</th><th>Position</th><th>Planning Unit</th><th colspan=2 align='center'>Current Fiscal Year</th>";
             
 
             // Number of months to output
             var n = 3;
             List<DateTime> lastMonths = new List<DateTime>();
             DateTime today = DateTime.Today;
-            int[] totals = [];
+            int[] totals = new int[2+2*n];
 
             for(var i = 0; i < n; i++){
                 var theDate = today.AddMonths(-i);
@@ -227,12 +227,12 @@ namespace Kers.Controllers
                 table += "</tr>";
             }
             var displayTotalIndex = 0;
-            table +="</tr><tr><td></td><td></td><td></td><td>" + totals[displayTotalIndex++].ToString() + "</td><td>" + totals[displayTotalIndex++].ToString() + "</td>";
+            table +="<tfoot><tr><td>Total:</td><td></td><td></td><td>" + totals[displayTotalIndex++].ToString() + "</td><td>" + totals[displayTotalIndex++].ToString() + "</td>";
              for(var i = 0; i < n; i++)
             {
                 table += "<td>"+totals[displayTotalIndex++].ToString()+"</td><td>"+totals[displayTotalIndex++].ToString()+"</td>";
             }
-            table += "</tr>";
+            table += "</tr></tfoot>";
 
 
             table += "</table>";
