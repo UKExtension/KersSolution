@@ -1453,7 +1453,12 @@ namespace Kers.Models.Repositories
                             AsSplitQuery().
                             OrderBy(a => a.Created).LastOrDefault();
                         // Save into cache only recent activities
-                        if( (DateTime.Now - lstrvsn.ActivityDate).Days < 60 ){
+
+                        var differenceInDays = 100;
+                        if(lstrvsn != null)
+                            differenceInDays = (DateTime.Now - lstrvsn.ActivityDate).Days;
+                    
+                        if( differenceInDays < 60 ){
                           
                             var serialized = JsonConvert.SerializeObject(lstrvsn);
                             _cache.SetString(cacheKey, serialized, new DistributedCacheEntryOptions
