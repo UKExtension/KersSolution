@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Indicator, IndicatorsService } from './indicators.service';
+import { Indicator, IndicatorsService, IndicatorValueEntry } from './indicators.service';
 import { MajorProgram, ProgramsService, StrategicInitiative } from '../admin/programs/programs.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 import { ReportingService } from '../../components/reporting/reporting.service';
@@ -22,6 +22,7 @@ export class IndicatorsFormComponent implements OnInit {
   childIcon:string = '(Youth)';
   adultIcon:string = '(Adult)';
   volunteersIcon:string = '(Volunteers)';
+  historyTexts:string[] = [];
 
   loading = false;
 
@@ -70,7 +71,36 @@ export class IndicatorsFormComponent implements OnInit {
   }
 
 
-
+  showHistory(indicatorId:number){
+    if(this.historyTexts[indicatorId] == null){
+        this.historyTexts[indicatorId]="loading...";
+        this.indicatorsService.submissionHistory(indicatorId).subscribe(
+            res => {
+                
+                var history:IndicatorValueEntry[] = res;
+                var responseHtml:string = "<table class='table'><tr><th colspan='2'>Submissions History</th></tr>";
+                for( let entry of history){
+                    const options: Intl.DateTimeFormatOptions = { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit' 
+                        };
+                    const created = new Date(entry.createdDateTime);
+                    const localized: string = created.toLocaleDateString('en-US', options);
+                    responseHtml += "<tr><td>"+entry.value+"</td><td>"+localized+"</td></tr>";
+                }
+                responseHtml += "</table>"
+                this.historyTexts[indicatorId] = responseHtml;
+            }
+        );
+    }else{
+        delete this.historyTexts[indicatorId];
+    }
+    
+  }
 
   onChange(programId) {
       this.dataSubmitted=false;
@@ -114,6 +144,7 @@ export class IndicatorsFormComponent implements OnInit {
 
   onSubmit(){
       this.loading = true;
+      this.historyTexts = [];
       this.indicatorsService.
           updateValues(this.selectedProgram, this.indicatorsForm.value.indicatorsGroup).
           subscribe(

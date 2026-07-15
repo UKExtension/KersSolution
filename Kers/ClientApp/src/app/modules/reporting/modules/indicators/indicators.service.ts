@@ -64,6 +64,15 @@ export class IndicatorsService {
                 );
     }
 
+    submissionHistory(indicatorid:number):Observable<IndicatorValueEntry[]>{
+            var url = this.baseUrl + "submissionhistory/" + indicatorid;
+            return this.http.get<IndicatorValueEntry[]>(this.location.prepareExternalUrl(url))
+                .pipe(
+                    catchError(this.handleError('indicatorValuesHistory', []))
+                );
+    }
+
+
     updateValues(program:MajorProgram, vals:IndicatorValue[]):Observable<IndicatorValue[]>{
         var url = this.baseUrl + "valuesupdate/" + program.id;
         return this.http.put<IndicatorValue[]>(this.location.prepareExternalUrl(url), vals)
@@ -113,3 +122,8 @@ export interface IndicatorValue{
     value:number;
 }
 
+export interface IndicatorValueEntry{
+    programIndicatorId:number;
+    value:number;
+    createdDateTime:Date
+}

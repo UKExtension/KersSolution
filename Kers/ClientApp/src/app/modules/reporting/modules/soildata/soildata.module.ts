@@ -58,6 +58,9 @@ import { FormsModule } from '@angular/forms';
     SoilCropFormElementComponent,
     SoilCropattributeFormElementComponent,
     AddressBrowserFormElementComponent,
-    SoildataListAddressComponent]
+    SoildataListAddressComponent],
+    exports: [
+      AddressBrowserFormElementComponent
+    ]
 })
 export class SoildataModule { }
