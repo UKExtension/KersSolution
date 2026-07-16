@@ -448,7 +448,7 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("facultydata/{year?}")]
-        public async Task<IActionResult> FacultyData(string year = "2024")
+        public async Task<IActionResult> FacultyData(string year = "2026")
         {
 
 
@@ -643,7 +643,7 @@ namespace Kers.Controllers.Reports
 
         [HttpGet]
         [Route("facultystories/{year?}")]
-        public async Task<IActionResult> FacultyStories(string year = "2023")
+        public async Task<IActionResult> FacultyStories(string year = "2026")
         {
             var fiscalYear = this.GetFYByName(year);
             ViewData["FiscalYear"] = fiscalYear;
