@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import {IndicatorsService, Indicator} from '../../indicators/indicators.service';
 
 
@@ -22,7 +22,9 @@ import {IndicatorsService, Indicator} from '../../indicators/indicators.service'
         <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
     </div>
 </div>
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramindicatorsIndicatorDetailComponent{
     

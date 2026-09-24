@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ProgramsService, StrategicInitiative } from '../admin/programs/programs.service';
 import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'indicators-demo-form',
-  template: `
+    selector: 'indicators-demo-form',
+    template: `
     
 
 
@@ -134,8 +134,9 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 
 
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class IndicatorsDemoFormComponent implements OnInit {
 
@@ -148,7 +149,7 @@ export class IndicatorsDemoFormComponent implements OnInit {
   loading = false;
 
   constructor( 
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private programsService:ProgramsService,
     private indicatorsService: IndicatorsService,
     private fiscalYearService: FiscalyearService

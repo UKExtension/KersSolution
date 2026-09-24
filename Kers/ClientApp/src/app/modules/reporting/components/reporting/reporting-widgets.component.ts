@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from './reporting.service';
 import {UserService, User, PlanningUnit} from '../../modules/user/user.service';
 
@@ -10,7 +10,7 @@ import { NavigationService } from '../reporting-navigation/navigation.service';
 
 
 @Component({
-  template: `
+    template: `
   <div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
       </button>
@@ -35,7 +35,9 @@ import { NavigationService } from '../reporting-navigation/navigation.service';
 
 
 
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingWidgetsComponent implements OnInit { 
  

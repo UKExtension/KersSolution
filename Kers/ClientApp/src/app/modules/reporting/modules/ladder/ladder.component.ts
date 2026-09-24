@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'ladder-home',
-  template: `
+    selector: 'ladder-home',
+    template: `
   <ladder-application-form></ladder-application-form>
     <p>
       ladder works!
     </p>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderComponent implements OnInit {
 

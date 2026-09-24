@@ -1,13 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommitmentBundle, SnapEdCommitmentService, SnapEdActivityType, SnapEdProjectType, SnapEdReinforcementItem } from '../snap-ed-commitment.service';
 import { SnapedService } from '../../servicelog/snaped.service';
 import { FiscalYear, FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'commitment-view',
-  templateUrl: './commitment-view.component.html',
-  styleUrls: ['./commitment-view.component.css']
+    selector: 'commitment-view',
+    templateUrl: './commitment-view.component.html',
+    styleUrls: ['./commitment-view.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CommitmentViewComponent implements OnInit {
   @Input() commitment:CommitmentBundle | null = null;

@@ -17,28 +17,25 @@ import { PlansofworkFormDemo1Component } from './plansofwork-form-demo1.componen
 
 
 @NgModule({
-  declarations: [
-    DemoComponent,
-    StoryDemoComponent,
-    IndicatorsDemoComponent,
-    IndicatorsDemoFormComponent,
-    PlansofworkFormDemoComponent,
-    PlansofworkFormDemo1Component
-  ],
-  imports: [
-    SharedModule,
-    CommonModule,
-    DemosRoutingModule,
-    StoryModule,
-    IndicatorsModule,
-    NgSelectModule
-  ],
-  providers: [
-    PlansofworkService,
-    ProgramsService
-  ],
-  entryComponents: [
-    DemoComponent
-  ]
+    declarations: [
+        DemoComponent,
+        StoryDemoComponent,
+        IndicatorsDemoComponent,
+        IndicatorsDemoFormComponent,
+        PlansofworkFormDemoComponent,
+        PlansofworkFormDemo1Component
+    ],
+    imports: [
+        SharedModule,
+        CommonModule,
+        DemosRoutingModule,
+        StoryModule,
+        IndicatorsModule,
+        NgSelectModule
+    ],
+    providers: [
+        PlansofworkService,
+        ProgramsService
+    ]
 })
 export class DemosModule { }

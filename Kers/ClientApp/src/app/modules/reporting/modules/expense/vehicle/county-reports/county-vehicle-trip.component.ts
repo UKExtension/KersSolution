@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Expense } from '../../expense.service';
 import { MileageBundle } from '../../../mileage/mileage';
 
 @Component({
-  selector: 'county-vehicle-trip',
-  template: `
+    selector: 'county-vehicle-trip',
+    template: `
     <article class="media event" style="padding-top: 29px;">
       <a class="pull-left date">
         <p class="month">{{expense.expenseDate | date: 'LLL'}}</p>
@@ -34,8 +34,9 @@ import { MileageBundle } from '../../../mileage/mileage';
       </div>
     </div>
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyVehicleTripComponent implements OnInit {
   @Input() expense:MileageBundle;

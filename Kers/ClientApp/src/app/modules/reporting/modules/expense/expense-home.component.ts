@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from './expense.service';
 
 import { ActivatedRoute, Params } from "@angular/router";
 
 @Component({
-  template: `
+    template: `
         <div>
             <div class="text-right">
                 <a class="btn btn-info btn-xs" *ngIf="!newExpense" (click)="newExpense = true">+ new mileage record</a>
@@ -18,7 +18,9 @@ import { ActivatedRoute, Params } from "@angular/router";
         <div *ngIf="latest.length < numbExpenses" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
             load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
         </div>
-    </div>`
+    </div>`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseHomeComponent { 
 

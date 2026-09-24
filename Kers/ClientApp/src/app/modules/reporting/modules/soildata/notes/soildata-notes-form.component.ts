@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyNote, SoildataService } from '../soildata.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'soildata-notes-form',
-  template: `
+    selector: 'soildata-notes-form',
+    template: `
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
       <div class="col-sm-offset-3 col-sm-9">
@@ -42,7 +42,9 @@ import { FormBuilder, Validators } from '@angular/forms';
       </form>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class SoildataNotesFormComponent implements OnInit {
@@ -55,7 +57,7 @@ export class SoildataNotesFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<CountyNote>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:SoildataService
   ) { 
     this.noteForm = this.fb.group(

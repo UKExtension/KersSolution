@@ -1,5 +1,5 @@
 import { HttpBackend, HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import {Location} from '@angular/common';
@@ -10,8 +10,8 @@ import { MessageService } from '../../reporting/core/services/message.service';
 import { PersonalProfile, ReportingProfile, User } from '../../reporting/modules/user/user.service';
 
 @Component({
-  selector: 'login-jwt-get',
-  template: `
+    selector: 'login-jwt-get',
+    template: `
   <div class="row" *ngIf="newUserExists" >
     <div class="row">
         <div class="col-sm-2"></div>
@@ -22,7 +22,7 @@ import { PersonalProfile, ReportingProfile, User } from '../../reporting/modules
     </div>
   </div>
   `,
-  styles: [`
+    styles: [`
   body{
       background-color: #F7F7F7 !important;
   }
@@ -30,7 +30,9 @@ import { PersonalProfile, ReportingProfile, User } from '../../reporting/modules
   
 
   `],
-  encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LoginJwtGetComponent implements OnInit {
   token:string;

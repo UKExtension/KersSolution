@@ -1,12 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PlanningUnit } from '../../user/user.service';
 import { IndicatorsService } from '../../indicators/indicators.service';
 
 @Component({
-  selector: 'assignment-program-indicators',
-  templateUrl: './assignment-program-indicators.component.html',
-  styleUrls: ['./assignment-program-indicators.component.css']
+    selector: 'assignment-program-indicators',
+    templateUrl: './assignment-program-indicators.component.html',
+    styleUrls: ['./assignment-program-indicators.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AssignmentProgramIndicatorsComponent implements OnInit {
 

@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 
 import { NavigationService, NavSection } from '../../../components/reporting-navigation/navigation.service';
 import {AdminNavigationService} from './admin-navigation.service';
 
 @Component({
-  template: `
+    template: `
   <div>
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newSection" (click)="newSection = true">+ new section</a>
@@ -22,7 +22,9 @@ import {AdminNavigationService} from './admin-navigation.service';
         </table>
     </div>
 
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationSectionComponent { 
 

@@ -1,19 +1,21 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow } from './training';
 import { TrainingService } from './training.service';
-import { IMyDpOptions, IMyDateModel } from "mydatepicker";
+import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable } from 'rxjs';
 
 
 @Component({
-  selector: 'training-form',
-  templateUrl: './training-form.component.html',
-  styles:[`
+    selector: 'training-form',
+    templateUrl: './training-form.component.html',
+    styles: [`
   my-date-picker.ng-invalid.ng-touched >>> .mydp {
     border: 1px solid #CE5454;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingFormComponent implements OnInit {
     @Input() training:Training;
@@ -36,16 +38,15 @@ export class TrainingFormComponent implements OnInit {
         quickInsertButtons: ['ul', 'ol', 'hr'],    
       };
     loading = true;
-    public myDatePickerOptions: IMyDpOptions = {
+    public myDatePickerOptions: IAngularMyDpOptions = {
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
+            showFooterToday: false,
             satHighlight: true,
-            firstDayOfWeek: 'su',
-            showClearDateBtn: false
+            firstDayOfWeek: 'su'
         };
-    public myDatePickerOptionsEnd: IMyDpOptions = {
+    public myDatePickerOptionsEnd: IAngularMyDpOptions = {
               dateFormat: 'mm/dd/yyyy',
-              showTodayBtn: false,
+              showFooterToday: false,
               satHighlight: true,
               firstDayOfWeek: 'su'
           };
@@ -55,7 +56,7 @@ export class TrainingFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<Training>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:TrainingService
   ) {
     this.date.setMonth(this.date.getMonth() + 2);

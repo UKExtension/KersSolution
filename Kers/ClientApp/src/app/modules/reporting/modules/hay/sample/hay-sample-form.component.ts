@@ -1,6 +1,6 @@
 import { ViewportScroller } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { AbstractControl, AsyncValidatorFn, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, ValidationErrors, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, mergeMap, switchMap, tap } from 'rxjs/operators';
@@ -10,10 +10,10 @@ import { SampleInfoBundle } from '../../soildata/sample/SampleInfoBundle';
 import { CountyCode, FarmerAddress } from '../../soildata/soildata.service';
 
 @Component({
-  selector: 'hay-sample-form',
-  templateUrl: './hay-sample-form.component.html',
-  styles: [
-    `
+    selector: 'hay-sample-form',
+    templateUrl: './hay-sample-form.component.html',
+    styles: [
+        `
     .index-border{
       border: 1px solid #1ABB9C;
       width: 20px;
@@ -24,7 +24,9 @@ import { CountyCode, FarmerAddress } from '../../soildata/soildata.service';
     }
 
     `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HaySampleFormComponent implements OnInit {
 
@@ -46,13 +48,13 @@ export class HaySampleFormComponent implements OnInit {
     };
 
   get haySamples() {
-    return this.soilSampleForm.get('haySamples') as FormArray;
+    return this.soilSampleForm.get('haySamples') as UntypedFormArray;
   }
 
  
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private viewportScroller: ViewportScroller,
     private reportingService: ReportingService
   ) { 
@@ -111,7 +113,7 @@ export class HaySampleFormComponent implements OnInit {
   }
 
   addSegment() {
-    var group:FormControl; 
+    var group:UntypedFormControl; 
 
         group = this.fb.control(
           {

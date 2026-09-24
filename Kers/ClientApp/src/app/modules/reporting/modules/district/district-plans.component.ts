@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { PlansofworkService, PlanOfWork, Plan, PlanningUnit } from '../plansofwork/plansofwork.service';
 import { Observable } from 'rxjs';
 import { DistrictService, County } from "./district.service";
@@ -6,7 +6,9 @@ import {ReportingService} from '../../components/reporting/reporting.service';
 
 @Component({
     selector: 'district-plansofwork',
-    templateUrl: 'district-plans.component.html' 
+    templateUrl: 'district-plans.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class DistrictPlansComponent{
 

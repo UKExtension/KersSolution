@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { DistrictService, County, District } from './district.service';
 
 import {Observable} from 'rxjs';
@@ -72,7 +72,9 @@ import { RegionService } from '../region/region.service';
 -->
 
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyListComponent { 
 

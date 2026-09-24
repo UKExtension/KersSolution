@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from "@angular/forms";
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, UntypedFormControl } from "@angular/forms";
 import {Location} from '@angular/common';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from "rxjs";
@@ -18,7 +18,9 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
     ng-select.ng-invalid{
         border: 1px solid red;
     }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryFormComponent implements OnInit{ 
 
@@ -53,7 +55,7 @@ export class StoryFormComponent implements OnInit{
 
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private programsService:ProgramsService,
         private indicatorsService: IndicatorsService,
         private location: Location,
@@ -287,7 +289,7 @@ export class StoryFormComponent implements OnInit{
 
 
     //validator
-    isPositiveInt(control:FormControl){
+    isPositiveInt(control:UntypedFormControl){
         
         if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
             return null;

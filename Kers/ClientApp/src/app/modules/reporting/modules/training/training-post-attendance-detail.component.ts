@@ -1,12 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { Training, TrainingEnrollment } from './training';
 import { TrainingService } from './training.service';
 
 @Component({
-  selector: '[training-post-attendance-detail]',
-  templateUrl: './training-post-attendance-detail.component.html',
-  styles: []
+    selector: '[training-post-attendance-detail]',
+    templateUrl: './training-post-attendance-detail.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingPostAttendanceDetailComponent implements OnInit {
 

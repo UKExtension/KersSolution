@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, ChangeDetectionStrategy} from '@angular/core';
 import { MajorProgram} from '../programs/programs.service';
 
 
@@ -13,7 +13,9 @@ import { MajorProgram} from '../programs/programs.service';
             border-bottom: 1px solid #D9DEE4;
             margin: 0;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramindicatorsListProgramsComponent implements OnInit{
     

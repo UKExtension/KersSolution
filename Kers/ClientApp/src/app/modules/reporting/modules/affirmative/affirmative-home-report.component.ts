@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import {    AffirmativeService, 
             AffirmativePlan,
@@ -12,9 +12,11 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 import { Observable } from 'rxjs';
 
 @Component({
-  template: `<div>This is a total county plan and report. A single Plan is required per year per county.</div>
+    template: `<div>This is a total county plan and report. A single Plan is required per year per county.</div>
   <br><reporting-display-help id="2"></reporting-display-help><br>
-  <affirmative-form [affirmativePlan]="plan" [isReport]="true" (onFormSubmit)="onFormSubmit()" (onFormCancel)="onFormCancel()"></affirmative-form>`
+  <affirmative-form [affirmativePlan]="plan" [isReport]="true" (onFormSubmit)="onFormSubmit()" (onFormCancel)="onFormCancel()"></affirmative-form>`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AffirmativeHomeReportComponent { 
 

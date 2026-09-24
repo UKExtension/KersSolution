@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { User } from '../user/user.service';
 import { Observable } from 'rxjs';
 import { TrainingService } from './training.service';
 import { Training } from './training';
 
 @Component({
-  selector: 'training-enrollment',
-  templateUrl: './training-enrollment.component.html',
-  styles: []
+    selector: 'training-enrollment',
+    templateUrl: './training-enrollment.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingEnrollmentComponent implements OnInit {
 

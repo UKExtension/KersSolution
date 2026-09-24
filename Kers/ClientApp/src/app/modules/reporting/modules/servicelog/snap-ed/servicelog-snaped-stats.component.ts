@@ -1,12 +1,14 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { PlanningUnit, User } from '../../user/user.service';
 import { SnapedService } from '../snaped.service';
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
-  selector: 'snape-ed-stats',
-  templateUrl: 'servicelog-snaped-stats.component.html'
+    selector: 'snape-ed-stats',
+    templateUrl: 'servicelog-snaped-stats.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogSnapedStatsComponent { 
     @Input() planningUnit: PlanningUnit;

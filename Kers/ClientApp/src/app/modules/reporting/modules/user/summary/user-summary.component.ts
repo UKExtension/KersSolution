@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { ActivatedRoute, Params } from "@angular/router";
 
@@ -43,7 +43,9 @@ import { switchMap } from 'rxjs/operators';
                 margin-left: 105px;
                 margin-right: 45px;
             }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserSummaryComponent { 
 

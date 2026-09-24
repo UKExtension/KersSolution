@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 
 import { ActivatedRoute, Params, Router } from "@angular/router";
@@ -13,7 +13,7 @@ import { switchMap } from 'rxjs/operators';
 
 
 @Component({
-  template: `
+    template: `
     <div class="text-right"><a class="btn btn-default btn-xs" routerLink="/reporting/state">State Admin Dashboard</a></div>
     <div><reporting-display-help id="7"></reporting-display-help></div>
     <county-list [district]="district" *ngIf="district"></county-list>
@@ -136,7 +136,9 @@ import { switchMap } from 'rxjs/operators';
 
     <router-outlet></router-outlet>
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class DistrictHomeComponent { 
 

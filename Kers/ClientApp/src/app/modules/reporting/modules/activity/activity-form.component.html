@@ -14,7 +14,7 @@
         <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="activityDate">Activity Date:</label>
             <div class="col-md-4 col-sm-6 col-xs-7">
-                <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="activityDate"></my-date-picker>
+                <input angular-mydatepicker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="activityDate">
             </div>
         </div>
         <div class="form-group">

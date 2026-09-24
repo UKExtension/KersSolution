@@ -1,22 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SnapedAdminService } from './snaped-admin.service';
 import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { PlanningUnit, User } from '../../user/user.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
-import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
+import { UntypedFormBuilder, Validators, UntypedFormControl, AbstractControl } from "@angular/forms";
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  templateUrl: 'snaped-county.component.html',
-  styles: [
-    `
+    templateUrl: 'snaped-county.component.html',
+    styles: [
+        `
     .bar_tabs li{
       cursor: pointer;
     }
     `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedCountyComponent { 
 
@@ -54,7 +56,7 @@ export class SnapedCountyComponent {
         private fiscalyearService:FiscalyearService,
         private reportingService:ReportingService,
         private route: ActivatedRoute,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private planningUnitService: PlanningunitService
     )   
     {
@@ -219,14 +221,14 @@ export class SnapedCountyComponent {
     
      ***********************/
 
-    isIntOrFloat(control:FormControl){
+    isIntOrFloat(control:UntypedFormControl){
       if(control.value == +control.value && +control.value >= 0){
           return null;
       }
       return {"notDigit":true};
     }
 
-    isPositiveInt(control:FormControl){
+    isPositiveInt(control:UntypedFormControl){
         
         if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
             return null;

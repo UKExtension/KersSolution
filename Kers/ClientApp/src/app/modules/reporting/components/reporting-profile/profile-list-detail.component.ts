@@ -1,9 +1,11 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ProfileService, Profile } from './profile.service';
 
 @Component({
     selector: '[profileListDetail]',
-    templateUrl: 'profile-list-detail.component.html'
+    templateUrl: 'profile-list-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProfileListDetailComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TripsSearchCriteria, Vehicle, VehicleService } from '../vehicle.service';
 import { Expense } from '../../expense.service';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
@@ -7,8 +7,8 @@ import { Observable, Subject } from 'rxjs';
 import { flatMap, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'vehicle-reports',
-  template: `
+    selector: 'vehicle-reports',
+    template: `
     <article class="media event">
               <div class="media-body">
               <a class="title" [ngStyle]="{ 'color' : (vehicle.enabled)? 'rgb(35, 82, 124);' : '#ccc' }">{{vehicle.year}} {{vehicle.make}}<span *ngIf="vehicle.name != undefined && vehicle.name != ''"> ({{vehicle.name}})</span></a>
@@ -42,9 +42,9 @@ import { flatMap, startWith } from 'rxjs/operators';
 
 
   `,
-  styles: [
-    
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class VehicleReportsComponent implements OnInit {
   @Input() vehicle:Vehicle;

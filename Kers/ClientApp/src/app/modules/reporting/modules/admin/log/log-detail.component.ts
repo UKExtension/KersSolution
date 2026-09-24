@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { Log } from './log.service';
 import * as ua_parser from "ua-parser-js"
@@ -6,7 +6,9 @@ import * as ua_parser from "ua-parser-js"
 
 @Component({
     selector: '[log-detail]',
-    templateUrl: 'log-detail.component.html'
+    templateUrl: 'log-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LogDetailComponent implements OnInit { 
     

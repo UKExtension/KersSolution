@@ -1,11 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Activity, ActivityOption, Race, Ethnicity, ActivityOptionNumber, ActivityService } from '../../activity.service';
 import { Observable } from 'rxjs';
 import { ServicelogService } from '../../../servicelog/servicelog.service';
 
 @Component({
-  selector: 'service-log-full-details',
-  templateUrl: './service-log-full-details.component.html'
+    selector: 'service-log-full-details',
+    templateUrl: './service-log-full-details.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServiceLogFullDetailsComponent implements OnInit {
   @Input() activity:Activity;

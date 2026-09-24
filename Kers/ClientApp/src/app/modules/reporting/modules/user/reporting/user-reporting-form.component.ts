@@ -1,4 +1,4 @@
-import { Component,OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { debounceTime } from 'rxjs/operators';
 import {    UserService,
             ExtensionPosition, 
@@ -11,7 +11,7 @@ import {    UserService,
             Specialty, 
             Institution
         } from '../user.service';
-import { FormBuilder, Validators, AbstractControl, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, AbstractControl, UntypedFormControl } from '@angular/forms';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { Observable } from "rxjs";
 import {Router} from '@angular/router';
@@ -25,7 +25,9 @@ import { AuthHttp } from '../../../../authentication/auth.http';
     .toggle{
         padding-top: 0px important!;
     }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserReportingFormComponent implements OnInit { 
 
@@ -57,7 +59,7 @@ export class UserReportingFormComponent implements OnInit {
 
     constructor( 
         private userService: UserService,
-        private fb: FormBuilder, 
+        private fb: UntypedFormBuilder, 
         private reportingService: ReportingService,
         private router: Router,
         private http:AuthHttp,
@@ -255,7 +257,7 @@ export class UserReportingFormComponent implements OnInit {
     }
 
 
-    doesItContainComma(control:FormControl){
+    doesItContainComma(control:UntypedFormControl){
         if(control.value.match(/,/)){
             return null;
         }

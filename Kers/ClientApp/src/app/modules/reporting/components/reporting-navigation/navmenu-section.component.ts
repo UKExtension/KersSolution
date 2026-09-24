@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { NavSection, NavGroup, NavItem} from './navigation.service';
 
@@ -11,7 +11,9 @@ import { NavSection, NavGroup, NavItem} from './navigation.service';
             <li class="nav-group" *ngFor = "let group of section.groups" [class.active]="this.group.isOpen == 'active'" [nav-menu-group]="group" (onOpen)="closeOthers($event)" (onSelected)="itemSelected($event)"></li>
         </ul>
     </div>
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavmenuSectionComponent implements OnInit{
     @Input('section') section: NavSection;

@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyCode, FarmerAddress, SoildataService } from '../soildata.service';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { debounce, debounceTime, distinctUntilChanged, mergeMap, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 @Component({
-  selector: 'soildata-farmer-address-form',
-  template: `
+    selector: 'soildata-farmer-address-form',
+    template: `
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
       <div class="col-sm-offset-3 col-sm-9">
@@ -90,7 +90,9 @@ import { Observable, of } from 'rxjs';
       </form>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataFarmerAddressFormComponent implements OnInit {
 
@@ -107,7 +109,7 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<FarmerAddress>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:SoildataService
   ) { 
     this.addressForm = this.fb.group(
@@ -127,8 +129,8 @@ export class SoildataFarmerAddressFormComponent implements OnInit {
 
   ngOnInit() {
     if(this.address) this.addressForm.patchValue(this.address);
-    var first = this.addressForm.get('first') as FormControl;
-    var last = this.addressForm.get('last') as FormControl;
+    var first = this.addressForm.get('first') as UntypedFormControl;
+    var last = this.addressForm.get('last') as UntypedFormControl;
     this.foundSameAddress$ = first.valueChanges.pipe(
                 debounceTime(500),
                 distinctUntilChanged(),

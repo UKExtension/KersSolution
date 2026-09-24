@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {TrainingService} from './training.service';
 import { Training } from './training';
 import { Observable } from 'rxjs';
@@ -6,9 +6,11 @@ import { ReportingService } from '../../components/reporting/reporting.service';
 import { UserService, User } from '../user/user.service';
 
 @Component({
-  selector: 'training-home',
-  templateUrl: './training-home.component.html',
-  styleUrls: ['./training-home.component.css']
+    selector: 'training-home',
+    templateUrl: './training-home.component.html',
+    styleUrls: ['./training-home.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingHomeComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -6,7 +6,7 @@ import {IndicatorsService, Indicator} from '../indicators/indicators.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  template: `
+    template: `
 <br><br>
 <span style="color:orange;">---- This form serves demonstration purpose and won't work or save entered test data. ----</span><br><br>
     These numbers are to be kept up to date PER INDIVIDUAL (YOU) - NOT THE COUNTY.<br>
@@ -15,7 +15,9 @@ Simply update the numbers as needed throughout the fiscal year.<br>
 <div *ngIf="fiscalYear" style="padding-top:15px;">
     <indicators-form [fiscalYear]="fiscalYear" [demoMode]="true"></indicators-form>
 </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class IndicatorsDemoComponent { 
     

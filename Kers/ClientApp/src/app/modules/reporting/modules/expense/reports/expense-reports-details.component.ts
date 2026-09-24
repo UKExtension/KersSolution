@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from '../expense.service';
 import { User } from "../../user/user.service";
 import { Mileage, MileageSegment } from '../../mileage/mileage';
@@ -15,7 +15,9 @@ import { ProgramCategory } from '../../admin/programs/programs.service';
 <div *ngIf="!loading && isMileage">
     <mileage-reports-details-item [sources]="sources" [categories]="categories" [expense]="expense" *ngFor="let expense of monthMileage"></mileage-reports-details-item>
 </div>
-        `
+        `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsDetailsComponent { 
 

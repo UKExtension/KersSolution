@@ -1,6 +1,6 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate} from './expense.service';
-import { FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormControl, AbstractControl } from '@angular/forms';
 import { Observable } from "rxjs";
 import {IMyDpOptions} from 'mydatepicker';
 import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
@@ -11,7 +11,9 @@ import { Vehicle } from './vehicle/vehicle.service';
 
 @Component({
     selector: 'expense-form',
-    templateUrl: 'expense-form.component.html'
+    templateUrl: 'expense-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseFormComponent { 
 
@@ -48,7 +50,7 @@ export class ExpenseFormComponent {
     enabledVehicles: Vehicle[];
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private expenseService:ExpenseService,
         private programsService: ProgramsService,
         private userService: UserService,
@@ -208,7 +210,7 @@ export class ExpenseFormComponent {
         
     }
 
-    isIntOrFloat(control:FormControl){
+    isIntOrFloat(control:UntypedFormControl){
         if(control.value == +control.value && +control.value >= 0){
             return null;
         }

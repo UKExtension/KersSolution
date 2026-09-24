@@ -1,5 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-@Pipe({name: 'convertFrom24To12Format'})
+@Pipe({
+    name: 'convertFrom24To12Format',
+    standalone: false
+})
 export class TimeFormat implements PipeTransform {
      transform(time: any): any {
          let hour = (time.split(':'))[0]

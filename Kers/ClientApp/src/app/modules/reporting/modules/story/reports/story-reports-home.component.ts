@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
@@ -11,7 +11,9 @@ import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
     <!--
     <div class="text-right"><a class="btn btn-default btn-xs" href="https://kers.ca.uky.edu/kers_mobile/ReportSuccessStoriesMain.aspx">Success Stories Reports Archive</a></div>
     -->
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryReportsHomeComponent { 
 

@@ -1,5 +1,5 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormBuilder, UntypedFormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TrainingSession } from '../training';
 import { IAngularMyDpOptions, IMyDateModel} from 'angular-mydatepicker';
@@ -7,8 +7,8 @@ import { IAngularMyDpOptions, IMyDateModel} from 'angular-mydatepicker';
 
 
 @Component({
-  selector: 'training-session',
-  template: `
+    selector: 'training-session',
+    template: `
 <div class="form-group" [formGroup]="sessionGroup">
     <div class="row">
         <div class="col-sm-4">
@@ -49,20 +49,22 @@ import { IAngularMyDpOptions, IMyDateModel} from 'angular-mydatepicker';
 </div>
 
   `,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => SessionFormElementComponent),
-                  multi: true
-                } ,
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => SessionFormElementComponent),
-                  multi: true
-                }
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SessionFormElementComponent),
+            multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SessionFormElementComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SessionFormElementComponent extends BaseControlValueAccessor<TrainingSession> implements ControlValueAccessor, OnInit { 
-    sessionGroup: FormGroup;
+    sessionGroup: UntypedFormGroup;
     @Input('index') index:number;
     @Output() removeMe = new EventEmitter<number>();
     public myDatePickerOptions: IAngularMyDpOptions = {
@@ -72,7 +74,7 @@ export class SessionFormElementComponent extends BaseControlValueAccessor<Traini
     };
     date = new Date();
     constructor( 
-      private formBuilder: FormBuilder
+      private formBuilder: UntypedFormBuilder
     )   
     {
       super();

@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Expense } from '../expense.service';
 
 @Component({
-  selector: 'expense-reports-details-item',
-  template: `
+    selector: 'expense-reports-details-item',
+    template: `
   <div class="col-md-12 col-sm-12 col-xs-12">
   <div class="ln_solid"></div>
       <div class="row">
@@ -52,7 +52,9 @@ import { Expense } from '../expense.service';
 
 </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsDetailsItemComponent implements OnInit {
   @Input() expense:Expense;

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { fi } from 'date-fns/locale';
 import { switchMap } from 'rxjs/operators';
@@ -8,8 +8,8 @@ import { ExtensionArea } from '../state/state.service';
 import { AreaService } from './area.service';
 
 @Component({
-  selector: 'area-home',
-  template: `
+    selector: 'area-home',
+    template: `
 
     <div *ngIf="noArrea" class="orange"><br>The area cannot be determined.<br><br>
         In your <a routerLink="/reporting/user/reporting">reporting profile</a> should be selected a planning unit that is part of an area.
@@ -129,7 +129,9 @@ import { AreaService } from './area.service';
 
 
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AreaHomeComponent implements OnInit {
 

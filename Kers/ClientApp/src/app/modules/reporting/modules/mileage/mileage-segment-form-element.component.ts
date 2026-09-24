@@ -1,5 +1,5 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormBuilder, UntypedFormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BaseControlValueAccessor } from '../../core/BaseControlValueAccessor';
 import { ProgramCategory } from '../admin/programs/programs.service';
 import { ExtensionEventLocation } from '../events/extension-event';
@@ -10,8 +10,8 @@ import { MileageSegment } from './mileage';
 
 
 @Component({
-  selector: 'mileage-segment',
-  template: `
+    selector: 'mileage-segment',
+    template: `
 <div class="form-group" [formGroup]="sectionGroup">
   
     <div class="col-xs-12 ng-star-inserted text-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer;"><i class="fa fa-close"></i></a></span></div>
@@ -66,20 +66,22 @@ import { MileageSegment } from './mileage';
   </div>
 </div>
   `,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => MileageSegmentFormElementComponent),
-                  multi: true
-                } ,
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => MileageSegmentFormElementComponent),
-                  multi: true
-                }
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MileageSegmentFormElementComponent),
+            multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => MileageSegmentFormElementComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageSegmentFormElementComponent extends BaseControlValueAccessor<MileageSegment> implements ControlValueAccessor, OnInit { 
-    sectionGroup: FormGroup;
+    sectionGroup: UntypedFormGroup;
     private _itIsPersonalVehicle;
     @Input() programCategories: ProgramCategory[];
     @Input() fundingSources:ExpenseFundingSource[];
@@ -116,7 +118,7 @@ export class MileageSegmentFormElementComponent extends BaseControlValueAccessor
     }
     
     constructor( 
-      private formBuilder: FormBuilder
+      private formBuilder: UntypedFormBuilder
     )   
     {
       super();

@@ -1,13 +1,15 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PlansofworkService, Map, PlanOfWork, PlanOfWorkDataSource } from './plansofwork.service';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
     selector: 'planofwork-form',
-    templateUrl: 'plansofwork-form.component.html'
+    templateUrl: 'plansofwork-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlansofworkFormComponent implements OnInit{
 
@@ -29,7 +31,7 @@ export class PlansofworkFormComponent implements OnInit{
     constructor( 
         private plansofworkService: PlansofworkService,
         private service:ProgramsService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private fiscalYearService: FiscalyearService,
     ){
         this.programs = [];

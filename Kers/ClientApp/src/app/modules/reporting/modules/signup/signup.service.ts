@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HandleError, HttpErrorHandler } from '../../core/services/http-error-handler.service';
 import { Ethnicity, Race, RaceEthnicityValue } from '../activity/activity.service';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -76,13 +76,13 @@ export class SignupService {
         );
     }
 
-    updateServiceLogForm(entry:ActivitySignUpEntry, form:FormGroup){
+    updateServiceLogForm(entry:ActivitySignUpEntry, form:UntypedFormGroup){
     
         var vals:RaceEthnicityValue[] = form.value.raceEthnicityValues;
         var females = form.value.female + 0;
         var theOne = vals.findIndex( v => v.raceId == entry.raceId && v.ethnicityId == entry.ethnicityId);
         vals[theOne].amount++;
-        (<FormArray>form.get('raceEthnicityValues')).at(theOne).patchValue(vals[theOne]);
+        (<UntypedFormArray>form.get('raceEthnicityValues')).at(theOne).patchValue(vals[theOne]);
     
         if(entry.gender == 1){
           if(females != form.get('female').value){

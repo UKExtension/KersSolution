@@ -1,11 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import {PlansofworkService, Map} from './plansofwork.service';
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'plansofwork-maps',
-    templateUrl: 'plansofwork-maps.component.html' 
+    templateUrl: 'plansofwork-maps.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlansofworkMapsComponent implements OnInit{
     @Input() fy:FiscalYear;

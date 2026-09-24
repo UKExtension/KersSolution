@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber, Ethnicity, PerMonthActivities, PerMonthContacts, ActivityOptionNumberValue } from '../activity.service';
 
 import { Router } from "@angular/router";
@@ -12,7 +12,9 @@ import { Contact, ContactOptionNumberValue } from '../../contact/contact.service
 
 @Component({
     selector: 'contact-activity-summary-month',
-    templateUrl: 'activity-stats-month.component.html'
+    templateUrl: 'activity-stats-month.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityStatsMonthComponent { 
 

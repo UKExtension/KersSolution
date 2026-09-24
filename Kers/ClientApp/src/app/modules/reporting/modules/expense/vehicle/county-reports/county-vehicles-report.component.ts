@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PlanningUnit } from '../../../user/user.service';
 
 @Component({
-  selector: 'county-vehicles-reports',
-  template: `
+    selector: 'county-vehicles-reports',
+    template: `
     <div class="row" *ngIf="county && county.vehicles && county.vehicles.length > 0">
         <div class="col-md-12">
             <div class="x_panel">
@@ -34,8 +34,8 @@ import { PlanningUnit } from '../../../user/user.service';
         </div>
     </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
         .switch {
           position: relative;
           display: inline-block;
@@ -97,7 +97,9 @@ import { PlanningUnit } from '../../../user/user.service';
         }
         
         `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyVehiclesReportComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
@@ -10,8 +10,8 @@ import { SoilSampleService } from './soil-sample.service';
 
 
 @Component({
-  selector: 'address-browser-form-element',
-  styles: [`
+    selector: 'address-browser-form-element',
+    styles: [`
   .address-browser{
     border: 1px solid #e5e5e5;
     padding: 15px;
@@ -20,7 +20,7 @@ import { SoilSampleService } from './soil-sample.service';
 
 
   `],
-  template: `
+    template: `
 
   
 
@@ -41,19 +41,21 @@ import { SoilSampleService } from './soil-sample.service';
 
 
   `,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => AddressBrowserFormElementComponent),
-                  multi: true
-                } 
-                /* 
-                ,
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => SoilCropFormElementComponent),
-                  multi: true
-                } */
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AddressBrowserFormElementComponent),
+            multi: true
+        }
+        /*
+        ,
+        {
+          provide: NG_VALIDATORS,
+          useExisting: forwardRef(() => SoilCropFormElementComponent),
+          multi: true
+        } */
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AddressBrowserFormElementComponent extends BaseControlValueAccessor<FarmerAddress> implements ControlValueAccessor, OnInit { 
     @Input() countyid:number = 0;

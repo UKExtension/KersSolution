@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ServicelogService, ServicelogMonth, Servicelog } from './servicelog.service';
 
 
 @Component({
     selector: 'servicelog-list',
-    templateUrl: 'servicelog-list.component.html'
+    templateUrl: 'servicelog-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServocelogListComponent implements OnInit{ 
     

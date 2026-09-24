@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Alert, AlertTypes } from '../../modules/alerts/Alert';
 
 @Component({
-  selector: 'alert-banner',
-  template: `
+    selector: 'alert-banner',
+    template: `
   <div class="alert {{alertClass}} alert-dismissible" role="alert" *ngIf="!hidden">
     <button (click)="hidden=true" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
     </button>
@@ -13,7 +13,7 @@ import { Alert, AlertTypes } from '../../modules/alerts/Alert';
     </div>
   </div>
   `,
-  styles: [`
+    styles: [`
   .alert-danger a{
     color:#333;
   }
@@ -25,7 +25,9 @@ import { Alert, AlertTypes } from '../../modules/alerts/Alert';
   }
   
   `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AlertBannerComponent implements OnInit {
   hidden = false;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, delay, map, tap } from 'rxjs/operators';
@@ -6,8 +6,8 @@ import { TrainingSearchCriteria } from '../training/training';
 import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
 
 @Component({
-  selector: 'meeting-list',
-  template: `
+    selector: 'meeting-list',
+    template: `
   <div>
       <div class="text-right">
           <a class="btn btn-info btn-xs" *ngIf="!newMeeting" (click)="newMeeting = true">+ new event</a>
@@ -107,7 +107,7 @@ import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
     <loading *ngIf="loading"></loading>
   </div>
   `,
-  styles: [`
+    styles: [`
   .input-box-container {
     position: relative;
   }
@@ -117,7 +117,9 @@ import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
     border: 1px solid #ccc;
     font-size: 16px;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MeetingListComponent implements OnInit {
   refresh: Subject<string>; // For load/reload

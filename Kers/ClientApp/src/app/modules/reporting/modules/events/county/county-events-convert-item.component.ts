@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyEvent, CountyEventService } from './county-event.service';
 
 @Component({
-  selector: 'county-events-convert-item',
-  templateUrl: './county-events-convert-item.component.html',
-  styles: []
+    selector: 'county-events-convert-item',
+    templateUrl: './county-events-convert-item.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyEventConvertItemComponent implements OnInit {
   @Input('service') s:Object;

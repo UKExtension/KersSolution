@@ -11,19 +11,15 @@ import { LocationDetailComponent } from './location-detail.component';
 
 
 @NgModule({
-  imports:      [   SharedModule,
-                    LocationRoutingModule
-                ],
-  declarations: [ 
-                    
-                LocationHomeComponent,
-                LocationFormComponent,
-                LocationDetailComponent
-              ],
-  providers:    [  
-                    
-                ],
-  exports: [ LocationHomeComponent ],
-  entryComponents: [LocationHomeComponent]
+    imports: [SharedModule,
+        LocationRoutingModule
+    ],
+    declarations: [
+        LocationHomeComponent,
+        LocationFormComponent,
+        LocationDetailComponent
+    ],
+    providers: [],
+    exports: [LocationHomeComponent]
 })
 export class LocationModule { }

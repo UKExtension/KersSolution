@@ -1,16 +1,16 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
-import {    FormBuilder, ControlValueAccessor, AbstractControl, 
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {    UntypedFormBuilder, ControlValueAccessor, AbstractControl, 
             NG_VALUE_ACCESSOR, 
             NG_VALIDATORS, 
-            FormControl, 
+            UntypedFormControl, 
             Validator
         } from '@angular/forms';
 import { ServicelogService, SnapIndirectMethod, SnapIndirectReached, SnapIndirectReachedValue, SnapPolicyPartnerValue, SnapPolicyPartner } from "../servicelog.service";
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-policy-partners',
-  template: `
+    selector: 'snap-policy-partners',
+    template: `
   <loading *ngIf="loading"></loading>
     <div class="table-responsive" *ngIf="!loading" [formGroup]="partnerForm">
         <table class="table table-striped table-bordered" formArrayName="snapPolicyPartnerValue">
@@ -27,17 +27,19 @@ import { Observable } from 'rxjs';
     </div>
   
   `,
-    providers:[  {
-                    provide: NG_VALIDATORS,
-                    useExisting: forwardRef(() => SnapPolicyPartnersComponent),
-                    multi: true,
-                } ,
-                { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapPolicyPartnersComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SnapPolicyPartnersComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapPolicyPartnersComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapPolicyPartnersComponent implements ControlValueAccessor, OnInit, Validator {
 
@@ -60,7 +62,7 @@ export class SnapPolicyPartnersComponent implements ControlValueAccessor, OnInit
     
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private service: ServicelogService,
     ){
         
@@ -112,7 +114,7 @@ export class SnapPolicyPartnersComponent implements ControlValueAccessor, OnInit
         this.selections = this.partnerForm.value.snapPolicyPartnerValue; 
     }
     
-    public validate(control: FormControl) {
+    public validate(control: UntypedFormControl) {
         
         if(this.loading){
             return null;
@@ -122,7 +124,7 @@ export class SnapPolicyPartnersComponent implements ControlValueAccessor, OnInit
         }
     }
 
-    isPositiveInt(control:FormControl){
+    isPositiveInt(control:UntypedFormControl){
         
         if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
             return null;

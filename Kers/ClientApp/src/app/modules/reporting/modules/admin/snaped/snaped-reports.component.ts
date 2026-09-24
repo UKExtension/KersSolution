@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SnapedSearchCriteria, SnapedAdminService, SnapSearchResult, SnapSeearchResultsWithCount } from './snaped-admin.service';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
@@ -8,9 +8,9 @@ import { saveAs } from 'file-saver';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 
 @Component({
-  selector: 'snaped-reports',
-  templateUrl: './snaped-reports.component.html',
-  styles: [`
+    selector: 'snaped-reports',
+    templateUrl: './snaped-reports.component.html',
+    styles: [`
   .download-overlay{
     background-color:rgba(220,239,230, 0.8);
     border: 3px solid rgba(120,139,130, 0.2);
@@ -22,7 +22,9 @@ import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
     z-index: 100;
     padding: 10px;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedReportsComponent implements OnInit {
   condition = false;

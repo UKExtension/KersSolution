@@ -1,11 +1,11 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder } from '@angular/forms';
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormBuilder } from '@angular/forms';
 import { ServicelogService, SnapIndirectMethod } from "../servicelog.service";
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-indirect-methods',
-  template: `
+    selector: 'snap-indirect-methods',
+    template: `
   <loading *ngIf="loading"></loading>
   <table class="table table-striped table-bordered" *ngIf="!loading" [formGroup]="methodForm">
       <tbody formArrayName="methodSelections">
@@ -18,12 +18,14 @@ import { Observable } from 'rxjs';
   </table>
 
   `,
-    providers:[  { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapIndirectMethodsComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapIndirectMethodsComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapIndirectMethodsComponent implements ControlValueAccessor, OnInit {
 
@@ -51,7 +53,7 @@ export class SnapIndirectMethodsComponent implements ControlValueAccessor, OnIni
   
 
   constructor(
-      private fb: FormBuilder,
+      private fb: UntypedFormBuilder,
       private service: ServicelogService,
   ){
     

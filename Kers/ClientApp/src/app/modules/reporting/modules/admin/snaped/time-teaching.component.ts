@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { flatMap, startWith, tap } from 'rxjs/operators';
@@ -8,8 +8,8 @@ import { PlanningUnit } from '../../user/user.service';
 import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount } from './snaped-admin.service';
 
 @Component({
-  selector: 'app-time-teaching',
-  template: `
+    selector: 'app-time-teaching',
+    template: `
     
 
   <h3>Time Spent Teaching</h3><br>
@@ -108,8 +108,9 @@ import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount }
 
 
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TimeTeachingComponent implements OnInit {
 

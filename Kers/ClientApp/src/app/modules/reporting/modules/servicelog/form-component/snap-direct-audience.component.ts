@@ -1,16 +1,16 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
-import {    FormBuilder, ControlValueAccessor, AbstractControl, 
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {    UntypedFormBuilder, ControlValueAccessor, AbstractControl, 
             NG_VALUE_ACCESSOR, 
             NG_VALIDATORS, 
-            FormControl, 
+            UntypedFormControl, 
             Validator
         } from '@angular/forms';
 import { ServicelogService, SnapIndirectMethod, SnapIndirectReached, SnapIndirectReachedValue, SnapDirectAgesAudienceValue, SnapDirectAges, SnapDirectAudience } from "../servicelog.service";
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-direct-audience',
-  template: `
+    selector: 'snap-direct-audience',
+    template: `
   <loading *ngIf="loading"></loading>
     <div class="table-responsive" *ngIf="!loading" [formGroup]="audienceForm">
         <table class="table table-striped table-bordered snap-direct-audience" formArrayName="snapDirectAgesAudienceValue">
@@ -39,22 +39,24 @@ import { Observable } from 'rxjs';
     </div>
   
   `,
-  styles:[`
+    styles: [`
   .snap-direct-audience input{
     width: 80px;
   }
   `],
-    providers:[  {
-                    provide: NG_VALIDATORS,
-                    useExisting: forwardRef(() => SnapDirectAudienceComponent),
-                    multi: true,
-                } ,
-                { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapDirectAudienceComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SnapDirectAudienceComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapDirectAudienceComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapDirectAudienceComponent implements ControlValueAccessor, OnInit, Validator {
 
@@ -86,7 +88,7 @@ export class SnapDirectAudienceComponent implements ControlValueAccessor, OnInit
     
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private service: ServicelogService,
     ){
         
@@ -148,7 +150,7 @@ export class SnapDirectAudienceComponent implements ControlValueAccessor, OnInit
         this.selections = this.audienceForm.value.snapDirectAgesAudienceValue; 
     }
     
-    public validate(control: FormControl) {
+    public validate(control: UntypedFormControl) {
         
         if(this.loading){
             return null;
@@ -176,7 +178,7 @@ export class SnapDirectAudienceComponent implements ControlValueAccessor, OnInit
         return sum;
     }
 
-    isPositiveInt(control:FormControl){
+    isPositiveInt(control:UntypedFormControl){
         
         if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
             return null;

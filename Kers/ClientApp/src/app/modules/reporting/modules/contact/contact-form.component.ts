@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, UntypedFormControl, AbstractControl } from "@angular/forms";
 import {    ContactService, Contact, 
             ContactOptionNumberValue,
             ContactRaceEthnicityValue
@@ -12,7 +12,9 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 
 @Component({
     selector: 'contact-form',
-    templateUrl: 'contact-form.component.html'
+    templateUrl: 'contact-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactFormComponent implements OnInit{ 
 
@@ -44,7 +46,7 @@ export class ContactFormComponent implements OnInit{
 
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private service: ContactService,
         private programsService:ProgramsService,
         private fiscalYearService: FiscalyearService
@@ -314,14 +316,14 @@ export class ContactFormComponent implements OnInit{
         this.onFormCancel.emit();
     }
 
-    isIntOrFloat(control:FormControl){
+    isIntOrFloat(control:UntypedFormControl){
         if(control.value == +control.value && +control.value >= 0){
             return null;
         }
         return {"notDigit":true};
     }
 
-    isPositiveInt(control:FormControl){
+    isPositiveInt(control:UntypedFormControl){
         
         if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
             return null;

@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { IMyDpOptions, IMyDateModel } from "mydatepicker";
-import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
+import { UntypedFormBuilder, Validators, UntypedFormControl, AbstractControl } from "@angular/forms";
 import {    ActivityService, Activity, 
             ActivityOption, ActivityOptionNumber, 
             ActivityOptionNumberValue, ActivityOptionSelection,
@@ -14,7 +14,9 @@ import { Observable } from "rxjs";
 @Component({
     selector: 'activity-form',
     templateUrl: 'activity-form.component.html',
-    styleUrls: ['activity-form.component.scss'] 
+    styleUrls: ['activity-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityFormComponent implements OnInit{ 
 
@@ -56,7 +58,7 @@ export class ActivityFormComponent implements OnInit{
         };
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private service: ActivityService,
         private programsService:ProgramsService
     )   
@@ -427,14 +429,14 @@ export class ActivityFormComponent implements OnInit{
     
      ***********************/
 
-    isIntOrFloat(control:FormControl){
+    isIntOrFloat(control:UntypedFormControl){
         if(control.value == +control.value && +control.value >= 0){
             return null;
         }
         return {"notDigit":true};
     }
 
-    isPositiveInt(control:FormControl){
+    isPositiveInt(control:UntypedFormControl){
         
         if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
             return null;

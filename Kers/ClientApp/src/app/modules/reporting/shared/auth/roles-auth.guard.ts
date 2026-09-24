@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { UserService } from '../../modules/user/user.service';
 import { tap } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class RolesAuthGuard implements CanActivate, CanActivateChild {
+export class RolesAuthGuard  {
 
   permissions:RouteRolesPermission[] = [
     <RouteRolesPermission>{

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from './reporting.service';
 import { MessageService } from '../../core/services/message.service';
 
@@ -16,7 +16,9 @@ import { MessageService } from '../../core/services/message.service';
 <button type="button" class="close" (click)="dismiss()"><span>&times;</span></button>
         <i class="fa fa-info-circle fa-lg"></i> {{alert.name}}
 </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingAlertComponent implements OnInit { 
   public alert;

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from './reporting.service';
 
 @Component({
-  template: `
+    template: `
     <div [innerHtml]="stats.name"></div>
     <div class="x_panel">
       <div class="x_title">
@@ -14,7 +14,9 @@ import {ReportingService} from './reporting.service';
       </div>
     </div>
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingHomeComponent { 
   public title:any;

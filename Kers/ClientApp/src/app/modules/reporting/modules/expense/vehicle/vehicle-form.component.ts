@@ -1,14 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Vehicle, VehicleService } from './vehicle.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 import { User, UserService } from '../../user/user.service';
 
 @Component({
-  selector: 'vehicle-form',
-  templateUrl: 'vehicle-form.component.html',
-  styles: []
+    selector: 'vehicle-form',
+    templateUrl: 'vehicle-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class VehicleFormComponent implements OnInit {
 
@@ -30,7 +32,7 @@ export class VehicleFormComponent implements OnInit {
   
 
   constructor(
-      private fb: FormBuilder,
+      private fb: UntypedFormBuilder,
       private userService:UserService,
       private service:VehicleService,
   ) { 

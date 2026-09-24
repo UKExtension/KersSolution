@@ -1,4 +1,4 @@
-import {  Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'loading',
@@ -22,7 +22,7 @@ import {  Component, Input } from '@angular/core';
   <div class="rect5"></div>
 </div>
     `,
-    styles:[`
+    styles: [`
     .spinner {
         width: 30px;
         height: 20px;
@@ -147,7 +147,9 @@ import {  Component, Input } from '@angular/core';
 
 
 
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class LoadingComponent{

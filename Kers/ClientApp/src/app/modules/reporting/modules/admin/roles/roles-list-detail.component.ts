@@ -1,9 +1,11 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { RolesService, Role } from './roles.service';
 
 @Component({
     selector: '[rolesListDetail]',
-    templateUrl: 'roles-list-detail.component.html'
+    templateUrl: 'roles-list-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class RolesListDetailComponent implements OnInit {
 

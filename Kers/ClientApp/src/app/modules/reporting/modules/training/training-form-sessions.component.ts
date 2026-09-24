@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, AbstractControl, UntypedFormArray, FormControl } from '@angular/forms';
 import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow, TrainingSession } from './training';
 import { TrainingService } from './training.service';
 import { Observable } from 'rxjs';
@@ -7,13 +7,15 @@ import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 
 
 @Component({
-  selector: 'training-form-sessions',
-  templateUrl: './training-form-sessions.component.html',
-  styles:[`
+    selector: 'training-form-sessions',
+    templateUrl: './training-form-sessions.component.html',
+    styles: [`
   my-date-picker.ng-invalid.ng-touched >>> .mydp {
     border: 1px solid #CE5454;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingFormSessionsComponent implements OnInit {
     @Input() training:Training;
@@ -30,7 +32,7 @@ export class TrainingFormSessionsComponent implements OnInit {
     sessionsIndex = 0;
 
     get sessions() {
-        return this.trainingForm.get('trainingSession') as FormArray;
+        return this.trainingForm.get('trainingSession') as UntypedFormArray;
     }
     options = { 
         placeholderText: 'Your Description Here!',
@@ -57,7 +59,7 @@ export class TrainingFormSessionsComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<Training>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:TrainingService
   ) {
     this.date.setMonth(this.date.getMonth() + 2);

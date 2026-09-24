@@ -1,13 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TaxExempt } from './exmpt';
 import { ExemptService } from './exempt.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'exempt-list',
-  templateUrl: './exempt-list.component.html',
-  styles: [
-  ]
+    selector: 'exempt-list',
+    templateUrl: './exempt-list.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExemptListComponent implements OnInit {
   exempts$:Observable<TaxExempt[]>;

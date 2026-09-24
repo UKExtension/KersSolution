@@ -1,13 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Mileage, MileageMonth } from './mileage';
 
 @Component({
-  selector: 'mileage-month',
-  template: `
+    selector: 'mileage-month',
+    template: `
   <h3>{{month.date | date:'MMMM, y'}}</h3>
   <mileage-detail *ngFor="let expense of month.expenses" [expense]="expense" (onDeleted)="deleted($event)" (onEdited)="edit($event)"></mileage-detail><br><br>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageMonthComponent implements OnInit {
   @Input() month:MileageMonth;

@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import { ContactService } from '../contact/contact.service';
 import { Observable } from 'rxjs/internal/Observable';
 
 
 @Component({
-  template: `
+    template: `
 
 
   <div>
@@ -35,7 +35,9 @@ import { Observable } from 'rxjs/internal/Observable';
     <div [innerHTML]="kSUdata"></div>
 </div>
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class KsuHomeComponent { 
 

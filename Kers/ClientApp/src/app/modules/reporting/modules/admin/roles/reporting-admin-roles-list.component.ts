@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { RolesService, Role } from './roles.service';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {Router} from '@angular/router';
@@ -28,8 +28,9 @@ import {ReportingRoleFormComponent} from './reporting-role-form.component';
     </table>            
 </div>
        
-    `
-
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingAdminRolesListComponent implements OnInit{
 

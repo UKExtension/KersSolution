@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import { Observable } from 'rxjs';
 import {FiscalyearFormComponent} from './fiscalyear-form.component';
@@ -27,8 +27,9 @@ import {FiscalyearService, FiscalYear} from './fiscalyear.service';
     </table>            
 </div>
        
-    `
-
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class FiscalyearListComponent implements OnInit{
 

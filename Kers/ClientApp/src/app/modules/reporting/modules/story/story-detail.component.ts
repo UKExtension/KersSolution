@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {StoryService, Story} from './story.service';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'story-detail',
-    templateUrl: 'story-detail.component.html'
+    templateUrl: 'story-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryDetailComponent { 
     rowDefault =true;

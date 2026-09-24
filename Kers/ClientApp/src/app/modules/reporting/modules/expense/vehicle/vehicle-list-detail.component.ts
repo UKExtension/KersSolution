@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Vehicle } from './vehicle.service';
 
 @Component({
-  selector: 'vehicle-list-detail',
-  template: `
+    selector: 'vehicle-list-detail',
+    template: `
   <div class="ln_solid"></div>
   <div class="row">
         <div class="media event col-xs-9" *ngIf="rowDefault">
@@ -30,7 +30,9 @@ import { Vehicle } from './vehicle.service';
       </div>
       
   </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class VehicleListDetailComponent implements OnInit {
   @Input() vehicle:Vehicle;

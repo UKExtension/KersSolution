@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'vehicle',
-  template: `
+    selector: 'vehicle',
+    template: `
     <p>
     <planningunit-list [link]="'/reporting/expense/vehicle/county/'"></planningunit-list>
     </p>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class VehicleComponent implements OnInit {
 

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'exempt',
-  templateUrl: './exempt.component.html'
+    selector: 'exempt',
+    templateUrl: './exempt.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExemptComponent implements OnInit {
   newExempt:boolean = false;

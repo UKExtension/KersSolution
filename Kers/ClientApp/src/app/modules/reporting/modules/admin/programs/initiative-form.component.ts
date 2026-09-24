@@ -1,13 +1,15 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ProgramsService, StrategicInitiative, ProgramCategory } from './programs.service';
 import {Location} from '@angular/common';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormControl } from '@angular/forms';
 import {Router} from '@angular/router';
 import { FiscalYear } from '../fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'initiative-form',
-    templateUrl: 'initiative-form.component.html' 
+    templateUrl: 'initiative-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class InitiativeFormComponent implements OnInit{
 
@@ -23,7 +25,7 @@ export class InitiativeFormComponent implements OnInit{
 
     constructor( 
         private service: ProgramsService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private router: Router,
         private location: Location
     ){
@@ -91,7 +93,7 @@ export class InitiativeFormComponent implements OnInit{
         this.onFormCancel.emit();
     }  
 
-    validateNumber(c: FormControl) {
+    validateNumber(c: UntypedFormControl) {
         return c.value > 0 && c.value < 100000 ? null : {valid: false}
     }; 
 }

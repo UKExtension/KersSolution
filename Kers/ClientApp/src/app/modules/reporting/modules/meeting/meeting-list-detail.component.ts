@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Meeting, MeetingService, MeetingWithTime } from './meeting.service';
 
 @Component({
-  selector: '[meeting-list-detail]',
-  template: `
+    selector: '[meeting-list-detail]',
+    template: `
 <ng-container>
   <td *ngIf="rowDefault">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
   <td *ngIf="rowDefault">{{training.subject}}</td>
@@ -32,7 +32,9 @@ import { Meeting, MeetingService, MeetingWithTime } from './meeting.service';
 
 
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MeetingListDetailComponent implements OnInit {
 

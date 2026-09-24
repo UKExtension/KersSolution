@@ -1,4 +1,4 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { ActivityService, Activity, ActivityOption, Race, ActivityOptionNumber } from '../activity.service';
 import { Observable } from "rxjs";
@@ -16,7 +16,9 @@ import { Observable } from "rxjs";
         <td>{{activity.males}}</td>
         <td *ngFor="let opt of optionNumbers | async">{{optionValue(opt)}}</td>
         
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityStatsProgramhRow implements OnInit {
 

@@ -1,9 +1,9 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ActivitySignUpEntry, SignupService } from './signup.service';
 
 @Component({
-  selector: '[signup-list-row]',
-  template: `
+    selector: '[signup-list-row]',
+    template: `
   <td *ngIf="defaultView">{{attendie.name}}</td>
   <td *ngIf="defaultView">{{attendie.address}}</td>
   <td *ngIf="defaultView">{{attendie.email}}</td>
@@ -28,8 +28,9 @@ import { ActivitySignUpEntry, SignupService } from './signup.service';
     <loading *ngIf="loading"></loading>
   </td>
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SignupListRowComponent implements OnInit {
   @Input('signup-list-row') attendie:ActivitySignUpEntry = null;

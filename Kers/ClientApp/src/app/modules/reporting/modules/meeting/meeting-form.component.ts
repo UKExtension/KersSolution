@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Meeting, MeetingService, MeetingWithTime } from './meeting.service';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
-import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
-  selector: 'meeting-form',
-  template: `
+    selector: 'meeting-form',
+    template: `
 <loading *ngIf="loading"></loading>
 
 <div class="row" *ngIf="!loading">
@@ -118,7 +118,9 @@ import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
   </form>
 </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MeetingFormComponent implements OnInit {
   
@@ -154,7 +156,7 @@ export class MeetingFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<Meeting>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:MeetingService
   ) {
     this.date.setMonth(this.date.getMonth() + 2);

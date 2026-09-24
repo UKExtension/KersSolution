@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {HelpService, Help, HelpCategory} from './help.service';
 
 @Component({
@@ -24,8 +24,9 @@ import {HelpService, Help, HelpCategory} from './help.service';
     </table>            
 </div>
        
-    `
-
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpListComponent implements OnInit{
 

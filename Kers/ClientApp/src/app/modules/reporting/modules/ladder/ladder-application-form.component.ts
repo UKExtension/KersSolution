@@ -1,7 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
-import { FormBuilder, Validators, FormArray, FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormArray, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { LadderService, FileUploadResult } from './ladder.service';
 import { LadderLevel, LadderEducationLevel, LadderPerformanceRating, LadderApplication, LadderImage, UploadImage } from './ladder';
 import { Observable } from 'rxjs';
@@ -11,9 +11,11 @@ import { Router } from '@angular/router';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'ladder-application-form',
-  templateUrl: './ladder-application-form.component.html',
-  styles: []
+    selector: 'ladder-application-form',
+    templateUrl: './ladder-application-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderApplicationFormComponent implements OnInit {
 
@@ -29,11 +31,11 @@ export class LadderApplicationFormComponent implements OnInit {
     today:Date;
 
     get ratings() {
-      return this.ladderForm.get('ratings') as FormArray;
+      return this.ladderForm.get('ratings') as UntypedFormArray;
     }
 
     get formImages() {
-      return this.ladderForm.get('images') as FormArray;
+      return this.ladderForm.get('images') as UntypedFormArray;
     }
   
     ladderForm:any;
@@ -77,7 +79,7 @@ export class LadderApplicationFormComponent implements OnInit {
   @Output() onDraftSaved = new EventEmitter<LadderApplication>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private userService: UserService,
     private service:LadderService,
     private trainingService:TrainingService,
@@ -166,10 +168,10 @@ export class LadderApplicationFormComponent implements OnInit {
   }
 
   addRating(year:string = '', rating:string = '') {
-    const group = new FormGroup({
-      year: new FormControl(year, [Validators.required, 
+    const group = new UntypedFormGroup({
+      year: new UntypedFormControl(year, [Validators.required, 
         Validators.pattern('^\\d*$')]),
-      ratting: new FormControl(rating, [Validators.required])
+      ratting: new UntypedFormControl(rating, [Validators.required])
     });
     this.ratings.push(group);
   }
@@ -185,10 +187,10 @@ export class LadderApplicationFormComponent implements OnInit {
           res => {
             var reslt = <FileUploadResult> res;
             if(reslt.success){
-              const group = new FormGroup({
-                description: new FormControl(''),
-                imageId: new FormControl(''),
-                imageName: new FormControl('')
+              const group = new UntypedFormGroup({
+                description: new UntypedFormControl(''),
+                imageId: new UntypedFormControl(''),
+                imageName: new UntypedFormControl('')
               });
               group.patchValue({imageId:reslt.imageId, imageName:reslt.fileName});
               this.formImages.push(group);
@@ -207,10 +209,10 @@ export class LadderApplicationFormComponent implements OnInit {
   }
 
   addImage(imageId:number = 0, imageName = "", imageDescription = ""){
-    const group = new FormGroup({
-      description: new FormControl(imageDescription),
-      imageId: new FormControl(imageId),
-      imageName: new FormControl(imageName)
+    const group = new UntypedFormGroup({
+      description: new UntypedFormControl(imageDescription),
+      imageId: new UntypedFormControl(imageId),
+      imageName: new UntypedFormControl(imageName)
     });
     this.formImages.push(group);
     var img = new LadderImage;

@@ -1,20 +1,22 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { LadderApplication, LadderStage, LadderApplicationStage } from './ladder';
 import { Observable } from 'rxjs';
 import { LadderService } from './ladder.service';
 
 @Component({
-  selector: 'ladder-review-application-detail',
-  templateUrl: './ladder-review-application-detail.component.html',
-  styles: [
-    `
+    selector: 'ladder-review-application-detail',
+    templateUrl: './ladder-review-application-detail.component.html',
+    styles: [
+        `
     .row{
       padding-top: 10px;
       padding-bottom: 5px;
       border-bottom: 1px solid #ccc
     }
     `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderReviewApplicationDetailComponent implements OnInit {
   @Input() application:LadderApplication;

@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { TrainingSurveyResult } from '../training';
 import {outlineJson} from './outline';
 
 @Component({
-  selector: '[training-survey-row]',
-  template: `
+    selector: '[training-survey-row]',
+    template: `
     <td *ngIf="default">{{result.created | date:'mediumDate'}}</td>
     <td *ngIf="default"><a (click)="detailsView()" class="btn btn-info btn-xs pull-right">details</a></td>
     <td *ngIf="details" colspan="2"><br>
@@ -19,7 +19,9 @@ import {outlineJson} from './outline';
     </td>
 
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingSurveyRowComponent implements OnInit {
   @Input('training-survey-row') result:TrainingSurveyResult;

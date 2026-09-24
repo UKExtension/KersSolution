@@ -16,24 +16,21 @@ import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
-  imports:      [   
-                  SharedModule,
-                  AngularMyDatePickerModule,
-                  CountyEventsRoutingModule,
-                  LocationModule,
-                  NgSelectModule,
-                  FormsModule
-                ],
-  declarations: [ 
-                  CountyEventsHomeComponent,
-                  CountyEventFormComponent,
-                  CountyEventListDetailsComponent,
-                  CountyEventConvertComponent,
-                  CountyEventConvertItemComponent
-                ],
-  providers:    [  
-                    
-                ],
-  entryComponents: [CountyEventsHomeComponent]
+    imports: [
+        SharedModule,
+        AngularMyDatePickerModule,
+        CountyEventsRoutingModule,
+        LocationModule,
+        NgSelectModule,
+        FormsModule
+    ],
+    declarations: [
+        CountyEventsHomeComponent,
+        CountyEventFormComponent,
+        CountyEventListDetailsComponent,
+        CountyEventConvertComponent,
+        CountyEventConvertItemComponent
+    ],
+    providers: []
 })
 export class CountyEventsModule { }

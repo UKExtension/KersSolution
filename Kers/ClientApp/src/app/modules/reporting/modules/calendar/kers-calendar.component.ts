@@ -31,10 +31,12 @@ import { Activity } from '../activity/activity.service';
 import { CalendarService } from './calendar-service.service';
 
 @Component({
-  selector: 'kers-calendar',
-  templateUrl: './kers-calendar.component.html',
-  styleUrls: ['./kers-calendar.component.css'],
-  animations: [collapseAnimation]
+    selector: 'kers-calendar',
+    templateUrl: './kers-calendar.component.html',
+    styleUrls: ['./kers-calendar.component.css'],
+    animations: [collapseAnimation],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class KersCalendarComponent implements OnInit {
   

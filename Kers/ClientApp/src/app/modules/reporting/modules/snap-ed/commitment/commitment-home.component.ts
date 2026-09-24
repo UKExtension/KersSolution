@@ -1,12 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SnapEdCommitmentService, CommitmentBundle } from '../snap-ed-commitment.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'app-commitment-home',
-  templateUrl: './commitment-home.component.html',
-  styles: []
+    selector: 'app-commitment-home',
+    templateUrl: './commitment-home.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CommitmentHomeComponent implements OnInit {
   commitment:CommitmentBundle;

@@ -1,12 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { EmailService } from './email.service';
 import { MessageTemplate } from './message-template';
 
 @Component({
-  selector: 'email-template-form',
-  templateUrl: './email-template-form.component.html',
-  styles: []
+    selector: 'email-template-form',
+    templateUrl: './email-template-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EmailTemplateFormComponent implements OnInit {
   @Input() template:MessageTemplate;
@@ -17,7 +19,7 @@ export class EmailTemplateFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<MessageTemplate>();
 
   constructor(
-    private fb:FormBuilder,
+    private fb:UntypedFormBuilder,
     private service: EmailService
   ) { 
     this.templateForm = this.fb.group(

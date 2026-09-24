@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CountyCode, SoildataService } from '../soildata.service';
 import { Observable } from 'rxjs';
 import { FormTypeSignees } from '../soildata.report';
-import { FormArray, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'soildata-signees',
-  template: `
+    selector: 'soildata-signees',
+    template: `
   
   <loading *ngIf="loading"></loading>
   <div class="row" *ngIf="!loading">
@@ -77,11 +77,13 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
       </form>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataSigneesComponent implements OnInit {
-  signeesForm: FormGroup;
-  signeesFormArray: FormArray;
+  signeesForm: UntypedFormGroup;
+  signeesFormArray: UntypedFormArray;
   loading = true;
   selectedCounty:CountyCode; 
 
@@ -90,7 +92,7 @@ export class SoildataSigneesComponent implements OnInit {
   constructor(
     private reportingService: ReportingService,
     private service:SoildataService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -120,7 +122,7 @@ export class SoildataSigneesComponent implements OnInit {
   initialieForm(){
     this.service.signeesByCounty(this.selectedCounty.planningUnitId).subscribe(
           res => {
-            this.signeesFormArray = this.signeesForm.get('signees') as FormArray;
+            this.signeesFormArray = this.signeesForm.get('signees') as UntypedFormArray;
             this.signeesFormArray.clear();
             for( let item of res ) this.addItem(item);
             this.loading = false;
@@ -132,11 +134,11 @@ export class SoildataSigneesComponent implements OnInit {
   }
 
   addItem(item:FormTypeSignees): void {
-    this.signeesFormArray = this.signeesForm.get('signees') as FormArray;
+    this.signeesFormArray = this.signeesForm.get('signees') as UntypedFormArray;
     this.signeesFormArray.push(this.createItem(item));
   }
 
-  createItem(item:FormTypeSignees): FormGroup {
+  createItem(item:FormTypeSignees): UntypedFormGroup {
     return this.formBuilder.group({
       title: item.title,
       signee: item.signee,

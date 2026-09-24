@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ActivityService, Activity, ActivityOption} from '../activity.service';
 
@@ -7,7 +7,7 @@ import { User } from "../../user/user.service";
 
 
 @Component({
-  template: `
+    template: `
         <a [routerLink]="['/reporting/activity/stats/statsfilter']" routerLinkActive="active" [routerLinkActiveOptions]="{exact:
 true}">All Statistical Contact Records</a> | 
         <a [routerLink]="['/reporting/activity/stats/month']" routerLinkActive="active">Summary By Month</a> | 
@@ -22,7 +22,9 @@ true}">All Statistical Contact Records</a> |
                 font-weight:bold;
             }
         `
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityStatsHomeComponent { 
 

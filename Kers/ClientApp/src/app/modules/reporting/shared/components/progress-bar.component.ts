@@ -1,4 +1,4 @@
-import {  Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'progress-bar',
@@ -16,7 +16,7 @@ import {  Component, Input } from '@angular/core';
 
 </div>
     `,
-    styles:[`
+    styles: [`
 .download-overlay{
     background-color:rgba(220,239,230, 0.8);
     border: 3px solid rgba(120,139,130, 0.2);
@@ -31,7 +31,9 @@ import {  Component, Input } from '@angular/core';
 
 
 
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class ProgressBarComponent{

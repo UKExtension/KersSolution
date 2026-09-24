@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import { UserService, User } from './user.service';
 import { ActivityService, Activity } from '../activity/activity.service';
@@ -31,8 +31,9 @@ import * as echarts from 'echarts';
                 margin-left: 105px;
                 margin-right: 45px;
             }
-    `]
-
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserComponent { 
 

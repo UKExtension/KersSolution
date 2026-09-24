@@ -1,5 +1,5 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl, FormArray } from '@angular/forms';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormBuilder, UntypedFormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { SampleAttributeSampleInfoBundle, SampleAttributeType, SampleInfoBundle } from '../../soildata/sample/SampleInfoBundle';
@@ -9,8 +9,8 @@ import { HaySample, HayType, HayTypeDetails } from './hay-sample';
 
 
 @Component({
-  selector: 'hay-sample-form-element',
-  template: `
+    selector: 'hay-sample-form-element',
+    template: `
 <div class="form-horizontal form-label-left sample-crop" [formGroup]="sampleForm">
     
   <div class="row" style="padding: 8px 0;">
@@ -146,7 +146,7 @@ import { HaySample, HayType, HayTypeDetails } from './hay-sample';
 </div>
 
   `,
-  styles: [`
+    styles: [`
   .sample-crop{
     border-bottom: 1px solid #ccc
   }
@@ -214,22 +214,23 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-  `]
-  ,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => HaySampleFormElementComponent),
-                  multi: true
-                },
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => HaySampleFormElementComponent),
-                  multi: true
-                } 
-                ]
+  `],
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => HaySampleFormElementComponent),
+            multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => HaySampleFormElementComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HaySampleFormElementComponent extends BaseControlValueAccessor<HaySample> implements ControlValueAccessor, OnInit { 
-    sampleForm: FormGroup;
+    sampleForm: UntypedFormGroup;
     @Input('index') index:number;
     @Output() removeMe = new EventEmitter<number>();
 
@@ -244,7 +245,7 @@ export class HaySampleFormElementComponent extends BaseControlValueAccessor<HayS
     kdaSelected = false;
     date = new Date();
     constructor( 
-      private formBuilder: FormBuilder,
+      private formBuilder: UntypedFormBuilder,
       private service:SoilSampleService
     )   
     {

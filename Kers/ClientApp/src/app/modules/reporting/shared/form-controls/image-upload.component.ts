@@ -1,19 +1,21 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'image-picker',
-  template: `
+    selector: 'image-picker',
+    template: `
             <img [froalaEditor]="options" [(froalaModel)]="imgObj" alt="Profile Image" class="col-xs-5 img-circle">
   `,
-    providers:[  { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => ImageUploadComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => ImageUploadComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ImageUploadComponent implements ControlValueAccessor, OnInit {
 

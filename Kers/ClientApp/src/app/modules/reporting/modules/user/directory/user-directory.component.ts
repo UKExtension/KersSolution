@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { UserService, User } from '../user.service';
 import { Observable } from 'rxjs';
@@ -9,7 +9,9 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 
 
 @Component({
-  templateUrl: 'user-directory.component.html'
+    templateUrl: 'user-directory.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserDirectoryComponent {
 

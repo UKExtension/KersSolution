@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Servicelog } from '../../../servicelog/servicelog.service';
 import { Activity } from '../../activity.service';
 
 @Component({
-  selector: '[service-log-summary-row]',
-  templateUrl: './service-log-summary-row.component.html'
+    selector: '[service-log-summary-row]',
+    templateUrl: './service-log-summary-row.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServiceLogSummaryRowComponent implements OnInit {
   @Input('service-log-summary-row') activity:Servicelog;

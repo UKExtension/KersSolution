@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from "@angular/forms";
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, FormControl } from "@angular/forms";
 import {Location} from '@angular/common';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { Observable } from "rxjs";
@@ -13,7 +13,9 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 
 @Component({
     selector: 'story-form-demo',
-    templateUrl: 'story-form-demo.component.html'
+    templateUrl: 'story-form-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryFormDemoComponent implements OnInit{ 
 
@@ -42,7 +44,7 @@ export class StoryFormDemoComponent implements OnInit{
     outcome: Observable<StoryOutcome[]>;
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private programsService:ProgramsService,
         private indicatorsService: IndicatorsService,
         private location: Location,

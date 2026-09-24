@@ -13,13 +13,13 @@
     <div class="form-group">
         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
         <div class="col-md-4 col-sm-6 col-xs-7">
-            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start"></my-date-picker>
+            <input angular-mydatepicker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" formControlName="start">
         </div>
     </div>
     <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
             <div class="col-md-4 col-sm-6 col-xs-7">
-                <my-date-picker [class.ng-invalid]="trainingForm.hasError('endDate')" [options]="myDatePickerOptionsEnd" (dateChanged)="onDateChanged($event)" formControlName="end"></my-date-picker>
+                <input angular-mydatepicker [class.ng-invalid]="trainingForm.hasError('endDate')" [options]="myDatePickerOptionsEnd" (dateChanged)="onDateChanged($event)" formControlName="end">
             </div>
         </div>
     <div class="form-group">

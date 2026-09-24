@@ -1,4 +1,4 @@
-import {    Component, Input, OnInit  } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { ActivityService, Race, ActivityOptionNumber } from '../../activity/activity.service';
 import { Observable } from 'rxjs';
@@ -17,7 +17,9 @@ import {Contact} from '../contact.service';
         <td>{{activity.female}}</td>
         <td>{{activity.male}}</td>
         <td *ngFor="let opt of optionNumbers | async">{{optionValue(opt)}}</td>
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactStatsRow implements OnInit {
 

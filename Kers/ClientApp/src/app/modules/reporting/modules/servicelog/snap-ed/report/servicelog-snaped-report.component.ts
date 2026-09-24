@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../../components/reporting/reporting.service';
 import { UserService, User, PlanningUnit } from '../../../user/user.service';
 import { FiscalyearService, FiscalYear } from '../../../admin/fiscalyear/fiscalyear.service';
 import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetReimbursementsCounty } from '../../../admin/snaped/snaped-admin.service';
 
 @Component({
-  template: `
+    template: `
     <div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
         </button>
@@ -70,7 +70,9 @@ import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetRei
         </table>
     </div>
     </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogSnapedReportComponent { 
 

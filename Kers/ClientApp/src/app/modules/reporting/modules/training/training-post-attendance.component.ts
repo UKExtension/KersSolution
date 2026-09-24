@@ -1,13 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Training } from './training';
 import { TrainingService } from './training.service';
 import { User } from '../user/user.service';
 
 @Component({
-  selector: 'training-post-attendance',
-  templateUrl: './training-post-attendance.component.html',
-  styles: []
+    selector: 'training-post-attendance',
+    templateUrl: './training-post-attendance.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingPostAttendanceComponent implements OnInit {
 

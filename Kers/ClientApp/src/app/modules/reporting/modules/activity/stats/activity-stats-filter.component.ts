@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'activity-stats-filter',
-  template: `
+    selector: 'activity-stats-filter',
+    template: `
     <br><br>
     <activity-filter [userId]="0"></activity-filter>
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityStatsFilterComponent implements OnInit {
 

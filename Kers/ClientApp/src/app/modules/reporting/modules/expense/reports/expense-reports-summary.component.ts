@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth, ExpenseSummary } from '../expense.service';
 import { saveAs } from 'file-saver';
 import { User } from "../../user/user.service";
@@ -91,7 +91,9 @@ import { Observable } from 'rxjs';
         </div>
 
 
-        `
+        `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsSummaryComponent { 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Training, TrainingEnrollment, TrainingSearchCriteria } from './training';
@@ -7,9 +7,11 @@ import { switchMap } from 'rxjs/operators';
 import { UserService, User, UserSpecialty } from '../user/user.service';
 
 @Component({
-  selector: 'training-info',
-  templateUrl: './training-info.component.html',
-  styleUrls: ['./training-info.component.css']
+    selector: 'training-info',
+    templateUrl: './training-info.component.html',
+    styleUrls: ['./training-info.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingInfoComponent implements OnInit {
   

@@ -1,13 +1,15 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FiscalyearService, FiscalYear } from './fiscalyear.service';
 import {Location} from '@angular/common';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import {Router} from '@angular/router';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 
 @Component({
     selector: 'fiscalyear-form',
-    templateUrl: 'fiscalyear-form.component.html' 
+    templateUrl: 'fiscalyear-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class FiscalyearFormComponent implements OnInit{
 
@@ -26,7 +28,7 @@ export class FiscalyearFormComponent implements OnInit{
 
     constructor( 
         private service: FiscalyearService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private router: Router,
         private location: Location
     ){

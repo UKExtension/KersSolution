@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from "@angular/forms";
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, UntypedFormControl } from "@angular/forms";
 import { SnapedAdminService } from './snaped-admin.service';
 
 
@@ -32,7 +32,9 @@ import { SnapedAdminService } from './snaped-admin.service';
                 </div>
             </div>
         </form>
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedReimbursmentFormComponent implements OnInit{ 
 
@@ -50,7 +52,7 @@ export class SnapedReimbursmentFormComponent implements OnInit{
     errorMessage;
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private service: SnapedAdminService
     )   
     {
@@ -126,14 +128,14 @@ export class SnapedReimbursmentFormComponent implements OnInit{
     
      ***********************/
 
-    isIntOrFloat(control:FormControl){
+    isIntOrFloat(control:UntypedFormControl){
         if(control.value == +control.value && +control.value >= 0){
             return null;
         }
         return {"notDigit":true};
       }
   
-      isPositiveInt(control:FormControl){
+      isPositiveInt(control:UntypedFormControl){
           
           if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
               return null;

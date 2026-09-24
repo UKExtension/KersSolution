@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ActivityService, ActivityOptionNumber, Race } from '../../activity/activity.service';
 import {Contact, ContactService} from '../contact.service';
 
@@ -9,7 +9,9 @@ import { User } from '../../user/user.service';
 
 
 @Component({
-  templateUrl: 'contact-stats-program.component.html'
+    templateUrl: 'contact-stats-program.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactStatsProgramComponent { 
     @Input() user:User;

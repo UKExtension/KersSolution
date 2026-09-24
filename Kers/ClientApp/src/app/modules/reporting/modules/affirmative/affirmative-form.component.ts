@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import {    
             AffirmativeService, 
             AffirmativePlan,
@@ -10,12 +10,14 @@ import {
             SummaryValue,
             MakeupValueForm
                                 } from './affirmative.service';
-import { FormBuilder, Validators, FormGroup,FormArray, FormControl }   from '@angular/forms';
+import { UntypedFormBuilder, Validators, FormGroup,FormArray, FormControl }   from '@angular/forms';
 import {Observable} from 'rxjs';
 
 @Component({
     selector: 'affirmative-form',
-    templateUrl: 'affirmative-form.component.html'
+    templateUrl: 'affirmative-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AffirmativeFormComponent implements OnInit{
 
@@ -49,7 +51,7 @@ export class AffirmativeFormComponent implements OnInit{
 
     constructor( 
         private service: AffirmativeService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ){
         
 

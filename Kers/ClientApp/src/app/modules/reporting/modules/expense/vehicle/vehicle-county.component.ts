@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { VehicleService, Vehicle } from './vehicle.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
@@ -7,8 +7,8 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-vehicle-county',
-  template: `
+    selector: 'app-vehicle-county',
+    template: `
   <div>
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newVehicle" (click)="newVehicle = true">+ new vehicle record</a>
@@ -19,7 +19,9 @@ import { switchMap } from 'rxjs/operators';
     <vehicle-list-detail *ngFor="let vehicle of county.vehicles" [vehicle]="vehicle" (onEdited)="vehicleEdited($event)"></vehicle-list-detail>
   </div>
     `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class VehicleCountyComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { ActivityService, ActivityOption, Race, ActivityOptionNumber } from '../../activity/activity.service';
 import { ContactService, Contact} from '../contact.service';
 
@@ -8,15 +8,17 @@ import { Observable } from 'rxjs';
 
 
 @Component({
-  templateUrl: 'contact-stats-all.component.html',
-  styles: [`
+    templateUrl: 'contact-stats-all.component.html',
+    styles: [`
     .mydrp .selectiongroup .selection{
         color:rgb(189, 189, 189);
     }
 
 
   `],
-  encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactStatsAllComponent { 
 

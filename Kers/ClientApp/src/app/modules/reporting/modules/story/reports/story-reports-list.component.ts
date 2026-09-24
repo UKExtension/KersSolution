@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {StoryService, Story} from '../story.service';
 import { Observable } from "rxjs";
 import { User, UserService } from "../../user/user.service";
@@ -12,7 +12,9 @@ import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
         <div *ngIf="(otherStories | async)?.length == 0 ">No success stories submitted.</div>
          <success-story-display-list [stories]="otherStories"></success-story-display-list>
     </div>
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryReportsListComponent { 
 

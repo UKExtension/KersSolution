@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ActivityService, Activity } from '../activity.service';
 
@@ -23,7 +23,9 @@ import { User } from "../../user/user.service";
         .panel-heading{
             cursor:pointer;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsYearComponent { 
 

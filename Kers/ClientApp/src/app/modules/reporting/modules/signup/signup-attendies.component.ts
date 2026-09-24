@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Servicelog } from '../servicelog/servicelog.service';
 import { ActivitySignUpEntry, SignupService } from './signup.service';
 import { saveAs } from 'file-saver';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'signup-attendies',
-  template: `
+    selector: 'signup-attendies',
+    template: `
   <h2>Attended By</h2>
   <div class="row" *ngIf="!displayNewEntry">
     <div class="col-xs-6">
@@ -27,13 +27,14 @@ import { FormGroup } from '@angular/forms';
     </tbody>
   </table>
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SignupAttendiesComponent implements OnInit {
   attendies$:Observable<ActivitySignUpEntry[]>;
   @Input() activity:Servicelog = null;
-  @Input() activityForm:FormGroup;
+  @Input() activityForm:UntypedFormGroup;
   @Output() removed = new EventEmitter<ActivitySignUpEntry>();
   @Output() added = new EventEmitter<ActivitySignUpEntry>();
   @Output() edited = new EventEmitter<ActivitySignUpEntry>();

@@ -1,12 +1,14 @@
-import { Component, Inject, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Inject, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
-import {FormBuilder, Validators }   from '@angular/forms';
+import {UntypedFormBuilder, Validators }   from '@angular/forms';
 import {Location} from '@angular/common';
 
 @Component({
-  selector: 'login',
-  templateUrl: 'login.component.html'
+    selector: 'login',
+    templateUrl: 'login.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LoginComponent implements OnInit { 
 
@@ -22,7 +24,7 @@ export class LoginComponent implements OnInit {
   constructor(
                 public authService: AuthenticationService, 
                 public router: Router,
-                private fb: FormBuilder,
+                private fb: UntypedFormBuilder,
                 private location: Location
               ) 
   {

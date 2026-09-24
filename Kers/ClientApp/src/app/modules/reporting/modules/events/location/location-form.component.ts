@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ExtensionEventLocation } from '../extension-event';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 import { User } from '../../user/user.service';
 import { LocationService, ExtensionEventLocationConnection } from './location.service';
 
 @Component({
-  selector: 'location-form',
-  template: `
+    selector: 'location-form',
+    template: `
 <loading *ngIf="loading"></loading>
 <div *ngIf="!loading" class="row">
   <div class="col-sm-offset-3 col-sm-9">
@@ -72,7 +72,9 @@ import { LocationService, ExtensionEventLocationConnection } from './location.se
   </ng-form>
 </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LocationFormComponent implements OnInit {
   @Input() county:PlanningUnit;
@@ -99,7 +101,7 @@ export class LocationFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<ExtensionEventLocationConnection>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service: LocationService
   ) {
     this.locationForm = this.fb.group(

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ActivityService, Activity} from '../activity.service';
 
@@ -45,7 +45,7 @@ import { UserService, User, PersonalProfile } from '../../user/user.service';
         </div>
     </div>
         `,
-        styles: [`
+    styles: [`
             .row-even{
                 background-color: #f9f9f9;
             }
@@ -53,7 +53,9 @@ import { UserService, User, PersonalProfile } from '../../user/user.service';
                 padding: 10px 7px;
                 border-top: 1px solid #ddd;
             }
-        `]
+        `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsMonthComponent { 
 

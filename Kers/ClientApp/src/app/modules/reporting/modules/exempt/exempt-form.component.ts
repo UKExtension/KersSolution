@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PlanningUnit, User, UserService } from '../user/user.service';
-import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormArray, UntypedFormBuilder, FormControl, Validators } from '@angular/forms';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import { TaxExempt, TaxExemptFinancialYear, TaxExemptFundsHandled, TaxExemptProgramCategory } from './exmpt';
 import { PlanningunitService } from '../planningunit/planningunit.service';
@@ -10,10 +10,11 @@ import { tap } from 'rxjs/operators';
 import { number } from 'echarts';
 
 @Component({
-  selector: 'exempt-form',
-  templateUrl: './exempt-form.component.html',
-  styles: [
-  ]
+    selector: 'exempt-form',
+    templateUrl: './exempt-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExemptFormComponent implements OnInit {
   
@@ -38,7 +39,7 @@ export class ExemptFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<TaxExempt>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private planningUnitService: PlanningunitService,
     private userService:UserService,
     private service:ExemptService

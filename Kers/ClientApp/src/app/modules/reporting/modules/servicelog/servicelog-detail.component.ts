@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ServicelogService, Servicelog } from "./servicelog.service";
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'servicelog-detail',
-    templateUrl: 'servicelog-detail.component.html'
+    templateUrl: 'servicelog-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogDetailComponent { 
     rowDefault =true;

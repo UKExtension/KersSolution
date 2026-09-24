@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, Validators, AbstractControl} from '@angular/forms';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {Location} from '@angular/common';
 import { CountyEvent, CountyEventService, CountyEventProgramCategory, CountyEventPlanningUnit, CountyEventWithTime } from './county-event.service';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
@@ -10,9 +10,11 @@ import { ExtensionEventLocation, ExtensionEventImage } from '../extension-event'
 import { ExtensionEventLocationConnection } from '../location/location.service';
 
 @Component({
-  selector: 'county-event-form',
-  templateUrl: './county-event-form.component.html',
-  styleUrls: ['./county-event-form.component.scss']
+    selector: 'county-event-form',
+    templateUrl: './county-event-form.component.html',
+    styleUrls: ['./county-event-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyEventFormComponent implements OnInit {
   @Input() countyEvent:CountyEventWithTime;
@@ -51,7 +53,7 @@ export class CountyEventFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<CountyEvent>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service: CountyEventService,
     private programsService: ProgramsService,
     private location: Location,

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import { Observable } from 'rxjs';
 import {InitiativeFormComponent} from './initiative-form.component';
@@ -34,8 +34,9 @@ import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service'
         .active-year{
             font-weight: bold;
         }
-    `]
-
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class InitiativeListComponent implements OnInit{
 

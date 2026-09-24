@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, Validators} from "@angular/forms";
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators} from "@angular/forms";
 import { Observable } from 'rxjs';
 import { Activity, Ethnicity } from '../activity/activity.service';
 import { Race, ServicelogService } from '../servicelog/servicelog.service';
 import { ActivitySignUpEntry, SignupService } from './signup.service';
 
 @Component({
-  selector: 'signup-form',
-  template: `
+    selector: 'signup-form',
+    template: `
     
 <br><br>
   <div *ngIf="confirmMessage" class="green text-center" style="width:100%;font-weight:bold;">
@@ -81,8 +81,9 @@ import { ActivitySignUpEntry, SignupService } from './signup.service';
   </div>
   
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SignupFormComponent implements OnInit {
 
@@ -98,7 +99,7 @@ export class SignupFormComponent implements OnInit {
   signupForm:any;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:ServicelogService,
     private signupservice: SignupService
   ) { 

@@ -1,12 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 
 @Component({
-  selector: 'calendar-day-events',
-  templateUrl: './calendar-day-events.component.html',
-  styleUrls: ['./calendar-day-events.component.css']
+    selector: 'calendar-day-events',
+    templateUrl: './calendar-day-events.component.html',
+    styleUrls: ['./calendar-day-events.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CalendarDayEventsComponent implements OnInit {
 

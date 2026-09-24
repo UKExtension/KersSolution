@@ -1,10 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {HelpService, HelpCategory} from './help.service';
 
 
 @Component({
-  selector: 'help-category-list',
-  template: `
+    selector: 'help-category-list',
+    template: `
   <div class="row">
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newCategory && parentId==0" (click)="newCategoryOpen()">+ new category</a>
@@ -17,7 +17,9 @@ import {HelpService, HelpCategory} from './help.service';
         </ul>
     </div>
   </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpCategoryListComponent { 
 

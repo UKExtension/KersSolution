@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ExtensionEventLocation } from '../extension-event';
 import { ExtensionEventLocationConnection, LocationService } from './location.service';
 
 @Component({
-  selector: 'location-detail',
-  templateUrl: './location-detail.component.html',
-  styles: []
+    selector: 'location-detail',
+    templateUrl: './location-detail.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LocationDetailComponent implements OnInit {
   @Input() location:ExtensionEventLocationConnection;

@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import * as Survey from 'survey-angular';
 
 @Component({
     selector: 'survey',
     template: `<div class="survey-container contentcontainer codecontainer"><div id="surveyElement"></div></div>`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SurveyComponent  {
     @Output() submitSurvey = new EventEmitter<any>();

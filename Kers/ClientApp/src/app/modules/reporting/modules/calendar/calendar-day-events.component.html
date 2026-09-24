@@ -7,6 +7,6 @@
   <expense-form *ngIf="expenseOpened && !displayNewMileage" [expenseDate]="viewDate" (onFormCancel)="expenseOpened=false" (onFormSubmit)="expenseSubmit($event)"></expense-form>
   <mileage-form *ngIf="expenseOpened && displayNewMileage" [mileageDate]="viewDate" (onFormCancel)="expenseOpened=false" (onFormSubmit)="expenseSubmit($event)"></mileage-form>
 </div>
-<div *ngFor="let event of events" [ngClass]="event?.cssClass">
+<div *ngFor="let event of events" [ngClass]="$safeNavigationMigration(event?.cssClass)">
   <calendar-event-detail [event]="event" (changed)="changed.emit()"></calendar-event-detail>
 </div>

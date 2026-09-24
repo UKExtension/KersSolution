@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 
 
@@ -7,7 +7,7 @@ import {AdminNavigationService} from './admin-navigation.service';
 
 @Component({
     selector: 'admin-nav-groups',
-  template: `
+    template: `
   <div>
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newGroup" (click)="newGroup = true">+ new group</a>
@@ -24,7 +24,9 @@ import {AdminNavigationService} from './admin-navigation.service';
         </table>
     </div>
 
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationGroupComponent { 
 

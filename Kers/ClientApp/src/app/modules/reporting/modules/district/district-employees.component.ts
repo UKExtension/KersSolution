@@ -1,13 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { DistrictService, District, EmployeeNumActivities } from './district.service';
 import { Observable } from 'rxjs';
 import { ExtensionArea, ExtensionRegion } from '../state/state.service';
 import { PlanningUnit } from '../plansofwork/plansofwork.service';
 
 @Component({
-  selector: 'district-employees',
-  templateUrl: './district-employees.component.html',
-  styles: []
+    selector: 'district-employees',
+    templateUrl: './district-employees.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class DistrictEmployeesComponent implements OnInit {
 

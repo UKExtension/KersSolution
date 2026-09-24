@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { CountyEvent, CountyEventService, CountyEventWithTime, CountyEventSearchCriteria } from './county-event.service';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
@@ -6,8 +6,8 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'app-county-events-home',
-  template: `
+    selector: 'app-county-events-home',
+    template: `
     <div class="text-right">
         <a class="btn btn-info btn-xs" *ngIf="!newEvent" (click)="newEvent = true">+ new event</a>
     </div>
@@ -103,7 +103,9 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
     <loading *ngIf="loading"></loading>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyEventsHomeComponent implements OnInit {
 

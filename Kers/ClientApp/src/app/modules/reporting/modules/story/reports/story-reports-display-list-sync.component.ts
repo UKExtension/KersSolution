@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {Story} from '../story.service';
 
 @Component({
@@ -7,7 +7,9 @@ import {Story} from '../story.service';
                 <ul class="messages">
                     <li *ngFor="let story of stories" [success-story-short]="story" [link]="link"></li>
                 </ul>    
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryReportsDisplayListSyncComponent { 
 

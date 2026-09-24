@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ActivityService, Activity, ActivityOption} from '../activity.service';
 
@@ -14,7 +14,9 @@ import { User } from "../../user/user.service";
             <activity-reports-year *ngFor="let year of years | async; let i = index" [year]="year" [index]="i" [user]="user"></activity-reports-year>
         
         </div><loading *ngIf="!(years | async)"></loading><br><br>
-         `
+         `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsHomeComponent { 
 

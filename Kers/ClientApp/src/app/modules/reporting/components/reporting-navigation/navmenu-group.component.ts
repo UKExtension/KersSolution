@@ -1,8 +1,10 @@
-import {    Component, 
-            EventEmitter, 
-            Input, 
-            Output,
-        } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { NavGroup, NavItem} from './navigation.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
@@ -29,12 +31,14 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
             state('inactive', style({
                 height: 0
             })),
-            state('active',   style({
+            state('active', style({
                 height: "*"
             })),
             transition("inactive <=> active", animate('250ms cubic-bezier(0.1, 0.1, 0.2, 0.9)'))
         ])
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavmenuGroupComponent {
     @Input('nav-menu-group') sectionGroup: NavGroup;

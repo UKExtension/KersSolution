@@ -1,11 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { PlansofworkService, PlanningUnit } from '../../plansofwork/plansofwork.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'assignment-plans-of-work',
-  templateUrl: './assignment-plans-of-work.component.html',
-  styleUrls: ['./assignment-plans-of-work.component.css']
+    selector: 'assignment-plans-of-work',
+    templateUrl: './assignment-plans-of-work.component.html',
+    styleUrls: ['./assignment-plans-of-work.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AssignmentPlansOfWorkComponent implements OnInit {
 

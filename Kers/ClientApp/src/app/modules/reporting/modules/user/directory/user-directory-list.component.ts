@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { UserService, User, PlanningUnit } from '../user.service';
 import { Observable } from 'rxjs';
 
@@ -92,7 +92,9 @@ import { Observable } from 'rxjs';
         }
         
         `
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserDirectoryListComponent {
 

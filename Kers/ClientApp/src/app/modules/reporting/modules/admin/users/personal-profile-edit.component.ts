@@ -1,12 +1,14 @@
-import { Component, OnInit, Input, EventEmitter, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { Component, OnInit, Input, EventEmitter, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import {Router} from '@angular/router';
 import { ProfileService, Profile } from '../../../components/reporting-profile/profile.service';
 import { UsersService, KersUser, PersonalProfile} from './users.service';
 
 @Component({
     selector: 'personal-profile-edit',
-    templateUrl: 'personal-profile-edit.component.html' 
+    templateUrl: 'personal-profile-edit.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PersonalProfileEditComponent implements OnInit{
 
@@ -21,7 +23,7 @@ export class PersonalProfileEditComponent implements OnInit{
     @Output() onFormSubmit = new EventEmitter<void>();
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private router: Router,
         private usersService: UsersService
     ){

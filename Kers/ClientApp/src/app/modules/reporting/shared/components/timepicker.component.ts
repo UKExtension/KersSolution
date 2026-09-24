@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, Injector } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
@@ -9,12 +9,14 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl, NG_VALIDATORS, Abst
     <option *ngFor="let tm of options" [value]="tm.value">{{tm.label}}</option>
 </select>
     `,
-    providers:[  { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => TiimepickerComponent),
-                    multi: true
-                  }
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => TiimepickerComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class TiimepickerComponent implements OnInit{

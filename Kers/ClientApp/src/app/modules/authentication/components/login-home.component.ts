@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { UserService, User, ReportingProfile, PersonalProfile } from '../../reporting/modules/user/user.service';
 import { Observable, of } from "rxjs";
 import { Router } from '@angular/router';
@@ -6,16 +6,18 @@ import { AuthenticationService } from '../authentication.service';
 
 
 @Component({
-  templateUrl: 'login-home.component.html',
-  styles: [`
+    templateUrl: 'login-home.component.html',
+    styles: [`
   body{
       background-color: #F7F7F7 !important;
   }
   
   
 
-  ` ],
-  encapsulation: ViewEncapsulation.None
+  `],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LoginHomeComponent { 
     

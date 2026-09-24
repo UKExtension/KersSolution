@@ -1,9 +1,11 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ProgramsService, StrategicInitiative, MajorProgram } from './programs.service';
 
 @Component({
     selector: '[programListDetail]',
-    templateUrl: 'program-detail.component.html'
+    templateUrl: 'program-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramDetailComponent implements OnInit {
 

@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text;
 using Kers.Models;
 using Kers.Models.Abstract;
@@ -18,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -273,6 +275,11 @@ namespace Kers
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "ClientApp", "dist")),
+                RequestPath = "/core"
+            });
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseAuthentication();

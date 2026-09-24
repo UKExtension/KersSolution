@@ -1,11 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Training, TrainingSurveyResult } from './training';
 import { User } from '../user/user.service';
 
 @Component({
-  selector: '[training-transcript-detail]',
-  templateUrl: './training-transcript-detail.component.html',
-  styles: []
+    selector: '[training-transcript-detail]',
+    templateUrl: './training-transcript-detail.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class TrainingTranscriptDetailComponent implements OnInit {

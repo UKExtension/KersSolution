@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { User } from '../../../modules/user/user.service';
 import { Vehicle } from '../../../modules/expense/vehicle/vehicle.service';
 
@@ -23,7 +23,9 @@ import { Vehicle } from '../../../modules/expense/vehicle/vehicle.service';
           </div>
         </div>
     </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class WidgetActivitiesAgentComponent { 
   @Input() enabledVehicles:Vehicle[];

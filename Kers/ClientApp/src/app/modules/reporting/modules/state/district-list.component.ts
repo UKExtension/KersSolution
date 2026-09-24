@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {StateService} from './state.service';
 
 import {Observable} from 'rxjs';
@@ -6,7 +6,7 @@ import { District } from "../district/district.service";
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  template: `
+    template: `
     <div class="col-md-12">
         <div class="x_panel">
             
@@ -125,7 +125,9 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
 
 
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class DistrictListComponent { 
 

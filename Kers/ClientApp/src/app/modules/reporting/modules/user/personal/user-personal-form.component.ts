@@ -1,4 +1,4 @@
-import { Component,OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import {    UserService,
             ExtensionPosition, 
             User,
@@ -13,7 +13,7 @@ import {    UserService,
             SocialConnectionType,
             SocialConnection 
         } from '../user.service';
-import { FormBuilder, Validators, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormArray } from '@angular/forms';
 import { Observable } from "rxjs";
 import {Location} from '@angular/common';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
@@ -21,7 +21,9 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'user-personal-form',
-    templateUrl: 'user-personal-form.component.html'
+    templateUrl: 'user-personal-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserPersonalFormComponent implements OnInit { 
 
@@ -49,7 +51,7 @@ export class UserPersonalFormComponent implements OnInit {
     constructor( 
         private userService: UserService,
         private unitService: PlanningunitService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private location: Location,
         private http: HttpClient 
     )   
@@ -143,12 +145,12 @@ export class UserPersonalFormComponent implements OnInit {
 
     addConnection() {
         // add address to the list
-        const control = <FormArray>this.personalForm.controls.personalProfile.controls['socialConnections'];
+        const control = <UntypedFormArray>this.personalForm.controls.personalProfile.controls['socialConnections'];
         control.push(this.initConnection());
     }
 
     removeConnection(i: number) {
-        const control = <FormArray>this.personalForm.controls.personalProfile.controls['socialConnections'];
+        const control = <UntypedFormArray>this.personalForm.controls.personalProfile.controls['socialConnections'];
         control.removeAt(i);
     }
 

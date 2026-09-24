@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { UserService, User } from '../user.service';
 
@@ -95,7 +95,9 @@ import { UserService, User } from '../user.service';
 
 
             
-            `]
+            `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserDirectoryProfileComponent {
     

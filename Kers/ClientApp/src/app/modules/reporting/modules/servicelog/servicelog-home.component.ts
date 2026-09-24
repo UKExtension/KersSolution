@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ServicelogService, ServicelogMonth, Servicelog } from "./servicelog.service";
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
-  templateUrl: 'servicelog-home.component.html'
+    templateUrl: 'servicelog-home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogHomeComponent implements OnInit { 
     

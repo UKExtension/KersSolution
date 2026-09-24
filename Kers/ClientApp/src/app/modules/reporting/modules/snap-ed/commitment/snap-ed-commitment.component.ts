@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SnapEdCommitmentService, CommitmentBundle } from '../snap-ed-commitment.service';
 import { FiscalYear, FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'snap-ed-commitment-manager',
-  template: `
+    selector: 'snap-ed-commitment-manager',
+    template: `
     <fiscal-year-switcher [type]="'snapEd'" *ngIf="displayFiscalYearSwitcher" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
     <loading *ngIf="loading"></loading>
     <div *ngIf="!loading">
@@ -20,7 +20,9 @@ import { FiscalYear, FiscalyearService } from '../../admin/fiscalyear/fiscalyear
       </div>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapEdCommitmentComponent implements OnInit {
 

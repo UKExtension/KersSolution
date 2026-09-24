@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ExpenseService} from '../expense.service';
 import { Observable } from "rxjs";
 import { User } from "../../user/user.service";
@@ -20,7 +20,9 @@ import { User } from "../../user/user.service";
         .panel-heading{
             cursor:pointer;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsYearComponent { 
 

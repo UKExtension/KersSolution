@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CountyEventService, CountyEvent } from './county-event.service';
 import { CountyEventConvertItemComponent } from './county-events-convert-item.component';
 @Component({
-  selector: 'county-events-convert',
-  templateUrl: './county-events-convert.component.html',
-  styles: []
+    selector: 'county-events-convert',
+    templateUrl: './county-events-convert.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyEventConvertComponent implements OnInit {
 

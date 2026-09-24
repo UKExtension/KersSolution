@@ -1,6 +1,6 @@
 import { ViewportScroller } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { AbstractControl, AsyncValidatorFn, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, ValidationErrors, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, mergeMap, switchMap, tap } from 'rxjs/operators';
@@ -11,10 +11,10 @@ import { SoilSampleService } from './soil-sample.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'soil-sample-form',
-  templateUrl: './sample-form.component.html',
-  styles: [
-    `
+    selector: 'soil-sample-form',
+    templateUrl: './sample-form.component.html',
+    styles: [
+        `
     .index-border{
       border: 1px solid #1ABB9C;
       width: 20px;
@@ -25,7 +25,9 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
     }
 
     `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SampleFormComponent implements OnInit {
   
@@ -51,7 +53,7 @@ export class SampleFormComponent implements OnInit {
     };
 
   get sampleInfoBundles() {
-    return this.soilSampleForm.get('sampleInfoBundles') as FormArray;
+    return this.soilSampleForm.get('sampleInfoBundles') as UntypedFormArray;
   }
   billingTypes$:Observable<BillingType[]>;
   lastSampleNum$:Observable<number>;
@@ -59,7 +61,7 @@ export class SampleFormComponent implements OnInit {
  
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:SoilSampleService,
     private viewportScroller: ViewportScroller,
     private reportingService: ReportingService
@@ -120,7 +122,7 @@ export class SampleFormComponent implements OnInit {
 
     
     
-          var sampleControl = this.soilSampleForm.get('coSamnum') as FormControl;
+          var sampleControl = this.soilSampleForm.get('coSamnum') as UntypedFormControl;
           this.billingTypes$ = this.service.billingtypes();
           if( this.sample != null && !this.isThisACopy && this.sample.lastStatus.soilReportStatus.name != 'Entered' ) this.soilSampleForm.controls["coSamnum"].disable();
           
@@ -221,7 +223,7 @@ export class SampleFormComponent implements OnInit {
   }
 
   addSegment(sampleInfoBundles:SampleInfoBundle = null) {
-    var group:FormControl; 
+    var group:UntypedFormControl; 
 
     if(sampleInfoBundles == null){
       if( this.isThisAltCrop ){

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import {StoryService, Story} from '../story.service';
 import { User } from "../../user/user.service";
@@ -19,7 +19,9 @@ import { User } from "../../user/user.service";
         </div>
 
     
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryDisplayComponent { 
 

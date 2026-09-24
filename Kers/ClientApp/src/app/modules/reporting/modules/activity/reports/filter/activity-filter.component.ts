@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
@@ -10,9 +10,9 @@ import { ActivitySearchCriteria, ActivitySeearchResultsWithCount, ActivityServic
 import { ActivityOption } from '../../../servicelog/servicelog.service';
 
 @Component({
-  selector: 'activity-filter',
-  templateUrl: './activity-filter.component.html',
-  styles: [`
+    selector: 'activity-filter',
+    templateUrl: './activity-filter.component.html',
+    styles: [`
   .download-overlay{
     background-color:rgba(220,239,230, 0.8);
     border: 3px solid rgba(120,139,130, 0.2);
@@ -24,7 +24,9 @@ import { ActivityOption } from '../../../servicelog/servicelog.service';
     z-index: 100;
     padding: 10px;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityFilterComponent implements OnInit {
 

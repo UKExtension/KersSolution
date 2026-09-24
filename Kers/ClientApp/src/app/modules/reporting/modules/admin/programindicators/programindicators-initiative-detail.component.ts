@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import { StrategicInitiative, MajorProgram} from '../programs/programs.service';
 
 
@@ -15,7 +15,9 @@ import { StrategicInitiative, MajorProgram} from '../programs/programs.service';
         <a class="btn btn-info btn-xs" (click)="programs=!programs" *ngIf="!programs">programs</a>
         <a class="btn btn-info btn-xs" (click)="programs=!programs" *ngIf="programs">close</a>
     </div>
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramindicatorsInitiativeDetailComponent{
     

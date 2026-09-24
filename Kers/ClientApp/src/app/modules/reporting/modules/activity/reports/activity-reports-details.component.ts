@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ActivityService, Activity} from '../activity.service';
 import { User } from "../../user/user.service";
 import { saveAs } from 'file-saver';
@@ -37,7 +37,9 @@ import { saveAs } from 'file-saver';
 
         </div>
     </div>
-        `
+        `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsDetailsComponent { 
 

@@ -1,9 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'calendar-header',
-  templateUrl: './calendar-header.component.html',
-  styleUrls: ['./calendar-header.component.css']
+    selector: 'calendar-header',
+    templateUrl: './calendar-header.component.html',
+    styleUrls: ['./calendar-header.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CalendarHeaderComponent implements OnInit {
 

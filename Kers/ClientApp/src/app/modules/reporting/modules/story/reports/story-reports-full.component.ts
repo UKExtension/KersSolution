@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {StoryService, Story} from '../story.service';
 import { Observable } from "rxjs";
 import { User } from "../../user/user.service";
@@ -63,7 +63,9 @@ import {Location} from '@angular/common';
                 margin-left: 105px;
                 margin-right: 45px;
             }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryReportsFullComponent { 
 

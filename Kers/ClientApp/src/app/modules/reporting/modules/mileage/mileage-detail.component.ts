@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Mileage } from './mileage';
 import { MileageService } from './mileage.service';
 
 @Component({
-  selector: 'mileage-detail',
-  template: `
+    selector: 'mileage-detail',
+    template: `
   <div class="ln_solid"></div>
   <div class="row">
       <div class="col-xs-9">
@@ -36,7 +36,9 @@ import { MileageService } from './mileage.service';
   </div>
   
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageDetailComponent implements OnInit {
 

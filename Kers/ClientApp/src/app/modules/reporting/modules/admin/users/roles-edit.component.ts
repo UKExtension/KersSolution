@@ -1,14 +1,16 @@
-import { Component, Input, EventEmitter, Output, SimpleChanges } from '@angular/core';
+import { Component, Input, EventEmitter, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { ProfileService, Profile } from '../../../components/reporting-profile/profile.service';
 import {UsersService, KersUser } from './users.service';
 import {UserService, User} from '../../user/user.service';
 import {RolesService, Role } from '../roles/roles.service';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import { Observable } from "rxjs";
 
 @Component({
     selector: 'roles-edit-form',
-    templateUrl: './roles-edit.component.html'
+    templateUrl: './roles-edit.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class RolesEditComponent { 
 
@@ -29,7 +31,7 @@ export class RolesEditComponent {
     constructor( 
         private usersService:UsersService,
         private rolesService:RolesService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
     )   
     {}
 

@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'meeting-home',
-  template: `
+    selector: 'meeting-home',
+    template: `
     <router-outlet></router-outlet>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MeetingHomeComponent implements OnInit {
 

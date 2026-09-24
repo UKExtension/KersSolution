@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
 import { ExtensionEventLocation } from '../events/extension-event';
@@ -12,9 +12,9 @@ import { Mileage, MileageSegment } from './mileage';
 import { MileageService } from './mileage.service';
 
 @Component({
-  selector: 'mileage-form',
-  templateUrl: './mileage-form.component.html',
-  styles: [`
+    selector: 'mileage-form',
+    templateUrl: './mileage-form.component.html',
+    styles: [`
   .segment-container{
     border: 1px solid #ccc;
     padding: 6px;
@@ -23,7 +23,9 @@ import { MileageService } from './mileage.service';
     border-radius: 10px;
   }
   
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageFormComponent implements OnInit {
 
@@ -85,13 +87,13 @@ export class MileageFormComponent implements OnInit {
         firstDayOfWeek: 'su'
     };
   get segments() {
-    return this.mileageForm.get('segments') as FormArray;
+    return this.mileageForm.get('segments') as UntypedFormArray;
   }
 
   constructor(
     private expenseService:ExpenseService,
     private userService: UserService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:MileageService,
     private planningUnitService: PlanningunitService,
     private programsService: ProgramsService
@@ -189,7 +191,7 @@ export class MileageFormComponent implements OnInit {
     var formValue = this.mileageForm.value;
     if( formValue.startingLocation != undefined && formValue.segments.length == 1){
       var firstSegment = formValue.segments[0];
-      var group:FormControl = this.fb.control(
+      var group:UntypedFormControl = this.fb.control(
         {
           locationId: this.stLocId,
           location: this.stLoc,
@@ -205,7 +207,7 @@ export class MileageFormComponent implements OnInit {
 
 
   addSegment(segment:MileageSegment = null) {
-    var group:FormControl; 
+    var group:UntypedFormControl; 
 
     if(segment == null){
       group = this.fb.control(

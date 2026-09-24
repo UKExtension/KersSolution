@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PlanningUnit } from '../user/user.service';
 import { ExtensionArea, ExtensionRegion, StateService } from './state.service';
 
 @Component({
-  selector: 'navigate-counties',
-  templateUrl: './navigate-counties.component.html',
-  styles: [
-  ]
+    selector: 'navigate-counties',
+    templateUrl: './navigate-counties.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigateCountiesComponent implements OnInit {
 

@@ -1,13 +1,15 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { RolesService, Role } from './roles.service';
 import {Location} from '@angular/common';
 import { ReportingService } from '../../../components/reporting/reporting.service';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import {Router} from '@angular/router';
 
 @Component({
     selector: 'reporting-role-form',
-    templateUrl: 'reporting-role-form.component.html' 
+    templateUrl: 'reporting-role-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingRoleFormComponent implements OnInit{
 
@@ -22,7 +24,7 @@ export class ReportingRoleFormComponent implements OnInit{
     constructor( 
         private rolesService: RolesService,
         private reportingService: ReportingService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private router: Router,
         private location: Location
     ){

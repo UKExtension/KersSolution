@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { SoilReportBundle, SoilReportStatus } from '../soildata.report';
 import { saveAs } from 'file-saver';
 import { SoildataService } from '../soildata.service';
@@ -6,8 +6,8 @@ import { UserService, User } from '../../user/user.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: '[soildata-reports-catalog-details]',
-  template: `
+    selector: '[soildata-reports-catalog-details]',
+    template: `
     <td *ngIf="default" [class.pulse]="display_pulse">{{report.sampleLabelCreated | date:'mediumDate'}}</td>
     <td *ngIf="default" [ngClass]="{'pulse': display_pulse }">{{report.typeForm.code}}</td>
     <td *ngIf="default" [ngClass]="{'pulse': display_pulse }">{{report.coSamnum}}</td>
@@ -81,7 +81,7 @@ import { Observable } from 'rxjs';
     </td>
     
   `,
-  styles: [`
+    styles: [`
   .soil-report-status-recieved{
     background-color:#50C1CFg;
   }
@@ -148,7 +148,9 @@ import { Observable } from 'rxjs';
 
 
 
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Input('soildata-reports-catalog-details') report: SoilReportBundle;

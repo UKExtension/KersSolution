@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { TaxExempt } from './exmpt';
 import { saveAs } from 'file-saver';
 import { ExemptService } from './exempt.service';
 
 @Component({
-  selector: '[exempt-list-detail]',
-  templateUrl: './exempt-list-detail.component.html',
-  styles: [
-  ]
+    selector: '[exempt-list-detail]',
+    templateUrl: './exempt-list-detail.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExemptListDetailComponent implements OnInit {
   

@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyNote } from '../soildata.service';
 
 @Component({
-  selector: 'soildata-notes-detail',
-  template: `
+    selector: 'soildata-notes-detail',
+    template: `
   <div class="ln_solid"></div>
   <div class="row">
       <div class="col-xs-10">
@@ -29,7 +29,9 @@ import { CountyNote } from '../soildata.service';
       </div>  
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataNotesDetailComponent implements OnInit {
   @Input() note:CountyNote;

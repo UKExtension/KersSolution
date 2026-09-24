@@ -1,14 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl, FormBuilder } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
 import { SnapedService } from '../../servicelog/snaped.service';
 import { SnapEdActivityType, SnapEdProjectType, SnapEdCommitmentService, CommitmentBundle, SnapEdReinforcementItem, SnapEdReinforcementItemChoice } from '../snap-ed-commitment.service';
 import { User } from '../../user/user.service';
 import { FiscalYear, FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'commitment-form',
-  templateUrl: './commitment-form.component.html',
-  styleUrls: ['./commitment-form.component.css']
+    selector: 'commitment-form',
+    templateUrl: './commitment-form.component.html',
+    styleUrls: ['./commitment-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CommitmentFormComponent implements OnInit {
 
@@ -35,7 +37,7 @@ export class CommitmentFormComponent implements OnInit {
   contactsCounter = 0;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:SnapedService,
     private commitmentService:SnapEdCommitmentService,
     private fiscalYearService:FiscalyearService
@@ -273,14 +275,14 @@ export class CommitmentFormComponent implements OnInit {
     
      ***********************/
 
-    isIntOrFloat(control:FormControl){
+    isIntOrFloat(control:UntypedFormControl){
       if(control.value == +control.value && +control.value >= 0){
           return null;
       }
       return {"notDigit":true};
   }
 
-  isPositiveInt(control:FormControl){
+  isPositiveInt(control:UntypedFormControl){
       
       if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
           return null;

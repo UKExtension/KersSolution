@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormBuilder, Validators, UntypedFormControl, AbstractControl } from "@angular/forms";
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import {    ActivityOption, ActivityOptionNumber, 
             Race, Ethnicity, ActivityImage
@@ -18,7 +18,9 @@ import {ExtensionEventLocationConnection} from '../events/location/location.serv
 @Component({
     selector: 'servicelog-form',
     templateUrl: 'servicelog-form.component.html',
-    styleUrls: ['servicelog-form.component.scss'] 
+    styleUrls: ['servicelog-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogFormComponent implements OnInit{ 
 
@@ -111,7 +113,7 @@ export class ServicelogFormComponent implements OnInit{
         };
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private service: ServicelogService,
         private programsService:ProgramsService,
         private fiscalYearService: FiscalyearService,
@@ -718,14 +720,14 @@ export class ServicelogFormComponent implements OnInit{
     
      ***********************/
 
-    isIntOrFloat(control:FormControl){
+    isIntOrFloat(control:UntypedFormControl){
         if(control.value == +control.value && +control.value >= 0){
             return null;
         }
         return {"notDigit":true};
     }
 
-    isPositiveInt(control:FormControl){
+    isPositiveInt(control:UntypedFormControl){
         
         if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
             return null;

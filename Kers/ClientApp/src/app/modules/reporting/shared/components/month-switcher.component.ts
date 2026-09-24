@@ -1,19 +1,21 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'month-switcher',
-  template: `
+    selector: 'month-switcher',
+    template: `
   <div class="row">
     <div class="col-md-5">
       Month: <span *ngFor="let month of months"><a (click)="selectMonth(month)" [class.active-month]="month.getMonth() == selectedMonth.getMonth()" style="cursor:pointer;">{{month | date:'MMM yyyy'}}</a> | </span>
     </div>
   </div>
   `,
-  styles: [`
+    styles: [`
   .active-month{
       font-weight: bold;
   }
-`]
+`],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MonthSwitcherComponent implements OnInit {
 

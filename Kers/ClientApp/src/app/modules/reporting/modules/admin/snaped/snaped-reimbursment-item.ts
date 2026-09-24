@@ -1,4 +1,4 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { SnapBudgetReimbursementsCounty, SnapedAdminService } from './snaped-admin.service';
 
 
@@ -26,7 +26,9 @@ import { SnapBudgetReimbursementsCounty, SnapedAdminService } from './snaped-adm
         <button (click)="close()" class="btn btn-info btn-xs">close</button>
     </td>
 
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedReimbursmentItem implements OnInit {
 

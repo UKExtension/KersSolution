@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from '../expense.service';
 import { saveAs } from 'file-saver';
@@ -15,7 +15,9 @@ import { User } from "../../user/user.service";
         
         </div><loading *ngIf="!(years | async)"></loading><br><br>
         <div class="text-right" *ngIf="!user"><a class="btn btn-default btn-xs" href="https://kers.ca.uky.edu/kers_mobile/ReportExpenseMain.aspx">Expense Reports Archive</a></div>
-        `
+        `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsHomeComponent { 
 

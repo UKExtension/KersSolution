@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from '../expense.service';
 
@@ -81,7 +81,7 @@ import { ɵangular_packages_platform_browser_dynamic_testing_testing_b } from '@
         </div>
     </div>
         `,
-        styles: [`
+    styles: [`
             .row-even{
                 background-color: #f9f9f9;
             }
@@ -89,7 +89,9 @@ import { ɵangular_packages_platform_browser_dynamic_testing_testing_b } from '@
                 padding: 10px 7px;
                 border-top: 1px solid #ddd;
             }
-        `]
+        `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsMonthComponent { 
 

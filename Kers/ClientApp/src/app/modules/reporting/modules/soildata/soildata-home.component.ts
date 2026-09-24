@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import { PlanningunitService } from '../planningunit/planningunit.service';
 import { Observable } from 'rxjs';
@@ -8,8 +8,8 @@ import { UserService } from '../user/user.service';
 import { init } from 'echarts';
 
 @Component({
-  selector: 'app-soildata-home',
-  template: `
+    selector: 'app-soildata-home',
+    template: `
 
   <div *ngIf="isUserAnAdmin">
     <div class="row" *ngIf="selectedUnit">
@@ -35,7 +35,9 @@ import { init } from 'echarts';
     </div>
     <router-outlet></router-outlet>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataHomeComponent implements OnInit {
 

@@ -1,16 +1,16 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
-import {    FormBuilder, ControlValueAccessor, AbstractControl, 
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {    UntypedFormBuilder, ControlValueAccessor, AbstractControl, 
             NG_VALUE_ACCESSOR, 
             NG_VALIDATORS, 
-            FormControl, 
+            UntypedFormControl, 
             Validator
         } from '@angular/forms';
 import { ServicelogService, SnapIndirectMethod, SnapIndirectReached, SnapIndirectReachedValue } from "../servicelog.service";
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-indirect-reached',
-  template: `
+    selector: 'snap-indirect-reached',
+    template: `
   <loading *ngIf="loading"></loading>
     <div class="col-md-9 col-sm-9 col-xs-12" *ngIf="!loading" [formGroup]="reachedForm">
         <table class="table table-striped table-bordered" formArrayName="reached">
@@ -27,17 +27,19 @@ import { Observable } from 'rxjs';
     </div>
   
   `,
-    providers:[  {
-                    provide: NG_VALIDATORS,
-                    useExisting: forwardRef(() => SnapIndirectReachedComponent),
-                    multi: true,
-                } ,
-                { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapIndirectReachedComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SnapIndirectReachedComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapIndirectReachedComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapIndirectReachedComponent implements ControlValueAccessor, OnInit, Validator {
 
@@ -65,7 +67,7 @@ export class SnapIndirectReachedComponent implements ControlValueAccessor, OnIni
     
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private service: ServicelogService,
     ){
         
@@ -126,7 +128,7 @@ export class SnapIndirectReachedComponent implements ControlValueAccessor, OnIni
         this.selections = this.reachedForm.value.reached; 
     }
     
-    public validate(control: FormControl) {
+    public validate(control: UntypedFormControl) {
         
         if(this.loading){
             return null;
@@ -136,7 +138,7 @@ export class SnapIndirectReachedComponent implements ControlValueAccessor, OnIni
         }
     }
 
-    isPositiveInt(control:FormControl){
+    isPositiveInt(control:UntypedFormControl){
         
         if(!isNaN(control.value) && (function(x) { return (x | 0) === x; })(parseFloat(control.value)) && +control.value >= 0){
             return null;

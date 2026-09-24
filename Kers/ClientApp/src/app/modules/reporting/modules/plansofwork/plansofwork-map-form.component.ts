@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PlansofworkService, Map } from './plansofwork.service';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
@@ -26,7 +26,9 @@ import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
             </div>
         </form>
     </div>
-    ` 
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlansofworkMapFormComponent implements OnInit{
 
@@ -41,7 +43,7 @@ export class PlansofworkMapFormComponent implements OnInit{
 
     constructor( 
         private plansofworkService: PlansofworkService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ){
 
 

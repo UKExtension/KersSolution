@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Log, LogService } from './log.service';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { Observable, Subject } from "rxjs";
-import { FormGroup, FormBuilder } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder } from "@angular/forms";
 import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
 import { tap, startWith, debounceTime, flatMap, delay } from 'rxjs/operators';
 
 
 @Component({
-  templateUrl: 'log-home.component.html'
+    templateUrl: 'log-home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LogHomeComponent implements OnInit { 
     
@@ -38,14 +40,14 @@ export class LogHomeComponent implements OnInit {
     loading: boolean = true; // Turn spinner on and off
 
 
-    private searchForm: FormGroup;
+    private searchForm: UntypedFormGroup;
     
 
 
     constructor( 
         private service:LogService,
         private reportingService: ReportingService,
-        private formBuilder: FormBuilder 
+        private formBuilder: UntypedFormBuilder 
     )   
     {
         this.latest = this.searchTermStream.asObservable()

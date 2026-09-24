@@ -1,12 +1,14 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import { ProgramsService, MajorProgram} from '../programs/programs.service';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import {IndicatorsService, Indicator} from '../../indicators/indicators.service';
 
 
 @Component({
     selector: 'programindicators-form-admin',
-    templateUrl: 'programindicators-form.component.html'
+    templateUrl: 'programindicators-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramindicatorsFormComponent{
 
@@ -23,7 +25,7 @@ export class ProgramindicatorsFormComponent{
     public options: Object;
 
     constructor( 
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private service:IndicatorsService
     )   
     {

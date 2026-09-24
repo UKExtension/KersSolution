@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CountyCode, CountyNote, SoildataService } from '../soildata.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-soildata-notes',
-  template: `
+    selector: 'app-soildata-notes',
+    template: `
   <br>
   <h3>Report Note Templates</h3>
   <br>
@@ -14,7 +14,9 @@ import { Observable } from 'rxjs';
     <soildata-notes-form *ngIf="newNote" (onFormCancel)="newNote=false" (onFormSubmit)="newNoteSubmitted($event)"></soildata-notes-form>
     <soildata-notes-detail *ngFor="let note of notes | async" [note]="note" (deleted)="noteDeleted($event)"></soildata-notes-detail>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataNotesComponent implements OnInit {
   newNote = false;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { LadderApplication, LadderLevel, LadderStage } from './ladder';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
@@ -7,9 +7,11 @@ import { ExtensionRegion, ExtensionArea, StateService } from '../state/state.ser
 import { PlanningUnit } from '../user/user.service';
 
 @Component({
-  selector: 'ladder-filter',
-  templateUrl: './ladder-filter.component.html',
-  styles: []
+    selector: 'ladder-filter',
+    templateUrl: './ladder-filter.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderFilterComponent implements OnInit {
 

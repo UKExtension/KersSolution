@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {ProfileService, Profile} from './profile.service';
 
 @Component({
@@ -11,7 +11,9 @@ import {ProfileService, Profile} from './profile.service';
        </div>
        
     </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProfileCurrentComponent implements OnInit {
     profile:Profile;

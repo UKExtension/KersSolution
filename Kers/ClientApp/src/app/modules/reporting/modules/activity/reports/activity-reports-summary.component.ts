@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ActivityService, Activity, Race} from '../activity.service';
 import { User } from "../../user/user.service";
 
@@ -49,7 +49,9 @@ import { User } from "../../user/user.service";
 
 
 
-        `
+        `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsSummaryComponent { 
 
@@ -166,7 +168,7 @@ export class ActivityReportsSummaryComponent {
 
 
         for(let activity of this.monthActivities){
-            var options = { month: 'numeric', day: 'numeric' };
+            const options: Intl.DateTimeFormatOptions = { month: 'numeric', day: 'numeric' };
             let date = new Date(activity.activityDate);
             data.push(date.toLocaleDateString("en-US", options));
             

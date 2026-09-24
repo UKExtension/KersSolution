@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { UserService, User, SocialConnection, SocialConnectionType } from "../user.service";
-import { FormGroup } from "@angular/forms";
+import { UntypedFormGroup } from "@angular/forms";
 
 
 @Component({
-  selector: 'social-connection',
-  template: `
+    selector: 'social-connection',
+    template: `
 <div class="row">
   <div class="col-xs-11">
     <div class="input-group" [formGroup]="connectionForm">
@@ -22,12 +22,14 @@ import { FormGroup } from "@angular/forms";
   </div>
 </div>
 
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserPersonalConnectionComponent implements OnInit { 
 
     @Input('group') 
-        public connectionForm:FormGroup;
+        public connectionForm:UntypedFormGroup;
     @Input('canDelete') canDelete:boolean;
     @Input('index') index:number;
     @Input('connectionTypes') connectionTypes:SocialConnectionType[];

@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { ReportingService } from '../../../components/reporting/reporting.service';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import {Router} from '@angular/router';
 import {AdminNavigationService} from './admin-navigation.service';
 import {  NavSection } from '../../../components/reporting-navigation/navigation.service';
@@ -11,7 +11,9 @@ import { UsersService, Position } from '../users/users.service';
 
 @Component({
     selector: 'navigation-section-form',
-    templateUrl: 'navigation-section-form.component.html' 
+    templateUrl: 'navigation-section-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationSectionFormComponent implements OnInit{
 
@@ -28,7 +30,7 @@ export class NavigationSectionFormComponent implements OnInit{
     constructor( 
         private reportingService: ReportingService,
         private service: AdminNavigationService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private router: Router,
         private location: Location,
         private rolesService: RolesService,

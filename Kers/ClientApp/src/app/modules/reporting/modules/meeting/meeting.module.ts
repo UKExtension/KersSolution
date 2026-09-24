@@ -13,17 +13,15 @@ import { MeetingFormComponent } from './meeting-form.component';
 
 
 @NgModule({
-  imports:      [   SharedModule,
-                    AngularMyDatePickerModule,
-                    MeetingRoutingModule
-                ],
-  declarations: [ 
-                    MeetingHomeComponent, MeetingListComponent, MeetingListDetailComponent, MeetingFormComponent
-
-                ],
-  providers:    [  
-                    MeetingService
-                ],
-  entryComponents: [MeetingHomeComponent]
+    imports: [SharedModule,
+        AngularMyDatePickerModule,
+        MeetingRoutingModule
+    ],
+    declarations: [
+        MeetingHomeComponent, MeetingListComponent, MeetingListDetailComponent, MeetingFormComponent
+    ],
+    providers: [
+        MeetingService
+    ]
 })
 export class MeetingModule { }

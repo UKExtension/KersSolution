@@ -1,14 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { PlanningUnit } from '../../user/user.service';
 import { CountyService } from '../../county/county.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { PlanningunitService } from '../planningunit.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'planning-unit-admin-form',
-  templateUrl: './planning-unit-admin-form.component.html',
-  styleUrls: ['./planning-unit-admin-form.component.css']
+    selector: 'planning-unit-admin-form',
+    templateUrl: './planning-unit-admin-form.component.html',
+    styleUrls: ['./planning-unit-admin-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlanningUnitAdminFormComponent implements OnInit {
   @Input() county:PlanningUnit;
@@ -22,7 +24,7 @@ export class PlanningUnitAdminFormComponent implements OnInit {
   @Output() onFormSubmit = new EventEmitter<PlanningUnit>();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private service:PlanningunitService
   ) { 
 

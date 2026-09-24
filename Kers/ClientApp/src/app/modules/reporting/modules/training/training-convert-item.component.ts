@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { TrainingService } from './training.service';
 import { Training } from './training';
 
 @Component({
-  selector: 'training-convert-item',
-  templateUrl: './training-convert-item.component.html',
-  styles: []
+    selector: 'training-convert-item',
+    templateUrl: './training-convert-item.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingConvertItemComponent implements OnInit {
   @Input('service') s:Object;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
 import { Expense, ExpenseService } from '../expense/expense.service';
 import { ServicelogService, Servicelog } from '../servicelog/servicelog.service';
@@ -7,9 +7,11 @@ import { MileageService } from '../mileage/mileage.service';
 import { Mileage } from '../mileage/mileage';
 
 @Component({
-  selector: 'calendar-event-detail',
-  templateUrl: './calendar-event-detail.component.html',
-  styleUrls: ['./calendar-event-detail.component.css']
+    selector: 'calendar-event-detail',
+    templateUrl: './calendar-event-detail.component.html',
+    styleUrls: ['./calendar-event-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CalendarEventDetailComponent implements OnInit {
   @Input() event:CalendarEvent;

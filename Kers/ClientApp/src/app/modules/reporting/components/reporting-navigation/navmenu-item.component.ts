@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {NavItem} from './navigation.service';
 
 @Component({
@@ -10,7 +10,9 @@ true}" href="{{itemData.route}}" class="nav-item">{{itemData.name}}</a>
         <a *ngIf="!itemData.isRelative" (click)="clicked($event)" href="{{itemData.route}}" class="nav-item">{{itemData.name}}</a>
 
     `,
-    styleUrls: ['./navmenu-item.component.css']
+    styleUrls: ['./navmenu-item.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavmenuItemComponent {
     @Input('nav-menu-item') itemData: NavItem;

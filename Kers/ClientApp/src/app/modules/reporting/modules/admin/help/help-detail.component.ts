@@ -1,9 +1,11 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { HelpService, Help } from './help.service';
 
 @Component({
     selector: '[helpListDetail]',
-    templateUrl: 'help-detail.component.html'
+    templateUrl: 'help-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpDetailComponent implements OnInit {
 

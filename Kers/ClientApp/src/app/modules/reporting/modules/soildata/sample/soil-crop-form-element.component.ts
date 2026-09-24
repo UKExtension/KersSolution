@@ -1,5 +1,5 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl, FormArray } from '@angular/forms';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormBuilder, UntypedFormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, UntypedFormControl, UntypedFormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TypeForm } from '../soildata.report';
@@ -9,8 +9,8 @@ import { SoilSampleService } from './soil-sample.service';
 
 
 @Component({
-  selector: 'soil-crop-form-element',
-  template: `
+    selector: 'soil-crop-form-element',
+    template: `
 <div class="form-horizontal form-label-left sample-crop" [formGroup]="sampleForm">
     
   <div class="row" style="padding: 8px 0;">
@@ -43,26 +43,27 @@ import { SoilSampleService } from './soil-sample.service';
 </div>
 
   `,
-  styles: [`
+    styles: [`
   .sample-crop{
     border-bottom: 1px solid #ccc
   }
-  `]
-  ,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => SoilCropFormElementComponent),
-                  multi: true
-                },
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => SoilCropFormElementComponent),
-                  multi: true
-                } 
-                ]
+  `],
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SoilCropFormElementComponent),
+            multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SoilCropFormElementComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoilCropFormElementComponent extends BaseControlValueAccessor<SampleInfoBundle> implements ControlValueAccessor, OnInit { 
-    sampleForm: FormGroup;
+    sampleForm: UntypedFormGroup;
     connections:SampleAttributeSampleInfoBundle[] = null;
     @Input('index') index:number;
     @Output() removeMe = new EventEmitter<number>();
@@ -74,17 +75,17 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
 
     get selectedFormType() {
       var rawValue = this.sampleForm.getRawValue();
-      var formTypeControl =  this.sampleForm.get('typeFormId') as FormControl;
+      var formTypeControl =  this.sampleForm.get('typeFormId') as UntypedFormControl;
       var val = rawValue["typeFormId"];
       return val;
     }
     get sampleAttributeSampleInfoBundles() {
-      return this.sampleForm.get('sampleAttributeSampleInfoBundles') as FormArray;
+      return this.sampleForm.get('sampleAttributeSampleInfoBundles') as UntypedFormArray;
     }
 
     date = new Date();
     constructor( 
-      private formBuilder: FormBuilder,
+      private formBuilder: UntypedFormBuilder,
       private service:SoilSampleService
     )   
     {

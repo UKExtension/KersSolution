@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { ReportingService } from '../../components/reporting/reporting.service';
@@ -7,8 +7,8 @@ import { ExtensionRegion } from '../state/state.service';
 import { RegionService } from './region.service';
 
 @Component({
-  selector: 'region-home',
-  template: `
+    selector: 'region-home',
+    template: `
 
 <div *ngIf="noRegion" class="orange"><br>The region cannot be determined.<br><br>
     In your <a routerLink="/reporting/user/reporting">reporting profile</a> should be selected a county that is part of the region.
@@ -132,7 +132,9 @@ import { RegionService } from './region.service';
 
 
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class RegionHomeComponent implements OnInit {
 

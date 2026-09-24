@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import { Mileage, MileageMonth } from './mileage';
 import { MileageService } from './mileage.service';
 
 @Component({
-  selector: 'app-mileage-home',
-  template: `
+    selector: 'app-mileage-home',
+    template: `
 
   <div>
     <div class="text-right">
@@ -22,7 +22,9 @@ import { MileageService } from './mileage.service';
         </div>
     </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageHomeComponent implements OnInit {
   latest:Mileage[] = [];

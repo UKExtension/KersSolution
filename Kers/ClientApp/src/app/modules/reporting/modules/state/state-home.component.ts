@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import {StateService} from './state.service';
 
@@ -7,13 +7,15 @@ import * as echarts from 'echarts';
 import { CountyService } from '../county/county.service';
 
 @Component({
-  template: `
+    template: `
   <!--
   <div [ts-chart]="option" (chartClick)="ccc($event)"></div>
   -->
     <router-outlet></router-outlet>
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StateHomeComponent { 
 

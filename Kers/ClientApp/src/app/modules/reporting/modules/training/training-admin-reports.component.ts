@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Training } from './training';
 import { TrainingService } from './training.service';
 
 @Component({
-  selector: 'training-admin-reports',
-  templateUrl: './training-admin-reports.component.html',
-  styles: []
+    selector: 'training-admin-reports',
+    templateUrl: './training-admin-reports.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingAdminReportsComponent implements OnInit {
 

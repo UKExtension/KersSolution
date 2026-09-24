@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -11,28 +11,21 @@ import { CoreModule } from './modules/reporting/core/core.module';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
 
 
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    BrowserAnimationsModule,
-    HttpClientModule,
-    FormsModule,
-    RouterModule.forRoot([
-      { path: '', redirectTo: 'reporting', pathMatch: 'full' },
-      { path: '**', redirectTo: 'reporting' },
-    ]),
-    ReportingModule,
-    CoreModule,
-    AuthenticationModule
-  ],
-  providers: [
-    
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+        BrowserAnimationsModule,
+        FormsModule,
+        RouterModule.forRoot([
+            { path: '', redirectTo: 'reporting', pathMatch: 'full' },
+            { path: '**', redirectTo: 'reporting' },
+        ]),
+        ReportingModule,
+        CoreModule,
+        AuthenticationModule], providers: [
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
+    ] })
 export class AppModule { }
 
 

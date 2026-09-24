@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ServicelogService, SnapPolicy, SnapPolicyPartner, SnapPolicyPartnerValue } from '../../../servicelog/servicelog.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'service-log-snap-policy-details',
-  templateUrl: './service-log-snap-policy-details.component.html'
+    selector: 'service-log-snap-policy-details',
+    templateUrl: './service-log-snap-policy-details.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServiceLogSnapPolicyDetailsComponent implements OnInit {
   @Input() snapPolicyId;

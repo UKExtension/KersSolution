@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyCode, FarmerAddress } from '../soildata.service';
 
 @Component({
-  selector: 'soildata-farmer-address-detail',
-  template: `
+    selector: 'soildata-farmer-address-detail',
+    template: `
   <div class="ln_solid"></div>
   <div class="row">
       <div class="col-xs-10">
@@ -22,7 +22,9 @@ import { CountyCode, FarmerAddress } from '../soildata.service';
       </div>  
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataFarmerAddressDetailComponent implements OnInit {
 

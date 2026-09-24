@@ -1,20 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FiscalYear, FiscalyearService } from '../../modules/admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'fiscal-year-switcher',
-  template: `
+    selector: 'fiscal-year-switcher',
+    template: `
   <div class="row" *ngIf="fiscalYears != null && fiscalYears.length > 1 && selectedFiscalYear != null">
     <div class="col-md-5">
       <span *ngIf="isItFiscal">Fiscal </span>Year: <span *ngFor="let year of fiscalYears"><a (click)="selectFiscalYear(year)" [class.active-year]="year.id == selectedFiscalYear.id" style="cursor:pointer;">{{year.name}}</a> | </span>
     </div>
   </div>
   `,
-  styles: [`
+    styles: [`
   .active-year{
       font-weight: bold;
   }
-`]
+`],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class FiscalYearSwitcherComponent implements OnInit {
 

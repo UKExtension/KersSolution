@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ExtensionEventLocation } from '../extension-event';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 import { User } from '../../user/user.service';
@@ -7,8 +7,8 @@ import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'location-browser',
-  template: `
+    selector: 'location-browser',
+    template: `
   <div *ngIf="!user && !county">No county or user provided</div>
   <div *ngIf="user || county" style="background-color: #F8F8F8; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 12px 7px; ">
     <div *ngIf="countyLocations$ | async as countyLocations">
@@ -67,7 +67,9 @@ Order by:&nbsp;
     </div>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LocationHomeComponent implements OnInit {
   @Input() county:PlanningUnit;

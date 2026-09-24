@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { HelpService, Help, HelpCategory } from './help.service';
 import {Location} from '@angular/common';
-import { FormBuilder, Validators }   from '@angular/forms';
+import { UntypedFormBuilder, Validators }   from '@angular/forms';
 import {Router} from '@angular/router';
 import {ProfileService, Profile} from '../../../components/reporting-profile/profile.service';
 import { RolesService, Role } from '../roles/roles.service';
@@ -10,7 +10,9 @@ import { UserService, User } from '../../user/user.service';
 
 @Component({
     selector: 'help-form',
-    templateUrl: 'help-form.component.html' 
+    templateUrl: 'help-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpFormComponent implements OnInit{
 
@@ -31,7 +33,7 @@ export class HelpFormComponent implements OnInit{
 
     constructor( 
         private service: HelpService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private router: Router,
         private location: Location,
         private userService:UserService,

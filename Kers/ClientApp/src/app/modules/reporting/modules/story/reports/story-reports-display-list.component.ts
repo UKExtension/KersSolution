@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {StoryService, Story} from '../story.service';
 import { Observable } from "rxjs";
 import {Location} from '@angular/common';
@@ -12,7 +12,9 @@ import {Location} from '@angular/common';
                     <li *ngFor="let story of stories | async" [success-story-short]="story" [link]="link"></li>
                 </ul>
                 <!-- end more stories -->     
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryReportsDisplayListComponent { 
 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {StoryService, Story} from '../story.service';
 import {Location} from '@angular/common';
 
@@ -56,7 +56,9 @@ import {Location} from '@angular/common';
                 margin-left: 105px !important;
                 margin-right: 45px !important;
             }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryShortComponent { 
 
