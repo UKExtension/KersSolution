@@ -21,6 +21,7 @@
     ]
   },
   "angularCompilerOptions": {
+    "strictPropertyInitialization": false,
     "enableI18nLegacyMessageIdFormat": false
   }
 }

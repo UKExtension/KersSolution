@@ -195,6 +195,30 @@ namespace Kers.Controllers
             }
         }
 
+
+
+        [HttpGet("submissionhistory/{indicatoorid}")]
+        public IActionResult SubmissionHistory(int indicatoorid){
+            var user = CurrentUser();
+            user = context.KersUser.Where( u => u.Id == user.Id).Include( u => u.RprtngProfile).FirstOrDefault();
+            var vals = context.ProgramIndicatorValueEntries.
+                        Where( e => e.KersUserId == user.Id && e.PlanningUnitId == user.RprtngProfile.PlanningUnitId && e.ProgramIndicatorId == indicatoorid).
+                        AsEnumerable().
+                        OrderByDescending(e => e.CreatedDateTime);
+            return new OkObjectResult(vals);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpGet("indicatorvalues/{id}")]
         public IActionResult GetIndicatorValuesPerProgramId(int id){
             var program = this.context.MajorProgram.Find(id);

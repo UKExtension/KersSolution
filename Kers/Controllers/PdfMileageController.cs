@@ -397,7 +397,7 @@ namespace Kers.Controllers
 	
 		public string[] UKSourceNames = new string[]{"State", "Federal"};
 		public string[] countySourceNames = new string[]{"County"};
-		public string[] professionalDevelopmentNames = new string[]{"Professional Improvement (Reimbursed to Employee)"};
+		public string[] professionalDevelopmentNames = new string[]{"County Professional Improvement"};
 
 
 

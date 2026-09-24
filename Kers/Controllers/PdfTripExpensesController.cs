@@ -332,7 +332,7 @@ namespace Kers.Controllers
 		bool isItPersonalVehicle = true;
 		List<ExpenseMileageLogPageData> pages = new List<ExpenseMileageLogPageData>();
 		string[] nonCountySourceNames = new string[]{"State", "Federal"};
-		string[] professionalDevelopmentNames = new string[]{"Professional Improvement (Reimbursed to Employee)"};
+		string[] professionalDevelopmentNames = new string[]{"County Professional Improvement"};
 		int locationLinesCharacterLength = 52;
 		int businessPurposeLinesCharacterLength = 50;
 

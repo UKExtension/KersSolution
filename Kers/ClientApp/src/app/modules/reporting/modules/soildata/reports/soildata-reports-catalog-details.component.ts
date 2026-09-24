@@ -46,12 +46,13 @@ import { Observable } from 'rxjs';
     <td *ngIf="edit" colspan="6" [ngClass]="{'pulse': display_pulse }">
       <div class="row">
         <div class="col-xs-6">
-        <loading [type]="'bars'" *ngIf="deleteLoading"></loading>
+          <loading [type]="'bars'" *ngIf="deleteLoading"></loading>
           <a (click)="openDelete=!openDelete" *ngIf="!openDelete" style="cursor: pointer;"><i class="fa fa-ellipsis-v"></i></a>
           <div *ngIf="openDelete&&!openConfirmDelete"><a (click)="openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Delete</a> | <a (click)="openDelete=!openDelete" style="cursor: pointer;">Cancel</a><br><br></div>
           <div *ngIf="openConfirmDelete&&!deleteLoading">
             <span class="blue">Do you really want to permanently delete this soil sample record?</span><br>
-            <a (click)="onDelete()" style="cursor: pointer;">Confirm Delete</a> | <a (click)="openDelete=!openDelete;openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Cancel</a><br><br> </div>
+            <a (click)="onDelete()" style="cursor: pointer;">Confirm Delete</a> | <a (click)="openDelete=!openDelete;openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Cancel</a><br><br> 
+          </div>
         </div>
         <div class="col-xs-6">
           <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
@@ -60,7 +61,18 @@ import { Observable } from 'rxjs';
       <soildata-report-form [report]="report" (onCropNoteUpdated)="cropNoteUpdated()"></soildata-report-form>
     </td>
     <td *ngIf="sampleEdit" colspan="6" [ngClass]="{'pulse': display_pulse }">
-      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+      <div class="col-xs-6">
+        <loading [type]="'bars'" *ngIf="deleteLoading"></loading>
+        <a (click)="openDelete=!openDelete" *ngIf="!openDelete" style="cursor: pointer;"><i class="fa fa-ellipsis-v"></i></a>
+        <div *ngIf="openDelete&&!openConfirmDelete"><a (click)="openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Delete</a> | <a (click)="openDelete=!openDelete" style="cursor: pointer;">Cancel</a><br><br></div>
+        <div *ngIf="openConfirmDelete&&!deleteLoading">
+          <span class="blue">Do you really want to permanently delete this soil sample record?</span><br>
+          <a (click)="onDelete()" style="cursor: pointer;">Confirm Delete</a> | <a (click)="openDelete=!openDelete;openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Cancel</a><br><br> 
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+      </div>
       <soil-sample-form [sample]="report" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
     </td>
     <td *ngIf="altCrop" colspan="6" [ngClass]="{'pulse': display_pulse }">
@@ -144,6 +156,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Output() onStatusChange = new EventEmitter<SoilReportStatus | null>();
   @Output() onNoteChange = new EventEmitter<SoilReportStatus>();
   @Output() onCopySample = new EventEmitter<SoilReportBundle>();
+  @Output() onBundleDelete = new EventEmitter<boolean>();
   @Output() isItReport = new EventEmitter<boolean>();
   @Output() isItSample = new EventEmitter<boolean>();
 
@@ -351,7 +364,7 @@ export class SoildataReportsCatalogDetailsComponent implements OnInit {
     this.service.deleteReport(this.report.id).subscribe(
       res => {
         this.deleteLoading = false;
-        this.onStatusChange.emit(null);
+        this.onBundleDelete.emit();
       }
     )
     

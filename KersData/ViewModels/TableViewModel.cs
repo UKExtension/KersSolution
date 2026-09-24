@@ -10,6 +10,7 @@ namespace Kers.Models.ViewModels
         public List<string> Header {get;set;}
         public List<List<string>> Rows {get;set;}
         public List<String> Foother {get;set;}
+        public DateTime? LastUpdated {get; set;}
 
     }
 }
