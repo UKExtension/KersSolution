@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Http.Features;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using AutoMapper.Internal.Mappers;
 
 namespace Kers.Controllers
 {
