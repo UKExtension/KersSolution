@@ -37,16 +37,6 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
-        },
-        {
-            "taskName": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/Kers/Kers.csproj"
-            ],
-            "problemMatcher": "$msCompile"
         }
     ]
 }
