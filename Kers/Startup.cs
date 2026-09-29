@@ -305,7 +305,10 @@ namespace Kers
 
                 if (env.IsDevelopment() || (env.IsStaging() && isItLocalStaging != null))
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                    // UseAngularCliServer waits for a stdout string that modern (esbuild/Vite based)
+                    // Angular CLI versions no longer print, so it always times out after StartupTimeout.
+                    // Instead, run `npm start` yourself in ClientApp and just proxy to it here.
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings

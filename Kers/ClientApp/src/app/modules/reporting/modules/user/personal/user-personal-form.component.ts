@@ -135,6 +135,8 @@ export class UserPersonalFormComponent implements OnInit {
             .get(this.location.prepareExternalUrl(url));
     };
 
+    public addInterestTag = (term: string) => ({ value: term, display: term });
+
 
     initConnection(){
         return this.fb.group({

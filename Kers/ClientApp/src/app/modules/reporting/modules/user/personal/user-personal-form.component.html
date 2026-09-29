@@ -68,14 +68,14 @@
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastName">Interests:</label>
                     <div class="col-md-9 col-sm-9 col-xs-12">
-                            <small>Type interest below and press semicolon to add it to the list.</small>
-                            <tag-input 
-                                    formControlName="interests" 
-                                    theme='minimal'
-                                    [separatorKeyCodes]="[186]"
-                                    [placeholder]='Type' >                                
-                                <tag-input-dropdown [autocompleteObservable]='requestAutocompleteItems'></tag-input-dropdown>
-                            </tag-input>
+                            <small>Type an interest and press enter to add it to the list.</small>
+                            <ng-select
+                                    formControlName="interests"
+                                    [multiple]="true"
+                                    [addTag]="addInterestTag"
+                                    bindLabel="display"
+                                    placeholder="Type">
+                            </ng-select>
                             <br><br>
                     </div>
                 </div>

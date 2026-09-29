@@ -14,7 +14,7 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
 @NgModule({ declarations: [
         AppComponent
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    bootstrap: [AppComponent], imports: [BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
         RouterModule.forRoot([

@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 
 @Component({
+    selector: 'servicelog-root',
     template: `
     <router-outlet></router-outlet>
     

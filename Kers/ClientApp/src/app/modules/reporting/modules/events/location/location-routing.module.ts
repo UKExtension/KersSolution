@@ -3,13 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 
 @NgModule({
-  imports: [ RouterModule.forChild([
-     
-      {
-        
-      }
-             
-  ])],
+  imports: [ RouterModule.forChild([]) ],
   exports: [ RouterModule ]
 })
 export class LocationRoutingModule {}

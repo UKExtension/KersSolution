@@ -94,7 +94,7 @@ export class SnapPolicyPartnersComponent implements ControlValueAccessor, OnInit
     }
 
     writeValue(value: any) {
-        if (value !== []) {
+        if (true) {
             this.selections = value;
             if(this.partnerForm != null){
                 this.partnerForm.patchValue({snapPolicyPartnerValue: this.selections});

@@ -8,7 +8,7 @@ import { NavSection, NavGroup, NavItem} from './navigation.service';
     <div *ngIf="section.groups.length > 0" class="menu_section">
         <h3>{{section.name}}</h3>
         <ul class="nav side-menu">
-            <li class="nav-group" *ngFor = "let group of section.groups" [class.active]="this.group.isOpen == 'active'" [nav-menu-group]="group" (onOpen)="closeOthers($event)" (onSelected)="itemSelected($event)"></li>
+            <li class="nav-group" *ngFor = "let group of section.groups" [class.active]="group.isOpen == 'active'" [nav-menu-group]="group" (onOpen)="closeOthers($event)" (onSelected)="itemSelected($event)"></li>
         </ul>
     </div>
     `,

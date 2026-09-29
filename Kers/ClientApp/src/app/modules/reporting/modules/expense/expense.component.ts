@@ -4,6 +4,7 @@ import {ReportingService} from '../../components/reporting/reporting.service';
 import { Router } from "@angular/router";
 
 @Component({
+    selector: 'expense-root',
     template: `<router-outlet></router-outlet>`,
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false

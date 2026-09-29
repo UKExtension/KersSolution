@@ -47,6 +47,38 @@
                 "${workspaceFolder}/Kers/Kers.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "start-angular",
+            "type": "shell",
+            // kill any stray dev-server left listening on 4200 (e.g. from a prior debug session)
+            // and pin the port so the CLI never silently falls back to a random one
+            "command": "lsof -ti tcp:4200 | xargs kill -9 2>/dev/null; npm start -- --port 4200",
+            "options": {
+                "cwd": "${workspaceFolder}/Kers/ClientApp"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^NEVER_MATCH_ANYTHING$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".",
+                    "endsPattern": "Local:\\s+https?://"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "group": "kers"
+            }
+        },
+        {
+            "label": "debug",
+            "dependsOn": ["build", "start-angular"],
+            "dependsOrder": "parallel",
+            "problemMatcher": []
         }
     ]
 }

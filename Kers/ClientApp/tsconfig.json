@@ -2,14 +2,13 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "esModuleInterop": true,
     "declaration": false,
     "module": "esnext",
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "skipLibCheck": true,
     "target": "ES2022",
@@ -20,7 +19,16 @@
       "es2018",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "noImplicitAny": false,
+    "strict": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "angular-mydatepicker": ["./src/app/shared/mydatepicker-shim/index.ts"],
+      "mydatepicker": ["./src/app/shared/mydatepicker-shim/index.ts"],
+      "angular-froala-wysiwyg": ["./src/app/shared/froala-shim/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "strictPropertyInitialization": false,

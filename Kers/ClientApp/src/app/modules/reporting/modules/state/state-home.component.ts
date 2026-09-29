@@ -7,6 +7,7 @@ import * as echarts from 'echarts';
 import { CountyService } from '../county/county.service';
 
 @Component({
+    selector: 'state-home-root',
     template: `
   <!--
   <div [ts-chart]="option" (chartClick)="ccc($event)"></div>

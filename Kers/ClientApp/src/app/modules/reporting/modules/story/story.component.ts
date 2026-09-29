@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 
 @Component({
+    selector: 'story-root',
     template: `
     <router-outlet></router-outlet>
     

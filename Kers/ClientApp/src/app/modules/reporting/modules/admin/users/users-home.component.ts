@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 
 @Component({
+    selector: 'users-home-root',
     template: `
     <router-outlet></router-outlet>
     

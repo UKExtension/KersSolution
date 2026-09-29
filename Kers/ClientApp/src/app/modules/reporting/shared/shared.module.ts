@@ -5,8 +5,6 @@ import { FormsModule, ReactiveFormsModule }         from '@angular/forms';
 //https://github.com/ng-select/ng-select
 import { NgSelectModule } from '@ng-select/ng-select';
 
-import { ReportingDisplayHelpComponent } from '../components/reporting-help/reporting-display-help.component';
-
 
 
 import {LoadingComponent} from './components/loading.component';
@@ -18,9 +16,7 @@ import {echartsDirective} from './directives/echarts.directive';
 import {SafeHtmlPipe} from "./pipes/safe-html-pipe.pipe";
 
 
-
-//https://github.com/Gbuomprisco/ng2-tag-input
-import { TagInputModule } from '@vpetrusevici/ngx-chips';
+import { ReportingDisplayHelpComponent } from '../components/reporting-help/reporting-display-help.component';
 
 // Import the Froala Editor plugin.
 //import "froala-editor/js/froala_editor.pkgd.min.js";
@@ -50,11 +46,9 @@ import { ProgressBarComponent } from './components/progress-bar.component';
 @NgModule({
   imports:      [ 
                   CommonModule, 
-                  TagInputModule,
                   FroalaEditorModule.forRoot(), 
                   FroalaViewModule.forRoot(),
                   ReactiveFormsModule,
-                  TagInputModule,
                   NgSelectModule,
                   FormsModule
                   ],
