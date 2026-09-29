@@ -8,8 +8,6 @@ import { saveAs } from 'file-saver';
 import { User, PlanningUnit, UserService } from "../../user/user.service";
 import { Vehicle } from '../vehicle/vehicle.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
-import { ɵangular_packages_platform_browser_dynamic_testing_testing_b } from '@angular/platform-browser-dynamic/testing';
-
 @Component({
     selector: 'expense-reports-month',
     template: `

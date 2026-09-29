@@ -25,10 +25,7 @@ import { TagInputModule } from '@vpetrusevici/ngx-chips';
 // Import the Froala Editor plugin.
 //import "froala-editor/js/froala_editor.pkgd.min.js";
 
-// Import Angular plugin.
-import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
-
-
+import { FroalaCompatModule } from './froala-compat.module';
 import { UserSocialPickerComponent } from '../modules/user/personal/user-social-picker.component';
 import { UserPersonalFormComponent } from '../modules/user/personal/user-personal-form.component';
 import { UserPersonalConnectionComponent} from '../modules/user/personal/user-personal-connection.component';
@@ -51,10 +48,8 @@ import { ProgressBarComponent } from './components/progress-bar.component';
   imports:      [ 
                   CommonModule, 
                   TagInputModule,
-                  FroalaEditorModule.forRoot(), 
-                  FroalaViewModule.forRoot(),
+                  FroalaCompatModule,
                   ReactiveFormsModule,
-                  TagInputModule,
                   NgSelectModule,
                   FormsModule
                   ],
@@ -82,8 +77,7 @@ import { ProgressBarComponent } from './components/progress-bar.component';
       CommonModule, 
       FormsModule,
       ReactiveFormsModule,
-      FroalaEditorModule,
-      FroalaViewModule,
+      FroalaCompatModule,
       LoadingComponent,
       ProgressBarComponent,
       echartsDirective,

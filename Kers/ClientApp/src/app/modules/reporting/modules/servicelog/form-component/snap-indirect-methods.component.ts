@@ -102,11 +102,9 @@ export class SnapIndirectMethodsComponent implements ControlValueAccessor, OnIni
   }
 
   writeValue(value: any) {
-    if (value !== []) {
-      this.selections = value;
-      if(this.methodForm != null){
-        this.patch();
-      }
+    this.selections = value;
+    if(this.methodForm != null){
+      this.patch();
     }
   }
 

@@ -128,11 +128,9 @@ export class SnapDirectAudienceComponent implements ControlValueAccessor, OnInit
     }
 
     writeValue(value: any) {
-        if (value !== []) {
-            this.selections = value;
-            if(this.audienceForm != null){
-                this.audienceForm.patchValue({snapDirectAgesAudienceValue: this.selections});
-            }
+        this.selections = value;
+        if(this.audienceForm != null){
+            this.audienceForm.patchValue({snapDirectAgesAudienceValue: this.selections});
         }
     }
 

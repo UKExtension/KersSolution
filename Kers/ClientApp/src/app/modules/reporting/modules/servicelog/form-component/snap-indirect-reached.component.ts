@@ -97,11 +97,9 @@ export class SnapIndirectReachedComponent implements ControlValueAccessor, OnIni
     }
 
     writeValue(value: SnapIndirectReachedValue[]) {
-        if (value !== []) {
-            this.selections = value.sort(this.compareReached);
-            if(this.reachedForm != null){
-                this.reachedForm.patchValue({reached: this.selections});
-            }
+        this.selections = value.sort(this.compareReached);
+        if(this.reachedForm != null){
+            this.reachedForm.patchValue({reached: this.selections});
         }
     }
 

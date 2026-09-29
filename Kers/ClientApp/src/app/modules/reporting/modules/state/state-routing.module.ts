@@ -17,7 +17,7 @@ import {DistrictListComponent} from './district-list.component';
                 },
                 {
                   path: 'district', 
-                  loadChildren: '../district/district.module#DistrictModule'
+                  loadChildren: () => import('../district/district.module').then(m => m.DistrictModule)
                 }
               ]
       }

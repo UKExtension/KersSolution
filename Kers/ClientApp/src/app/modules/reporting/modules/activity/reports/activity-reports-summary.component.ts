@@ -166,7 +166,7 @@ export class ActivityReportsSummaryComponent {
 
 
         for(let activity of this.monthActivities){
-            var options = { month: 'numeric', day: 'numeric' };
+            var options: Intl.DateTimeFormatOptions = { month: 'numeric', day: 'numeric' };
             let date = new Date(activity.activityDate);
             data.push(date.toLocaleDateString("en-US", options));
             

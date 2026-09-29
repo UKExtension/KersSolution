@@ -187,7 +187,7 @@ export class LadderApplicationFormComponent implements OnInit {
             if(reslt.success){
               const group = new FormGroup({
                 description: new FormControl(''),
-                imageId: new FormControl(''),
+                imageId: new FormControl<string | number>(''),
                 imageName: new FormControl('')
               });
               group.patchValue({imageId:reslt.imageId, imageName:reslt.fileName});

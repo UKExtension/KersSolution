@@ -77,11 +77,9 @@ export class SnapPolicyAimedComponent implements ControlValueAccessor, OnInit {
   }
 
   writeValue(value: any) {
-      if (value !== []) {
-        this.selections = value;
-        if(this.aimedForm != null){
-          this.patch();
-        }
+      this.selections = value;
+      if(this.aimedForm != null){
+        this.patch();
       }
       
   }
