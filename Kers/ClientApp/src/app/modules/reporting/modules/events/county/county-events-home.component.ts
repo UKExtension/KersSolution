@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { CountyEvent, CountyEventService, CountyEventWithTime, CountyEventSearchCriteria } from './county-event.service';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { startWith, flatMap, tap } from 'rxjs/operators';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 

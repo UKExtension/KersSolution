@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Meeting, MeetingService, MeetingWithTime } from './meeting.service';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 @Component({

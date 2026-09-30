@@ -10,7 +10,7 @@ import {FiscalyearDetailComponent} from './fiscalyear-detail.component';
 import {FiscalyearFormComponent} from './fiscalyear-form.component';
 
 import {FiscalyearService} from './fiscalyear.service';
-import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { AngularMyDatePickerModule } from 'gramli-angular-mydatepicker';
 
 
 @NgModule({

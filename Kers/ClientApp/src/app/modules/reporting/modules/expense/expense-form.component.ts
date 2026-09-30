@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate} from './expense.service';
 import { FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { Observable } from "rxjs";
-import {IMyDpOptions} from 'mydatepicker';
+import {IAngularMyDpOptions} from 'gramli-angular-mydatepicker';
 import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
 import { User, UserService, PlanningUnit } from '../user/user.service';
 import { PlanningunitService } from '../planningunit/planningunit.service';
@@ -27,10 +27,10 @@ export class ExpenseFormComponent {
     mealRates:Observable<ExpenseMealRate[]>;
     loading = false;
     expenseForm = null;
-    private myDatePickerOptions: IMyDpOptions = {
+    private myDatePickerOptions: IAngularMyDpOptions = {
         // other options...
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
+            showFooterToday: false,
             satHighlight: true,
             firstDayOfWeek: 'su'
         };
@@ -99,8 +99,6 @@ export class ExpenseFormComponent {
         
         this.myDatePickerOptions.disableSince = {year: novFirst.getFullYear(), month: novFirst.getMonth() + 1, day: novFirst.getDate() + 1};
         this.myDatePickerOptions.disableUntil = {year: 2017, month: 6, day: 30};
-        this.myDatePickerOptions.editableDateField = false;
-        this.myDatePickerOptions.showClearDateBtn = false;
 
     }
 

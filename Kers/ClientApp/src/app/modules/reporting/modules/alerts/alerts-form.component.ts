@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
-import { IAngularMyDpOptions } from 'angular-mydatepicker';
+import { IAngularMyDpOptions } from 'gramli-angular-mydatepicker';
 import { Role, RolesService } from '../admin/roles/roles.service';
 import { Position, UsersService } from '../admin/users/users.service';
 import { Alert, AlertRoute, AlertTypes, AlertType } from './Alert';
@@ -166,7 +166,7 @@ export const alertsValidator = (control: AbstractControl): {[key: string]: boole
   let end = control.get('end');
   var errors = {};
   var hasErrors = false;
-  if( end.value != null && end.value.date != null){
+  if( end.value != null && end.value.singleDate != null){
     if(start.value != null){
       let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
       let endDate = new Date(end.value.date.year, end.value.date.month - 1, end.value.date.day);

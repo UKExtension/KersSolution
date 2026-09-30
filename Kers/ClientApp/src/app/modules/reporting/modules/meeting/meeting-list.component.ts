@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, delay, map, tap } from 'rxjs/operators';
 import { TrainingSearchCriteria } from '../training/training';

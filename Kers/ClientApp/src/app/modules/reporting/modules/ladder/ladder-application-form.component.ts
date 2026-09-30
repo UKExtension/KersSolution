@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import {Location} from '@angular/common';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { FormBuilder, Validators, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { LadderService, FileUploadResult } from './ladder.service';
 import { LadderLevel, LadderEducationLevel, LadderPerformanceRating, LadderApplication, LadderImage, UploadImage } from './ladder';

@@ -3,7 +3,7 @@ import { ActivityService, ActivityOption, Race, ActivityOptionNumber } from '../
 import { ContactService, Contact} from '../contact.service';
 
 import { Router } from "@angular/router";
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { Observable } from 'rxjs';
 
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { SoilReportSearchCriteria, SoilReportBundle, TypeForm, SoilReportStatus } from '../soildata.report';
 import { Subject, Observable } from 'rxjs';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { CountyCode, SoildataService } from '../soildata.service';
 import { startWith, tap, mergeMap, map, scan } from 'rxjs/operators';
 import { saveAs } from 'file-saver';

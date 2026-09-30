@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import {    ActivityOption, ActivityOptionNumber, 
             Race, Ethnicity, ActivityImage
         } from '../activity/activity.service';

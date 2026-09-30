@@ -4,7 +4,7 @@ import { Training, TrainingSearchCriteria } from './training';
 import { TrainingService } from './training.service';
 import { startWith, flatMap, delay, map, tap } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 
 @Component({
   selector: 'app-training-catalog',

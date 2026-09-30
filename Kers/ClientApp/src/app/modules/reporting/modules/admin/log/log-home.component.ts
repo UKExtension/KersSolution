@@ -3,7 +3,7 @@ import { Log, LogService } from './log.service';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { Observable, Subject } from "rxjs";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { tap, startWith, debounceTime, flatMap, delay } from 'rxjs/operators';
 
 

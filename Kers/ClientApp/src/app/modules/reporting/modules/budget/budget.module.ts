@@ -50,7 +50,6 @@ import { TravelFormComponentComponent } from './form-component/travel-form-compo
     SharedModule,
     CommonModule,
     BudgetRoutingModule
-  ],
-  entryComponents: [BudgetHomeComponent, BudgetPlanComponent]
+  ]
 })
 export class BudgetModule { }

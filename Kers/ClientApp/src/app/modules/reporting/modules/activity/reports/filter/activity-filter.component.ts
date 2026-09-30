@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, tap, mergeMap } from 'rxjs/operators';
 import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } from '../../../state/state.service';

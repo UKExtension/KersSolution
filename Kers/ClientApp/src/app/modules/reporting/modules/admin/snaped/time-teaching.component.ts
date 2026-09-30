@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { flatMap, startWith, tap } from 'rxjs/operators';
 import { ServicelogService, SnapDirectSessionLength, SnapDirectSessionType } from '../../servicelog/servicelog.service';

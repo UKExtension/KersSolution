@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow } from './training';
 import { TrainingService } from './training.service';
-import { IMyDpOptions, IMyDateModel } from "mydatepicker";
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { Observable } from 'rxjs';
 
 
@@ -36,16 +36,15 @@ export class TrainingFormComponent implements OnInit {
         quickInsertButtons: ['ul', 'ol', 'hr'],    
       };
     loading = true;
-    public myDatePickerOptions: IMyDpOptions = {
+    public myDatePickerOptions: IAngularMyDpOptions = {
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
+            showFooterToday: false,
             satHighlight: true,
-            firstDayOfWeek: 'su',
-            showClearDateBtn: false
+            firstDayOfWeek: 'su'
         };
-    public myDatePickerOptionsEnd: IMyDpOptions = {
+    public myDatePickerOptionsEnd: IAngularMyDpOptions = {
               dateFormat: 'mm/dd/yyyy',
-              showTodayBtn: false,
+              showFooterToday: false,
               satHighlight: true,
               firstDayOfWeek: 'su'
           };
@@ -127,9 +126,9 @@ export class TrainingFormComponent implements OnInit {
 
   onSubmit(){
     var trning:Training = <Training> this.trainingForm.value;
-    trning.start = new Date(this.trainingForm.value.start.date.year, this.trainingForm.value.start.date.month - 1, this.trainingForm.value.start.date.day);
+    trning.start = new Date(this.trainingForm.value.start.singleDate.date.year, this.trainingForm.value.start.singleDate.date.month - 1, this.trainingForm.value.start.singleDate.date.day);
     if( this.trainingForm.value.end != null && this.trainingForm.value.end.date != null ){
-      trning.end = new Date(this.trainingForm.value.end.date.year, this.trainingForm.value.end.date.month - 1, this.trainingForm.value.end.date.day);
+      trning.end = new Date(this.trainingForm.value.end.singleDate.date.year, this.trainingForm.value.end.singleDate.date.month - 1, this.trainingForm.value.end.singleDate.date.day);
     }else{
       trning.end = null;
     }
@@ -171,7 +170,7 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
   let start = control.get('start');
   let end = control.get('end');
 
-  if( end.value != null && end.value.date != null){
+  if( end.value != null && end.value.singleDate != null){
     let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
     let endDate = new Date(end.value.date.year, end.value.date.month - 1, end.value.date.day);
     if( startDate.getTime() > endDate.getTime()){

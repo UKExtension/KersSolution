@@ -3,7 +3,7 @@ import { FiscalyearService, FiscalYear } from './fiscalyear.service';
 import {Location} from '@angular/common';
 import { FormBuilder, Validators }   from '@angular/forms';
 import {Router} from '@angular/router';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 
 @Component({
     selector: 'fiscalyear-form',

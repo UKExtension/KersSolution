@@ -4,7 +4,7 @@ import { ActivityService, Activity, ActivityOption, Race } from '../activity.ser
 import { Router } from "@angular/router";
 import { Observable } from 'rxjs';
 
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 
 
 @Component({

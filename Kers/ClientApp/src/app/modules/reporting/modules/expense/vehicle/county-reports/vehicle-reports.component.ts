@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TripsSearchCriteria, Vehicle, VehicleService } from '../vehicle.service';
 import { Expense } from '../../expense.service';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { MileageBundle } from '../../../mileage/mileage';
 import { Observable, Subject } from 'rxjs';
 import { flatMap, startWith } from 'rxjs/operators';

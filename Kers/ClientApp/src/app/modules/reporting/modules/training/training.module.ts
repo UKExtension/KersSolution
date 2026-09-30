@@ -6,7 +6,7 @@ import { TrainingRoutingModule } from './training-routing.module';
 import { TrainingHomeComponent } from './training-home.component';
 import { TrainingFormComponent } from './training-form.component';
 import { TrainingCatalogComponent } from './training-catalog.component';
-import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { AngularMyDatePickerModule } from 'gramli-angular-mydatepicker';
 import { TrainingDetailComponent } from './training-detail.component';
 import { TrainingInfoComponent } from './training-info.component';
 import { TrainingConvertComponent } from './training-convert.component';

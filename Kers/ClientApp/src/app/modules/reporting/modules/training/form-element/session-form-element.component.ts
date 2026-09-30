@@ -2,7 +2,7 @@ import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@ang
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TrainingSession } from '../training';
-import { IAngularMyDpOptions, IMyDateModel} from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel} from 'gramli-angular-mydatepicker';
 
 
 

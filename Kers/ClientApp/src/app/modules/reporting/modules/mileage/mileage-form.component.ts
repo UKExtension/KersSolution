@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
 import { ExtensionEventLocation } from '../events/extension-event';
 import { ExtensionEventLocationConnection } from '../events/location/location.service';

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IMyDpOptions, IMyDateModel } from "mydatepicker";
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
 import {    ActivityService, Activity, 
             ActivityOption, ActivityOptionNumber, 
@@ -48,10 +48,10 @@ export class ActivityFormComponent implements OnInit{
 
     snapFiscalYear18 = false;
 
-    private myDatePickerOptions: IMyDpOptions = {
+    private myDatePickerOptions: IAngularMyDpOptions = {
         // other options...
             dateFormat: 'mm/dd/yyyy',
-            showTodayBtn: false,
+            showFooterToday: false,
             satHighlight: true
         };
 
@@ -85,7 +85,7 @@ export class ActivityFormComponent implements OnInit{
 
     //Disable Snap Ed Checkbox for the 2018 fiscal year on date change
     onDateChanged(event: IMyDateModel) {
-        if(event.date.year >= 2017 && event.date.month > 9){
+        if(event.singleDate.date.year >= 2017 && event.singleDate.date.month > 9){
             this.snapFiscalYear18 = true;
             this.activityForm.patchValue({isSnap:false});
             this.snapEligable = false;
@@ -295,8 +295,6 @@ export class ActivityFormComponent implements OnInit{
         );
         this.myDatePickerOptions.disableSince = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() + 1};
         this.myDatePickerOptions.disableUntil = {year: 2017, month: 6, day: 30};
-        this.myDatePickerOptions.editableDateField = false;
-        this.myDatePickerOptions.showClearDateBtn = false;
         
 
 

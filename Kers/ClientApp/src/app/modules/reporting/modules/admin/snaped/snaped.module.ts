@@ -24,7 +24,7 @@ import { SnapedDownloadButtonComponent } from './snaped-download-button.componen
 import { SnapedReportsComponent } from './snaped-reports.component';
 import { SnapedReportsDetailComponent } from './snaped-reports-detail.component';
 import { ActivityModule } from '../../activity/activity.module';
-import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { AngularMyDatePickerModule } from 'gramli-angular-mydatepicker';
 import { CustomReportsComponent } from './custom-reports.component';
 import { TimeTeachingComponent } from './time-teaching.component';
 import { SnapedAllRecordsComponent } from './snaped-all-records.component';

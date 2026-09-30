@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Vehicle, VehicleService } from './vehicle.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 import { User, UserService } from '../../user/user.service';
 

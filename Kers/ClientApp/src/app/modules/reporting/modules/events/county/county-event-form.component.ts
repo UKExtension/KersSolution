@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl} from '@angular/forms';
 import {Location} from '@angular/common';
 import { CountyEvent, CountyEventService, CountyEventProgramCategory, CountyEventPlanningUnit, CountyEventWithTime } from './county-event.service';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { ProgramCategory, ProgramsService } from '../../admin/programs/programs.service';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { UserService, PlanningUnit } from '../../user/user.service';
@@ -224,7 +224,7 @@ export class CountyEventFormComponent implements OnInit {
     this.loading = true;
     var result = <CountyEventWithTime> this.countyEventForm.value;
 
-    //result.start = new Date(this.countyEventForm.value.start.date.year, this.countyEventForm.value.start.date.month - 1, this.countyEventForm.value.start.date.day);
+    //result.start = new Date(this.countyEventForm.value.start.singleDate.date.year, this.countyEventForm.value.start.singleDate.date.month - 1, this.countyEventForm.value.start.singleDate.date.day);
     
     
     result.start = this.countyEventForm.value.start.singleDate.jsDate;
@@ -280,7 +280,7 @@ export const trainingValidator = (control: AbstractControl): {[key: string]: boo
   let end = control.get('end');
   var errors = {};
   var hasErrors = false;
-  if( end.value != null && end.value.date != null){
+  if( end.value != null && end.value.singleDate != null){
     if(start.value != null){
       let startDate = new Date(start.value.date.year, start.value.date.month - 1, start.value.date.day);
       let endDate = new Date(end.value.date.year, end.value.date.month - 1, end.value.date.day);

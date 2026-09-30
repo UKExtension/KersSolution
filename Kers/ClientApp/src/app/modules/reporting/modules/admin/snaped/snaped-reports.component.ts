@@ -5,7 +5,7 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
 import { StateService, CongressionalDistrict, ExtensionArea, ExtensionRegion } from '../../state/state.service';
 import { PlanningUnit } from "../../user/user.service";
 import { saveAs } from 'file-saver';
-import { IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 
 @Component({
   selector: 'snaped-reports',

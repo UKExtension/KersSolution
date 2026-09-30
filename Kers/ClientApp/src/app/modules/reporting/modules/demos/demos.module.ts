@@ -36,9 +36,6 @@ import { PlansofworkFormDemo1Component } from './plansofwork-form-demo1.componen
   providers: [
     PlansofworkService,
     ProgramsService
-  ],
-  entryComponents: [
-    DemoComponent
   ]
 })
 export class DemosModule { }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../../shared/shared.module';
 import { MileageRoutingModule } from './mileage-routing.module';
-import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { AngularMyDatePickerModule } from 'gramli-angular-mydatepicker';
 import { MileageHomeComponent } from './mileage-home.component';
 import { MileageFormComponent } from './mileage-form.component';
 import { LocationModule } from '../events/location/location.module';

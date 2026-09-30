@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '../../shared/shared.module';
-import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { AngularMyDatePickerModule } from 'gramli-angular-mydatepicker';
 import {ServicelogRoutingModule} from './servicelog-routing.module';
 import { ServicelogService } from "./servicelog.service";
 import { ServicelogComponent } from "./servicelog.component";

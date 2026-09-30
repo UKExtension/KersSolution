@@ -5,7 +5,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { LadderRoutingModule } from './ladder-routing.module';
 import { LadderComponent } from './ladder.component';
 import { LadderApplicationFormComponent } from './ladder-application-form.component';
-import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { AngularMyDatePickerModule } from 'gramli-angular-mydatepicker';
 import { TrainingModule } from '../training/training.module';
 import { LadderApplicantComponent } from './ladder-applicant.component';
 import { LadderApplicationsListComponent } from './ladder-applications-list.component';

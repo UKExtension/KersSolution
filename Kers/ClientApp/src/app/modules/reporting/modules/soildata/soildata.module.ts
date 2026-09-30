@@ -13,7 +13,7 @@ import { SoildataNotesFormComponent } from './notes/soildata-notes-form.componen
 import { SoildataSigneesComponent } from './signees/soildata-signees.component';
 import { SoildataReportsComponent } from './reports/soildata-reports.component';
 import { SoildataReportsCatalogComponent } from './reports/soildata-reports-catalog.component';
-import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { AngularMyDatePickerModule } from 'gramli-angular-mydatepicker';
 import { SoildataReportsCatalogDetailsComponent } from './reports/soildata-reports-catalog-details.component';
 import { SoildataReportFormComponent } from './reports/soildata-report-form.component';
 import { SoildataReportCropComponent } from './reports/soildata-report-crop.component';

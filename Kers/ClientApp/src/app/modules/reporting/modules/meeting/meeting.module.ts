@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '../../shared/shared.module';
-import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { AngularMyDatePickerModule } from 'gramli-angular-mydatepicker';
 import { MeetingHomeComponent } from './meeting-home.component';
 import { MeetingRoutingModule } from './meeting-routing.module';
 import { MeetingService } from './meeting.service';
@@ -23,7 +23,6 @@ import { MeetingFormComponent } from './meeting-form.component';
                 ],
   providers:    [  
                     MeetingService
-                ],
-  entryComponents: [MeetingHomeComponent]
+                ]
 })
 export class MeetingModule { }
