@@ -1,31 +1,40 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {HelpService, Help, HelpCategory} from './help.service';
 
 @Component({
     template: `{{errorMessage}}
 <div>
-    <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newHelp" (click)="newHelpOpen()">+ new help content</a>
-    </div>
-    <help-form *ngIf="newHelp" (onFormCancel)="newHelpCancelled()" (onFormSubmit)="newHelpSubmitted($event)"></help-form>
+  <div class="text-right">
+    @if (!newHelp) {
+      <a class="btn btn-info btn-xs" (click)="newHelpOpen()">+ new help content</a>
+    }
+  </div>
+  @if (newHelp) {
+    <help-form (onFormCancel)="newHelpCancelled()" (onFormSubmit)="newHelpSubmitted($event)"></help-form>
+  }
 </div>
-<div *ngIf="helps">
+@if (helps) {
+  <div>
     <table class="table table-striped">
-        <thead>
+      <thead>
         <tr>
-            <th>Id</th>
-            <th>Title</th>
-            <th></th>
+          <th>Id</th>
+          <th>Title</th>
+          <th></th>
         </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let help of helps" [helpListDetail]="help" (onHelpUpdated)="onHelpUpdate()" (onHelpDeleted)="onHelpDeleted($event)"></tr>
-        </tbody>               
-    </table>            
-</div>
-       
-    `
+      </thead>
+      <tbody>
+        @for (help of helps; track help) {
+          <tr [helpListDetail]="help" (onHelpUpdated)="onHelpUpdate()" (onHelpDeleted)="onHelpDeleted($event)"></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
 
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpListComponent implements OnInit{
 

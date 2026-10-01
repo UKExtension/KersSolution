@@ -1,4 +1,4 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { NavigationService, NavSection, NavGroup } from '../../../components/reporting-navigation/navigation.service';
 import {UsersService, Position} from '../users/users.service';
@@ -7,7 +7,9 @@ import {AdminNavigationService} from './admin-navigation.service';
 
 @Component({
     selector: '[navigationSectionDetail]',
-    templateUrl: 'navigation-section-detail.component.html'
+    templateUrl: 'navigation-section-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationSectionDetailComponent implements OnInit {
 

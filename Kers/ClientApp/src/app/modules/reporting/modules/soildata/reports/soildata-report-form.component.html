@@ -5,19 +5,27 @@
     Received Date: {{ report.sampleLabelCreated | date: 'mediumDate'}}<br>
     Report Date: {{ report.dataProcessed | date: 'mediumDate'}}<br>
     Laboratory Number: {{report.reports[0].labNum}}<br>
-    
-    
+
+
   </div>
   <div class="col-sm-6">
     Client Name: {{report.farmerForReport.first}} {{report.farmerForReport.last}}<br>
-    <ng-container *ngIf="report.ownerID">Owner Sample Id: {{report.ownerID}}<br></ng-container>
-    <ng-container *ngIf="report.acres">Acres: {{report.acres}}<br></ng-container>
-    <ng-container *ngIf="report.optionalInfo">{{report.optionalInfo}}<br></ng-container>
-    <ng-container *ngIf="report.privateNote != null && report.privateNote != ''">Non-reported Comment: {{report.privateNote}}<br></ng-container>
+    @if (report.ownerID) {
+      Owner Sample Id: {{report.ownerID}}<br>
+    }
+    @if (report.acres) {
+      Acres: {{report.acres}}<br>
+    }
+    @if (report.optionalInfo) {
+      {{report.optionalInfo}}<br>
+    }
+    @if (report.privateNote != null && report.privateNote != '') {
+      Non-reported Comment: {{report.privateNote}}<br>
+    }
 
-<!-- 
+    <!--
 
-    <strong>Farmer:</strong><br> 
+    <strong>Farmer:</strong><br>
     <loading *ngIf="loading"></loading>
     <div *ngIf="report.farmerForReport != null && !loading">
       {{report.farmerForReport.first}} {{report.farmerForReport.last}}<br>
@@ -28,17 +36,19 @@
     </div>
     <div *ngIf="report.farmerForReport == null && !addressBrowserOpen">
       <br>
-      <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">add</a>
+        <a class="btn btn-info btn-xs" (click)="addressBrowserOpen = true">add</a>
+      </div>
+      <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+
+      -->
+
+
     </div>
-    <soildata-address-browser *ngIf="addressBrowserOpen" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
-  
-   -->
-  
-  
+  </div><br><br>
+  <div class="row">
+    @for (crop of report.reports; track crop) {
+      <div class="col-xs-12">
+        <soildata-report-crop [crop]="crop" (onFormSubmit)="cropNoteUpdate($event)"></soildata-report-crop>
+      </div>
+    }
   </div>
-</div><br><br>
-<div class="row">
-  <div class="col-xs-12" *ngFor="let crop of report.reports">
-    <soildata-report-crop [crop]="crop" (onFormSubmit)="cropNoteUpdate($event)"></soildata-report-crop>
-  </div>
-</div>

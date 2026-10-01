@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from "@angular/forms";
 import {Location} from '@angular/common';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
@@ -13,7 +13,9 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
 
 @Component({
     selector: 'story-form-demo',
-    templateUrl: 'story-form-demo.component.html'
+    templateUrl: 'story-form-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryFormDemoComponent implements OnInit{ 
 

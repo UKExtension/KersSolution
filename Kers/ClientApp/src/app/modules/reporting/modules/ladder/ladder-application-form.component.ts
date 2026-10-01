@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { FormBuilder, Validators, FormArray, FormGroup, FormControl } from '@angular/forms';
@@ -11,9 +11,11 @@ import { Router } from '@angular/router';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'ladder-application-form',
-  templateUrl: './ladder-application-form.component.html',
-  styles: []
+    selector: 'ladder-application-form',
+    templateUrl: './ladder-application-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderApplicationFormComponent implements OnInit {
 

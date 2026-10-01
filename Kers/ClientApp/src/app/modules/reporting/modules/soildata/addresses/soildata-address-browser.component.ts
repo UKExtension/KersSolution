@@ -1,12 +1,12 @@
-import { Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FarmerAddress, SoildataService, FarmerAddressSearchResult, CountyCode } from '../soildata.service';
 import { Observable, Subject } from 'rxjs';
 import { FarmerAddressSearchCriteria } from '../soildata.report';
 import { startWith, mergeMap, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'soildata-address-browser',
-  template: `
+    selector: 'soildata-address-browser',
+    template: `
     <div *ngIf="close" class="ln_solid"></div>
     <div class="row" *ngIf="addresses$ | async as addresses">
       <div *ngIf="close" class="col-xs-12" style="margin-bottom: 30px;">
@@ -61,7 +61,7 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
     
     <div *ngIf="close" class="ln_solid"></div>
   `,
-  styles: [`
+    styles: [`
     .flex-container{
       display: flex;
       flex-wrap: wrap;
@@ -77,7 +77,9 @@ import { startWith, mergeMap, tap } from 'rxjs/operators';
     }
     
     
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataAddressBrowserComponent implements OnInit {
   @Input() countyid:number = 0;

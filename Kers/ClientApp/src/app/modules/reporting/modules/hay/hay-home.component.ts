@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { User, UserService } from '../user/user.service';
 import { PlanningUnit } from '../plansofwork/plansofwork.service';
 import { CountyCode, SoildataService } from '../soildata/soildata.service';
 
 @Component({
-  selector: 'hay-home',
-  template: `
-  <div *ngIf="countyCode">
-    <hay-sample-form [countyCode]="countyCode"></hay-sample-form>
-  </div>
+    selector: 'hay-home',
+    template: `
+  @if (countyCode) {
+    <div>
+      <hay-sample-form [countyCode]="countyCode"></hay-sample-form>
+    </div>
+  }
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HayHomeComponent implements OnInit {
 

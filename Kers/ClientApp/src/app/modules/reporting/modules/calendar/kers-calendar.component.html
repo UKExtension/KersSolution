@@ -8,55 +8,58 @@
 
 
 <ng-template
-#kersOpenDayTemplate
-      let-events="events"
-      let-eventClicked="eventClicked"
-      let-isOpen="isOpen">
-      <div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
-
-          <calendar-day-events [viewDate]="viewDate" [events]="events" (changed)="fetchEvents()"></calendar-day-events>
-
-
-      </div>
-    </ng-template>
-
-
-<ng-template #loading>
-  <loading></loading>
+  #kersOpenDayTemplate
+  let-events="events"
+  let-eventClicked="eventClicked"
+  let-isOpen="isOpen">
+  @if (isOpen) {
+    <div class="cal-open-day-events" [@collapse]>
+      <calendar-day-events [viewDate]="viewDate" [events]="events" (changed)="fetchEvents()"></calendar-day-events>
+    </div>
+  }
 </ng-template>
 
-<div *ngIf="events$ | async; else loading; let events">
 
 
-  <div [ngSwitch]="view">
-    <mwl-calendar-month-view
-      *ngSwitchCase="'month'"
-      [viewDate]="viewDate"
-      [events]="events"
-      [refresh]="refresh"
-      [activeDayIsOpen]="activeDayIsOpen"
-      [openDayEventsTemplate]="kersOpenDayTemplate"
-      (dayClicked)="dayClicked($event.day)"
-      (eventClicked)="handleEvent('Clicked', $event.event)"
-      (eventTimesChanged)="eventTimesChanged($event)">
-    </mwl-calendar-month-view>
-    <mwl-calendar-week-view
-      *ngSwitchCase="'week'"
-      [viewDate]="viewDate"
-      [events]="events"
-      [refresh]="refresh"
-      (eventClicked)="handleEvent('Clicked', $event.event)"
-      (eventTimesChanged)="eventTimesChanged($event)">
-    </mwl-calendar-week-view>
-    <mwl-calendar-day-view
-      *ngSwitchCase="'day'"
-      [viewDate]="viewDate"
-      [events]="events"
-      [refresh]="refresh"
-      (eventClicked)="handleEvent('Clicked', $event.event)"
-      (eventTimesChanged)="eventTimesChanged($event)">
-    </mwl-calendar-day-view>
+@if (events$ | async; as events) {
+  <div>
+    <div>
+      @switch (view) {
+        @case ('month') {
+          <mwl-calendar-month-view
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            [activeDayIsOpen]="activeDayIsOpen"
+            [openDayEventsTemplate]="kersOpenDayTemplate"
+            (dayClicked)="dayClicked($event.day)"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)">
+          </mwl-calendar-month-view>
+        }
+        @case ('week') {
+          <mwl-calendar-week-view
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)">
+          </mwl-calendar-week-view>
+        }
+        @case ('day') {
+          <mwl-calendar-day-view
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventTimesChanged)="eventTimesChanged($event)">
+          </mwl-calendar-day-view>
+        }
+      }
+    </div>
   </div>
-</div>
+} @else {
+  <loading></loading>
+}
 
 

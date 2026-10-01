@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 
 
@@ -17,7 +17,9 @@ import { Component, OnInit } from '@angular/core';
           </div>
         </div>
     </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class WidgetDDComponent { 
 

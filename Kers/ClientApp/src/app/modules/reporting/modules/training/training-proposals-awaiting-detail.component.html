@@ -1,24 +1,41 @@
-<td *ngIf="default">{{training.createdDateTime | date:'mediumDate'}}</td>
-<td *ngIf="default">{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</td>
-<td *ngIf="default">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
-<td *ngIf="default">{{training.subject}}</td>
-<td *ngIf="default"><a class="btn btn-info btn-xs" (click)="editView()">edit</a><a class="btn btn-info btn-xs" (click)="deleteView()">delete</a></td>
-<td *ngIf="!default" colspan="5">
-  <div>
-      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
-  </div>
-  <div *ngIf="edit">
-      <ng-container *ngIf="training.trainingSession.length == 0">
-          <training-form [training]="training" (onFormCancel)="default()" (onFormSubmit)="editSubmitted($event)"></training-form>
-      </ng-container>
-      <ng-container *ngIf="training.trainingSession.length > 0">
-          <training-form-sessions [training]="training" (onFormCancel)="default()" (onFormSubmit)="editSubmitted($event)"></training-form-sessions>
-      </ng-container>
-  </div>
-  <div *ngIf="delete">
+@if (default) {
+  <td>{{training.createdDateTime | date:'mediumDate'}}</td>
+}
+@if (default) {
+  <td>{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</td>
+}
+@if (default) {
+  <td>{{training.start | date:'mediumDate'}} @if (training.end) {
+    <span><br>{{training.end | date:'mediumDate'}}</span>
+  }</td>
+}
+@if (default) {
+  <td>{{training.subject}}</td>
+}
+@if (default) {
+  <td><a class="btn btn-info btn-xs" (click)="editView()">edit</a><a class="btn btn-info btn-xs" (click)="deleteView()">delete</a></td>
+}
+@if (!default) {
+  <td colspan="5">
     <div>
-        Do you really want to delete training <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
     </div>
-  </div>
-</td>
-  
+    @if (edit) {
+      <div>
+        @if (training.trainingSession.length == 0) {
+          <training-form [training]="training" (onFormCancel)="default()" (onFormSubmit)="editSubmitted($event)"></training-form>
+        }
+        @if (training.trainingSession.length > 0) {
+          <training-form-sessions [training]="training" (onFormCancel)="default()" (onFormSubmit)="editSubmitted($event)"></training-form-sessions>
+        }
+      </div>
+    }
+    @if (delete) {
+      <div>
+        <div>
+          Do you really want to delete training <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+        </div>
+      </div>
+    }
+  </td>
+}

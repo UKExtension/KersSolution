@@ -1,34 +1,56 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SnapedAdminService } from './snaped-admin.service';
 import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import { saveAs } from 'file-saver';
 
 @Component({
-  template: `
-    
+    template: `
+
+<div>
+  <a (click)="ccond = !ccond" style="cursor:pointer;">@if (!ccond) {
+    <i class="fa fa-plus-square"></i>
+    }@if (ccond) {
+    <i class="fa fa-minus-square"></i>
+  } Counties </a>
+  @if (ccond) {
     <div>
-      <a (click)="ccond = !ccond" style="cursor:pointer;"><i class="fa fa-plus-square" *ngIf="!ccond"></i><i class="fa fa-minus-square" *ngIf="ccond"></i> Counties </a>
-      <div *ngIf="ccond">
-        <planningunit-list [link]="link"></planningunit-list>
-      </div>
+      <planningunit-list [link]="link"></planningunit-list>
     </div>
+  }
+</div>
+<div>
+  <a (click)="cond = !cond" style="cursor:pointer;">@if (!cond) {
+    <i class="fa fa-plus-square"></i>
+    }@if (cond) {
+    <i class="fa fa-minus-square"></i>
+  } Snap-Ed Assistants </a>
+  @if (cond) {
     <div>
-      <a (click)="cond = !cond" style="cursor:pointer;"><i class="fa fa-plus-square" *ngIf="!cond"></i><i class="fa fa-minus-square" *ngIf="cond"></i> Snap-Ed Assistants </a>
-      <div *ngIf="cond">
-        <snaped-assistants-list></snaped-assistants-list>
-      </div>
+      <snaped-assistants-list></snaped-assistants-list>
     </div>
-    <div>
-  </div><br><br>
-  <h2>Data Downloads</h2>
-  <h5>Reimbursement Year-To-Date Totals: </h5>
-  <button (click)="csvReimbursementNepAssistants()" class="btn btn-info btn-xs" *ngIf="!reimbursementNepAssistants_loading">NEP Assistants</button><loading [type]="'bars'" *ngIf="reimbursementNepAssistants_loading"></loading>|
-  <button (click)="csvReimbursementCounty()" class="btn btn-info btn-xs" *ngIf="!reimbursementCounty_loading">County (Not NEP Assistants)</button><loading [type]="'bars'" *ngIf="reimbursementCounty_loading"></loading> 
-  
+  }
+</div>
+<div>
+</div><br><br>
+<h2>Data Downloads</h2>
+<h5>Reimbursement Year-To-Date Totals: </h5>
+@if (!reimbursementNepAssistants_loading) {
+  <button (click)="csvReimbursementNepAssistants()" class="btn btn-info btn-xs">NEP Assistants</button>
+  }@if (reimbursementNepAssistants_loading) {
+  <loading [type]="'bars'"></loading>
+  }|
+  @if (!reimbursementCounty_loading) {
+    <button (click)="csvReimbursementCounty()" class="btn btn-info btn-xs">County (Not NEP Assistants)</button>
+    }@if (reimbursementCounty_loading) {
+    <loading [type]="'bars'"></loading>
+  }
 
 
-  `
+
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedBudgetHomeComponent { 
 

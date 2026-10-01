@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {ActivityService, ActivityMonth, Activity} from './activity.service';
 
 @Component({
     selector: 'activity-detail',
-    templateUrl: 'activity-detail.component.html'
+    templateUrl: 'activity-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityDetailComponent { 
     rowDefault =true;

@@ -1,7 +1,11 @@
-<loading *ngIf="loading"></loading>
-<div *ngIf="!loading">
-  <ng-container *ngFor="let ap of aplications$ | async">
-    <ladder-review-application-detail [application]="ap"></ladder-review-application-detail>
-  </ng-container>
-</div>
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading) {
+  <div>
+    @for (ap of aplications$ | async; track ap) {
+      <ladder-review-application-detail [application]="ap"></ladder-review-application-detail>
+    }
+  </div>
+}
 

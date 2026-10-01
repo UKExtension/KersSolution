@@ -1,42 +1,60 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Mileage } from './mileage';
 import { MileageService } from './mileage.service';
 
 @Component({
-  selector: 'mileage-detail',
-  template: `
+    selector: 'mileage-detail',
+    template: `
   <div class="ln_solid"></div>
   <div class="row">
-      <div class="col-xs-9">
-          
-          <article class="media event" *ngIf="rowDefault">
-              <a class="pull-left date">
-                  <p class="day">{{expense.expenseDate | date:'d'}}</p>   
-                  <p class="month">{{expense.expenseDate | date:'MMM'}} </p>
-              </a>
-              <div class="media-body">
-              <a class="title">{{location}}</a>
-              <p>Mileage: {{miles}}</p>
-              </div>
-          </article>
-          <div class="col-xs-12" *ngIf="rowEdit">
-              <mileage-form *ngIf="isItMileageRecord" [mileage]="expense" (onFormCancel)="default()" (onFormSubmit)="expenseSubmitted($event)"></mileage-form>
-              <expense-compatability-form *ngIf="!isItMileageRecord" [expense]="expense" (onFormCancel)="default()" (onFormSubmit)="expenseSubmitted($event)"></expense-compatability-form>
+    <div class="col-xs-9">
+  
+      @if (rowDefault) {
+        <article class="media event">
+          <a class="pull-left date">
+            <p class="day">{{expense.expenseDate | date:'d'}}</p>
+            <p class="month">{{expense.expenseDate | date:'MMM'}} </p>
+          </a>
+          <div class="media-body">
+            <a class="title">{{location}}</a>
+            <p>Mileage: {{miles}}</p>
           </div>
-          <div class="col-xs-11" *ngIf="rowDelete">
-              Do you really want to delete expense <strong>{{expense.expenseLocation}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
-          </div>
-          
-      </div>
-      <div class="col-xs-3 text-right">
-          <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault">edit</a>
-          <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault">delete</a>
-          <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
-      </div>  
+        </article>
+      }
+      @if (rowEdit) {
+        <div class="col-xs-12">
+          @if (isItMileageRecord) {
+            <mileage-form [mileage]="expense" (onFormCancel)="default()" (onFormSubmit)="expenseSubmitted($event)"></mileage-form>
+          }
+          @if (!isItMileageRecord) {
+            <expense-compatability-form [expense]="expense" (onFormCancel)="default()" (onFormSubmit)="expenseSubmitted($event)"></expense-compatability-form>
+          }
+        </div>
+      }
+      @if (rowDelete) {
+        <div class="col-xs-11">
+          Do you really want to delete expense <strong>{{expense.expenseLocation}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+        </div>
+      }
+  
+    </div>
+    <div class="col-xs-3 text-right">
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="edit()">edit</a>
+      }
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="delete()">delete</a>
+      }
+      @if (!rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="default()">close</a>
+      }
+    </div>
   </div>
   
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageDetailComponent implements OnInit {
 

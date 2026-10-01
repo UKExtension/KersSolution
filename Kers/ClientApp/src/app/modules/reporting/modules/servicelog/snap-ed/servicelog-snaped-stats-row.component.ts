@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { User } from '../../user/user.service';
 
 @Component({
-  selector: '[servicelog-snaped-stats-row]',
-  templateUrl: './servicelog-snaped-stats-row.component.html',
-  styles: []
+    selector: '[servicelog-snaped-stats-row]',
+    templateUrl: './servicelog-snaped-stats-row.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogSnapedStatsRowComponent implements OnInit {
 

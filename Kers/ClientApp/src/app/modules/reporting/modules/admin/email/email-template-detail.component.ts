@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { MessageTemplate } from './message-template';
 import { EmailService } from './email.service';
 
 @Component({
-  selector: '[email-template-detail]',
-  templateUrl: './email-template-detail.component.html',
-  styles: []
+    selector: '[email-template-detail]',
+    templateUrl: './email-template-detail.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EmailTemplateDetailComponent implements OnInit {
   

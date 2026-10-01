@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { ProgramCategory, ProgramsService } from '../admin/programs/programs.service';
@@ -12,9 +12,9 @@ import { Mileage, MileageSegment } from './mileage';
 import { MileageService } from './mileage.service';
 
 @Component({
-  selector: 'mileage-form',
-  templateUrl: './mileage-form.component.html',
-  styles: [`
+    selector: 'mileage-form',
+    templateUrl: './mileage-form.component.html',
+    styles: [`
   .segment-container{
     border: 1px solid #ccc;
     padding: 6px;
@@ -23,7 +23,9 @@ import { MileageService } from './mileage.service';
     border-radius: 10px;
   }
   
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageFormComponent implements OnInit {
 

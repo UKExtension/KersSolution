@@ -2,20 +2,34 @@
 <div class="table-responsive">
   <table  class="table table-bordered table-striped">
     <thead>
-        <tr>
-            <th></th>
-            <th>Training Date(s)</th>
-            <th>Title</th>
-            <th>Location</th>
-            <th>Time</th>
-        </tr>
+      <tr>
+        <th></th>
+        <th>Training Date(s)</th>
+        <th>Title</th>
+        <th>Location</th>
+        <th>Time</th>
+      </tr>
     </thead>
-    <tr *ngFor="let training of trainings | async">
+    @for (training of trainings | async; track training) {
+      <tr>
         <td><a [routerLink]="['/reporting/training',training.id]" >Select</a></td>
-      <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
-      <td>{{training.subject}}<ng-container *ngIf="training.isCore"> (Core In-Service)</ng-container><span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
-      <td>{{training.tLocation}}</td>
-      <td>{{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span></td>
-    </tr>
+        <td>{{training.start | date:'mediumDate'}} @if (training.end) {
+          <span><br>{{training.end | date:'mediumDate'}}</span>
+        }</td>
+        <td>{{training.subject}}@if (training.isCore) {
+          (Core In-Service)
+          }@if (training.seatLimit) {
+          <span><br><strong>Limited to {{training.seatLimit}} participants.</strong></span>
+        }</td>
+        <td>{{training.tLocation}}</td>
+        <td>{{training.day1}}@if (training.day2) {
+          <span><br>{{training.day2}}</span>
+          }@if (training.day3) {
+          <span><br>{{training.day3}}</span>
+          }@if (training.day4) {
+          <span><br>{{training.day4}}</span>
+        }</td>
+      </tr>
+    }
   </table>
 </div>

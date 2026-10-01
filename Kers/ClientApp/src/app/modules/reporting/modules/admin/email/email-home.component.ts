@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { EmailService, Email } from './email.service';
 import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
-  templateUrl: 'email-home.component.html'
+    templateUrl: 'email-home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EmailHomeComponent { 
 

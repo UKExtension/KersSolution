@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {    FormBuilder, ControlValueAccessor, AbstractControl, 
             NG_VALUE_ACCESSOR, 
             NG_VALIDATORS, 
@@ -9,35 +9,40 @@ import { ServicelogService, SnapIndirectMethod, SnapIndirectReached, SnapIndirec
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-policy-partners',
-  template: `
-  <loading *ngIf="loading"></loading>
-    <div class="table-responsive" *ngIf="!loading" [formGroup]="partnerForm">
-        <table class="table table-striped table-bordered" formArrayName="snapPolicyPartnerValue">
-            <tbody>
-                
-                <tr *ngFor="let opt of partnerForm.controls.snapPolicyPartnerValue.controls; let i=index" [formGroupName]="i">
-                    <td>{{partnerChoices[i].name}}</td>
-                    <td><input id="{{partnerChoices[i].id}}" type="number" maxlength="5" (change)="changed($event)" formControlName="value"></td>
-                </tr>
-            
-            
-            </tbody>
-        </table>
+    selector: 'snap-policy-partners',
+    template: `
+  @if (loading) {
+    <loading></loading>
+  }
+  @if (!loading) {
+    <div class="table-responsive" [formGroup]="partnerForm">
+      <table class="table table-striped table-bordered" formArrayName="snapPolicyPartnerValue">
+        <tbody>
+          @for (opt of partnerForm.controls.snapPolicyPartnerValue.controls; track opt; let i = $index) {
+            <tr [formGroupName]="i">
+              <td>{{partnerChoices[i].name}}</td>
+              <td><input id="{{partnerChoices[i].id}}" type="number" maxlength="5" (change)="changed($event)" formControlName="value"></td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
+  }
   
   `,
-    providers:[  {
-                    provide: NG_VALIDATORS,
-                    useExisting: forwardRef(() => SnapPolicyPartnersComponent),
-                    multi: true,
-                } ,
-                { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapPolicyPartnersComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SnapPolicyPartnersComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapPolicyPartnersComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapPolicyPartnersComponent implements ControlValueAccessor, OnInit, Validator {
 

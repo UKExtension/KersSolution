@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 
 import { ActivatedRoute, Params } from "@angular/router";
@@ -9,23 +9,23 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  template: `
+    template: `
 
 
-  <div *ngIf="county">
+@if (county) {
+  <div>
     <div class="row x_title">
-        <div class="col-md-6">
+      <div class="col-md-6">
         <h3>Employees</h3>
-        </div>
-                  
-   </div>
-
+      </div>
+    </div>
     <user-directory-list [county]="county" [showEmployeeSummaryButton]="true"></user-directory-list>
-
-
   </div>
-    
-  `
+}
+
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UnitHomeComponent { 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
 import {    ContactService, Contact, 
             ContactOptionNumberValue,
@@ -12,7 +12,9 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 
 @Component({
     selector: 'contact-form',
-    templateUrl: 'contact-form.component.html'
+    templateUrl: 'contact-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactFormComponent implements OnInit{ 
 

@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CountyCode, FarmerAddress, FarmerAddressSearchResult, SoildataService } from './../soildata.service';
 import { Observable, Subject } from 'rxjs';
 import { FarmerAddressSearchCriteria } from '../soildata.report';
 import { flatMap, startWith, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-soildata-farmer-address',
-  template: `
+    selector: 'app-soildata-farmer-address',
+    template: `
     <br>
     <h3>Client Addresses</h3>
     <div class="text-right">
@@ -56,7 +56,9 @@ import { flatMap, startWith, tap } from 'rxjs/operators';
     
     
       `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataFarmerAddressComponent implements OnInit {
 

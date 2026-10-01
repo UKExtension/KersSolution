@@ -1,1 +1,1 @@
-<story-detail *ngFor="let story of latest" [story]="story" (onDeleted)="deleted($event)"></story-detail>
+@for (story of latest; track story) {<story-detail [story]="story" (onDeleted)="deleted($event)"></story-detail>}

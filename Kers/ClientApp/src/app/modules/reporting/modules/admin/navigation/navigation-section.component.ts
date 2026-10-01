@@ -1,28 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 
 import { NavigationService, NavSection } from '../../../components/reporting-navigation/navigation.service';
 import {AdminNavigationService} from './admin-navigation.service';
 
 @Component({
-  template: `
+    template: `
   <div>
     <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newSection" (click)="newSection = true">+ new section</a>
+      @if (!newSection) {
+        <a class="btn btn-info btn-xs" (click)="newSection = true">+ new section</a>
+      }
     </div>
- <div *ngIf="newSection">
-    <navigation-section-form (onFormCancel)="onCancel()" (onFormSubmit)="onNewSection()"></navigation-section-form>
- </div>
- </div>
-    <div *ngIf="sections">
-        <table class="table table-striped">
-            <tbody>
-                <tr *ngFor="let section of sections" [navigationSectionDetail]="section" (onSectionDeleted)="sectionUpdated()" (onSectionUpdated)="sectionUpdated()" ></tr>
-            </tbody>
-        </table>
+    @if (newSection) {
+      <div>
+        <navigation-section-form (onFormCancel)="onCancel()" (onFormSubmit)="onNewSection()"></navigation-section-form>
+      </div>
+    }
+  </div>
+  @if (sections) {
+    <div>
+      <table class="table table-striped">
+        <tbody>
+          @for (section of sections; track section) {
+            <tr [navigationSectionDetail]="section" (onSectionDeleted)="sectionUpdated()" (onSectionUpdated)="sectionUpdated()" ></tr>
+          }
+        </tbody>
+      </table>
     </div>
-
-  `
+  }
+  
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationSectionComponent { 
 

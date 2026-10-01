@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
@@ -9,57 +9,66 @@ import { SoilSampleService } from './soil-sample.service';
 
 
 @Component({
-  selector: 'soil-crop-form-element',
-  template: `
+    selector: 'soil-crop-form-element',
+    template: `
 <div class="form-horizontal form-label-left sample-crop" [formGroup]="sampleForm">
-    
+
   <div class="row" style="padding: 8px 0;">
     <div class="col-sm-11">
 
-        <div class="form-group">
-            <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Intended Use:</label>           
-            <div class="col-md-9 col-sm-9 col-xs-12">
-              <select name="typeFormId" formControlName="typeFormId" class="form-control col-md-7 col-xs-12" (change)="formTypeChange($event)">
-                  <option value="">-- select form type --</option>
-                  <option *ngFor="let formtype of typeForms | async" [value]="formtype.id">{{formtype.name}}</option>
-              </select>
-            </div>
-        </div><br>
-        <ng-container *ngIf="selectedFormType!='' && !attributesLoading" formArrayName="sampleAttributeSampleInfoBundles">
-          <div class="form-group" *ngFor="let attributyType of sampleAttributeSampleInfoBundles.controls ; let i=index">
+      <div class="form-group">
+        <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Intended Use:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <select name="typeFormId" formControlName="typeFormId" class="form-control col-md-7 col-xs-12" (change)="formTypeChange($event)">
+            <option value="">-- select form type --</option>
+            @for (formtype of typeForms | async; track formtype) {
+              <option [value]="formtype.id">{{formtype.name}}</option>
+            }
+          </select>
+        </div>
+      </div><br>
+      @if (selectedFormType!='' && !attributesLoading) {
+        <ng-container formArrayName="sampleAttributeSampleInfoBundles">
+          @for (attributyType of sampleAttributeSampleInfoBundles.controls ; track attributyType; let i = $index) {
+            <div class="form-group">
               <soil-cropattribute-form-element [formControlName]="i" [connections]="connections"></soil-cropattribute-form-element>
-          </div>
+            </div>
+          }
         </ng-container>
+      }
 
 
-        
+
     </div>
     <div class="col-sm-1">
-            <div *ngIf="index != 0 && !disabled" class="col-xs-1 ng-star-inserted text-right pull-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
-            <br>
+      @if (index != 0 && !disabled) {
+        <div class="col-xs-1 ng-star-inserted text-right pull-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
+      }
+      <br>
         <small>&nbsp;</small>
+      </div>
     </div>
   </div>
-</div>
 
-  `,
-  styles: [`
+`,
+    styles: [`
   .sample-crop{
     border-bottom: 1px solid #ccc
   }
-  `]
-  ,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => SoilCropFormElementComponent),
-                  multi: true
-                },
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => SoilCropFormElementComponent),
-                  multi: true
-                } 
-                ]
+  `],
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SoilCropFormElementComponent),
+            multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SoilCropFormElementComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoilCropFormElementComponent extends BaseControlValueAccessor<SampleInfoBundle> implements ControlValueAccessor, OnInit { 
     sampleForm: FormGroup;

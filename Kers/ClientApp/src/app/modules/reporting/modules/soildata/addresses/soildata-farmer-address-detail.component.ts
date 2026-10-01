@@ -1,28 +1,36 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyCode, FarmerAddress } from '../soildata.service';
 
 @Component({
-  selector: 'soildata-farmer-address-detail',
-  template: `
+    selector: 'soildata-farmer-address-detail',
+    template: `
   <div class="ln_solid"></div>
   <div class="row">
-      <div class="col-xs-10">
-          <ng-container  *ngIf="rowDefault">
-            <soildata-list-address [address]="address"></soildata-list-address>
-          </ng-container>
-          <div class="col-xs-12" *ngIf="rowEdit">
-              <soildata-farmer-address-form [address]="address" [selectedCounty]="selectedCounty" (onFormCancel)="default()" (onFormSubmit)="addressSubmitted($event)"></soildata-farmer-address-form>
-          </div>
-
-          
-      </div>
-      <div class="col-xs-2 text-right">
-          <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault">edit</a>
-          <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
-      </div>  
+    <div class="col-xs-10">
+      @if (rowDefault) {
+        <soildata-list-address [address]="address"></soildata-list-address>
+      }
+      @if (rowEdit) {
+        <div class="col-xs-12">
+          <soildata-farmer-address-form [address]="address" [selectedCounty]="selectedCounty" (onFormCancel)="default()" (onFormSubmit)="addressSubmitted($event)"></soildata-farmer-address-form>
+        </div>
+      }
+  
+  
+    </div>
+    <div class="col-xs-2 text-right">
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="edit()">edit</a>
+      }
+      @if (!rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="default()">close</a>
+      }
+    </div>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataFarmerAddressDetailComponent implements OnInit {
 

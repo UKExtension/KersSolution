@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 
 
@@ -7,24 +7,34 @@ import {AdminNavigationService} from './admin-navigation.service';
 
 @Component({
     selector: 'admin-nav-groups',
-  template: `
+    template: `
   <div>
     <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newGroup" (click)="newGroup = true">+ new group</a>
+      @if (!newGroup) {
+        <a class="btn btn-info btn-xs" (click)="newGroup = true">+ new group</a>
+      }
     </div>
- <div *ngIf="newGroup">
-    <navigation-group-form [section]="section" (onFormSubmit)="groupAdded($event)" (onFormCancel)="onCancel()"></navigation-group-form>
- </div>
- </div>
-    <div *ngIf="groups">
-        <table class="table table-striped">
-            <tbody>
-                <tr *ngFor="let group of groups" [navigationGroupDetail]="group" (onGroupDeleted)="groupDeleted($event)" (onGroupUpdated)="groupUpdated($event)" ></tr>
-            </tbody>
-        </table>
+    @if (newGroup) {
+      <div>
+        <navigation-group-form [section]="section" (onFormSubmit)="groupAdded($event)" (onFormCancel)="onCancel()"></navigation-group-form>
+      </div>
+    }
+  </div>
+  @if (groups) {
+    <div>
+      <table class="table table-striped">
+        <tbody>
+          @for (group of groups; track group) {
+            <tr [navigationGroupDetail]="group" (onGroupDeleted)="groupDeleted($event)" (onGroupUpdated)="groupUpdated($event)" ></tr>
+          }
+        </tbody>
+      </table>
     </div>
-
-  `
+  }
+  
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationGroupComponent { 
 

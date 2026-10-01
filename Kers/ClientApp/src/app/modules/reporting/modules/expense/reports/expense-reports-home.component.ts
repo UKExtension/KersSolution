@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from '../expense.service';
 import { saveAs } from 'file-saver';
@@ -9,13 +9,21 @@ import { User } from "../../user/user.service";
 @Component({
     selector: 'user-expenses',
     template: `
-        
-        <div class="accordion">
-            <expense-reports-year *ngFor="let year of years | async; let i = index" [year]="year" [index]="i" [user]="user"></expense-reports-year>
-        
-        </div><loading *ngIf="!(years | async)"></loading><br><br>
-        <div class="text-right" *ngIf="!user"><a class="btn btn-default btn-xs" href="https://kers.ca.uky.edu/kers_mobile/ReportExpenseMain.aspx">Expense Reports Archive</a></div>
-        `
+
+<div class="accordion">
+  @for (year of years | async; track year; let i = $index) {
+    <expense-reports-year [year]="year" [index]="i" [user]="user"></expense-reports-year>
+  }
+
+</div>@if (!(years | async)) {
+<loading></loading>
+}<br><br>
+@if (!user) {
+  <div class="text-right"><a class="btn btn-default btn-xs" href="https://kers.ca.uky.edu/kers_mobile/ReportExpenseMain.aspx">Expense Reports Archive</a></div>
+}
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsHomeComponent { 
 

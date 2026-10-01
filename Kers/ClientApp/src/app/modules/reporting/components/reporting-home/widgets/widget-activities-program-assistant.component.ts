@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { User } from '../../../modules/user/user.service';
 import { Vehicle } from '../../../modules/expense/vehicle/vehicle.service';
 
@@ -8,21 +8,31 @@ import { Vehicle } from '../../../modules/expense/vehicle/vehicle.service';
     selector: 'widget-program-assistant',
     template: `
     <div class="col-md-6 col-xs-12">
-        <div class="x_panel">
-          <div class="x_title">
-            <h2>Report Activities</h2>
-            <div class="clearfix"></div>
-          </div>
-          <div class="x_content" *ngIf="enabledVehicles">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Report Activities</h2>
+          <div class="clearfix"></div>
+        </div>
+        @if (enabledVehicles) {
+          <div class="x_content">
             <a routerLink="/reporting/servicelog" class="btn btn-dark btn-lg btn-block">Service Log</a>
-            <a routerLink="/reporting/mileage" *ngIf="!(enabledVehicles.length > 0)" class="btn btn-dark btn-lg btn-block">Mileage Records</a>
-            <a routerLink="/reporting/mileage/bytype/new" *ngIf="enabledVehicles.length > 0" class="btn btn-dark btn-lg btn-block">Mileage Records Personal Vehicle</a>
-            <a routerLink="/reporting/mileage/bytype/newcountyvehicle" *ngIf="enabledVehicles.length > 0" class="btn btn-dark btn-lg btn-block">Mileage Records County Vehicle</a>
+            @if (!(enabledVehicles.length > 0)) {
+              <a routerLink="/reporting/mileage" class="btn btn-dark btn-lg btn-block">Mileage Records</a>
+            }
+            @if (enabledVehicles.length > 0) {
+              <a routerLink="/reporting/mileage/bytype/new" class="btn btn-dark btn-lg btn-block">Mileage Records Personal Vehicle</a>
+            }
+            @if (enabledVehicles.length > 0) {
+              <a routerLink="/reporting/mileage/bytype/newcountyvehicle" class="btn btn-dark btn-lg btn-block">Mileage Records County Vehicle</a>
+            }
             <a routerLink="/reporting/story" class="btn btn-dark btn-lg btn-block">Success Stories</a>
           </div>
-        </div>
+        }
+      </div>
     </div>
-  `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class WidgetActivitiesProgramAssistantComponent { 
   @Input() enabledVehicles:Vehicle[];

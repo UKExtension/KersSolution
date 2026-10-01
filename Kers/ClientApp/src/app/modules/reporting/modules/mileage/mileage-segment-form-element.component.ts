@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BaseControlValueAccessor } from '../../core/BaseControlValueAccessor';
 import { ProgramCategory } from '../admin/programs/programs.service';
@@ -10,73 +10,89 @@ import { MileageSegment } from './mileage';
 
 
 @Component({
-  selector: 'mileage-segment',
-  template: `
+    selector: 'mileage-segment',
+    template: `
 <div class="form-group" [formGroup]="sectionGroup">
-  
-    <div class="col-xs-12 ng-star-inserted text-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer;"><i class="fa fa-close"></i></a></span></div>
 
-        <div class="row">
-            <div class="form-group">
-            <label [ngClass]="(locationBrowser)?'col-xs-12':'control-label col-md-3 col-sm-3 col-xs-12'" [ngStyle]="{'margin-left': (locationBrowser)?'10px;':'0px'}">Location:</label>
-            
-                <div class="col-xs-12" *ngIf="locationBrowser" style="padding: 10px;">
-                    <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
-                </div>
-                <div  class="col-md-9 col-sm-9 col-xs-12" *ngIf="!locationBrowser" style="padding: 10px;">
-                    <h5>{{loc.address.building}}<strong *ngIf="loc.displayName != null && loc.displayName != '' "> ({{loc.displayName}})</strong></h5>
-                    <h5>{{loc.address.street}}</h5>
-                    <h5>{{loc.address.city}}{{loc.address.state != ""?", "+loc.address.state:""}}</h5>
-                    <a (click)="locationBrowser = true" class="btn btn-info btn-xs">change</a>
-                </div>
-                
-            
-            
+  <div class="col-xs-12 ng-star-inserted text-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer;"><i class="fa fa-close"></i></a></span></div>
+
+  <div class="row">
+    <div class="form-group">
+      <label [ngClass]="(locationBrowser)?'col-xs-12':'control-label col-md-3 col-sm-3 col-xs-12'" [ngStyle]="{'margin-left': (locationBrowser)?'10px;':'0px'}">Location:</label>
+
+      @if (locationBrowser) {
+        <div class="col-xs-12" style="padding: 10px;">
+          @if (currentUser) {
+            <location-browser [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
+          }
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="programCategory">Program Category:</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <select name="programCategoryId" formControlName="programCategoryId" class="form-control col-md-7 col-xs-12">
-                    <option value="">--- select ---</option>
-                    <option *ngFor="let category of programCategories" [value]="category.id">{{category.name}}</option>
-                </select>
-            </div>
+      }
+      @if (!locationBrowser) {
+        <div  class="col-md-9 col-sm-9 col-xs-12" style="padding: 10px;">
+          <h5>{{loc.address.building}}@if (loc.displayName != null && loc.displayName != '' ) {
+            <strong> ({{loc.displayName}})</strong>
+          }</h5>
+          <h5>{{loc.address.street}}</h5>
+          <h5>{{loc.address.city}}{{loc.address.state != ""?", "+loc.address.state:""}}</h5>
+          <a (click)="locationBrowser = true" class="btn btn-info btn-xs">change</a>
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Business Purpose:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                <input type="text" name="businessPurpose" id="businessPurpose" formControlName="businessPurpose" class="form-control">
-            </div>
+      }
+
+
+
+    </div>
+    <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="programCategory">Program Category:</label>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <select name="programCategoryId" formControlName="programCategoryId" class="form-control col-md-7 col-xs-12">
+          <option value="">--- select ---</option>
+          @for (category of programCategories; track category) {
+            <option [value]="category.id">{{category.name}}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Business Purpose:</label>
+      <div class="col-md-9 col-sm-9 col-xs-12">
+        <input type="text" name="businessPurpose" id="businessPurpose" formControlName="businessPurpose" class="form-control">
+      </div>
+    </div>
+    @if (itIsPersonalVehicle) {
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fundingSourceMileageId">Mileage Funding Source: </label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+          <select name="fundingSourceId" id="fundingSourceId" formControlName="fundingSourceId" class="form-control col-md-7 col-xs-12" >
+            <option value="">--- select ---</option>
+            @for (source of fundingSources; track source) {
+              <option [value]="source.id">{{source.name}}</option>
+            }
+          </select>
         </div>
-        <div class="form-group" *ngIf="itIsPersonalVehicle">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fundingSourceMileageId">Mileage Funding Source: </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <select name="fundingSourceId" id="fundingSourceId" formControlName="fundingSourceId" class="form-control col-md-7 col-xs-12" >
-                    <option value="">--- select ---</option>
-                    <option *ngFor="let source of fundingSources" [value]="source.id">{{source.name}}</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Mileage:</label>
-            <div class="col-md-5 col-sm-5 col-xs-10">
-                    <input type="number" name="mileage" id="mileage" formControlName="mileage" class="form-control">
-        </div>
+      </div>
+    }
+    <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Mileage:</label>
+      <div class="col-md-5 col-sm-5 col-xs-10">
+        <input type="number" name="mileage" id="mileage" formControlName="mileage" class="form-control">
+      </div>
     </div>
   </div>
 </div>
-  `,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => MileageSegmentFormElementComponent),
-                  multi: true
-                } ,
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => MileageSegmentFormElementComponent),
-                  multi: true
-                }
-                ]
+`,
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MileageSegmentFormElementComponent),
+            multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => MileageSegmentFormElementComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageSegmentFormElementComponent extends BaseControlValueAccessor<MileageSegment> implements ControlValueAccessor, OnInit { 
     sectionGroup: FormGroup;

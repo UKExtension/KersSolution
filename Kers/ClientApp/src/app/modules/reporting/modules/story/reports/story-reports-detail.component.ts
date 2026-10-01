@@ -1,14 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { ActivatedRoute, Router, Params } from "@angular/router";
 import {StoryService, Story} from '../story.service';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  template: `
-    <success-story-full [story]="story" *ngIf="story"></success-story-full>
+    template: `
+    @if (story) {
+      <success-story-full [story]="story"></success-story-full>
+    }
     
-  `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryReportsDetailComponent { 
 

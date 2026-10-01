@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from "@angular/forms";
 import {Location} from '@angular/common';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
@@ -18,7 +18,9 @@ import { Indicator, IndicatorsService } from '../indicators/indicators.service';
     ng-select.ng-invalid{
         border: 1px solid red;
     }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryFormComponent implements OnInit{ 
 

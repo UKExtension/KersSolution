@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Alert } from './Alert';
 import { AlertsService } from './alerts.service';
 
 @Component({
-  selector: '[alert-list-row]',
-  templateUrl: './alert-list-row.component.html',
-  styles: [
-  ]
+    selector: '[alert-list-row]',
+    templateUrl: './alert-list-row.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AlertListRowComponent implements OnInit {
   @Input('alert-list-row') alert:Alert;

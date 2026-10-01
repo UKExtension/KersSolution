@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from './reporting.service';
 import {UserService, User, PlanningUnit} from '../../modules/user/user.service';
 
@@ -10,32 +10,49 @@ import { NavigationService } from '../reporting-navigation/navigation.service';
 
 
 @Component({
-  template: `
-  <div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    template: `
+  @if (errorMessage) {
+    <div class="alert alert-danger alert-dismissible fade in" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>Error: </strong> {{errorMessage}}
+    </button>
+    <strong>Error: </strong> {{errorMessage}}
   </div>
-  <div class="row" *ngIf="user">
-    <widget-activities-agent [enabledVehicles]="enabledVehicles" *ngIf="isAgent"></widget-activities-agent>
-    <widget-program-assistant [enabledVehicles]="enabledVehicles" *ngIf="isProgramAssistant"></widget-program-assistant>
-    <widget-staff-assistant *ngIf="isStaffAssistant"></widget-staff-assistant>
-    <widget-dd-assistant *ngIf="isDDAssistant"></widget-dd-assistant>
-    <widget-dd *ngIf="isDD"></widget-dd>
-    <widget-specialist *ngIf="isSepcialist"></widget-specialist>
-
-    <widget-trainings *ngIf="!isAny"></widget-trainings>
-
-    <widget-my-info [user]="user"></widget-my-info>
-    
-</div>
-
-
-
-
-
-
-  `
+  }
+  @if (user) {
+    <div class="row">
+      @if (isAgent) {
+        <widget-activities-agent [enabledVehicles]="enabledVehicles"></widget-activities-agent>
+      }
+      @if (isProgramAssistant) {
+        <widget-program-assistant [enabledVehicles]="enabledVehicles"></widget-program-assistant>
+      }
+      @if (isStaffAssistant) {
+        <widget-staff-assistant></widget-staff-assistant>
+      }
+      @if (isDDAssistant) {
+        <widget-dd-assistant></widget-dd-assistant>
+      }
+      @if (isDD) {
+        <widget-dd></widget-dd>
+      }
+      @if (isSepcialist) {
+        <widget-specialist></widget-specialist>
+      }
+      @if (!isAny) {
+        <widget-trainings></widget-trainings>
+      }
+      <widget-my-info [user]="user"></widget-my-info>
+    </div>
+  }
+  
+  
+  
+  
+  
+  
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingWidgetsComponent implements OnInit { 
  

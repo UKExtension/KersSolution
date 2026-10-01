@@ -1,20 +1,28 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FiscalYear, FiscalyearService } from '../../modules/admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'fiscal-year-switcher',
-  template: `
-  <div class="row" *ngIf="fiscalYears != null && fiscalYears.length > 1 && selectedFiscalYear != null">
-    <div class="col-md-5">
-      <span *ngIf="isItFiscal">Fiscal </span>Year: <span *ngFor="let year of fiscalYears"><a (click)="selectFiscalYear(year)" [class.active-year]="year.id == selectedFiscalYear.id" style="cursor:pointer;">{{year.name}}</a> | </span>
+    selector: 'fiscal-year-switcher',
+    template: `
+  @if (fiscalYears != null && fiscalYears.length > 1 && selectedFiscalYear != null) {
+    <div class="row">
+      <div class="col-md-5">
+        @if (isItFiscal) {
+          <span>Fiscal </span>
+          }Year: @for (year of fiscalYears; track year) {
+          <span><a (click)="selectFiscalYear(year)" [class.active-year]="year.id == selectedFiscalYear.id" style="cursor:pointer;">{{year.name}}</a> | </span>
+        }
+      </div>
     </div>
-  </div>
+  }
   `,
-  styles: [`
+    styles: [`
   .active-year{
       font-weight: bold;
   }
-`]
+`],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class FiscalYearSwitcherComponent implements OnInit {
 

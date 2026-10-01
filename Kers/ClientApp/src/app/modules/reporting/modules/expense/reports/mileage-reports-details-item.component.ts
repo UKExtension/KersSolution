@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ProgramCategory } from '../../admin/programs/programs.service';
 import { Mileage } from '../../mileage/mileage';
@@ -6,8 +6,8 @@ import { MileageService } from '../../mileage/mileage.service';
 import { ExpenseFundingSource } from '../expense.service';
 
 @Component({
-  selector: 'mileage-reports-details-item',
-  template: `
+    selector: 'mileage-reports-details-item',
+    template: `
   <loading *ngIf="loading"></loading>
   <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="!loading">
     <div class="ln_solid"></div>
@@ -55,7 +55,9 @@ import { ExpenseFundingSource } from '../expense.service';
         </div>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MileageReportsDetailsItemComponent implements OnInit {
   @Input() expense:Mileage;

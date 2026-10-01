@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import {    
             AffirmativeService, 
             AffirmativePlan,
@@ -15,7 +15,9 @@ import {Observable} from 'rxjs';
 
 @Component({
     selector: 'affirmative-form',
-    templateUrl: 'affirmative-form.component.html'
+    templateUrl: 'affirmative-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AffirmativeFormComponent implements OnInit{
 

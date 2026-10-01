@@ -1,21 +1,27 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-  selector: 'social-picker',
-  template: `
+    selector: 'social-picker',
+    template: `
             <button type="button" (click)="menuOpen = !menuOpen" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{selectedLabel}} <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-right" role="menu" *ngIf="connectionTypes" [ngStyle]="{'display': menuOpen ? 'block':'none'}">
-                <li *ngFor="let type of connectionTypes" (click)="selectedConnection(type)"><a ><span class="fa {{type.icon}}" aria-hidden="true"></span> {{type.name}}</a></li>
-            </ul>
-  `,
-    providers:[  { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => UserSocialPickerComponent),
-                    multi: true
-                  } 
-                  ]
+            @if (connectionTypes) {
+              <ul class="dropdown-menu dropdown-menu-right" role="menu" [ngStyle]="{'display': menuOpen ? 'block':'none'}">
+                @for (type of connectionTypes; track type) {
+                  <li (click)="selectedConnection(type)"><a ><span class="fa {{type.icon}}" aria-hidden="true"></span> {{type.name}}</a></li>
+                }
+              </ul>
+            }
+            `,
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => UserSocialPickerComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserSocialPickerComponent implements ControlValueAccessor, OnInit {
 

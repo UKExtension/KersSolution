@@ -1,17 +1,19 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { LadderImage } from './ladder';
 import {Location} from '@angular/common';
 
 @Component({
-  selector: 'ladder-detail-image',
-  template: `
+    selector: 'ladder-detail-image',
+    template: `
     <div [ngClass]="zoomed ? 'col-xs-12' : 'col-xs-2'" >
       {{image.description}}<br>
       <img src="{{src}}" width="100%" (click)="zoomed = !zoomed" />
       
     </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderDetailImageComponent implements OnInit {
   @Input() image:LadderImage;

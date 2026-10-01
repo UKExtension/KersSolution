@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MileageSegment } from '../../../mileage/mileage';
 
 @Component({
-  selector: 'trip-segment',
-  template: `
+    selector: 'trip-segment',
+    template: `
   <h4>{{segment.businessPurpose}}</h4>
    <div class="row">
    <div class="col-xs-12 col-sm-4">
@@ -17,14 +17,16 @@ import { MileageSegment } from '../../../mileage/mileage';
    </div>
    </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
     h4{
     border-bottom: 1px solid #ccc;
     padding: 10px 0 9px;
     }
     `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TripSegmentComponent implements OnInit {
   @Input() segment:MileageSegment;

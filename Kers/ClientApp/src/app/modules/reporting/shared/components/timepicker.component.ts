@@ -1,20 +1,26 @@
-import { Component, Input, forwardRef, OnInit, Injector } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
     selector: 'timepicker',
     template: `
-<select class="form-control col-md-4 col-xs-7" (change)="changeTime($event)" [value]="timeValue" [ngClass]="control?.valid ? 'ng-valid' : 'ng-invalid'" *ngIf="options != null">
+@if (options != null) {
+  <select class="form-control col-md-4 col-xs-7" (change)="changeTime($event)" [value]="timeValue" [ngClass]="control?.valid ? 'ng-valid' : 'ng-invalid'">
     <option value="">{{empty}}</option>
-    <option *ngFor="let tm of options" [value]="tm.value">{{tm.label}}</option>
-</select>
-    `,
-    providers:[  { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => TiimepickerComponent),
-                    multi: true
-                  }
-                ]
+    @for (tm of options; track tm) {
+      <option [value]="tm.value">{{tm.label}}</option>
+    }
+  </select>
+}
+`,
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => TiimepickerComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class TiimepickerComponent implements OnInit{

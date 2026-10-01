@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {Story} from './story.service';
 
 
 @Component({
     selector: 'story-list',
-    templateUrl: 'story-list.component.html'
+    templateUrl: 'story-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryListComponent implements OnInit{ 
     

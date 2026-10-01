@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Training, TrainingSurveyResult } from '../training';
 import { UserService, User } from '../../user/user.service';
 import { TrainingService } from '../training.service';
@@ -8,9 +8,11 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
 import {outlineJson} from './outline';
 
 @Component({
-  selector: 'training-survey',
-  templateUrl: './training-survey.component.html',
-  styles: []
+    selector: 'training-survey',
+    templateUrl: './training-survey.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingSurveyComponent implements OnInit {
   @Input() training:Training;

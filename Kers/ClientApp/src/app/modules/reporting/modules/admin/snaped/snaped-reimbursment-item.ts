@@ -1,32 +1,49 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { SnapBudgetReimbursementsCounty, SnapedAdminService } from './snaped-admin.service';
 
 
 @Component({
     selector: '[snapedReimbursmentItem]',
     template: `
-    <td *ngIf="rowOppened">{{reimbursment.notes}}</td>
-    <td *ngIf="rowOppened" class="text-right">{{reimbursment.amount | currency:'USD':'symbol'}}</td>
-    <td class="text-right"  *ngIf="rowOppened">
-        
+    @if (rowOppened) {
+      <td>{{reimbursment.notes}}</td>
+    }
+    @if (rowOppened) {
+      <td class="text-right">{{reimbursment.amount | currency:'USD':'symbol'}}</td>
+    }
+    @if (rowOppened) {
+      <td class="text-right" >
         <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
         <button (click)="delete()" class="btn btn-info btn-xs">delete</button>
-        <span *ngIf="errorMessage">{{errorMessage}}</span>
-    </td>
-
-
-    <td *ngIf="editOppened" colspan="2">
+        @if (errorMessage) {
+          <span>{{errorMessage}}</span>
+        }
+      </td>
+    }
+    
+    
+    @if (editOppened) {
+      <td colspan="2">
         <snaped-reimbursment-form [reimbursment]="reimbursment" [countyId]="reimbursment.planningUnitId" (onFormCancel)="close()" (onFormSubmit)="editSubmit($event)"></snaped-reimbursment-form>
-    </td>
-    <td class="text-right"  *ngIf="editOppened">
+      </td>
+    }
+    @if (editOppened) {
+      <td class="text-right" >
         <button (click)="close()" class="btn btn-info btn-xs">close</button>
-    </td>
-    <td *ngIf="deleteOppened" colspan="2">Do you really want to delete County Reimbursement <strong>{{reimbursment.notes}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></td>
-    <td class="text-right"  *ngIf="deleteOppened">
+      </td>
+    }
+    @if (deleteOppened) {
+      <td colspan="2">Do you really want to delete County Reimbursement <strong>{{reimbursment.notes}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></td>
+    }
+    @if (deleteOppened) {
+      <td class="text-right" >
         <button (click)="close()" class="btn btn-info btn-xs">close</button>
-    </td>
-
-    `
+      </td>
+    }
+    
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedReimbursmentItem implements OnInit {
 

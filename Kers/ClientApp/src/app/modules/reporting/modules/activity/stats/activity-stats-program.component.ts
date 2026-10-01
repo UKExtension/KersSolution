@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ActivityService, Activity, ActivityOption, ActivityOptionNumber, Race } from '../activity.service';
 
 import { Router } from "@angular/router";
@@ -9,7 +9,9 @@ import { FiscalYear } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'contact-activity-summary-program',
-    templateUrl: 'activity-stats-program.component.html'
+    templateUrl: 'activity-stats-program.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityStatsProgramComponent { 
 

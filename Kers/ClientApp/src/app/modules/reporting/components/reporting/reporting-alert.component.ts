@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from './reporting.service';
 import { MessageService } from '../../core/services/message.service';
 
@@ -7,16 +7,24 @@ import { MessageService } from '../../core/services/message.service';
     template: `
 
 
-<div class="alert alert-danger" *ngIf="messageService.messages.length">
+@if (messageService.messages.length) {
+  <div class="alert alert-danger">
     <button type="button" class="close" (click)="messageService.clear()"><span>&times;</span></button>
-    <div *ngFor='let message of messageService.messages'> {{message}} </div>
-</div>
+    @for (message of messageService.messages; track message) {
+      <div> {{message}} </div>
+    }
+  </div>
+}
 
-<div class="alert alert-success" *ngIf="alert.name != ''">
-<button type="button" class="close" (click)="dismiss()"><span>&times;</span></button>
-        <i class="fa fa-info-circle fa-lg"></i> {{alert.name}}
-</div>
-  `
+@if (alert.name != '') {
+  <div class="alert alert-success">
+    <button type="button" class="close" (click)="dismiss()"><span>&times;</span></button>
+    <i class="fa fa-info-circle fa-lg"></i> {{alert.name}}
+  </div>
+}
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingAlertComponent implements OnInit { 
   public alert;

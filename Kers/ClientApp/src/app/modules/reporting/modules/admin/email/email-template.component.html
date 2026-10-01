@@ -1,43 +1,51 @@
 <div>
   <div class="text-right">
-      <a class="btn btn-info btn-xs" *ngIf="!newTemplate" (click)="newTemplateOpen()">+ new email template</a>
+    @if (!newTemplate) {
+      <a class="btn btn-info btn-xs" (click)="newTemplateOpen()">+ new email template</a>
+    }
   </div>
-  <email-template-form *ngIf="newTemplate" (onFormCancel)="cancelled()" (onFormSubmit)="submitted()"></email-template-form>
-  <loading *ngIf="loading"></loading>
+  @if (newTemplate) {
+    <email-template-form (onFormCancel)="cancelled()" (onFormSubmit)="submitted()"></email-template-form>
+  }
+  @if (loading) {
+    <loading></loading>
+  }
 </div>
 <div>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Code</th>
-            <th>Subject</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let template of templates | async" [email-template-detail]="template" (onEdited)="onTemplateUpdate($event)" (onDeleted)="onTemplateUpdate($event)"></tr>
-        </tbody>               
-    </table>            
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Subject</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (template of templates | async; track template) {
+        <tr [email-template-detail]="template" (onEdited)="onTemplateUpdate($event)" (onDeleted)="onTemplateUpdate($event)"></tr>
+      }
+    </tbody>
+  </table>
 </div>
 <div>
-    <pre>
-InService Training Replacement Indexes
+  <pre>
+    InService Training Replacement Indexes
 
-        // 0 - Subject
-        // 1 - Subject
-        // 2 - Start and End dates
-        // 3 - Location
-        // 4 - Time(s)
-        // 5 - Day 1
-        // 6 - Day 2
-        // 7 - Day 3
-        // 8 - Day 4
-        // 9 - Contact
-        // 10 - Roster as table rows
-        // 11 - Times as table rows
-        // 12 - Times as text lines
-        // 13 - Training Id
-    </pre>
+    // 0 - Subject
+    // 1 - Subject
+    // 2 - Start and End dates
+    // 3 - Location
+    // 4 - Time(s)
+    // 5 - Day 1
+    // 6 - Day 2
+    // 7 - Day 3
+    // 8 - Day 4
+    // 9 - Contact
+    // 10 - Roster as table rows
+    // 11 - Times as table rows
+    // 12 - Times as text lines
+    // 13 - Training Id
+  </pre>
 </div>
 
 

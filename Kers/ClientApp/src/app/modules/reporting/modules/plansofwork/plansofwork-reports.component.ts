@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import {PlansofworkService, Map, PlanOfWork} from './plansofwork.service';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
@@ -10,7 +10,9 @@ import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.se
         .active-year{
             font-weight: bold;
         }
-    `] 
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlansofworkReportsComponent implements OnInit{
 

@@ -1,12 +1,19 @@
-<loading *ngIf="loading" [type]="'bars'"></loading>
-<div *ngIf="!loading">
-  <p *ngIf="!training">
-    <a class="btn btn-default" (click)="convert()">convert</a>
-
-    {{s.trainDateBegin}} - {{s.tTitle}}
-  </p>
-  <p  *ngIf="training">
-    converted {{training.end}} - {{training.subject}}
-  </p>
-</div>
+@if (loading) {
+  <loading [type]="'bars'"></loading>
+}
+@if (!loading) {
+  <div>
+    @if (!training) {
+      <p>
+        <a class="btn btn-default" (click)="convert()">convert</a>
+        {{s.trainDateBegin}} - {{s.tTitle}}
+      </p>
+    }
+    @if (training) {
+      <p >
+        converted {{training.end}} - {{training.subject}}
+      </p>
+    }
+  </div>
+}
 

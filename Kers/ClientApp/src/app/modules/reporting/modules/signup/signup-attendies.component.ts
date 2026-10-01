@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Servicelog } from '../servicelog/servicelog.service';
 import { ActivitySignUpEntry, SignupService } from './signup.service';
@@ -6,29 +6,36 @@ import { saveAs } from 'file-saver';
 import { FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'signup-attendies',
-  template: `
+    selector: 'signup-attendies',
+    template: `
   <h2>Attended By</h2>
-  <div class="row" *ngIf="!displayNewEntry">
-    <div class="col-xs-6">
-      <a class="btn btn-info btn-xs" (click)="displayNewEntry = !displayNewEntry">+</a>
+  @if (!displayNewEntry) {
+    <div class="row">
+      <div class="col-xs-6">
+        <a class="btn btn-info btn-xs" (click)="displayNewEntry = !displayNewEntry">+</a>
+      </div>
+      <div class="col-xs-6 text-right">
+        <!-- <a class="btn btn-info btn-xs" (click)="print()"><i class="fa fa-download"></i> Pdf</a> -->
+        <a class="btn btn-info btn-xs" (click)="csvDownload()()"><i class="fa fa-download"></i> Csv</a>
+      </div>
     </div>
-    <div class="col-xs-6 text-right">
-      <!-- <a class="btn btn-info btn-xs" (click)="print()"><i class="fa fa-download"></i> Pdf</a> -->
-      <a class="btn btn-info btn-xs" (click)="csvDownload()()"><i class="fa fa-download"></i> Csv</a>
+  }
+  @if (displayNewEntry) {
+    <div>
+      <signup-form [activity]="activity" [dalayConfirm]="false" (Submit)="newEntry($event);" (Cancel)="displayNewEntry = false"></signup-form>
     </div>
-  </div>
-  <div *ngIf="displayNewEntry">
-    <signup-form [activity]="activity" [dalayConfirm]="false" (Submit)="newEntry($event);" (Cancel)="displayNewEntry = false"></signup-form>
-  </div>
+  }
   <table class="table">
     <tbody>
-      <tr *ngFor="let attendie of attendies$ | async" [signup-list-row]="attendie" (deleted)="newEntry()"></tr>
+      @for (attendie of attendies$ | async; track attendie) {
+        <tr [signup-list-row]="attendie" (deleted)="newEntry()"></tr>
+      }
     </tbody>
   </table>
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SignupAttendiesComponent implements OnInit {
   attendies$:Observable<ActivitySignUpEntry[]>;

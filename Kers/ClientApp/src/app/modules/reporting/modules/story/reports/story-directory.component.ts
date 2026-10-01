@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { Observable, Subject } from 'rxjs';
 import { Story, StoryService } from '../story.service';
@@ -11,7 +11,9 @@ import { startWith, debounceTime, flatMap, tap } from 'rxjs/operators';
 
 
 @Component({
-  templateUrl: 'story-directory.component.html'
+    templateUrl: 'story-directory.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryDirectoryComponent {
 

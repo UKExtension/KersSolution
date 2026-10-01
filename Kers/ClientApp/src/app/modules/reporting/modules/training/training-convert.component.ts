@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TrainingService } from './training.service';
 import { Observable } from 'rxjs';
 import { TrainingConvertItemComponent } from './training-convert-item.component';
 import { Training } from './training';
 
 @Component({
-  selector: 'training-convert',
-  templateUrl: './training-convert.component.html',
-  styles: []
+    selector: 'training-convert',
+    templateUrl: './training-convert.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingConvertComponent implements OnInit {
 

@@ -1,24 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from './expense.service';
 
 import { ActivatedRoute, Params } from "@angular/router";
 
 @Component({
-  template: `
+    template: `
         <div>
-            <div class="text-right">
-                <a class="btn btn-info btn-xs" *ngIf="!newExpense" (click)="newExpense = true">+ new mileage record</a>
-            </div>
-            <expense-form *ngIf="newExpense" [isNewCountyVehicle]="newCountyVehicle" (onFormCancel)="newExpense=false" (onFormSubmit)="newExpenseSubmitted($event)"></expense-form>
+          <div class="text-right">
+            @if (!newExpense) {
+              <a class="btn btn-info btn-xs" (click)="newExpense = true">+ new mileage record</a>
+            }
+          </div>
+          @if (newExpense) {
+            <expense-form [isNewCountyVehicle]="newCountyVehicle" (onFormCancel)="newExpense=false" (onFormSubmit)="newExpenseSubmitted($event)"></expense-form>
+          }
         </div>
-    <br><expense-list [byMonth]="byMonth" (onDeleted)="deleted($event)" (onEdited)="edited($event)"></expense-list>
-    <div *ngIf="numbExpenses != 0" class="text-center">
-        <div>Showing {{latest.length}} of {{numbExpenses}} expense records</div>
-        <div *ngIf="latest.length < numbExpenses" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
-            load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-        </div>
-    </div>`
+        <br><expense-list [byMonth]="byMonth" (onDeleted)="deleted($event)" (onEdited)="edited($event)"></expense-list>
+        @if (numbExpenses != 0) {
+          <div class="text-center">
+            <div>Showing {{latest.length}} of {{numbExpenses}} expense records</div>
+            @if (latest.length < numbExpenses) {
+              <div class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+                load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+              </div>
+            }
+          </div>
+        }`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseHomeComponent { 
 

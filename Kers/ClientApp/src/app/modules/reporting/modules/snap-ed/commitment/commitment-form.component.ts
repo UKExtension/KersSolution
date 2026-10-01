@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { SnapedService } from '../../servicelog/snaped.service';
 import { SnapEdActivityType, SnapEdProjectType, SnapEdCommitmentService, CommitmentBundle, SnapEdReinforcementItem, SnapEdReinforcementItemChoice } from '../snap-ed-commitment.service';
@@ -6,9 +6,11 @@ import { User } from '../../user/user.service';
 import { FiscalYear, FiscalyearService } from '../../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  selector: 'commitment-form',
-  templateUrl: './commitment-form.component.html',
-  styleUrls: ['./commitment-form.component.css']
+    selector: 'commitment-form',
+    templateUrl: './commitment-form.component.html',
+    styleUrls: ['./commitment-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CommitmentFormComponent implements OnInit {
 

@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {    ContactService, Contact, ContactRaceEthnicityValue,
             ContactMonth
         } from './contact.service';
 
 @Component({
-  templateUrl: 'contact-home.component.html'
+    templateUrl: 'contact-home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactHomeComponent implements OnInit { 
     

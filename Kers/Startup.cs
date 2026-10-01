@@ -291,7 +291,7 @@ namespace Kers
 
                 if (env.IsDevelopment() || (env.IsStaging() && isItLocalStaging != null))
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings

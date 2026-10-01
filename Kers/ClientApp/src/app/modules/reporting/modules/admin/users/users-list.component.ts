@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ProfileService, Profile } from '../../../components/reporting-profile/profile.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import { Observable, Subject } from 'rxjs';
@@ -6,7 +6,9 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'users-list',
-    templateUrl: 'users-list.component.html' 
+    templateUrl: 'users-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UsersListComponent implements OnInit{
 

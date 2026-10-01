@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ActivityService, Activity} from '../activity.service';
 
@@ -9,43 +9,49 @@ import { UserService, User, PersonalProfile } from '../../user/user.service';
 @Component({
     selector: 'activity-reports-month',
     template: `
-    
-    <div class="expense-row" [class.row-even]="isIndexEven()" *ngIf="user">
-        <div class="row">
-            
-            <div class="col-xs-8" *ngIf="rowDefault">
-                
-                <article class="media event">
-                    <div class="media-body">
-                        <a class="title" style="font-size:1.1em;">{{date | date:'MMMM'}} <small style="font-weight:normal;">({{year.year}})</small></a>
-                    </div>
-                </article>
 
+@if (user) {
+  <div class="expense-row" [class.row-even]="isIndexEven()">
+    <div class="row">
+      @if (rowDefault) {
+        <div class="col-xs-8">
+          <article class="media event">
+            <div class="media-body">
+              <a class="title" style="font-size:1.1em;">{{date | date:'MMMM'}} <small style="font-weight:normal;">({{year.year}})</small></a>
             </div>
-            <div class="col-xs-11" *ngIf="rowSummary">
-                <h3>{{date | date:'MMMM, y'}} <small>{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</small></h3>Monthly Meetings/Activities Summary<br><br>
-                <activity-reports-summary [month]="month" [year]="year" [user]="user"></activity-reports-summary>
-
-            </div>
-            <div class="col-xs-11" *ngIf="rowDetails" style="padding-bottom: 40px;">
-                    
-                    
-                    <h3>{{date | date:'MMMM, y'}} <small>{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</small></h3>Detailed Meetings/Activities Records<br><br>
-
-
-                    <activity-reports-details [month]="month" [year]="year" [user]="user"></activity-reports-details>
-            </div>
-            <div class="col-xs-4 text-right" *ngIf="rowDefault">
-                <a class="btn btn-info btn-xs" (click)="summary()" ><i class="fa fa-cog"></i> Summary</a>
-                <a class="btn btn-info btn-xs" (click)="details()" *ngIf="rowDefault"><i class="fa fa-cogs"></i> Details</a>
-            </div>
-            <div class="col-xs-1 text-right" *ngIf="!rowDefault">
-                <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
-            </div>  
+          </article>
         </div>
+      }
+      @if (rowSummary) {
+        <div class="col-xs-11">
+          <h3>{{date | date:'MMMM, y'}} <small>{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</small></h3>Monthly Meetings/Activities Summary<br><br>
+          <activity-reports-summary [month]="month" [year]="year" [user]="user"></activity-reports-summary>
+        </div>
+      }
+      @if (rowDetails) {
+        <div class="col-xs-11" style="padding-bottom: 40px;">
+          <h3>{{date | date:'MMMM, y'}} <small>{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</small></h3>Detailed Meetings/Activities Records<br><br>
+          <activity-reports-details [month]="month" [year]="year" [user]="user"></activity-reports-details>
+        </div>
+      }
+      @if (rowDefault) {
+        <div class="col-xs-4 text-right">
+          <a class="btn btn-info btn-xs" (click)="summary()" ><i class="fa fa-cog"></i> Summary</a>
+          @if (rowDefault) {
+            <a class="btn btn-info btn-xs" (click)="details()"><i class="fa fa-cogs"></i> Details</a>
+          }
+        </div>
+      }
+      @if (!rowDefault) {
+        <div class="col-xs-1 text-right">
+          <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+        </div>
+      }
     </div>
-        `,
-        styles: [`
+  </div>
+}
+`,
+    styles: [`
             .row-even{
                 background-color: #f9f9f9;
             }
@@ -53,7 +59,9 @@ import { UserService, User, PersonalProfile } from '../../user/user.service';
                 padding: 10px 7px;
                 border-top: 1px solid #ddd;
             }
-        `]
+        `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsMonthComponent { 
 

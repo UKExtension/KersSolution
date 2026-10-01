@@ -1,13 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import { LadderService } from './ladder.service';
 import { LadderApplication } from './ladder';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'ladder-applicant',
-  templateUrl: './ladder-applicant.component.html',
-  styles: []
+    selector: 'ladder-applicant',
+    templateUrl: './ladder-applicant.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderApplicantComponent implements OnInit {
   @Input() userId:number;

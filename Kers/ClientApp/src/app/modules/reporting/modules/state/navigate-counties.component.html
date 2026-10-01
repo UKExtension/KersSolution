@@ -1,43 +1,57 @@
 <div class="x_title">
-    <h2 *ngIf="countiesOpen">Counties</h2>
-    <h2 *ngIf="areasOpen">Areas</h2>
-    <h2 *ngIf="regionsOpen">Regions</h2>
-    <div class="clearfix"></div>
+  @if (countiesOpen) {
+    <h2>Counties</h2>
+  }
+  @if (areasOpen) {
+    <h2>Areas</h2>
+  }
+  @if (regionsOpen) {
+    <h2>Regions</h2>
+  }
+  <div class="clearfix"></div>
 </div>
 <div class="x_content">
-    <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-        <li role="presentation" [class.active]="countiesOpen"><a (click)="openCounties()" style="cursor: pointer;">Counties</a>
-        </li>
-        <li role="presentation" [class.active]="regionsOpen"><a (click)="openRegions()"  style="cursor: pointer;">Regions</a>
-        </li>
-        <li role="presentation" [class.active]="areasOpen"><a (click)="openAreas()"  style="cursor: pointer;">Areas</a>
-        </li>
-    </ul>
+  <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+    <li role="presentation" [class.active]="countiesOpen"><a (click)="openCounties()" style="cursor: pointer;">Counties</a>
+  </li>
+  <li role="presentation" [class.active]="regionsOpen"><a (click)="openRegions()"  style="cursor: pointer;">Regions</a>
+</li>
+<li role="presentation" [class.active]="areasOpen"><a (click)="openAreas()"  style="cursor: pointer;">Areas</a>
+</li>
+</ul>
 </div>
-<ng-container *ngIf="countiesOpen">
-    <div class="x_content" *ngIf="counties">
-        <ng-container *ngFor="let county of counties | async">
-            <div *ngIf="county.name.substring(county.name.length - 3)=='CES'" class="col-lg-4 col-md-6 col-xs-12">
-                    <a [routerLink]="['/reporting/county', county.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{county.name.substring(0, county.name.length - 11)}}</a>
-            </div>
-        </ng-container>  
+@if (countiesOpen) {
+  @if (counties) {
+    <div class="x_content">
+      @for (county of counties | async; track county) {
+        @if (county.name.substring(county.name.length - 3)=='CES') {
+          <div class="col-lg-4 col-md-6 col-xs-12">
+            <a [routerLink]="['/reporting/county', county.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{county.name.substring(0, county.name.length - 11)}}</a>
+          </div>
+        }
+      }
     </div>
-</ng-container>
-<ng-container *ngIf="areasOpen">
-    <div class="x_content" *ngIf="areas">
-        <ng-container *ngFor="let area of areas | async">
-            <div class="col-lg-4 col-md-6 col-xs-12">
-                    <a [routerLink]="['/reporting/extensionarea', area.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{area.name}}</a>
-            </div>
-        </ng-container>  
+  }
+}
+@if (areasOpen) {
+  @if (areas) {
+    <div class="x_content">
+      @for (area of areas | async; track area) {
+        <div class="col-lg-4 col-md-6 col-xs-12">
+          <a [routerLink]="['/reporting/extensionarea', area.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{area.name}}</a>
+        </div>
+      }
     </div>
-</ng-container>
-<ng-container *ngIf="regionsOpen">
-    <div class="x_content" *ngIf="regions">
-        <ng-container *ngFor="let region of regions | async">
-            <div class="col-lg-4 col-md-6 col-xs-12">
-                    <a [routerLink]="['/reporting/extensionregion', region.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{region.description}}</a>
-            </div>
-        </ng-container>  
+  }
+}
+@if (regionsOpen) {
+  @if (regions) {
+    <div class="x_content">
+      @for (region of regions | async; track region) {
+        <div class="col-lg-4 col-md-6 col-xs-12">
+          <a [routerLink]="['/reporting/extensionregion', region.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{region.description}}</a>
+        </div>
+      }
     </div>
-</ng-container>
+  }
+}

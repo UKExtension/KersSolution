@@ -1,47 +1,56 @@
-<h3 *ngIf="!start">Trainings Transcript</h3>
-<div *ngIf="!start" class="row">
-  <div class="col-sm-6 col-xs-12" class="form-inline" style="margin-top: 3px;">
-    
-    <div class="form-group col-sm-6 col-xs-12" style="margin-bottom: 8px;">
-      <label for="exampleInputName2">Select Calendar Year: &nbsp;</label>
-      <select class="form-control" (change)="onYearChange($event.target.value)">
-        <option *ngFor="let year of years" [value]="year" [selected]="year == thisYear">{{year}}</option>
-      </select>
+@if (!start) {
+  <h3>Trainings Transcript</h3>
+}
+@if (!start) {
+  <div class="row">
+    <div class="col-sm-6 col-xs-12" class="form-inline" style="margin-top: 3px;">
+      <div class="form-group col-sm-6 col-xs-12" style="margin-bottom: 8px;">
+        <label for="exampleInputName2">Select Calendar Year: &nbsp;</label>
+        <select class="form-control" (change)="onYearChange($event.target.value)">
+          @for (year of years; track year) {
+            <option [value]="year" [selected]="year == thisYear">{{year}}</option>
+          }
+        </select>
+      </div>
     </div>
-    
-    
-      
+    <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
+    </div>
   </div>
-  <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-  </div>
-
-</div>
+}
 
 
 
 <div class="table-responsive">
-  <table  class="table table-bordered table-striped" *ngIf="trainings">
-    <thead>
+  @if (trainings) {
+    <table  class="table table-bordered table-striped">
+      <thead>
         <tr>
-            <th>Training Date(s)</th>
-            <th>Hours</th>
-            <th>Title</th>
-            <th>Attendance</th>
-            <th>Evaluation</th>
+          <th>Training Date(s)</th>
+          <th>Hours</th>
+          <th>Title</th>
+          <th>Attendance</th>
+          <th>Evaluation</th>
         </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let training of trainings" [user]="user" [training-transcript-detail]="training"></tr>
-    </tbody>
-    <tfoot *ngIf="totalHours != null">
-      <tr>
-        <td>
-          <strong>Hours Earned:</strong>
-        </td>
-        <td><strong>{{totalHours}}</strong></td>
-        <td colspan="3">&nbsp;</td>
-      </tr>
-    </tfoot>
-  </table>
-  <loading *ngIf="loading"></loading>
+      </thead>
+      <tbody>
+        @for (training of trainings; track training) {
+          <tr [user]="user" [training-transcript-detail]="training"></tr>
+        }
+      </tbody>
+      @if (totalHours != null) {
+        <tfoot>
+          <tr>
+            <td>
+              <strong>Hours Earned:</strong>
+            </td>
+            <td><strong>{{totalHours}}</strong></td>
+            <td colspan="3">&nbsp;</td>
+          </tr>
+        </tfoot>
+      }
+    </table>
+  }
+  @if (loading) {
+    <loading></loading>
+  }
 </div>

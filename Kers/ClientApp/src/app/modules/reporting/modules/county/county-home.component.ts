@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 
 import { ActivatedRoute, Params } from "@angular/router";
@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  template: `
+    template: `
 
 
 
@@ -130,7 +130,9 @@ import { switchMap } from 'rxjs/operators';
 
 
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyHomeComponent { 
 

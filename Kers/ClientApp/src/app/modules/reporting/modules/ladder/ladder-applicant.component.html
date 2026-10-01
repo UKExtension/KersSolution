@@ -1,5 +1,13 @@
-<loading *ngIf="loading"></loading>
-<div *ngIf="!loading">
-  <ladder-application-form *ngIf="newApplication" (onFormCancel)="canceled()" (onDraftSaved)="submitted($event)" (onFormSubmit)="submitted($event)"></ladder-application-form>
-  <ladder-applicant-list-detail *ngIf="!newApplication" [application]="application"></ladder-applicant-list-detail>
-</div>
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading) {
+  <div>
+    @if (newApplication) {
+      <ladder-application-form (onFormCancel)="canceled()" (onDraftSaved)="submitted($event)" (onFormSubmit)="submitted($event)"></ladder-application-form>
+    }
+    @if (!newApplication) {
+      <ladder-applicant-list-detail [application]="application"></ladder-applicant-list-detail>
+    }
+  </div>
+}

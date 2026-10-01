@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import {IndicatorsService, Indicator} from '../../indicators/indicators.service';
 
 
@@ -7,22 +7,36 @@ import {IndicatorsService, Indicator} from '../../indicators/indicators.service'
     selector: 'programindicators-indicator-detail',
     template: `
 <div class="row" style="padding-bottom: 20px;">
-    <div class="col-xs-9"><span *ngIf="rowDefault" [innerHTML]="indicator.question"></span>
-        <div class="col-xs-12" *ngIf="rowEdit">
-            <programindicators-form-admin [indicator]="indicator" (onFormCancel)="default()" (onFormSubmit)="editSubmit($event)"></programindicators-form-admin>
-            <div class="ln_solid"></div>
-        </div>
-        <div class="col-xs-11" *ngIf="rowDelete">
-            Do you really want to delete indicator:<br> <small>{{indicator.question}}</small>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
-        </div>
+  <div class="col-xs-9">@if (rowDefault) {
+    <span [innerHTML]="indicator.question"></span>
+  }
+  @if (rowEdit) {
+    <div class="col-xs-12">
+      <programindicators-form-admin [indicator]="indicator" (onFormCancel)="default()" (onFormSubmit)="editSubmit($event)"></programindicators-form-admin>
+      <div class="ln_solid"></div>
     </div>
-    <div class="col-xs-3 text-right">
-        <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault">edit</a>
-        <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault">delete</a>
-        <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
+  }
+  @if (rowDelete) {
+    <div class="col-xs-11">
+      Do you really want to delete indicator:<br> <small>{{indicator.question}}</small>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
     </div>
+  }
 </div>
-    `
+<div class="col-xs-3 text-right">
+  @if (rowDefault) {
+    <a class="btn btn-info btn-xs" (click)="edit()">edit</a>
+  }
+  @if (rowDefault) {
+    <a class="btn btn-info btn-xs" (click)="delete()">delete</a>
+  }
+  @if (!rowDefault) {
+    <a class="btn btn-info btn-xs" (click)="default()">close</a>
+  }
+</div>
+</div>
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramindicatorsIndicatorDetailComponent{
     

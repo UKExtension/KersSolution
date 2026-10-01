@@ -1,19 +1,23 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Alert, AlertTypes } from '../../modules/alerts/Alert';
 
 @Component({
-  selector: 'alert-banner',
-  template: `
-  <div class="alert {{alertClass}} alert-dismissible" role="alert" *ngIf="!hidden">
-    <button (click)="hidden=true" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    selector: 'alert-banner',
+    template: `
+  @if (!hidden) {
+    <div class="alert {{alertClass}} alert-dismissible" role="alert">
+      <button (click)="hidden=true" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
     </button>
     <div [innerHTML]="alert.message"></div>
-    <div *ngIf="alert.moreInfoUrl != ''"><br>
-    <a href="{{alert.moreInfoUrl}}" target="_blank">Visit for More Info</a>
-    </div>
+    @if (alert.moreInfoUrl != '') {
+      <div><br>
+        <a href="{{alert.moreInfoUrl}}" target="_blank">Visit for More Info</a>
+      </div>
+    }
   </div>
+  }
   `,
-  styles: [`
+    styles: [`
   .alert-danger a{
     color:#333;
   }
@@ -25,7 +29,9 @@ import { Alert, AlertTypes } from '../../modules/alerts/Alert';
   }
   
   `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AlertBannerComponent implements OnInit {
   hidden = false;

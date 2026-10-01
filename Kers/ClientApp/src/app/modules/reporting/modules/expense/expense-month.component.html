@@ -1,2 +1,4 @@
 <h3>{{month.date | date:'MMMM, y'}}</h3>
-<expense-detail *ngFor="let expense of month.expenses" [expense]="expense" (onDeleted)="deleted($event)" (onEdited)="edit($event)"></expense-detail><br><br>
+@for (expense of month.expenses; track expense) {
+  <expense-detail [expense]="expense" (onDeleted)="deleted($event)" (onEdited)="edit($event)"></expense-detail>
+  }<br><br>

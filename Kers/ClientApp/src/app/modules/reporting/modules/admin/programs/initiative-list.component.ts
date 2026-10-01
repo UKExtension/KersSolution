@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import { Observable } from 'rxjs';
 import {InitiativeFormComponent} from './initiative-form.component';
@@ -8,34 +8,43 @@ import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service'
 @Component({
     template: `
     <fiscal-year-switcher (onSwitched)="selectFiscalYear($event)"></fiscal-year-switcher><br><br>
-<div>
-    <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newInitiative" (click)="newInitiativeOpen()">+ new statigic initiative</a>
+    <div>
+      <div class="text-right">
+        @if (!newInitiative) {
+          <a class="btn btn-info btn-xs" (click)="newInitiativeOpen()">+ new statigic initiative</a>
+        }
+      </div>
+      @if (newInitiative) {
+        <initiative-form (onFormCancel)="newInitiativeCancelled()" (onFormSubmit)="newInitiativeSubmitted()" [fiscalYear]="selectedFiscalYear"></initiative-form>
+      }
     </div>
-    <initiative-form *ngIf="newInitiative" (onFormCancel)="newInitiativeCancelled()" (onFormSubmit)="newInitiativeSubmitted()" [fiscalYear]="selectedFiscalYear"></initiative-form>
-</div>
-<div *ngIf="initiatives">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let initiative of initiatives" [initiativeListDetail]="initiative" (onInitiativeUpdated)="onInitiativeUpdate()" (onInitiativeDeleted)="onInitiativeUpdate()"></tr>
-        </tbody>               
-    </table>            
-</div>
-       
+    @if (initiatives) {
+      <div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (initiative of initiatives; track initiative) {
+              <tr [initiativeListDetail]="initiative" (onInitiativeUpdated)="onInitiativeUpdate()" (onInitiativeDeleted)="onInitiativeUpdate()"></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    
     `,
     styles: [`
         .active-year{
             font-weight: bold;
         }
-    `]
-
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class InitiativeListComponent implements OnInit{
 

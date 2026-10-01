@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -6,17 +6,21 @@ import {IndicatorsService, Indicator} from './indicators.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
-  template: `
+    template: `
 
 <div><reporting-display-help id="27"></reporting-display-help></div>
-    
-    These numbers are to be kept up to date PER INDIVIDUAL (YOU) - NOT THE COUNTY.<br>
+
+These numbers are to be kept up to date PER INDIVIDUAL (YOU) - NOT THE COUNTY.<br>
 Simply update the numbers as needed throughout the fiscal year.<br>
 <strong>ENTER WHOLE NUMBERS ONLY.</strong><br>
-<div *ngIf="fiscalYear" style="padding-top:15px;">
+@if (fiscalYear) {
+  <div style="padding-top:15px;">
     <indicators-form [fiscalYear]="fiscalYear"></indicators-form>
-</div>
-  `
+  </div>
+}
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class IndicatorsHomeComponent { 
     

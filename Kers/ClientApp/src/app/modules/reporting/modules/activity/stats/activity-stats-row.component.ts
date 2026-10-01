@@ -1,4 +1,4 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { ActivityService, Activity, ActivityOption, Race } from '../activity.service';
 import { Observable } from "rxjs";
@@ -12,14 +12,18 @@ import { Observable } from "rxjs";
         <td>{{activity.hours}}</td>
         <td>{{optionExists('Multistate effort?')}}</td>
         <td>{{activity.male + activity.female}}</td>
-        <td *ngFor="let race of races | async">{{raceValue(race)}}</td>
+        @for (race of races | async; track race) {
+          <td>{{raceValue(race)}}</td>
+        }
         <td>{{ethnicity(2)}}</td>
         <td>{{activity.female}}</td>
         <td>{{activity.male}}</td>
         <td>{{optionValue('Number of Youth Participants (18 and under)')}}</td>
         <td>{{optionValue('Number of Adult Volunteers')}}</td>
         <td>{{optionValue('Number of Indirect Contacts')}}</td>
-    `
+        `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityStatsRow implements OnInit {
 

@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { Observable } from "rxjs";
 import { UserService, User } from "../user.service";
 import {Router} from '@angular/router'
 
 @Component({
-  template: `
+    template: `
     <user-personal-form [userObservable]="user" (onFormSubmit)="personalSubmit($event)"></user-personal-form>
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserPersonalHomeComponent { 
 

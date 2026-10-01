@@ -1,16 +1,28 @@
-<loading *ngIf="loading"></loading>
-<div *ngIf="!loading">
-  <h3>{{training.subject}}</h3>
-  <h2>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"> - {{training.end | date:'mediumDate'}}</span></h2>
-  <h2>Contact: {{training.tContact}}</h2>
-  <div *ngIf="isQualified">
-    <survey [json]="json" (submitSurvey)="sendData($event)"></survey>
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading) {
+  <div>
+    <h3>{{training.subject}}</h3>
+    <h2>{{training.start | date:'mediumDate'}} @if (training.end) {
+      <span> - {{training.end | date:'mediumDate'}}</span>
+    }</h2>
+    <h2>Contact: {{training.tContact}}</h2>
+    @if (isQualified) {
+      <div>
+        <survey [json]="json" (submitSurvey)="sendData($event)"></survey>
+      </div>
+    }
+    @if (!attended) {
+      <div>
+        You did not attend this training.
+      </div>
+    }
+    @if (attended && completed) {
+      <div>
+        You already completed this survey.
+      </div>
+    }
   </div>
-  <div *ngIf="!attended">
-    You did not attend this training.
-  </div>
-  <div *ngIf="attended && completed">
-    You already completed this survey.
-  </div>
-</div>
+}
 

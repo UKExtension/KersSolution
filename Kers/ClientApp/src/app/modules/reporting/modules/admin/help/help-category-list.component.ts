@@ -1,23 +1,35 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {HelpService, HelpCategory} from './help.service';
 
 
 @Component({
-  selector: 'help-category-list',
-  template: `
+    selector: 'help-category-list',
+    template: `
   <div class="row">
     <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newCategory && parentId==0" (click)="newCategoryOpen()">+ new category</a>
-        <a class="btn btn-info btn-xs" *ngIf="!newCategory && parentId!=0" (click)="newCategoryOpen()">+ new sub category</a>
+      @if (!newCategory && parentId==0) {
+        <a class="btn btn-info btn-xs" (click)="newCategoryOpen()">+ new category</a>
+      }
+      @if (!newCategory && parentId!=0) {
+        <a class="btn btn-info btn-xs" (click)="newCategoryOpen()">+ new sub category</a>
+      }
     </div>
-    <help-category-form *ngIf="newCategory" [parentId]="parentId" (onFormCancel)="newCategoryClose()" (onFormSubmit)="newCategorySubmit($event)" ></help-category-form>
-    <div *ngIf="categories">
+    @if (newCategory) {
+      <help-category-form [parentId]="parentId" (onFormCancel)="newCategoryClose()" (onFormSubmit)="newCategorySubmit($event)" ></help-category-form>
+    }
+    @if (categories) {
+      <div>
         <ul class="list-unstyled timeline">
-            <li *ngFor="let category of categories" [help-category-detail]="category" (onHelpCategoryDeleted)="categoryDeleted($event)"></li>           
+          @for (category of categories; track category) {
+            <li [help-category-detail]="category" (onHelpCategoryDeleted)="categoryDeleted($event)"></li>
+          }
         </ul>
-    </div>
+      </div>
+    }
   </div>
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpCategoryListComponent { 
 

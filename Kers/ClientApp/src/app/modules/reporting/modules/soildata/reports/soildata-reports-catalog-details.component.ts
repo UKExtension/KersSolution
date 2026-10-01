@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { SoilReportBundle, SoilReportStatus } from '../soildata.report';
 import { saveAs } from 'file-saver';
 import { SoildataService } from '../soildata.service';
@@ -6,82 +6,140 @@ import { UserService, User } from '../../user/user.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: '[soildata-reports-catalog-details]',
-  template: `
-    <td *ngIf="default" [class.pulse]="display_pulse">{{report.sampleLabelCreated | date:'mediumDate'}}</td>
-    <td *ngIf="default" [ngClass]="{'pulse': display_pulse }">{{report.typeForm.code}}</td>
-    <td *ngIf="default" [ngClass]="{'pulse': display_pulse }">{{report.coSamnum}}</td>
-    <td *ngIf="default" [ngClass]="{'pulse': display_pulse }">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
-    <td *ngIf="default"  [ngClass]="{'pulse': display_pulse }" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
-      <div *ngIf="processedStatuses == null && report.lastStatus !=null">
-        {{report.lastStatus.soilReportStatus.name}}
-      </div>
-      <ng-container *ngIf="processedStatuses != null">
-        <div *ngIf="!statusLoading">
-          <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
-            {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-angle-down"></i>
-          </a>
-          <div *ngIf="statusChangeClicked" style="position:absolute;">
-            <table class="table status-choice">
-              <tbody>
-                <tr *ngFor="let st of processedStatuses">
-                  <td><a style="cursor:pointer;" (click)="changeStatusTo(st.id)">{{st.name}}</a></td>
-                </tr>
-              </tbody>
-            </table>
+    selector: '[soildata-reports-catalog-details]',
+    template: `
+    @if (default) {
+      <td [class.pulse]="display_pulse">{{report.sampleLabelCreated | date:'mediumDate'}}</td>
+    }
+    @if (default) {
+      <td [ngClass]="{'pulse': display_pulse }">{{report.typeForm.code}}</td>
+    }
+    @if (default) {
+      <td [ngClass]="{'pulse': display_pulse }">{{report.coSamnum}}</td>
+    }
+    @if (default) {
+      <td [ngClass]="{'pulse': display_pulse }">{{ report.farmerForReport == null ? 'None' : report.farmerForReport.first + ' ' + report.farmerForReport.last }}</td>
+    }
+    @if (default) {
+      <td  [ngClass]="{'pulse': display_pulse }" class="{{ report.lastStatus == null ? 'soil-report-status-recieved' : report.lastStatus.soilReportStatus.cssClass }}">
+        @if (processedStatuses == null && report.lastStatus !=null) {
+          <div>
+            {{report.lastStatus.soilReportStatus.name}}
+          </div>
+        }
+        @if (processedStatuses != null) {
+          @if (!statusLoading) {
+            <div>
+              <a (click)="statusChangeClicked=!statusChangeClicked" style="cursor:pointer;">
+                {{ report.lastStatus == null ? 'Received' : report.lastStatus.soilReportStatus.name }} <i class="fa fa-angle-down"></i>
+              </a>
+              @if (statusChangeClicked) {
+                <div style="position:absolute;">
+                  <table class="table status-choice">
+                    <tbody>
+                      @for (st of processedStatuses; track st) {
+                        <tr>
+                          <td><a style="cursor:pointer;" (click)="changeStatusTo(st.id)">{{st.name}}</a></td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </div>
+          }
+          @if (statusLoading) {
+            <loading [type]="bars"></loading>
+          }
+        }
+      </td>
+    }
+    @if (default) {
+      <td class="text-left" [ngClass]="{'pulse': display_pulse }">
+        @if (isEditButtonAvailable()) {
+          <a class="btn btn-info btn-xs" (click)="sampleEditView()"><i class="fa fa-pencil"></i> edit</a>
+        }
+        @if (isCopyButtonAvailable()) {
+          <a class="btn btn-info btn-xs" (click)="sampleCopy()"><i class="fa fa-copy"></i> copy</a>
+        }
+        @if (isReviewButtonAvailable()) {
+          <a class="btn btn-info btn-xs" (click)="editView()"><i class="fa fa-pencil"></i> review</a>
+        }
+        @if (isPdfButtonAvailable()) {
+          <a class="btn btn-info btn-xs" (click)="print()"><i class="fa fa-download"></i> pdf</a>
+        }
+        @if (pdfLoading) {
+          <loading [type]="'bars'"></loading>
+        }
+        @if (isEmailButtonAvailable()) {
+          <a class="btn btn-info btn-xs" (click)="email()" ><i class="fa fa-envelope"></i> email</a>
+        }
+        @if (isAlterButtonAvailable()) {
+          <a class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Alter</a>
+        }
+      </td>
+    }
+    @if (edit) {
+      <td colspan="6" [ngClass]="{'pulse': display_pulse }">
+        <div class="row">
+          <div class="col-xs-6">
+            @if (deleteLoading) {
+              <loading [type]="'bars'"></loading>
+            }
+            @if (!openDelete) {
+              <a (click)="openDelete=!openDelete" style="cursor: pointer;"><i class="fa fa-ellipsis-v"></i></a>
+            }
+            @if (openDelete&&!openConfirmDelete) {
+              <div><a (click)="openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Delete</a> | <a (click)="openDelete=!openDelete" style="cursor: pointer;">Cancel</a><br><br></div>
+            }
+            @if (openConfirmDelete&&!deleteLoading) {
+              <div>
+                <span class="blue">Do you really want to permanently delete this soil sample record?</span><br>
+                <a (click)="onDelete()" style="cursor: pointer;">Confirm Delete</a> | <a (click)="openDelete=!openDelete;openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Cancel</a><br><br>
+              </div>
+            }
+          </div>
+          <div class="col-xs-6">
+            <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
           </div>
         </div>
-        <loading *ngIf="statusLoading" [type]="bars"></loading>
-      </ng-container>
-    </td>
-    <td *ngIf="default" class="text-left" [ngClass]="{'pulse': display_pulse }">
-      <a class="btn btn-info btn-xs" (click)="sampleEditView()" *ngIf="isEditButtonAvailable()"><i class="fa fa-pencil"></i> edit</a>
-      <a class="btn btn-info btn-xs" (click)="sampleCopy()" *ngIf="isCopyButtonAvailable()"><i class="fa fa-copy"></i> copy</a>
-      <a class="btn btn-info btn-xs" (click)="editView()" *ngIf="isReviewButtonAvailable()"><i class="fa fa-pencil"></i> review</a>
-      <a class="btn btn-info btn-xs" (click)="print()" *ngIf="isPdfButtonAvailable()"><i class="fa fa-download"></i> pdf</a>
-      <loading [type]="'bars'" *ngIf="pdfLoading"></loading>
-      <a class="btn btn-info btn-xs" (click)="email()"  *ngIf="isEmailButtonAvailable()"><i class="fa fa-envelope"></i> email</a>
-      <a *ngIf="isAlterButtonAvailable()" class="btn btn-info btn-xs" (click)="altCropView()" ><i class="fa fa-download"></i> Alter</a>
-    </td>
-    <td *ngIf="edit" colspan="6" [ngClass]="{'pulse': display_pulse }">
-      <div class="row">
+        <soildata-report-form [report]="report" (onCropNoteUpdated)="cropNoteUpdated()"></soildata-report-form>
+      </td>
+    }
+    @if (sampleEdit) {
+      <td colspan="6" [ngClass]="{'pulse': display_pulse }">
         <div class="col-xs-6">
-          <loading [type]="'bars'" *ngIf="deleteLoading"></loading>
-          <a (click)="openDelete=!openDelete" *ngIf="!openDelete" style="cursor: pointer;"><i class="fa fa-ellipsis-v"></i></a>
-          <div *ngIf="openDelete&&!openConfirmDelete"><a (click)="openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Delete</a> | <a (click)="openDelete=!openDelete" style="cursor: pointer;">Cancel</a><br><br></div>
-          <div *ngIf="openConfirmDelete&&!deleteLoading">
-            <span class="blue">Do you really want to permanently delete this soil sample record?</span><br>
-            <a (click)="onDelete()" style="cursor: pointer;">Confirm Delete</a> | <a (click)="openDelete=!openDelete;openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Cancel</a><br><br> 
-          </div>
+          @if (deleteLoading) {
+            <loading [type]="'bars'"></loading>
+          }
+          @if (!openDelete) {
+            <a (click)="openDelete=!openDelete" style="cursor: pointer;"><i class="fa fa-ellipsis-v"></i></a>
+          }
+          @if (openDelete&&!openConfirmDelete) {
+            <div><a (click)="openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Delete</a> | <a (click)="openDelete=!openDelete" style="cursor: pointer;">Cancel</a><br><br></div>
+          }
+          @if (openConfirmDelete&&!deleteLoading) {
+            <div>
+              <span class="blue">Do you really want to permanently delete this soil sample record?</span><br>
+              <a (click)="onDelete()" style="cursor: pointer;">Confirm Delete</a> | <a (click)="openDelete=!openDelete;openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Cancel</a><br><br>
+            </div>
+          }
         </div>
         <div class="col-xs-6">
           <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
         </div>
-      </div>
-      <soildata-report-form [report]="report" (onCropNoteUpdated)="cropNoteUpdated()"></soildata-report-form>
-    </td>
-    <td *ngIf="sampleEdit" colspan="6" [ngClass]="{'pulse': display_pulse }">
-      <div class="col-xs-6">
-        <loading [type]="'bars'" *ngIf="deleteLoading"></loading>
-        <a (click)="openDelete=!openDelete" *ngIf="!openDelete" style="cursor: pointer;"><i class="fa fa-ellipsis-v"></i></a>
-        <div *ngIf="openDelete&&!openConfirmDelete"><a (click)="openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Delete</a> | <a (click)="openDelete=!openDelete" style="cursor: pointer;">Cancel</a><br><br></div>
-        <div *ngIf="openConfirmDelete&&!deleteLoading">
-          <span class="blue">Do you really want to permanently delete this soil sample record?</span><br>
-          <a (click)="onDelete()" style="cursor: pointer;">Confirm Delete</a> | <a (click)="openDelete=!openDelete;openConfirmDelete=!openConfirmDelete" style="cursor: pointer;">Cancel</a><br><br> 
-        </div>
-      </div>
-      <div class="col-xs-6">
+        <soil-sample-form [sample]="report" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
+      </td>
+    }
+    @if (altCrop) {
+      <td colspan="6" [ngClass]="{'pulse': display_pulse }">
         <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
-      </div>
-      <soil-sample-form [sample]="report" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
-    </td>
-    <td *ngIf="altCrop" colspan="6" [ngClass]="{'pulse': display_pulse }">
-      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
-      <soil-sample-form [sample]="report" [isThisAltCrop]="true" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
-    </td>
+        <soil-sample-form [sample]="report" [isThisAltCrop]="true" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)"></soil-sample-form>
+      </td>
+    }
     
-  `,
-  styles: [`
+    `,
+    styles: [`
   .soil-report-status-recieved{
     background-color:#50C1CFg;
   }
@@ -148,7 +206,9 @@ import { Observable } from 'rxjs';
 
 
 
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataReportsCatalogDetailsComponent implements OnInit {
   @Input('soildata-reports-catalog-details') report: SoilReportBundle;

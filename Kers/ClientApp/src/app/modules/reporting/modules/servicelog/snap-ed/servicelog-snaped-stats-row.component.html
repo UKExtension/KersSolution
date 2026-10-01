@@ -1,10 +1,24 @@
-  <td *ngIf="!fullstats">{{stat.year}}/{{stat.month}}</td>
-  <td *ngIf="!fullstats">{{stat.hours}}</td>
-  <td *ngIf="!fullstats">{{direct}}</td>
-  <td *ngIf="!fullstats">{{indirect}}</td>
-  <td *ngIf="!fullstats">{{direct + indirect}}</td>
-  <td *ngIf="!fullstats && user != null" width="20"><a class="btn btn-info btn-xs" (click)="open()"><i class="fa fa-plus"></i></a></td>
-  <td *ngIf="fullstats" colspan="6">
+@if (!fullstats) {
+  <td>{{stat.year}}/{{stat.month}}</td>
+}
+@if (!fullstats) {
+  <td>{{stat.hours}}</td>
+}
+@if (!fullstats) {
+  <td>{{direct}}</td>
+}
+@if (!fullstats) {
+  <td>{{indirect}}</td>
+}
+@if (!fullstats) {
+  <td>{{direct + indirect}}</td>
+}
+@if (!fullstats && user != null) {
+  <td width="20"><a class="btn btn-info btn-xs" (click)="open()"><i class="fa fa-plus"></i></a></td>
+}
+@if (fullstats) {
+  <td colspan="6">
     <div class="text-right"><a class="btn btn-info btn-xs" (click)="close()"><i class="fa fa-minus"></i></a></div>
     <activity-reports-summary [month]="stat.month" [year]="stat.year" [isSnap]="true" [user]="user"></activity-reports-summary>
   </td>
+}

@@ -1,92 +1,140 @@
-<td *ngIf="default">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
-<td *ngIf="default"><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
-<td *ngIf="default">{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
-<td *ngIf="default">
-  <a class="btn btn-info btn-xs pull-right" (click)="postView()">Post Attendance</a>
-  <div *ngIf="training.surveyResults != undefined && training.surveyResults.length > 0">
-     <a class="btn btn-success btn-xs pull-right" (click)="evaluationView()">Evaluation Results</a>
-  </div>
-</td>
-<td *ngIf="survey" colspan="4">
-  <div>
-    <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
-  </div>
-  <h3>{{training.subject}}</h3>
-    <a (click)="moreInfoSurvey = !moreInfoSurvey" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="moreInfo"></i>
-      <i class="fa fa-plus-square" *ngIf="!moreInfoSurvey"></i> info
-    </a>
-    <div *ngIf="moreInfoSurvey">
-      
-      <h5><strong>Date(s):</strong> {{training.start | date:'mediumDate'}} <span *ngIf="training.end"> - {{training.end | date:'mediumDate'}}</span></h5>
-      <h5><strong>Location:</strong> {{training.tLocation}}</h5>
-      <h5><strong>Contact:</strong> {{training.tContact}}</h5>
-      <h5><strong>Url:</strong>&nbsp;<a [routerLink]="['/reporting/training/', training.id]">https://kers.ca.uky.edu/core/reporting/training/{{training.id}}</a> &nbsp;<button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
-          <i class="fa fa-clipboard"></i>&nbsp;
-          <ng-container *ngIf="!coppied">Copy</ng-container> <ng-container *ngIf="coppied">Copied</ng-container>
-      </button></h5><br><br>
-    </div>
-    <h4>Training Session Evaluation Results</h4>
-    <div>
-      <a class="btn btn-info btn-xs pull-right" (click)="csv()"><i class="fa fa-download"></i> Csv</a>
-    </div>
-  <table class="table">
-    <thead>
-      <th>Survey Submitted</th>
-      <th></th>
-    </thead>
-    <tbody>
-      <tr *ngFor="let result of training.surveyResults" [training-survey-row]="result"></tr>
-    </tbody>
-  </table>
-
-</td>
-<td *ngIf="post" colspan="4">
+@if (default) {
+  <td>{{training.start | date:'mediumDate'}} @if (training.end) {
+    <span><br>{{training.end | date:'mediumDate'}}</span>
+  }</td>
+}
+@if (default) {
+  <td>@if (training.iHour) {
+    <span>{{training.iHour.iHourValue}}</span>
+  }</td>
+}
+@if (default) {
+  <td>{{training.subject}}@if (training.seatLimit) {
+    <span><br><strong>Limited to {{training.seatLimit}} participants.</strong></span>
+  }</td>
+}
+@if (default) {
+  <td>
+    <a class="btn btn-info btn-xs pull-right" (click)="postView()">Post Attendance</a>
+    @if (training.surveyResults != undefined && training.surveyResults.length > 0) {
+      <div>
+        <a class="btn btn-success btn-xs pull-right" (click)="evaluationView()">Evaluation Results</a>
+      </div>
+    }
+  </td>
+}
+@if (survey) {
+  <td colspan="4">
     <div>
       <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
     </div>
     <h3>{{training.subject}}</h3>
-    <a (click)="moreInfo = !moreInfo" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="moreInfo"></i>
-      <i class="fa fa-plus-square" *ngIf="!moreInfo"></i> info
+    <a (click)="moreInfoSurvey = !moreInfoSurvey" style="cursor: pointer;">@if (moreInfo) {
+      <i class="fa fa-minus-square"></i>
+    }
+    @if (!moreInfoSurvey) {
+      <i class="fa fa-plus-square"></i>
+      } info
     </a>
-    <div *ngIf="moreInfo">
-      
-      <h5><strong>Date(s):</strong> {{training.start | date:'mediumDate'}} <span *ngIf="training.end"> - {{training.end | date:'mediumDate'}}</span></h5>
+    @if (moreInfoSurvey) {
+      <div>
+        <h5><strong>Date(s):</strong> {{training.start | date:'mediumDate'}} @if (training.end) {
+        <span> - {{training.end | date:'mediumDate'}}</span>
+      }</h5>
       <h5><strong>Location:</strong> {{training.tLocation}}</h5>
       <h5><strong>Contact:</strong> {{training.tContact}}</h5>
       <h5><strong>Url:</strong>&nbsp;<a [routerLink]="['/reporting/training/', training.id]">https://kers.ca.uky.edu/core/reporting/training/{{training.id}}</a> &nbsp;<button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
-          <i class="fa fa-clipboard"></i>&nbsp;
-          <ng-container *ngIf="!coppied">Copy</ng-container> <ng-container *ngIf="coppied">Copied</ng-container>
-      </button></h5><br><br>
-    </div>
-    <div *ngIf="training.enrollment.length == 0">
-      No one has enrolled for this training session.
-    </div>
-    <div *ngIf="training.enrollment.length > 0 && !loading">
-        <h4>Training Session Roaster</h4>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Planning Unit</th>
-              <th>Enrolled Date</th>
-              <th>Email</th>
-              <th>Attended</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let enrolled of enrolledFolks">
-              <td>{{enrolled.attendie.rprtngProfile.name}}</td>
-              <td>{{enrolled.attendie.rprtngProfile.planningUnit.name}}</td>
-              <td>{{enrolled.enrolledDate | date:'mediumDate'}}</td>
-              <td>{{enrolled.attendie.rprtngProfile.email}}</td>
-              <td><input type="checkbox" (change)="checked($event, enrolled)" [checked]="enrolled.attended"></td>
-            </tr>
-          </tbody>
-        </table>
-        <a class="btn btn-info" (click)="submit()">Submit</a>
-    </div>
-    
-    <loading *ngIf="loading"></loading>
-    
-
+      <i class="fa fa-clipboard"></i>&nbsp;
+      @if (!coppied) {
+        Copy
+        } @if (coppied) {
+        Copied
+      }
+    </button></h5><br><br>
+  </div>
+}
+<h4>Training Session Evaluation Results</h4>
+<div>
+  <a class="btn btn-info btn-xs pull-right" (click)="csv()"><i class="fa fa-download"></i> Csv</a>
+</div>
+<table class="table">
+  <thead>
+    <th>Survey Submitted</th>
+    <th></th>
+  </thead>
+  <tbody>
+    @for (result of training.surveyResults; track result) {
+      <tr [training-survey-row]="result"></tr>
+    }
+  </tbody>
+</table>
 </td>
+}
+@if (post) {
+  <td colspan="4">
+    <div>
+      <a class="btn btn-info btn-xs pull-right" (click)="defaultView()">close</a>
+    </div>
+    <h3>{{training.subject}}</h3>
+    <a (click)="moreInfo = !moreInfo" style="cursor: pointer;">@if (moreInfo) {
+      <i class="fa fa-minus-square"></i>
+    }
+    @if (!moreInfo) {
+      <i class="fa fa-plus-square"></i>
+      } info
+    </a>
+    @if (moreInfo) {
+      <div>
+        <h5><strong>Date(s):</strong> {{training.start | date:'mediumDate'}} @if (training.end) {
+        <span> - {{training.end | date:'mediumDate'}}</span>
+      }</h5>
+      <h5><strong>Location:</strong> {{training.tLocation}}</h5>
+      <h5><strong>Contact:</strong> {{training.tContact}}</h5>
+      <h5><strong>Url:</strong>&nbsp;<a [routerLink]="['/reporting/training/', training.id]">https://kers.ca.uky.edu/core/reporting/training/{{training.id}}</a> &nbsp;<button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
+      <i class="fa fa-clipboard"></i>&nbsp;
+      @if (!coppied) {
+        Copy
+        } @if (coppied) {
+        Copied
+      }
+    </button></h5><br><br>
+  </div>
+}
+@if (training.enrollment.length == 0) {
+  <div>
+    No one has enrolled for this training session.
+  </div>
+}
+@if (training.enrollment.length > 0 && !loading) {
+  <div>
+    <h4>Training Session Roaster</h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Planning Unit</th>
+          <th>Enrolled Date</th>
+          <th>Email</th>
+          <th>Attended</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (enrolled of enrolledFolks; track enrolled) {
+          <tr>
+            <td>{{enrolled.attendie.rprtngProfile.name}}</td>
+            <td>{{enrolled.attendie.rprtngProfile.planningUnit.name}}</td>
+            <td>{{enrolled.enrolledDate | date:'mediumDate'}}</td>
+            <td>{{enrolled.attendie.rprtngProfile.email}}</td>
+            <td><input type="checkbox" (change)="checked($event, enrolled)" [checked]="enrolled.attended"></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <a class="btn btn-info" (click)="submit()">Submit</a>
+  </div>
+}
+@if (loading) {
+  <loading></loading>
+}
+</td>
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SnapedAdminService, SnapBudgetReimbursementsNepAssistant } from './snaped-admin.service';
 import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
@@ -8,7 +8,9 @@ import { SnapedService } from '../../servicelog/snaped.service';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  templateUrl: 'snaped-user.component.html'
+    templateUrl: 'snaped-user.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedUserComponent { 
 

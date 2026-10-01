@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ExpenseService, ExpenseFundingSource, ExpenseMealRate} from '../expense/expense.service';
 import { FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -13,7 +13,9 @@ import { MileageService } from './mileage.service';
 
 @Component({
     selector: 'expense-compatability-form',
-    templateUrl: 'expense-compatability-form.component.html'
+    templateUrl: 'expense-compatability-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseCompatabilityFormComponent { 
 

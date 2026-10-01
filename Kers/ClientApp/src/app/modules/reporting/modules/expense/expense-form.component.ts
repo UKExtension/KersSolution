@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate} from './expense.service';
 import { FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { Observable } from "rxjs";
@@ -11,7 +11,9 @@ import { Vehicle } from './vehicle/vehicle.service';
 
 @Component({
     selector: 'expense-form',
-    templateUrl: 'expense-form.component.html'
+    templateUrl: 'expense-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseFormComponent { 
 

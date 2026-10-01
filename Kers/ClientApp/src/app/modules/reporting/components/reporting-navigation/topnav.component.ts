@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import {UserService, User, PersonalProfile, PlanningUnit} from '../../modules/user/user.service';
 import {AuthenticationService} from '../../../authentication/authentication.service';
@@ -21,7 +21,9 @@ import { NavigationService } from './navigation.service';
         .nav_menu{
             height:42px;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TopNavComponent implements OnInit{
 

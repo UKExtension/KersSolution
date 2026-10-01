@@ -1,9 +1,11 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PlansofworkService, Map } from './plansofwork.service';
 
 @Component({
     selector: '[plansofworkMapsDetail]',
-    templateUrl: 'plansofwork-maps-detail.component.html'
+    templateUrl: 'plansofwork-maps-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlansofworkMapsDetailComponent implements OnInit {
 

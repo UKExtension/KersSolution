@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {ProfileService, Profile} from './profile.service';
 
 @Component({
@@ -6,12 +6,16 @@ import {ProfileService, Profile} from './profile.service';
     template: `
     <h2>Current User</h2>
     <div class="row">
-      <div class="col-lg-6 col-md-12" *ngIf="profile">
-        {{profile.personName}}
-       </div>
-       
+      @if (profile) {
+        <div class="col-lg-6 col-md-12">
+          {{profile.personName}}
+        </div>
+      }
+    
     </div>
-  `
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProfileCurrentComponent implements OnInit {
     profile:Profile;

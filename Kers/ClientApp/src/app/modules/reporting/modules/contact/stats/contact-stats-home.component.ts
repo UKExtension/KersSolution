@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ContactService, Contact} from '../contact.service';
 
@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 
 
 @Component({
-  template: `
+    template: `
         <a [routerLink]="['/reporting/contact/stats/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact:
 true}">All Statistical Contact Records</a> | 
         <a [routerLink]="['/reporting/contact/stats/month']" routerLinkActive="active">Summary By Month</a> | 
@@ -22,7 +22,9 @@ true}">All Statistical Contact Records</a> |
                 font-weight:bold;
             }
         `
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactStatsHomeComponent { 
 

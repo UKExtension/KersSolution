@@ -13,10 +13,14 @@
 
           <!-- sidebar menu -->
           <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-            <div *ngIf="!navigation" style="margin: 20px 0 0 50px;text-align:center;">
-              <loading type="bars"></loading>
-            </div>
-            <nav-menu-section *ngFor = "let section of navigation" [section]="section" (onSelected)="itemSelected($event)"></nav-menu-section>
+            @if (!navigation) {
+              <div style="margin: 20px 0 0 50px;text-align:center;">
+                <loading type="bars"></loading>
+              </div>
+            }
+            @for (section of navigation; track section) {
+              <nav-menu-section [section]="section" (onSelected)="itemSelected($event)"></nav-menu-section>
+            }
           </div>
           <!-- /sidebar menu -->
 

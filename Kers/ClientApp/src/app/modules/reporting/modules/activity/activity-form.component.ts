@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
 import {    ActivityService, Activity, 
@@ -14,7 +14,9 @@ import { Observable } from "rxjs";
 @Component({
     selector: 'activity-form',
     templateUrl: 'activity-form.component.html',
-    styleUrls: ['activity-form.component.scss'] 
+    styleUrls: ['activity-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityFormComponent implements OnInit{ 
 

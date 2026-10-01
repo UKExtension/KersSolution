@@ -1,9 +1,10 @@
-import {  Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'loading',
     template: `
-<div class="sk-cube-grid" *ngIf="type=='cube'">
+@if (type=='cube') {
+  <div class="sk-cube-grid">
     <div class="sk-cube sk-cube1"></div>
     <div class="sk-cube sk-cube2"></div>
     <div class="sk-cube sk-cube3"></div>
@@ -13,16 +14,19 @@ import {  Component, Input } from '@angular/core';
     <div class="sk-cube sk-cube7"></div>
     <div class="sk-cube sk-cube8"></div>
     <div class="sk-cube sk-cube9"></div>
-</div>
-<div class="spinner" *ngIf="type=='bars'">
-  <div class="rect1"></div>
-  <div class="rect2"></div>
-  <div class="rect3"></div>
-  <div class="rect4"></div>
-  <div class="rect5"></div>
-</div>
-    `,
-    styles:[`
+  </div>
+}
+@if (type=='bars') {
+  <div class="spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+  </div>
+}
+`,
+    styles: [`
     .spinner {
         width: 30px;
         height: 20px;
@@ -147,7 +151,9 @@ import {  Component, Input } from '@angular/core';
 
 
 
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class LoadingComponent{

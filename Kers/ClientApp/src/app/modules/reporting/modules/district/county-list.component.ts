@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { DistrictService, County, District } from './district.service';
 
 import {Observable} from 'rxjs';
@@ -12,67 +12,79 @@ import { RegionService } from '../region/region.service';
     selector: 'county-list',
     template: `
     <div class="col-xs-12">
-        <div class="x_panel">
+      <div class="x_panel">
         <div class="x_title">
-            <h2 *ngIf="district != null">Counties</h2>
-            <h2 *ngIf="district == null">Units</h2>
-            <div class="clearfix"></div>
+          @if (district != null) {
+            <h2>Counties</h2>
+          }
+          @if (district == null) {
+            <h2>Units</h2>
+          }
+          <div class="clearfix"></div>
         </div>
-        <div class="x_content" *ngIf="counties">
-
-                <div class="col-lg-4 col-md-6 col-xs-12" *ngFor="let county of counties | async">
-                        <a *ngIf="district != null || type=='area' || type=='region'" [routerLink]="['/reporting/county', county.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{county.name.substring(0, county.name.length - 11)}}</a>
-                        <a *ngIf="district == null && type!='area' && type!='region'" [routerLink]="['/reporting/county/unit', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name}}</a>
-                </div>
-                
-            </div>
-        </div>
+        @if (counties) {
+          <div class="x_content">
+            @for (county of counties | async; track county) {
+              <div class="col-lg-4 col-md-6 col-xs-12">
+                @if (district != null || type=='area' || type=='region') {
+                  <a [routerLink]="['/reporting/county', county.id, {returnto: type}]" class="btn btn-dark btn-lg btn-block">{{county.name.substring(0, county.name.length - 11)}}</a>
+                }
+                @if (district == null && type!='area' && type!='region') {
+                  <a [routerLink]="['/reporting/county/unit', county.id]" class="btn btn-dark btn-lg btn-block">{{county.name}}</a>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
     </div>
-
-<!--
+    
+    <!--
     <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="x_panel">
+      <div class="x_panel">
         <div class="x_title">
-            <h2>Counties without Affirmative Action Plan</h2>
-            <div class="clearfix"></div>
+          <h2>Counties without Affirmative Action Plan</h2>
+          <div class="clearfix"></div>
         </div>
         <div class="x_content" *ngIf="countiesNoAa">
-            <ul class="to_do">
-                <li *ngFor="let countyN of countiesNoAa" >
-                    <a [routerLink]="['/county', countyN.id]"><p>
-                       {{countyN.name.substring(0, countyN.name.length - 11)}} 
-                    </p></a>
-                </li>
-                
-            </ul>
-            </div>
+          <ul class="to_do">
+            <li *ngFor="let countyN of countiesNoAa" >
+              <a [routerLink]="['/county', countyN.id]"><p>
+                {{countyN.name.substring(0, countyN.name.length - 11)}}
+              </p></a>
+            </li>
+    
+          </ul>
         </div>
+      </div>
     </div>
-
-
+    
+    
     <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="x_panel">
+      <div class="x_panel">
         <div class="x_title">
-            <h2>Counties Without Plans of Work Submission</h2>
-            <div class="clearfix"></div>
+          <h2>Counties Without Plans of Work Submission</h2>
+          <div class="clearfix"></div>
         </div>
         <div class="x_content" *ngIf="countiesNoPl">
-            <ul class="to_do">
-                <li *ngFor="let countyP of countiesNoPl" >
-                    <a [routerLink]="['/county', countyP.id]"><p>
-                       {{countyP.name.substring(0, countyP.name.length - 11)}} 
-                    </p></a>
-                </li>
-                
-            </ul>
-            </div>
-        </div>
-    </div>
-
--->
-
+          <ul class="to_do">
+            <li *ngFor="let countyP of countiesNoPl" >
+              <a [routerLink]="['/county', countyP.id]"><p>
+                {{countyP.name.substring(0, countyP.name.length - 11)}}
+              </p></a>
+            </li>
     
-  `
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    -->
+    
+    
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyListComponent { 
 

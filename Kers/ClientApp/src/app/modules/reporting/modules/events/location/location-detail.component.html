@@ -1,39 +1,52 @@
-<div *ngIf="isDefault" style="padding: 35px 35px 0 35px; min-height: 210px;" class="col-lg-4 col-md-6 col-xs-12">
-
-
+@if (isDefault) {
+  <div style="padding: 35px 35px 0 35px; min-height: 210px;" class="col-lg-4 col-md-6 col-xs-12">
     <div class="text-right">
-        <a  *ngIf="!(location.id == 0)"><i style="cursor: pointer;" class="fa fa-pencil-square-o" (click)="edit()"></i></a>&nbsp;<a *ngIf="!(location.id == 0)"><i  style="cursor: pointer;" class="fa fa-trash-o" (click)="delete()"></i></a>
+      @if (!(location.id == 0)) {
+        <a ><i style="cursor: pointer;" class="fa fa-pencil-square-o" (click)="edit()"></i></a>
+        }&nbsp;@if (!(location.id == 0)) {
+        <a><i  style="cursor: pointer;" class="fa fa-trash-o" (click)="delete()"></i></a>
+      }
     </div>
-    
-    <h4 *ngIf="purpose=='CountyEvents'">{{location.extensionEventLocation.address.building}}</h4>
-    <h5 *ngIf="purpose=='Mileage'">{{location.extensionEventLocation.address.building}}<strong *ngIf="purpose=='Mileage' && location.extensionEventLocation.displayName != null && location.extensionEventLocation.displayName != '' "> ({{location.extensionEventLocation.displayName}})</strong></h5>
+    @if (purpose=='CountyEvents') {
+      <h4>{{location.extensionEventLocation.address.building}}</h4>
+    }
+    @if (purpose=='Mileage') {
+      <h5>{{location.extensionEventLocation.address.building}}@if (purpose=='Mileage' && location.extensionEventLocation.displayName != null && location.extensionEventLocation.displayName != '' ) {
+        <strong> ({{location.extensionEventLocation.displayName}})</strong>
+      }</h5>
+    }
     <h5>{{location.extensionEventLocation.address.street}}</h5>
-    <h5 *ngIf="location.extensionEventLocation.address.city != null && location.extensionEventLocation.address.city != '' && location.extensionEventLocation.address.city != 'NULL'">{{location.extensionEventLocation.address.city}}{{location.extensionEventLocation.address.state != "" ? ", "+location.extensionEventLocation.address.state:""}} {{purpose=='CountyEvents' || showZip ?location.extensionEventLocation.address.postalCode:''}}</h5>
+    @if (location.extensionEventLocation.address.city != null && location.extensionEventLocation.address.city != '' && location.extensionEventLocation.address.city != 'NULL') {
+      <h5>{{location.extensionEventLocation.address.city}}{{location.extensionEventLocation.address.state != "" ? ", "+location.extensionEventLocation.address.state:""}} {{purpose=='CountyEvents' || showZip ?location.extensionEventLocation.address.postalCode:''}}</h5>
+    }
     <a class="btn btn-info btn-xs" (click)="selection()">select</a>
-
-</div>
-<div *ngIf="isEditing">
-    <location-form *ngIf="purpose=='CountyEvents'" [location]="location"  [county]="county" [user]="user" (onFormCancel)="default()" (onFormSubmit)="changed($event)"></location-form>
-      <location-form 
-              *ngIf="purpose=='Mileage'"
-                    [location]="location"  
-                      [showZip]="showZip" 
-                      [isItBuilding]="false"
-                      [showState]="true"
-                      [isNameRequired]="true"
-                      [isCityRequired]="true"
-                      [isStateRequired]="true"
-                      [showDisplayName]="true"
-                      [county]="county"  
-                      [user]="user" 
-                          (onFormCancel)="default()" 
-                          (onFormSubmit)="changed($event)">
+  </div>
+}
+@if (isEditing) {
+  <div>
+    @if (purpose=='CountyEvents') {
+      <location-form [location]="location"  [county]="county" [user]="user" (onFormCancel)="default()" (onFormSubmit)="changed($event)"></location-form>
+    }
+    @if (purpose=='Mileage') {
+      <location-form
+        [location]="location"
+        [showZip]="showZip"
+        [isItBuilding]="false"
+        [showState]="true"
+        [isNameRequired]="true"
+        [isCityRequired]="true"
+        [isStateRequired]="true"
+        [showDisplayName]="true"
+        [county]="county"
+        [user]="user"
+        (onFormCancel)="default()"
+        (onFormSubmit)="changed($event)">
       </location-form>
-
-
-
-
-</div>
-<div *ngIf="isDeleting" style="padding: 6px;" class="col-md-3">
+    }
+  </div>
+}
+@if (isDeleting) {
+  <div style="padding: 6px;" class="col-md-3">
     Do you really want to delete location <strong>{{location.extensionEventLocation.address.building}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
-</div>
+  </div>
+}

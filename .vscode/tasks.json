@@ -2,6 +2,32 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "start-angular",
+            "type": "process",
+            "command": "npm",
+            "args": [
+                "start"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Kers/ClientApp"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "angular",
+                "pattern": {
+                    "regexp": ".*",
+                    "file": 1,
+                    "location": 1,
+                    "message": 1
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*",
+                    "endsPattern": "Local:\\s+https?://localhost:4200/"
+                }
+            }
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",

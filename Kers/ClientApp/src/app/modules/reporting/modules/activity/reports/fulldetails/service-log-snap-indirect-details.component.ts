@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ServicelogService, SnapIndirect, SnapIndirectReached, SnapIndirectReachedValue } from '../../../servicelog/servicelog.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'service-log-snap-indirect-details',
-  templateUrl: './service-log-snap-indirect-details.component.html'
+    selector: 'service-log-snap-indirect-details',
+    templateUrl: './service-log-snap-indirect-details.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServiceLogSnapIndirectDetailsComponent implements OnInit {
   @Input() snapIndirectId;

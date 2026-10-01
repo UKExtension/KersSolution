@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyEventWithTime, CountyEventService } from './county-event.service';
 
 @Component({
-  selector: '[county-event-list-details]',
-  templateUrl: './county-event-list-details.component.html',
-  styles: []
+    selector: '[county-event-list-details]',
+    templateUrl: './county-event-list-details.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyEventListDetailsComponent implements OnInit {
   @Input('county-event-list-details') event:CountyEventWithTime;

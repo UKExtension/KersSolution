@@ -1,10 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { PlansofworkService, PlanOfWork, Plan, PlanningUnit } from './plansofwork.service';
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'plansofwork-view',
-    templateUrl: 'plansofwork-view.component.html' 
+    templateUrl: 'plansofwork-view.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlansofworkViewComponent{
 

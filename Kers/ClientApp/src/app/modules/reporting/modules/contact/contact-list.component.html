@@ -1,7 +1,11 @@
-<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+@if (errorMessage) {
+  <div class="alert alert-danger alert-dismissible fade in" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-    </button>
-    <strong>Error: </strong> {{errorMessage}}
+  </button>
+  <strong>Error: </strong> {{errorMessage}}
 </div>
-<contact-month *ngFor="let m of byMonth" [month]="m" (onDeleted)="deleted($event)" (onUpdated)="updated($event)"></contact-month>
+}
+@for (m of byMonth; track m) {
+  <contact-month [month]="m" (onDeleted)="deleted($event)" (onUpdated)="updated($event)"></contact-month>
+}
 

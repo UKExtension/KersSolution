@@ -1,37 +1,61 @@
 <div class="ln_solid"></div>
-<loading *ngIf="loading"></loading>
-<div class="row" *ngIf="!loading">
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading) {
+  <div class="row">
     <div class="col-xs-10">
-        
-        <article class="media event" *ngIf="rowDefault">
-            <a class="pull-left date">
-                <p class="month">{{activity.activityDate | date:'MMM'}} </p>
-                <p class="day">{{activity.activityDate | date:'d'}}</p>   
-            </a>
-            <div class="media-body">
+      @if (rowDefault) {
+        <article class="media event">
+          <a class="pull-left date">
+            <p class="month">{{activity.activityDate | date:'MMM'}} </p>
+            <p class="day">{{activity.activityDate | date:'d'}}</p>
+          </a>
+          <div class="media-body">
             <a class="title">{{activity.title}}</a>
             <p>Hours: {{activity.hours}}, Audience: {{activity.male + activity.female}}</p>
             <p>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapDirect != null">Snap-Ed Direct</span>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapAdmin">Snap-Ed Admin/Staff Dev</span>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapPolicy != null">Snap-Ed Community/PSE</span>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="activity.isSnap && activity.snapIndirect != null">Snap-Ed Indirect</span>
-                <span style="background-color: #73879C;" class="label label-default" *ngIf="blankSnap">Snap-Ed</span></p>
+              @if (activity.isSnap && activity.snapDirect != null) {
+                <span style="background-color: #73879C;" class="label label-default">Snap-Ed Direct</span>
+              }
+              @if (activity.isSnap && activity.snapAdmin) {
+                <span style="background-color: #73879C;" class="label label-default">Snap-Ed Admin/Staff Dev</span>
+              }
+              @if (activity.isSnap && activity.snapPolicy != null) {
+                <span style="background-color: #73879C;" class="label label-default">Snap-Ed Community/PSE</span>
+              }
+              @if (activity.isSnap && activity.snapIndirect != null) {
+                <span style="background-color: #73879C;" class="label label-default">Snap-Ed Indirect</span>
+              }
+              @if (blankSnap) {
+                <span style="background-color: #73879C;" class="label label-default">Snap-Ed</span>
+              }</p>
             </div>
-        </article>
-        <div class="col-xs-12" *ngIf="rowEdit">
-
+          </article>
+        }
+        @if (rowEdit) {
+          <div class="col-xs-12">
             <servicelog-form [activity]="activity" (onFormCancel)="default()" (onFormSubmit)="activitySubmitted($event)"></servicelog-form>
-
-        </div>
-        <div class="col-xs-11" *ngIf="rowDelete">
+          </div>
+        }
+        @if (rowDelete) {
+          <div class="col-xs-11">
             Do you really want to delete activity <strong>{{activity.title}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+          </div>
+        }
+      </div>
+      @if (displayEdit) {
+        <div class="col-xs-2 text-right">
+          @if (rowDefault) {
+            <a class="btn btn-info btn-xs" (click)="edit()"><i class="fa fa-pencil"></i> Edit</a>
+          }
+          @if (rowDefault) {
+            <a class="btn btn-info btn-xs" (click)="delete()"><i class="fa fa-trash-o"></i> Delete</a>
+          }
+          @if (!rowDefault) {
+            <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+          }
         </div>
-        
+      }
     </div>
-    <div class="col-xs-2 text-right" *ngIf="displayEdit">
-        <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
-        <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
-        <a class="btn btn-primary btn-xs" (click)="default()" *ngIf="!rowDefault"><i class="fa fa-close"></i> Close</a>
-    </div>  
-</div>
+  }

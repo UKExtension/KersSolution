@@ -1,38 +1,62 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Meeting, MeetingService, MeetingWithTime } from './meeting.service';
 
 @Component({
-  selector: '[meeting-list-detail]',
-  template: `
+    selector: '[meeting-list-detail]',
+    template: `
 <ng-container>
-  <td *ngIf="rowDefault">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
-  <td *ngIf="rowDefault">{{training.subject}}</td>
-  <td *ngIf="rowDefault">{{training.tLocation}}</td>
-  <td *ngIf="rowDefault">{{training.tContact}}</td>
-  <td *ngIf="rowDefault" class="text-right">
-      <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
-      <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
-      <a class="btn btn-primary btn-xs" (click)="default()" *ngIf="!rowDefault"><i class="fa fa-close"></i> Close</a>
-  </td>
-  <td *ngIf="rowEdit" colspan="5">
+  @if (rowDefault) {
+    <td>{{training.start | date:'mediumDate'}} @if (training.end) {
+      <span><br>{{training.end | date:'mediumDate'}}</span>
+    }</td>
+  }
+  @if (rowDefault) {
+    <td>{{training.subject}}</td>
+  }
+  @if (rowDefault) {
+    <td>{{training.tLocation}}</td>
+  }
+  @if (rowDefault) {
+    <td>{{training.tContact}}</td>
+  }
+  @if (rowDefault) {
+    <td class="text-right">
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="edit()"><i class="fa fa-pencil"></i> Edit</a>
+      }
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="delete()"><i class="fa fa-trash-o"></i> Delete</a>
+      }
+      @if (!rowDefault) {
+        <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+      }
+    </td>
+  }
+  @if (rowEdit) {
+    <td colspan="5">
       <div class="text-right">
-          <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+        <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
       </div>
       <meeting-form [meeting]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></meeting-form>
-  </td>
-  <td *ngIf="rowDelete" colspan="5">
+    </td>
+  }
+  @if (rowDelete) {
+    <td colspan="5">
       <div class="text-right">
-          <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+        <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
       </div>
       <div>
-          Do you really want to delete CES Event <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+        Do you really want to delete CES Event <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
       </div>
-  </td>
+    </td>
+  }
 </ng-container>
 
 
-  `,
-  styles: []
+`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MeetingListDetailComponent implements OnInit {
 

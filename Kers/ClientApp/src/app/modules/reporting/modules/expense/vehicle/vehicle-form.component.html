@@ -1,121 +1,129 @@
-<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+@if (errorMessage) {
+  <div class="alert alert-danger alert-dismissible fade in" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-    </button>
-    <strong>Error: </strong> {{errorMessage}}
+  </button>
+  <strong>Error: </strong> {{errorMessage}}
 </div>
-<loading *ngIf="loading"></loading>
-<div class="row" *ngIf="!loading">
+}
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading) {
+  <div class="row">
     <div class="col-sm-offset-3 col-sm-9">
-        <h2 *ngIf="!vehicle">New County Vehicle</h2>
-        <h2 *ngIf="vehicle">Edit County Vehicle Record</h2><br>
-    </div>
-    <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="vehicleForm">
-        <div class="form-group profile_details" *ngIf="user">
+      @if (!vehicle) {
+        <h2>New County Vehicle</h2>
+      }
+      @if (vehicle) {
+        <h2>Edit County Vehicle Record</h2>
+        }<br>
+      </div>
+      <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="vehicleForm">
+        @if (user) {
+          <div class="form-group profile_details">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="uploadImageId">Vehicle Image:</label>
             <div class="col-md-5 col-sm-5 col-xs-10 profile_view">
-                <image-picker [defaultImageName]="'vehicle.png'" [userId]="user.id" formControlName="uploadImageId"></image-picker>
+              <image-picker [defaultImageName]="'vehicle.png'" [userId]="user.id" formControlName="uploadImageId"></image-picker>
             </div>
+          </div>
+        }
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Vehicle Name (e.g. ANR Truck):</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="name" id="name" formControlName="name" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Vehicle Name (e.g. ANR Truck):</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="text" name="name" id="name" formControlName="name" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="make">Make:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="make" id="make" formControlName="make" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="make">Make:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="text" name="make" id="make" formControlName="make" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="model">Model:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="model" id="model" formControlName="model" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="model">Model:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="text" name="model" id="model" formControlName="model" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="year">Model Year:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="year" id="year" formControlName="year" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="year">Model Year:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="text" name="year" id="year" formControlName="year" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="licenseTag">License Tag:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="licenseTag" id="licenseTag" formControlName="licenseTag" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="licenseTag">License Tag:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="text" name="licenseTag" id="licenseTag" formControlName="licenseTag" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="purchasePrice">Purchase Price:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="number" name="purchasePrice" id="purchasePrice" formControlName="purchasePrice" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="purchasePrice">Purchase Price:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="number" name="purchasePrice" id="purchasePrice" formControlName="purchasePrice" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="color">Color:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="color" id="color" formControlName="color" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="color">Color:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="text" name="color" id="color" formControlName="color" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="odometer">Beginning Odometer:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="number" name="odometer" id="odometer" formControlName="odometer" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="odometer">Beginning Odometer:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="number" name="odometer" id="odometer" formControlName="odometer" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="endingOdometer">Ending Odometer:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="number" name="endingOdometer" id="endingOdometer" formControlName="endingOdometer" class="form-control col-md-7 col-xs-12">
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="endingOdometer">Ending Odometer:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="number" name="endingOdometer" id="endingOdometer" formControlName="endingOdometer" class="form-control col-md-7 col-xs-12">
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comments">Comments:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <textarea name="comments" id="comments" formControlName="comments" class="form-control"></textarea>
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comments">Comments:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                    <textarea name="comments" id="comments" formControlName="comments" class="form-control"></textarea>
-            </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="enabled">Enabled:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12" style="padding-top: 6px;">
+            <input type="checkbox" id="enabled" formControlName="enabled" />
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="enabled">Enabled:</label>
-            <div class="col-md-9 col-sm-9 col-xs-12" style="padding-top: 6px;">
-                <input type="checkbox" id="enabled" formControlName="enabled" />               
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="datePurchased">Date Purchased:</label>
+          <div class="col-md-5 col-sm-7 col-xs-8">
+            <div class="input-group">
+              <input type="text" class="form-control input-box" placeholder="Click to select a date"
+                angular-mydatepicker (click)="dp.toggleCalendar()"
+                formControlName="datePurchased" [options]="myDatePickerOptions"
+                #dp="angular-mydatepicker" >
+              <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
             </div>
+          </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="datePurchased">Date Purchased:</label>
-            <div class="col-md-5 col-sm-7 col-xs-8">
-                <div class="input-group">
-                    <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-                        angular-mydatepicker (click)="dp.toggleCalendar()" 
-                        formControlName="datePurchased" [options]="myDatePickerOptions" 
-                        #dp="angular-mydatepicker" >
-                    <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
-                </div>
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateDispossed">Date Dispossed:</label>
+          <div class="col-md-5 col-sm-7 col-xs-8">
+            <div class="input-group">
+              <input type="text" class="form-control input-box" placeholder="Click to select a date"
+                angular-mydatepicker (click)="dp2.toggleCalendar()"
+                formControlName="dateDispossed" [options]="myDatePickerOptions"
+                #dp2="angular-mydatepicker" >
+              <span class="input-group-addon" id="basic-addon2" (click)="dp2.toggleCalendar()"><i class="fa fa-calendar"></i></span>
             </div>
+          </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateDispossed">Date Dispossed:</label>
-            <div class="col-md-5 col-sm-7 col-xs-8">
-
-                    <div class="input-group">
-                        <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-                            angular-mydatepicker (click)="dp2.toggleCalendar()" 
-                            formControlName="dateDispossed" [options]="myDatePickerOptions" 
-                            #dp2="angular-mydatepicker" >
-                        <span class="input-group-addon" id="basic-addon2" (click)="dp2.toggleCalendar()"><i class="fa fa-calendar"></i></span>
-                    </div>
-
-            </div>
-        </div>
-        
         <div class="ln_solid"></div>
         <div class="form-group">
-            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-                <button type="submit" [disabled]="vehicleForm.invalid"  class="btn btn-success">Submit</button>
-            </div>
+          <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+            <button type="submit" [disabled]="vehicleForm.invalid"  class="btn btn-success">Submit</button>
+          </div>
         </div>
-        
-    </form>
-</div>
+      </form>
+    </div>
+  }

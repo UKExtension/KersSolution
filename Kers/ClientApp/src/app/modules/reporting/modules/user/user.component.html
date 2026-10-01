@@ -1,156 +1,173 @@
-<div *ngIf="user" class="x_content">
-                    <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
-                      <div class="profile_img">
-                        <div id="crop-avatar">
-                          <!-- Current avatar -->
-                          <img class="img-responsive avatar-view" src="{{profilePicSrc}}" alt="Avatar" title="Change the avatar">
-                        </div>
-                      </div>
-                      <h3>{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</h3>
-                      <h2>{{user.personalProfile.professionalTitle}}</h2>
-                      <ul class="list-unstyled user_data">
-                        <li><i class="fa fa-map-marker user-profile-icon"></i> {{user.rprtngProfile.planningUnit.name}}
-                        </li>
-
-                        <li>
-                          <i class="fa fa-briefcase user-profile-icon"></i> {{user.extensionPosition.title}}
-                        </li>
-
-                        <li class="m-top-xs">
-                          <i class="fa fa-envelope user-profile-icon"></i>
-                          <a href="mailto:{{user.rprtngProfile.email}}" target="_blank">{{user.rprtngProfile.email}}</a>
-                        </li>
-                        <li  class="m-top-xs" *ngIf="user.personalProfile"><i class="fa fa-phone user-profile-icon"></i> <span *ngIf="user.personalProfile.officePhone != ''">{{user.personalProfile.officePhone}}</span><span *ngIf="user.personalProfile.officePhone == '' || !user.personalProfile">{{user.rprtngProfile.planningUnit.phone}}</span> </li>
-                        <li class="m-top-xs" *ngIf="user.personalProfile && user.personalProfile.mobilePhone != null && user.personalProfile.mobilePhone != ''"><i class="fa fa-mobile user-profile-icon"></i> 
-                                {{user.personalProfile.mobilePhone}}
-                          </li>
-                      </ul>
-                      <br>
-                      <!-- start areas -->
-                      <div *ngIf="user.specialties.length > 0">
-                        <h4>Program Areas</h4>
-                        <ul class="list-unstyled user_data">
-                          <li *ngFor="let area of user.specialties">
-                            <p>{{area.specialty.name}}</p>
-                          </li>
-                        </ul>
-                      
-                      </div>
-                      <!-- end of areas -->
-                      <br>
-                      <!-- start interests -->
-                      <div *ngIf="user.personalProfile.interests.length > 0">
-                        <h4>Interests</h4>
-                        <ul class="list-unstyled user_data">
-                          <li *ngFor="let interest of user.personalProfile.interests">
-                            <p>{{interest.interest.name}}</p>
-                          </li>
-                        </ul>
-                      
-                      </div>
-                      <!-- end of interests -->
-                      <br>
-                      <!-- start social media -->
-                      <div *ngIf="user.personalProfile.socialConnections.length > 0">
-                        <h4>Social Connections</h4>
-                        <ul class="list-unstyled user_data">
-                          <li *ngFor="let connection of user.personalProfile.socialConnections">
-                            <p><i class="fa {{connection.socialConnectionType.icon}} user-profile-icon"></i> 
-                                  <span *ngIf="connection.socialConnectionType.url != ''"><a href="{{connection.socialConnectionType.url}}{{connection.identifier}}" target="_blank">{{connection.identifier}}</a></span>
-                                  <span *ngIf="connection.socialConnectionType.url == ''">{{connection.identifier}}</span>
-                            </p>
-                          </li>
-                        </ul>
-                      </div>
-                      <!-- end of social media -->
-                      <br>
-                        <div [innerHtml]="timeWithExtension"></div>
-                    </div>
-                    <div class="col-md-9 col-sm-9 col-xs-12">
-
-                      <div class="profile_title">
-                        <div class="col-md-6">
-                          <h2>User Activity</h2>
-                        </div>
-                        <div class="col-md-6">
-                          
-                        </div>
-                      </div>
-                      
-                      <!-- start of user-activity-graph -->
-                     <div [ts-chart]="option"></div>
-                      <!-- end of user-activity-graph -->
-                      
-
-                      <div class="" role="tabpanel" data-example-id="togglable-tabs">
-                        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                          <li role="presentation" [class.active]="storiesOpen"><a (click)="openStories()" style="cursor: pointer">Success Stories</a>
-                          </li>
-                          <li role="presentation" [class.active]="aboutOpen"><a (click)="openAbout()" style="cursor: pointer">About</a>
-                          </li>
-                          <li role="presentation" [class.active]="activityOpen"><a (click)="openActivity()" style="cursor: pointer">Activity</a>
-                          </li>
-                        </ul>
-                        <div id="myTabContent" class="tab-content">
-                          <div role="tabpanel" class="tab-pane fade in" [class.active]="storiesOpen">
-
-                            <!-- start recent activity -->
-                            <ul class="messages">
-                              <li *ngFor="let story of latestStories | async">
-                                <img src="{{externalUrl('/image/crop/100/100/' + story.storyImages[0].uploadImage.uploadFile.name)}}" class="avtr" alt="Avatar" *ngIf="story.storyImages.length > 0">
-                                <div class="message_date">
-                                  <h3 class="date text-info">{{day(story.created)}}</h3>
-                                  <p class="month">{{month(story.created)}}</p>
-                                </div>
-                                <div class="message_wrapper">
-                                  <h4 class="heading">{{story.title}}</h4>
-                                  <blockquote class="message" [innerHtml]="htmlToPlaintext(story.story)"></blockquote>
-                                  <br>
-                                  <p class="url">
-                                    <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                                    <a [routerLink]="['/reporting/story', story.id]"><i class="fa fa-align-left"></i> Full Story</a>
-                                  </p>
-                                </div>
-                              </li>
-                              
-
-                            </ul>
-                            <!-- end recent activity -->
-
-                          </div>
-                          <div role="tabpanel" class="tab-pane fade" [class.active]="aboutOpen" [class.in]="aboutOpen">
-                              <br><br>
-                              <div [innerHtml]="user.personalProfile.bio" class="fr-view"></div>
-
-                          </div>
-                          <div role="tabpanel" class="tab-pane fade" [class.active]="activityOpen" [class.in]="activityOpen">
-                            <!-- start user projects -->
-                            <table class="data table table-striped no-margin">
-                              <thead>
-                                <tr>
-                                  <th>#</th>
-                                  <th>Title</th>
-                                  <th>Major Program</th>
-                                  <th class="hidden-phone">Hours</th>
-                                  <th>Audience</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr *ngFor="let activity of latestActivities | async; let i = index">
-                                  <td>{{i+1}}</td>
-                                  <td>{{activity.title}}</td>
-                                  <td>{{activity.majorProgram.name}}</td>
-                                  <td class="hidden-phone">{{activity.hours}}</td>
-                                  <td class="vertical-align-mid">
-                                    {{+activity.male + activity.female}}
-                                  </td>
-                                </tr>
-                                
-                              </tbody>
-                            </table>
-                            <!-- end user projects -->
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+@if (user) {
+  <div class="x_content">
+    <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
+      <div class="profile_img">
+        <div id="crop-avatar">
+          <!-- Current avatar -->
+          <img class="img-responsive avatar-view" src="{{profilePicSrc}}" alt="Avatar" title="Change the avatar">
+        </div>
+      </div>
+      <h3>{{user.personalProfile.firstName}} {{user.personalProfile.lastName}}</h3>
+      <h2>{{user.personalProfile.professionalTitle}}</h2>
+      <ul class="list-unstyled user_data">
+        <li><i class="fa fa-map-marker user-profile-icon"></i> {{user.rprtngProfile.planningUnit.name}}
+      </li>
+      <li>
+        <i class="fa fa-briefcase user-profile-icon"></i> {{user.extensionPosition.title}}
+      </li>
+      <li class="m-top-xs">
+        <i class="fa fa-envelope user-profile-icon"></i>
+        <a href="mailto:{{user.rprtngProfile.email}}" target="_blank">{{user.rprtngProfile.email}}</a>
+      </li>
+      @if (user.personalProfile) {
+        <li  class="m-top-xs"><i class="fa fa-phone user-profile-icon"></i> @if (user.personalProfile.officePhone != '') {
+        <span>{{user.personalProfile.officePhone}}</span>
+        }@if (user.personalProfile.officePhone == '' || !user.personalProfile) {
+        <span>{{user.rprtngProfile.planningUnit.phone}}</span>
+      } </li>
+    }
+    @if (user.personalProfile && user.personalProfile.mobilePhone != null && user.personalProfile.mobilePhone != '') {
+      <li class="m-top-xs"><i class="fa fa-mobile user-profile-icon"></i>
+      {{user.personalProfile.mobilePhone}}
+    </li>
+  }
+</ul>
+<br>
+  <!-- start areas -->
+  @if (user.specialties.length > 0) {
+    <div>
+      <h4>Program Areas</h4>
+      <ul class="list-unstyled user_data">
+        @for (area of user.specialties; track area) {
+          <li>
+            <p>{{area.specialty.name}}</p>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+  <!-- end of areas -->
+  <br>
+    <!-- start interests -->
+    @if (user.personalProfile.interests.length > 0) {
+      <div>
+        <h4>Interests</h4>
+        <ul class="list-unstyled user_data">
+          @for (interest of user.personalProfile.interests; track interest) {
+            <li>
+              <p>{{interest.interest.name}}</p>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+    <!-- end of interests -->
+    <br>
+      <!-- start social media -->
+      @if (user.personalProfile.socialConnections.length > 0) {
+        <div>
+          <h4>Social Connections</h4>
+          <ul class="list-unstyled user_data">
+            @for (connection of user.personalProfile.socialConnections; track connection) {
+              <li>
+                <p><i class="fa {{connection.socialConnectionType.icon}} user-profile-icon"></i>
+                @if (connection.socialConnectionType.url != '') {
+                  <span><a href="{{connection.socialConnectionType.url}}{{connection.identifier}}" target="_blank">{{connection.identifier}}</a></span>
+                }
+                @if (connection.socialConnectionType.url == '') {
+                  <span>{{connection.identifier}}</span>
+                }
+              </p>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+    <!-- end of social media -->
+    <br>
+      <div [innerHtml]="timeWithExtension"></div>
+    </div>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+      <div class="profile_title">
+        <div class="col-md-6">
+          <h2>User Activity</h2>
+        </div>
+        <div class="col-md-6">
+        </div>
+      </div>
+      <!-- start of user-activity-graph -->
+      <div [ts-chart]="option"></div>
+      <!-- end of user-activity-graph -->
+      <div class="" role="tabpanel" data-example-id="togglable-tabs">
+        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+          <li role="presentation" [class.active]="storiesOpen"><a (click)="openStories()" style="cursor: pointer">Success Stories</a>
+        </li>
+        <li role="presentation" [class.active]="aboutOpen"><a (click)="openAbout()" style="cursor: pointer">About</a>
+      </li>
+      <li role="presentation" [class.active]="activityOpen"><a (click)="openActivity()" style="cursor: pointer">Activity</a>
+    </li>
+  </ul>
+  <div id="myTabContent" class="tab-content">
+    <div role="tabpanel" class="tab-pane fade in" [class.active]="storiesOpen">
+      <!-- start recent activity -->
+      <ul class="messages">
+        @for (story of latestStories | async; track story) {
+          <li>
+            @if (story.storyImages.length > 0) {
+              <img src="{{externalUrl('/image/crop/100/100/' + story.storyImages[0].uploadImage.uploadFile.name)}}" class="avtr" alt="Avatar">
+            }
+            <div class="message_date">
+              <h3 class="date text-info">{{day(story.created)}}</h3>
+              <p class="month">{{month(story.created)}}</p>
+            </div>
+            <div class="message_wrapper">
+              <h4 class="heading">{{story.title}}</h4>
+              <blockquote class="message" [innerHtml]="htmlToPlaintext(story.story)"></blockquote>
+              <br>
+                <p class="url">
+                  <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                  <a [routerLink]="['/reporting/story', story.id]"><i class="fa fa-align-left"></i> Full Story</a>
+                </p>
+              </div>
+            </li>
+          }
+        </ul>
+        <!-- end recent activity -->
+      </div>
+      <div role="tabpanel" class="tab-pane fade" [class.active]="aboutOpen" [class.in]="aboutOpen">
+        <br><br>
+        <div [innerHtml]="user.personalProfile.bio" class="fr-view"></div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" [class.active]="activityOpen" [class.in]="activityOpen">
+        <!-- start user projects -->
+        <table class="data table table-striped no-margin">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Major Program</th>
+              <th class="hidden-phone">Hours</th>
+              <th>Audience</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (activity of latestActivities | async; track activity; let i = $index) {
+              <tr>
+                <td>{{i+1}}</td>
+                <td>{{activity.title}}</td>
+                <td>{{activity.majorProgram.name}}</td>
+                <td class="hidden-phone">{{activity.hours}}</td>
+                <td class="vertical-align-mid">
+                  {{+activity.male + activity.female}}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <!-- end user projects -->
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+}

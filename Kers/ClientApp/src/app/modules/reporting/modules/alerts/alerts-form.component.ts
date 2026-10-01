@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { IAngularMyDpOptions } from 'gramli-angular-mydatepicker';
 import { Role, RolesService } from '../admin/roles/roles.service';
@@ -10,10 +10,11 @@ import { ExtensionArea, ExtensionRegion, StateService } from '../state/state.ser
 import { PlanningUnit } from '../user/user.service';
 
 @Component({
-  selector: 'alerts-form',
-  templateUrl: './alerts-form.component.html',
-  styles: [
-  ]
+    selector: 'alerts-form',
+    templateUrl: './alerts-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AlertsFormComponent implements OnInit {
   alertForm:any;

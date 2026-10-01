@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ServicelogMonth, Servicelog } from "../servicelog.service";
 import { ReportingService } from "../../../components/reporting/reporting.service";
 import { Router } from "@angular/router";
@@ -7,7 +7,9 @@ import { SnapedService } from "../snaped.service";
 
 
 @Component({
-  templateUrl: 'servicelog-snaped.component.html'
+    templateUrl: 'servicelog-snaped.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogSnapedComponent implements OnInit { 
     

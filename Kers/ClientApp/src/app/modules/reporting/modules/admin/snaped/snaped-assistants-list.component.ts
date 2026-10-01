@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SnapedAdminService } from './snaped-admin.service';
 import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
@@ -10,8 +10,12 @@ import { Observable } from 'rxjs';
 @Component({
     selector: 'snaped-assistants-list',
     template: `
-        <span *ngFor="let assistant of assistants | async"><a [routerLink]="['/reporting/admin/snaped/user', assistant.id]">{{assistant.personalProfile.firstName}} {{assistant.personalProfile.lastName}}</a>&nbsp;|&nbsp;</span>
-    `
+        @for (assistant of assistants | async; track assistant) {
+          <span><a [routerLink]="['/reporting/admin/snaped/user', assistant.id]">{{assistant.personalProfile.firstName}} {{assistant.personalProfile.lastName}}</a>&nbsp;|&nbsp;</span>
+        }
+        `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedAssistantsListComponent { 
 

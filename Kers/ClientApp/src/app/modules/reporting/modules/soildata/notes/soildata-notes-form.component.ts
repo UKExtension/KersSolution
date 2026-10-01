@@ -1,48 +1,56 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyNote, SoildataService } from '../soildata.service';
 import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'soildata-notes-form',
-  template: `
-  <loading *ngIf="loading"></loading>
-  <div class="row" *ngIf="!loading">
+    selector: 'soildata-notes-form',
+    template: `
+  @if (loading) {
+    <loading></loading>
+  }
+  @if (!loading) {
+    <div class="row">
       <div class="col-sm-offset-3 col-sm-9">
-          <h2 *ngIf="!address">New Note Template</h2>
-          <h2 *ngIf="address">Update Note Template</h2>
+        @if (!address) {
+          <h2>New Note Template</h2>
+        }
+        @if (address) {
+          <h2>Update Note Template</h2>
+        }
       </div>
-
       <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="noteForm">
-          <div class="form-group">
-              <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Keyword:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" name="name" formControlName="name" id="name" class="form-control col-xs-12" />
-              </div>
+        <div class="form-group">
+          <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">Keyword:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="name" formControlName="name" id="name" class="form-control col-xs-12" />
           </div>
-          <div class="form-group">
-              <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Note:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <textarea name="note" formControlName="note" id="note" class="form-control col-xs-12" rows="12"></textarea>
-              </div>
+        </div>
+        <div class="form-group">
+          <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Note:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <textarea name="note" formControlName="note" id="note" class="form-control col-xs-12" rows="12"></textarea>
           </div>
-          <div class="form-group">
-              <label for="order" class="control-label col-md-3 col-sm-3 col-xs-12">Display Order:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="number" name="order" formControlName="order" id="order" class="form-control col-xs-12" style="width:50%;" />
-              </div>
+        </div>
+        <div class="form-group">
+          <label for="order" class="control-label col-md-3 col-sm-3 col-xs-12">Display Order:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="number" name="order" formControlName="order" id="order" class="form-control col-xs-12" style="width:50%;" />
           </div>
-
-          <div class="ln_solid"></div>
-          <div class="form-group">
-              <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
-                  <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-                  <button type="submit" [disabled]="noteForm.invalid"  class="btn btn-success">Submit</button>
-              </div>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="form-group">
+          <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
+            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+            <button type="submit" [disabled]="noteForm.invalid"  class="btn btn-success">Submit</button>
           </div>
+        </div>
       </form>
-  </div>
+    </div>
+  }
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class SoildataNotesFormComponent implements OnInit {

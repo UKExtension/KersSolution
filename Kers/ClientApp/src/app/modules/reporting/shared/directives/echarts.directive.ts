@@ -11,7 +11,8 @@ import { distinctUntilChanged } from 'rxjs/operators';
 
 
 @Directive({
-  selector: '[ts-chart]',
+    selector: '[ts-chart]',
+    standalone: false
 })
 export class echartsDirective implements OnChanges,OnInit,OnDestroy {
   private chart: ECharts;

@@ -1,37 +1,50 @@
 <div class="row">
-    <div class="col-xs-10">
-        
-        <article *ngIf="rowDefault">
+  <div class="col-xs-10">
 
-            <img src="{{profilePicSrc}}" class="avatar" alt="Avatar">
-            <div class="message_date">
-                <h3 class="date text-info">{{logTime | date:'d'}}</h3>
-                <p class="month">{{logTime | date:'MMMM'}}</p>
-            </div>
-            <div class="message_wrapper">
-                <h4 class="heading">{{log.type}}</h4>
-                <blockquote class="message">{{logTime| date:'mediumTime'}}<br><em>{{log.description}}</em></blockquote>
-                <br>
-                <p class="url">
-                <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                <a *ngIf="log.user" [routerLink]="['/reporting/user', log.user.id]"><i class="fa fa-bookmark-o"></i> {{log.user.personalProfile.firstName}} {{log.user.personalProfile.lastName}}</a>
-                </p>
-            </div>
+    @if (rowDefault) {
+      <article>
+        <img src="{{profilePicSrc}}" class="avatar" alt="Avatar">
+        <div class="message_date">
+          <h3 class="date text-info">{{logTime | date:'d'}}</h3>
+          <p class="month">{{logTime | date:'MMMM'}}</p>
+        </div>
+        <div class="message_wrapper">
+          <h4 class="heading">{{log.type}}</h4>
+          <blockquote class="message">{{logTime| date:'mediumTime'}}<br><em>{{log.description}}</em></blockquote>
+          <br>
+            <p class="url">
+              <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+              @if (log.user) {
+                <a [routerLink]="['/reporting/user', log.user.id]"><i class="fa fa-bookmark-o"></i> {{log.user.personalProfile.firstName}} {{log.user.personalProfile.lastName}}</a>
+              }
+            </p>
+          </div>
         </article>
-        <div class="col-xs-11" *ngIf="rowDetail">
-            <strong>IP: </strong> <br>{{log.ip}}<br><br>
-            <strong>User Agent: </strong> <br>{{browser()}}<br><br>
-            <strong>Object Type: </strong> <br>{{log.objectType}}<br><br>
-            <div><pre>{{JSON.parse(log.object) | json}}</pre></div>
+      }
+      @if (rowDetail) {
+        <div class="col-xs-11">
+          <strong>IP: </strong> <br>{{log.ip}}<br><br>
+          <strong>User Agent: </strong> <br>{{browser()}}<br><br>
+          <strong>Object Type: </strong> <br>{{log.objectType}}<br><br>
+          <div><pre>{{JSON.parse(log.object) | json}}</pre></div>
         </div>
-        <div class="col-xs-11" *ngIf="rowProgress">
-            <div><pre>{{log.progressLog}}</pre></div>
+      }
+      @if (rowProgress) {
+        <div class="col-xs-11">
+          <div><pre>{{log.progressLog}}</pre></div>
         </div>
-        
+      }
+
     </div>
     <div class="col-xs-2 text-right">
-        <a class="btn btn-info btn-xs" (click)="details()" *ngIf="rowDefault">details</a>
-        <a class="btn btn-info btn-xs" (click)="progress()" *ngIf="rowDefault && log.progressLog && log.progressLog != ''">progress</a>
-        <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
-    </div>  
-</div>
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="details()">details</a>
+      }
+      @if (rowDefault && log.progressLog && log.progressLog != '') {
+        <a class="btn btn-info btn-xs" (click)="progress()">progress</a>
+      }
+      @if (!rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="default()">close</a>
+      }
+    </div>
+  </div>

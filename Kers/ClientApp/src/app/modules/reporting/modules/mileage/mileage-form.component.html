@@ -1,97 +1,122 @@
-<loading *ngIf="loading"></loading>
-<div class="row" *ngIf="!loading">
-  <div><reporting-display-help id="5"></reporting-display-help></div>
-  <div class="col-sm-offset-3 col-sm-9">
-      <h2 *ngIf="!mileage">New Mileage Record</h2>
-      <h2 *ngIf="mileage">Edit Mileage Record</h2><br>
-  </div>
-  <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="mileageForm">
-    <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isOvernight">Trip Type:</label>
-        <div class="col-md-5 col-sm-7 col-xs-8">
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading) {
+  <div class="row">
+    <div><reporting-display-help id="5"></reporting-display-help></div>
+    <div class="col-sm-offset-3 col-sm-9">
+      @if (!mileage) {
+        <h2>New Mileage Record</h2>
+      }
+      @if (mileage) {
+        <h2>Edit Mileage Record</h2>
+        }<br>
+      </div>
+      <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="mileageForm">
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isOvernight">Trip Type:</label>
+          <div class="col-md-5 col-sm-7 col-xs-8">
             <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-default" (click)="isOvernight(false)" [class.active]="!itIsOvernight">
+              <label class="btn btn-default" (click)="isOvernight(false)" [class.active]="!itIsOvernight">
                 <input type="radio" name="isOvernight" formControlName="isOvernight" [value]="false"> Day Trip
-                </label>
-                <label class="btn btn-default" [class.active]="itIsOvernight" (click)="isOvernight(true)">
+              </label>
+              <label class="btn btn-default" [class.active]="itIsOvernight" (click)="isOvernight(true)">
                 <input type="radio" name="isOvernight" formControlName="isOvernight" [value]="true"> Overnight Trip
-                </label>
+              </label>
             </div>
+          </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="rDT">Date of Travel:</label>
-        <div class="col-md-5 col-sm-7 col-xs-8">
-
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="rDT">Date of Travel:</label>
+          <div class="col-md-5 col-sm-7 col-xs-8">
             <div class="input-group">
-            
-                <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-                    angular-mydatepicker name="expenseDate" (click)="dp.toggleCalendar()" 
-                    formControlName="expenseDate" [options]="myDatePickerOptions" 
-                    #dp="angular-mydatepicker">
-                <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+              <input type="text" class="form-control input-box" placeholder="Click to select a date"
+                angular-mydatepicker name="expenseDate" (click)="dp.toggleCalendar()"
+                formControlName="expenseDate" [options]="myDatePickerOptions"
+                #dp="angular-mydatepicker">
+              <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
             </div>
+          </div>
         </div>
-    </div>
-    <div class="form-group" [hidden]="!(enabledVehicles && enabledVehicles.length > 0)">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="vehcileType">Vehicle Type:</label>
-        <div class="col-md-5 col-sm-7 col-xs-8">
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default" (click)="isPersonal(true)" [class.active]="itIsPersonalVehicle">
-                    <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'1'"> Personal Vehicle
-                    </label>
-                    <label class="btn btn-default" [class.active]="!itIsPersonalVehicle" (click)="isPersonal(false)">
-                    <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'2'"> County Vehicle
-                    </label>
-                </div>
-        </div>
-    </div>
-    <div class="form-group" *ngIf="(enabledVehicles && !itIsPersonalVehicle)">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">County Vehicle:</label>
-        <div class="col-md-6 col-sm-6 col-xs-12">
-            <select name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
-                <option *ngIf="enabledVehicles.length > 1" value="">-- select --</option>
-                <option *ngFor="let vehicle of enabledVehicles" [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}} {{ vehicle.name != undefined && vehicle.name != '' ? '(' + vehicle.name + ')' : ''}}</option>
-            </select>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Comments:</label>
-        <div class="col-md-9 col-sm-9 col-xs-12">
-                <textarea name="comment" id="comment" formControlName="comment" class="form-control"></textarea>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Starting Location:<span *ngIf="!startingLocationBrowser && stLoc != null && stLoc.displayName != null && stLoc.displayName != 'County Extension Office'" class="red"><br>Note: Mileage is reinbursed from the traveler's workstation to the destination, unless driving from the traveler's residence is closer</span></label>
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <div *ngIf="startingLocationBrowser" style="padding: 10px;">
-                <location-browser *ngIf="currentUser" [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
+        <div class="form-group" [hidden]="!(enabledVehicles && enabledVehicles.length > 0)">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="vehcileType">Vehicle Type:</label>
+          <div class="col-md-5 col-sm-7 col-xs-8">
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-default" (click)="isPersonal(true)" [class.active]="itIsPersonalVehicle">
+                <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'1'"> Personal Vehicle
+              </label>
+              <label class="btn btn-default" [class.active]="!itIsPersonalVehicle" (click)="isPersonal(false)">
+                <input type="radio" name="vehicleType" formControlName="vehicleType" [value]="'2'"> County Vehicle
+              </label>
             </div>
-            <div *ngIf="!startingLocationBrowser && stLoc!=null" style="padding: 10px;">
-                <h5>{{stLoc.address.building}}<strong *ngIf="stLoc.displayName != null && stLoc.displayName != ''"> ({{stLoc.displayName}})</strong></h5>
+          </div>
+        </div>
+        @if ((enabledVehicles && !itIsPersonalVehicle)) {
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="countyVehicleId">County Vehicle:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="startingLocationType" formControlName="countyVehicleId" class="form-control col-md-7 col-xs-12">
+                @if (enabledVehicles.length > 1) {
+                  <option value="">-- select --</option>
+                }
+                @for (vehicle of enabledVehicles; track vehicle) {
+                  <option [value]="vehicle.id">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}} {{vehicle.licenseTag}} {{ vehicle.name != undefined && vehicle.name != '' ? '(' + vehicle.name + ')' : ''}}</option>
+                }
+              </select>
+            </div>
+          </div>
+        }
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Comments:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <textarea name="comment" id="comment" formControlName="comment" class="form-control"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="comment">Starting Location:@if (!startingLocationBrowser && stLoc != null && stLoc.displayName != null && stLoc.displayName != 'County Extension Office') {
+            <span class="red"><br>Note: Mileage is reinbursed from the traveler's workstation to the destination, unless driving from the traveler's residence is closer</span>
+          }</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            @if (startingLocationBrowser) {
+              <div style="padding: 10px;">
+                @if (currentUser) {
+                  <location-browser [purpose]="'Mileage'" [user]="currentUser" [includeCountyOffice]="true" (onSelected)="locationSelected($event)"></location-browser>
+                }
+              </div>
+            }
+            @if (!startingLocationBrowser && stLoc!=null) {
+              <div style="padding: 10px;">
+                <h5>{{stLoc.address.building}}@if (stLoc.displayName != null && stLoc.displayName != '') {
+                  <strong> ({{stLoc.displayName}})</strong>
+                }</h5>
                 <h5>{{stLoc.address.street}}</h5>
                 <h5>{{stLoc.address.city}} {{stLoc.address.state != ""?", "+stLoc.address.state:""}} {{stLoc.address.postalCode}}</h5>
                 <a (click)="startingLocationBrowser = true" class="btn btn-info btn-xs">change</a>
-                
-            </div>
+              </div>
+            }
+          </div>
         </div>
-    </div>
-    <div class="form-group" formArrayName="segments">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Destination(s):<br><small class="red">Note: Each destination visited during the day must be listed individually and in the specific order visited including the ending destination. Additional destinations may be added using "+ add destination" button below.</small></label>
-    <div class="col-md-9 col-sm-9 col-xs-12">
-        <div *ngFor="let segment of segments.controls; let i=index" class="segment-container">
-            <mileage-segment [itIsPersonalVehicle]="itIsPersonalVehicle" [index]="i" [fundingSources]="fundingSources" [programCategories]="programCategories" [currentUser]="currentUser" (removeMe)="sectionRemoved($event)" [formControlName]="i"></mileage-segment>
+        <div class="form-group" formArrayName="segments">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">Destination(s):<br><small class="red">Note: Each destination visited during the day must be listed individually and in the specific order visited including the ending destination. Additional destinations may be added using "+ add destination" button below.</small></label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            @for (segment of segments.controls; track segment; let i = $index) {
+              <div class="segment-container">
+                <mileage-segment [itIsPersonalVehicle]="itIsPersonalVehicle" [index]="i" [fundingSources]="fundingSources" [programCategories]="programCategories" [currentUser]="currentUser" (removeMe)="sectionRemoved($event)" [formControlName]="i"></mileage-segment>
+              </div>
+            }
+            <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add destination</a>
+            @if (isBackButtonAvailable) {
+              <span> or <a class="btn btn-info btn-xs" (click)="getBack()" style="margin-top: 8px; margin-left: 5px;">round trip</a></span>
+            }
+          </div>
         </div>
-        <a class="btn btn-info btn-xs" (click)="addSegment()" style="margin-top: 8px;"> + add destination</a>
-        <span *ngIf="isBackButtonAvailable"> or <a class="btn btn-info btn-xs" (click)="getBack()" style="margin-top: 8px; margin-left: 5px;">round trip</a></span>
-    </div>
-    </div>
-    <div class="ln_solid"></div>
-    <div class="form-group">
-        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+        <div class="ln_solid"></div>
+        <div class="form-group">
+          <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
             <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
             <button type="submit" [disabled]="mileageForm.invalid"  class="btn btn-success">Submit</button>
+          </div>
         </div>
-    </div> 
-  </form>
-</div>
+      </form>
+    </div>
+  }

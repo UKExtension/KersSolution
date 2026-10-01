@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AlertsService } from '../../modules/alerts/alerts.service';
@@ -6,12 +6,15 @@ import { Observable } from 'rxjs';
 import { Alert } from '../../modules/alerts/Alert';
 
 @Component({
-  selector: 'alert-widget',
-  template: `
-  <alert-banner *ngFor="let alert of alerts$ | async " [alert]="alert"></alert-banner>
+    selector: 'alert-widget',
+    template: `
+  @for (alert of alerts$ | async ; track alert) {
+    <alert-banner [alert]="alert"></alert-banner>
+  }
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AlertWidgetComponent implements OnInit {
   alerts$:Observable<Alert[]>;

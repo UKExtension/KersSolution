@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ProgramsService, StrategicInitiative, MajorProgram } from './programs.service';
 import {Location} from '@angular/common';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -6,7 +6,9 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'program-form',
-    templateUrl: 'program-form.component.html' 
+    templateUrl: 'program-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramFormComponent implements OnInit{
 

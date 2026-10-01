@@ -1,13 +1,17 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {Story} from '../story.service';
 
 @Component({
     selector: 'success-story-display-list-sync',
-    template: ` 
+    template: `
                 <ul class="messages">
-                    <li *ngFor="let story of stories" [success-story-short]="story" [link]="link"></li>
-                </ul>    
-    `
+                  @for (story of stories; track story) {
+                    <li [success-story-short]="story" [link]="link"></li>
+                  }
+                </ul>
+                `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryReportsDisplayListSyncComponent { 
 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth} from '../expense.service';
 import { User } from "../../user/user.service";
 import { Mileage, MileageSegment } from '../../mileage/mileage';
@@ -8,14 +8,26 @@ import { ProgramCategory } from '../../admin/programs/programs.service';
 @Component({
     selector: 'expense-reports-details',
     template: `
-<loading *ngIf="loading"></loading>
-<div *ngIf="!loading && !isMileage">
-    <expense-reports-details-item [expense]="expense" *ngFor="let expense of monthExpenses"></expense-reports-details-item>
-</div>
-<div *ngIf="!loading && isMileage">
-    <mileage-reports-details-item [sources]="sources" [categories]="categories" [expense]="expense" *ngFor="let expense of monthMileage"></mileage-reports-details-item>
-</div>
-        `
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading && !isMileage) {
+  <div>
+    @for (expense of monthExpenses; track expense) {
+      <expense-reports-details-item [expense]="expense"></expense-reports-details-item>
+    }
+  </div>
+}
+@if (!loading && isMileage) {
+  <div>
+    @for (expense of monthMileage; track expense) {
+      <mileage-reports-details-item [sources]="sources" [categories]="categories" [expense]="expense"></mileage-reports-details-item>
+    }
+  </div>
+}
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsDetailsComponent { 
 

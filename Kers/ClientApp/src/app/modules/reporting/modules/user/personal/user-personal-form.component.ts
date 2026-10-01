@@ -1,4 +1,4 @@
-import { Component,OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import {    UserService,
             ExtensionPosition, 
             User,
@@ -21,7 +21,9 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'user-personal-form',
-    templateUrl: 'user-personal-form.component.html'
+    templateUrl: 'user-personal-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserPersonalFormComponent implements OnInit { 
 

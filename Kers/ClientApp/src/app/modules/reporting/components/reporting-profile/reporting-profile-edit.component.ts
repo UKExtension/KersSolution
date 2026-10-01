@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ProfileService, Profile } from './profile.service';
 import { ReportingService } from '../reporting/reporting.service';
 import { FormBuilder, Validators }   from '@angular/forms';
@@ -6,7 +6,9 @@ import {Router} from '@angular/router';
 
 @Component({
     selector: 'reporting-profile-edit',
-    templateUrl: 'reporting-profile-edit.component.html' 
+    templateUrl: 'reporting-profile-edit.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingProfileEditComponent implements OnInit{
 

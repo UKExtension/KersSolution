@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, ChangeDetectorRef, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {    AffirmativeService, 
             AffirmativePlan,
@@ -17,7 +17,9 @@ import {Observable} from 'rxjs';
 
 @Component({
     selector: 'affirmative-report',
-    templateUrl: 'affirmative-reporting-home.component.html'
+    templateUrl: 'affirmative-reporting-home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AffirmativeReportsHomeComponent { 
 

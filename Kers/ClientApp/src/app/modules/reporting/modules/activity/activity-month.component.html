@@ -1,2 +1,4 @@
 <h3>{{month.date | date:'MMMM, y'}}</h3>
-<activity-detail *ngFor="let activity of month.activities" [activity]="activity" (onEdited)="edited($event)" (onDeleted)="deleted($event)"></activity-detail><br><br>
+@for (activity of month.activities; track activity) {
+  <activity-detail [activity]="activity" (onEdited)="edited($event)" (onDeleted)="deleted($event)"></activity-detail>
+  }<br><br>

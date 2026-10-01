@@ -1,41 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import { ContactService } from '../contact/contact.service';
 import { Observable } from 'rxjs/internal/Observable';
 
 
 @Component({
-  template: `
+    template: `
 
 
-  <div>
-    <div class="row x_title">
-        <div class="col-md-6">
-        <h3>Employees</h3>
-        </div>
-                  
-   </div>
-   
-
-    <user-directory-list [onlyKSU]="true" [initialAmount]="100" [showEmployeeSummaryButton]="true"></user-directory-list>
+<div>
+  <div class="row x_title">
+    <div class="col-md-6">
+      <h3>Employees</h3>
+    </div>
 
   </div>
-  <div class="ln_solid"></div>
-  <h2>MONTHLY STATISTICAL CONTACTS BY EMPLOYEE</h2>
-<div class="view-row" *ngIf="!pr">
-    <div class="text-right">
-        <button class="btn btn-info btn-xs" (click)="openStats()" >view</button>
-    </div>
+
+
+  <user-directory-list [onlyKSU]="true" [initialAmount]="100" [showEmployeeSummaryButton]="true"></user-directory-list>
+
 </div>
-<div class="close-row" *ngIf="pr">
+<div class="ln_solid"></div>
+<h2>MONTHLY STATISTICAL CONTACTS BY EMPLOYEE</h2>
+@if (!pr) {
+  <div class="view-row">
     <div class="text-right">
-        <button class="btn btn-info btn-xs" (click)="closeStats()" >close</button>
+      <button class="btn btn-info btn-xs" (click)="openStats()" >view</button>
     </div>
-    <loading *ngIf="loading"></loading>
+  </div>
+}
+@if (pr) {
+  <div class="close-row">
+    <div class="text-right">
+      <button class="btn btn-info btn-xs" (click)="closeStats()" >close</button>
+    </div>
+    @if (loading) {
+      <loading></loading>
+    }
     <div [innerHTML]="kSUdata"></div>
-</div>
-    
-  `
+  </div>
+}
+
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class KsuHomeComponent { 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Training, TrainingSearchCriteria } from './training';
 import { TrainingService } from './training.service';
@@ -7,9 +7,11 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 
 @Component({
-  selector: 'app-training-catalog',
-  templateUrl: './training-catalog.component.html',
-  styles: []
+    selector: 'app-training-catalog',
+    templateUrl: './training-catalog.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingCatalogComponent implements OnInit {
   refresh: Subject<string>; // For load/reload

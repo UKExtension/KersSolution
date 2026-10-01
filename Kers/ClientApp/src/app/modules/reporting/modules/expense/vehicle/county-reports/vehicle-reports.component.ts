@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TripsSearchCriteria, Vehicle, VehicleService } from '../vehicle.service';
 import { Expense } from '../../expense.service';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
@@ -7,44 +7,46 @@ import { Observable, Subject } from 'rxjs';
 import { flatMap, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'vehicle-reports',
-  template: `
+    selector: 'vehicle-reports',
+    template: `
     <article class="media event">
-              <div class="media-body">
-              <a class="title" [ngStyle]="{ 'color' : (vehicle.enabled)? 'rgb(35, 82, 124);' : '#ccc' }">{{vehicle.year}} {{vehicle.make}}<span *ngIf="vehicle.name != undefined && vehicle.name != ''"> ({{vehicle.name}})</span></a>
-              <p [ngStyle]="{ 'color' : (vehicle.enabled)? 'rgb(115, 135, 156)' : '#ccc' }">{{vehicle.model}}</p>
-              </div>
-     </article>
-     <article *ngIf="trips$ != null">
-     <h4 style="padding-top:14px;">Trips</h4>
-
-
-     <div class="col-sm-12 col-xs-12 text-right" style="margin-top: -33px;">
-      <div class="input-group" style="width:250px; float:right;">   
-        <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-        angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
-        [(ngModel)]="model" [options]="myDateRangePickerOptions" 
-        #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
-        <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+      <div class="media-body">
+        <a class="title" [ngStyle]="{ 'color' : (vehicle.enabled)? 'rgb(35, 82, 124);' : '#ccc' }">{{vehicle.year}} {{vehicle.make}}@if (vehicle.name != undefined && vehicle.name != '') {
+          <span> ({{vehicle.name}})</span>
+        }</a>
+        <p [ngStyle]="{ 'color' : (vehicle.enabled)? 'rgb(115, 135, 156)' : '#ccc' }">{{vehicle.model}}</p>
       </div>
-    </div>
-
-
-     <div *ngFor="let trip of trips$ | async">
-      <county-vehicle-trip [expense]="trip"></county-vehicle-trip>
-     </div>
-     </article>
-
-
+    </article>
+    @if (trips$ != null) {
+      <article>
+        <h4 style="padding-top:14px;">Trips</h4>
+        <div class="col-sm-12 col-xs-12 text-right" style="margin-top: -33px;">
+          <div class="input-group" style="width:250px; float:right;">
+            <input type="text" class="form-control input-box" placeholder="Click to select a date"
+              angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()"
+              [(ngModel)]="model" [options]="myDateRangePickerOptions"
+              #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
+            <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+          </div>
+        </div>
+        @for (trip of trips$ | async; track trip) {
+          <div>
+            <county-vehicle-trip [expense]="trip"></county-vehicle-trip>
+          </div>
+        }
+      </article>
+    }
     
-
-
-
-
-  `,
-  styles: [
     
-  ]
+    
+    
+    
+    
+    
+    `,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class VehicleReportsComponent implements OnInit {
   @Input() vehicle:Vehicle;

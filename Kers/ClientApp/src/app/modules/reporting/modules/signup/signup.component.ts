@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { Servicelog } from '../servicelog/servicelog.service';
 import  { ActivitySignUpEntry, SignupService } from './signup.service'
@@ -6,8 +6,8 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { RaceEthnicityValue } from '../activity/activity.service';
 
 @Component({
-  selector: 'signup',
-  template: `
+    selector: 'signup',
+    template: `
   
   
   <div class="signup-form-overlay">
@@ -61,7 +61,7 @@ import { RaceEthnicityValue } from '../activity/activity.service';
   </div>
 </div>
   `,
-  styles: [`
+    styles: [`
   .signup-form-overlay{
     background-color:rgba(220,239,230, 0.8);
     border: 3px solid rgba(120,139,130, 0.2);
@@ -83,7 +83,9 @@ import { RaceEthnicityValue } from '../activity/activity.service';
     border: 2px solid #ccc;
     overflow: scroll;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SignupComponent implements OnInit {
   @Input() activity:Servicelog;

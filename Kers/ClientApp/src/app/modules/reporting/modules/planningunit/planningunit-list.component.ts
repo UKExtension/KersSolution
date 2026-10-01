@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { PlanningunitService } from './planningunit.service';
 import { PlanningUnit } from '../user/user.service';
 import { Observable } from 'rxjs';
@@ -8,7 +8,9 @@ import { AreaService } from '../area/area.service';
 
 @Component({
     selector: 'planningunit-list',
-    templateUrl: 'planningunit-list.component.html'
+    templateUrl: 'planningunit-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlanningunitListComponent implements OnInit{ 
     

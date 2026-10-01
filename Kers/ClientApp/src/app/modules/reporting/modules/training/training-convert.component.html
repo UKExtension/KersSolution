@@ -1,9 +1,13 @@
 
 <div><a class="btn btn-default" (click)="reload()">Reload</a></div>
-<div  *ngIf="services$ | async as services">
+@if (services$ | async; as services) {
+  <div >
     <div [hidden]="services.length != items.length && !this.convertAllClicked && convertedItemIndex <= items.length">
-        <a class="btn btn-default" (click)="convertAll()">Convert All</a><br><br>
+      <a class="btn btn-default" (click)="convertAll()">Convert All</a><br><br>
     </div>
     <div [hidden]="convertedItemIndex <= items.length">Reload</div>
-    <training-convert-item *ngFor="let s of services" (onLoaded)="addItem($event)" (onConverted)="addTraining($event)" [service]="s"></training-convert-item>
-</div>
+    @for (s of services; track s) {
+      <training-convert-item (onLoaded)="addItem($event)" (onConverted)="addTraining($event)" [service]="s"></training-convert-item>
+    }
+  </div>
+}

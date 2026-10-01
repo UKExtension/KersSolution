@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { UserService, User } from '../user/user.service';
 import { LadderService } from './ladder.service';
@@ -8,9 +8,11 @@ import { switchMap } from 'rxjs/operators';
 import { ReportingService } from '../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'ladder-review',
-  templateUrl: './ladder-review.component.html',
-  styles: []
+    selector: 'ladder-review',
+    templateUrl: './ladder-review.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderReviewComponent implements OnInit {
 

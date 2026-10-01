@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-story-demo',
-  template: `
+    selector: 'app-story-demo',
+    template: `
   
     <story-form-demo [help_sections]="help_sections"></story-form-demo>
 
   `,
-  styles: [
-  ]
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryDemoComponent implements OnInit {
   public help_sections = "1";

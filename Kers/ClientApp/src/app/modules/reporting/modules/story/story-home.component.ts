@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {StoryService, Story} from './story.service';
 
 
 @Component({
-  templateUrl: 'story-home.component.html'
+    templateUrl: 'story-home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryHomeComponent implements OnInit { 
     

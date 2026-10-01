@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Log, LogService } from './log.service';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import { Observable, Subject } from "rxjs";
@@ -8,7 +8,9 @@ import { tap, startWith, debounceTime, flatMap, delay } from 'rxjs/operators';
 
 
 @Component({
-  templateUrl: 'log-home.component.html'
+    templateUrl: 'log-home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LogHomeComponent implements OnInit { 
     

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {ActivityService, Activity } from '../activity.service';
 
@@ -10,12 +10,16 @@ import { User } from "../../user/user.service";
     selector: 'activity-reports-year',
     template: `
     <div class="panel-year">
-        <a class="panel-heading" (click)="toggle()">{{year.year}}</a>
-        <div class="panel-collapse" *ngIf="condition">
-            <activity-reports-month *ngFor="let month of months | async; let i = index" [month]="month" [index]="i" [year]="year" [user]="user"></activity-reports-month>
+      <a class="panel-heading" (click)="toggle()">{{year.year}}</a>
+      @if (condition) {
+        <div class="panel-collapse">
+          @for (month of months | async; track month; let i = $index) {
+            <activity-reports-month [month]="month" [index]="i" [year]="year" [user]="user"></activity-reports-month>
+          }
         </div>
+      }
     </div>
-        `,
+    `,
     styles: [`
         .panel-year{
             border-bottom: 1px solid #efefef;
@@ -23,7 +27,9 @@ import { User } from "../../user/user.service";
         .panel-heading{
             cursor:pointer;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsYearComponent { 
 

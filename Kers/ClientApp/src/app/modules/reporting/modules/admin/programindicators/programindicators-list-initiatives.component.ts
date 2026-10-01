@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import { Observable } from 'rxjs';
 import { ProgramsService, StrategicInitiative, MajorProgram} from '../programs/programs.service';
 import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';
@@ -15,7 +15,9 @@ import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service'
             border-bottom: 1px solid #D9DEE4;
             margin: 0;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramindicatorsListInitiativesComponent implements OnInit{
     

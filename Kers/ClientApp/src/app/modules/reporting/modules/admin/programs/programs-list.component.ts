@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import { Observable } from 'rxjs';
 import {InitiativeFormComponent} from './initiative-form.component';
@@ -8,28 +8,37 @@ import {ProgramsService, StrategicInitiative, MajorProgram} from './programs.ser
     selector: 'programs-list',
     template: `
 <div>
-    <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newProgram" (click)="newProgramOpen()">+ new major program</a>
-    </div>
-    <program-form *ngIf="newProgram" [initiative]="initiative" (onFormCancel)="newProgramCancelled()" (onFormSubmit)="newProgramSubmitted()"></program-form>
+  <div class="text-right">
+    @if (!newProgram) {
+      <a class="btn btn-info btn-xs" (click)="newProgramOpen()">+ new major program</a>
+    }
+  </div>
+  @if (newProgram) {
+    <program-form [initiative]="initiative" (onFormCancel)="newProgramCancelled()" (onFormSubmit)="newProgramSubmitted()"></program-form>
+  }
 </div>
-<div *ngIf="programs">
+@if (programs) {
+  <div>
     <table class="table table-striped">
-        <thead>
+      <thead>
         <tr>
-            <th>Name</th>
-            <th>Code</th>
-            <th></th>
+          <th>Name</th>
+          <th>Code</th>
+          <th></th>
         </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let program of programs" [programListDetail]="program" (onProgramUpdated)="onProgramUpdate()" (onProgramDeleted)="onProgramUpdate()"></tr>
-        </tbody>               
-    </table>            
-</div>
-       
-    `
+      </thead>
+      <tbody>
+        @for (program of programs; track program) {
+          <tr [programListDetail]="program" (onProgramUpdated)="onProgramUpdate()" (onProgramDeleted)="onProgramUpdate()"></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
 
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramsListComponent implements OnInit{
 

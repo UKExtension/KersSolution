@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CountyCode, SoildataService } from '../soildata.service';
 import { Observable } from 'rxjs';
 import { FormTypeSignees } from '../soildata.report';
@@ -7,77 +7,81 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'soildata-signees',
-  template: `
-  
-  <loading *ngIf="loading"></loading>
-  <div class="row" *ngIf="!loading">
-      <form novalidate class="form-horizontal form-label-left" (ngSubmit)="onSubmit()" [formGroup]="signeesForm">
+    selector: 'soildata-signees',
+    template: `
+
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading) {
+  <div class="row">
+    <form novalidate class="form-horizontal form-label-left" (ngSubmit)="onSubmit()" [formGroup]="signeesForm">
       <br>
-      <h3>Notifications Recipients</h3><br>
+        <h3>Notifications Recipients</h3><br>
         <div class="form-group">
-          <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12"></label>           
+          <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12"></label>
           <div class="col-md-9 col-sm-9 col-xs-12">
-          Multiple recipients may be entered (separate with semicolon and space)<br>
+            Multiple recipients may be entered (separate with semicolon and space)<br>
           </div>
         </div>
         <div class="form-group">
-          <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice Email:</label>           
+          <label for="invoiceEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice Email:</label>
           <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text"  name="invoiceEmail" formControlName="invoiceEmail" id="invoiceEmail" class="form-control col-xs-12" />
+            <input type="text"  name="invoiceEmail" formControlName="invoiceEmail" id="invoiceEmail" class="form-control col-xs-12" />
           </div>
         </div>
         <div class="form-group">
-          <label for="reportEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Report Email:</label>           
+          <label for="reportEmail" class="control-label col-md-3 col-sm-3 col-xs-12">Report Email:</label>
           <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text"  name="reportEmail" formControlName="reportEmail" id="reportEmail" class="form-control col-xs-12" />
+            <input type="text"  name="reportEmail" formControlName="reportEmail" id="reportEmail" class="form-control col-xs-12" />
           </div>
         </div>
         <div class="ln_solid"></div>
-          <div class="form-group">
-              <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
-                  <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-                  <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Submit</button>
-              </div>
-          </div>
-          
-        <br>
-      <h3>Agent Information</h3><br>
-      <h5>The signature that appears on reports will come from the KERS personal profile of the person completing the review step.<br>If the review step is skipped, the information on this page will be used.</h5>
-  
-      <div formArrayName="signees" *ngFor="let item of signeesForm.get('signees').controls; let i = index;">
-        <div [formGroupName]="i">
-          
-          <div class="col-sm-offset-3" style="padding-left: 10px;"><br>
-            <h3 style="margin-bottom: 0;"><small class="green">Form</small> {{ signeesForm.controls.signees.controls[i].controls.typeFormDisplay.value.code }}</h3>
-            <small>({{ signeesForm.controls.signees.controls[i].controls.typeFormDisplay.value.name }})</small>
-          </div>
-          <div class="form-group">
-              <label for="signee" class="control-label col-md-3 col-sm-3 col-xs-12">Signee:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" name="signee" formControlName="signee" id="signee" class="form-control col-xs-12" />
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Signee Title:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text"  name="title" formControlName="title" id="title" class="form-control col-xs-12" />
-              </div>
+        <div class="form-group">
+          <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
+            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+            <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Submit</button>
           </div>
         </div>
-      </div>
-     
+        <br>
+          <h3>Agent Information</h3><br>
+          <h5>The signature that appears on reports will come from the KERS personal profile of the person completing the review step.<br>If the review step is skipped, the information on this page will be used.</h5>
+          @for (item of signeesForm.get('signees').controls; track item; let i = $index) {
+            <div formArrayName="signees">
+              <div [formGroupName]="i">
+                <div class="col-sm-offset-3" style="padding-left: 10px;"><br>
+                  <h3 style="margin-bottom: 0;"><small class="green">Form</small> {{ signeesForm.controls.signees.controls[i].controls.typeFormDisplay.value.code }}</h3>
+                  <small>({{ signeesForm.controls.signees.controls[i].controls.typeFormDisplay.value.name }})</small>
+                </div>
+                <div class="form-group">
+                  <label for="signee" class="control-label col-md-3 col-sm-3 col-xs-12">Signee:</label>
+                  <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" name="signee" formControlName="signee" id="signee" class="form-control col-xs-12" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Signee Title:</label>
+                  <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text"  name="title" formControlName="title" id="title" class="form-control col-xs-12" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
           <div class="ln_solid"></div>
           <div class="form-group">
-              <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
-                  <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-                  <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Submit</button>
-              </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-3">
+              <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+              <button type="submit" [disabled]="signeesForm.invalid"  class="btn btn-success">Submit</button>
+            </div>
           </div>
-      </form>
-  </div>
-  `,
-  styles: []
+        </form>
+      </div>
+    }
+`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataSigneesComponent implements OnInit {
   signeesForm: FormGroup;

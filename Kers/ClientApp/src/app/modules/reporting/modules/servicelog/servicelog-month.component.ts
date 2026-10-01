@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Servicelog, ServicelogService, ServicelogMonth } from "./servicelog.service";
 
 @Component({
     selector: 'servicelog-month',
-    templateUrl: 'servicelog-month.component.html'
+    templateUrl: 'servicelog-month.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogMonthComponent { 
 

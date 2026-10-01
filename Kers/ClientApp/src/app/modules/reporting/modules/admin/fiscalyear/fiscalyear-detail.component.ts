@@ -1,9 +1,11 @@
-import {    Component, Input, OnInit, EventEmitter, Output   } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FiscalyearService, FiscalYear } from './fiscalyear.service';
 
 @Component({
     selector: '[fiscalyearListDetail]',
-    templateUrl: 'fiscalyear-detail.component.html'
+    templateUrl: 'fiscalyear-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class FiscalyearDetailComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
 import { TrainingSession } from '../training';
@@ -7,8 +7,8 @@ import { IAngularMyDpOptions, IMyDateModel} from 'gramli-angular-mydatepicker';
 
 
 @Component({
-  selector: 'training-session',
-  template: `
+    selector: 'training-session',
+    template: `
 <div class="form-group" [formGroup]="sessionGroup">
     <div class="row">
         <div class="col-sm-4">
@@ -49,17 +49,19 @@ import { IAngularMyDpOptions, IMyDateModel} from 'gramli-angular-mydatepicker';
 </div>
 
   `,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => SessionFormElementComponent),
-                  multi: true
-                } ,
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => SessionFormElementComponent),
-                  multi: true
-                }
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SessionFormElementComponent),
+            multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SessionFormElementComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SessionFormElementComponent extends BaseControlValueAccessor<TrainingSession> implements ControlValueAccessor, OnInit { 
     sessionGroup: FormGroup;

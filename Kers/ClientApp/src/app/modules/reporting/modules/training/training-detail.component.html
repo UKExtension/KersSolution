@@ -1,61 +1,105 @@
-<ng-container *ngIf="admin">
-    <td *ngIf="rowDefault">{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
-    <td *ngIf="rowDefault">{{training.subject}}</td>
-    <td *ngIf="rowDefault">{{training.tLocation}}</td>
-    <td *ngIf="rowDefault" style="white-space: nowrap;">
-        <ng-container *ngIf="training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0">
-            <ng-container *ngFor="let session of training.trainingSessionWithTimes">
-                {{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}}<br>
-            </ng-container>
-        </ng-container>
-        <ng-container *ngIf="training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0">
-                {{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span>
-        </ng-container>
-    </td>
-    <td *ngIf="rowDefault"><span *ngIf="training.submittedBy && training.submittedBy.personalProfile">{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span></td>
-    <td *ngIf="rowDefault">{{training.enrollment.length}}</td>
-    <td *ngIf="rowDefault" class="text-right">
-        <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault"><i class="fa fa-pencil"></i> Edit</a>
-        <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault"><i class="fa fa-trash-o"></i> Delete</a>
-        <a class="btn btn-primary btn-xs" (click)="default()" *ngIf="!rowDefault"><i class="fa fa-close"></i> Close</a>
-    </td>
-    <td *ngIf="rowEdit" colspan="7">
-        <div class="text-right">
-            <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
-        </div>
-        <ng-container *ngIf="training.trainingSession.length == 0">
-            <training-form [training]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></training-form>
-        </ng-container>
-        <ng-container *ngIf="training.trainingSession.length > 0">
-            <training-form-sessions [training]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></training-form-sessions>
-        </ng-container>
-    </td>
-    <td *ngIf="rowDelete" colspan="6">
-        <div class="text-right">
-            <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
-        </div>
-        <div>
-            Do you really want to delete training <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
-        </div>
-    </td>
-</ng-container>
-<ng-container *ngIf="!admin">
-    <td><a [routerLink]="['/reporting/training',training.id, criteria]" >Select</a></td>
-    <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
-    <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
+@if (admin) {
+  @if (rowDefault) {
+    <td>{{training.start | date:'mediumDate'}} @if (training.end) {
+      <span><br>{{training.end | date:'mediumDate'}}</span>
+    }</td>
+  }
+  @if (rowDefault) {
+    <td>{{training.subject}}</td>
+  }
+  @if (rowDefault) {
     <td>{{training.tLocation}}</td>
+  }
+  @if (rowDefault) {
     <td style="white-space: nowrap;">
-            <ng-container *ngIf="training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0">
-                <ng-container *ngFor="let session of training.trainingSessionWithTimes">
-                    {{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}}<br>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf="training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0">
-                    {{training.day1}}<span *ngIf="training.day2"><br>{{training.day2}}</span><span *ngIf="training.day3"><br>{{training.day3}}</span><span *ngIf="training.day4"><br>{{training.day4}}</span>
-            </ng-container>
-        </td>
-</ng-container>
+      @if (training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0) {
+        @for (session of training.trainingSessionWithTimes; track session) {
+          {{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}}<br>
+        }
+      }
+      @if (training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0) {
+        {{training.day1}}@if (training.day2) {
+        <span><br>{{training.day2}}</span>
+        }@if (training.day3) {
+        <span><br>{{training.day3}}</span>
+        }@if (training.day4) {
+        <span><br>{{training.day4}}</span>
+      }
+    }
+  </td>
+}
+@if (rowDefault) {
+  <td>@if (training.submittedBy && training.submittedBy.personalProfile) {
+    <span>{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span>
+  }</td>
+}
+@if (rowDefault) {
+  <td>{{training.enrollment.length}}</td>
+}
+@if (rowDefault) {
+  <td class="text-right">
+    @if (rowDefault) {
+      <a class="btn btn-info btn-xs" (click)="edit()"><i class="fa fa-pencil"></i> Edit</a>
+    }
+    @if (rowDefault) {
+      <a class="btn btn-info btn-xs" (click)="delete()"><i class="fa fa-trash-o"></i> Delete</a>
+    }
+    @if (!rowDefault) {
+      <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+    }
+  </td>
+}
+@if (rowEdit) {
+  <td colspan="7">
+    <div class="text-right">
+      <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+    </div>
+    @if (training.trainingSession.length == 0) {
+      <training-form [training]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></training-form>
+    }
+    @if (training.trainingSession.length > 0) {
+      <training-form-sessions [training]="training" (onFormCancel)="default()" (onFormSubmit)="trainingSubmitted($event)"></training-form-sessions>
+    }
+  </td>
+}
+@if (rowDelete) {
+  <td colspan="6">
+    <div class="text-right">
+      <a class="btn btn-primary btn-xs" (click)="default()"><i class="fa fa-close"></i> Close</a>
+    </div>
+    <div>
+      Do you really want to delete training <strong>{{training.subject}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+    </div>
+  </td>
+}
+}
+@if (!admin) {
+  <td><a [routerLink]="['/reporting/training',training.id, criteria]" >Select</a></td>
+  <td>{{training.start | date:'mediumDate'}} @if (training.end) {
+    <span><br>{{training.end | date:'mediumDate'}}</span>
+  }</td>
+  <td>{{training.subject}}@if (training.seatLimit) {
+    <span><br><strong>Limited to {{training.seatLimit}} participants.</strong></span>
+  }</td>
+  <td>{{training.tLocation}}</td>
+  <td style="white-space: nowrap;">
+    @if (training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0) {
+      @for (session of training.trainingSessionWithTimes; track session) {
+        {{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}}<br>
+      }
+    }
+    @if (training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0) {
+      {{training.day1}}@if (training.day2) {
+      <span><br>{{training.day2}}</span>
+      }@if (training.day3) {
+      <span><br>{{training.day3}}</span>
+      }@if (training.day4) {
+      <span><br>{{training.day4}}</span>
+    }
+  }
+</td>
+}
 
 
-        
-        
+
+

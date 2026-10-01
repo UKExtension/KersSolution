@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FiscalyearService, FiscalYear } from './fiscalyear.service';
 import {Location} from '@angular/common';
 import { FormBuilder, Validators }   from '@angular/forms';
@@ -7,7 +7,9 @@ import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 
 @Component({
     selector: 'fiscalyear-form',
-    templateUrl: 'fiscalyear-form.component.html' 
+    templateUrl: 'fiscalyear-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class FiscalyearFormComponent implements OnInit{
 

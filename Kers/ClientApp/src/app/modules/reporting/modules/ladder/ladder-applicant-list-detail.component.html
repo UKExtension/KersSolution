@@ -1,27 +1,45 @@
-<div class="row" *ngIf="rowDefault">
-  <div class="col-xs-6">Professional Promotion Application Created on {{application.created | date:'shortDate'}}</div>
-  <div class="col-xs-6 text-right">
-    <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault && application.draft">edit</a>
-    <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault && application.draft">delete</a>
-    <a class="btn btn-info btn-xs" (click)="details()" *ngIf="rowDefault">details</a>
+@if (rowDefault) {
+  <div class="row">
+    <div class="col-xs-6">Professional Promotion Application Created on {{application.created | date:'shortDate'}}</div>
+    <div class="col-xs-6 text-right">
+      @if (rowDefault && application.draft) {
+        <a class="btn btn-info btn-xs" (click)="edit()">edit</a>
+      }
+      @if (rowDefault && application.draft) {
+        <a class="btn btn-info btn-xs" (click)="delete()">delete</a>
+      }
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="details()">details</a>
+      }
+    </div>
   </div>
-</div>
-<div class="row" *ngIf="rowDelete">
-  <div class="col-xs-12">
-    <a class="btn btn-info btn-xs pull-right" (click)="default()" *ngIf="!rowDefault">close</a>
+}
+@if (rowDelete) {
+  <div class="row">
+    <div class="col-xs-12">
+      @if (!rowDefault) {
+        <a class="btn btn-info btn-xs pull-right" (click)="default()">close</a>
+      }
+    </div>
+    <div>
+      Do you really want to delete Professional Promotion Application draft created on <strong>{{application.created | date:'shortDate'}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
+    </div>
   </div>
-  <div>
-    Do you really want to delete Professional Promotion Application draft created on <strong>{{application.created | date:'shortDate'}}</strong>?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
-</div>
-</div>
-<div class="row" *ngIf="rowDetails">
-  <div class="col-xs-12">
-    <a class="btn btn-info btn-xs pull-right" (click)="default()" *ngIf="!rowDefault">close</a>
+}
+@if (rowDetails) {
+  <div class="row">
+    <div class="col-xs-12">
+      @if (!rowDefault) {
+        <a class="btn btn-info btn-xs pull-right" (click)="default()">close</a>
+      }
+    </div>
+    <ladder-application-details [applicationId]="application.id"></ladder-application-details>
   </div>
-  <ladder-application-details [applicationId]="application.id"></ladder-application-details>
-</div>
-<div class="row" *ngIf="rowEdit">
-  <div class="col-xs-12">
-    <ladder-application-form [application]="application" (onFormCancel)="default()" (onFormSubmit)="formSaved($event)" (onDraftSaved)="formSaved($event)"></ladder-application-form>
+}
+@if (rowEdit) {
+  <div class="row">
+    <div class="col-xs-12">
+      <ladder-application-form [application]="application" (onFormCancel)="default()" (onFormSubmit)="formSaved($event)" (onDraftSaved)="formSaved($event)"></ladder-application-form>
+    </div>
   </div>
-</div>
+}

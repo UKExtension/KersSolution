@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {StoryService, Story} from '../story.service';
 import { Observable } from "rxjs";
 import { User } from "../../user/user.service";
@@ -7,43 +7,46 @@ import {Location} from '@angular/common';
 @Component({
     selector: 'success-story-full',
     template: `
-    <div *ngIf="story">
+    @if (story) {
+      <div>
         <success-story-display [story]="story"></success-story-display>
         <div class="row">
-            <div class="col-xs-12">
-                <br>
-                    <div class="ln_solid"></div><br>
-                <div *ngIf="author | async">
-                    <h2>More stories by  {{(author | async)?.personalProfile.firstName}} {{(author | async)?.personalProfile.lastName}}</h2>
-                    
-                    <!-- start more stories -->
-                    <ul class="messages">
-                        <li *ngFor="let story of otherStories | async">
-                        <img src="{{externalUrl('/image/crop/100/100/' + story.storyImages[0].uploadImage.uploadFile.name)}}" class="avtr" alt="Avatar" *ngIf="story.storyImages.length > 0">
+          <div class="col-xs-12">
+            <br>
+              <div class="ln_solid"></div><br>
+              @if (author | async) {
+                <div>
+                  <h2>More stories by  {{(author | async)?.personalProfile.firstName}} {{(author | async)?.personalProfile.lastName}}</h2>
+                  <!-- start more stories -->
+                  <ul class="messages">
+                    @for (story of otherStories | async; track story) {
+                      <li>
+                        @if (story.storyImages.length > 0) {
+                          <img src="{{externalUrl('/image/crop/100/100/' + story.storyImages[0].uploadImage.uploadFile.name)}}" class="avtr" alt="Avatar">
+                        }
                         <div class="message_date">
-                            <h3 class="date text-info">{{day(story.created)}}</h3>
-                            <p class="month">{{month(story.created)}}</p>
+                          <h3 class="date text-info">{{day(story.created)}}</h3>
+                          <p class="month">{{month(story.created)}}</p>
                         </div>
                         <div class="message_wrapper">
-                            <h4 class="heading">{{story.title}}</h4>
-                            <blockquote class="message" [innerHtml]="htmlToPlaintext(story.story)"></blockquote>
-                            <br>
+                          <h4 class="heading">{{story.title}}</h4>
+                          <blockquote class="message" [innerHtml]="htmlToPlaintext(story.story)"></blockquote>
+                          <br>
                             <p class="url">
-                            <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                            <a [routerLink]="['/reporting/story', story.id]" (click)="clicked()"><i class="fa fa-align-left"></i> Full Story</a>
+                              <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                              <a [routerLink]="['/reporting/story', story.id]" (click)="clicked()"><i class="fa fa-align-left"></i> Full Story</a>
                             </p>
-                        </div>
+                          </div>
                         </li>
-                        
-
+                      }
                     </ul>
                     <!-- end more stories -->
-                    
-                
-                </div>
+                  </div>
+                }
+              </div>
             </div>
-        </div>
-    </div>
+          </div>
+        }
     
     `,
     styles: [`
@@ -63,7 +66,9 @@ import {Location} from '@angular/common';
                 margin-left: 105px;
                 margin-right: 45px;
             }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryReportsFullComponent { 
 

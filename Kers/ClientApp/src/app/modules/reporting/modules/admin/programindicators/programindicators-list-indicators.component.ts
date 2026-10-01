@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import { ProgramsService, StrategicInitiative, MajorProgram} from '../programs/programs.service';
 import {IndicatorsService, Indicator} from '../../indicators/indicators.service';
 
@@ -12,7 +12,9 @@ import {IndicatorsService, Indicator} from '../../indicators/indicators.service'
             padding-bottom: 10px;
             border-bottom: none;
         }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProgramindicatorsListIndicatorsComponent implements OnInit{
     

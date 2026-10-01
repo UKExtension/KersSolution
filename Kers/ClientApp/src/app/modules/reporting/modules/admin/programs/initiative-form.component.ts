@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ProgramsService, StrategicInitiative, ProgramCategory } from './programs.service';
 import {Location} from '@angular/common';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -7,7 +7,9 @@ import { FiscalYear } from '../fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'initiative-form',
-    templateUrl: 'initiative-form.component.html' 
+    templateUrl: 'initiative-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class InitiativeFormComponent implements OnInit{
 

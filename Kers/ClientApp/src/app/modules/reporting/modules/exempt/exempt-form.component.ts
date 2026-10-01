@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PlanningUnit, User, UserService } from '../user/user.service';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ReportingService } from '../../components/reporting/reporting.service';
@@ -10,10 +10,11 @@ import { tap } from 'rxjs/operators';
 import { number } from 'echarts';
 
 @Component({
-  selector: 'exempt-form',
-  templateUrl: './exempt-form.component.html',
-  styles: [
-  ]
+    selector: 'exempt-form',
+    templateUrl: './exempt-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExemptFormComponent implements OnInit {
   

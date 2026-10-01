@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/forms";
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import {    ActivityOption, ActivityOptionNumber, 
@@ -18,7 +18,9 @@ import {ExtensionEventLocationConnection} from '../events/location/location.serv
 @Component({
     selector: 'servicelog-form',
     templateUrl: 'servicelog-form.component.html',
-    styleUrls: ['servicelog-form.component.scss'] 
+    styleUrls: ['servicelog-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogFormComponent implements OnInit{ 
 

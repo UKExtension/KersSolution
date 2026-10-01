@@ -1,17 +1,23 @@
-<div *ngIf="!newSample"><reporting-display-help id="19"></reporting-display-help></div>
+@if (!newSample) {
+  <div><reporting-display-help id="19"></reporting-display-help></div>
+}
 <h3>Soil Samples</h3>
 <div class="text-right">
-  <a class="btn btn-info btn-xs" *ngIf="!newSample" (click)="newSample = true">+ new sample</a>
+  @if (!newSample) {
+    <a class="btn btn-info btn-xs" (click)="newSample = true">+ new sample</a>
+  }
 </div>
-<soil-sample-form *ngIf="newSample" (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)" [countyCode]="selectedCounty" [sample]="reportForCopy" [isThisACopy]="isThisSampleCopy"></soil-sample-form>
+@if (newSample) {
+  <soil-sample-form (onFormCancel)="SampleFormCanceled()" (onFormSubmit)="SampleFormSubmit($event)" [countyCode]="selectedCounty" [sample]="reportForCopy" [isThisACopy]="isThisSampleCopy"></soil-sample-form>
+}
 <br><br>
 <div class="row">
   <div class="col-sm-4 col-xs-12 text-right" style="margin-top: 3px;">
-    <div class="input-group" style="width:250px;"> 
-      <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-      angular-mydatepicker name="mydaterange" (click)="dp.toggleCalendar()" 
-      [(ngModel)]="model" [options]="myDateRangePickerOptions" 
-      #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
+    <div class="input-group" style="width:250px;">
+      <input type="text" class="form-control input-box" placeholder="Click to select a date"
+        angular-mydatepicker name="mydaterange" (click)="dp.toggleCalendar()"
+        [(ngModel)]="model" [options]="myDateRangePickerOptions"
+        #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
       <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
     </div>
   </div>
@@ -19,112 +25,129 @@
     <input type="text" [(ngModel)]="criteria.search" placeholder="Search by first OR last name (results displayed for date range selected)" (keyup)="onSearch($event)" class="form-control" name="Search" />
   </div>
   <div class="col-sm-3 col-xs-12 text-right" style="margin-top: 3px;">
-    <ng-container *ngIf="samplesExist">
-      Generate packing slip <a class="btn btn-info btn-xs" (click)="printPackingSlip(filteredReports)"  *ngIf="!samplePdfLoading"><i class="fa fa-download"></i> pdf</a>
-      <loading *ngIf="samplePdfLoading"></loading>
-    </ng-container>
-  </div>
+    @if (samplesExist) {
+      Generate packing slip @if (!samplePdfLoading) {
+      <a class="btn btn-info btn-xs" (click)="printPackingSlip(filteredReports)" ><i class="fa fa-download"></i> pdf</a>
+    }
+    @if (samplePdfLoading) {
+      <loading></loading>
+    }
+  }
+</div>
 
 </div>
 
-<div  *ngIf="filteredReports">
-
-  <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
-    <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
-  </a>
-  <div class="row">
-    <form class="form-horizontal form-label-left" [style.display]="condition ? null : 'none'">
-      <div class="col-sm-offset-3 col-sm-9">
-        <h2>Refine Search</h2>
-      </div>
-      <div class="form-group">
+@if (filteredReports) {
+  <div >
+    <a (click)="condition = !condition" style="cursor: pointer;">@if (condition) {
+      <i class="fa fa-minus-square"></i>
+    }
+    @if (!condition) {
+      <i class="fa fa-plus-square"></i>
+      } more search options
+    </a>
+    <div class="row">
+      <form class="form-horizontal form-label-left" [style.display]="condition ? null : 'none'">
+        <div class="col-sm-offset-3 col-sm-9">
+          <h2>Refine Search</h2>
+        </div>
+        <div class="form-group">
           <label class="control-label col-md-3 col-sm-3 col-xs-12">Form Type</label>
           <div class="col-md-6 col-sm-6 col-xs-12">
-            
-              
-                <label *ngFor="let option of typesCheckboxes" class="checkbox-inline">
-                    <input type="checkbox"
-                          (change)="onFormTypeChange($event)"
-                          name="{{option.name}}"
-                          value="{{option.value}}"
-                          [(ngModel)]="option.checked"/>
-                    {{option.name}}
-                </label>
-
-          </div>
-      </div>
-
-      <div class="form-group">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12">Report Status</label>
-        <div class="col-md-6 col-sm-6 col-xs-12">
-              <label *ngFor="let option of statusesCheckboxes" class="checkbox-inline">
-                  <input type="checkbox"
-                        (change)="onReportStatusesChange($event)"
-                        name="{{option.name}}"
-                        value="{{option.value}}"
-                        [(ngModel)]="option.checked"
-                        />
-                  {{option.name}}
+            @for (option of typesCheckboxes; track option) {
+              <label class="checkbox-inline">
+                <input type="checkbox"
+                  (change)="onFormTypeChange($event)"
+                  name="{{option.name}}"
+                  value="{{option.value}}"
+                  [(ngModel)]="option.checked"/>
+                {{option.name}}
               </label>
+            }
           </div>
-      </div>
-      <div class="form-group" >
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">Report Status</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            @for (option of statusesCheckboxes; track option) {
+              <label class="checkbox-inline">
+                <input type="checkbox"
+                  (change)="onReportStatusesChange($event)"
+                  name="{{option.name}}"
+                  value="{{option.value}}"
+                  [(ngModel)]="option.checked"
+                  />
+                {{option.name}}
+              </label>
+            }
+          </div>
+        </div>
+        <div class="form-group" >
           <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
           <div class="col-md-9 col-sm-9 col-xs-12">
-              <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-default" [class.active]="type=='dsc'">
-                    <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Desc
-                  </label>
-                  <label class="btn btn-default" [class.active]="type=='asc'">
-                    <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Asc
-                  </label>
-                  <label class="btn btn-default" [class.active]="type=='smpl'">
-                    <input type="radio" name="type" id="option4" (click)="switchOrder('smpl')"> CoSamNum Desc
-                  </label>
-                  <label class="btn btn-default" [class.active]="type=='smplasc'">
-                    <input type="radio" name="type" id="option4" (click)="switchOrder('smplasc')"> CoSamNum Asc
-                  </label>
-
-                    
-              </div>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-default" [class.active]="type=='dsc'">
+                <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Desc
+              </label>
+              <label class="btn btn-default" [class.active]="type=='asc'">
+                <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Asc
+              </label>
+              <label class="btn btn-default" [class.active]="type=='smpl'">
+                <input type="radio" name="type" id="option4" (click)="switchOrder('smpl')"> CoSamNum Desc
+              </label>
+              <label class="btn btn-default" [class.active]="type=='smplasc'">
+                <input type="radio" name="type" id="option4" (click)="switchOrder('smplasc')"> CoSamNum Asc
+              </label>
+            </div>
           </div>
-      </div>  
-      <div class="form-group" *ngIf="filteredReports.length > 0">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
-        <div class="col-md-6 col-sm-6 col-xs-12">
-          
-            <ng-container *ngIf="reportsExist">
-              <a class="btn btn-info btn-xs" (click)="printAll(filteredReports)"  *ngIf="!pdfLoading"><i class="fa fa-download"></i> pdf</a> Generate consolidated report of filtered results
-              <loading *ngIf="pdfLoading"></loading>
-<br>
-              <a class="btn btn-info btn-xs" (click)="downloadCsv(filteredReports)"  *ngIf="!csvDataLoading"><i class="fa fa-download"></i> csv</a> Download reports data
-              <loading *ngIf="csvDataLoading"></loading>
-
-            </ng-container>
         </div>
-    </div>
-      
-      
-    </form>
-  </div><br>
-  <div class="table-responsive">
-    
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-              <th>Sample In</th>
-              <th>Form Type</th>
-              <th>CO Sample Num</th>
-              <th>Client</th>
-              <th>Status</th>
-              <th></th>              
-            </tr>
-        </thead>
-        <tbody *ngIf="!loading">
-          <tr *ngFor="let report of filteredReports" [soildata-reports-catalog-details]="report" (isItReport)="registerReports($event)" (isItSample)="registerSamples($event)" (onBundleDelete)="onRefresh()" (onStatusChange)="statusChanged()" (onNoteChange)="reportAgentNoteChanged($event)" (onCopySample)="copySample($event)"></tr>
-        </tbody>
-    </table>
-    
-  </div>
-</div>
-<loading *ngIf="loading"></loading>
+        @if (filteredReports.length > 0) {
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              @if (reportsExist) {
+                @if (!pdfLoading) {
+                  <a class="btn btn-info btn-xs" (click)="printAll(filteredReports)" ><i class="fa fa-download"></i> pdf</a>
+                  } Generate consolidated report of filtered results
+                  @if (pdfLoading) {
+                    <loading></loading>
+                  }
+                  <br>
+                    @if (!csvDataLoading) {
+                      <a class="btn btn-info btn-xs" (click)="downloadCsv(filteredReports)" ><i class="fa fa-download"></i> csv</a>
+                      } Download reports data
+                      @if (csvDataLoading) {
+                        <loading></loading>
+                      }
+                    }
+                  </div>
+                </div>
+              }
+            </form>
+          </div><br>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Sample In</th>
+                  <th>Form Type</th>
+                  <th>CO Sample Num</th>
+                  <th>Client</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              @if (!loading) {
+                <tbody>
+                  @for (report of filteredReports; track report) {
+                    <tr [soildata-reports-catalog-details]="report" (isItReport)="registerReports($event)" (isItSample)="registerSamples($event)" (onBundleDelete)="onRefresh()" (onStatusChange)="statusChanged()" (onNoteChange)="reportAgentNoteChanged($event)" (onCopySample)="copySample($event)"></tr>
+                  }
+                </tbody>
+              }
+            </table>
+          </div>
+        </div>
+      }
+      @if (loading) {
+        <loading></loading>
+      }

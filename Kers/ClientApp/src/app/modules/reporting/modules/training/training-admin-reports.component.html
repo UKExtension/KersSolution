@@ -1,66 +1,86 @@
 <h3>Admin Reports</h3>
 <div class="row">
   <div class="col-sm-6 col-xs-12" class="form-inline" style="margin-top: 3px;">
-    
+
     <div class="form-group col-sm-6 col-xs-12" style="margin-bottom: 8px;">
       <label for="exampleInputName2">Select Calendar Year: &nbsp;</label>
       <select class="form-control" (change)="onYearChange($event.target.value)">
-        <option *ngFor="let year of years" [value]="year" [selected]="year == thisYear">{{year}}</option>
+        @for (year of years; track year) {
+          <option [value]="year" [selected]="year == thisYear">{{year}}</option>
+        }
       </select>
     </div>
-    
-    
-      
+
+
+
   </div>
   <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-        <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-default" [class.active]="status=='act'">
-                    <input type="radio" name="order" id="option2" (click)="switchStatus('act')">Active
-                </label>
-                <label class="btn btn-default" [class.active]="status=='pnd'">
-                        <input type="radio" name="order" id="option2" (click)="switchStatus('pnd')">Pending
-                    </label>
-                <label class="btn btn-default active" [class.active]="status=='cnc'">
-                    <input type="radio" name="order" id="option3" (click)="switchStatus('cnc')">Canceled
-                </label>
-            </div>
+    <div class="btn-group" data-toggle="buttons">
+      <label class="btn btn-default" [class.active]="status=='act'">
+        <input type="radio" name="order" id="option2" (click)="switchStatus('act')">Active
+      </label>
+      <label class="btn btn-default" [class.active]="status=='pnd'">
+        <input type="radio" name="order" id="option2" (click)="switchStatus('pnd')">Pending
+      </label>
+      <label class="btn btn-default active" [class.active]="status=='cnc'">
+        <input type="radio" name="order" id="option3" (click)="switchStatus('cnc')">Canceled
+      </label>
+    </div>
   </div>
 
 </div>
 
 
 <div class="table-responsive">
-    <loading *ngIf="loading"></loading>
-    <table  class="table table-bordered table-striped" *ngIf="trainings && !loading">
+  @if (loading) {
+    <loading></loading>
+  }
+  @if (trainings && !loading) {
+    <table  class="table table-bordered table-striped">
       <thead>
-          <tr>
-              <th>Title</th>
-              <th>Submitter</th>
-              <th>Training Date(s)</th>
-              <th>Hours</th>
-              <th>Enrolled</th>
-              <th>Attended</th>
-          </tr>
-      </thead>
-      <tr *ngFor="let training of trainings">
-        <td>{{training.subject}}<span *ngIf="training.seatLimit"><br><strong>Limited to {{training.seatLimit}} participants.</strong></span></td>
-        <td><span *ngIf="training.submittedBy">{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span></td>
-        <td>{{training.start | date:'mediumDate'}} <span *ngIf="training.end"><br>{{training.end | date:'mediumDate'}}</span></td>
-        <td><span *ngIf="!training.iHour">0</span><span *ngIf="training.iHour">{{training.iHour.iHourValue}}</span></td>
-        <td>{{training.enrollment.length}}</td>
-        <td>{{attendance(training)}}</td>
-      </tr>
-      <tfoot *ngIf="totalHours != null">
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><strong>{{totalHours}}</strong></td>
-          <td>{{totalEnrolled}}</td>
-          <td>{{totalAttended}}</td>
+          <th>Title</th>
+          <th>Submitter</th>
+          <th>Training Date(s)</th>
+          <th>Hours</th>
+          <th>Enrolled</th>
+          <th>Attended</th>
         </tr>
-      </tfoot>
+      </thead>
+      @for (training of trainings; track training) {
+        <tr>
+          <td>{{training.subject}}@if (training.seatLimit) {
+            <span><br><strong>Limited to {{training.seatLimit}} participants.</strong></span>
+          }</td>
+          <td>@if (training.submittedBy) {
+            <span>{{training.submittedBy.personalProfile.firstName}} {{training.submittedBy.personalProfile.lastName}}</span>
+          }</td>
+          <td>{{training.start | date:'mediumDate'}} @if (training.end) {
+            <span><br>{{training.end | date:'mediumDate'}}</span>
+          }</td>
+          <td>@if (!training.iHour) {
+            <span>0</span>
+            }@if (training.iHour) {
+            <span>{{training.iHour.iHourValue}}</span>
+          }</td>
+          <td>{{training.enrollment.length}}</td>
+          <td>{{attendance(training)}}</td>
+        </tr>
+      }
+      @if (totalHours != null) {
+        <tfoot>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>{{totalHours}}</strong></td>
+            <td>{{totalEnrolled}}</td>
+            <td>{{totalAttended}}</td>
+          </tr>
+        </tfoot>
+      }
     </table>
-    
-  </div>
-  
+  }
+
+</div>
+

@@ -1,28 +1,36 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder } from '@angular/forms';
 import { ServicelogService, SnapIndirectMethod, SnapPolicyAimed } from "../servicelog.service";
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-policy-aimed',
-  template: `
-  <loading *ngIf="loading"></loading>
-  <table class="table table-striped table-bordered" *ngIf="!loading" [formGroup]="aimedForm">
+    selector: 'snap-policy-aimed',
+    template: `
+  @if (loading) {
+    <loading></loading>
+  }
+  @if (!loading) {
+    <table class="table table-striped table-bordered" [formGroup]="aimedForm">
       <tbody formArrayName="aimedSelections">
-          <tr *ngFor="let aim of aimed; let i=index" [formGroupName]="i">
-              <td>{{aim.name}}</td>
-              <td><input type="checkbox" formControlName="selected" (change)="changed($event)"></td>
+        @for (aim of aimed; track aim; let i = $index) {
+          <tr [formGroupName]="i">
+            <td>{{aim.name}}</td>
+            <td><input type="checkbox" formControlName="selected" (change)="changed($event)"></td>
           </tr>
+        }
       </tbody>
-  </table>
-
+    </table>
+  }
+  
   `,
-    providers:[  { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapPolicyAimedComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapPolicyAimedComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapPolicyAimedComponent implements ControlValueAccessor, OnInit {
 

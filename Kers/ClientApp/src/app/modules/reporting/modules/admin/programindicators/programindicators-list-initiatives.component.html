@@ -1,6 +1,10 @@
 <fiscal-year-switcher (onSwitched)="selectFiscalYear($event)"></fiscal-year-switcher><br><br>
-<div *ngIf="this.selectedFiscalYear">
-    <div  *ngFor="let initiative of initiatives | async" class="row">
+@if (this.selectedFiscalYear) {
+  <div>
+    @for (initiative of initiatives | async; track initiative) {
+      <div  class="row">
         <programindicators-initiative-detail [initiative]="initiative"></programindicators-initiative-detail>
-    </div>
-</div>
+      </div>
+    }
+  </div>
+}

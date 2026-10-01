@@ -1,51 +1,81 @@
-<div *ngIf="thePlan">
-<h3>Program Plan For {{thePlan.fiscalYear.start | date:'longDate'}} - {{thePlan.fiscalYear.end | date:'longDate'}}</h3>
-<h4>{{thePlan.planningUnit.name}}</h4>
-<p><strong>RECORD ID:</strong> {{thePlan.id}}</p>
-</div><br>
-<p><strong>RECORD DATE STAMP:</strong> {{plan.created | date:'medium'}}</p>
-<p *ngIf="fiscalYear != undefined && fiscalYear.epoch == 0"><strong>MAP:</strong> {{plan.map.title}}</p>
-<p><strong>COUNTY EMPHASIS:</strong> {{plan.title}}</p>
+@if (thePlan) {
+  <div>
+    <h3>Program Plan For {{thePlan.fiscalYear.start | date:'longDate'}} - {{thePlan.fiscalYear.end | date:'longDate'}}</h3>
+    <h4>{{thePlan.planningUnit.name}}</h4>
+    <p><strong>RECORD ID:</strong> {{thePlan.id}}</p>
+  </div>
+  }<br>
+  <p><strong>RECORD DATE STAMP:</strong> {{plan.created | date:'medium'}}</p>
+  @if (fiscalYear != undefined && fiscalYear.epoch == 0) {
+    <p><strong>MAP:</strong> {{plan.map.title}}</p>
+  }
+  <p><strong>COUNTY EMPHASIS:</strong> {{plan.title}}</p>
 
-<p *ngIf="fiscalYear != undefined && fiscalYear.epoch == 0"><strong>AGENTS INVOLVED:</strong> {{plan.agentsInvolved}}</p><br>
-<p *ngIf="plan.mp1 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 1:</strong> {{plan.mp1.name}}</p>
-<p *ngIf="plan.mp2 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 2:</strong> {{plan.mp2.name}}</p>
-<p *ngIf="plan.mp3 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 3:</strong> {{plan.mp3.name}}</p>
-<p *ngIf="plan.mp4 && fiscalYear.epoch == 0"><strong>MAJOR PROGRAM 4:</strong> {{plan.mp4.name}}</p>
-
-
-<p *ngIf="plan.mp1 && fiscalYear.epoch == 1"><strong>CONCENTRATION 1:</strong> {{plan.mp1.name}}</p>
-<p *ngIf="plan.mp2 && fiscalYear.epoch == 1"><strong>CONCENTRATION 2:</strong> {{plan.mp2.name}}</p>
-<p *ngIf="plan.mp3 && fiscalYear.epoch == 1"><strong>CONCENTRATION 3:</strong> {{plan.mp3.name}}</p>
-<p *ngIf="plan.mp4 && fiscalYear.epoch == 1"><strong>CONCENTRATION 4:</strong> {{plan.mp4.name}}</p>
-
-<br>
-<strong>SITUATION:</strong> <div [innerHTML]="plan.situation"></div><br><br>
-<strong>COUNTY SITUATION:</strong> <div [innerHTML]="plan.countySituation"></div><br><br>
-<strong>LONG-TERM OUTCOMES:</strong> <div [innerHTML]="plan.longTermOutcomes"></div><br><br>
-<strong>INTERMEDIATE OUTCOMES:</strong> <div [innerHTML]="plan.intermediateOutcomes"></div><br><br>
-<strong>INITIAL OUTCOMES:</strong> <div [innerHTML]="plan.initialOutcomes"></div><br><br>
-<strong>LEARNING OPPORTUNITIES:</strong> <div [innerHTML]="plan.learning"></div><br><br>
-<strong>EVALUATION:</strong> <div [innerHTML]="plan.evaluation"></div><br><br>
-<div *ngIf="fiscalYear.epoch == 1">
-    <strong>DATA SOURCES(s)</strong>
-    
-    <ul>
-        <li *ngFor="let source of plan.planOfWorkDataSourceSelections">{{source.planOfWorkDataSource.name}}</li>
-    </ul>
+  @if (fiscalYear != undefined && fiscalYear.epoch == 0) {
+    <p><strong>AGENTS INVOLVED:</strong> {{plan.agentsInvolved}}</p>
+    }<br>
+    @if (plan.mp1 && fiscalYear.epoch == 0) {
+      <p><strong>MAJOR PROGRAM 1:</strong> {{plan.mp1.name}}</p>
+    }
+    @if (plan.mp2 && fiscalYear.epoch == 0) {
+      <p><strong>MAJOR PROGRAM 2:</strong> {{plan.mp2.name}}</p>
+    }
+    @if (plan.mp3 && fiscalYear.epoch == 0) {
+      <p><strong>MAJOR PROGRAM 3:</strong> {{plan.mp3.name}}</p>
+    }
+    @if (plan.mp4 && fiscalYear.epoch == 0) {
+      <p><strong>MAJOR PROGRAM 4:</strong> {{plan.mp4.name}}</p>
+    }
 
 
-</div><br><br>
-<div *ngIf="thePlan" class="fontawesome-icon-list">
-    <div class="fa-hover">
-        <a (click)="history=!history" style="padding-left: 0"><i class="fa fa-chevron-circle-right"></i>Revisions</a>
-    </div>
-    <ul *ngIf="history">
-        <li *ngFor="let revision of thePlan.revisions">{{revision.created | date:"longDate"}}<span *ngIf="revision.by"> revision by {{revision.by.personalProfile.firstName}} {{revision.by.personalProfile.lastName}}</span></li>
-    </ul>
-</div>
+    @if (plan.mp1 && fiscalYear.epoch == 1) {
+      <p><strong>CONCENTRATION 1:</strong> {{plan.mp1.name}}</p>
+    }
+    @if (plan.mp2 && fiscalYear.epoch == 1) {
+      <p><strong>CONCENTRATION 2:</strong> {{plan.mp2.name}}</p>
+    }
+    @if (plan.mp3 && fiscalYear.epoch == 1) {
+      <p><strong>CONCENTRATION 3:</strong> {{plan.mp3.name}}</p>
+    }
+    @if (plan.mp4 && fiscalYear.epoch == 1) {
+      <p><strong>CONCENTRATION 4:</strong> {{plan.mp4.name}}</p>
+    }
+
+    <br>
+      <strong>SITUATION:</strong> <div [innerHTML]="plan.situation"></div><br><br>
+      <strong>COUNTY SITUATION:</strong> <div [innerHTML]="plan.countySituation"></div><br><br>
+      <strong>LONG-TERM OUTCOMES:</strong> <div [innerHTML]="plan.longTermOutcomes"></div><br><br>
+      <strong>INTERMEDIATE OUTCOMES:</strong> <div [innerHTML]="plan.intermediateOutcomes"></div><br><br>
+      <strong>INITIAL OUTCOMES:</strong> <div [innerHTML]="plan.initialOutcomes"></div><br><br>
+      <strong>LEARNING OPPORTUNITIES:</strong> <div [innerHTML]="plan.learning"></div><br><br>
+      <strong>EVALUATION:</strong> <div [innerHTML]="plan.evaluation"></div><br><br>
+      @if (fiscalYear.epoch == 1) {
+        <div>
+          <strong>DATA SOURCES(s)</strong>
+          <ul>
+            @for (source of plan.planOfWorkDataSourceSelections; track source) {
+              <li>{{source.planOfWorkDataSource.name}}</li>
+            }
+          </ul>
+        </div>
+        }<br><br>
+        @if (thePlan) {
+          <div class="fontawesome-icon-list">
+            <div class="fa-hover">
+              <a (click)="history=!history" style="padding-left: 0"><i class="fa fa-chevron-circle-right"></i>Revisions</a>
+            </div>
+            @if (history) {
+              <ul>
+                @for (revision of thePlan.revisions; track revision) {
+                  <li>{{revision.created | date:"longDate"}}@if (revision.by) {
+                    <span> revision by {{revision.by.personalProfile.firstName}} {{revision.by.personalProfile.lastName}}</span>
+                  }</li>
+                }
+              </ul>
+            }
+          </div>
+        }
 
 
 
 
-        

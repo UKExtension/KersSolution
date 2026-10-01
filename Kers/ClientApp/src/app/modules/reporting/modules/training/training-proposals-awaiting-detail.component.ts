@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Training } from './training';
 import { TrainingService } from './training.service';
 
 @Component({
-  selector: '[training-proposals-awaiting-detail]',
-  templateUrl: './training-proposals-awaiting-detail.component.html',
-  styles: []
+    selector: '[training-proposals-awaiting-detail]',
+    templateUrl: './training-proposals-awaiting-detail.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingProposalsAwaitingDetailComponent implements OnInit {
 

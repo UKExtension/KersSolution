@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {    FormBuilder, ControlValueAccessor, AbstractControl, 
             NG_VALUE_ACCESSOR, 
             NG_VALIDATORS, 
@@ -9,52 +9,66 @@ import { ServicelogService, SnapIndirectMethod, SnapIndirectReached, SnapIndirec
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-direct-audience',
-  template: `
-  <loading *ngIf="loading"></loading>
-    <div class="table-responsive" *ngIf="!loading" [formGroup]="audienceForm">
-        <table class="table table-striped table-bordered snap-direct-audience" formArrayName="snapDirectAgesAudienceValue">
-            <thead>
-                <tr>
-                    <th>&nbsp;</th>
-                    <th *ngFor="let age of ages">{{age.name}}</th>
-                    <th>TOTALS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let audience of audiences">
-                    <td>{{audience.name}}</td>
-                    <td *ngFor="let age of ages; let i=index" [formGroupName]="rIndex()">
-                        <input type="number" formControlName="value" (change)="changed($event)" maxlength="5">
-                    </td>
-                    <td>{{totalAudienceById(audience.id)}}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td *ngFor="let age of ages"></td>
-                    <td>{{totalAudience()}}</td>
-                </tr>
-            </tbody>
-        </table>
+    selector: 'snap-direct-audience',
+    template: `
+  @if (loading) {
+    <loading></loading>
+  }
+  @if (!loading) {
+    <div class="table-responsive" [formGroup]="audienceForm">
+      <table class="table table-striped table-bordered snap-direct-audience" formArrayName="snapDirectAgesAudienceValue">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            @for (age of ages; track age) {
+              <th>{{age.name}}</th>
+            }
+            <th>TOTALS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (audience of audiences; track audience) {
+            <tr>
+              <td>{{audience.name}}</td>
+              @for (age of ages; track age; let i = $index) {
+                <td [formGroupName]="rIndex()">
+                  <input type="number" formControlName="value" (change)="changed($event)" maxlength="5">
+                </td>
+              }
+              <td>{{totalAudienceById(audience.id)}}</td>
+            </tr>
+          }
+          <tr>
+            <td></td>
+            @for (age of ages; track age) {
+              <td></td>
+            }
+            <td>{{totalAudience()}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  }
   
   `,
-  styles:[`
+    styles: [`
   .snap-direct-audience input{
     width: 80px;
   }
   `],
-    providers:[  {
-                    provide: NG_VALIDATORS,
-                    useExisting: forwardRef(() => SnapDirectAudienceComponent),
-                    multi: true,
-                } ,
-                { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapDirectAudienceComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SnapDirectAudienceComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapDirectAudienceComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapDirectAudienceComponent implements ControlValueAccessor, OnInit, Validator {
 

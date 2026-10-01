@@ -1,29 +1,36 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder } from '@angular/forms';
 import { ServicelogService, SnapIndirectMethod } from "../servicelog.service";
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-indirect-methods',
-  template: `
-  <loading *ngIf="loading"></loading>
-  <table class="table table-striped table-bordered" *ngIf="!loading" [formGroup]="methodForm">
+    selector: 'snap-indirect-methods',
+    template: `
+  @if (loading) {
+    <loading></loading>
+  }
+  @if (!loading) {
+    <table class="table table-striped table-bordered" [formGroup]="methodForm">
       <tbody formArrayName="methodSelections">
-          <tr *ngFor="let method of methods; let i=index" [formGroupName]="i">
-              <td>{{method.name}}</td>
-              <td><input type="checkbox" formControlName="selected" (change)="changed($event)"></td>
-              
+        @for (method of methods; track method; let i = $index) {
+          <tr [formGroupName]="i">
+            <td>{{method.name}}</td>
+            <td><input type="checkbox" formControlName="selected" (change)="changed($event)"></td>
           </tr>
+        }
       </tbody>
-  </table>
-
+    </table>
+  }
+  
   `,
-    providers:[  { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapIndirectMethodsComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapIndirectMethodsComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapIndirectMethodsComponent implements ControlValueAccessor, OnInit {
 

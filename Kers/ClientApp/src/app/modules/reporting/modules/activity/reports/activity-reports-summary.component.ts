@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ActivityService, Activity, Race} from '../activity.service';
 import { User } from "../../user/user.service";
 
@@ -7,49 +7,56 @@ import { User } from "../../user/user.service";
 @Component({
     selector: 'activity-reports-summary',
     template: `
-  
 
 
-<loading *ngIf="loading"></loading>
-    <div class="fa-hover col-md-3 col-sm-4 col-xs-12"><a (click)="showChart = !showChart"><i class="fa fa-bar-chart" style="cursor:pointer;"></i></a>
+
+@if (loading) {
+  <loading></loading>
+}
+<div class="fa-hover col-md-3 col-sm-4 col-xs-12"><a (click)="showChart = !showChart"><i class="fa fa-bar-chart" style="cursor:pointer;"></i></a>
+</div>
+@if (showChart) {
+  <div>
+    <div class="ln_solid"></div>
+    <h3>Meeting/Activity Hours and Contacts by Date</h3>
+    <div [ts-chart]="option"></div>
+    <div class="ln_solid"></div>
+  </div>
+}
+@if (!loading) {
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="table-responsive">
+      <table class="table table-striped" style="background-color: white">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Major Program</th>
+            <th>Hours</th>
+            <th>Contacts</th>
+            <th>Options</th>
+            <th>Snap-Ed</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (activity of monthActivities; track activity) {
+            <tr [service-log-summary-row]="activity"></tr>
+          }
+        </tbody>
+      </table>
     </div>
-    <div *ngIf="showChart">
-        <div class="ln_solid"></div>
-        <h3>Meeting/Activity Hours and Contacts by Date</h3>
-        <div [ts-chart]="option"></div>
-        <div class="ln_solid"></div>
-    </div>
-     <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="!loading">
-
-            <div class="table-responsive">
-                <table class="table table-striped" style="background-color: white">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Major Program</th>
-                            <th>Hours</th>
-                            <th>Contacts</th>
-                            <th>Options</th>
-                            <th>Snap-Ed</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let activity of monthActivities" [service-log-summary-row]="activity"></tr>
-                    </tbody>
-                </table>
-            </div>
-            <br><br>
-
-                           
-                         </div>
+    <br><br>
+  </div>
+}
 
 
 
 
-        `
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsSummaryComponent { 
 

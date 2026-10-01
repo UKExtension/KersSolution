@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ActivityService, Activity} from '../activity.service';
 import { User } from "../../user/user.service";
 import { saveAs } from 'file-saver';
@@ -6,38 +6,50 @@ import { saveAs } from 'file-saver';
 @Component({
     selector: 'activity-reports-details',
     template: `
-  <loading *ngIf="loading"></loading>
-  <div *ngIf="!loading">
-    <div class="text-right">
-        <loading [type]="'bars'" *ngIf="pdfLoading || csvLoading"></loading>
-        <a class="btn btn-info btn-xs" (click)="print()" *ngIf="!pdfLoading"><i class="fa fa-download"></i> Pdf</a>
-        <a class="btn btn-info btn-xs" (click)="csv()" *ngIf="!csvLoading"><i class="fa fa-download"></i> Csv</a>
-    </div>
-        <div class="col-md-12 col-sm-12 col-xs-12" *ngFor="let activity of monthActivities">
-            <div class="ln_solid"></div>
-                <div class="row">
-                    <div class="col-md-6"><h3>{{activity.activityDate| date:'EEEE,  MMMM d, y'}}</h3></div>
-                    <div class="col-md-6">Submitted: {{activity.created| date:'MMMM d, y'}}</div>
-                </div>
-                
-                <p><strong>Title: </strong>{{activity.title}}</p>
-
-                <div class="row invoice-info">
-                    <div class="col-sm-6 col-xs-12">
-                        <strong>Description:</strong>
-                        <p innerHtml="{{replaceImageTag(activity.description)}}"></p>
-                    </div>
-                    <div class="col-sm-6 col-xs-12">
-                        <strong>Major Program: </strong>{{activity.majorProgram.name}}<br>
-                        <strong>Attendance: </strong>{{ attendance(activity) }}<br>
-                        <div *ngFor="let opt of activity.activityOptionSelections">{{opt.activityOption.name.substring(0, opt.activityOption.name.length -1 )}}</div>
-                    </div>
-
-                </div>
-
+  @if (loading) {
+    <loading></loading>
+  }
+  @if (!loading) {
+    <div>
+      <div class="text-right">
+        @if (pdfLoading || csvLoading) {
+          <loading [type]="'bars'"></loading>
+        }
+        @if (!pdfLoading) {
+          <a class="btn btn-info btn-xs" (click)="print()"><i class="fa fa-download"></i> Pdf</a>
+        }
+        @if (!csvLoading) {
+          <a class="btn btn-info btn-xs" (click)="csv()"><i class="fa fa-download"></i> Csv</a>
+        }
+      </div>
+      @for (activity of monthActivities; track activity) {
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="ln_solid"></div>
+          <div class="row">
+            <div class="col-md-6"><h3>{{activity.activityDate| date:'EEEE,  MMMM d, y'}}</h3></div>
+            <div class="col-md-6">Submitted: {{activity.created| date:'MMMM d, y'}}</div>
+          </div>
+          <p><strong>Title: </strong>{{activity.title}}</p>
+          <div class="row invoice-info">
+            <div class="col-sm-6 col-xs-12">
+              <strong>Description:</strong>
+              <p innerHtml="{{replaceImageTag(activity.description)}}"></p>
+            </div>
+            <div class="col-sm-6 col-xs-12">
+              <strong>Major Program: </strong>{{activity.majorProgram.name}}<br>
+              <strong>Attendance: </strong>{{ attendance(activity) }}<br>
+              @for (opt of activity.activityOptionSelections; track opt) {
+                <div>{{opt.activityOption.name.substring(0, opt.activityOption.name.length -1 )}}</div>
+              }
+            </div>
+          </div>
         </div>
+      }
     </div>
-        `
+  }
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityReportsDetailsComponent { 
 

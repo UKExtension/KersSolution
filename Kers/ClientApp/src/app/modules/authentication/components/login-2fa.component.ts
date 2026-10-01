@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, Output, EventEmitter, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 import {FormBuilder, Validators }   from '@angular/forms';
@@ -8,17 +8,19 @@ import { environment } from '../../../../environments/environment';
 import { HttpParams } from '@angular/common/http';
 
 @Component({
-  selector: 'login2fa',
-  templateUrl: 'login-2fa.component.html',
-  styles: [`
+    selector: 'login2fa',
+    templateUrl: 'login-2fa.component.html',
+    styles: [`
   body{
       background-color: #F7F7F7 !important;
   }
   
   
 
-  ` ],
-  encapsulation: ViewEncapsulation.None
+  `],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class Login2faComponent implements OnInit { 
 

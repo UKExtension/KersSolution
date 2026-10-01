@@ -1,124 +1,133 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Meeting, MeetingService, MeetingWithTime } from './meeting.service';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
-  selector: 'meeting-form',
-  template: `
-<loading *ngIf="loading"></loading>
+    selector: 'meeting-form',
+    template: `
+@if (loading) {
+  <loading></loading>
+}
 
-<div class="row" *ngIf="!loading">
-  <div class="col-sm-offset-3 col-sm-9">
-      <h2 *ngIf="!meeting">New CES Event</h2>
-      <h2 *ngIf="meeting">Update CES Event</h2>
+@if (!loading) {
+  <div class="row">
+    <div class="col-sm-offset-3 col-sm-9">
+      @if (!meeting) {
+        <h2>New CES Event</h2>
+      }
+      @if (meeting) {
+        <h2>Update CES Event</h2>
+      }
       <br><br>
-  </div>
-  <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="meetingForm">
-    <div class="form-group">
+    </div>
+    <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="meetingForm">
+      <div class="form-group">
         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="start">Start Date:</label>
         <div class="col-md-4 col-sm-6 col-xs-7">
-
           <div class="input-group">
-            
-              <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-              angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
-              formControlName="start" [options]="myDatePickerOptions" 
+            <input type="text" class="form-control input-box" placeholder="Click to select a date"
+              angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()"
+              formControlName="start" [options]="myDatePickerOptions"
               #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
-
-
-              <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
+            <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
           </div>
         </div>
         <label><input type="checkbox" formControlName="isAllDay" /> All Day Event</label>
-    </div>
-    <div class="form-group">
-      <div *ngIf="!meetingForm.value.isAllDay" class="col-md-offset-3 col-sm-offset-3 col-md-4 col-sm-6 col-xs-7">
-            <timepicker formControlName="starttime" [start]="6" [end]="23"></timepicker>
       </div>
-    </div>
-    <div *ngIf="!meetingForm.value.isAllDay">
       <div class="form-group">
-          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
-          <div class="col-md-4 col-sm-6 col-xs-7">
-
-
-          <div class="input-group">
-            
-              <input type="text" class="form-control input-box" 
-              [class.ng-invalid]="meetingForm.hasError('endDate')"
-              
-              placeholder="Click to select a date" 
-              angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
-              formControlName="end" [options]="myDatePickerOptionsEnd" 
-              #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
-
-
-              <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
+        @if (!meetingForm.value.isAllDay) {
+          <div class="col-md-offset-3 col-sm-offset-3 col-md-4 col-sm-6 col-xs-7">
+            <timepicker formControlName="starttime" [start]="6" [end]="23"></timepicker>
           </div>
+        }
       </div>
-      </div>
-    </div>
-    <div class="form-group" *ngIf="!meetingForm.value.isAllDay">
-      <div class="col-md-offset-3 col-sm-offset-3 col-md-4 col-sm-6 col-xs-7">
+      @if (!meetingForm.value.isAllDay) {
+        <div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="end">End Date:</label>
+            <div class="col-md-4 col-sm-6 col-xs-7">
+              <div class="input-group">
+                <input type="text" class="form-control input-box"
+                  [class.ng-invalid]="meetingForm.hasError('endDate')"
+                  placeholder="Click to select a date"
+                  angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()"
+                  formControlName="end" [options]="myDatePickerOptionsEnd"
+                  #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+                <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()"><i class="fa fa-calendar"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+      @if (!meetingForm.value.isAllDay) {
+        <div class="form-group">
+          <div class="col-md-offset-3 col-sm-offset-3 col-md-4 col-sm-6 col-xs-7">
             <timepicker formControlName="endtime" [start]="6" [end]="23"></timepicker>
+          </div>
+        </div>
+      }
+      @if (!meetingForm.value.isAllDay) {
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="etimezone">Timezone:</label>
+          <div class="col-md-5 col-sm-7 col-xs-8">
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-default" (click)="isEastern(true)" [class.active]="easternTimezone">
+                <input type="radio" name="etimezone" formControlName="etimezone" [value]="true"> Eastern Timezone
+              </label>
+              <label class="btn btn-default" [class.active]="!easternTimezone" (click)="isEastern(false)">
+                <input type="radio" name="etimezone" formControlName="etimezone" [value]="false"> Central Timezone
+              </label>
+            </div>
+          </div>
+        </div>
+      }
+      <div class="form-group">
+        <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Title:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <input type="text" name="subject" formControlName="subject" id="subject" class="form-control col-xs-12" />
+        </div>
       </div>
-    </div>
-    <div class="form-group" *ngIf="!meetingForm.value.isAllDay">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="etimezone">Timezone:</label>
-        <div class="col-md-5 col-sm-7 col-xs-8">
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default" (click)="isEastern(true)" [class.active]="easternTimezone">
-                    <input type="radio" name="etimezone" formControlName="etimezone" [value]="true"> Eastern Timezone
-                    </label>
-                    <label class="btn btn-default" [class.active]="!easternTimezone" (click)="isEastern(false)">
-                    <input type="radio" name="etimezone" formControlName="etimezone" [value]="false"> Central Timezone
-                    </label>
-                </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Title:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="subject" formControlName="subject" id="subject" class="form-control col-xs-12" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="body" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>           
+      <div class="form-group">
+        <label for="body" class="control-label col-md-3 col-sm-3 col-xs-12">Description:</label>
         <div class="col-md-9 col-sm-9 col-xs-12" [class.description-invalid]="!meetingForm.controls.body.valid">
-            <textarea [froalaEditor]="options" name="body" formControlName="body" id="body" class="form-control col-xs-12"></textarea>
+          <textarea [froalaEditor]="options" name="body" formControlName="body" id="body" class="form-control col-xs-12"></textarea>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="tContact" class="control-label col-md-3 col-sm-3 col-xs-12">Contact:</label>           
+      </div>
+      <div class="form-group">
+        <label for="tContact" class="control-label col-md-3 col-sm-3 col-xs-12">Contact:</label>
         <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="tContact" formControlName="tContact" id="tContact" class="form-control col-xs-12" />
+          <input type="text" name="tContact" formControlName="tContact" id="tContact" class="form-control col-xs-12" />
         </div>
-    </div>
-    <div class="form-group">
-        <label for="tLocation" class="control-label col-md-3 col-sm-3 col-xs-12">Location:</label>           
+      </div>
+      <div class="form-group">
+        <label for="tLocation" class="control-label col-md-3 col-sm-3 col-xs-12">Location:</label>
         <div class="col-md-9 col-sm-9 col-xs-12">
-            <input type="text" name="tLocation" formControlName="tLocation" id="tLocation" class="form-control col-xs-12" />
+          <input type="text" name="tLocation" formControlName="tLocation" id="tLocation" class="form-control col-xs-12" />
         </div>
-    </div> 
-    <div class="form-group" *ngIf="meeting != null">
-        <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Canceled:</label>           
-        <div class="col-md-9 col-sm-9 col-xs-12">
+      </div>
+      @if (meeting != null) {
+        <div class="form-group">
+          <label for="subject" class="control-label col-md-3 col-sm-3 col-xs-12">Canceled:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
             <input type="checkbox" name="isCancelled" formControlName="isCancelled" id="isCancelled" style="margin-top: 10px;" />
+          </div>
         </div>
-    </div>  
-    <div class="ln_solid"></div>
-    <div class="form-group">
+      }
+      <div class="ln_solid"></div>
+      <div class="form-group">
         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-            <button type="submit" [disabled]="meetingForm.invalid"  class="btn btn-success">Submit</button>
+          <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+          <button type="submit" [disabled]="meetingForm.invalid"  class="btn btn-success">Submit</button>
         </div>
-    </div>
-      
-  </form>
-</div>
-  `,
-  styles: []
+      </div>
+    </form>
+  </div>
+}
+`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MeetingFormComponent implements OnInit {
   

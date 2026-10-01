@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FarmerAddress } from '../soildata.service';
 
 @Component({
-  selector: 'soildata-list-address',
-  templateUrl: './soildata-list-address.component.html',
-  styles: [
-  ]
+    selector: 'soildata-list-address',
+    templateUrl: './soildata-list-address.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataListAddressComponent implements OnInit {
   @Input() address: FarmerAddress;

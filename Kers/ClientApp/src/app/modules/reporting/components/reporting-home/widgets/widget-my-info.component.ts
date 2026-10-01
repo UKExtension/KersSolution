@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {User} from '../../../modules/user/user.service';
 
 
@@ -6,33 +6,29 @@ import {User} from '../../../modules/user/user.service';
 @Component({
     selector: 'widget-my-info',
     template: `
-<div class="col-md-6 col-xs-12" *ngIf="user">
+@if (user) {
+  <div class="col-md-6 col-xs-12">
     <div class="x_panel">
-        <div class="x_title">
-            <h2>Info</h2>
-            <div class="clearfix"></div>
+      <div class="x_title">
+        <h2>Info</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div>
+          Planning Unit Name: <strong>{{user.rprtngProfile.planningUnit.name}}</strong><br>
+          Position:  <strong>{{user.extensionPosition.title}}</strong><br>
+          <br><br><br>
         </div>
-        <div class="x_content">
-            <div>
-                Planning Unit Name: <strong>{{user.rprtngProfile.planningUnit.name}}</strong><br>
-                Position:  <strong>{{user.extensionPosition.title}}</strong><br>
-                <br><br><br>
-            </div>
-
-            <p>For questions or assistance, please email:<br><a href="mailto:KERS-HELP&#64;uky.edu">KERS-HELP&#64;uky.edu</a></p>
-
-
-         </div>
+        <p>For questions or assistance, please email:<br><a href="mailto:KERS-HELP&#64;uky.edu">KERS-HELP&#64;uky.edu</a></p>
+      </div>
     </div>
     <div>
-    
-
-
-
-    
     </div>
-</div>
-  `
+  </div>
+}
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class WidgetMyInfoComponent { 
     @Input() user:User;

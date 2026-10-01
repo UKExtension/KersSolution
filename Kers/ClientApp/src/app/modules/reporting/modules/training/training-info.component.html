@@ -1,17 +1,22 @@
-<div class="training" *ngIf="training$ | async as training">
-  <div class="row">
-    <div class="col-xs-12">
-      <h3 class="green">{{training.subject}}</h3>
-      <h5 *ngIf="training.seatLimit != null && training.seatLimit != 0" class="red">Limited to {{training.seatLimit}} participants.</h5>
+@if (training$ | async; as training) {
+  <div class="training">
+    <div class="row">
+      <div class="col-xs-12">
+        <h3 class="green">{{training.subject}}</h3>
+        @if (training.seatLimit != null && training.seatLimit != 0) {
+          <h5 class="red">Limited to {{training.seatLimit}} participants.</h5>
+        }
+      </div>
     </div>
-  </div>
-  <div class="row">
+    <div class="row">
       <div class="col-sm-3 col-xs-12">
         <strong>Date(s):</strong>
       </div>
       <div class="col-sm-9 col-xs-12">
-        {{training.start | date:'mediumDate'}} <span *ngIf="training.end && (training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 1)"><br>{{training.end | date:'mediumDate'}}</span>
-      </div>
+        {{training.start | date:'mediumDate'}} @if (training.end && (training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 1)) {
+        <span><br>{{training.end | date:'mediumDate'}}</span>
+      }
+    </div>
   </div>
   <div class="row">
     <div class="col-sm-3 col-xs-12">
@@ -22,35 +27,44 @@
     </div>
   </div>
   <div class="row">
-    <ng-container *ngIf="training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0">
-        <div class="col-sm-3 col-xs-12">
-            <strong>Session<span *ngIf="training.trainingSessionWithTimes.length > 1">s</span>:</strong>
-          </div>
-          <div class="col-sm-9 col-xs-12">
-            <table class="table table-striped">
-            <ng-container *ngFor="let session of training.trainingSessionWithTimes">
-              <tr>
+    @if (training.trainingSessionWithTimes != undefined && training.trainingSessionWithTimes.length > 0) {
+      <div class="col-sm-3 col-xs-12">
+        <strong>Session@if (training.trainingSessionWithTimes.length > 1) {
+          <span>s</span>
+        }:</strong>
+      </div>
+      <div class="col-sm-9 col-xs-12">
+        <table class="table table-striped">
+          @for (session of training.trainingSessionWithTimes; track session) {
+            <tr>
               <td>{{session.date | date: 'fullDate'}}</td>
               <td>
                 {{session.starttime | convertFrom24To12Format}} - {{session.endtime | convertFrom24To12Format}} {{ training.etimezone ? "ET" : "CT" }}
-                <span *ngIf="session.note != undefined && session.note != ''"> 
+                @if (session.note != undefined && session.note != '') {
+                  <span>
                     <br>{{session.note}}
-                </span>
-
-              </td>
-            </tr>
-            </ng-container>
+                    </span>
+                  }
+                </td>
+              </tr>
+            }
           </table>
-          </div>
-    </ng-container>
-    <ng-container *ngIf="training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0">
-      <div class="col-sm-3 col-xs-12">
-        <strong>Time(s):</strong>
+        </div>
+      }
+      @if (training.trainingSessionWithTimes == undefined || training.trainingSessionWithTimes.length == 0) {
+        <div class="col-sm-3 col-xs-12">
+          <strong>Time(s):</strong>
+        </div>
+        <div class="col-sm-9 col-xs-12">
+          Day 1: {{training.day1}}@if (training.day2) {
+          <span><br>Day 2: {{training.day2}}</span>
+          }@if (training.day3) {
+          <span><br>Day 3: {{training.day3}}</span>
+          }@if (training.day4) {
+          <span><br>Day 4: {{training.day4}}</span>
+        }
       </div>
-      <div class="col-sm-9 col-xs-12">
-        Day 1: {{training.day1}}<span *ngIf="training.day2"><br>Day 2: {{training.day2}}</span><span *ngIf="training.day3"><br>Day 3: {{training.day3}}</span><span *ngIf="training.day4"><br>Day 4: {{training.day4}}</span>
-      </div>
-    </ng-container>
+    }
   </div>
   <div></div>
   <div class="row">
@@ -74,169 +88,186 @@
     <div class="col-sm-9 col-xs-12" [innerHTML]="training.tAudience + '&nbsp;'"></div>
   </div>
   <div class="row">
-      <div class="col-sm-3 col-xs-12">
-        <strong>Instructional Hours:</strong>
-      </div>
-      <div class="col-sm-9 col-xs-12">
-        <span *ngIf="training.iHour">{{training.iHour.iHoursTxt}} <small>(Credit given for attendance at entire session. Partial credit not available.)</small></span><span *ngIf="!training.iHour">0</span>
-      </div>
+    <div class="col-sm-3 col-xs-12">
+      <strong>Instructional Hours:</strong>
+    </div>
+    <div class="col-sm-9 col-xs-12">
+      @if (training.iHour) {
+        <span>{{training.iHour.iHoursTxt}} <small>(Credit given for attendance at entire session. Partial credit not available.)</small></span>
+        }@if (!training.iHour) {
+        <span>0</span>
+      }
+    </div>
   </div>
   <div class="row">
-      <div class="col-sm-3 col-xs-12">
-        <strong>Last Day to Register:</strong>
-      </div>
-      <div class="col-sm-9 col-xs-12">
-        {{registerCutOfDate(training) | date:'mediumDate'}}
-      </div>
+    <div class="col-sm-3 col-xs-12">
+      <strong>Last Day to Register:</strong>
+    </div>
+    <div class="col-sm-9 col-xs-12">
+      {{registerCutOfDate(training) | date:'mediumDate'}}
+    </div>
   </div>
   <div class="row">
-      <div class="col-sm-3 col-xs-12">
-        <strong>Last Day to Cancel:</strong>
-      </div>
-      <div class="col-sm-9 col-xs-12">
-        {{cancelCutOfDate(training) | date:'mediumDate'}}
-      </div>
+    <div class="col-sm-3 col-xs-12">
+      <strong>Last Day to Cancel:</strong>
+    </div>
+    <div class="col-sm-9 col-xs-12">
+      {{cancelCutOfDate(training) | date:'mediumDate'}}
+    </div>
   </div>
   <div class="row">
-      <div class="col-sm-3 col-xs-12">
-        <strong>Url:</strong>
-      </div>
-      <div class="col-sm-9 col-xs-12">
-          https://kers.ca.uky.edu/core/reporting/training/{{training.id}} &nbsp;
-          <button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
-              <i class="fa fa-clipboard"></i>&nbsp;
-              <ng-container *ngIf="!coppied">Copy</ng-container> <ng-container *ngIf="coppied">Copied</ng-container>
-          </button>
-      </div>
+    <div class="col-sm-3 col-xs-12">
+      <strong>Url:</strong>
+    </div>
+    <div class="col-sm-9 col-xs-12">
+      https://kers.ca.uky.edu/core/reporting/training/{{training.id}} &nbsp;
+      <button class="btn btn-default btn-xs" [disabled]="coppied" role="button" [copy-clipboard]="'https://kers.ca.uky.edu/core/reporting/training/'+training.id" (copied)="notify($event)">
+        <i class="fa fa-clipboard"></i>&nbsp;
+        @if (!coppied) {
+          Copy
+          } @if (coppied) {
+          Copied
+        }
+      </button>
+    </div>
   </div>
   <div class="row">
-  
-  <div class="col-xs-12">
-    <loading *ngIf="loading"></loading>
-
-
-    <div *ngIf="!loading && !isEnrolled(training)">
-
-      <ng-container *ngIf="isFull(training)">
-
-
-        <ng-container *ngIf="isItInsideTheCancellationWindow(training) && !isItPast(training)">
-          <h6 class="red">*** TRAINING IS FULL ***<br /></h6>
-        </ng-container>
-
-
-        <ng-container *ngIf="!isItInsideTheCancellationWindow(training)">
-          <ng-container *ngIf="isWaiting(training)">
-              <h6 class="red">
-                  The training session is currently full. You have been placed on the waiting list. If space becomes available, 
+    <div class="col-xs-12">
+      @if (loading) {
+        <loading></loading>
+      }
+      @if (!loading && !isEnrolled(training)) {
+        <div>
+          @if (isFull(training)) {
+            @if (isItInsideTheCancellationWindow(training) && !isItPast(training)) {
+              <h6 class="red">*** TRAINING IS FULL ***<br /></h6>
+            }
+            @if (!isItInsideTheCancellationWindow(training)) {
+              @if (isWaiting(training)) {
+                <h6 class="red">
+                  The training session is currently full. You have been placed on the waiting list. If space becomes available,
                   you will automatically be added to the list of attendees and you will receive an email confirmation.
-              </h6>
-          </ng-container>
-          <ng-container *ngIf="!isWaiting(training)">
-              <h6 class="red">*** TRAINING IS FULL ***<br />If you would like to be added to the waiting list for this training, please click the submit button below. In the event of a cancellation, those on the waiting list will be automatically enrolled, then sent a notification via email.</h6>
-              <a (click)="enroll(training);" class="btn btn-info">Add me to the waiting list</a>
-          </ng-container>
-        </ng-container>
-        <ng-container *ngIf="isItPast(training)">
-            <h6 class="red">If you attended this training session but did not previously enroll, click the Enroll button below and you will be enrolled. You must contact the instructor and request they return to the roster to confirm your attendance. Clicking the Enroll button below will immediately enroll you in this training event.</h6>
-            <a (click)="enroll(training);" class="btn btn-info">Enroll for this PAST training event</a> 
-        </ng-container>
-      </ng-container> 
-
-
-
-      <ng-container *ngIf="!isFull(training)">
-        <ng-container *ngIf="isItPast(training)">
-            <h6 class="red">If you attended this training session but did not previously enroll, click the Enroll button below and you will be enrolled. You must contact the instructor and request they return to the roster to confirm your attendance. Clicking the Enroll button below will immediately enroll you in this training event.</h6>
-            <a (click)="enroll(training);" class="btn btn-info">Enroll for this PAST training event</a> 
-        </ng-container>
-        <ng-container *ngIf="!isItPast(training)">
-          <ng-container *ngIf="isItInsideRegistrationWindow(training)"> 
-            <h6 class="red">Clicking the Enroll button below will immediately enroll you in this training event.</h6>
-            <a (click)="enroll(training);" class="btn btn-info">Enroll for this training event</a> 
-          </ng-container>
-          <ng-container *ngIf="!isItInsideRegistrationWindow(training)">
-              <h6 class="red">*** PAST LAST DAY TO REGISTER ***<br /></h6>
-          </ng-container>
-        </ng-container>
-             
-      </ng-container>
-
-
-
-
-    </div>
-
-
-    
-    <div *ngIf="!loading && isEnrolled(training)">
-      <ng-container *ngIf="!isItInsideTheCancellationWindow(training)">
-          <a (click)="unenroll(training);" class="btn btn-info">Cancel enrollment for this training event</a>
-      </ng-container>
-    </div>
-  </div>
-  <div>&nbsp;</div>
-  <div class="col-xs-12" *ngIf="criteria.start != null"><a [routerLink]="['/reporting/training/catalog', criteria]" >Back to Training Catalog</a></div>
-  <div class="col-xs-12" *ngIf="criteria.start == null"><a [routerLink]="['/reporting/training/catalog']" >Back to Training Catalog</a></div>
-  <div>&nbsp;</div>
-  <div class="col-xs-12" *ngIf="!loading">
-      <h6 class="red">TRAINING SESSION ROSTER   Enrollment Count: {{getOnlyEnrolled(training).length}}
-      <ng-container *ngIf="numberWaiting(training) > 0">
-        <small > (waiting list length: {{numberWaiting(training)}})</small>
-        <ng-container *ngIf="(canSeeWatingList() | async) || user.Id == training.submittedById">
-          &nbsp;
-          <a (click)="openWaitingList = !openWaitingList" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="openWaitingList"></i>
-            <i class="fa fa-plus-square" *ngIf="!openWaitingList"></i> list
-          </a>
-        </ng-container>
-      </ng-container></h6>
-        <div *ngIf="openWaitingList" class="table-responsive" >
-          <table class="table table-bordered">
-            <tbody>
-              <tr *ngFor="let enr of waitingList">
-                <td><span>{{enr.enrolledDate | date:'mediumDate'}}</span></td>
-                  <td><span>{{enr.attendie.rprtngProfile.name}}</span></td>
-                  <td><span>{{enr.attendie.rprtngProfile.planningUnit.name}}</span></td>
-                  <td><span *ngFor="let area of enr.attendie.specialties">{{specialty(area)}} </span></td>
-                  <td><span>{{enr.attendie.rprtngProfile.email}}</span></td>
-              </tr>
-            </tbody>
-          </table>
+                </h6>
+              }
+              @if (!isWaiting(training)) {
+                <h6 class="red">*** TRAINING IS FULL ***<br />If you would like to be added to the waiting list for this training, please click the submit button below. In the event of a cancellation, those on the waiting list will be automatically enrolled, then sent a notification via email.</h6>
+                <a (click)="enroll(training);" class="btn btn-info">Add me to the waiting list</a>
+              }
+            }
+            @if (isItPast(training)) {
+              <h6 class="red">If you attended this training session but did not previously enroll, click the Enroll button below and you will be enrolled. You must contact the instructor and request they return to the roster to confirm your attendance. Clicking the Enroll button below will immediately enroll you in this training event.</h6>
+              <a (click)="enroll(training);" class="btn btn-info">Enroll for this PAST training event</a>
+            }
+          }
+          @if (!isFull(training)) {
+            @if (isItPast(training)) {
+              <h6 class="red">If you attended this training session but did not previously enroll, click the Enroll button below and you will be enrolled. You must contact the instructor and request they return to the roster to confirm your attendance. Clicking the Enroll button below will immediately enroll you in this training event.</h6>
+              <a (click)="enroll(training);" class="btn btn-info">Enroll for this PAST training event</a>
+            }
+            @if (!isItPast(training)) {
+              @if (isItInsideRegistrationWindow(training)) {
+                <h6 class="red">Clicking the Enroll button below will immediately enroll you in this training event.</h6>
+                <a (click)="enroll(training);" class="btn btn-info">Enroll for this training event</a>
+              }
+              @if (!isItInsideRegistrationWindow(training)) {
+                <h6 class="red">*** PAST LAST DAY TO REGISTER ***<br /></h6>
+              }
+            }
+          }
         </div>
-      
+      }
+      @if (!loading && isEnrolled(training)) {
+        <div>
+          @if (!isItInsideTheCancellationWindow(training)) {
+            <a (click)="unenroll(training);" class="btn btn-info">Cancel enrollment for this training event</a>
+          }
+        </div>
+      }
+    </div>
+    <div>&nbsp;</div>
+    @if (criteria.start != null) {
+      <div class="col-xs-12"><a [routerLink]="['/reporting/training/catalog', criteria]" >Back to Training Catalog</a></div>
+    }
+    @if (criteria.start == null) {
+      <div class="col-xs-12"><a [routerLink]="['/reporting/training/catalog']" >Back to Training Catalog</a></div>
+    }
+    <div>&nbsp;</div>
+    @if (!loading) {
+      <div class="col-xs-12">
+        <h6 class="red">TRAINING SESSION ROSTER   Enrollment Count: {{getOnlyEnrolled(training).length}}
+          @if (numberWaiting(training) > 0) {
+            <small > (waiting list length: {{numberWaiting(training)}})</small>
+            @if ((canSeeWatingList() | async) || user.Id == training.submittedById) {
+              &nbsp;
+              <a (click)="openWaitingList = !openWaitingList" style="cursor: pointer;">@if (openWaitingList) {
+                <i class="fa fa-minus-square"></i>
+              }
+              @if (!openWaitingList) {
+                <i class="fa fa-plus-square"></i>
+                } list
+              </a>
+            }
+          }</h6>
+          @if (openWaitingList) {
+            <div class="table-responsive" >
+              <table class="table table-bordered">
+                <tbody>
+                  @for (enr of waitingList; track enr) {
+                    <tr>
+                      <td><span>{{enr.enrolledDate | date:'mediumDate'}}</span></td>
+                      <td><span>{{enr.attendie.rprtngProfile.name}}</span></td>
+                      <td><span>{{enr.attendie.rprtngProfile.planningUnit.name}}</span></td>
+                      <td>@for (area of enr.attendie.specialties; track area) {
+                        <span>{{specialty(area)}} </span>
+                      }</td>
+                      <td><span>{{enr.attendie.rprtngProfile.email}}</span></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+      @if (!loading) {
+        <div class="col-xs-12">
+          @if (training.enrollment.length > 0) {
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Date Enrolled</th>
+                    <th>Name</th>
+                    <th>Planning Unit</th>
+                    <th>Program Area</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (enr of getOnlyEnrolled(training); track enr) {
+                    <tr>
+                      <td><span>{{enr.enrolledDate | date:'mediumDate'}}</span></td>
+                      <td><span>{{enr.attendie.rprtngProfile.name}}</span></td>
+                      <td><span>{{enr.attendie.rprtngProfile.planningUnit.name}}</span></td>
+                      <td>@for (area of enr.attendie.specialties; track area) {
+                        <span>{{specialty(area)}} </span>
+                      }</td>
+                      <td><span>{{enr.attendie.rprtngProfile.email}}</span></td>
+                    </tr>
+                  }
+                  <tr>
+                    <td colspan="5">
+                      <a href="mailto:{{ attendieemails(training) }}">Click here to send an email message to all those enrolled in this training </a><br><br>
+                      If the link above does not open your email client as expected, simply copy/paste the text block of email recipients (shown below) into the To: line of a new mail message within your email client.<br><br>
+                      {{attendieemails(training)}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+    </div>
   </div>
-  <div class="col-xs-12" *ngIf="!loading">
-      <div class="table-responsive" *ngIf="training.enrollment.length > 0">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Date Enrolled</th>
-                <th>Name</th>
-                <th>Planning Unit</th>
-                <th>Program Area</th>
-                <th>Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let enr of getOnlyEnrolled(training)">
-                <td><span>{{enr.enrolledDate | date:'mediumDate'}}</span></td>
-                <td><span>{{enr.attendie.rprtngProfile.name}}</span></td>
-                <td><span>{{enr.attendie.rprtngProfile.planningUnit.name}}</span></td>
-                <td><span *ngFor="let area of enr.attendie.specialties">{{specialty(area)}} </span></td>
-                <td><span>{{enr.attendie.rprtngProfile.email}}</span></td>
-              </tr>
-              <tr>
-                <td colspan="5">
-                    <a href="mailto:{{ attendieemails(training) }}">Click here to send an email message to all those enrolled in this training </a><br><br>   
-
-                    If the link above does not open your email client as expected, simply copy/paste the text block of email recipients (shown below) into the To: line of a new mail message within your email client.<br><br>
-                    
-                    {{attendieemails(training)}}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>      
-  </div>
-</div>
-</div>
+}

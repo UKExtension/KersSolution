@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 
 @Directive({
-  selector: '[froalaView]'
+    selector: '[froalaView]',
+    standalone: false
 })
 export class FroalaViewDirective implements OnInit {
   constructor(private readonly renderer: Renderer2, private readonly element: ElementRef) { }

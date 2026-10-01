@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {ActivityService, ActivityMonth, Activity} from './activity.service';
 
 
 @Component({
     selector: 'activity-list',
-    templateUrl: 'activity-list.component.html'
+    templateUrl: 'activity-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityListComponent implements OnInit{ 
     

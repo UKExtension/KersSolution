@@ -1,19 +1,51 @@
-<td *ngIf="!detailsOpened">{{activity.activityDate| date:'shortDate'}}</td>
-<td *ngIf="!detailsOpened">{{activity.title}}</td>
-<td innerHtml="{{replaceImageTag(activity.description)}}"  *ngIf="!detailsOpened"></td>
-<td *ngIf="!detailsOpened">{{activity.majorProgram.name}}</td>
-<td *ngIf="!detailsOpened">{{activity.hours}}</td>
-<td *ngIf="!detailsOpened">{{attendance(activity)}}</td>
-<td *ngIf="!detailsOpened"><div *ngFor="let opt of activity.activityOptionSelections">{{opt.activityOption.name.substring(0, opt.activityOption.name.length -1 )}}</div></td>
-<td *ngIf="!detailsOpened">
-  <div *ngIf="activity.snapAdmin && activity.isSnap">Admin</div>
-  <div *ngIf="activity.snapPolicyId != null">Community/PSE</div>
-  <div *ngIf="activity.snapDirectId != null">Direct</div> 
-  <div *ngIf="activity.snapIndirectId != null">Indirect</div>
-  <div *ngIf="blankSnap">Snap-Ed</div>
-</td>
-<td *ngIf="!detailsOpened"><a class="btn btn-info btn-xs" (click)="open()">Details</a></td>
-<td  *ngIf="detailsOpened" colspan="9">
-  <div class="text-right"><a class="btn btn-primary btn-xs" (click)="close()">Close</a></div>
-  <service-log-full-details [activity]="activity"></service-log-full-details>
-</td>
+@if (!detailsOpened) {
+  <td>{{activity.activityDate| date:'shortDate'}}</td>
+}
+@if (!detailsOpened) {
+  <td>{{activity.title}}</td>
+}
+@if (!detailsOpened) {
+  <td innerHtml="{{replaceImageTag(activity.description)}}" ></td>
+}
+@if (!detailsOpened) {
+  <td>{{activity.majorProgram.name}}</td>
+}
+@if (!detailsOpened) {
+  <td>{{activity.hours}}</td>
+}
+@if (!detailsOpened) {
+  <td>{{attendance(activity)}}</td>
+}
+@if (!detailsOpened) {
+  <td>@for (opt of activity.activityOptionSelections; track opt) {
+    <div>{{opt.activityOption.name.substring(0, opt.activityOption.name.length -1 )}}</div>
+  }</td>
+}
+@if (!detailsOpened) {
+  <td>
+    @if (activity.snapAdmin && activity.isSnap) {
+      <div>Admin</div>
+    }
+    @if (activity.snapPolicyId != null) {
+      <div>Community/PSE</div>
+    }
+    @if (activity.snapDirectId != null) {
+      <div>Direct</div>
+    }
+    @if (activity.snapIndirectId != null) {
+      <div>Indirect</div>
+    }
+    @if (blankSnap) {
+      <div>Snap-Ed</div>
+    }
+  </td>
+}
+@if (!detailsOpened) {
+  <td><a class="btn btn-info btn-xs" (click)="open()">Details</a></td>
+}
+@if (detailsOpened) {
+  <td  colspan="9">
+    <div class="text-right"><a class="btn btn-primary btn-xs" (click)="close()">Close</a></div>
+    <service-log-full-details [activity]="activity"></service-log-full-details>
+  </td>
+}

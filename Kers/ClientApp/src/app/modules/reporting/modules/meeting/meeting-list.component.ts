@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { startWith, flatMap, delay, map, tap } from 'rxjs/operators';
@@ -6,108 +6,123 @@ import { TrainingSearchCriteria } from '../training/training';
 import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
 
 @Component({
-  selector: 'meeting-list',
-  template: `
+    selector: 'meeting-list',
+    template: `
   <div>
-      <div class="text-right">
-          <a class="btn btn-info btn-xs" *ngIf="!newMeeting" (click)="newMeeting = true">+ new event</a>
-      </div>
-      <meeting-form *ngIf="newMeeting" (onFormCancel)="newMeeting=false" (onFormSubmit)="newMeetingSubmitted($event)"></meeting-form>
+    <div class="text-right">
+      @if (!newMeeting) {
+        <a class="btn btn-info btn-xs" (click)="newMeeting = true">+ new event</a>
+      }
+    </div>
+    @if (newMeeting) {
+      <meeting-form (onFormCancel)="newMeeting=false" (onFormSubmit)="newMeetingSubmitted($event)"></meeting-form>
+    }
   </div><br><br>
   <div class="row">
     <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
       <input type="text" [(ngModel)]="criteria.search" placeholder="search by title" (keyup)="onSearch($event)" class="form-control" name="Search" />
     </div>
     <div class="col-sm-4 col-xs-8 pull-right" style="margin-top: 3px;">
-        
-
-
-        <div class="input-group" style="width:260px; float:right;">
-          
-          <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-            angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
-            [(ngModel)]="model" [options]="myDpOptions" 
-            #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
-          <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
-        </div>
+  
+  
+  
+      <div class="input-group" style="width:260px; float:right;">
+  
+        <input type="text" class="form-control input-box" placeholder="Click to select a date"
+          angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()"
+          [(ngModel)]="model" [options]="myDpOptions"
+          #dp="angular-mydatepicker" (dateChanged)="onDateChanged($event)">
+        <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+      </div>
     </div>
   
   </div>
   
   
-  <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
-    <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
+  <a (click)="condition = !condition" style="cursor: pointer;">@if (condition) {
+    <i class="fa fa-minus-square"></i>
+  }
+  @if (!condition) {
+    <i class="fa fa-plus-square"></i>
+    } more search options
   </a>
   <div class="row">
-    <form *ngIf="condition" class="form-horizontal form-label-left">
-      <div class="col-sm-offset-3 col-sm-9">
-        <h2>Refine Search</h2>
-      </div>
-      <div class="form-group" >
+    @if (condition) {
+      <form class="form-horizontal form-label-left">
+        <div class="col-sm-offset-3 col-sm-9">
+          <h2>Refine Search</h2>
+        </div>
+        <div class="form-group" >
           <label class="control-label col-md-3 col-sm-3 col-xs-12">Day of the week</label>
           <div class="col-md-6 col-sm-6 col-xs-12">
-              <select [(ngModel)]="criteria.day" class="form-control" (change)="onDayChange($event)" name="dayOfTheWeek">
-                  <option value="null">-- Select --</option>
-                  <option value="1">Monday</option>
-                  <option value="2">Tuesday</option>
-                  <option value="3">Wednesday</option>
-                  <option value="4">Thursday</option>
-                  <option value="5">Friday</option>
-                  <option value="6">Saturday</option>
-                  <option value="0">Sunday</option>
-              </select>
+            <select [(ngModel)]="criteria.day" class="form-control" (change)="onDayChange($event)" name="dayOfTheWeek">
+              <option value="null">-- Select --</option>
+              <option value="1">Monday</option>
+              <option value="2">Tuesday</option>
+              <option value="3">Wednesday</option>
+              <option value="4">Thursday</option>
+              <option value="5">Friday</option>
+              <option value="6">Saturday</option>
+              <option value="0">Sunday</option>
+            </select>
           </div>
-      </div>
-      <div class="form-group" >
+        </div>
+        <div class="form-group" >
           <label class="control-label col-md-3 col-sm-3 col-xs-12">Contact</label>
           <div class="col-md-6 col-sm-6 col-xs-12">
-              <input class="form-control" [(ngModel)]="criteria.contacts" name="contact" (keyup)="onSearchContact($event)" />
+            <input class="form-control" [(ngModel)]="criteria.contacts" name="contact" (keyup)="onSearchContact($event)" />
           </div>
-      </div>
-      <div class="form-group" >
+        </div>
+        <div class="form-group" >
           <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
           <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-default" [class.active]="type=='dsc'">
-                  <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
-                  </label>
-                  <label class="btn btn-default" [class.active]="type=='asc'">
-                    <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
-                  </label>
-                  <label class="btn btn-default" [class.active]="type=='alph'">
-                      <input type="radio" name="type" id="option4" (click)="switchOrder('alph')"> Alphabetically
-                    </label>
-              </div>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-default" [class.active]="type=='dsc'">
+                <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
+              </label>
+              <label class="btn btn-default" [class.active]="type=='asc'">
+                <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
+              </label>
+              <label class="btn btn-default" [class.active]="type=='alph'">
+                <input type="radio" name="type" id="option4" (click)="switchOrder('alph')"> Alphabetically
+              </label>
+            </div>
           </div>
-      </div>  
-      
-      
-      
-    </form>
+        </div>
+      </form>
+    }
   </div><br>
   
   
   
   <div class="table-responsive">
-    
-    <table class="table table-bordered table-striped" *ngIf="meetings$ | async as trainings">
+  
+    @if (meetings$ | async; as trainings) {
+      <table class="table table-bordered table-striped">
         <thead>
-            <tr>
-              <th>Date(s)</th>
-              <th>Title</th>
-              <th>Location</th>
-              <th>Contact</th>
-              <th></th>
-            </tr>
+          <tr>
+            <th>Date(s)</th>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Contact</th>
+            <th></th>
+          </tr>
         </thead>
-        <tbody *ngIf="!loading">
-          <tr [meeting-list-detail]="training" (onEdited)="editedMeeting($event)" (onDeleted)="deletedMeeting($event)" *ngFor="let training of trainings"></tr>
-        </tbody>
-    </table>
-    <loading *ngIf="loading"></loading>
+        @if (!loading) {
+          <tbody>
+            @for (training of trainings; track training) {
+              <tr [meeting-list-detail]="training" (onEdited)="editedMeeting($event)" (onDeleted)="deletedMeeting($event)"></tr>
+            }
+          </tbody>
+        }
+      </table>
+    }
+    @if (loading) {
+      <loading></loading>
+    }
   </div>
   `,
-  styles: [`
+    styles: [`
   .input-box-container {
     position: relative;
   }
@@ -117,7 +132,9 @@ import { MeetingService, Meeting, MeetingWithTime } from './meeting.service';
     border: 1px solid #ccc;
     font-size: 16px;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MeetingListComponent implements OnInit {
   refresh: Subject<string>; // For load/reload

@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
@@ -9,144 +9,151 @@ import { HaySample, HayType, HayTypeDetails } from './hay-sample';
 
 
 @Component({
-  selector: 'hay-sample-form-element',
-  template: `
+    selector: 'hay-sample-form-element',
+    template: `
 <div class="form-horizontal form-label-left sample-crop" [formGroup]="sampleForm">
-    
+
   <div class="row" style="padding: 8px 0;">
     <div class="col-sm-11">
 
-       
-        <div class="form-group">
-            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Sample Name:</label>           
+
+      <div class="form-group">
+        <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Sample Name:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <input type="text" formControlName="name" id="name" class="form-control col-xs-12"/>
+        </div>
+      </div>
+
+
+
+
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId">Sample Type:</label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+          <select name="hayTypeId" formControlName="hayTypeId" class="form-control col-md-7 col-xs-12" (change)="SampleTypeChange($event)">
+            <option value="">-- select sample type --</option>
+            @for (type of types; track type) {
+              <option [value]="type.id">{{type.name}}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId">Hay Type:</label>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+          <select name="hayTypeDetailId" formControlName="hayTypeDetailId" class="form-control col-md-7 col-xs-12">
+            <option value="">-- select hay type --</option>
+            @for (selectedType of selectedTypeDetail; track selectedType) {
+              <option [value]="selectedType.id">{{selectedType.name}}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId"></label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          All samples run by Near Infrared Spectroscopy (NIR). $22
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="optionalTests">Optional Tests:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <ng-select
+            id="optionalTests"
+            formControlName="optionalTests"
+            [items]="testTypes"
+            [multiple]="true"
+            [hideSelected]="true"
+            placeholder = "(select any/all that apply)">
+          </ng-select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId"></label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          Kentucky producers who have their hay tested by a certified lab, such as the University of Kentucky Division of Agriculture Forage Program, may participate in the Kentucky Department of Agriculture’s hay grading program and have the hay included on KDA’s Hay For Sale listing. By checking the option to email the report to “KDA for Marketing” on page 1, you will receive this free service.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="SnapEdEligable" class="control-label col-md-3 col-sm-3 col-xs-12">Offer for sale through KDA:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <label class="switch">
+            <input type="checkbox" id="isKda">
+            <div class="slider round" (click)="onKdaChecked()"></div>
+          </label>
+        </div>
+      </div>
+      @if (kdaSelected) {
+        <div>
+          <h4>KDA Marketing Information</h4>
+          <h5>Lot Information</h5>
+          <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Initial Number of Bales:</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <input type="text" formControlName="name" id="name" class="form-control col-xs-12"/>
+              <input type="text" id="name" class="form-control col-xs-12"/>
             </div>
-        </div>
-
-
-
-
-       <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId">Sample Type:</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <select name="hayTypeId" formControlName="hayTypeId" class="form-control col-md-7 col-xs-12" (change)="SampleTypeChange($event)">
-                    <option value="">-- select sample type --</option>
-                    <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId">Hay Type:</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <select name="hayTypeDetailId" formControlName="hayTypeDetailId" class="form-control col-md-7 col-xs-12">
-                    <option value="">-- select hay type --</option>
-                    <option *ngFor="let selectedType of selectedTypeDetail" [value]="selectedType.id">{{selectedType.name}}</option>
-                </select>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId"></label>
+          </div>
+          <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Cutting Date:</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                All samples run by Near Infrared Spectroscopy (NIR). $22
+              <input type="text" id="name" class="form-control col-xs-12"/>
             </div>
-        </div>
-
-
-
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="optionalTests">Optional Tests:</label>
+          </div>
+          <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Bales sie:</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <ng-select
-                    id="optionalTests"
-                    formControlName="optionalTests"
-                    [items]="testTypes"
-                    [multiple]="true"
-                    [hideSelected]="true"
-                    placeholder = "(select any/all that apply)">
-                </ng-select>
+              <input type="text" id="name" class="form-control col-xs-12"/>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="billingTypeId"></label>
+          </div>
+          <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Bale weight:</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                Kentucky producers who have their hay tested by a certified lab, such as the University of Kentucky Division of Agriculture Forage Program, may participate in the Kentucky Department of Agriculture’s hay grading program and have the hay included on KDA’s Hay For Sale listing. By checking the option to email the report to “KDA for Marketing” on page 1, you will receive this free service.
+              <input type="text" id="name" class="form-control col-xs-12"/>
             </div>
-        </div>
-        
-         <div class="form-group">
-            <label for="SnapEdEligable" class="control-label col-md-3 col-sm-3 col-xs-12">Offer for sale through KDA:</label>           
+          </div>
+          <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Binding (String, Net Wrap, other):</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <label class="switch">
-                    <input type="checkbox" id="isKda">
-                    <div class="slider round" (click)="onKdaChecked()"></div>
-                </label>
+              <input type="text" id="name" class="form-control col-xs-12"/>
             </div>
+          </div>
+          <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Storage type:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text" id="name" class="form-control col-xs-12"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Method of contact:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text" id="name" class="form-control col-xs-12"/>
+            </div>
+          </div>
         </div>
-        <div *ngIf="kdaSelected">
-        <h4>KDA Marketing Information</h4>
-        <h5>Lot Information</h5>
-          <div class="form-group">
-              <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Initial Number of Bales:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="name" class="form-control col-xs-12"/>
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Cutting Date:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="name" class="form-control col-xs-12"/>
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Bales sie:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="name" class="form-control col-xs-12"/>
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Bale weight:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="name" class="form-control col-xs-12"/>
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Binding (String, Net Wrap, other):</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="name" class="form-control col-xs-12"/>
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Storage type:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="name" class="form-control col-xs-12"/>
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="note" class="control-label col-md-3 col-sm-3 col-xs-12">Method of contact:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" id="name" class="form-control col-xs-12"/>
-              </div>
-          </div>
-          
-        </div>
+      }
 
 
 
-        
+
     </div>
     <div class="col-sm-1">
-            <div *ngIf="index != 0 && !disabled" class="col-xs-1 ng-star-inserted text-right pull-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
-            <br>
+      @if (index != 0 && !disabled) {
+        <div class="col-xs-1 ng-star-inserted text-right pull-right"><span><a class="close-link" (click)="onRemove()" style="position:relative; cursor:pointer; top: -18px;"><i class="fa fa-close"></i></a></span></div>
+      }
+      <br>
         <small>&nbsp;</small>
+      </div>
     </div>
   </div>
-</div>
 
-  `,
-  styles: [`
+`,
+    styles: [`
   .sample-crop{
     border-bottom: 1px solid #ccc
   }
@@ -214,19 +221,20 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-  `]
-  ,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => HaySampleFormElementComponent),
-                  multi: true
-                },
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => HaySampleFormElementComponent),
-                  multi: true
-                } 
-                ]
+  `],
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => HaySampleFormElementComponent),
+            multi: true
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => HaySampleFormElementComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HaySampleFormElementComponent extends BaseControlValueAccessor<HaySample> implements ControlValueAccessor, OnInit { 
     sampleForm: FormGroup;

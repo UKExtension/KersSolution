@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { PlanningUnit } from '../../user/user.service';
 
 @Component({
-  selector: 'county-detail',
-  templateUrl: './county-detail.component.html',
-  styleUrls: ['./county-detail.component.css']
+    selector: 'county-detail',
+    templateUrl: './county-detail.component.html',
+    styleUrls: ['./county-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyDetailComponent implements OnInit {
   @Input() county:PlanningUnit

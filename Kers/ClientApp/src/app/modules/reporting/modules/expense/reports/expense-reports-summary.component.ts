@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ExpenseService, Expense, ExpenseFundingSource, ExpenseMealRate, ExpenseMonth, ExpenseSummary } from '../expense.service';
 import { saveAs } from 'file-saver';
 import { User } from "../../user/user.service";
@@ -9,89 +9,106 @@ import { Observable } from 'rxjs';
 @Component({
     selector: 'expense-reports-summary',
     template: `
-  
 
 
-<loading *ngIf="loading"></loading>
 
-     <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="!loading">
+@if (loading) {
+  <loading></loading>
+}
 
-            <div class="table-responsive" *ngIf="!isMileage">
-                <table class="table table-striped" style="background-color: white">
-                    <thead>
-                        <tr>
-                            <th>FUNDING SOURCE</th>
-                            <th class="text-right">MILES</th>
-                            <th class="text-right">MILEAGE COST</th>
-                            <th class="text-right">MEALS</th>
-                            <th class="text-right">LODGING</th>
-                            <th class="text-right">REGISTRATION</th>
-                            <th class="text-right">OTHER</th>
-                            <th class="text-right">MTD TOTALS</th>
-                            <th class="text-right">YTD</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let summary of summaries">
-                            <td>{{summary.fundingSource.name}}</td>
-                            <td class="text-right">{{summary.miles | number:'0.0-2'}}</td>
-                            <td class="text-right">{{summary.mileageCost | currency:'USD':'symbol':'1.2-2'}}</td>
-                            <td class="text-right">{{summary.meals | currency:'USD':'symbol':'1.2-2'}}</td>
-                            <td class="text-right">{{summary.lodging | currency:'USD':'symbol':'1.2-2'}}</td>
-                            <td class="text-right">{{summary.registration | currency:'USD':'symbol':'1.2-2'}}</td>
-                            <td class="text-right">{{summary.other | currency:'USD':'symbol':'1.2-2'}}</td>
-                            <td class="text-right">{{summary.total | currency:'USD':'symbol':'1.2-2'}}</td>
-                            <td class="text-right" *ngIf="fiscalYearSummaries">{{ytd(summary.fundingSource.id) | currency:'USD':'symbol':'1.2-2'}}</td>
-                        </tr>
-                        <tr *ngFor="let blank of blankRows">
-                            <td>{{blank.fundingSource.name}}</td>
-                            <td class="text-right">0</td>
-                            <td class="text-right">$0.00</td>
-                            <td class="text-right">$0.00</td>
-                            <td class="text-right">$0.00</td>
-                            <td class="text-right">$0.00</td>
-                            <td class="text-right">$0.00</td>
-                            <td class="text-right">$0.00</td>
-                            <td class="text-right">{{blank.total | currency:'USD':'symbol':'1.2-2'}}</td>
-                        </tr>
-                        
-                    </tbody>
-                </table>
-            </div>
-        </div><br>
-        <div class="table-responsive" *ngIf="isMileage"><br>
-                <table class="table table-striped" style="background-color: white" *ngIf="(mileageSummary$ | async) as mileageSummary">
-                    <thead>
-                        <tr>
-                            <th>FUNDING SOURCE</th>
-                            <th class="text-right">MILES</th>
-                            <th class="text-right">COST PER MILE</th>
-                            <th class="text-right">TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let summary of mileageSummary">
-                            <td>{{summary.fundingSource.name}}</td>
-                            <td class="text-right">{{summary.miles}}</td>
-                            <td class="text-right">{{summary.mileageCost | currency:'USD':'symbol':'1.2-2'}}</td>
-                            <td class="text-right">{{summary.total | currency:'USD':'symbol':'1.2-2'}}</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td><strong>Total:</strong></td>
-                            <td class="text-right">{{mileageToatl(mileageSummary)}}</td>
-                            <td>&nbsp;</td>
-                            <td class="text-right">{{total(mileageSummary) | currency:'USD':'symbol':'1.2-2'}}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-<br><br>
+@if (!loading) {
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    @if (!isMileage) {
+      <div class="table-responsive">
+        <table class="table table-striped" style="background-color: white">
+          <thead>
+            <tr>
+              <th>FUNDING SOURCE</th>
+              <th class="text-right">MILES</th>
+              <th class="text-right">MILEAGE COST</th>
+              <th class="text-right">MEALS</th>
+              <th class="text-right">LODGING</th>
+              <th class="text-right">REGISTRATION</th>
+              <th class="text-right">OTHER</th>
+              <th class="text-right">MTD TOTALS</th>
+              <th class="text-right">YTD</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (summary of summaries; track summary) {
+              <tr>
+                <td>{{summary.fundingSource.name}}</td>
+                <td class="text-right">{{summary.miles | number:'0.0-2'}}</td>
+                <td class="text-right">{{summary.mileageCost | currency:'USD':'symbol':'1.2-2'}}</td>
+                <td class="text-right">{{summary.meals | currency:'USD':'symbol':'1.2-2'}}</td>
+                <td class="text-right">{{summary.lodging | currency:'USD':'symbol':'1.2-2'}}</td>
+                <td class="text-right">{{summary.registration | currency:'USD':'symbol':'1.2-2'}}</td>
+                <td class="text-right">{{summary.other | currency:'USD':'symbol':'1.2-2'}}</td>
+                <td class="text-right">{{summary.total | currency:'USD':'symbol':'1.2-2'}}</td>
+                @if (fiscalYearSummaries) {
+                  <td class="text-right">{{ytd(summary.fundingSource.id) | currency:'USD':'symbol':'1.2-2'}}</td>
+                }
+              </tr>
+            }
+            @for (blank of blankRows; track blank) {
+              <tr>
+                <td>{{blank.fundingSource.name}}</td>
+                <td class="text-right">0</td>
+                <td class="text-right">$0.00</td>
+                <td class="text-right">$0.00</td>
+                <td class="text-right">$0.00</td>
+                <td class="text-right">$0.00</td>
+                <td class="text-right">$0.00</td>
+                <td class="text-right">$0.00</td>
+                <td class="text-right">{{blank.total | currency:'USD':'symbol':'1.2-2'}}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+  }<br>
+  @if (isMileage) {
+    <div class="table-responsive"><br>
+      @if ((mileageSummary$ | async); as mileageSummary) {
+        <table class="table table-striped" style="background-color: white">
+          <thead>
+            <tr>
+              <th>FUNDING SOURCE</th>
+              <th class="text-right">MILES</th>
+              <th class="text-right">COST PER MILE</th>
+              <th class="text-right">TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (summary of mileageSummary; track summary) {
+              <tr>
+                <td>{{summary.fundingSource.name}}</td>
+                <td class="text-right">{{summary.miles}}</td>
+                <td class="text-right">{{summary.mileageCost | currency:'USD':'symbol':'1.2-2'}}</td>
+                <td class="text-right">{{summary.total | currency:'USD':'symbol':'1.2-2'}}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td><strong>Total:</strong></td>
+              <td class="text-right">{{mileageToatl(mileageSummary)}}</td>
+              <td>&nbsp;</td>
+              <td class="text-right">{{total(mileageSummary) | currency:'USD':'symbol':'1.2-2'}}</td>
+            </tr>
+          </tfoot>
+        </table>
+      }
+      <br><br>
+    </div>
+  }
 
-        </div>
 
-
-        `
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExpenseReportsSummaryComponent { 
 

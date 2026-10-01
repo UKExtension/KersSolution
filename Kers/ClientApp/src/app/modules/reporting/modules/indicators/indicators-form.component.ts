@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Indicator, IndicatorsService, IndicatorValueEntry } from './indicators.service';
 import { MajorProgram, ProgramsService, StrategicInitiative } from '../admin/programs/programs.service';
 import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
@@ -6,10 +6,11 @@ import { ReportingService } from '../../components/reporting/reporting.service';
 import { FormBuilder } from '@angular/forms';
 
 @Component({
-  selector: 'indicators-form',
-  templateUrl: './indicators-form.component.html',
-  styles: [
-  ]
+    selector: 'indicators-form',
+    templateUrl: './indicators-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class IndicatorsFormComponent implements OnInit {
 

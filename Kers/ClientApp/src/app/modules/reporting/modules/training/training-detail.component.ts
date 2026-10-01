@@ -1,11 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { TrainingService } from "./training.service";
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import { Training, TrainingSearchCriteria } from './training';
 
 @Component({
     selector: '[training-detail]',
-    templateUrl: 'training-detail.component.html'
+    templateUrl: 'training-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingDetailComponent { 
     rowDefault =true;

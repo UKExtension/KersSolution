@@ -1,76 +1,94 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../../components/reporting/reporting.service';
 import { UserService, User, PlanningUnit } from '../../../user/user.service';
 import { FiscalyearService, FiscalYear } from '../../../admin/fiscalyear/fiscalyear.service';
 import { SnapBudgetReimbursementsNepAssistant, SnapedAdminService, SnapBudgetReimbursementsCounty } from '../../../admin/snaped/snaped-admin.service';
 
 @Component({
-  template: `
-    <div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+    template: `
+    @if (errorMessage) {
+      <div class="alert alert-danger alert-dismissible fade in" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-        </button>
-        <strong>Error: </strong> {{errorMessage}}
+      </button>
+      <strong>Error: </strong> {{errorMessage}}
     </div>
-    <div *ngIf="user">
-    <fiscal-year-switcher [type]="'snapEd'" [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
-    <br>
-        <div class="col-xs-12">
-            <snape-ed-stats *ngIf="fiscalYear" [user]="user" [fiscalYear]="fiscalYear"></snape-ed-stats>
-        </div>
-        <snape-ed-commitment-stats *ngIf="fiscalYear" [user]="user" [fiscalYear]="fiscalYear"></snape-ed-commitment-stats>
-        <br><br>
-        <!--
-        <div *ngIf="isSnapEdAssistant">
+    }
+    @if (user) {
+      <div>
+        <fiscal-year-switcher [type]="'snapEd'" [initially]="'current'" [showNext]="false" (onSwitched)="fiscalYearSwitched($event)"></fiscal-year-switcher>
+        <br>
+          <div class="col-xs-12">
+            @if (fiscalYear) {
+              <snape-ed-stats [user]="user" [fiscalYear]="fiscalYear"></snape-ed-stats>
+            }
+          </div>
+          @if (fiscalYear) {
+            <snape-ed-commitment-stats [user]="user" [fiscalYear]="fiscalYear"></snape-ed-commitment-stats>
+          }
+          <br><br>
+          <!--
+          <div *ngIf="isSnapEdAssistant">
             <h2>Reimbursements</h2>
             <div *ngIf="budget">
-                <table class="table table-striped" *ngIf="reimbursments">
-                    <thead *ngIf="reimbursments.length > 0">
-                        <tr>
-                            <th>Notes</th>
-                            <th class="text-right">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let reimbursment of reimbursments">
-                            <td>{{reimbursment.notes}}</td>
-                            <td class="text-right">{{reimbursment.amount  | currency:'USD':'symbol' }}</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>Remaining budget: <strong>{{remainingBudget | currency:'USD':'symbol' }}</strong></td>
-                            <td class="text-right">Total Reimbursements: <strong>{{totalReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
-                        </tr>
-                    </tfoot>               
-                </table>
-            </div>
-        </div>
-        -->
-        <h2>County SNAP-Ed Budget</h2>
-        <div *ngIf="countyBudget">
-        <table class="table table-striped" *ngIf="countyReimbursements">
-            <thead *ngIf="countyReimbursements.length > 0">
-                <tr>
+              <table class="table table-striped" *ngIf="reimbursments">
+                <thead *ngIf="reimbursments.length > 0">
+                  <tr>
                     <th>Notes</th>
                     <th class="text-right">Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let countyReimbursment of countyReimbursements">
-                    <td>{{countyReimbursment.notes}}</td>
-                    <td class="text-right">{{countyReimbursment.amount  | currency:'USD':'symbol' }}</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Remaining budget: <strong>{{remainingCountyBudget | currency:'USD':'symbol' }}</strong></td>
-                    <td class="text-right">Total Reimbursements: <strong>{{totalCountyReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
-                </tr>
-            </tfoot>               
-        </table>
-    </div>
-    </div>
-  `
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let reimbursment of reimbursments">
+                    <td>{{reimbursment.notes}}</td>
+                    <td class="text-right">{{reimbursment.amount  | currency:'USD':'symbol' }}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>Remaining budget: <strong>{{remainingBudget | currency:'USD':'symbol' }}</strong></td>
+                    <td class="text-right">Total Reimbursements: <strong>{{totalReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+          -->
+          <h2>County SNAP-Ed Budget</h2>
+          @if (countyBudget) {
+            <div>
+              @if (countyReimbursements) {
+                <table class="table table-striped">
+                  @if (countyReimbursements.length > 0) {
+                    <thead>
+                      <tr>
+                        <th>Notes</th>
+                        <th class="text-right">Amount</th>
+                      </tr>
+                    </thead>
+                  }
+                  <tbody>
+                    @for (countyReimbursment of countyReimbursements; track countyReimbursment) {
+                      <tr>
+                        <td>{{countyReimbursment.notes}}</td>
+                        <td class="text-right">{{countyReimbursment.amount  | currency:'USD':'symbol' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td>Remaining budget: <strong>{{remainingCountyBudget | currency:'USD':'symbol' }}</strong></td>
+                      <td class="text-right">Total Reimbursements: <strong>{{totalCountyReimbursementsAmount | currency:'USD':'symbol' }}</strong></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              }
+            </div>
+          }
+        </div>
+      }
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServicelogSnapedReportComponent { 
 

@@ -1,24 +1,42 @@
-<td *ngIf="rowOppened">{{section.name}}<small>{{positionRestriction}} {{roleRestriction}}</small></td>
-<td class="text-right"  *ngIf="rowOppened">
-        <button (click)="groups()" class="btn btn-info btn-xs">groups</button>
-        <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
-        <button (click)="delete()" class="btn btn-info btn-xs">delete</button>
-        <span *ngIf="errorMessage">{{errorMessage}}</span>
-</td>
-<td *ngIf="editOppened">
+@if (rowOppened) {
+  <td>{{section.name}}<small>{{positionRestriction}} {{roleRestriction}}</small></td>
+}
+@if (rowOppened) {
+  <td class="text-right" >
+    <button (click)="groups()" class="btn btn-info btn-xs">groups</button>
+    <button (click)="edit()" class="btn btn-info btn-xs">edit</button>
+    <button (click)="delete()" class="btn btn-info btn-xs">delete</button>
+    @if (errorMessage) {
+      <span>{{errorMessage}}</span>
+    }
+  </td>
+}
+@if (editOppened) {
+  <td>
     <navigation-section-form (onFormSubmit)="onUpdateSubmit()" (onFormCancel)="close()" [section]="section" ></navigation-section-form>
-</td>
-<td class="text-right"  *ngIf="editOppened">
+  </td>
+}
+@if (editOppened) {
+  <td class="text-right" >
     <button (click)="close()" class="btn btn-info btn-xs">close</button>
-</td>
-<td *ngIf="deleteOppened">Do you really want to delete section {{section.name}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></td>
-<td class="text-right"  *ngIf="deleteOppened">
+  </td>
+}
+@if (deleteOppened) {
+  <td>Do you really want to delete section {{section.name}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></td>
+}
+@if (deleteOppened) {
+  <td class="text-right" >
     <button (click)="close()" class="btn btn-info btn-xs">close</button>
-</td>
-<td *ngIf="groupsOppened">
+  </td>
+}
+@if (groupsOppened) {
+  <td>
     <div>{{section.name}}</div>
     <admin-nav-groups [section]="section" (onGroupAdded)="groupAdded($event)"></admin-nav-groups>
-</td>
-<td class="text-right"  *ngIf="groupsOppened">
+  </td>
+}
+@if (groupsOppened) {
+  <td class="text-right" >
     <button (click)="close()" class="btn btn-info btn-xs">close</button>
-</td>
+  </td>
+}

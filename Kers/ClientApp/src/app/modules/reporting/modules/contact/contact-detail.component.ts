@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {ContactService, ContactMonth, Contact} from './contact.service';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 
 @Component({
     selector: 'contact-detail',
-    templateUrl: 'contact-detail.component.html'
+    templateUrl: 'contact-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactDetailComponent { 
     rowDefault =true;

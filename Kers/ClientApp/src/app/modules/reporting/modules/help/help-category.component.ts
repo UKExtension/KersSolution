@@ -1,12 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Help, HelpCategory, HelpService } from '../admin/help/help.service';
 
 @Component({
-  selector: 'help-category',
-  templateUrl: './help-category.component.html',
-  styles: [
-  ]
+    selector: 'help-category',
+    templateUrl: './help-category.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpCategoryComponent implements OnInit {
   @Input() parentId:number;

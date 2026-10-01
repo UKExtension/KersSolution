@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import { PlanningUnit } from '../user/user.service';
 import { PlanningunitService } from '../planningunit/planningunit.service';
@@ -7,10 +7,11 @@ import { TaxExempt } from './exmpt';
 import { ExemptService } from './exempt.service';
 
 @Component({
-  selector: 'app-exempt-review',
-  templateUrl: './exempt-review.component.html',
-  styles: [
-  ]
+    selector: 'app-exempt-review',
+    templateUrl: './exempt-review.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExemptReviewComponent implements OnInit {
   planningUnits$: Observable<PlanningUnit[]>;

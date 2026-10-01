@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingHelpService, Help} from './reporting-help.service';
 
 @Component({
     selector: 'reporting-display-help',
-    templateUrl: 'reporting-display-help.component.html'
+    templateUrl: 'reporting-display-help.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class ReportingDisplayHelpComponent implements OnInit{

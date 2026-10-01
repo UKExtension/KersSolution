@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { ActivityService, Activity, ActivityOption, Race } from '../activity.service';
 
 import { Router } from "@angular/router";
@@ -8,15 +8,17 @@ import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 
 
 @Component({
-  templateUrl: 'activity-stats-all.component.html',
-  styles: [`
+    templateUrl: 'activity-stats-all.component.html',
+    styles: [`
     .mydrp .selectiongroup .selection{
         color:rgb(189, 189, 189);
     }
 
 
   `],
-  encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ActivityStatsAllComponent { 
 

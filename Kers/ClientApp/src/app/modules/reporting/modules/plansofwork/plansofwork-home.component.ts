@@ -1,16 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import { FiscalyearService, FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 
 @Component({
-  template: `
+    template: `
   <div><reporting-display-help id="12"></reporting-display-help></div>
-  <div *ngIf="fiscalYear">
-    <plansofwork [fy]="fiscalYear"></plansofwork>
-  </div>  
-
-  `
+  @if (fiscalYear) {
+    <div>
+      <plansofwork [fy]="fiscalYear"></plansofwork>
+    </div>
+  }
+  
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlansofworkHomeComponent { 
 

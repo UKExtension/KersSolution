@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators} from "@angular/forms";
 import { Observable } from 'rxjs';
 import { Activity, Ethnicity } from '../activity/activity.service';
@@ -6,83 +6,95 @@ import { Race, ServicelogService } from '../servicelog/servicelog.service';
 import { ActivitySignUpEntry, SignupService } from './signup.service';
 
 @Component({
-  selector: 'signup-form',
-  template: `
-    
+    selector: 'signup-form',
+    template: `
+
 <br><br>
-  <div *ngIf="confirmMessage" class="green text-center" style="width:100%;font-weight:bold;">
-   <br><br><br><br><br>
-   Your information is recorded. <br>
-   Thanks for your submission.
-   <br><br><br><br><br><br>
+@if (confirmMessage) {
+  <div class="green text-center" style="width:100%;font-weight:bold;">
+    <br><br><br><br><br>
+    Your information is recorded. <br>
+    Thanks for your submission.
+    <br><br><br><br><br><br>
   </div>
-  <loading *ngIf="loading && !confirmMessage"></loading>
-  <div class="row" *ngIf="!loading && !confirmMessage">
-      <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="signupForm">
-          <div class="form-group">
-              <label for="name" class="control-label col-md-2 col-sm-2 col-xs-12">Name:</label>           
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <input type="text" formControlName="name" class="form-control col-xs-12" />
-              </div>
-          </div>
-          <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12" for="address">Address: </label>
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                <input type="text" name="address" formControlName="address" id="address" class="form-control col-xs-12" />
-              </div>
-          </div>
-          <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12" for="email">Email: </label>
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                <input type="text" name="email" formControlName="email" id="email" class="form-control col-xs-12" />
-              </div>
-          </div>
-          <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12" for="raceId">Race: </label>
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <select name="race" id="raceId" formControlName="raceId" class="form-control col-md-7 col-xs-12" >	
-                      <option value="">--- select ---</option>
-                      <option *ngFor="let race of races | async"  [value]="race.id">{{race.name}}</option>
-                  </select>
-              </div>
-          </div>
-          <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12" for="ethnicityId">Ethnicity: </label>
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                  <select name="race" id="ethnicityId" formControlName="ethnicityId" class="form-control col-md-7 col-xs-12" >	
-                      <option value="">--- select ---</option>
-                      <option *ngFor="let ethnicity of ethnicities | async"  [value]="ethnicity.id">{{ethnicity.name}}</option>
-                  </select>
-              </div>
-          </div>
-          <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12" for="gender">Gender: </label>
-              <div class="col-md-9 col-sm-9 col-xs-12">
-                <label class="radio-inline">
-                  <input type="radio" name="gender" id="gender-male" [value]="1" formControlName="gender"> Male
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="gender" id="gender-female" [value]="2" formControlName="gender"> Female
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="gender" id="gender-no" [value]="0" formControlName="gender"> Choose not to Identify
-                </label>
-              </div>
-          </div>
-          <div class="ln_solid"></div>
-          <div class="form-group">
-              <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-2">
-                  <a class="btn btn-primary" *ngIf="!dalayConfirm" (click)="onCancel()">Cancel</a>
-                  <button type="submit" [disabled]="signupForm.invalid"  class="btn btn-success">Submit</button>
-              </div>
-          </div>
-          
-      </form>
+}
+@if (loading && !confirmMessage) {
+  <loading></loading>
+}
+@if (!loading && !confirmMessage) {
+  <div class="row">
+    <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="signupForm">
+      <div class="form-group">
+        <label for="name" class="control-label col-md-2 col-sm-2 col-xs-12">Name:</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <input type="text" formControlName="name" class="form-control col-xs-12" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="address">Address: </label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <input type="text" name="address" formControlName="address" id="address" class="form-control col-xs-12" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="email">Email: </label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <input type="text" name="email" formControlName="email" id="email" class="form-control col-xs-12" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="raceId">Race: </label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <select name="race" id="raceId" formControlName="raceId" class="form-control col-md-7 col-xs-12" >
+            <option value="">--- select ---</option>
+            @for (race of races | async; track race) {
+              <option  [value]="race.id">{{race.name}}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="ethnicityId">Ethnicity: </label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <select name="race" id="ethnicityId" formControlName="ethnicityId" class="form-control col-md-7 col-xs-12" >
+            <option value="">--- select ---</option>
+            @for (ethnicity of ethnicities | async; track ethnicity) {
+              <option  [value]="ethnicity.id">{{ethnicity.name}}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="gender">Gender: </label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="gender-male" [value]="1" formControlName="gender"> Male
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="gender-female" [value]="2" formControlName="gender"> Female
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="gender-no" [value]="0" formControlName="gender"> Choose not to Identify
+          </label>
+        </div>
+      </div>
+      <div class="ln_solid"></div>
+      <div class="form-group">
+        <div class="col-md-6 col-sm-6 col-xs-12 col-sm-offset-2">
+          @if (!dalayConfirm) {
+            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+          }
+          <button type="submit" [disabled]="signupForm.invalid"  class="btn btn-success">Submit</button>
+        </div>
+      </div>
+    </form>
   </div>
-  
-  `,
-  styles: [
-  ]
+}
+
+`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SignupFormComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from "@angular/forms";
 import { SnapedAdminService } from './snaped-admin.service';
 
@@ -8,31 +8,37 @@ import { SnapedAdminService } from './snaped-admin.service';
     selector: 'snaped-reimbursment-form',
     template: `
         <div class="col-sm-offset-3 col-sm-9">
-            <h2 *ngIf="!reimbursment">New Reimbursment</h2>
-            <h2 *ngIf="reimbursment">Edit Reimbursment</h2>
+          @if (!reimbursment) {
+            <h2>New Reimbursment</h2>
+          }
+          @if (reimbursment) {
+            <h2>Edit Reimbursment</h2>
+          }
         </div>
         <form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="reimbursmentForm">
-            <div class="form-group">
-                <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Amount:</label>           
-                <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="number" name="amount" formControlName="amount" id="notes" class="form-control" style="width: 150px;" />
-                </div>
+          <div class="form-group">
+            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Amount:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="number" name="amount" formControlName="amount" id="notes" class="form-control" style="width: 150px;" />
             </div>
-            <div class="form-group">
-                <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Notes:</label>           
-                <div class="col-md-9 col-sm-9 col-xs-12">
-                    <input type="text" name="notes" formControlName="notes" id="notes" class="form-control col-xs-12" />
-                </div>
+          </div>
+          <div class="form-group">
+            <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">Notes:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text" name="notes" formControlName="notes" id="notes" class="form-control col-xs-12" />
             </div>
-            <div class="ln_solid"></div>
-            <div class="form-group">
-                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                    <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-                    <button type="submit" [disabled]="reimbursmentForm.invalid"  class="btn btn-success">Submit</button>
-                </div>
+          </div>
+          <div class="ln_solid"></div>
+          <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+              <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+              <button type="submit" [disabled]="reimbursmentForm.invalid"  class="btn btn-success">Submit</button>
             </div>
+          </div>
         </form>
-    `
+        `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedReimbursmentFormComponent implements OnInit{ 
 

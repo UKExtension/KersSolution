@@ -1,35 +1,49 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CountyNote } from '../soildata.service';
 
 @Component({
-  selector: 'soildata-notes-detail',
-  template: `
+    selector: 'soildata-notes-detail',
+    template: `
   <div class="ln_solid"></div>
   <div class="row">
-      <div class="col-xs-10">
-          
-          <article class="media event" *ngIf="rowDefault">
-              <div class="media-body">
-              <a class="title">{{note.name}}</a>
-              </div>
-          </article>
-          <div class="col-xs-12" *ngIf="rowEdit">
-              <soildata-notes-form [note]="note" (onFormCancel)="default()" (onFormSubmit)="noteSubmitted($event)"></soildata-notes-form>
+    <div class="col-xs-10">
+  
+      @if (rowDefault) {
+        <article class="media event">
+          <div class="media-body">
+            <a class="title">{{note.name}}</a>
           </div>
-          <div class="col-xs-12" *ngIf="rowDelete">
+        </article>
+      }
+      @if (rowEdit) {
+        <div class="col-xs-12">
+          <soildata-notes-form [note]="note" (onFormCancel)="default()" (onFormSubmit)="noteSubmitted($event)"></soildata-notes-form>
+        </div>
+      }
+      @if (rowDelete) {
+        <div class="col-xs-12">
           Do you really want to delete note {{note.name}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="default()" class="btn btn-info btn-xs">No</button>
-          </div>
-
-          
-      </div>
-      <div class="col-xs-2 text-right">
-          <a class="btn btn-info btn-xs" (click)="edit()" *ngIf="rowDefault">edit</a>
-          <a class="btn btn-info btn-xs" (click)="delete()" *ngIf="rowDefault">delete</a>
-          <a class="btn btn-info btn-xs" (click)="default()" *ngIf="!rowDefault">close</a>
-      </div>  
+        </div>
+      }
+  
+  
+    </div>
+    <div class="col-xs-2 text-right">
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="edit()">edit</a>
+      }
+      @if (rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="delete()">delete</a>
+      }
+      @if (!rowDefault) {
+        <a class="btn btn-info btn-xs" (click)="default()">close</a>
+      }
+    </div>
   </div>
   `,
-  styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataNotesDetailComponent implements OnInit {
   @Input() note:CountyNote;

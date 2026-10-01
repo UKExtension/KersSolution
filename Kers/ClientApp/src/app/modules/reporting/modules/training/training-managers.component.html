@@ -1,8 +1,12 @@
 <h2>Session Managers List</h2>
 <table class="table">
-  <tr *ngFor="let trainer of trainiers | async">
-    <td><span *ngIf="trainer.personalProfile">{{trainer.personalProfile.firstName}} {{trainer.personalProfile.lastName}}</span></td>
-    <td>{{trainer.rprtngProfile.planningUnit.name}}</td>
-    <td>{{trainer.rprtngProfile.email}}</td>
-  </tr>
+  @for (trainer of trainiers | async; track trainer) {
+    <tr>
+      <td>@if (trainer.personalProfile) {
+        <span>{{trainer.personalProfile.firstName}} {{trainer.personalProfile.lastName}}</span>
+      }</td>
+      <td>{{trainer.rprtngProfile.planningUnit.name}}</td>
+      <td>{{trainer.rprtngProfile.email}}</td>
+    </tr>
+  }
 </table>

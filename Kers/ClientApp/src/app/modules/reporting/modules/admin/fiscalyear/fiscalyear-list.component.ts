@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import { Observable } from 'rxjs';
 import {FiscalyearFormComponent} from './fiscalyear-form.component';
@@ -7,28 +7,37 @@ import {FiscalyearService, FiscalYear} from './fiscalyear.service';
 @Component({
     template: `
 <div>
-    <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newYear" (click)="newFiscalYearOpen()">+ new fiscal year</a>
-    </div>
-    <fiscalyear-form *ngIf="newYear" (onFormCancel)="newFiscalYearCancelled()" (onFormSubmit)="newFiscalYearSubmitted()"></fiscalyear-form>
+  <div class="text-right">
+    @if (!newYear) {
+      <a class="btn btn-info btn-xs" (click)="newFiscalYearOpen()">+ new fiscal year</a>
+    }
+  </div>
+  @if (newYear) {
+    <fiscalyear-form (onFormCancel)="newFiscalYearCancelled()" (onFormSubmit)="newFiscalYearSubmitted()"></fiscalyear-form>
+  }
 </div>
-<div *ngIf="fiscalyears">
+@if (fiscalyears) {
+  <div>
     <table class="table table-striped">
-        <thead>
+      <thead>
         <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th></th>
+          <th>Name</th>
+          <th>Type</th>
+          <th></th>
         </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let fiscalyear of fiscalyears" [fiscalyearListDetail]="fiscalyear" (onFiscalyearUpdated)="onFiscalYearUpdate()" (onFisclyearDeleted)="onFiscalYearUpdate()"></tr>
-        </tbody>               
-    </table>            
-</div>
-       
-    `
+      </thead>
+      <tbody>
+        @for (fiscalyear of fiscalyears; track fiscalyear) {
+          <tr [fiscalyearListDetail]="fiscalyear" (onFiscalyearUpdated)="onFiscalYearUpdate()" (onFisclyearDeleted)="onFiscalYearUpdate()"></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
 
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class FiscalyearListComponent implements OnInit{
 

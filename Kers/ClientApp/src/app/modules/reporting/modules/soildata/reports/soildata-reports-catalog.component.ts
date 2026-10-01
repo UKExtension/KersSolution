@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { SoilReportSearchCriteria, SoilReportBundle, TypeForm, SoilReportStatus } from '../soildata.report';
 import { Subject, Observable } from 'rxjs';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
@@ -8,8 +8,10 @@ import { saveAs } from 'file-saver';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
 
 @Component({
-  selector: 'soildata-reports-catalog',
-  templateUrl: 'soildata-reports-catalog.component.html'
+    selector: 'soildata-reports-catalog',
+    templateUrl: 'soildata-reports-catalog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataReportsCatalogComponent implements OnInit {
   refresh: Subject<SoilReportBundle[] | null>; // For load/reload

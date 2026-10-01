@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
-  selector: 'vehicle-area',
-  template: `
-    <p *ngIf="areaId != null">
-    <planningunit-list [areaId]="areaId" [link]="'/reporting/expense/vehicle/county/'"></planningunit-list>
-    </p>
-  `,
-  styles: []
+    selector: 'vehicle-area',
+    template: `
+    @if (areaId != null) {
+      <p>
+        <planningunit-list [areaId]="areaId" [link]="'/reporting/expense/vehicle/county/'"></planningunit-list>
+      </p>
+    }
+    `,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class VehicleAreaComponent implements OnInit {
 

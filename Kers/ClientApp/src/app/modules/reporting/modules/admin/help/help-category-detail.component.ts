@@ -1,35 +1,49 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {HelpService, HelpCategory} from './help.service';
 
 
 @Component({
-  selector: '[help-category-detail]',
-  template: `
+    selector: '[help-category-detail]',
+    template: `
   <div class="block">
     <div class="tags">
-        <strong>
+      <strong>
         {{category.title}}
-        </strong>
+      </strong>
     </div>
     <div class="block_content">
-        <h2 class="title">
-            <div *ngIf="row">
-                <a class="btn btn-info btn-xs" (click)="openChildren()">sub categories</a>
-                <a class="btn btn-info btn-xs" (click)="onEdit()">edit</a>
-                <a class="btn btn-info btn-xs" (click)="onDelete()">delete</a>
-            </div>
-            <div *ngIf="!row">
-                <a class="btn btn-info btn-xs" (click)="close()">close</a>
-            </div>
-        </h2>
-        <help-category-form *ngIf="edit" [help]="category" (onFormCancel)="close()" (onFormSubmit)="updated($event)"></help-category-form>
-        <help-category-list [parentId]="category.id" *ngIf="children"></help-category-list>
-        <div *ngIf="delete">Do you really want to delete the help category {{category.title}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></div>
-        <p class="excerpt" *ngIf="row">{{category.description}}</p>     
+      <h2 class="title">
+        @if (row) {
+          <div>
+            <a class="btn btn-info btn-xs" (click)="openChildren()">sub categories</a>
+            <a class="btn btn-info btn-xs" (click)="onEdit()">edit</a>
+            <a class="btn btn-info btn-xs" (click)="onDelete()">delete</a>
+          </div>
+        }
+        @if (!row) {
+          <div>
+            <a class="btn btn-info btn-xs" (click)="close()">close</a>
+          </div>
+        }
+      </h2>
+      @if (edit) {
+        <help-category-form [help]="category" (onFormCancel)="close()" (onFormSubmit)="updated($event)"></help-category-form>
+      }
+      @if (children) {
+        <help-category-list [parentId]="category.id"></help-category-list>
+      }
+      @if (delete) {
+        <div>Do you really want to delete the help category {{category.title}}?<br><button (click)="confirmDelete()" class="btn btn-info btn-xs">Yes</button> <button (click)="close()" class="btn btn-info btn-xs">No</button></div>
+      }
+      @if (row) {
+        <p class="excerpt">{{category.description}}</p>
+      }
     </div>
-</div>
-    
-  `
+  </div>
+  
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpCategoryDetailComponent { 
 

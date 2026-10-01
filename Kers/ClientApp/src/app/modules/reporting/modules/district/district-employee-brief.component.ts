@@ -1,11 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { EmployeeNumActivities } from './district.service';
 import {Location} from '@angular/common';
 
 @Component({
-  selector: 'district-employee-brief',
-  templateUrl: './district-employee-brief.component.html',
-  styles: []
+    selector: 'district-employee-brief',
+    templateUrl: './district-employee-brief.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class DistrictEmployeeBriefComponent implements OnInit {
   @Input() data:EmployeeNumActivities;

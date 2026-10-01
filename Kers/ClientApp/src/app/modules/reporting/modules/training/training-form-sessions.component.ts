@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl, FormArray, FormControl } from '@angular/forms';
 import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow, TrainingSession } from './training';
 import { TrainingService } from './training.service';
@@ -7,13 +7,15 @@ import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 
 
 @Component({
-  selector: 'training-form-sessions',
-  templateUrl: './training-form-sessions.component.html',
-  styles:[`
+    selector: 'training-form-sessions',
+    templateUrl: './training-form-sessions.component.html',
+    styles: [`
   my-date-picker.ng-invalid.ng-touched >>> .mydp {
     border: 1px solid #CE5454;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingFormSessionsComponent implements OnInit {
     @Input() training:Training;

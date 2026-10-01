@@ -1,81 +1,104 @@
-<div class="alert alert-danger alert-dismissible fade in" role="alert" *ngIf="errorMessage">
+@if (errorMessage) {
+  <div class="alert alert-danger alert-dismissible fade in" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-    </button>
-    <strong>Error: </strong> {{errorMessage}}
+  </button>
+  <strong>Error: </strong> {{errorMessage}}
 </div>
+}
 
 
-<div class="alert alert-success alert-dismissible fade in" role="alert" *ngIf="dataSubmitted">
+@if (dataSubmitted) {
+  <div class="alert alert-success alert-dismissible fade in" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-    </button>
-    <strong>Indicator data for <em>{{selectedProgram.name}}</em> has been submitted </strong><br>
-To enter/adjust data for another Concentraton Area, just select the Concentration Area from the dropdown list bellow.
+  </button>
+  <strong>Indicator data for <em>{{selectedProgram.name}}</em> has been submitted </strong><br>
+  To enter/adjust data for another Concentraton Area, just select the Concentration Area from the dropdown list bellow.
 </div>
+}
 <br>
-<loading *ngIf="initiatives == null"></loading>
-<div *ngIf="initiatives != null">
-    <div>Select the Concentration Area from the dropdown list to access/enter your Indicator numbers:</div><br>
-    <select name="mp3" id="mp3" class="form-control col-md-7 col-xs-12" (change)="onChange($event.target.value)" style="clear: both;">
+  @if (initiatives == null) {
+    <loading></loading>
+  }
+  @if (initiatives != null) {
+    <div>
+      <div>Select the Concentration Area from the dropdown list to access/enter your Indicator numbers:</div><br>
+      <select name="mp3" id="mp3" class="form-control col-md-7 col-xs-12" (change)="onChange($event.target.value)" style="clear: both;">
         <option value="">--- select ---</option>
-        <optgroup  *ngFor="let initiative of initiatives" label="{{initiative.name}}">
-            <option *ngFor="let program of initiative.majorPrograms" [value]="program.id">{{program.name}} ({{program.pacCode}})</option>
-        </optgroup>
-    </select><br><br>
-    <div *ngIf="selectedProgram"><br>
-        <h2>{{selectedProgram.name}}</h2><br>
-
-        <div class="row" *ngIf="selectedIndicators != null && selectedIndicators.length > 0">
-
-            <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="indicatorsForm">
-                <loading *ngIf="loading"></loading>
-                
-                <div formArrayName="indicatorsGroup" *ngIf="!loading">
-                    
-                        <div *ngFor="let indicator of indicatorsForm.controls.indicatorsGroup.controls; let i=index" [formGroupName]="i" class="form-group" style="padding: 4px 0;" [style.background-color]="(i % 2 === 0) ? '#ededec' : '#ffffff'">
-                            <div class="col-xs-3">
-                                <div *ngIf="indicator.controls.value.value != 0" style="position:relative; top:10px; left: -4px; height: 2px;cursor:pointer;" (click)="showHistory(indicator.controls.programIndicatorId.value)">
-                                    <i class="fa fa-clock-o"></i>
-                                </div>
-                          
-                                <input class="form-control" type="number" id="firstName" formControlName="value" style="margin-left: 12px" />
+        @for (initiative of initiatives; track initiative) {
+          <optgroup  label="{{initiative.name}}">
+            @for (program of initiative.majorPrograms; track program) {
+              <option [value]="program.id">{{program.name}} ({{program.pacCode}})</option>
+            }
+          </optgroup>
+        }
+      </select><br><br>
+      @if (selectedProgram) {
+        <div><br>
+          <h2>{{selectedProgram.name}}</h2><br>
+          @if (selectedIndicators != null && selectedIndicators.length > 0) {
+            <div class="row">
+              <form class="form-horizontal form-label-left col-sm-12" novalidate (ngSubmit)="onSubmit()" [formGroup]="indicatorsForm">
+                @if (loading) {
+                  <loading></loading>
+                }
+                @if (!loading) {
+                  <div formArrayName="indicatorsGroup">
+                    @for (indicator of indicatorsForm.controls.indicatorsGroup.controls; track indicator; let i = $index) {
+                      <div [formGroupName]="i" class="form-group" style="padding: 4px 0;" [style.background-color]="(i % 2 === 0) ? '#ededec' : '#ffffff'">
+                        <div class="col-xs-3">
+                          @if (indicator.controls.value.value != 0) {
+                            <div style="position:relative; top:10px; left: -4px; height: 2px;cursor:pointer;" (click)="showHistory(indicator.controls.programIndicatorId.value)">
+                              <i class="fa fa-clock-o"></i>
                             </div>
-                            <div class="col-xs-8">
-                                <div *ngIf="fiscalYear.epoch > 0" style="display: inline; float: right; padding-left: 4px; font-size: 0.9 em;">{{
-                                ( selectedIndicators[i].isYouth==1 
-                                    ? 
-                                    childIcon 
-                                    :
-                                        (selectedIndicators[i].isYouth== 0
-                                        ?
-                                        adultIcon
-                                        :
-                                            (selectedIndicators[i].isYouth== 2
-                                            ?
-                                            volunteersIcon
-                                            :
-                                            ""
-                                            )
-                                        
-                                        )
-                                    )
-                                }}</div><div style="display: inline; float: left;">{{selectedProgram.pacCode}}.{{i+1}})&nbsp;</div>
-                                <span [ngStyle]="{'color': (selectedIndicators[i].isYouth==1) ? '#4f71a9' : '#6c757d'}" [innerHTML]="selectedIndicators[i].question"></span>
-                            </div>
-                            <div *ngIf="historyTexts[selectedIndicators[i].id] != null" style="clear: both;" [innerHtml]="historyTexts[selectedIndicators[i].id]"></div>
-                        
+                          }
+                          <input class="form-control" type="number" id="firstName" formControlName="value" style="margin-left: 12px" />
+                        </div>
+                        <div class="col-xs-8">
+                          @if (fiscalYear.epoch > 0) {
+                            <div style="display: inline; float: right; padding-left: 4px; font-size: 0.9 em;">{{
+                              ( selectedIndicators[i].isYouth==1
+                              ?
+                              childIcon
+                              :
+                              (selectedIndicators[i].isYouth== 0
+                              ?
+                              adultIcon
+                              :
+                              (selectedIndicators[i].isYouth== 2
+                              ?
+                              volunteersIcon
+                              :
+                              ""
+                              )
+                              )
+                              )
+                            }}</div>
+                            }<div style="display: inline; float: left;">{{selectedProgram.pacCode}}.{{i+1}})&nbsp;</div>
+                            <span [ngStyle]="{'color': (selectedIndicators[i].isYouth==1) ? '#4f71a9' : '#6c757d'}" [innerHTML]="selectedIndicators[i].question"></span>
+                          </div>
+                          @if (historyTexts[selectedIndicators[i].id] != null) {
+                            <div style="clear: both;" [innerHtml]="historyTexts[selectedIndicators[i].id]"></div>
+                          }
+                        </div>
+                      }
                     </div>
-                </div> 
-                <div class="ln_solid"></div>
-                <div class="form-group">
+                  }
+                  <div class="ln_solid"></div>
+                  <div class="form-group">
                     <div class="col-xs-12">
-                        <button type="submit" [disabled]="indicatorsForm.invalid || demoMode"  class="btn btn-success">Submit</button>
+                      <button type="submit" [disabled]="indicatorsForm.invalid || demoMode"  class="btn btn-success">Submit</button>
                     </div>
-                </div>
-                    
-            </form>
-
-        </div>
-        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0 && !demoMode">There are no indicators available for selected Major Program</div>
-        <div *ngIf="selectedIndicators != null && selectedIndicators.length == 0 && demoMode">There are no indicators available for selected Concentration</div>
-    </div>
-</div>
+                  </div>
+                </form>
+              </div>
+            }
+            @if (selectedIndicators != null && selectedIndicators.length == 0 && !demoMode) {
+              <div>There are no indicators available for selected Major Program</div>
+            }
+            @if (selectedIndicators != null && selectedIndicators.length == 0 && demoMode) {
+              <div>There are no indicators available for selected Concentration</div>
+            }
+          </div>
+        }
+      </div>
+    }

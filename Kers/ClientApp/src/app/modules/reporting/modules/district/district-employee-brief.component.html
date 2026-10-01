@@ -1,17 +1,21 @@
 <div class="col-md-4 col-sm-6 col-xs-12 profile_details" >
   <div class="well profile_view" style="height: 170px;">
-      <div class="col-sm-12 top">
-          <div class="left col-xs-7">
-              <h2 *ngIf="data.user.personalProfile" [routerLink]="['/reporting/user/summary', data.user.id ]"><a [routerLink]="['/reporting/user/summary', data.user.id ]">{{data.user.personalProfile.firstName}} {{data.user.personalProfile.lastName}}</a></h2>
-              <ul class="list-unstyled">
-                  <li *ngIf="data.user.rprtngProfile"><i class="fa fa-building"></i> &nbsp;<a [routerLink]="['/reporting/county', data.user.rprtngProfile.planningUnitId ]">{{data.user.rprtngProfile.planningUnit.name}}</a></li> 
-                  
-              </ul>
-              <h1 class="blue">{{data.numActivities}}</h1>
-          </div>
-          <div class="right col-xs-5 text-center">
-              <img src="{{profilePicSrc}}" alt="" class="img-circle img-responsive">
-          </div>
+    <div class="col-sm-12 top">
+      <div class="left col-xs-7">
+        @if (data.user.personalProfile) {
+          <h2 [routerLink]="['/reporting/user/summary', data.user.id ]"><a [routerLink]="['/reporting/user/summary', data.user.id ]">{{data.user.personalProfile.firstName}} {{data.user.personalProfile.lastName}}</a></h2>
+        }
+        <ul class="list-unstyled">
+          @if (data.user.rprtngProfile) {
+            <li><i class="fa fa-building"></i> &nbsp;<a [routerLink]="['/reporting/county', data.user.rprtngProfile.planningUnitId ]">{{data.user.rprtngProfile.planningUnit.name}}</a></li>
+          }
+
+        </ul>
+        <h1 class="blue">{{data.numActivities}}</h1>
       </div>
+      <div class="right col-xs-5 text-center">
+        <img src="{{profilePicSrc}}" alt="" class="img-circle img-responsive">
+      </div>
+    </div>
   </div>
 </div>

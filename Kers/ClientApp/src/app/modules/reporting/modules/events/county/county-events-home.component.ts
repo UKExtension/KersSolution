@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { CountyEvent, CountyEventService, CountyEventWithTime, CountyEventSearchCriteria } from './county-event.service';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
@@ -6,104 +6,119 @@ import { startWith, flatMap, tap } from 'rxjs/operators';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'app-county-events-home',
-  template: `
+    selector: 'app-county-events-home',
+    template: `
     <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newEvent" (click)="newEvent = true">+ new event</a>
+      @if (!newEvent) {
+        <a class="btn btn-info btn-xs" (click)="newEvent = true">+ new event</a>
+      }
     </div>
-    <county-event-form *ngIf="newEvent" (onFormCancel)="newEvent = false" (onFormSubmit)="newEventSubmitted($event)"></county-event-form>
+    @if (newEvent) {
+      <county-event-form (onFormCancel)="newEvent = false" (onFormSubmit)="newEventSubmitted($event)"></county-event-form>
+    }
     <br><br>
-
-
-
-
+    
+    
+    
+    
     <div class="row">
-    <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
-      <input type="text" [(ngModel)]="criteria.search" placeholder="search by title" (keyup)="onSearch($event)" class="form-control" name="Search" />
-    </div>
-    <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
-
-      <div class="input-group" style="width:250px; float:right;">
-            
-          <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-          angular-mydatepicker name="mydaterange" (click)="dp.toggleCalendar()" 
-          [(ngModel)]="model" [options]="myDateRangePickerOptions" 
-          #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
+      <div class="col-sm-6 col-xs-12" style="margin-top: 3px;">
+        <input type="text" [(ngModel)]="criteria.search" placeholder="search by title" (keyup)="onSearch($event)" class="form-control" name="Search" />
+      </div>
+      <div class="col-sm-6 col-xs-12 text-right" style="margin-top: 3px;">
+    
+        <div class="input-group" style="width:250px; float:right;">
+    
+          <input type="text" class="form-control input-box" placeholder="Click to select a date"
+            angular-mydatepicker name="mydaterange" (click)="dp.toggleCalendar()"
+            [(ngModel)]="model" [options]="myDateRangePickerOptions"
+            #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
           <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
-        
+    
+        </div>
+    
       </div>
-
+    
     </div>
-  
-  </div>  
-  <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
-    <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
-  </a>
-  <div class="row">
-    <form *ngIf="condition" class="form-horizontal form-label-left">
-      <div class="col-sm-offset-3 col-sm-9">
-        <h2>Refine Search</h2>
-      </div>
-      <div class="form-group" >
-          <label class="control-label col-md-3 col-sm-3 col-xs-12">Day of the week</label>
-          <div class="col-md-6 col-sm-6 col-xs-12">
+    <a (click)="condition = !condition" style="cursor: pointer;">@if (condition) {
+      <i class="fa fa-minus-square"></i>
+    }
+    @if (!condition) {
+      <i class="fa fa-plus-square"></i>
+      } more search options
+    </a>
+    <div class="row">
+      @if (condition) {
+        <form class="form-horizontal form-label-left">
+          <div class="col-sm-offset-3 col-sm-9">
+            <h2>Refine Search</h2>
+          </div>
+          <div class="form-group" >
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Day of the week</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
               <select [(ngModel)]="criteria.day" class="form-control" (change)="onDayChange($event)" name="dayOfTheWeek">
-                  <option value="null">-- Select --</option>
-                  <option value="1">Monday</option>
-                  <option value="2">Tuesday</option>
-                  <option value="3">Wednesday</option>
-                  <option value="4">Thursday</option>
-                  <option value="5">Friday</option>
-                  <option value="6">Saturday</option>
-                  <option value="0">Sunday</option>
+                <option value="null">-- Select --</option>
+                <option value="1">Monday</option>
+                <option value="2">Tuesday</option>
+                <option value="3">Wednesday</option>
+                <option value="4">Thursday</option>
+                <option value="5">Friday</option>
+                <option value="6">Saturday</option>
+                <option value="0">Sunday</option>
               </select>
+            </div>
           </div>
-      </div>
-      <div class="form-group" >
-          <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
-          <div class="col-md-6 col-sm-6 col-xs-12">
+          <div class="form-group" >
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Order by</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
               <div class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-default" [class.active]="type=='dsc'">
+                <label class="btn btn-default" [class.active]="type=='dsc'">
                   <input type="radio" name="type" id="option2" (click)="switchOrder('dsc')"> Date Descending
-                  </label>
-                  <label class="btn btn-default" [class.active]="type=='asc'">
-                    <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
-                  </label>
-                  <label class="btn btn-default" [class.active]="type=='alph'">
-                      <input type="radio" name="type" id="option4" (click)="switchOrder('alph')"> Alphabetically
-                    </label>
+                </label>
+                <label class="btn btn-default" [class.active]="type=='asc'">
+                  <input type="radio" name="type" id="option3" (click)="switchOrder('asc')"> Date Ascending
+                </label>
+                <label class="btn btn-default" [class.active]="type=='alph'">
+                  <input type="radio" name="type" id="option4" (click)="switchOrder('alph')"> Alphabetically
+                </label>
               </div>
+            </div>
           </div>
-      </div>  
-      
-      
-      
-    </form>
-  </div><br>
-
-
-
-
-
-
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover" *ngIf="events$ | async as events" [hidden]="loading">
-      <thead>
-        <tr class="ng-star-inserted">
-          <th>Date(s)</th>
-          <th>Title</th>
-          <th>Location/Virtual Link</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr [county-event-list-details]="ev" *ngFor="let ev of events" (onDeleted)="newEventSubmitted($event)"></tr>
-      </tbody>
-    </table>
-    <loading *ngIf="loading"></loading>
-  </div>
-  `,
-  styles: []
+        </form>
+      }
+    </div><br>
+    
+    
+    
+    
+    
+    
+    <div class="table-responsive">
+      @if (events$ | async; as events) {
+        <table class="table table-bordered table-striped table-hover" [hidden]="loading">
+          <thead>
+            <tr class="ng-star-inserted">
+              <th>Date(s)</th>
+              <th>Title</th>
+              <th>Location/Virtual Link</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ev of events; track ev) {
+              <tr [county-event-list-details]="ev" (onDeleted)="newEventSubmitted($event)"></tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if (loading) {
+        <loading></loading>
+      }
+    </div>
+    `,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CountyEventsHomeComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PlansofworkService, Map, PlanOfWork, PlanOfWorkDataSource } from '../plansofwork/plansofwork.service';
 import { FormBuilder, Validators }   from '@angular/forms';
 import {ProgramsService, StrategicInitiative, MajorProgram} from '../admin/programs/programs.service';
@@ -8,7 +8,9 @@ import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
     selector: 'planofwork-form-demo',
-    templateUrl: 'plansofwork-form-demo.component.html'
+    templateUrl: 'plansofwork-form-demo.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class PlansofworkFormDemoComponent implements OnInit{
 

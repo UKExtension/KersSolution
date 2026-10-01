@@ -1,5 +1,5 @@
 import { ViewportScroller } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { Observable, of } from 'rxjs';
@@ -11,10 +11,10 @@ import { SoilSampleService } from './soil-sample.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'soil-sample-form',
-  templateUrl: './sample-form.component.html',
-  styles: [
-    `
+    selector: 'soil-sample-form',
+    templateUrl: './sample-form.component.html',
+    styles: [
+        `
     .index-border{
       border: 1px solid #1ABB9C;
       width: 20px;
@@ -25,7 +25,9 @@ import { ReportingService } from '../../../components/reporting/reporting.servic
     }
 
     `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SampleFormComponent implements OnInit {
   

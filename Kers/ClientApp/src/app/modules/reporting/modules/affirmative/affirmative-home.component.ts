@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../components/reporting/reporting.service';
 import {    AffirmativeService, 
             AffirmativePlan,
@@ -12,7 +12,9 @@ import { FiscalYear, FiscalyearService } from '../admin/fiscalyear/fiscalyear.se
 import { Observable } from 'rxjs';
 
 @Component({
-  templateUrl: 'affirmative-home.component.html'
+    templateUrl: 'affirmative-home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AffirmativeHomeComponent { 
 

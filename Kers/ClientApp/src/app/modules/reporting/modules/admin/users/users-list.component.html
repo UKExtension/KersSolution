@@ -1,54 +1,78 @@
 <div>
-    <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newUser" (click)="newUser = true">+ new user</a>
-    </div>
-    <user-reporting-form *ngIf="newUser" (onFormCancel)="newUser=false" [adminEdit]="true" (onFormSubmit)="onNewUser($event)"></user-reporting-form>
+  <div class="text-right">
+    @if (!newUser) {
+      <a class="btn btn-info btn-xs" (click)="newUser = true">+ new user</a>
+    }
+  </div>
+  @if (newUser) {
+    <user-reporting-form (onFormCancel)="newUser=false" [adminEdit]="true" (onFormSubmit)="onNewUser($event)"></user-reporting-form>
+  }
 </div>
 
 <input type="text" placeholder="search by name" (keyup)="onSearch($event)" /> <br>
-<a (click)="condition = !condition"><i class="fa fa-minus-square" *ngIf="condition"></i>
-<i class="fa fa-plus-square" *ngIf="!condition"></i> more search options <span class="text-muted">(planning unit, position )</span></a>
-<div class="row">
-    <form *ngIf="condition" class="form-horizontal form-label-left">
-            <div class="col-sm-offset-3 col-sm-9">
-    <h2>Refine Search</h2>
-</div>
-            <div class="form-group" *ngIf="positions">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="positionID">Extension Position</label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <select class="form-control" (change)="onPositionChange($event)">
-                        <option value="0">-- Select --</option>
-                        <option *ngFor="let position of positions" value="{{position.posCode}}">{{position.posTitle}}</option>
-                    </select>
-                </div>
+<a (click)="condition = !condition">@if (condition) {
+  <i class="fa fa-minus-square"></i>
+}
+@if (!condition) {
+  <i class="fa fa-plus-square"></i>
+  } more search options <span class="text-muted">(planning unit, position )</span></a>
+  <div class="row">
+    @if (condition) {
+      <form class="form-horizontal form-label-left">
+        <div class="col-sm-offset-3 col-sm-9">
+          <h2>Refine Search</h2>
+        </div>
+        @if (positions) {
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="positionID">Extension Position</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select class="form-control" (change)="onPositionChange($event)">
+                <option value="0">-- Select --</option>
+                @for (position of positions; track position) {
+                  <option value="{{position.posCode}}">{{position.posTitle}}</option>
+                }
+              </select>
             </div>
-            <div class="form-group" *ngIf="planningUnits">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12">Planning Unit</label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <select class="form-control" (change)="onPlaningUnitChange($event)">
-                        <option value="0">-- Select --</option>
-                        <option *ngFor="let planningUnit of planningUnits" value="{{planningUnit.planningUnitID}}">{{planningUnit.planningUnitName}}</option>
-                    </select>
-                </div>
+          </div>
+        }
+        @if (planningUnits) {
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Planning Unit</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select class="form-control" (change)="onPlaningUnitChange($event)">
+                <option value="0">-- Select --</option>
+                @for (planningUnit of planningUnits; track planningUnit) {
+                  <option value="{{planningUnit.planningUnitID}}">{{planningUnit.planningUnitName}}</option>
+                }
+              </select>
             </div>
-    </form>
-</div>
-<table class="table table-striped">
+          </div>
+        }
+      </form>
+    }
+  </div>
+  <table class="table table-striped">
     <thead>
-    <tr>
+      <tr>
         <th>Name</th>
         <th>Position</th>
         <th>Planning Unit</th>
         <th></th>
-    </tr>
+      </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let profile of profiles | async" [usersListDetail]="profile"></tr>
+      @for (profile of profiles | async; track profile) {
+        <tr [usersListDetail]="profile"></tr>
+      }
     </tbody>
-</table>
-<div *ngIf="numResults != 0" class="text-center">
-<div>Showing {{numProfiles}} of {{numResults}} results</div>
-    <div *ngIf="criteria.amount < numResults" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
-        load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+  </table>
+  @if (numResults != 0) {
+    <div class="text-center">
+      <div>Showing {{numProfiles}} of {{numResults}} results</div>
+      @if (criteria.amount < numResults) {
+        <div class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+          load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+        </div>
+      }
     </div>
-</div>
+  }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { RolesService, Role } from './roles.service';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {Router} from '@angular/router';
@@ -8,28 +8,37 @@ import {ReportingRoleFormComponent} from './reporting-role-form.component';
 @Component({
     template: `
 <div>
-    <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newRole" (click)="newRoleOpen()">+ new role</a>
-    </div>
-    <reporting-role-form *ngIf="newRole" (onFormCancel)="newRoleCancelled()" (onFormSubmit)="newRoleSubmitted()"></reporting-role-form>
+  <div class="text-right">
+    @if (!newRole) {
+      <a class="btn btn-info btn-xs" (click)="newRoleOpen()">+ new role</a>
+    }
+  </div>
+  @if (newRole) {
+    <reporting-role-form (onFormCancel)="newRoleCancelled()" (onFormSubmit)="newRoleSubmitted()"></reporting-role-form>
+  }
 </div>
-<div *ngIf="roles">
+@if (roles) {
+  <div>
     <table class="table table-striped">
-        <thead>
+      <thead>
         <tr>
-            <th>Title</th>
-            <th>Short Name</th>
-            <th></th>
+          <th>Title</th>
+          <th>Short Name</th>
+          <th></th>
         </tr>
-        </thead>
-        <tbody>
-                    <tr *ngFor="let role of roles" [rolesListDetail]="role" (onRoleUpdated)="onRoleUpdate()" (onRoleDeleted)="onRoleUpdate()"></tr>
-        </tbody>               
-    </table>            
-</div>
-       
-    `
+      </thead>
+      <tbody>
+        @for (role of roles; track role) {
+          <tr [rolesListDetail]="role" (onRoleUpdated)="onRoleUpdate()" (onRoleDeleted)="onRoleUpdate()"></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
 
+`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingAdminRolesListComponent implements OnInit{
 

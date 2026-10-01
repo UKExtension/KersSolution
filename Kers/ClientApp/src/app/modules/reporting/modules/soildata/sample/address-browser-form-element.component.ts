@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, Validators, NG_VALIDATORS, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor';
@@ -10,8 +10,8 @@ import { SoilSampleService } from './soil-sample.service';
 
 
 @Component({
-  selector: 'address-browser-form-element',
-  styles: [`
+    selector: 'address-browser-form-element',
+    styles: [`
   .address-browser{
     border: 1px solid #e5e5e5;
     padding: 15px;
@@ -20,40 +20,50 @@ import { SoilSampleService } from './soil-sample.service';
 
 
   `],
-  template: `
-
-  
-
-                <div *ngIf="!addressBrowserOpen">
-                  <br>
-                  <soildata-list-address [address]="selectedAddress" [brief]="false"></soildata-list-address>
-                  <a *ngIf="!disabled" class="btn btn-info btn-xs" (click)="openBrowser()">change</a>
-                </div>
-                
-                <div *ngIf="addressBrowserOpen && !disabled" class="address-browser">
-                    <div class="col-xs-12" *ngIf="selectedAddress != null">
-                      <a class="pull-right" (click)="addressSelectionCanceled()" style="cursor:pointer;">X</a>
-                    </div>
-                    <h4>Select client from the list or enter a new one</h4><br>   
-                    <soildata-address-browser [countyid]="countyid" [selectedCounty]="selectedCounty" [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
-                </div>
+    template: `
 
 
 
-  `,
-  providers:[  { 
-                  provide: NG_VALUE_ACCESSOR,
-                  useExisting: forwardRef(() => AddressBrowserFormElementComponent),
-                  multi: true
-                } 
-                /* 
-                ,
-                {
-                  provide: NG_VALIDATORS,
-                  useExisting: forwardRef(() => SoilCropFormElementComponent),
-                  multi: true
-                } */
-                ]
+@if (!addressBrowserOpen) {
+  <div>
+    <br>
+      <soildata-list-address [address]="selectedAddress" [brief]="false"></soildata-list-address>
+      @if (!disabled) {
+        <a class="btn btn-info btn-xs" (click)="openBrowser()">change</a>
+      }
+    </div>
+  }
+
+  @if (addressBrowserOpen && !disabled) {
+    <div class="address-browser">
+      @if (selectedAddress != null) {
+        <div class="col-xs-12">
+          <a class="pull-right" (click)="addressSelectionCanceled()" style="cursor:pointer;">X</a>
+        </div>
+      }
+      <h4>Select client from the list or enter a new one</h4><br>
+      <soildata-address-browser [countyid]="countyid" [selectedCounty]="selectedCounty" [close]="false" (onSelected)="addressSelected($event)" (onCanceled)="addressSelectionCanceled()"></soildata-address-browser>
+    </div>
+  }
+
+
+
+`,
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AddressBrowserFormElementComponent),
+            multi: true
+        }
+        /*
+        ,
+        {
+          provide: NG_VALIDATORS,
+          useExisting: forwardRef(() => SoilCropFormElementComponent),
+          multi: true
+        } */
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AddressBrowserFormElementComponent extends BaseControlValueAccessor<FarmerAddress> implements ControlValueAccessor, OnInit { 
     @Input() countyid:number = 0;

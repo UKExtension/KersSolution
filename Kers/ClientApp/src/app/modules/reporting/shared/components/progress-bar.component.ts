@@ -1,22 +1,24 @@
-import {  Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'progress-bar',
     template: `
 <div class="download-overlay">
-<br>
-<br>
-  <h4>Generating Report</h4>
-  <div class="progress">
-    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" [style.width.%]="batchesCompleted/(totalBatches - 1)*100"></div>
-  </div>
-  <div >
-    <span *ngIf="averageBatchTime != 0">Time Remaining: {{getTimeRemaining() | number:'1.0-1' }} min.</span>&nbsp;
-  </div>
+  <br>
+    <br>
+      <h4>Generating Report</h4>
+      <div class="progress">
+        <div class="progress-bar progress-bar-striped bg-info" role="progressbar" [style.width.%]="batchesCompleted/(totalBatches - 1)*100"></div>
+      </div>
+      <div >
+        @if (averageBatchTime != 0) {
+          <span>Time Remaining: {{getTimeRemaining() | number:'1.0-1' }} min.</span>
+          }&nbsp;
+        </div>
 
-</div>
-    `,
-    styles:[`
+      </div>
+`,
+    styles: [`
 .download-overlay{
     background-color:rgba(220,239,230, 0.8);
     border: 3px solid rgba(120,139,130, 0.2);
@@ -31,7 +33,9 @@ import {  Component, Input } from '@angular/core';
 
 
 
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 
 export class ProgressBarComponent{

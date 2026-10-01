@@ -1,26 +1,36 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { NavigationService, NavItem, NavGroup } from '../../../components/reporting-navigation/navigation.service';
 import {AdminNavigationService} from './admin-navigation.service';
 
 @Component({
     selector: 'admin-nav-items',
-  template: `
+    template: `
   <div>
     <div class="text-right">
-        <a class="btn btn-info btn-xs" *ngIf="!newItem" (click)="newItem = true">+ new item</a>
+      @if (!newItem) {
+        <a class="btn btn-info btn-xs" (click)="newItem = true">+ new item</a>
+      }
     </div>
- <div *ngIf="newItem">
-    <navigation-item-form [group]="group" (onFormSubmit)="onNewItem($event)" (onFormCancel)="onCancel()"></navigation-item-form>
- </div>
- </div>
-    <div *ngIf="items">
-        <table class="table table-striped">
-            <tr *ngFor="let item of items" [navigationItemDetail]="item" (onItemDeleted)="onItemDeleted($event)" (onItemUpdated)="itemUpdated($event)" ></tr>
-        </table>
+    @if (newItem) {
+      <div>
+        <navigation-item-form [group]="group" (onFormSubmit)="onNewItem($event)" (onFormCancel)="onCancel()"></navigation-item-form>
+      </div>
+    }
+  </div>
+  @if (items) {
+    <div>
+      <table class="table table-striped">
+        @for (item of items; track item) {
+          <tr [navigationItemDetail]="item" (onItemDeleted)="onItemDeleted($event)" (onItemUpdated)="itemUpdated($event)" ></tr>
+        }
+      </table>
     </div>
-
-  `
+  }
+  
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationItemsComponent { 
 

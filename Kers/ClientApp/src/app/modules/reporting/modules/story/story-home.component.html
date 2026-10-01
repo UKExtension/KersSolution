@@ -1,13 +1,21 @@
 <div>
-    <div class="text-right">
-                <a class="btn btn-info btn-xs" *ngIf="!newStory" (click)="newStory = true">+ new success story</a>
-            </div>
-            <story-form *ngIf="newStory" (onFormCancel)="newStory=false" [fiscalYearSwitcher]="false" (onFormSubmit)="newStorySubmitted($event)"></story-form>
-        </div>
-    <br><story-list [latest]="latest" (onDeleted)="deleted($event)"></story-list><br><br>
-    <div *ngIf="numbStories != 0" class="text-center">
-        <div>Showing {{latest.length}} of {{numbStories}} success stories</div>
-        <div *ngIf="latest.length < numbStories" class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
-            load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-    </div>
+  <div class="text-right">
+    @if (!newStory) {
+      <a class="btn btn-info btn-xs" (click)="newStory = true">+ new success story</a>
+    }
+  </div>
+  @if (newStory) {
+    <story-form (onFormCancel)="newStory=false" [fiscalYearSwitcher]="false" (onFormSubmit)="newStorySubmitted($event)"></story-form>
+  }
 </div>
+<br><story-list [latest]="latest" (onDeleted)="deleted($event)"></story-list><br><br>
+@if (numbStories != 0) {
+  <div class="text-center">
+    <div>Showing {{latest.length}} of {{numbStories}} success stories</div>
+    @if (latest.length < numbStories) {
+      <div class="btn btn-app" style="width: 97%; margin-right: 35px;" (click)="loadMore()">
+        load more <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+      </div>
+    }
+  </div>
+}

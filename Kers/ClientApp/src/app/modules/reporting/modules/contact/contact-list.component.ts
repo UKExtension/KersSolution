@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import {ContactService, ContactMonth, Contact} from './contact.service';
 
 
 @Component({
     selector: 'contact-list',
-    templateUrl: 'contact-list.component.html'
+    templateUrl: 'contact-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ContactListComponent implements OnInit{ 
     

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { FormBuilder, Validators }   from '@angular/forms';
 import {Router} from '@angular/router';
@@ -9,7 +9,9 @@ import {  NavSection, NavGroup, NavItem } from '../../../components/reporting-na
 
 @Component({
     selector: 'navigation-item-form',
-    templateUrl: 'navigation-item-form.component.html' 
+    templateUrl: 'navigation-item-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationItemFormComponent implements OnInit{
 

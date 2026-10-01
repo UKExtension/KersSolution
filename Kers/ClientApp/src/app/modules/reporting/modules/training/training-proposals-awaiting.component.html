@@ -11,7 +11,9 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let training of trainings | async" [training-proposals-awaiting-detail]="training" (onDeleted)="trainingEdited($event)" (onEdit)="trainingEdited($event)"></tr>
+      @for (training of trainings | async; track training) {
+        <tr [training-proposals-awaiting-detail]="training" (onDeleted)="trainingEdited($event)" (onEdit)="trainingEdited($event)"></tr>
+      }
     </tbody>
   </table>
 </div>

@@ -1,4 +1,4 @@
-import { Component,OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { debounceTime } from 'rxjs/operators';
 import {    UserService,
             ExtensionPosition, 
@@ -25,7 +25,9 @@ import { AuthHttp } from '../../../../authentication/auth.http';
     .toggle{
         padding-top: 0px important!;
     }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserReportingFormComponent implements OnInit { 
 

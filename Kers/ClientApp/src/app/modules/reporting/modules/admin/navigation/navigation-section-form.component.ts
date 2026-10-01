@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import { ReportingService } from '../../../components/reporting/reporting.service';
 import { FormBuilder, Validators }   from '@angular/forms';
@@ -11,7 +11,9 @@ import { UsersService, Position } from '../users/users.service';
 
 @Component({
     selector: 'navigation-section-form',
-    templateUrl: 'navigation-section-form.component.html' 
+    templateUrl: 'navigation-section-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavigationSectionFormComponent implements OnInit{
 

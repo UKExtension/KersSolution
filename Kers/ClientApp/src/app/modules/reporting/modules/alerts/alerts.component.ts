@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Alert } from './Alert';
 import { AlertsService } from './alerts.service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -6,8 +6,10 @@ import { switchMap } from 'rxjs/operators';
 import { ReportingService } from '../../components/reporting/reporting.service';
 
 @Component({
-  selector: 'alerts',
-  templateUrl: './alerts.component.html'
+    selector: 'alerts',
+    templateUrl: './alerts.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AlertsComponent implements OnInit {
   newAlert = false;

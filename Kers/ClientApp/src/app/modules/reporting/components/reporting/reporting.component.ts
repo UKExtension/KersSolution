@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {Location} from '@angular/common';
 import {NavigationService, NavSection} from '../reporting-navigation/navigation.service';
 import {ProfileService, Profile} from '../reporting-profile/profile.service';
@@ -16,7 +16,9 @@ if (typeof window != 'undefined') {
 
 
 @Component({
-  templateUrl: './reporting.component.html'
+    templateUrl: './reporting.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ReportingComponent implements OnInit { 
     public navigation;

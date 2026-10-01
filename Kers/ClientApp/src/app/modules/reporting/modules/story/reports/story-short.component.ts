@@ -1,44 +1,61 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import {StoryService, Story} from '../story.service';
 import {Location} from '@angular/common';
 
 @Component({
     selector: '[success-story-short]',
-    template: ` 
-                   
-                        <div *ngIf="!fullDisplay">
-                            <img src="{{externalUrl('/image/crop/100/100/' + story.storyImages[0].uploadImage.uploadFile.name)}}" class="avtr" alt="Avatar" *ngIf="story.storyImages.length > 0">
-                            <div class="message_date">
-                                <h3 class="date text-info">{{day(story.created)}}</h3>
-                                <p class="month">{{month(story.created)}}</p>
-                            </div>
-                            <div class="message_wrapper">
-                                <h4 *ngIf="link" [routerLink]="['/reporting/story', story.id]" (click)="clicked()" class="heading">{{story.title}}<small *ngIf="showAuthor"> by <story-author [storyId]="story.id"></story-author></small></h4>
-                                <h4 *ngIf="!link" (click)="fullDisplay=true" class="heading">{{story.title}}<small *ngIf="showAuthor"> by <story-author [storyId]="story.id"></story-author></small></h4>
-                                <blockquote class="message" [innerHtml]="htmlToPlaintext(story.story)"></blockquote>
-                                <br>
-                                <p class="url">
-                                    <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                                    <a *ngIf="link" [routerLink]="['/reporting/story', story.id]" (click)="clicked()"><i class="fa fa-align-left"></i> Full Story</a>
-                                    <a *ngIf="!link" (click)="fullDisplay=true" style="cursor:pointer;"><i class="fa fa-align-left"></i> Full Story</a>
-                                </p>
-                            </div>
-                        </div>
-                        <div *ngIf="fullDisplay">
-                        
-                            <div class="text-right">
-                                <button (click)="fullDisplay = false" class="btn btn-info btn-xs">close</button>
-                            </div>
-                            <br>
-                            <br>
-                            <br>
-                            <success-story-display [story]="story"></success-story-display>
-                            <br>
-                            <br>
-                            <br>
-                        </div>
-                    
-    `,
+    template: `
+
+@if (!fullDisplay) {
+  <div>
+    @if (story.storyImages.length > 0) {
+      <img src="{{externalUrl('/image/crop/100/100/' + story.storyImages[0].uploadImage.uploadFile.name)}}" class="avtr" alt="Avatar">
+    }
+    <div class="message_date">
+      <h3 class="date text-info">{{day(story.created)}}</h3>
+      <p class="month">{{month(story.created)}}</p>
+    </div>
+    <div class="message_wrapper">
+      @if (link) {
+        <h4 [routerLink]="['/reporting/story', story.id]" (click)="clicked()" class="heading">{{story.title}}@if (showAuthor) {
+          <small> by <story-author [storyId]="story.id"></story-author></small>
+        }</h4>
+      }
+      @if (!link) {
+        <h4 (click)="fullDisplay=true" class="heading">{{story.title}}@if (showAuthor) {
+          <small> by <story-author [storyId]="story.id"></story-author></small>
+        }</h4>
+      }
+      <blockquote class="message" [innerHtml]="htmlToPlaintext(story.story)"></blockquote>
+      <br>
+        <p class="url">
+          <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+          @if (link) {
+            <a [routerLink]="['/reporting/story', story.id]" (click)="clicked()"><i class="fa fa-align-left"></i> Full Story</a>
+          }
+          @if (!link) {
+            <a (click)="fullDisplay=true" style="cursor:pointer;"><i class="fa fa-align-left"></i> Full Story</a>
+          }
+        </p>
+      </div>
+    </div>
+  }
+  @if (fullDisplay) {
+    <div>
+      <div class="text-right">
+        <button (click)="fullDisplay = false" class="btn btn-info btn-xs">close</button>
+      </div>
+      <br>
+        <br>
+          <br>
+            <success-story-display [story]="story"></success-story-display>
+            <br>
+              <br>
+                <br>
+                </div>
+              }
+
+`,
     styles: [`
         img.avtr, img.avtr {
                 height: 92px;
@@ -56,7 +73,9 @@ import {Location} from '@angular/common';
                 margin-left: 105px !important;
                 margin-right: 45px !important;
             }
-    `]
+    `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoryShortComponent { 
 

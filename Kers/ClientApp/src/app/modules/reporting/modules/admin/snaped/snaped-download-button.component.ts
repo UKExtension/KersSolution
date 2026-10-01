@@ -1,12 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SnapedAdminService } from './snaped-admin.service';
 import { FiscalYear } from '../fiscalyear/fiscalyear.service';
 import { saveAs } from 'file-saver';
 
 @Component({
-  selector: 'snaped-download-button',
-  template: `<button class="btn btn-info btn-xs" (click)="csvDownload()" *ngIf="!loading">{{label}}</button><loading [type]="'bars'" *ngIf="loading"></loading>`,
-  styles: []
+    selector: 'snaped-download-button',
+    template: `@if (!loading) {<button class="btn btn-info btn-xs" (click)="csvDownload()">{{label}}</button>}@if (loading) {<loading [type]="'bars'"></loading>}`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedDownloadButtonComponent implements OnInit {
 

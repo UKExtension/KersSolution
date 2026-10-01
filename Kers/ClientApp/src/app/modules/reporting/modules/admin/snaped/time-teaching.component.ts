@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { IAngularMyDpOptions, IMyDateModel } from 'gramli-angular-mydatepicker';
 import { Observable, Subject } from 'rxjs';
 import { flatMap, startWith, tap } from 'rxjs/operators';
@@ -8,31 +8,36 @@ import { PlanningUnit } from '../../user/user.service';
 import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount } from './snaped-admin.service';
 
 @Component({
-  selector: 'app-time-teaching',
-  template: `
-    
+    selector: 'app-time-teaching',
+    template: `
 
-  <h3>Time Spent Teaching</h3><br>
-  <div class="row">
-    <div class="col-xs-12 text-right" style="margin-top: 3px;">
-      <div class="input-group" style="width:250px; float:right;">
-              
-        <input type="text" class="form-control input-box" placeholder="Click to select a date" 
-        angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" 
-        [(ngModel)]="model" [options]="myDateRangePickerOptions" 
+
+<h3>Time Spent Teaching</h3><br>
+<div class="row">
+  <div class="col-xs-12 text-right" style="margin-top: 3px;">
+    <div class="input-group" style="width:250px; float:right;">
+
+      <input type="text" class="form-control input-box" placeholder="Click to select a date"
+        angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()"
+        [(ngModel)]="model" [options]="myDateRangePickerOptions"
         #dp="angular-mydatepicker" (dateChanged)="dateCnanged($event)">
-        <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
-      </div>
+      <span class="input-group-addon" id="basic-addon1" (click)="dp.toggleCalendar()" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
     </div>
-  
   </div>
-  
-  
-  <a (click)="condition = !condition" style="cursor: pointer;"><i class="fa fa-minus-square" *ngIf="condition"></i>
-    <i class="fa fa-plus-square" *ngIf="!condition"></i> more search options
-  </a>
-  <div class="row">
-    <form *ngIf="condition" class="form-horizontal form-label-left">
+
+</div>
+
+
+<a (click)="condition = !condition" style="cursor: pointer;">@if (condition) {
+  <i class="fa fa-minus-square"></i>
+}
+@if (!condition) {
+  <i class="fa fa-plus-square"></i>
+  } more search options
+</a>
+<div class="row">
+  @if (condition) {
+    <form class="form-horizontal form-label-left">
       <div class="col-sm-offset-3 col-sm-9">
         <h2>Refine Search</h2>
       </div>
@@ -41,7 +46,9 @@ import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount }
         <div class="col-md-6 col-sm-6 col-xs-12">
           <select class="form-control" (change)="onCongressionalChange($event)" name="CongressionalDistrict">
             <option value="null">-- Select --</option>
-            <option *ngFor="let congressional of congressional$ | async" value="{{congressional.id}}">{{congressional.name}}</option>
+            @for (congressional of congressional$ | async; track congressional) {
+              <option value="{{congressional.id}}">{{congressional.name}}</option>
+            }
           </select>
         </div>
       </div>
@@ -50,66 +57,80 @@ import { SnapedAdminService, SnapedSearchCriteria, SnapSeearchResultsWithCount }
         <div class="col-md-6 col-sm-6 col-xs-12">
           <select class="form-control" (change)="onRegionChange($event)" name="Region">
             <option value="null">-- Select --</option>
-            <option *ngFor="let region of regions$ | async" value="{{region.id}}">{{region.name}}</option>
+            @for (region of regions$ | async; track region) {
+              <option value="{{region.id}}">{{region.name}}</option>
+            }
           </select>
         </div>
       </div>
-      <div class="form-group" *ngIf="criteria.regionId != null && criteria.regionId != 0">
-        <label class="control-label col-md-3 col-sm-3 col-xs-12">Area</label>
-        <div class="col-md-6 col-sm-6 col-xs-12">
-          <select class="form-control" (change)="onAreaChange($event)" name="Region">
-            <option value="null">-- Select --</option>
-            <option *ngFor="let area of areas$ | async" value="{{area.id}}">{{area.name}}</option>
-          </select>
+      @if (criteria.regionId != null && criteria.regionId != 0) {
+        <div class="form-group">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">Area</label>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <select class="form-control" (change)="onAreaChange($event)" name="Region">
+              <option value="null">-- Select --</option>
+              @for (area of areas$ | async; track area) {
+                <option value="{{area.id}}">{{area.name}}</option>
+              }
+            </select>
+          </div>
         </div>
-      </div>
+      }
       <div class="form-group" >
         <label class="control-label col-md-3 col-sm-3 col-xs-12">County</label>
         <div class="col-md-6 col-sm-6 col-xs-12">
           <select class="form-control" (change)="onCountyChange($event)" name="Region">
             <option value="null">-- Select --</option>
-            <option *ngFor="let county of counties$ | async" value="{{county.id}}">{{county.name}}</option>
+            @for (county of counties$ | async; track county) {
+              <option value="{{county.id}}">{{county.name}}</option>
+            }
           </select>
         </div>
       </div>
-      
-      
-      
     </form>
-  </div><br>
+  }
+</div><br>
 
-  <div class="table-responsive" *ngIf="revisions$ | async as revisions">
+@if (revisions$ | async; as revisions) {
+  <div class="table-responsive">
+    @if (!loading) {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>SNAP-Ed Sessions</th>
+            <th>Number delivered</th>
+            @for (length of sessionLengths$ | async; track length) {
+              <th># of Sessions {{length.name}} Minutes Teaching</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (type of (sessionTypes$ | async); track type; let i = $index) {
+            <tr>
+              <td>{{type.name}}</td>
+              <td>{{revisions[i][0]}}</td>
+              @for (length of (sessionLengths$ | async); track length; let j = $index) {
+                <td>{{revisions[i][j+1]}}</td>
+              }
+            </tr>
+          }
+          <tbody>
+          </table>
+        }
+        @if (loading) {
+          <loading></loading>
+        }
+      </div>
+    }
 
-    <table class="table" *ngIf="!loading">
-      <thead>
-        <tr>
-          <th>SNAP-Ed Sessions</th>
-          <th>Number delivered</th>
-          <th *ngFor="let length of sessionLengths$ | async"># of Sessions {{length.name}} Minutes Teaching</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let type of (sessionTypes$ | async); let i = index">
-          <td>{{type.name}}</td>
-          <td>{{revisions[i][0]}}</td>
-          <td *ngFor="let length of (sessionLengths$ | async); let j = index">{{revisions[i][j+1]}}</td>
-        </tr>
-      <tbody>
-    </table>
-
-  <loading *ngIf="loading"></loading>
-
-
-
-</div>
 
 
 
 
-
-  `,
-  styles: [
-  ]
+`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TimeTeachingComponent implements OnInit {
 

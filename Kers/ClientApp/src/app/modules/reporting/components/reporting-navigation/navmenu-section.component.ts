@@ -1,17 +1,23 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { NavSection, NavGroup, NavItem} from './navigation.service';
 
 @Component({
     selector: 'nav-menu-section',
     template: `
-    <div *ngIf="section.groups.length > 0" class="menu_section">
+    @if (section.groups.length > 0) {
+      <div class="menu_section">
         <h3>{{section.name}}</h3>
         <ul class="nav side-menu">
-            <li class="nav-group" *ngFor = "let group of section.groups" [class.active]="this.group.isOpen == 'active'" [nav-menu-group]="group" (onOpen)="closeOthers($event)" (onSelected)="itemSelected($event)"></li>
+          @for (group of section.groups; track group) {
+            <li class="nav-group" [class.active]="group.isOpen == 'active'" [nav-menu-group]="group" (onOpen)="closeOthers($event)" (onSelected)="itemSelected($event)"></li>
+          }
         </ul>
-    </div>
-    `
+      </div>
+    }
+    `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NavmenuSectionComponent implements OnInit{
     @Input('section') section: NavSection;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 import { PlanningunitService } from '../planningunit/planningunit.service';
 import { Observable } from 'rxjs';
@@ -8,34 +8,42 @@ import { UserService } from '../user/user.service';
 import { init } from 'echarts';
 
 @Component({
-  selector: 'app-soildata-home',
-  template: `
+    selector: 'app-soildata-home',
+    template: `
 
-  <div *ngIf="isUserAnAdmin">
-    <div class="row" *ngIf="selectedUnit">
-      <div class="col-xs-12 form-group" style="margin-top: 3px; margin-bottom: 60px;">
-        <label>County</label>
-        <select [(ngModel)]="selectedUnit.id" class="form-control" (change)="countySelection($event.target.value)">
-          <option>Select</option>
-          <option *ngFor="let unit of units | async" [value]="unit.id">{{unit.name}}</option>
-        </select>
+@if (isUserAnAdmin) {
+  <div>
+    @if (selectedUnit) {
+      <div class="row">
+        <div class="col-xs-12 form-group" style="margin-top: 3px; margin-bottom: 60px;">
+          <label>County</label>
+          <select [(ngModel)]="selectedUnit.id" class="form-control" (change)="countySelection($event.target.value)">
+            <option>Select</option>
+            @for (unit of units | async; track unit) {
+              <option [value]="unit.id">{{unit.name}}</option>
+            }
+          </select>
+        </div>
       </div>
-    </div>
+    }
   </div>
+}
 
 
 
-    <div>
-      <p>
-        <a class="btn btn-default"[routerLink]="['/reporting/soildata/reports']" routerLinkActive="active">Reports</a> 
-        <a class="btn btn-default" [routerLink]="['/reporting/soildata/addresses']" routerLinkActive="active">Client Addresses</a> 
-        <a class="btn btn-default"[routerLink]="['/reporting/soildata/notes']" routerLinkActive="active">Notes</a> 
-        <a class="btn btn-default"[routerLink]="['/reporting/soildata/signees']" routerLinkActive="active">Signees</a>
-      </p>
-    </div>
-    <router-outlet></router-outlet>
-  `,
-  styles: []
+<div>
+  <p>
+    <a class="btn btn-default"[routerLink]="['/reporting/soildata/reports']" routerLinkActive="active">Reports</a>
+    <a class="btn btn-default" [routerLink]="['/reporting/soildata/addresses']" routerLinkActive="active">Client Addresses</a>
+    <a class="btn btn-default"[routerLink]="['/reporting/soildata/notes']" routerLinkActive="active">Notes</a>
+    <a class="btn btn-default"[routerLink]="['/reporting/soildata/signees']" routerLinkActive="active">Signees</a>
+  </p>
+</div>
+<router-outlet></router-outlet>
+`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataHomeComponent implements OnInit {
 

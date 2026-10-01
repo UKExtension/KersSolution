@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { SoilReportBundle, SoilReport } from '../soildata.report';
 import { FarmerAddress, SoildataService } from '../soildata.service';
 
 @Component({
-  selector: 'soildata-report-form',
-  templateUrl: './soildata-report-form.component.html',
-  styles: []
+    selector: 'soildata-report-form',
+    templateUrl: './soildata-report-form.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataReportFormComponent implements OnInit {
   @Input() report: SoilReportBundle;

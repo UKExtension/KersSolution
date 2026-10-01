@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { HelpService, HelpCategory } from './help.service';
 import {Location} from '@angular/common';
 import { FormBuilder, Validators }   from '@angular/forms';
@@ -9,7 +9,9 @@ import { UsersService, Position } from '../users/users.service';
 
 @Component({
     selector: 'help-category-form',
-    templateUrl: 'help-category-form.component.html' 
+    templateUrl: 'help-category-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HelpCategoryFormComponent implements OnInit{
 

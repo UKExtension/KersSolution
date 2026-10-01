@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { LadderApplication } from './ladder';
 import { LadderService } from './ladder.service';
 import { TrainingService } from '../training/training.service';
@@ -7,9 +7,11 @@ import { FiscalyearService } from '../admin/fiscalyear/fiscalyear.service';
 import { saveAs } from 'file-saver';
 
 @Component({
-  selector: 'ladder-application-details',
-  templateUrl: './ladder-application-details.component.html',
-  styles: []
+    selector: 'ladder-application-details',
+    templateUrl: './ladder-application-details.component.html',
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LadderApplicationDetailsComponent implements OnInit {
   @Input() application:LadderApplication;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { ExtensionEventLocation } from '../extension-event';
 import { PlanningUnit } from '../../plansofwork/plansofwork.service';
@@ -6,73 +6,94 @@ import { User } from '../../user/user.service';
 import { LocationService, ExtensionEventLocationConnection } from './location.service';
 
 @Component({
-  selector: 'location-form',
-  template: `
-<loading *ngIf="loading"></loading>
-<div *ngIf="!loading" class="row">
-  <div class="col-sm-offset-3 col-sm-9">
-      <h2 *ngIf="!location">New Location</h2>
-      <h2 *ngIf="location">Update Location</h2>
+    selector: 'location-form',
+    template: `
+@if (loading) {
+  <loading></loading>
+}
+@if (!loading) {
+  <div class="row">
+    <div class="col-sm-offset-3 col-sm-9">
+      @if (!location) {
+        <h2>New Location</h2>
+      }
+      @if (location) {
+        <h2>Update Location</h2>
+      }
       <br><br>
-  </div>
-  <ng-form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="locationForm">
-    <div formGroupName="address">
-      <div class="form-group">
-          <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12" *ngIf="isItBuilding">Building:</label>  
-          <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12" *ngIf="!isItBuilding">Name:</label>         
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="building" formControlName="building" id="building" class="form-control col-xs-12" />
-          </div>
-      </div>
-      <div class="form-group">
-          <label for="street" class="control-label col-md-3 col-sm-3 col-xs-12">Street Address:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="street" formControlName="street" id="street" class="form-control col-xs-12" />
-          </div>
-      </div>
-      <div class="form-group">
-          <label for="city" class="control-label col-md-3 col-sm-3 col-xs-12">City/County:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="city" formControlName="city" id="city" class="form-control col-xs-12" />
-          </div>
-      </div> 
-      <div class="form-group" *ngIf="showState">
-          <label for="state" class="control-label col-md-3 col-sm-3 col-xs-12">State:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="state" formControlName="state" id="state" class="form-control col-xs-12" />
-          </div>
-      </div> 
-      <div class="form-group" *ngIf="showZip">
-          <label for="postalCode" class="control-label col-md-3 col-sm-3 col-xs-12">Postal Code:</label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="postalCode" formControlName="postalCode" id="postalCode" class="form-control col-xs-12" />
-          </div>
-      </div>
-    </div> 
-    <div class="form-group" *ngIf="showUrl">
-          <label for="locationUri" class="control-label col-md-3 col-sm-3 col-xs-12">URL:<br><small>A web address for more information (optional).</small></label>           
-          <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="locationUri" formControlName="locationUri" id="locationUri" class="form-control col-xs-12" />
-          </div>
     </div>
-    <div class="form-group" *ngIf="showDisplayName">
-          <label for="locationUri" class="control-label col-md-3 col-sm-3 col-xs-12">Display Name:<br><small>(e.g. Work, Home)</small></label>           
+    <ng-form class="form-horizontal form-label-left" novalidate (ngSubmit)="onSubmit()" [formGroup]="locationForm">
+      <div formGroupName="address">
+        <div class="form-group">
+          @if (isItBuilding) {
+            <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12">Building:</label>
+          }
+          @if (!isItBuilding) {
+            <label for="building" class="control-label col-md-3 col-sm-3 col-xs-12">Name:</label>
+          }
           <div class="col-md-9 col-sm-9 col-xs-12">
-              <input type="text" name="displayName" formControlName="displayName" id="displayName" class="form-control col-xs-12" />
+            <input type="text" name="building" formControlName="building" id="building" class="form-control col-xs-12" />
           </div>
-    </div>
-    <div class="ln_solid"></div>
-    <div class="form-group">
-        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-            <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
-            <input type="button" [disabled]="locationForm.invalid"  (click)="onSubmit()" class="btn btn-success" value="Submit">
         </div>
-    </div>
-      
-  </ng-form>
-</div>
-  `,
-  styles: []
+        <div class="form-group">
+          <label for="street" class="control-label col-md-3 col-sm-3 col-xs-12">Street Address:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="street" formControlName="street" id="street" class="form-control col-xs-12" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="city" class="control-label col-md-3 col-sm-3 col-xs-12">City/County:</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="city" formControlName="city" id="city" class="form-control col-xs-12" />
+          </div>
+        </div>
+        @if (showState) {
+          <div class="form-group">
+            <label for="state" class="control-label col-md-3 col-sm-3 col-xs-12">State:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text" name="state" formControlName="state" id="state" class="form-control col-xs-12" />
+            </div>
+          </div>
+        }
+        @if (showZip) {
+          <div class="form-group">
+            <label for="postalCode" class="control-label col-md-3 col-sm-3 col-xs-12">Postal Code:</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              <input type="text" name="postalCode" formControlName="postalCode" id="postalCode" class="form-control col-xs-12" />
+            </div>
+          </div>
+        }
+      </div>
+      @if (showUrl) {
+        <div class="form-group">
+          <label for="locationUri" class="control-label col-md-3 col-sm-3 col-xs-12">URL:<br><small>A web address for more information (optional).</small></label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="locationUri" formControlName="locationUri" id="locationUri" class="form-control col-xs-12" />
+          </div>
+        </div>
+      }
+      @if (showDisplayName) {
+        <div class="form-group">
+          <label for="locationUri" class="control-label col-md-3 col-sm-3 col-xs-12">Display Name:<br><small>(e.g. Work, Home)</small></label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <input type="text" name="displayName" formControlName="displayName" id="displayName" class="form-control col-xs-12" />
+          </div>
+        </div>
+      }
+      <div class="ln_solid"></div>
+      <div class="form-group">
+        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+          <a class="btn btn-primary" (click)="onCancel()">Cancel</a>
+          <input type="button" [disabled]="locationForm.invalid"  (click)="onSubmit()" class="btn btn-success" value="Submit">
+        </div>
+      </div>
+    </ng-form>
+  </div>
+}
+`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LocationFormComponent implements OnInit {
   @Input() county:PlanningUnit;

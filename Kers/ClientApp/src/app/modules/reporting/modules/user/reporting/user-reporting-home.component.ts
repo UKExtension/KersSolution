@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ReportingService} from '../../../components/reporting/reporting.service';
 import {UserService, User} from '../user.service';
 import { Observable } from "rxjs";
@@ -6,10 +6,12 @@ import {Router} from '@angular/router';
 
 
 @Component({
-  template: `
+    template: `
     <user-reporting-form [userObservable]="user" (onFormSubmit)="reportingSubmit($event)" (onFormCancel)="reportingCancel()"></user-reporting-form>
     
-  `
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UserReportingHomeComponent { 
 

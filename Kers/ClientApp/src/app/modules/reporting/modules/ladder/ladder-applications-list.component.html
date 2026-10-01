@@ -1,3 +1,5 @@
-<div *ngFor="let appl of applications | async">
-  <ladder-applicant-list-detail [application]="appl"></ladder-applicant-list-detail>
-</div>
+@for (appl of applications | async; track appl) {
+  <div>
+    <ladder-applicant-list-detail [application]="appl"></ladder-applicant-list-detail>
+  </div>
+}

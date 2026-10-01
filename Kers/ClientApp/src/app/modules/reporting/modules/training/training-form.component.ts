@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Training, TainingInstructionalHour, TrainingCancelEnrollmentWindow, TainingRegisterWindow } from './training';
 import { TrainingService } from './training.service';
@@ -7,13 +7,15 @@ import { Observable } from 'rxjs';
 
 
 @Component({
-  selector: 'training-form',
-  templateUrl: './training-form.component.html',
-  styles:[`
+    selector: 'training-form',
+    templateUrl: './training-form.component.html',
+    styles: [`
   my-date-picker.ng-invalid.ng-touched >>> .mydp {
     border: 1px solid #CE5454;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrainingFormComponent implements OnInit {
     @Input() training:Training;

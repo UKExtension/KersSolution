@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SnapedAdminService } from './snaped-admin.service';
 import { FiscalyearService, FiscalYear } from '../fiscalyear/fiscalyear.service';
 import { ReportingService } from '../../../components/reporting/reporting.service';
@@ -9,14 +9,16 @@ import { FormBuilder, Validators, FormControl, AbstractControl } from "@angular/
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  templateUrl: 'snaped-county.component.html',
-  styles: [
-    `
+    templateUrl: 'snaped-county.component.html',
+    styles: [
+        `
     .bar_tabs li{
       cursor: pointer;
     }
     `
-  ]
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapedCountyComponent { 
 

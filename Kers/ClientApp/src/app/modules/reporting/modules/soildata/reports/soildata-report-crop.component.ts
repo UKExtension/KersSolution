@@ -1,17 +1,19 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { SoilReport, TestResults } from '../soildata.report';
 import { Observable } from 'rxjs';
 import { SoildataService, CountyNote } from '../soildata.service';
 import { FormBuilder } from '@angular/forms';
 
 @Component({
-  selector: 'soildata-report-crop',
-  templateUrl: './soildata-report-crop.component.html',
-  styles: [`
+    selector: 'soildata-report-crop',
+    templateUrl: './soildata-report-crop.component.html',
+    styles: [`
   .crop-comment{
     margin-top: 11px;
   }
-  `]
+  `],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SoildataReportCropComponent implements OnInit {
   @Input() crop:SoilReport;

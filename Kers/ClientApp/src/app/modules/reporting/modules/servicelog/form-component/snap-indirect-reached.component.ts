@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {    FormBuilder, ControlValueAccessor, AbstractControl, 
             NG_VALUE_ACCESSOR, 
             NG_VALIDATORS, 
@@ -9,35 +9,40 @@ import { ServicelogService, SnapIndirectMethod, SnapIndirectReached, SnapIndirec
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'snap-indirect-reached',
-  template: `
-  <loading *ngIf="loading"></loading>
-    <div class="col-md-9 col-sm-9 col-xs-12" *ngIf="!loading" [formGroup]="reachedForm">
-        <table class="table table-striped table-bordered" formArrayName="reached">
-            <tbody>
-                
-                <tr *ngFor="let opt of reachedForm.controls.reached.controls; let i=index" [formGroupName]="i">
-                    <td>{{reachedChoices[i].name}}</td>
-                    <td><input id="{{reachedChoices[i].id}}" type="number" maxlength="5" (change)="changed($event)" formControlName="value"></td>
-                </tr>
-            
-            
-            </tbody>
-        </table>
+    selector: 'snap-indirect-reached',
+    template: `
+  @if (loading) {
+    <loading></loading>
+  }
+  @if (!loading) {
+    <div class="col-md-9 col-sm-9 col-xs-12" [formGroup]="reachedForm">
+      <table class="table table-striped table-bordered" formArrayName="reached">
+        <tbody>
+          @for (opt of reachedForm.controls.reached.controls; track opt; let i = $index) {
+            <tr [formGroupName]="i">
+              <td>{{reachedChoices[i].name}}</td>
+              <td><input id="{{reachedChoices[i].id}}" type="number" maxlength="5" (change)="changed($event)" formControlName="value"></td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
+  }
   
   `,
-    providers:[  {
-                    provide: NG_VALIDATORS,
-                    useExisting: forwardRef(() => SnapIndirectReachedComponent),
-                    multi: true,
-                } ,
-                { 
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(() => SnapIndirectReachedComponent),
-                    multi: true
-                  } 
-                ]
+    providers: [{
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => SnapIndirectReachedComponent),
+            multi: true,
+        },
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SnapIndirectReachedComponent),
+            multi: true
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SnapIndirectReachedComponent implements ControlValueAccessor, OnInit, Validator {
 
