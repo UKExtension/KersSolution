@@ -113,14 +113,10 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
     formTypeChange(event){
       if(this.selectedFormType != '' ){
         this.attributesLoading = true;
-
-        
         this.sampleAttributeSampleInfoBundles.clear();
-        
         this.service.attributeTypes(this.selectedFormType).subscribe(
           res => {
             var types:SampleAttributeType[] = res;
-            
             for( let type of types){
               if(this.disabled){
                 this.sampleAttributeSampleInfoBundles.push(this.formBuilder.control(
@@ -138,9 +134,6 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
          }
         );
       }
-      
-      
- 
     }
 
 
@@ -152,9 +145,14 @@ export class SoilCropFormElementComponent extends BaseControlValueAccessor<Sampl
       this.formTypeChange(null);
     }
     
-    setDisabledState(){
-      this.disabled = true;
-      this.sampleForm.controls["typeFormId"].disable();
+    setDisabledState(isDisabled: boolean): void {
+      this.disabled = isDisabled;
+
+      if (isDisabled) {
+        this.sampleForm.controls["typeFormId"].disable();
+      } else {
+        this.sampleForm.controls["typeFormId"].enable();
+      }
     }
 
     validate(c: AbstractControl): ValidationErrors | null{
