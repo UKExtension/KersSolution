@@ -23,8 +23,8 @@ import { SoilSampleService } from './soil-sample.service';
     template: `
 
 
-
 @if (!addressBrowserOpen) {
+
   <div>
     <br>
       <soildata-list-address [address]="selectedAddress" [brief]="false"></soildata-list-address>
@@ -82,11 +82,14 @@ export class AddressBrowserFormElementComponent extends BaseControlValueAccessor
     
 
     ngOnInit(){
-       
+      
     }
 
-    setDisabledState(){
-      this.disabled = true;
+    setDisabledState(isDisabled: boolean): void{
+
+      this.disabled = isDisabled;
+
+
     }
 
 

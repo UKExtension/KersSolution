@@ -53,7 +53,6 @@ export class MileageFormComponent implements OnInit {
     var formValue = this.mileageForm.value;
     if(formValue.startingLocation != undefined && formValue.segments.length == 1){
       var firstSegment = formValue.segments[0];
-      console.log(firstSegment);
       if( firstSegment.locationId != ""
             &&
           firstSegment.programCategoryId != ""
