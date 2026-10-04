@@ -18,7 +18,8 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": {
-              "base": "dist"
+              "base": "dist",
+              "browser": ""
             },
             "index": "src/index.html",
             "polyfills": [
@@ -36,7 +37,8 @@
               "./node_modules/froala-editor/css/froala_editor.pkgd.min.css",
               "./node_modules/froala-editor/css/froala_style.min.css",
               "./node_modules/font-awesome/css/font-awesome.css",
-              "./node_modules/angular-calendar/css/angular-calendar.css"
+              "./node_modules/angular-calendar/css/angular-calendar.css",
+              "./node_modules/survey-core/survey-core.min.css"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js",

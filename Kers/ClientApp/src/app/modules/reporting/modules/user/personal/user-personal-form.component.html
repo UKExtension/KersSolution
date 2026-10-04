@@ -82,14 +82,18 @@
             <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="lastName">Interests:</label>
               <div class="col-md-9 col-sm-9 col-xs-12">
-                <small>Type interest below and press semicolon to add it to the list.</small>
-                <tag-input
+                <ng-select
+                  [items]="interestOptions$ | async"
+                  [multiple]="true"
+                  [addTag]="createInterest"
+                  [compareWith]="compareInterestTags"
+                  [typeahead]="interestSearch"
+                  [minTermLength]="1"
+                  [hideSelected]="true"
+                  bindLabel="display"
                   formControlName="interests"
-                  theme='minimal'
-                  [separatorKeyCodes]="[186]"
-                  [placeholder]='Type' >
-                  <tag-input-dropdown [autocompleteObservable]='requestAutocompleteItems'></tag-input-dropdown>
-                </tag-input>
+                  placeholder="Type to search or add an interest">
+                </ng-select>
                 <br><br>
               </div>
             </div>

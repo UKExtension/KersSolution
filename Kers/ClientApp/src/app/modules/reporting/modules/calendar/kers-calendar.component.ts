@@ -23,8 +23,7 @@ import { Subject } from 'rxjs';
 import {
   CalendarEvent,
   CalendarEventAction,
-  CalendarEventTimesChangedEvent,
-  collapseAnimation
+  CalendarEventTimesChangedEvent
 } from 'angular-calendar';
 import { Observable } from 'rxjs';
 import { Activity } from '../activity/activity.service';
@@ -34,7 +33,6 @@ import { CalendarService } from './calendar-service.service';
     selector: 'kers-calendar',
     templateUrl: './kers-calendar.component.html',
     styleUrls: ['./kers-calendar.component.css'],
-    animations: [collapseAnimation],
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })

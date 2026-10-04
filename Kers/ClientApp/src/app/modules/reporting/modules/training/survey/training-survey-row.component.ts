@@ -18,7 +18,7 @@ import {outlineJson} from './outline';
         </div>
         <br><br>
         <div>
-          <survey [json]="json" [previousResult]="previousResult"></survey>
+          <survey-renderer [json]="json" [previousResult]="previousResult"></survey-renderer>
         </div>
       </td>
     }

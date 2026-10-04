@@ -19,9 +19,6 @@ import {SafeHtmlPipe} from "./pipes/safe-html-pipe.pipe";
 
 
 
-//https://github.com/Gbuomprisco/ng2-tag-input
-import { TagInputModule } from 'ngx-chips';
-
 // Import the Froala Editor plugin.
 //import "froala-editor/js/froala_editor.pkgd.min.js";
 
@@ -47,7 +44,6 @@ import { ProgressBarComponent } from './components/progress-bar.component';
 @NgModule({
   imports:      [ 
                   CommonModule, 
-                  TagInputModule,
                   FroalaCompatModule,
                   ReactiveFormsModule,
                   NgSelectModule,

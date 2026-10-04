@@ -14,10 +14,16 @@ import {    UserService,
             SocialConnection 
         } from '../user.service';
 import { FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import {Location} from '@angular/common';
 import { PlanningunitService } from '../../planningunit/planningunit.service';
 import { HttpClient } from '@angular/common/http';
+
+interface InterestTag {
+    value: string;
+    display: string;
+}
 
 @Component({
     selector: 'user-personal-form',
@@ -34,7 +40,13 @@ export class UserPersonalFormComponent implements OnInit {
 
     user:User;
 
-    interestTags=[];
+    public interestSearch = new Subject<string>();
+    public interestOptions$: Observable<InterestTag[]> = this.interestSearch.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap(text => this.requestAutocompleteItems(text)),
+        startWith([] as InterestTag[])
+    );
 
     personalForm = null;
     public options: Object;
@@ -129,11 +141,20 @@ export class UserPersonalFormComponent implements OnInit {
        this.timezones = this.unitService.timezones();
     }
 
-    public requestAutocompleteItems = (text: string):Observable<Object> => {
-        const url = '/api/User/tags?q=' + text;
-        return this.http
-            .get(this.location.prepareExternalUrl(url));
+    public requestAutocompleteItems = (text: string): Observable<InterestTag[]> => {
+        const url = this.location.prepareExternalUrl('/api/User/tags');
+        return this.http.get<string[]>(url, { params: { q: text } }).pipe(
+            map(tags => tags.map(tag => ({ value: tag, display: tag })))
+        );
     };
+
+    public createInterest = (text: string): InterestTag => {
+        const value = text.trim();
+        return { value, display: value };
+    };
+
+    public compareInterestTags = (first: InterestTag, second: InterestTag): boolean =>
+        first?.value === second?.value;
 
 
     initConnection(){

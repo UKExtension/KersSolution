@@ -13,7 +13,7 @@
   let-eventClicked="eventClicked"
   let-isOpen="isOpen">
   @if (isOpen) {
-    <div class="cal-open-day-events" [@collapse]>
+    <div class="cal-open-day-events" animate.leave="cal-open-day-events-closing">
       <calendar-day-events [viewDate]="viewDate" [events]="events" (changed)="fetchEvents()"></calendar-day-events>
     </div>
   }

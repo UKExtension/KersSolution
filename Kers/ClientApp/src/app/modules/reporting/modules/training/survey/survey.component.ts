@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import * as Survey from 'survey-angular';
+import { Model } from 'survey-core';
 
 @Component({
-    selector: 'survey',
-    template: `<div class="survey-container contentcontainer codecontainer"><div id="surveyElement"></div></div>`,
+    selector: 'survey-renderer',
+    template: `<div class="survey-container contentcontainer codecontainer"><survey [model]="surveyModel"></survey></div>`,
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
@@ -12,38 +12,36 @@ export class SurveyComponent  {
     @Input() json: any;
     @Input() previousResult: any;
     result: any;
+    surveyModel: Model;
 
     ngOnInit() {
-        let surveyModel = new Survey.Model(this.json);
-        console.log(this.json);
+        const surveyModel = new Model(this.json);
+        this.surveyModel = surveyModel;
         surveyModel.onAfterRenderQuestion.add((survey, options) => {
-            if (!options.question.popupdescription) { return; }
+            const popupDescription = (options.question as any).popupdescription;
+            if (!popupDescription) { return; }
             // Add a button;
             const btn = document.createElement('button');
             btn.className = 'btn btn-info btn-xs';
-            btn.innerHTML = 'More Info';
+            btn.type = 'button';
+            btn.textContent = 'More Info';
             btn.onclick = function () {
-              // showDescription(question);
-              alert(options.question.popupdescription);
+              alert(popupDescription);
             };
             const header = options.htmlElement.querySelector('h5');
+            if (!header) { return; }
             const span = document.createElement('span');
             span.innerHTML = '  ';
             header.appendChild(span);
             header.appendChild(btn);
           });
-          surveyModel.onComplete
-            .add((result, options) => {
-              this.submitSurvey.emit(result.data);
-              this.result = result.data;
-            }
-            );
+        surveyModel.onComplete.add(sender => {
+            this.submitSurvey.emit(sender.data);
+            this.result = sender.data;
+        });
         if(this.previousResult != null){
           surveyModel.mode = 'display';
           surveyModel.data = this.previousResult;
         }
-
-
-        Survey.SurveyNG.render('surveyElement', { model: surveyModel });
     }
 }

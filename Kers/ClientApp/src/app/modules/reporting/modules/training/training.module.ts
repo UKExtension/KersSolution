@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SurveyModule } from 'survey-angular-ui';
 
 import { SharedModule } from '../../shared/shared.module';
 import { TrainingRoutingModule } from './training-routing.module';
@@ -60,6 +61,7 @@ import { TrainingSurveyRowComponent } from './survey/training-survey-row.compone
     SharedModule,
     AngularMyDatePickerModule,
     CommonModule,
+    SurveyModule,
     TrainingRoutingModule
   ],
   exports: [TrainingTranscriptComponent]
