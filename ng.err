@@ -1,0 +1,52 @@
+The "@angular-devkit/build-angular:dev-server" builder is deprecated as part of Angular's Webpack support deprecation. Use "@angular/build:dev-server" instead. For more information, see https://angular.dev/tools/cli/build-system-migration.
+Prebundling has been configured but will not be used because scripts optimization is enabled.
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mConstructing "ua_parser" will crash at run-time because it's an import namespace object, not a constructor[0m [call-import-namespace]
+
+    src/app/modules/reporting/modules/admin/log/log-detail.component.ts:155:25:
+[37m      155 │         var parser = new [32mua_parser[37m();
+          ╵                          [32m~~~~~~~~~[0m
+
+  Consider changing "ua_parser" to a default import instead:
+
+    src/app/modules/reporting/modules/admin/log/log-detail.component.ts:2:7:
+[37m      2 │ import [32m* as ua_parser[37m from "ua-parser-js";
+        │        [32m~~~~~~~~~~~~~~[37m
+        ╵        [32mua_parser[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mTypeScript compiler options 'target' and 'useDefineForClassFields' are set to 'ES2022' and 'false' respectively by the Angular CLI.[0m [1m[35m[plugin angular-compiler][0m
+
+    tsconfig.app.json:0:0:
+[37m      0 │ [32m[37m
+        ╵ [32m^[0m
+
+  To control ECMA version and features use the Browserslist configuration. For more information, see [4mhttps://angular.dev/tools/cli/build#configuring-browser-compatibility[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mUnexpected ">"[0m [1m[35m[plugin angular-compiler][0m [css-syntax-error]
+
+    angular:styles/component:css;bf2b03892e936b5e;C:/Users/idene3/KersSolution/Kers/ClientApp/src/app/modules/reporting/modules/training/training-form-sessions.component.ts:2:40:
+[37m      2 │   my-date-picker.ng-invalid.ng-touched >[32m>[37m> .mydp {
+        ╵                                         [32m^[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mUnexpected ">"[0m [1m[35m[plugin angular-compiler][0m [css-syntax-error]
+
+    angular:styles/component:css;bf2b03892e936b5e;C:/Users/idene3/KersSolution/Kers/ClientApp/src/app/modules/reporting/modules/training/training-form.component.ts:2:40:
+[37m      2 │   my-date-picker.ng-invalid.ng-touched >[32m>[37m> .mydp {
+        ╵                                         [32m^[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mExpected identifier but found "*"[0m [1m[35m[plugin angular-compiler][0m [css-syntax-error]
+
+    src/app/gentelella.scss:1431:2:
+[37m      1431 │   [32m*[37mmargin-top: -1px;
+           ╵   [32m^[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mCould not parse 3 selectors in styles.css; their rules were left out of the critical CSS but still apply once the full stylesheet loads:
+  0% (Unmatched selector: %)
+  0% (Unmatched selector: %)
+  0% (Unmatched selector: %)[0m
+
+

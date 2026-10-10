@@ -3,11 +3,8 @@
     "tasks": [
         {
             "label": "start-angular",
-            "type": "process",
-            "command": "npm",
-            "args": [
-                "start"
-            ],
+            "type": "shell",
+            "command": "npm start",
             "options": {
                 "cwd": "${workspaceFolder}/Kers/ClientApp"
             },
@@ -26,6 +23,14 @@
                     "endsPattern": "Local:\\s+https?://localhost:4200/"
                 }
             }
+        },
+        {
+            "label": "build-and-start-angular",
+            "dependsOn": [
+                "build",
+                "start-angular"
+            ],
+            "problemMatcher": []
         },
         {
             "label": "stop-angular",

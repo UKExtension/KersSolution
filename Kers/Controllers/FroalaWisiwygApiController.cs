@@ -44,7 +44,7 @@ namespace Kers.Controllers
                 var user = _context.KersUser.Find(Int32.Parse(profile));
                 var im = Kers.Services.FroalaWisiwyg.DatabaseImage.Upload(HttpContext, _context, user);
                 var lnk = "fileuploads/";
-                if( env.IsProduction()){
+                if( env.IsProduction() || env.IsStaging() ){
                     lnk = "/core/fileuploads/";
                 }
                 return Json(new { link = lnk + im.UploadFile.Name, imageId = im.Id } );
