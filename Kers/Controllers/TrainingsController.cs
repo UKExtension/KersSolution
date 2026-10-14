@@ -384,7 +384,7 @@ namespace Kers.Controllers
                     messageRepo.ScheduleTrainingMessage("PROPOSALCOMFIRMED",trn,trn.submittedBy);
                 }
                 
-                this.Log(trn,"Training", "Training Updated.");
+                this.Log(trn,"Training", "Training Updated.", "Training");
                 return new OkObjectResult(trn);
             }else{
                 this.Log( training ,"Training", "Not Found Training in an update attempt.", "Training", "Error");
