@@ -7,6 +7,7 @@ import { UserService, User } from '../../user/user.service';
 
 
 @Component({
+  standalone: false,
   selector: 'personel-form',
   template: `
   <div [formGroup]="personel">

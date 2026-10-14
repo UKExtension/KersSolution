@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BudgetPlanOfficeOperation } from '../budget.service';
 
 @Component({
+  standalone: false,
   selector: 'budget-plan-office-operations-detail',
   template: `
 

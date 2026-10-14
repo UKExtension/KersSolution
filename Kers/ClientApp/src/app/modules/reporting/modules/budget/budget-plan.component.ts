@@ -3,6 +3,7 @@ import {BudgetService, BudgetPlanOfficeOperation} from './budget.service';
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'budget-plan',
   templateUrl: './budget-plan.component.html',
   styles: []

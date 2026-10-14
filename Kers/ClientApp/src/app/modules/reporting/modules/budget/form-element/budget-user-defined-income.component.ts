@@ -6,6 +6,7 @@ import { BaseControlValueAccessor } from '../../../core/BaseControlValueAccessor
 
 
 @Component({
+  standalone: false,
   selector: 'budget-user-defined-income',
   template: `
 <div class="form-group" [formGroup]="budgetUserDefinedIncomeGroup">

@@ -114,6 +114,10 @@ const reportingRoutes: Routes = [
             loadChildren: () => import('./modules/mileage/mileage.module').then(m => m.MileageModule)
           },
           {
+            path:'budget',
+            loadChildren: () => import('./modules/budget/budget.module').then(m => m.BudgetModule)
+          },
+          {
             path:'extensionarea',
             loadChildren: () => import('./modules/area/area.module').then(m => m.AreaModule)
           },

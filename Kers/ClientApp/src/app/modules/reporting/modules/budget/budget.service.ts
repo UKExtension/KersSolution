@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../../core/services/http-error-handler.service';
-import { fstat } from 'fs';
+//import { fstat } from 'fs';
 import { User, PlanningUnit } from '../user/user.service';
 import { FiscalYear } from '../admin/fiscalyear/fiscalyear.service';
 

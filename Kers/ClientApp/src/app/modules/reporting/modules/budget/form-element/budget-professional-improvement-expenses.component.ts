@@ -7,6 +7,7 @@ import { User } from '../../user/user.service';
 
 
 @Component({
+  standalone: false,
   selector: 'budget-professional-improvement-expenses',
   template: `
 <div class="form-group" [formGroup]="budgetImprovement">

@@ -5,6 +5,7 @@ import { FormBuilder, Validators, FormArray } from '@angular/forms';
 import { UserService, User } from '../user/user.service';
 
 @Component({
+  standalone: false,
   selector: 'budget-plan-form',
   templateUrl: './budget-plan-form.component.html',
   styles: [`

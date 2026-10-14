@@ -4,6 +4,7 @@ import { FormGroup } from "@angular/forms";
 
 
 @Component({
+  standalone: false,
   selector: 'budget-support-staff',
   template: `
 <div class="row">

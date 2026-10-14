@@ -3,6 +3,7 @@ import { BudgetPlanOfficeOperation, BudgetService } from '../budget.service';
 import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
+  standalone: false,
   selector: 'budget-plan-office-operations-form',
   template: `
     <loading *ngIf="loading"></loading>

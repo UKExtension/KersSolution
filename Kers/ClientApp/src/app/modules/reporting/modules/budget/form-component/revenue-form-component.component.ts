@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 
 @Component({
+  standalone: false,
   selector: 'revenue-form-component',
   templateUrl: './revenue-form-component.component.html',
   styles: [`

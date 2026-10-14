@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
+  standalone: false,
   selector: 'travel-form-component',
   templateUrl: './travel-form-component.component.html',
   styles: []

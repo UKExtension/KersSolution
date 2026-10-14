@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReportingService } from '../../components/reporting/reporting.service';
 
 @Component({
+  standalone: false,
   selector: 'app-budget-home',
   templateUrl: './budget-home.component.html',
   styles: []

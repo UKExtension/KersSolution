@@ -6,6 +6,7 @@ import { BudgetPlanOfficeOperationValue, BudgetService, BudgetPlanOfficeOperatio
 
 
 @Component({
+  standalone: false,
   selector: 'office-operations',
   template: `
   <div [formGroup]="officeOperations">
