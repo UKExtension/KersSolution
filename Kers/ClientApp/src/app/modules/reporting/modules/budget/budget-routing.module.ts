@@ -5,6 +5,7 @@ import { BudgetPlanComponent } from './budget-plan.component';
 import { BudgetAuthGuard } from './auth/budget-auth.guard';
 import { BudgetPlanAdminComponent } from './admin/budget-plan-admin.component';
 import { BudgetPlanOfficeOperationsComponent } from './admin/budget-plan-office-operations.component';
+import { ProgramSupportComponent } from './program-support/program-support.component';
 
 const routes: Routes = [{
   path: '',
@@ -14,6 +15,10 @@ const routes: Routes = [{
           {
             path: 'plan',
             component: BudgetPlanComponent
+          },
+          {
+            path: 'program-support',
+            component: ProgramSupportComponent
           },
           {
             path: 'admin',

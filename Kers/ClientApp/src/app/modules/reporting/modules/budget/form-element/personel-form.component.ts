@@ -11,13 +11,19 @@ import { UserService, User } from '../../user/user.service';
   selector: 'personel-form',
   template: `
   <div [formGroup]="personel">
-    <h2>Professional Staff
-    Support Staff & Base Program Support</h2><br><br>
+    <div class="x_panel budget-subpanel">
+      <div class="x_title">
+        <h2>Professional Staff <small>Support Staff &amp; Base Program Support</small></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
 
 
     <div class="form-group" formArrayName="budgetPlanStaffExpenditures">
       <div *ngFor="let type of types">
-        <h3>{{type.label}}</h3><br>
+        <div class="row x_title budget-staff-type-title">
+          <div class="col-xs-12"><h3>{{type.label}}</h3></div>
+        </div>
         <div class="col-xs-12">
             <div *ngFor="let userDefinedIncome of this['staffSupportExpenditures'+type.id]; let i=index" class="form-group">
                 <budget-personel-support-staff [employees]="unitEmployees" (removeMe)="supportStaffExpenditureRemoved($event)" [index]="userDefinedIncome.value.index" [formControlName]="userDefinedIncome.value.index"></budget-personel-support-staff>
@@ -46,7 +52,17 @@ import { UserService, User } from '../../user/user.service';
       </div>
     </div>
   </div>
-  <table class="table table-bordered" style="background-color:rgba(233, 226, 122, 0.3);">
+    </div>
+  </div>
+  </div>
+  <div class="x_panel budget-subpanel">
+  <div class="x_title">
+    <h2>Personnel Summary</h2>
+    <div class="clearfix"></div>
+  </div>
+  <div class="x_content">
+    <div class="table-responsive">
+  <table class="table table-bordered">
       <thead>
           <tr>
               <th>Person</th>
@@ -80,6 +96,8 @@ import { UserService, User } from '../../user/user.service';
           </tr>
       </tfoot>
     </table>
+      </div>
+    </div>
   </div>
 
 

@@ -19,6 +19,7 @@ import {OfficeOperationsComponent} from './form-element/office-operations.compon
 import {PersonelFormComponent} from './form-element/personel-form.component';
 import { RevenueFormComponentComponent } from './form-component/revenue-form-component.component';
 import { TravelFormComponentComponent } from './form-component/travel-form-component.component';
+import { ProgramSupportComponent } from './program-support/program-support.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { TravelFormComponentComponent } from './form-component/travel-form-compo
     OfficeOperationsComponent,
     PersonelFormComponent,
     RevenueFormComponentComponent,
-    TravelFormComponentComponent
+    TravelFormComponentComponent,
+    ProgramSupportComponent
   
   
   ],

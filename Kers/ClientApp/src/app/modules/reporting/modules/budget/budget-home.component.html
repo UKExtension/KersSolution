@@ -1,2 +1,88 @@
-<router-outlet></router-outlet>
-
+<div class="budget-dashboard">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Budget Planning <small>County Cooperative Extension Service</small></h2>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <p class="budget-dashboard-intro">Choose a budget tool to get started.</p>
+          <div class="row budget-tool-grid">
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/training/upcomming']" routerLinkActive="active">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                <span>Schedule of Disbursements</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/training/transcript']" routerLinkActive="active">
+                <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                <span>Memorandum of Agreement</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/budget/plan']" routerLinkActive="active">
+                <i class="fa fa-calculator" aria-hidden="true"></i>
+                <span>Budget Plan</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/training/propose']" routerLinkActive="active">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                <span>Budget Amendment</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/training/postattendance']" routerLinkActive="active">
+                <i class="fa fa-line-chart" aria-hidden="true"></i>
+                <span>Operational Expenditures</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/budget/program-support']" routerLinkActive="active">
+                <i class="fa fa-support" aria-hidden="true"></i>
+                <span>Programs Support Funds Budget</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/training/admincatalog']" routerLinkActive="active">
+                <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                <span>5 Years Financial Plan for Service</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/training/adminenrollment']" routerLinkActive="active">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                <span>10 Years Financial Plan of Service</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/training/adminmanagers']" routerLinkActive="active">
+                <i class="fa fa-book" aria-hidden="true"></i>
+                <span>SPGE Budget Summary Instructions</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="col-lg-4 col-md-6 col-xs-12">
+              <a class="budget-tool-card" [routerLink]="['/reporting/training/adminreports']" routerLinkActive="active">
+                <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                <span>Summary</span>
+                <i class="fa fa-angle-right budget-tool-arrow" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

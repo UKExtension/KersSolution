@@ -1,0 +1,47 @@
+.budget-dashboard-intro {
+  margin: 0 0 15px;
+  color: #73879c;
+}
+
+.budget-tool-grid > div {
+  margin-bottom: 15px;
+}
+
+.budget-tool-card {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 14px;
+  padding: 15px;
+  color: #34495e;
+  background: #fff;
+  border: 1px solid #e6e9ed;
+  border-left: 3px solid #1abb9c;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.budget-tool-card:hover,
+.budget-tool-card:focus {
+  color: #1abb9c;
+  border-color: #1abb9c;
+  box-shadow: 0 3px 10px rgba(42, 63, 84, 0.12);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.budget-tool-card > .fa:first-child {
+  width: 24px;
+  color: #1abb9c;
+  font-size: 20px;
+  text-align: center;
+}
+
+.budget-tool-card > span {
+  flex: 1;
+  font-weight: 600;
+}
+
+.budget-tool-arrow {
+  color: #9aa8b6;
+  font-size: 20px;
+}

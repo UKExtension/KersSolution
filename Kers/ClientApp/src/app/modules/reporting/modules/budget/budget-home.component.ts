@@ -5,7 +5,7 @@ import { ReportingService } from '../../components/reporting/reporting.service';
   standalone: false,
   selector: 'app-budget-home',
   templateUrl: './budget-home.component.html',
-  styles: []
+  styleUrls: ['./budget-home.component.css']
 })
 export class BudgetHomeComponent implements OnInit {
 

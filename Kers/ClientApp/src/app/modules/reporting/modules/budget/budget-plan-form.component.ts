@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BudgetPlanOfficeOperation, BudgetService, BudgetPlanRevision, BudgetPlanStaffExpenditure } from './budget.service';
 import { FormBuilder, Validators, FormArray } from '@angular/forms';
@@ -8,16 +8,8 @@ import { UserService, User } from '../user/user.service';
   standalone: false,
   selector: 'budget-plan-form',
   templateUrl: './budget-plan-form.component.html',
-  styles: [`
-  .form_wizard ul li{
-    cursor: pointer;
-  }
-  .math-sign, .math-result{
-    font-weight: bold;
-    font-size: 1.5em;
-    color: #34495E;
-  }
-  `]
+  styleUrls: ['./budget-plan-form.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class BudgetPlanFormComponent implements OnInit {
   step = 1;

@@ -1,0 +1,265 @@
+<div class="program-support">
+  <div class="row ps-header">
+    <div class="col-md-8">
+      <h2>Program Support Budgets</h2>
+      <p class="ps-lead">Allocate and manage individual program support budgets for FY27</p>
+      <p class="ps-sub">Program Support totals must reconcile with the Budget Plan and each individual budget must balance to the assigned amount.</p>
+    </div>
+    <div class="col-md-4 ps-filters">
+      <select class="form-control" aria-label="County">
+        <option>Jessamine</option>
+      </select>
+      <select class="form-control" aria-label="Fiscal year">
+        <option>FY27</option>
+      </select>
+      <span class="ps-badge"><i class="fa fa-info-circle"></i> In Progress</span>
+    </div>
+  </div>
+
+  <div class="row ps-summary">
+    @for (card of summary; track card.label) {
+      <div class="col-lg-3 col-md-6 col-xs-12">
+        <div class="x_panel ps-stat">
+          <span class="ps-stat-icon ps-tone-{{card.tone}}"><i class="fa {{card.icon}}"></i></span>
+          <div>
+            <div class="ps-stat-amount" [class.text-danger]="card.tone === 'red'">{{card.amount}}</div>
+            <div class="ps-stat-label">{{card.label}}</div>
+            <small>{{card.note}}</small>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="row">
+    <div class="col-lg-9 col-md-8 col-xs-12">
+      <ul class="nav nav-tabs ps-tabs">
+        @for (tab of tabs; track tab; let i = $index) {
+          <li [class.active]="activeTab === i"><a (click)="activeTab = i">{{tab}}</a></li>
+        }
+      </ul>
+
+      <div class="row">
+        <div class="col-md-6 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title"><h2>Program Support by Category</h2><div class="clearfix"></div></div>
+            <div class="x_content ps-category">
+              <div class="ps-donut" [style.background]="donut">
+                <div class="ps-donut-hole"><strong>$21,000</strong><small>Budgeted</small></div>
+              </div>
+              <ul class="ps-legend">
+                @for (c of categories; track c.name) {
+                  <li>
+                    <span class="ps-dot" [style.background]="c.color"></span>
+                    <span class="ps-legend-name">{{c.name}}</span>
+                    <span class="ps-legend-amount">{{c.amount}}</span>
+                    <span class="ps-legend-percent">{{c.percent}}%</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title"><h2>Allocation Status by Position</h2><div class="clearfix"></div></div>
+            <div class="x_content">
+              @for (p of positions; track p.name) {
+                <div class="ps-allocation">
+                  <span class="ps-allocation-name">{{p.name}}</span>
+                  <div class="progress ps-progress">
+                    <div class="progress-bar ps-bar-{{p.tone}}" [style.width.%]="p.percent"></div>
+                  </div>
+                  <span class="ps-allocation-percent">{{p.percent}}%</span>
+                  <span class="ps-allocation-count">{{p.count}}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Personnel Program Support Budgets</h2>
+          <div class="ps-toolbar">
+            <div class="input-group ps-search">
+              <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              <input type="text" class="form-control" placeholder="Search personnel...">
+            </div>
+            <button type="button" class="btn btn-default"><i class="fa fa-filter"></i> Filters</button>
+            <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add Budget</button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <div class="table-responsive">
+            <table class="table table-bordered ps-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name / Position</th>
+                  <th>Program Area</th>
+                  <th class="text-right">Budget Amount</th>
+                  <th class="text-right">Assigned Amount</th>
+                  <th class="text-right">Detailed Amount</th>
+                  <th class="text-right">Variance</th>
+                  <th>Status</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (b of budgets; track b.id) {
+                  <tr>
+                    <td>{{b.id}}</td>
+                    <td>{{b.name}}</td>
+                    <td>{{b.area}}</td>
+                    <td class="text-right">{{b.budget}}</td>
+                    <td class="text-right">{{b.assigned}}</td>
+                    <td class="text-right">{{b.detailed}}</td>
+                    <td class="text-right" [class.text-danger]="b.variance !== '$0'">{{b.variance}}</td>
+                    <td><span class="ps-status ps-status-{{b.tone}}">{{b.status}}</span></td>
+                    <td class="text-center ps-actions">
+                      <a><i class="fa fa-pencil text-primary"></i></a>
+                      <a><i class="fa fa-file-text-o text-primary"></i></a>
+                      <a><i class="fa fa-ellipsis-h"></i></a>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3"><strong>Totals</strong></td>
+                  <td class="text-right"><strong>$21,000</strong></td>
+                  <td class="text-right"><strong>$21,000</strong></td>
+                  <td class="text-right"><strong>$18,000</strong></td>
+                  <td class="text-right text-danger"><strong>($3,000)</strong></td>
+                  <td colspan="2"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 col-xs-12">
+          <div class="x_panel ps-footer-panel">
+            <div class="x_title">
+              <h2>Validation Results</h2>
+              <a class="pull-right ps-link">View All</a>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <ul class="ps-checklist">
+                @for (v of validations; track v) {
+                  <li><i class="fa fa-check-circle"></i> {{v}}</li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-xs-12">
+          <div class="x_panel ps-footer-panel ps-guidance">
+            <div class="x_title"><h2><i class="fa fa-info-circle"></i> Guidance</h2><div class="clearfix"></div></div>
+            <div class="x_content">
+              <ul>
+                <li>Program support budgets must be reasonable and directly support educational programs.</li>
+                <li>Each individual budget must balance to the assigned amount.</li>
+                <li>Include sufficient detail and justification for all items.</li>
+                <li>Refer to FY27 Budget Manual, Program Support section.</li>
+              </ul>
+              <a class="ps-link">View Guidance Document <i class="fa fa-long-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-xs-12">
+          <div class="x_panel ps-footer-panel">
+            <div class="x_title"><h2>Quick Actions</h2><div class="clearfix"></div></div>
+            <div class="x_content">
+              <ul class="ps-checklist ps-quick">
+                @for (q of quickActions; track q) {
+                  <li><i class="fa fa-file-text"></i> <a>{{q}}</a></li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-4 col-xs-12">
+      <div class="x_panel ps-reconcile">
+        <h2>Reconciliation Status</h2>
+        <p><i class="fa fa-shield"></i> Totals are within allowed variance.<br>All detail budgets must be completed.</p>
+      </div>
+
+      <div class="x_panel ps-detail">
+        <div class="x_title">
+          <h2>Program Support Detail</h2>
+          <a class="pull-right ps-close"><i class="fa fa-close"></i></a>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <div class="form-group">
+            <label>Employee / Position</label>
+            <select class="form-control"><option>4-H Agent (ID: 34567)</option></select>
+          </div>
+          <div class="form-group">
+            <label>Program Area</label>
+            <select class="form-control"><option>4-H Youth Development</option></select>
+          </div>
+          <div class="form-group">
+            <label>Budget Amount (Assigned)</label>
+            <div class="input-group">
+              <span class="input-group-addon">$</span>
+              <input type="text" class="form-control" value="4,500" readonly>
+            </div>
+          </div>
+
+          <div class="ps-detail-head">
+            <h4>Budget Detail</h4>
+            <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add Item</button>
+          </div>
+          <table class="table table-bordered ps-table">
+            <thead>
+              <tr><th>Category</th><th>Description</th><th class="text-right">Amount</th><th class="text-center">Actions</th></tr>
+            </thead>
+            <tbody>
+              @for (d of detailItems; track d.category) {
+                <tr>
+                  <td>{{d.category}}</td>
+                  <td>{{d.description}}</td>
+                  <td class="text-right">{{d.amount}}</td>
+                  <td class="text-center ps-actions"><a><i class="fa fa-pencil text-primary"></i></a><a><i class="fa fa-trash text-danger"></i></a></td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr><td colspan="2"><strong>Total Detailed</strong></td><td class="text-right"><strong>$4,000</strong></td><td></td></tr>
+            </tfoot>
+          </table>
+
+          <div class="ps-variance">
+            <strong>Variance</strong>
+            <strong class="text-danger">$ (500)</strong>
+          </div>
+          <p class="ps-variance-note"><i class="fa fa-info-circle"></i> This budget is $500 under the assigned amount.</p>
+
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea class="form-control" rows="3">Additional teaching aids will be purchased in second quarter.</textarea>
+            <small class="pull-right">72/500</small>
+            <div class="clearfix"></div>
+          </div>
+
+          <div class="ps-detail-actions">
+            <button type="button" class="btn btn-default">Save</button>
+            <button type="button" class="btn btn-primary">Mark Complete</button>
+            <button type="button" class="btn btn-default"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
